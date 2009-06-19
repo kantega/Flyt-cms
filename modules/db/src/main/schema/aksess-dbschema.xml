@@ -1,0 +1,460 @@
+<?xml version="1.0"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database.dtd">
+<database name="aksess_db">
+    <table name="associationcategory">
+        <column name="AssociationId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="AssociationName" required="false" type="VARCHAR" size="64"/>
+        <column name="Description" required="false" type="CLOB" size="2147483647"/>
+        <column name="PublicId" required="false" type="VARCHAR" size="255"/>
+        <column name="LastModified" required="false" type="TIMESTAMP" size="23,3"/>
+    </table>
+    <table name="associations">
+        <column name="UniqueId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="AssociationId" required="false" type="INTEGER" size="10"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="ParentAssociationId" required="true" type="INTEGER" size="10"/>
+        <column name="Category" required="true" type="INTEGER" size="10"/>
+        <column name="SiteId" required="true" type="INTEGER" size="10" default="1"/>
+        <column name="SecurityId" required="false" type="INTEGER" size="10" default="null"/>
+        <column name="Type" required="true" type="INTEGER" size="10" default="0"/>
+        <column name="Priority" required="true" type="INTEGER" size="10"/>
+        <column name="Path" required="false" type="VARCHAR" size="255"/>
+        <column name="Depth" required="true" type="INTEGER" size="10"/>
+        <column name="IsDeleted" required="true" type="INTEGER" size="10" default="0"/>
+        <column name="DeletedItemsId" required="false" type="INTEGER" size="10"/>
+        <column name="NumberOfViews" required="false" type="INTEGER" size="10" default="null"/>
+        <index name="idx_associations">
+            <index-column name="AssociationId"/>
+            <index-column name="ContentId"/>
+            <index-column name="ParentAssociationId"/>
+        </index>
+    </table>
+    <table name="attachments">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="Language" required="true" type="INTEGER" size="10"/>
+        <column name="Filename" required="true" type="VARCHAR" size="255"/>
+        <column name="Data" required="false" type="BLOB" size="2147483647"/>
+        <column name="LastModified" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="FileSize" required="true" type="INTEGER" size="11" default="0"/>
+        <index name="idx_attachments">
+            <index-column name="ContentId"/>
+        </index>
+    </table>
+    <table name="attribute_editablelist">
+        <column name="AttributeKey" required="true" type="VARCHAR" size="255"/>
+        <column name="Value" required="true" type="VARCHAR" size="255"/>
+        <column name="DefaultSelected" required="true" type="INTEGER" size="10"/>
+        <column name="Language" required="true" type="VARCHAR" size="255"/>
+    </table>
+    <table name="content">
+        <column name="ContentId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Type" required="true" type="INTEGER" size="10"/>
+        <column name="ContentTemplateId" required="false" type="INTEGER" size="10"/>
+        <column name="MetaDataTemplateId" required="false" type="INTEGER" size="10"/>
+        <column name="DisplayTemplateId" required="false" type="INTEGER" size="10"/>
+        <column name="DocumentTypeId" required="false" type="INTEGER" size="10"/>
+        <column name="GroupId" required="true" type="INTEGER" size="10"/>
+        <column name="Owner" required="false" type="VARCHAR" size="128"/>
+        <column name="Location" required="false" type="VARCHAR" size="255"/>
+        <column name="Alias" required="false" type="VARCHAR" size="64"/>
+        <column name="PublishDate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="ExpireDate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="ExpireAction" required="false" type="INTEGER" size="10"/>
+        <column name="VisibilityStatus" required="true" type="INTEGER" size="10"/>
+        <column name="NumberOfNotes" required="true" type="INTEGER" size="10" default="0"/>
+        <column name="OwnerPerson" required="false" type="VARCHAR" size="128"/>
+        <column name="RevisionDate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="ForumId" required="false" type="INTEGER" size="10"/>
+        <column name="OpenInNewWindow" required="false" type="INTEGER" size="10"/>
+        <column name="DocumentTypeIdForChildren" required="false" type="INTEGER" size="10"/>
+        <column name="IsLocked" required="false" type="INTEGER" size="10" default="0"/>
+        <index name="idx_content_alias">
+            <index-column name="Alias"/>
+        </index>
+        <index name="idx_content_documenttype">
+            <index-column name="DocumentTypeId"/>
+        </index>
+        <index name="idx_content_contentTemplateId">
+            <index-column name="ContentTemplateId"/>
+        </index>
+        <index name="idx_content_displayTemplateId">
+            <index-column name="DisplayTemplateId"/>
+        </index>
+
+    </table>
+    <table name="contentattributes">
+        <column name="AttributeId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="ContentVersionId" required="true" type="INTEGER" size="10"/>
+        <column name="AttributeType" required="true" type="VARCHAR" size="32"/>
+        <column name="DataType" required="true" type="INTEGER" size="10"/>
+        <column name="Name" required="true" type="VARCHAR" size="64"/>
+        <column name="Value" required="false" type="CLOB" size="2147483647"/>
+        <index name="idx_contentattributes">
+            <index-column name="ContentVersionId"/>
+            <index-column name="AttributeType"/>
+        </index>
+    </table>
+    <table name="contentversion">
+        <column name="ContentVersionId" primaryKey="true" required="true" type="INTEGER" size="10"
+                autoIncrement="true"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="Version" required="true" type="INTEGER" size="10"/>
+        <column name="Status" required="true" type="INTEGER" size="10"/>
+        <column name="IsActive" required="false" type="INTEGER" size="10"/>
+        <column name="Language" required="true" type="INTEGER" size="10"/>
+        <column name="Title" required="true" type="VARCHAR" size="255"/>
+        <column name="AltTitle" required="false" type="VARCHAR" size="255"/>
+        <column name="Description" required="false" type="CLOB" size="2147483647"/>
+        <column name="Image" required="false" type="VARCHAR" size="255"/>
+        <column name="Keywords" required="false" type="CLOB" size="2147483647"/>
+        <column name="Publisher" required="false" type="VARCHAR" size="64"/>
+        <column name="LastModified" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="LastModifiedBy" required="false" type="VARCHAR" size="64"/>
+        <column name="ChangeDescription" required="false" type="CLOB" size="2147483647"/>
+        <column name="ApprovedBy" required="false" type="VARCHAR" size="64"/>
+        <index name="idx_contentversion">
+            <index-column name="ContentId"/>
+            <index-column name="Version"/>
+            <index-column name="Status"/>
+        </index>
+    </table>
+    <table name="ct2topic">
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="TopicId" required="true" type="VARCHAR" size="255"/>
+        <index name="idx_ct2topic_topicid_topicmapid">
+            <index-column name="TopicId"/>
+            <index-column name="TopicMapId"/>
+        </index>
+    </table>
+    <table name="dbuserattributes">
+        <column name="Domain" required="true" type="VARCHAR" size="64"/>
+        <column name="UserId" required="true" type="VARCHAR" size="64"/>
+        <column name="Name" type="VARCHAR" size="255"/>
+        <column name="Value" type="VARCHAR" size="255"/>
+    </table>
+    <table name="dbuserpassword">
+        <column name="Domain" required="true" type="VARCHAR" size="64"/>
+        <column name="UserId" required="true" type="VARCHAR" size="64"/>
+        <column name="Password" required="true" type="VARCHAR" size="255"/>
+        <column name="HashMech" type="VARCHAR" size="64"/>
+    </table>
+    <table name="dbuserprofile">
+        <column name="Domain" required="true" type="VARCHAR" size="64"/>
+        <column name="UserId" required="true" type="VARCHAR" size="64"/>
+        <column name="GivenName" type="VARCHAR" size="255"/>
+        <column name="Surname" type="VARCHAR" size="255"/>
+        <column name="Email" type="VARCHAR" size="255"/>
+        <column name="Department" type="VARCHAR" size="255"/>
+    </table>
+    <table name="dbuserrole">
+        <column name="Domain" required="true" type="VARCHAR" size="64"/>
+        <column name="RoleId" required="true" type="VARCHAR" size="255"/>
+        <column name="RoleName" required="true" type="VARCHAR" size="255"/>
+    </table>
+    <table name="dbuserrole2user">
+        <column name="RoleDomain" required="true" type="VARCHAR" size="64"/>
+        <column name="RoleId" required="true" type="VARCHAR" size="255"/>
+        <column name="UserDomain" required="true" type="VARCHAR" size="64"/>
+        <column name="UserId" required="true" type="VARCHAR" size="255"/>
+    </table>
+
+    <table name="deleteditems">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Title" required="true" type="VARCHAR" size="255"/>
+        <column name="ObjectType" required="true" type="INTEGER" size="10"/>
+        <column name="DeletedDate" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="DeletedBy" required="true" type="VARCHAR" size="255"/>
+    </table>
+    <table name="eventlog">
+        <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="UserId" required="false" type="VARCHAR" size="255"/>
+        <column name="EventName" required="true" type="VARCHAR" size="255"/>
+        <column name="SubjectName" required="false" type="VARCHAR" size="255"/>
+        <column name="RemoteAddress" required="false" type="VARCHAR" size="32"/>
+        <column name="SubjectType" required="false" type="INTEGER" size="10"/>
+        <column name="SubjectId" required="false" type="INTEGER" size="10"/>
+    </table>
+    <table name="form">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="name" required="true" type="VARCHAR" size="128"/>
+        <column name="wizard" required="false" type="BLOB" size="2147483647"/>
+        <column name="xslfo" required="false" type="BLOB" size="2147483647"/>
+        <column name="email" required="true" type="VARCHAR" size="50"/>
+        <column name="importsource" required="false" type="VARCHAR" size="255"/>
+        <column name="importid" required="false" type="VARCHAR" size="255"/>
+        <column name="importversion" required="false" type="VARCHAR" size="255"/>
+        <column name="importdirty" required="false" type="SMALLINT" size="5"/>
+        <column name="approvable" required="false" type="SMALLINT" size="5"/>
+        <column name="authenticationContext" required="false" type="VARCHAR" size="255"/>
+        <column name="signatureStrategy" required="false" type="VARCHAR" size="255"/>
+        <column name="deliveryService" required="false" type="VARCHAR" size="255"/>
+        <column name="wsDeliveryTemplate" required="false" type="BLOB" size="2147483647"/>
+        <column name="version" required="false" type="INTEGER" size="10" default="1"/>
+        <column name="allowAttachments" required="false" type="INTEGER" size="10"/>
+    </table>
+    <table name="formdelegation">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Delegator" required="true" type="VARCHAR" size="255"/>
+        <column name="Delegee" required="true" type="VARCHAR" size="255"/>
+    </table>
+    <table name="formfilled">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="ref" required="true" type="VARCHAR" size="100"/>
+        <column name="formid" required="true" type="INTEGER" size="10"/>
+        <column name="resultxml" required="true" type="BLOB" size="2147483647"/>
+        <column name="status" required="true" type="INTEGER" size="10"/>
+        <column name="filluser" required="false" type="VARCHAR" size="255"/>
+        <column name="approver" required="false" type="VARCHAR" size="255"/>
+        <column name="filldate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="approvedate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="delegee" required="false" type="VARCHAR" size="255"/>
+        <column name="realapprover" required="false" type="VARCHAR" size="255"/>
+        <column name="authenticatedId" required="false" type="VARCHAR" size="255"/>
+    </table>
+    <table name="formfilledfile">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="formfilledid" required="true" type="INTEGER" size="10"/>
+        <column name="filedata" required="true" type="BLOB" size="2147483647"/>
+        <column name="mimetype" required="false" type="VARCHAR" size="128"/>
+        <column name="filename" required="false" type="VARCHAR" size="128"/>
+    </table>
+    <table name="formpdfimage">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="formid" required="true" type="INTEGER" size="10"/>
+        <column name="filedata" required="true" type="BLOB" size="2147483647"/>
+        <column name="filename" required="true" type="VARCHAR" size="300"/>
+        <column name="mimetype" required="false" type="VARCHAR" size="128"/>
+    </table>
+    <table name="formversion">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="formid" required="true" type="INTEGER" size="10"/>
+        <column name="wizard" required="true" type="BLOB" size="2147483647"/>
+        <column name="version" required="false" type="INTEGER" size="10" default="1"/>
+        <column name="importversion" required="false" type="VARCHAR" size="128"/>
+    </table>
+
+    <table name="link">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Url" required="true" type="VARCHAR" size="2048"/>
+        <column name="LastChecked" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="Status" required="false" type="INTEGER" size="10"/>
+        <column name="HttpStatus" required="false" type="INTEGER" size="10"/>
+        <column name="FirstFound" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="TimesChecked" required="false" type="INTEGER" size="10"/>
+    </table>
+
+    <table name="linkoccurrence">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="AttributeName" required="false" type="VARCHAR" size="255"/>
+        <column name="LastChecked" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="LinkId" required="false" type="INTEGER" size="10"/>
+    </table>
+
+    <table name="mailsubscription">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Channel" required="true" type="INTEGER" size="10"/>
+        <column name="DocumentType" required="true" type="INTEGER" size="10"/>
+        <column name="Language" required="true" type="INTEGER" size="10"/>
+        <column name="Email" required="true" type="VARCHAR" size="255"/>
+        <column name="MailInterval" required="true" type="VARCHAR" size="255"/>
+    </table>
+    <table name="multimedia">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="ParentId" required="true" type="INTEGER" size="10"/>
+        <column name="SecurityId" required="false" type="INTEGER" size="10"/>
+        <column name="Type" required="false" type="INTEGER" size="10"/>
+        <column name="Name" required="true" type="VARCHAR" size="255"/>
+        <column name="Author" required="false" type="VARCHAR" size="255"/>
+        <column name="Description" required="false" type="CLOB" size="2147483647"/>
+        <column name="Filename" required="false" type="VARCHAR" size="255"/>
+        <column name="Mediasize" required="false" type="INTEGER" size="10"/>
+        <column name="Width" required="false" type="INTEGER" size="10"/>
+        <column name="Height" required="false" type="INTEGER" size="10"/>
+        <column name="Data" required="false" type="BLOB" size="2147483647"/>
+        <column name="LastModified" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="LastModifiedBy" required="false" type="VARCHAR" size="64"/>
+        <column name="AltName" required="false" type="VARCHAR" size="255"/>
+        <column name="UsageInfo" required="false" type="CLOB" size="2147483647"/>
+        <index name="idx_multimedia_parentid">
+            <index-column name="ParentId"/>
+        </index>
+    </table>
+
+    <table name="multimediaimagemap">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="MultimediaId" required="true" type="INTEGER" size="10"/>
+        <column name="Coords" required="true" type="VARCHAR" size="25"/>
+        <column name="URL" required="false" type="VARCHAR" size="255"/>
+        <column name="AltName" required="false" type="VARCHAR" size="255"/>
+        <column name="NewWindow" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="multimediausage">
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="MultimediaId" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="notes">
+        <column name="NoteId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Author" required="true" type="VARCHAR" size="255"/>
+        <column name="NoteText" required="false" type="CLOB" size="2147483647"/>
+        <column name="CreatedDate" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="objectpermissions">
+        <column name="ObjectSecurityId" required="true" type="INTEGER" size="10"/>
+        <column name="ObjectType" required="true" type="INTEGER" size="10"/>
+        <column name="Privilege" required="true" type="INTEGER" size="10"/>
+        <column name="RoleType" required="true" type="VARCHAR" size="32"/>
+        <column name="Role" required="true" type="VARCHAR" size="128"/>
+        <column name="NotificationPriority" required="true" type="INTEGER" size="10" default="0"/>
+    </table>
+    <table name="poll">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Alternative" required="true" type="VARCHAR" size="255"/>
+        <column name="Votes" required="true" type="INTEGER" size="10"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="role2topic">
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="TopicId" required="true" type="VARCHAR" size="64"/>
+        <column name="RoleType" required="true" type="VARCHAR" size="32"/>
+        <column name="Role" required="true" type="VARCHAR" size="128"/>
+    </table>
+    <table name="schedulelog">
+        <column name="Service" required="true" type="VARCHAR" size="64"/>
+        <column name="LastRun" required="true" type="TIMESTAMP" size="23,3"/>
+    </table>
+    <table name="searchlog">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="Query" required="true" type="VARCHAR" size="255"/>
+        <column name="ExactQuery" required="true" type="VARCHAR" size="255"/>
+        <column name="SiteId" required="true" type="INTEGER" size="10"/>
+        <column name="NumberOfHits" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="site2hostname">
+        <column name="SiteId" required="true" type="INTEGER" size="10"/>
+        <column name="Hostname" required="true" type="VARCHAR" size="255"/>
+        <column name="IsDefault" required="true" type="INTEGER" size="10"/>
+    </table>
+    <table name="sites">
+        <column name="SiteId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Name" required="false" type="VARCHAR" size="32"/>
+        <column name="Alias" required="false" type="VARCHAR" size="32"/>
+    </table>
+    <table name="survey">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="name" required="true" type="VARCHAR" size="128"/>
+        <column name="wizard" required="false" type="BLOB" size="2147483647"/>
+        <column name="type" required="false" type="INTEGER" size="10"/>
+    </table>
+    <table name="survey_participant">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="name" required="true" type="VARCHAR" size="128"/>
+        <column name="email" required="true" type="VARCHAR" size="128"/>
+        <column name="surveyid" required="true" type="INTEGER" size="10"/>
+        <column name="status" required="true" type="INTEGER" size="10"/>
+        <column name="secret" required="true" type="BIGINT" size="19"/>
+    </table>
+    <table name="survey_result">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="survey" required="true" type="INTEGER" size="10"/>
+        <column name="resultxml" required="false" type="BLOB" size="2147483647"/>
+    </table>
+    <table name="tmassociation">
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="InstanceOf" required="true" type="VARCHAR" size="255"/>
+        <column name="Rolespec" required="true" type="VARCHAR" size="255"/>
+        <column name="TopicRef" required="true" type="VARCHAR" size="255"/>
+        <column name="AssociatedTopicRef" required="true" type="VARCHAR" size="255"/>
+        <index name="idx_tmassociation_associatedtopicref">
+            <index-column name="AssociatedTopicRef"/>
+        </index>
+        <index name="idx_tmassociation_topicref">
+            <index-column name="TopicRef"/>
+        </index>
+    </table>
+    <table name="tmbasename">
+        <column name="TopicId" required="true" type="VARCHAR" size="255"/>
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="Scope" required="false" type="VARCHAR" size="255"/>
+        <column name="Basename" required="true" type="VARCHAR" size="255"/>
+        <index name="idx_tmbasename_topicid_topicmapid">
+            <index-column name="TopicId"/>
+            <index-column name="TopicMapId"/>
+        </index>
+    </table>
+    <table name="tmmaps">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Name" required="true" type="VARCHAR" size="64"/>
+        <column name="IsEditable" required="false" type="INTEGER" size="10"/>
+        <column name="WSOperation" required="false" type="VARCHAR" size="64"/>
+        <column name="WSSoapAction" required="false" type="VARCHAR" size="255"/>
+        <column name="WSEndPoint" required="false" type="VARCHAR" size="255"/>
+    </table>
+    <table name="tmoccurence">
+        <column name="TopicId" required="true" type="VARCHAR" size="255"/>
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="InstanceOf" required="true" type="VARCHAR" size="255"/>
+        <column name="ResourceData" required="true" type="CLOB" size="2147483647"/>
+        <index name="idx_tmoccurence_topicid_topicmapid">
+            <index-column name="TopicId"/>
+            <index-column name="TopicMapId"/>
+        </index>
+    </table>
+    <table name="tmtopic">
+        <column name="TopicId" required="true" type="VARCHAR" size="255"/>
+        <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
+        <column name="InstanceOf" required="false" type="VARCHAR" size="255"/>
+        <column name="IsTopicType" required="true" type="INTEGER" size="10"/>
+        <column name="IsAssociation" required="true" type="INTEGER" size="10"/>
+        <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="SubjectIdentity" required="false" type="VARCHAR" size="255"/>
+        <column name="IsSelectable" required="true" type="INTEGER" default="0"/>
+    </table>
+    <table name="trafficlog">
+        <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
+        <column name="ContentId" required="true" type="INTEGER" size="10"/>
+        <column name="Language" required="true" type="INTEGER" size="10"/>
+        <column name="RemoteAddress" required="false" type="VARCHAR" size="32"/>
+        <column name="Referer" required="false" type="VARCHAR" size="255"/>
+        <column name="SessionId" required="false" type="VARCHAR" size="128"/>
+        <column name="SiteId" required="false" type="INTEGER" size="10"/>
+	    <column name="RefererHost" required="false" type="VARCHAR" size="255"/>
+	    <column name="RefererQuery" required="false" type="VARCHAR" size="255"/>
+        <column name="IsSpider" required="true" type="INTEGER" size="10" default="0"/>
+        <index name="idx_trafficlog_contentid">
+            <index-column name="ContentId"/>
+        </index>
+    </table>
+    <table name="urlstatus">
+        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10"/>
+        <column name="contentid" required="false" type="INTEGER" size="10"/>
+        <column name="url" required="false" type="CLOB" size="2147483647"/>
+        <column name="lastchecked" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="numchecked" required="false" type="INTEGER" size="10"/>
+    </table>
+    <table name="xmlcache">
+        <column name="Id" primaryKey="true" required="true" type="VARCHAR" size="64"/>
+        <column name="Data" required="true" type="CLOB" size="2147483647"/>
+        <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
+    </table>
+</database>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="luceneConfig" class="no.kantega.publishing.search.index.config.AksessLuceneConfiguration"/>
+
+    <bean id="analyzerFactory" class="no.kantega.search.analysis.AnalyzerFactory">
+        <property name="defaultAnalyzer">
+            <bean class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+        </property>
+        <property name="perFieldAnalyzers">
+            <map>
+                <entry key="Content">
+                    <bean class="no.kantega.search.analysis.CustomSnowballAnalyzer">
+                        <constructor-arg value="Norwegian"/>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="analyzer" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="analyzerFactory"/>
+        <property name="targetMethod" value="createInstance"/>
+    </bean>
+    
+    <bean id="luceneDirectoryManager" class="no.kantega.search.index.FSDirectoryManager">
+        <property name="luceneConfiguration" ref="luceneConfig"/>
+    </bean>
+
+    <bean id="indexWriterManager" class="no.kantega.search.index.IndexWriterManager" destroy-method="destroy">
+        <property name="directoryManager" ref="luceneDirectoryManager"/>
+    </bean>
+
+    <bean id="indexSearcherManager" class="no.kantega.search.index.IndexSearcherManager">
+        <property name="directoryManager" ref="luceneDirectoryManager"/>
+    </bean>
+
+    <bean id="indexReaderManager" class="no.kantega.search.index.IndexReaderManager">
+        <property name="directoryManager" ref="luceneDirectoryManager"/>
+    </bean>
+
+    <bean id="indexJobManager" class="no.kantega.search.index.IndexJobManager" init-method="init" destroy-method="destroy"/>
+
+    <bean id="indexManager" class="no.kantega.search.index.IndexManagerImpl">
+        <property name="indexWriterManager" ref="indexWriterManager"/>
+        <property name="indexReaderManager" ref="indexReaderManager"/>
+        <property name="indexSearcherManager" ref="indexSearcherManager"/>
+        <property name="indexJobManager" ref="indexJobManager"/>
+        <property name="documentProviderSelector" ref="documentProviderSelector"/>
+        <property name="analyzerFactory" ref="analyzerFactory"/>
+    </bean>
+
+    <bean id="searcher" class="no.kantega.search.core.SearcherImpl">
+        <property name="indexManager" ref="indexManager"/>
+    </bean>
+
+    <bean id="termTranslator" class="no.kantega.search.result.TermTranslatorDefaultImpl"/>
+
+    <bean id="searchService" class="no.kantega.publishing.search.service.SearchServiceImpl">
+        <property name="searcher" ref="searcher"/>
+        <property name="termTranslator" ref="termTranslator"/>
+        <property name="indexManager" ref="indexManager"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
+    <bean id="aksessDao" class="no.kantega.publishing.search.dao.AksessDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="beanexporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
+        <property name="attributes">
+            <map>
+                <entry key="spring_search_index_manager">
+                    <ref bean="indexManager"/>
+                </entry>
+                <entry key="spring_search_searcher_manager">
+                    <ref bean="indexSearcherManager"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="defaultDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultDocumentProvider">
+        <property name="aksessDao" ref="aksessDao"/>
+        <property name="sourceId" value="aksessContent"/>
+    </bean>
+
+    <bean id="defaultAttachmentDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultAttachmentDocumentProvider">
+        <property name="sourceId" value="aksessAttachments"/>
+        <property name="aksessDao" ref="aksessDao"/>
+        <property name="textExtractorSelector" ref="textExtractorSelector"/>
+    </bean>
+
+    <bean id="documentProviderSelector" class="no.kantega.search.index.provider.DocumentProviderSelector">
+        <property name="providers">
+            <list>
+                <ref bean="defaultDocumentProvider"/>
+                <ref bean="defaultAttachmentDocumentProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="textExtractorSelector" class="no.kantega.publishing.search.extraction.TextExtractorSelector">
+        <property name="extractors">
+            <map>
+                <entry key="doc">
+                    <bean class="no.kantega.publishing.search.extraction.impl.MsWordExtractor"/>
+                </entry>
+                <entry key="pdf">
+                    <bean class="no.kantega.publishing.search.extraction.impl.PdfExtractor"/>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

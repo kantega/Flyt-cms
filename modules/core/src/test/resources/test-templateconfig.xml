@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<templateConfiguration version="1.0">
+    <sites>
+        <site id="1">
+            <name>Testsite</name>
+            <alias>/tbbc/</alias>
+        </site>
+    </sites>
+    <associationCategories>
+        <associationCategory databaseId="1" id="hovedmeny">
+            <name>Hovedmeny</name>
+        </associationCategory>
+        <associationCategory databaseId="2" id="relatert">
+            <name>Relatert innhold</name>
+        </associationCategory>
+        <associationCategory databaseId="3" id="midtspalte">
+            <name>Midtspalte</name>
+            <description/>
+        </associationCategory>
+        <associationCategory databaseId="4" id="skjult">
+            <name>Skjult plassering</name>
+            <description/>
+        </associationCategory>
+    </associationCategories>
+    <documentTypes>
+        <documentType databaseId="1" id="klasse">
+            <name>Klasse</name>
+        </documentType>
+    </documentTypes>
+    <contentTemplates>
+        <contentTemplate databaseId="1" id="forside" contentType="PAGE">
+            <documentType id="klasseX"/>
+            <name>Forside</name>
+            <templateFile>forside.xml</templateFile>
+            <associationCategories>
+                <associationCategory id="hovedmeny"/>
+                <associationCategory id="midtspalte"/>
+            </associationCategories>
+            <defaultAssociationCategory id="midtspalte"/>
+        </contentTemplate>
+        <contentTemplate databaseId="2" id="liste med nyheter" contentType="PAGE">
+            <name>Liste med nyheter</name>
+            <templateFile>nyheter.xml</templateFile>
+            <allowedParentTemplates>
+                <contentTemplate id="forside"/>
+            </allowedParentTemplates>
+            <associationCategories>
+                <associationCategory id="hovedmeny"/>
+            </associationCategories>
+        </contentTemplate>
+        <contentTemplate databaseId="3" id="nyhet" contentType="PAGE">
+            <name>Nyhet</name>
+            <templateFile>artikkel.xml</templateFile>
+            <allowedParentTemplates>
+                <contentTemplate id="liste med nyheterX"/>
+            </allowedParentTemplates>
+            <associationCategories/>
+        </contentTemplate>
+    </contentTemplates>
+    <displayTemplates>
+        <displayTemplate databaseId="1" id="forside">
+            <contentTemplate id="forside"/>
+            <name>Forside</name>
+            <view>/WEB-INF/jsp/tbbc/index.jsp</view>
+            <miniView>/WEB-INF/jsp/maler/mini/filnavn.jsp</miniView>
+        </displayTemplate>
+        <displayTemplate databaseId="2" id="nyheter" allowMultipleUsages="false">
+            <contentTemplate id="liste med nyheterX"/>
+            <name>Nyheter</name>
+            <view>/WEB-INF/jsp/common/maler/nyheter.jsp</view>
+            <miniView>/WEB-INF/jsp/common/maler/mini/artikkel.jsp</miniView>
+            <controllers>
+                <controller>nyhetsarkivController</controller>
+            </controllers>
+        </displayTemplate>
+        <displayTemplate databaseId="3" id="nyhet">
+            <contentTemplate id="nyhet"/>
+            <name>Nyhet</name>
+            <view>/WEB-INF/jsp/common/maler/nyhet.jsp</view>
+            <miniView>/WEB-INF/jsp/common/maler/mini/artikkel.jsp</miniView>
+        </displayTemplate>
+        <displayTemplate databaseId="3" id="nyhet2">
+            <contentTemplate id="nyhet"/>
+            <name>Nyhet</name>
+            <view>/WEB-INF/jsp/common/maler/nyhet.jsp</view>
+            <miniView>/WEB-INF/jsp/common/maler/mini/artikkel.jsp</miniView>
+        </displayTemplate>
+
+    </displayTemplates>
+</templateConfiguration>

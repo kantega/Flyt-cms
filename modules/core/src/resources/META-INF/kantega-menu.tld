@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+         version="2.0">
+    <description>Aksess CMS Taglib API for menus</description>
+    <tlib-version>2.0</tlib-version>
+    <short-name>menu</short-name>
+    <uri>http://www.kantega.no/aksess/tags/menu</uri>
+    <tag>
+        <description>Get menu and iterate through elements in menu</description>
+        <name>getmenu</name>
+        <tag-class>no.kantega.publishing.api.taglibs.menu.GetMenuTag</tag-class>
+        <body-content>JSP</body-content>
+        <variable>
+            <name-given>entry</name-given>
+            <variable-class>no.kantega.publishing.common.data.SiteMapEntry</variable-class>
+        </variable>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>language</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>ignorelanguage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <name>includeroot</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>alwaysincludecurrentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>rootid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>parentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultopenid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>siteid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>depth</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>checkauthorization</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print a menu with ul and li tags based on current page (or specified page id)</description>
+        <name>printlistmenu</name>
+        <tag-class>no.kantega.publishing.api.taglibs.menu.PrintListMenuTag</tag-class>
+        <body-content>JSP</body-content>
+        <variable>
+            <description>Current page in menu</description>
+            <name-given>entry</name-given>
+            <variable-class>no.kantega.publishing.common.data.SiteMapEntry</variable-class>
+        </variable>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only print pages published in specified category (column)</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>language</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>ignorelanguage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Include root (frontpage) in menu</description>
+            <name>includeroot</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Always includes current page even when page in current associationCategory</description>
+            <name>alwaysincludecurrentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Uses specified id as root instead of frontpage</description>
+            <name>rootid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sets specified page id or alias as current page when no page exists</description>
+            <name>defaultid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>defaultopenid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>siteid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum level of pages to print</description>
+            <name>depth</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Minimum depth to start menu at (used to hide first or more levels)</description>
+            <name>startdepth</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Current page in menu</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Status (LoopTagStatus)</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class to use for li tags</description>
+            <name>liclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class to use for ul tags</description>
+            <name>ulclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class to use current (selected) page</description>
+            <name>selectedclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class to for pages above current page</description>
+            <name>openclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class to for depths.  Depth of current page will be added to class, eg depth1</description>
+            <name>depthclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true to check is user is authorized to view each page. If user is not authorized to view page, page will not be printed in menu</description>
+            <name>checkauthorization</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Print a basic menu with pages published in the "Global menu":
+                        <menu:printlistmenu var="entry" associationcategory="Global menu">
+                            <a href="${entry.url}">${entry.title}</a>
+                        </menu:printlistmenu>
+
+
+                    Print a menu with specified CSS classes:
+
+                    <menu:printlistmenu var="entry" depthclass="mydepthclass" ulclass="myulclass" liclass="myliclass" selectedclass="myselectedclass" openclass="myopenclass">
+                        <a href="${entry.url}">${entry.title}</a>
+                    </menu:printlistmenu>
+
+                    * ulclass - class for UL tags
+                    * liclass - class for LI tags
+                    * depthclass - Printed with depth on LI tags (depthclass0, depthclass1 ...)
+                    * selectedclass - Printed if page is current page
+                    * openclass - Printed if page is "open" in menu
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Build and iterate through navigation path (bread crumb) for current page</description>
+        <name>getnavigationpath</name>
+        <tag-class>no.kantega.publishing.api.taglibs.menu.GetNavigationPathTag</tag-class>
+        <body-content>JSP</body-content>
+        <variable>
+            <name-given>entry</name-given>
+            <variable-class>no.kantega.publishing.common.data.SiteMapEntry</variable-class>
+        </variable>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>includecurrent</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>includeroot</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>defaultid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Print bread crumb for current page:
+
+                        <a href="<aksess:geturl/>">Home</a>
+                        <menu:getnavigationpath>
+                            &nbsp;&gt;&nbsp;<a href="${entry.url}">${entry.title}</a>
+                        </menu:getnavigationpath>                    
+            ]]>
+        </example>
+    </tag>
+</taglib>
+

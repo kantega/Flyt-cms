@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob">
+        <property name="contentNotifier">
+            <ref bean="contentListenerNotifier"/>
+        </property>
+    </bean>
+
+
+    <bean id="contentStateChangeJobDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="contentStateChangeJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="contentStateChangeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="contentStateChangeJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hvert 5 minutt -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>0 0/5 * * * ?</value>
+        </property>
+    </bean>
+
+    <bean name="expireContentAlertJob" class="no.kantega.publishing.jobs.alerts.ExpireContentAlertJob">
+        <property name="listeners">
+            <list>
+                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="expireContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="expireContentAlertJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="expireContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="expireContentAlertJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hver mandag kl 06.30 -->
+            <value>0 30 6 ? * MON</value>
+        </property>
+    </bean>
+
+    <bean name="revisionContentAlertJob" class="no.kantega.publishing.jobs.alerts.RevisionContentAlertJob">
+        <property name="listeners">
+            <list>
+                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
+                    <property name="mailTemplate" value="revisioncontent.vm"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="revisionContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="revisionContentAlertJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="revisionContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="revisionContentAlertJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hver mandag kl 06.45 -->
+            <value>0 45 6 ? * MON</value>
+        </property>
+    </bean>
+
+    <bean name="hearingContentAlertJob" class="no.kantega.publishing.jobs.alerts.HearingContentAlertJob">
+        <property name="listeners">
+            <list>
+                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
+                    <property name="mailTemplate" value="hearing.vm"/>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hearingContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="hearingContentAlertJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="hearingContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="hearingContentAlertJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hver dag kl 23.00 -->
+            <value>0 0 23 ? * *</value>
+        </property>
+    </bean>
+
+    <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+              <entry key="interval">
+                <value>immediate</value>
+              </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="mailSubscriptionJobDaily" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+              <entry key="interval">
+                <value>daily</value>
+              </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean name="mailSubscriptionJobWeekly" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+              <entry key="interval">
+                <value>weekly</value>
+              </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="mailSubscriptionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="mailSubscriptionJob"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hvert 15 minutt -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>50 0/3 * * * ?</value>
+        </property>
+    </bean>
+
+    <bean id="mailSubscriptionTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="mailSubscriptionJobDaily"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Klokka 15 hver dag -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>0 0 15 * * ?</value>
+        </property>
+    </bean>
+
+    <bean id="mailSubscriptionTriggerWeekly" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="mailSubscriptionJobWeekly"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Klokka 15 hver fredag -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>0 0 15 ? * FRI</value>
+        </property>
+    </bean>
+
+    <bean name="systemStatusJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>no.kantega.publishing.jobs.systemstatus.SystemStatusJob</value>
+        </property>
+    </bean>
+
+    <bean id="systemStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="systemStatusJob"/>
+        </property>
+        <property name="cronExpression">
+            <!-- run every five minutes -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>30 0/5 * * * ?</value>
+        </property>
+    </bean>
+
+    <bean name="databaseCleanupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+        <property name="jobClass">
+            <value>no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob</value>
+        </property>
+    </bean>
+
+    <!-- Slett gamle innslag i trafikk og eventlog -->
+    <bean id="databaseCleanupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="databaseCleanupJob"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Klokka 4 hver natt  0 0 4 * * ? -->
+            <value>0 0 4 * * ?</value>
+        </property>
+    </bean>
+
+    <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
+
+    <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
+        <property name="checker">
+            <ref bean="linkCheckJob"/>
+        </property>
+    </bean>
+
+    <bean id="linkCrawlJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="linkCrawlJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="linkCrawlTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="linkCrawlJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hvert natt klokka ti over tre  -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>0 10 3 * * ?</value>
+        </property>
+    </bean>
+
+
+    <bean name="contentImportJob" class="no.kantega.publishing.jobs.contentimport.ContentImportJob"/>
+
+    <bean id="contentImportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="contentImportJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="contentImportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="contentImportJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hvert natt klokka tjue over tre  -->
+            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <value>0 20 3 * * ?</value>
+        </property>
+    </bean>
+
+    <!-- Kommenter inn denne for å faktisk kjøre jobbene -->
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref local="contentStateChangeTrigger"/>
+                <ref local="expireContentAlertTrigger"/>
+                <ref local="hearingContentAlertTrigger"/>
+                <ref local="revisionContentAlertTrigger"/>
+                <ref local="mailSubscriptionTrigger"/>
+                <ref local="mailSubscriptionTriggerDaily"/>
+                <ref local="mailSubscriptionTriggerWeekly"/>
+                <ref local="systemStatusTrigger"/>
+                <ref local="databaseCleanupTrigger"/>
+                <ref local="linkCrawlTrigger"/>
+                <ref local="contentImportTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>
