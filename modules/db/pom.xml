@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>6.0-SNAPSHOT</version>
+        <version>6.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -129,9 +129,7 @@
                                 <mkdir dir="${basedir}/target/schemas/" />
 
                                 <ddlToDatabase databaseType="${dbtype}">
-                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15"
-                                              driverClassName="net.sourceforge.jtds.jdbc.Driver"
-                                              username="user" password="password" />
+                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15" driverClassName="net.sourceforge.jtds.jdbc.Driver" username="user" password="password" />
 
                                     <fileset dir="src/main/schema">
                                         <include name="aksess-dbschema.xml" />
@@ -170,9 +168,7 @@
                                 <mkdir dir="${basedir}/target/schemas/" />
 
                                 <databaseToDdl databaseType="${dbtype}">
-                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15"
-                                              driverClassName="net.sourceforge.jtds.jdbc.Driver"
-                                              username="user" password="password" />
+                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15" driverClassName="net.sourceforge.jtds.jdbc.Driver" username="user" password="password" />
 
                                     <writeSchemaToFile outputFile="${basedir}/target/schemas/aksess-schema.xml" />
                                     <!--<writeDataToFile outputFile="${basedir}/target/data.xml" />-->
