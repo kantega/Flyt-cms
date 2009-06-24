@@ -77,7 +77,7 @@
             <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
         </tr>
         <tr>
-            <td><%=System.getProperty("java.vm.version")%></td>
+            <td><%=System.getProperty("java.vendor")%> <%=System.getProperty("java.version")%></td>
         </tr>
         <tr>
             <td><img src="../bitmaps/blank.gif" width="2" height="4"></td>
