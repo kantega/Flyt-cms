@@ -201,11 +201,11 @@ public class CreateInitialUserController extends AbstractController {
     }
 
     private boolean isAuthorized(HttpServletRequest request) {
-        if (!request.getRemoteAddr().equals("127.0.0.1")) {
-            return false;
+        if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public void setProfileConfiguration(List profileConfigurations) {
