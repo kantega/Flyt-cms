@@ -274,7 +274,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
             
             d.add(new Field(Fields.SITE_ID, siteId, Field.Store.YES, Field.Index.ANALYZED));
             d.add(new Field(Fields.CONTENT, allText, Field.Store.NO, Field.Index.ANALYZED));
-            d.add(new Field(Fields.CONTENT_UNSTEMMED, allText, Field.Store.NO, Field.Index.ANALYZED));
+            d.add(new Field(Fields.CONTENT_UNSTEMMED, allText, Field.Store.NO, Field.Index.ANALYZED, Field.TermVector.YES));
 
             Field fKeywords = new Field(Fields.KEYWORDS, content.getKeywords() == null ? "" : content.getKeywords(), Field.Store.NO, Field.Index.ANALYZED);
             fKeywords.setBoost(1.5f);
