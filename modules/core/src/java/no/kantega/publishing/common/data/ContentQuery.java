@@ -361,43 +361,45 @@ public class ContentQuery {
             }
         }
 
-        if(topicMapId != -1) {
+        if (topicMapId != -1) {
             query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ?");
             parameters.add(new Integer(topicMapId));
         }
 
-        if(onHearingFor != null) {
+        if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
                     " and hearinginvitee.HearingId = hearing.Hearingid " +
-                    " and hearing.DeadLine > ?" +
-                    " and ((hearinginvitee.InviteeType = "+ HearingInvitee.TYPE_PERSON +
-                    "         and hearinginvitee.InviteeRef = ?)");
+                    " and hearing.DeadLine > ?");
             parameters.add(new Date());
-            parameters.add(onHearingFor);
 
-            Map managers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
-            if (managers.size() > 0) {
-                OrganizationManager manager = (OrganizationManager) managers.values().iterator().next();
-                List orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
-                if(orgUnits.size() > 0) {
-                    query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
-                                 "     and hearinginvitee.InviteeRef in (");
+            if (!onHearingFor.equals("everyone")) {
+                query.append(" and ((hearinginvitee.InviteeType = "+ HearingInvitee.TYPE_PERSON + " and hearinginvitee.InviteeRef = ?)");
+                parameters.add(onHearingFor);
 
-                    for (int i = 0; i < orgUnits.size(); i++) {
-                        OrgUnit unit = (OrgUnit) orgUnits.get(i);
-                        query.append("?");
-                        parameters.add(unit.getExternalId());
-                        if(i < orgUnits.size() -1) {
-                            query.append(",");
+                Map managers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
+                if (managers.size() > 0) {
+                    OrganizationManager manager = (OrganizationManager) managers.values().iterator().next();
+                    List orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
+                    if(orgUnits.size() > 0) {
+                        query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
+                                "     and hearinginvitee.InviteeRef in (");
+
+                        for (int i = 0; i < orgUnits.size(); i++) {
+                            OrgUnit unit = (OrgUnit) orgUnits.get(i);
+                            query.append("?");
+                            parameters.add(unit.getExternalId());
+                            if(i < orgUnits.size() -1) {
+                                query.append(",");
+                            }
                         }
+                        query.append("))");
                     }
-                    query.append("))");
                 }
+                query.append(")");
             }
-            query.append("))");
+            query.append(")");
         }
-
 
         if (attributes != null) {
             try {
