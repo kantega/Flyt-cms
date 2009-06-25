@@ -26,6 +26,8 @@ import no.kantega.publishing.common.Aksess;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
@@ -69,8 +71,11 @@ public class DatetimeAttribute extends DateAttribute {
     }
 
     public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+        Map<String, Object> objects = new HashMap<String, Object>();
+        objects.put("field", title);
+
         if (mandatory && (value == null || value.trim().length() == 0)) {
-            errors.add(name, "Feltet " + title + " kan ikke være blankt!");
+            errors.add(name, "aksess.feil.mandatoryfield", objects);
         }
         if (value != null && value.trim().length() > 0) {
             String date = getDateValue();
@@ -80,10 +85,10 @@ public class DatetimeAttribute extends DateAttribute {
                     sdf.setLenient(false);
                     sdf.parse(date);
                 } catch (ParseException e) {
-                    errors.add(name, "Feltet " + title + " inneholder en ugyldig dato.");
+                    errors.add(name, "aksess.feil.invaliddate", objects);
                 }
             } else {
-                errors.add(name, "Feltet " + title + " inneholder en ugyldig dato.  Årstall må ha 4 siffer.");
+                errors.add(name, "aksess.feil.invaliddate", objects);
             }
 
             String time = getTimeValue();
@@ -93,10 +98,10 @@ public class DatetimeAttribute extends DateAttribute {
                     sdf.setLenient(false);
                     sdf.parse(getTimeValue());
                 } catch (ParseException e) {
-                    errors.add(name, "Feltet " + title + " inneholder et ugyldig klokkeslett.");
+                    errors.add(name, "aksess.feil.invaliddate.time", objects);
                 }
             } else {
-                errors.add(name, "Feltet " + title + " inneholder et ugyldig klokkeslett.");
+                errors.add(name, "aksess.feil.invaliddate.time", objects);
             }
         }
     }

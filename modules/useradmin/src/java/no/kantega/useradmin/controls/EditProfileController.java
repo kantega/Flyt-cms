@@ -18,8 +18,6 @@ package no.kantega.useradmin.controls;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.util.LocaleLabels;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.DefaultProfile;
@@ -35,11 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jun 26, 2007
- * Time: 2:23:35 PM
- */
+
 public class EditProfileController extends AbstractUserAdminController {
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
@@ -93,7 +87,7 @@ public class EditProfileController extends AbstractUserAdminController {
             if (oldProfile != null) {
                 if (isNew) {
                     model.put("errors", errors);
-                    errors.add(null, LocaleLabels.getLabel("useradmin.profile.duplicateuserid", Aksess.getDefaultAdminLocale()));
+                    errors.add(null, "useradmin.profile.duplicateuserid");
                     model.put("error", "useradmin.profile.duplicateuserid");
                     return new ModelAndView("/profile/edit", model);
                 } else {
@@ -102,10 +96,10 @@ public class EditProfileController extends AbstractUserAdminController {
             }
 
             if (id == null || id.length() < 3) {
-                errors.add(null, LocaleLabels.getLabel("useradmin.profile.useridmissing", Aksess.getDefaultAdminLocale()));
+                errors.add(null, "useradmin.profile.useridmissing");
                 return new ModelAndView("/profile/edit", model);
             } else if (profile.getGivenName() == null || profile.getGivenName().length() < 1) {
-                errors.add(null, LocaleLabels.getLabel("useradmin.profile.givennameepty", Aksess.getDefaultAdminLocale()));
+                errors.add(null, "useradmin.profile.givennameepty");
                 return new ModelAndView("/profile/edit", model);
             }
 

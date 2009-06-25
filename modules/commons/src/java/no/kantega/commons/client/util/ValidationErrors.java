@@ -18,27 +18,42 @@ package no.kantega.commons.client.util;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Locale;
 
 
 /**
- * Inneholder en liste over valideringsfeil med navn på felt og feilmelding
+ *
  */
 
 public class ValidationErrors {
-    List errors = new ArrayList();
+    List<ValidationError> errors = new ArrayList<ValidationError>();
 
     public ValidationErrors() {
     }
 
     /**
-     * Legg til en feilmelding
+     * Add error message
+     * @param field - name of field with error
+     * @param message - error message
+     * @param parameters - parameters
+     */
+    public void add(String field, String message, Map<String, Object> parameters) {
+        errors.add(new ValidationError(field, message, parameters));
+    }
+
+    /**
+     * Add error message
+     * @param field - name of field with error
+     * @param message - error message
      */
     public void add(String field, String message) {
         errors.add(new ValidationError(field, message));
     }
 
     /**
-     * Returnerer antall feil
+     * Get number of validation errors
+     * @return
      */
     public int getLength() {
         return errors.size();
@@ -49,14 +64,19 @@ public class ValidationErrors {
     }
 
     /**
-     * Hva slags feil som har oppstått
+     * Get error message
+     * @param i - index
+     * @param locale - locale
+     * @return - localized string
      */
-    public String getMessage(int i) {
-        return item(i).getMessage();
+    public String getMessage(int i, Locale locale) {
+        return item(i).getMessage(locale);
     }
 
     /**
-     * Hvilket felt det er feil i
+     * Get the field with error
+     * @param i - index
+     * @return
      */
     public String getField(int i) {
         return item(i).getField();

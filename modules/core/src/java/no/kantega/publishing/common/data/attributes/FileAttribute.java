@@ -29,6 +29,9 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FileAttribute extends Attribute {
 
     private MultipartFile importFile = null;
@@ -100,7 +103,9 @@ public class FileAttribute extends Attribute {
 
     public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
         if (mandatory && (value == null || value.length() == 0) && (importFile == null)) {
-            errors.add(name, "Det må lastes opp en fil i feltet " + title + "!");
+            Map<String, Object> objects = new HashMap<String, Object>();
+            objects.put("field", title);
+            errors.add(name, "aksess.feil.mandatoryfield.file", objects);
         }
     }
 

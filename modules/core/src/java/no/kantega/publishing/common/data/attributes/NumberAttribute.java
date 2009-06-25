@@ -21,6 +21,9 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.ValidationErrors;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  */
@@ -35,7 +38,9 @@ public class NumberAttribute extends Attribute {
 
         if ((value != null) && (value.length() > 0) && (regexp != null) && (regexp.length() > 0)) {
             if (!RegExp.matches(regexp, value)) {
-                errors.add(name, "Feltet " + title + " kan kun inneholde tall!");
+                Map<String, Object> objects = new HashMap<String, Object>();
+                objects.put("field", title);
+                errors.add(name, "aksess.feil.invalidnumber", objects);
             }
         }
     }    

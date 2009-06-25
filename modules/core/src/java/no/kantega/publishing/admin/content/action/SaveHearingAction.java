@@ -106,7 +106,7 @@ public class SaveHearingAction extends HttpServlet  {
 
         String deadlineString = param.getString("deadline");
         if(deadlineString == null || deadlineString.equals("")) {
-            errors.add("deadline", "Høringsfrist må oppgis");
+            errors.add("deadline", "aksess.feil.hearing.deadline.missing");
         } else {
             try {
                 Date date = new SimpleDateFormat(Aksess.getDefaultDateFormat()).parse(deadlineString);
@@ -116,7 +116,9 @@ public class SaveHearingAction extends HttpServlet  {
                 calendar.set(Calendar.MINUTE, 59);
                 hearing.setDeadLine(calendar.getTime());
             } catch (ParseException e) {
-                errors.add("deadline", "Høringsfrist har ikke gyldig format (" +Aksess.getDefaultDateFormat() +")");
+                Map<String, Object> objects = new HashMap<String, Object>();
+                objects.put("dateFormat", Aksess.getDefaultDateFormat());
+                errors.add("deadline", "aksess.feil.hearing.deadline.invalid", objects);
             }
         }
         map.put("deadline", deadlineString);
@@ -124,7 +126,7 @@ public class SaveHearingAction extends HttpServlet  {
         String description  = param.getString("description");
 
         if(description == null) {
-            errors.add("description", "Endringsbeskrivelse må være fylt ut");
+            errors.add("description", "aksess.feil.hearing.description.missing");
         }
         else {
              Content content = (Content)request.getSession().getAttribute("currentContent");

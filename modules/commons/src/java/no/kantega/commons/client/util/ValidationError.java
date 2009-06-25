@@ -16,17 +16,30 @@
 
 package no.kantega.commons.client.util;
 
+import no.kantega.commons.util.LocaleLabels;
+
+import java.util.Map;
+import java.util.Locale;
+import java.util.Iterator;
+
 public class ValidationError {
     private String field;
     private String message;
+    private Map<String, Object> parameters;
 
     public ValidationError(String field, String message) {
         this.field = field;
         this.message = message;
     }
 
-    public String getMessage() {
-        return message;
+    public ValidationError(String field, String message, Map<String, Object> parameters) {
+        this.field = field;
+        this.message = message;
+        this.parameters = parameters;
+    }
+
+    public String getMessage(Locale locale) {
+        return LocaleLabels.getLabel(message, locale, parameters);
     }
 
     public String getField() {

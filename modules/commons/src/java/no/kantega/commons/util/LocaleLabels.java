@@ -20,9 +20,6 @@ import no.kantega.commons.log.Log;
 
 import java.util.*;
 
-/**
- *
- */
 
 public class LocaleLabels {
     static public String DEFAULT_BUNDLE = "TextLabels";
@@ -50,46 +47,83 @@ public class LocaleLabels {
         return bundle;
     }
 
-    public static String getLabel(String key, String bundleName, String locale) {
+    private static String getLabel(String key, String bundleName, String locale, Map parameters) {
+        String msg = key;
+
         PropertyResourceBundle bundle = getBundle(bundleName, locale);
         if (bundle == null) {
-            return key;
+            return msg;
         }
 
         try {
-            return bundle.getString(key);
+            msg = bundle.getString(key);
         } catch (MissingResourceException e) {
-            return key;
+            // Do nothing
         }
+
+        if (parameters != null) {
+            Iterator paramNames = parameters.keySet().iterator();
+            while (paramNames.hasNext()) {
+                String pName = (String)paramNames.next();
+                msg = msg.replaceAll("\\$\\{" + pName + "\\}", parameters.get(pName).toString());
+            }
+        }
+        return msg;
     }
 
-    public static String getLabel(String key, String locale) {
-        return getLabel(key, DEFAULT_BUNDLE, locale);
-    }
-
+    /**
+     * Get label from bundle with specified locale
+     * @param key - key to look up
+     * @param bundleName - bundle (property-file) to use
+     * @param locale - locale
+     * @return - localized string
+     */
     public static String getLabel(String key, String bundleName, Locale locale) {
         String loc = locale.getLanguage() + "_" + locale.getCountry();
         if (locale.getVariant() != null) {
             loc += "_" + locale.getVariant();
         }
-        return getLabel(key, bundleName, loc);
+        return getLabel(key, bundleName, loc, null);
     }
 
-    public static String getLabel(String key, Locale locale) {
+
+    /**
+     * Get label from bundle with specified locale, replaces parameters found in string
+     * @param key - key to look up
+     * @param bundleName - bundle (property-file) to use
+     * @param locale - locale
+     * @param parameters - parameters
+     * @return - localized string
+     */
+    public static String getLabel(String key, String bundleName, Locale locale, Map parameters) {
         String loc = locale.getLanguage() + "_" + locale.getCountry();
         if (locale.getVariant() != null) {
             loc += "_" + locale.getVariant();
         }
-        return getLabel(key, DEFAULT_BUNDLE, loc);
+        return getLabel(key, bundleName, loc, parameters);
     }
 
+    /**
+     * Get label from default bundle with specified locale
+     * @param key - key to look up
+     * @param locale - locale
+     * @return - localized string
+     */
 
-    public static Enumeration getKeys(String bundleName, String locale) {
-        PropertyResourceBundle bundle = getBundle(bundleName, locale);
-        if (bundle == null) {
-            return null;
-        }
-        return bundle.getKeys();
+    public static String getLabel(String key, Locale locale) {
+        return getLabel(key, DEFAULT_BUNDLE, locale, null);
+    }
+
+    /**
+     * Get label from default bundle with specified locale, replaces parameters found in string
+     * @param key - key to look up
+     * @param locale - locale
+     * @param parameters - parameters
+     * @return - localized string
+     */
+
+    public static String getLabel(String key, Locale locale, Map parameters) {
+        return getLabel(key, DEFAULT_BUNDLE, locale, parameters);
     }
 
     public static Enumeration getKeys(String bundleName, Locale locale) {
@@ -97,7 +131,11 @@ public class LocaleLabels {
         if (locale.getVariant() != null) {
             loc += "_" + locale.getVariant();
         }
-        return getKeys(bundleName, loc);
-    }
 
+        PropertyResourceBundle bundle = getBundle(bundleName, loc);
+        if (bundle == null) {
+            return null;
+        }
+        return bundle.getKeys();
+    }
 }

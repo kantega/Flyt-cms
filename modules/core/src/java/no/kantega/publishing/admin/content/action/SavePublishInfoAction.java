@@ -28,10 +28,7 @@ import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.service.ContentManagementService;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 
 public class SavePublishInfoAction extends AbstractSaveContentAction {
@@ -45,13 +42,17 @@ public class SavePublishInfoAction extends AbstractSaveContentAction {
                 content.setPublishDate(startDate);
             }
         } catch(Exception e) {
-            errors.add(null, LocaleLabels.getLabel("aksess.feil.dato", Aksess.getDefaultAdminLocale()) + "(" + Aksess.getDefaultDateFormat() +  ")");
+            Map<String, Object> objects = new HashMap<String, Object>();
+            objects.put("dateFormat", Aksess.getDefaultDateFormat());
+            errors.add(null, "aksess.feil.dato", objects);
         }
         try {
             Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());
             content.setExpireDate(expireDate);
         } catch (Exception e) {
-            errors.add(null, LocaleLabels.getLabel("aksess.feil.dato", Aksess.getDefaultAdminLocale()) + "(" + Aksess.getDefaultDateFormat() + ")");
+            Map<String, Object> objects = new HashMap<String, Object>();
+            objects.put("dateFormat", Aksess.getDefaultDateFormat());
+            errors.add(null, "aksess.feil.dato", objects);
         }
 
         int expireAction = param.getInt("expireaction");

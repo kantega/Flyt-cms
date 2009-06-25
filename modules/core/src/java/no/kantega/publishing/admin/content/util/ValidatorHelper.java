@@ -20,9 +20,7 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.RegExp;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentIdentifierCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -43,7 +41,7 @@ public class ValidatorHelper {
 
         try {
             if (!RegExp.matches(regexp, alias)) {
-                errors.add(null, LocaleLabels.getLabel("aksess.feil.aliasulovlig", Aksess.getDefaultAdminLocale()));
+                errors.add(null, "aksess.feil.aliasulovlig");
             }
         } catch (RegExpSyntaxException e) {
             e.printStackTrace();
@@ -55,7 +53,7 @@ public class ValidatorHelper {
                 Association association =  (Association)associations.get(i);
                 ContentIdentifier cid = ContentIdentifierCache.getContentIdentifierByAlias(association.getSiteId(), alias);
                 if (cid != null && cid.getContentId() != content.getId() && cid.getSiteId() == association.getSiteId()) {
-                    errors.add(null, LocaleLabels.getLabel("aksess.feil.aliasibruk", Aksess.getDefaultAdminLocale()));
+                    errors.add(null, "aksess.feil.aliasibruk");
                     break;
                 }
             }

@@ -41,6 +41,7 @@ import java.io.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
@@ -259,7 +260,9 @@ public abstract class Attribute {
 
     public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
         if (mandatory && (value == null || value.length() == 0)) {
-            errors.add(name, "Feltet " + title + " kan ikke være blankt!");
+            Map<String, Object> objects = new HashMap<String, Object>();
+            objects.put("field", title);
+            errors.add(name, "aksess.feil.mandatoryfield", objects);
         }
     }
 

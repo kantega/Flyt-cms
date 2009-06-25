@@ -16,7 +16,6 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -31,16 +30,9 @@ import no.kantega.security.api.role.DefaultRoleId;
 import no.kantega.security.api.role.RoleUpdateManager;
 import no.kantega.security.api.role.DefaultRole;
 import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.Aksess;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jun 26, 2007
- * Time: 2:37:53 PM
- */
 public class EditRoleController extends AbstractUserAdminController {
 
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -76,7 +68,7 @@ public class EditRoleController extends AbstractUserAdminController {
                 model.put("isNew", Boolean.TRUE);
                 model.put("canEdit", Boolean.TRUE);
                 model.put("role", role);
-                errors.add(null, LocaleLabels.getLabel("useradmin.role.rolenamemissing", Aksess.getDefaultAdminLocale()));
+                errors.add(null, "useradmin.role.rolenamemissing");
                 return new ModelAndView("/role/edit", model);
             } else if (updateManager != null) {
                 updateManager.saveOrUpdateRole(role);

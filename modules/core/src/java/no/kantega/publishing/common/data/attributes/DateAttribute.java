@@ -26,6 +26,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -104,26 +106,29 @@ public class DateAttribute extends Attribute {
         value = value.replace('/', '.');
         value = value.replace('-', '.');
 
+        Map<String, Object> objects = new HashMap<String, Object>();
+        objects.put("field", title);
+
         DateFormat df = new SimpleDateFormat(dateFormat);
 
         String[] d = value.split("\\.");
         if (d.length != 3) {
-            errors.add(name, "Feltet " + title + " inneholder en ugyldig dato. Angi fire siffer for &aring;rstall.");
+            errors.add(name, "aksess.feil.invaliddate", objects);
             return;
         }
 
         if (d[2].length() < 4) {
-            errors.add(name, "Feltet " + title + " inneholder en ugyldig dato");
+            errors.add(name, "aksess.feil.invaliddate.year", objects);
             return;
         }
 
         try {
             if(!value.equals(df.format(df.parse(value)))) {
-                errors.add(name, "Feltet " + title + " inneholder en ugyldig dato");
+                errors.add(name, "aksess.feil.invaliddate", objects);
             }
 
         } catch (ParseException e) {
-            errors.add(name, "Feltet " + title + " inneholder en ugyldig dato");
+            errors.add(name, "aksess.feil.invaliddate", objects);
         }
     }
 

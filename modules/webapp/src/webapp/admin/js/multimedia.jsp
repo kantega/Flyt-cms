@@ -1,3 +1,4 @@
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%--
@@ -15,7 +16,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
+<%
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+%>
 function newMMObject(parent, type) {
     window.parent.location = "multimedia.jsp?activetab=editmultimedia&parentId=" + parent + "&type=" + type;
 }

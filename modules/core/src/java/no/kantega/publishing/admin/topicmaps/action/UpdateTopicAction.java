@@ -21,7 +21,6 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.RegExp;
-import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
 import no.kantega.publishing.common.service.TopicMapService;
@@ -101,7 +100,7 @@ public class UpdateTopicAction extends HttpServlet {
                 Topic tmp = topicService.getTopic(topic.getTopicMapId(), id);
                 if (tmp != null) {
                     // Feil på siden, send bruker tilbake for å rette opp feil
-                    errors.add(null, LocaleLabels.getLabel("aksess.feil.emneibruk", Aksess.getDefaultAdminLocale()));
+                    errors.add(null, "aksess.feil.emneibruk");
                 }
             }
 
