@@ -159,7 +159,7 @@ public class ContentManagementService {
             throw new NotAuthorizedException("User not authorized to view: " + c.getId(), SOURCE);
         }
 
-        if(c.getStatus() == ContentStatus.HEARING && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode) {
+        if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode) {
             throw new NotAuthorizedException("User is neigther in admin mode or hearing instance", SOURCE);
         }
 

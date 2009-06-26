@@ -65,6 +65,7 @@ public class Aksess {
     private static String roleUnit;
     private static String roleOwner = "owner";
     private static String roleDeveloper;
+    private static String roleQualityAdmin;
 
     private static String outputImageFormat = "jpg";
     private static int outputImageQuality = 85;
@@ -226,6 +227,7 @@ public class Aksess {
             roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin);
             roleUnit = c.getString("security.role.unit", "enhet*");
             roleDeveloper = c.getString("security.role.developer", "developer");
+            roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");            
 
             // ContentLock
             lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
@@ -385,6 +387,10 @@ public class Aksess {
     public static String getOwnerRole() {
         return roleOwner;
     }
+
+    public static String getQualityAdminRole() {
+        return roleQualityAdmin;
+    }    
 
     public static boolean isTrafficLogEnabled() {
         return trafficLogEnabled;
