@@ -27,7 +27,7 @@
         <name>productcategories</name>
         <tag-class>no.kantega.publishing.store.tags.ForEachProductCategory</tag-class>
         <body-content>JSP</body-content>
-        <description>Iterer over alle produktkategorier</description>
+        <description>Iterate over all product categories</description>
         <attribute>
             <name>store</name>
             <required>true</required>
@@ -50,7 +50,7 @@
         <name>products</name>
         <tag-class>no.kantega.publishing.store.tags.ForEachProduct</tag-class>
         <body-content>JSP</body-content>
-        <description>Iterer over alle produkter i en kategori</description>
+        <description>Iterate over all products in category</description>
 
         <attribute>
             <name>store</name>
@@ -80,7 +80,7 @@
         <name>cart</name>
         <tag-class>no.kantega.publishing.store.tags.CartTag</tag-class>
         <body-content>JSP</body-content>
-        <description>Henter handlevogn for butikk</description>
+        <description>Get shopping cart from store</description>
 
         <variable>
             <name-given>cart</name-given>
@@ -108,7 +108,7 @@
         <name>addtocart</name>
         <tag-class>no.kantega.publishing.store.tags.AddToCart</tag-class>
         <body-content>JSP</body-content>
-        <description>Henter informasjon om produktid og antall fra request og legger til i handlevogn</description>
+        <description>Fetch information from request about productid and number of items and adds to shopping cart</description>
 
         <attribute>
             <name>store</name>
@@ -122,7 +122,7 @@
         <name>updatecart</name>
         <tag-class>no.kantega.publishing.store.tags.UpdateCart</tag-class>
         <body-content>JSP</body-content>
-        <description>Henter informasjon om linjenr og antall i handlevogn</description>
+        <description>Update shoppingcart</description>
         <attribute>
             <name>store</name>
             <required>true</required>
@@ -134,7 +134,7 @@
         <name>emptycart</name>
         <tag-class>no.kantega.publishing.store.tags.EmptyCart</tag-class>
         <body-content>JSP</body-content>
-        <description>Tøm handlevogn</description>
+        <description>Empty shoppingcart</description>
 
         <attribute>
             <name>store</name>
