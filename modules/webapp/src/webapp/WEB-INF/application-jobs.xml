@@ -111,38 +111,6 @@
         </property>
     </bean>
 
-    <bean name="hearingContentAlertJob" class="no.kantega.publishing.jobs.alerts.HearingContentAlertJob">
-        <property name="listeners">
-            <list>
-                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
-                    <property name="mailTemplate" value="hearing.vm"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="hearingContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="hearingContentAlertJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
-    </bean>
-
-    <bean id="hearingContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="hearingContentAlertJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hver dag kl 23.00 -->
-            <value>0 0 23 ? * *</value>
-        </property>
-    </bean>
-
     <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass">
             <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
@@ -313,7 +281,6 @@
             <list>
                 <ref local="contentStateChangeTrigger"/>
                 <ref local="expireContentAlertTrigger"/>
-                <ref local="hearingContentAlertTrigger"/>
                 <ref local="revisionContentAlertTrigger"/>
                 <ref local="mailSubscriptionTrigger"/>
                 <ref local="mailSubscriptionTriggerDaily"/>
