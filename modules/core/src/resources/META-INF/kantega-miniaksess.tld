@@ -21,7 +21,7 @@
          version="2.0">
     <description>Aksess CMS Taglib API for MiniAksess</description>
     <tlib-version>2.0</tlib-version>
-    <short-name>MiniAksess</short-name>
+    <short-name>miniaksess</short-name>
     <uri>http://www.kantega.no/aksess/tags/miniaksess</uri>
     <tag>
         <description>Creates link for creating page with MiniAksess. contenttemplateid, contenttemplatename, displaytemplateid or displaytemplatename must be specified</description>

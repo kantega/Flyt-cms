@@ -21,7 +21,7 @@
          version="2.0">
     <description>Aksess CMS - Store Taglib API</description>
     <tlib-version>2.0</tlib-version>
-    <short-name>AksessStore</short-name>
+    <short-name>store</short-name>
     <uri>http://www.kantega.no/aksess/tags/store</uri>
     <tag>
         <name>productcategories</name>

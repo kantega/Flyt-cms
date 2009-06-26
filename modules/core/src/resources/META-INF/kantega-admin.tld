@@ -21,7 +21,7 @@
          version="2.0">
     <description>Aksess CMS Taglib API for Content Admin</description>
     <tlib-version>2.0</tlib-version>
-    <short-name>AksessAdmin</short-name>
+    <short-name>admin</short-name>
     <uri>http://www.kantega.no/aksess/tags/admin</uri>
     <tag>
         <description>Create a locale specific button</description>
