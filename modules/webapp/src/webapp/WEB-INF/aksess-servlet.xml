@@ -169,7 +169,7 @@
   </bean>
   <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
       <property name="loginView">
-        <value>/WEB-INF/jsp/login/login.jsp</value>
+        <value>${security.login.view}</value>
       </property>
       <property name="userLoginRestrictor">
           <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">

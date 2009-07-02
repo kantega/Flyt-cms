@@ -44,7 +44,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.InitializingBean;
 
-public class LoginAction implements Controller, InitializingBean {
+public class LoginAction implements Controller {
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
 
@@ -168,13 +168,6 @@ public class LoginAction implements Controller, InitializingBean {
         this.ipLoginRestrictor = ipLoginRestrictor;
     }
 
-    public void afterPropertiesSet() throws Exception {
-        Configuration config = Aksess.getConfiguration();
-        String view = config.getString("security.login.view");
-        if (view != null && view.length() > 0) {
-            loginView = view;
-        }
-    }
 
     private boolean rolesExists() throws SystemException {
         if (rolesExists) {
