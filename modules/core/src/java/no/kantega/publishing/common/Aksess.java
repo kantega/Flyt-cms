@@ -122,6 +122,8 @@ public class Aksess {
 
     private static Configuration c;
 
+    private static boolean invalidateSessionBeforeLogin = true;
+
     public static void loadConfiguration() {
 
         try {
@@ -171,6 +173,8 @@ public class Aksess {
             Log.debug(SOURCE, "Bruker sikkerhetsrealm:" + securityRealm, null, null);
 
             securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
+
+            invalidateSessionBeforeLogin = c.getBoolean("security.invalidatesessionbeforelogin", true);
 
             // Rewrite URLs to userfriendly URLS
             urlRewritingEnabled = c.getBoolean("links.rewrite.enabled", true);
@@ -538,6 +542,10 @@ public class Aksess {
 
     public static int getMaxMediaHeight() {
         return maxMediaHeight;
+    }
+
+    public static boolean isInvalidateSessionBeforeLogin() {
+        return invalidateSessionBeforeLogin;
     }
 
     public static void setConfiguration(Configuration configuration) {

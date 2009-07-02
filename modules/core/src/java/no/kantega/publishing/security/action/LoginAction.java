@@ -139,12 +139,14 @@ public class LoginAction implements Controller, InitializingBean {
         /*
          * User may have existing session from HTTP, invalidate old session
          */
-        HttpSession session = request.getSession();
-        if (session != null) {
-            try {
-                session.invalidate();
-            } catch (Exception e) {
-                // Already invalidated
+        if(Aksess.isInvalidateSessionBeforeLogin()) {
+            HttpSession session = request.getSession();
+            if (session != null) {
+                try {
+                    session.invalidate();
+                } catch (Exception e) {
+                    // Already invalidated
+                }
             }
         }
         

@@ -241,14 +241,16 @@ public class SecuritySession {
          * User may have existing session from HTTP, invalidate old session
          * This code is repeated in LoginAction.java, since a user may log in without this code being called first 
          */
-        HttpSession session = request.getSession();
-        if (session != null) {
-            try {
-                session.invalidate();
-            } catch (Exception e) {
-                // Already invalidated
+        if(Aksess.isInvalidateSessionBeforeLogin()) {
+            HttpSession session = request.getSession();
+            if (session != null) {
+                try {
+                    session.invalidate();
+                } catch (Exception e) {
+                    // Already invalidated
+                }
             }
-        }        
+        }
 
         resolver.initateLogin(loginContext);
     }
