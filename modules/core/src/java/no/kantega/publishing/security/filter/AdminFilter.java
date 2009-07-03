@@ -123,6 +123,11 @@ public class AdminFilter implements Filter {
             return false;
         }
 
+        // Regular form posts can't set headers, so if we've got an XHR ajax header, we're good
+        if("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+            return false;
+        }
+
         if(!HttpHelper.isAdminMode(request)) {
             return false;
         }
