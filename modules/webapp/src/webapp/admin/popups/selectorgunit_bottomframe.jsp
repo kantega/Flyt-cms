@@ -25,7 +25,7 @@
 <body>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
         <tr>
-            <td background="../bitmaps/<%=skin%>/framework/navigator_bottom.gif"><img src="../bitmaps/blank.gif" width="4" height="4"></td>
+            <td background="<%=framework_bitmaps%>//navigator_bottom.gif"><img src="../bitmaps/blank.gif" width="4" height="4"></td>
         </tr>
         <tr>
             <td class="framework"><a href="Javascript:window.parent.close()"><img src="../bitmaps/<%=skin%>/buttons/avbryt.gif" border="0" hspace="4" vspace="4"></a></td>

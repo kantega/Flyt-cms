@@ -42,7 +42,7 @@
         <td>
             <table border="0" cellspacing="0" cellpadding="0" width="100%">
                 <tr height="3">
-                    <td background="../bitmaps/<%=skin%>/framework/status_shadow.gif"><img src="../bitmaps/<%=skin%>/framework/status_shadow_corner.gif" width="1" height="3"></td>
+                    <td background="<%=framework_bitmaps%>/status_shadow.gif"><img src="<%=framework_bitmaps%>/status_shadow_corner.gif" width="1" height="3"></td>
                 </tr>
                 <tr height="2">
                     <td><img src="../bitmaps/blank.gif" width="1" height="2"></td>

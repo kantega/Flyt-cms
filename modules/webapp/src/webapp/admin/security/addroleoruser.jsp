@@ -43,7 +43,7 @@ function addRoles() {
     </div>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
         <tr>
-             <td background="../bitmaps/<%=skin%>/framework/navigator_bottom.gif"><img src="../bitmaps/blank.gif" width="4" height="4" alt=""></td>
+             <td background="<%=framework_bitmaps%>/navigator_bottom.gif"><img src="../bitmaps/blank.gif" width="4" height="4" alt=""></td>
          </tr>
          <tr>
              <td class="framework">

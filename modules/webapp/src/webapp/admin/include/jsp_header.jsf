@@ -40,6 +40,9 @@
 
     String skin =   "default";
 
+
+    String framework_bitmaps = request.getContextPath() + "/admin/bitmaps/"+skin+"/"+ ((Locale)request.getAttribute("aksess_locale")).getLanguage().toLowerCase() + "/framework";
+
     try {
 
 %>

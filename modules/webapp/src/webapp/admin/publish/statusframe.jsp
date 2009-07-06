@@ -145,7 +145,7 @@ function showUser(userid) {
         <td>
             <table border="0" cellspacing="0" cellpadding="0" width="100%">
                 <tr height="3">
-                    <td background="<%=locale_bildesti_framework%>/framework/status_shadow.gif"><img src="<%=locale_bildesti_framework%>status_shadow_corner.gif" width="1" height="3"></td>
+                    <td background="<%=locale_bildesti_framework%>status_shadow.gif"><img src="<%=locale_bildesti_framework%>status_shadow_corner.gif" width="1" height="3"></td>
                 </tr>
                 <tr height="2">
                     <td><img src="../bitmaps/blank.gif" width="1" height="2"></td>
