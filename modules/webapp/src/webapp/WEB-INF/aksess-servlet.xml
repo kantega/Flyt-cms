@@ -97,7 +97,6 @@
         <prop key="/ajax/SearchUsersAsXML.action">SearchUsersAsXMLAction</prop>
         <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
         <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
-        <prop key="/admin/groovy.action">groovyConsole</prop>
         <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
         <prop key="/robots.txt">RobotsController</prop>
       </props>
@@ -530,7 +529,7 @@
     <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
         <property name="resourceLoaderPath" value="classpath:"/>
     </bean>
-    <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+    <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="cache" value="true"/>
         <property name="prefix" value=""/>
         <property name="suffix" value=".vm"/>
@@ -542,7 +541,6 @@
 
   <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
 
-  <bean id="groovyConsole" class="no.kantega.publishing.admin.groovyconsole.GroovyConsole"/>
 
   <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 

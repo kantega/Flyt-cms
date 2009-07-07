@@ -45,6 +45,9 @@
     <bean id="pluginManager" class="no.kantega.publishing.spring.PluginManagerFactory">
         <property name="servicesClass" value="no.kantega.publishing.api.plugin.OpenAksessServices"/>
         <property name="pluginClass" value="no.kantega.publishing.api.plugin.OpenAksessPlugin"/>
+        <property name="postProcessors">
+            <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor"/>
+        </property>
         
     </bean>
 

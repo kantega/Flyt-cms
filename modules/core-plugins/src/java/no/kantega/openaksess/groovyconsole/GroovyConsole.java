@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.groovyconsole;
+package no.kantega.openaksess.groovyconsole;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.ui.ModelMap;
@@ -46,10 +47,11 @@ import javax.servlet.ServletContext;
 @Controller
 @RequestMapping("/admin/groovy.action")
 public class GroovyConsole implements ApplicationContextAware, ServletContextAware {
-    private String view = "/WEB-INF/jsp/admin/groovy/groovy.jsp";;
+    private String view = "/no/kantega/openaksess/groovyconsole/views/groovy";
     private ApplicationContext applicationContext;
     private ServletContext servletContext;
 
+    private ApplicationContext rootApplicationContext;
 
     @RequestMapping(method = RequestMethod.GET)
     public String show() {
@@ -72,7 +74,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
 
 
         Map beans = new HashMap();
-        beans.putAll(BeanFactoryUtils.beansOfTypeIncludingAncestors(applicationContext, Object.class));
+        beans.putAll(BeanFactoryUtils.beansOfTypeIncludingAncestors(rootApplicationContext, Object.class));
 
         inVariables.put("beans", beans);
 
@@ -122,6 +124,10 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    public void setRootApplicationContext(ApplicationContext rootApplicationContext) {
+        this.rootApplicationContext = rootApplicationContext;
     }
 
     public void setServletContext(ServletContext servletContext) {
