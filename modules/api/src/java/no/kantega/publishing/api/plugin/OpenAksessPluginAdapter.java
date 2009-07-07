@@ -4,6 +4,7 @@ import org.kantega.jexmec.AbstractPlugin;
 import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.List;
+import java.util.Collections;
 
 /**
  * Date: Jul 6, 2009
@@ -13,7 +14,7 @@ import java.util.List;
  */
 public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAksessPlugin {
 
-    private List<HandlerMapping> handlerMappings;
+    private List<HandlerMapping> handlerMappings = Collections.emptyList();
 
 
     public OpenAksessPluginAdapter(String pluginId) {
