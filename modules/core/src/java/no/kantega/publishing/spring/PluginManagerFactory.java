@@ -103,4 +103,8 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     public void setServicesClass(Class<? extends Services> servicesClass) {
         this.servicesClass = servicesClass;
     }
+
+    public void setPluginClass(Class<? extends Plugin> pluginClass) {
+        this.pluginClass = pluginClass;
+    }
 }

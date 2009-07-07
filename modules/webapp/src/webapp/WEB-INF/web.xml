@@ -125,6 +125,12 @@
 
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
+        <url-pattern>/admin/oap/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
         <url-pattern>/oap/*</url-pattern>
     </servlet-mapping>
 
