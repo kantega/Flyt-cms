@@ -48,7 +48,7 @@
         <property name="postProcessors">
             <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
                 <property name="exposedBeanNames">
-                    
+                    <list></list>
                 </property>
             </bean>
         </property>
