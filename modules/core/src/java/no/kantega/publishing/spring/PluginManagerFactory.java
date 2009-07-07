@@ -35,7 +35,8 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     private ServiceLocator serviceLocator;
     private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
     private List<BeanFactoryPostProcessor> postProcessors;
-
+    private Class<? extends Services> servicesClass;
+    private Class<? extends Plugin> pluginClass;
 
     public Class getObjectType() {
         return PluginManager.class;
@@ -46,7 +47,7 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     }
 
     public Object createInstance() throws Exception {
-        ServiceLocator serviceLocator = new SpringServiceLocator(applicationContext, new HashSet<Class>());
+        ServiceLocator serviceLocator = new SpringServiceLocator(applicationContext, servicesClass);
         SpringPluginLoader<OpenAksessPlugin> spring = new SpringPluginLoader<OpenAksessPlugin>() {
 
             @Override
@@ -64,7 +65,8 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
             spring.setBeanFactoryPostProcessors(postProcessors);
         }
 
-        final DefaultPluginManager<OpenAksessPlugin> manager = new DefaultPluginManager<OpenAksessPlugin>(OpenAksessPlugin.class,
+        pluginClass = OpenAksessPlugin.class;
+        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass,
                 serviceLocator);
         manager.addClassLoaderStrategy(new SimpleClassLoaderStrategy(applicationContext.getClassLoader()));
         manager.addPluginLoader(spring);
@@ -98,4 +100,7 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         }
     }
 
+    public void setServicesClass(Class<? extends Services> servicesClass) {
+        this.servicesClass = servicesClass;
+    }
 }
