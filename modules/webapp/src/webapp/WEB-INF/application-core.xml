@@ -42,6 +42,21 @@
         <property name="hostnamesDao" ref="aksessHostnamesDao"/>
     </bean>
 
+    <bean id="pluginManager" class="no.kantega.publishing.spring.PluginManagerFactory">
+        <property name="postProcessors">
+            <list>
+                <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
+                    <property name="exposedBeanNames">
+                        <list>
+                            <value>aksessDataSource</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        
+    </bean>
+
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
         <constructor-arg>
             <list>

@@ -104,6 +104,10 @@
     </property>
   </bean>
 
+    <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
+
   <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
 
   <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -522,6 +526,16 @@
   <bean class="no.kantega.publishing.admin.attributes.action.AddListOptionAction" id="AddListOptionAction"/>
   <bean class="no.kantega.publishing.admin.attributes.action.RemoveListOptionAction" id="RemoveListOptionAction"/>
 
+
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="classpath:"/>
+    </bean>
+    <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="cache" value="true"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".vm"/>
+    </bean>
+    
   <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
   </bean>

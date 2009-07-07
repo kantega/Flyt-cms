@@ -123,6 +123,10 @@
         <url-pattern>/admin/useradmin/*</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/oap/*</url-pattern>
+    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>

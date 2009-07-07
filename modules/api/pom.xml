@@ -29,6 +29,18 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>org.kantega.jexmec</groupId>
+            <artifactId>jexmec-api</artifactId>
+            <version>${jexmec.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
+
     </dependencies>
 
 
