@@ -8,10 +8,6 @@ import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Date: Jul 6, 2009
- * Time: 2:00:22 PM
- *
- * @author Tarje Killingberg
  */
 public class PluginDelegatingHandlerMapping implements HandlerMapping {
 

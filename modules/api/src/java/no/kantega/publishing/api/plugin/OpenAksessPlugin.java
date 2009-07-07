@@ -4,12 +4,10 @@ import org.kantega.jexmec.Plugin;
 import org.springframework.web.servlet.HandlerMapping;
 
 import java.util.List;
+import java.util.Map;
+
 
 /**
- * Date: Jul 6, 2009
- * Time: 1:17:12 PM
- *
- * @author Tarje Killingberg
  */
 public interface OpenAksessPlugin extends Plugin {
 
