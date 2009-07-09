@@ -40,14 +40,14 @@
     </filter>
 
     <filter>
-      <filter-name>ParamEncodingFilter</filter-name>
-      <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
     </filter>
 
     <filter-mapping>
         <filter-name>ParamEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>    
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>MultipartFilter</filter-name>
@@ -84,6 +84,21 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
+
+    <servlet>
+        <servlet-name>dwr-invoker</servlet-name>
+        <display-name>DWR Servlet</display-name>
+        <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>crossDomainSessionSecurity</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+
 
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
@@ -123,10 +138,21 @@
         <url-pattern>/admin/useradmin/*</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>dwr-invoker</servlet-name>
+        <url-pattern>/admin/dwr/*</url-pattern>
+    </servlet-mapping>
+
+
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
         <url-pattern>*.jnlp</url-pattern>
+    </servlet-mapping>
+    <!-- jjs = Dynamic (jsp) JavaScript files -->
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jjs</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

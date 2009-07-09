@@ -1,418 +1,407 @@
-body, p, td {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    margin: 0px;
-}
-
-img {
-    border: 0;
-}
-
-label {
-    font-weight: bold;
-    display: block;
-}
-
-.textInput {
-    width: 300px;
-}
-
-.topButton {
-    font-weight: bold;
-    text-decoration:none;
-    font-size: 10px;
-    color: #0030ff;
-}
-
-.topButton:hover {
-    font-weight: bold;
-    text-decoration:none;
-}
-
-.tab {
-    background-color: #e0e0df;
-    border-color: #b5b5b5;
-    border-width: 1px;
-    border-style:  solid;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+body {
+    font-family: Arial, sans-serif;
     font-size: 11px;
     color: #000000;
 }
 
-.tabSelected {
-    background-color: #ffffff;
-    border-color: #b5b5b5;
-    border-width: 1px;
-    border-left-style: solid;
-    border-right-style: solid;
-    border-top-style: solid;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
+/************** General styles **************/
+a {
     color: #000000;
+    text-decoration: none;
 }
 
-.scrollList {
-    height: 200px;
+
+/************** General classes **************/
+
+.clearing {
+    clear: both;
+}
+
+
+
+/************** Layout **************/
+#Top {}
+
+#TopMenu {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 17px;
+    background: #3B3C3D url("../bitmaps/default/framework/top_nav_background.png") center left repeat-x;
+}
+#ModesMenu {
+    padding: 0 5px;
+    height: 37px;
+    background: #333333 url("../bitmaps/default/framework/modus_background.png") center left repeat-x;
+}
+#ToolsMenu {
+    height: 25px;
+    padding: 0 5px;
+    background: #E3E3E3 url("../bitmaps/default/framework/tools_background.png") center left repeat-x;
+}
+#Content {
+
+}
+#Navigation {
+    position: relative;
+    float: left;
+    width: 190px;
+    padding-right: 10px;/*Framesplit.width*/
+    background: #ffffff;
+}
+#Navigator {
     overflow: auto;
+    padding-top: 5px;
 }
 
-.acItem, acItemOver {
-    padding-left: 0px;
-    padding-right: 0px;
-    cursor: pointer;
-    border-bottom: 1px solid;
-    border-bottom-color: #cccccc;
+#Framesplit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 100%;
+    background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
 }
 
-.acItem {
-    color: black;
+#FramesplitDrag {
+    cursor: e-resize;
+    position: relative;
+    top: 50%;
+    height: 17px;
+    width: 10px;
+    background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
 }
 
-.acItemOver {
-    color: white;
-    background-color: black;
+#ContentFrame {
+    float: left;
+    position: relative;
+    width: auto;
+    height: 100%;
+    background: #A0A0A0;
+}
+#ContentFrame iframe {
+    border: none;
 }
 
-
-.tab A, .tabSelected A {
-    text-decoration: none;
-    color: #000000;
+/************** Top menu **************/
+#TopMenu .logo {
+    background: transparent url("../bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;
+    line-height: 28px;
+    padding-left: 31px;
+}
+#TopMenu a {
+    line-height: 28px;
+    margin-right: 15px;
 }
 
-
-.button {
-    padding-left: 3px;
-    padding-right: 3px;    
-    color: #0030ff;
-    font-size: 11px;
-    text-decoration:none;
-}
-
-.button:hover {
-    color: #0030ff;
-    text-decoration:underline;
-}
-
-.date {
-    color: #eeeeed;
-}
-
-.bodyWithMargin {
-    margin: 3px;
-}
-
-.padded {
-    padding: 3px;
-}
-
-.symbol {
-    font-family: 'Lucida Sans Unicode';
+#TopMenu a.menuitem {
+    color: #cccccc;
     font-size: 12px;
-    text-decoration: none;
-    color: #000000;    
 }
-
-.tableHeading  {
+#TopMenu a.menuitem:hover {
+    color: #ffffff;
+}
+#TopMenu a.menuitem.selected {
+    color: #ffffff;
     font-weight: bold;
-    background-color: #666666;
-    color: #ffffff;
-    padding: 2px;
 }
 
-.tableHeading a {
-    color: #ffffff;
-}
-
-.tableRow0 {
-    background-color: #ffffff;
-    padding: 2px;
-}
-
-.tableRow1 {
-    background-color: #eeeeee;
-    padding: 2px;
-}
-
-.tableRowSel {
-    background-color: #0000ff;
-    color: #ffffff;
-    padding: 2px;
-}
-
-#errorMessageArea {
-    width: 600px;
-    padding-bottom: 10px;
-}
-
-.error {
-    border: 1px solid #000000;
-    padding: 4px;
-    color: #000000;
-    background-color: #FFFFE1;
-}
-
-.clickable {
-    cursor:default;
-}
-
-
-.info {
-    border: 1px solid #000000;
-    padding: 4px;
-    color: #000000;
-    background-color: #FFFFE1;
-    margin-bottom: 10px;
-}
-
-.inpHeading {
-    background-color: #eeeeed;
-    padding-left: 8px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
-
-.comment {
+/************** Modes menu **************/
+#ModesMenu {
     color: #dddddd;
 }
 
-.helpText {
-    border: 1px solid #000000;
-    padding: 4px;
-    color: #000000;
-    background-color: #FFFFE1;
-}
-
-.errorText {
-    border: 1px solid #000000;
-    padding: 4px;
-    color: #000000;
-    background-color: #AA0000;
-}
-
-.framework {
-    background-color: #eeeeed;
-}
-
-.inp {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+#ModesMenu .search input[type=text]{
+    width: 200px;
+    height: 26px;
+    border: none;
+    color: #dddddd;
     font-size: 11px;
+    padding-top: 11px;
+    padding-left: 25px;
+    background: url("../bitmaps/default/framework/search_inputfield.png") center left no-repeat;
+    float: left;
+}
+#ModesMenu .search input[type=submit]{
+    height: 37px;
+    width: 61px;
+    border: none;
+    color: #dddddd;
+    font-size: 1em;
+    background: url("../bitmaps/default/framework/search_btnicon.png") center left no-repeat;
+    float: left;
 }
 
-.inpSelectList {    
-    max-height: 200px;  
-    overflow: auto;
+#ModesMenu .buttonGroup {
+    font-size: 0;/*Collapses all whitespace between buttons. Enables buttons to be defined on separate lines in the html.*/
+    margin-right: 10px;
+    float: left;
 }
 
-A.inpSelectItem {
-    text-decoration: none;
-    color: #000000;
-}
-
-.inpgrey {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
+#ModesMenu .buttonGroup .button {
     font-size: 11px;
-    background-color: #eeeeed;
-}
-
-.invertFrame {
-    background-color: #000000;
-}
-
-.invert {
-    background-color: #666666;
     color: #ffffff;
+    display: inline-block;
+    height: 37px;
+    line-height: 37px;
+    padding: 0 10px;
+    background: url("../bitmaps/default/framework/modus_btn_center.png") center center repeat-x;
 }
 
-.mmbackground {
-    background-color: #666666;
+#ModesMenu .buttonGroup .button:first-child {
+    background: url("../bitmaps/default/framework/modus_btn_left.png") left center no-repeat
+}
+#ModesMenu .buttonGroup .button:last-child {
+    background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat
+}
+#ModesMenu .buttonGroup .buttonSeparator {
+    padding-left: 1px;
+    background: url("../bitmaps/default/framework/modus_btn_separator.png") left center no-repeat;
+}
+
+#ModesMenu .button span {
+    padding-left: 20px;
+}
+#ModesMenu .button .navigate {
+    background: url("../bitmaps/default/framework/modus_icon_navigate.png") left center no-repeat;
+}
+#ModesMenu .button .organize {
+    background: url("../bitmaps/default/framework/modus_icon_organize.png") left center no-repeat;
+}
+#ModesMenu .button .linkcheck {
+    background: url("../bitmaps/default/framework/modus_icon_linkcheck.png") left center no-repeat;
+}
+#ModesMenu .button .statistics {
+    background: url("../bitmaps/default/framework/modus_icon_statistics.png") left center no-repeat;
+}
+
+/************** Tools menu **************/
+#ToolsMenu .buttonGroup {
+    display: inline;
+}
+#ToolsMenu .button {
+    line-height: 25px;
+    display: inline-block;
+    height: 25px;
+    margin-right: 10px;
+    background: url("../bitmaps/default/framework/tools_btn_separator.png") right center no-repeat;
+}
+#ToolsMenu .button span {
+    display: inline-block;
+    padding-left: 20px;
+    padding-right:10px;
+    line-height: 25px;
+}
+#ToolsMenu .button .newSubpage {
+    background: url("../bitmaps/default/framework/tools_icon_newsubpage.png") left center no-repeat;
+}
+#ToolsMenu .button .edit{
+    background: url("../bitmaps/default/framework/tools_icon_edit.png") left center no-repeat;
+}
+#ToolsMenu .button .delete{
+    background: url("../bitmaps/default/framework/tools_icon_delete.png") left center no-repeat;
+}
+#ToolsMenu .button .cut {
+    background: url("../bitmaps/default/framework/tools_icon_copy.png") left center no-repeat;
+}
+#ToolsMenu .button .copy {
+    background: url("../bitmaps/default/framework/tools_icon_copy.png") left center no-repeat;
+}
+#ToolsMenu .button .paste {
+    background: url("../bitmaps/default/framework/tools_icon_paste.png") left center no-repeat;
+}
+#ToolsMenu .button .displayPeriod {
+    background: url("../bitmaps/default/framework/tools_icon_displayperiod.png") left center no-repeat;
+}
+#ToolsMenu .button .privileges {
+    background: url("../bitmaps/default/framework/tools_icon_privileges.png") left center no-repeat;
+}
+
+/************** Navigation (left column) **************/
+.filteroptions {
+    background: url("../bitmaps/default/framework/filteroptions_background.png") left center repeat-x;
+    height: 22px;
+}
+.filteroption {
+    display: inline;
+    line-height:22px;
+}
+.filteroption.filter{
+    background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
+    padding-left: 15px;
+    margin: 0 5px;
+}
+.filteroption input[type=checkbox] {
+    vertical-align: -15%;
+}
+.filteroption label {
+    cursor: pointer;
+}
+
+
+/************** Content frame (right column) **************/
+#ContentFrame .statusbar {
+    line-height: 22px;
+    background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    padding: 0 10px;
+}
+#ContentFrame .statusbar .breadcrumbs {
+    margin: 0;
+    padding: 0;
+}
+#ContentFrame .statusbar .breadcrumbs li {
+    display: inline;
+    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
+    padding-left: 12px;
+}
+#ContentFrame .statusbar .breadcrumbs li:first-child {
+    /*TODO: Change bitmap*/
+    background: url("../bitmaps/common/navigator/root.png") left center no-repeat;
+    padding-left: 18px;
+}
+
+/************** Navigator **************/
+.navigator {
+    margin: 0 0 0 0.25em;
+}
+.navigator li{
+    list-style: none;
+    margin-top: 0.25em;
+    white-space: nowrap;
+}
+.navigator li li {
+    margin-left: 1em;
+}
+
+.navigator li span {
+
+}
+
+.navigator .openState {
+    margin-right: 2px;
+}
+
+.navigator .openState a {
+    display: inline-block;
+    position: relative;
+    top: 1px;
+    width: 9px;
+    height: 9px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.navigator .openState a.open {
+    background-image: url("../bitmaps/common/navigator/nav_open.png");;
+}
+.navigator .openState a.closed {
+    background-image: url("../bitmaps/common/navigator/nav_closed.png");
+}
+.navigator .openState a.noChildren {
+    background-image: none;
+}
+
+.navigator .icon {
+}
+.navigator .icon a {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    width: 13px;
+    height: 15px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.navigator .icon .root{
+    width: 14px;
+    height: 14px;
+    top: 3px;
+    background-image: url("../bitmaps/common/navigator/root.png");
+}
+.navigator .icon .waiting{
+    background-image: url("../bitmaps/common/navigator/waiting.gif");
+}
+.navigator .icon .expired {
+    background-image: url("../bitmaps/common/navigator/expired.gif");
+}
+.navigator .icon .shortcut {
+    background-image: url("../bitmaps/common/navigator/shortcut.gif");
+}
+.navigator .icon .link {
+    background-image: url("../bitmaps/common/navigator/link.gif");
+}
+.navigator .icon .file {
+    background-image: url("../bitmaps/common/navigator/file.gif");
+}
+.navigator .icon .page {
+    background-image: url("../bitmaps/common/navigator/page.png");
+}
+.navigator .icon .link-draft {
+    background-image: url("../bitmaps/common/navigator/link_draft.gif");
+}
+.navigator .icon .file-draft {
+    background-image: url("../bitmaps/common/navigator/file_draft.gif");
+}
+.navigator .icon .page-draft {
+    background-image: url("../bitmaps/common/navigator/page_draft.gif");
+}
+.navigator .title {
+}
+.navigator .title a {
+    padding: 2px;
+    text-decoration: none;
+}
+
+.navigator .title a:hover {
+    background: #dddddd;
+}
+
+.navigator .title a.selected {
     color: #ffffff;
-    cursor:default;
-}
-
-.navNormal {
-    color: #000000;
-    background-color: #ffffff;
-    text-decoration: none;
-}
-
-.navSelected {
-    color: #ffffff;
-    background-color: #326ac5;
-    text-decoration: none;
-}
-
-.navMyNormal {
-    color: #9a6508;
-    background-color: #ffffff;
-    text-decoration: none;
-}
-
-.navMySelected {
-    color: #ffffff;
-    background-color: #326ac5;
-    text-decoration: none;
-}
-
-.cMenu {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    cursor:default;
-    background-color: #ffffff;
-}
-
-.cMenuOver {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    cursor:default;
-    background-color: #000000;
-}
-
-.cMenuDisabled {
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    font-size: 11px;
-    cursor:default;
-    background-color: #ffffff;
-}
-
-
-.cMenuFrame {
-    color: #cccccc;
-    background-color: #cccccc;
-}
-
-.cMenu a {
-    color: #000000;
-    text-decoration: none;
-    display: block;
-    height: 100%;
-    width: 100%;
-}
-
-.cMenuOver a {
-    color: #ffffff;
-    text-decoration: none;
-    display: block;
-    height: 100%;
-    width: 100%;
-}
-
-.cMenuDisabled a {
-    color: #cccccc;
-    text-decoration: none;
-    display: block;
-    height: 100%;
-    width: 100%;
-}
-
-.calendarDay {
-    text-decoration:none;
-    font-size: 10px;
-    color: #0030ff;
-}
-
-.calendarToday {
     font-weight: bold;
-    text-decoration:none;
-    font-size: 10px;
-    color: #0030ff;
+    text-decoration: none;
+    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
 }
 
-.noteArea {
-    background-color: #FFFFAA;
-    width: 600px;
-    height: 100px;
+/* Generic context menu styles */
+.contextMenu {
+    position: absolute;
+    width: 130px;
+    z-index: 99999;
+    border: solid 1px #cccccc;
+    background: #ffffff;
+    padding: 0;
+    margin: 0;
+    display: none;
 }
 
-.popupNoteArea {
-    background-color: #FFFFAA;
-    width: 250px;
-    height: 100px;
+.contextMenu li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.note {
-    background-color: #FFFFAA;
-    width: 100%;
-    margin: 3px;
-    border: solid 1px black;
-    padding: 5px;
+.contextMenu a {
+    color: #333;
+    text-decoration: none;
+    display: block;
+    line-height: 20px;
+    outline: none;
+    padding: 1px 5px;
 }
 
-.imagemap0 {
-    background-color: #ff0000;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+.contextMenu li.hover a {
+    color: #ffffff;
+    background-color: #3399ff;
 }
 
-.imagemap1 {
-    background-color: #ffff00;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+.contextMenu li.disabled a {
+    color: #aaaaaa;
+    cursor: default;
 }
 
-.imagemap2 {
-    background-color: #ffaa00;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+.contextMenu li.hover.disabled a {
+    background-color: transparent;
 }
 
-.imagemap3 {
-    background-color: #ccff00;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap4 {
-    background-color: #ffcc00;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap5 {
-    background-color: #00ccff;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap6 {
-    background-color: #00ffcc;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap7 {
-    background-color: #ff00aa;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap8 {
-    background-color: #aaffaa;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-}
-
-.imagemap9 {
-    background-color: #ffaaff;
-    font-size: 11px;
-    font-family: Verdana, Arial, Helvetica, sans-serif;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
+.contextMenu li.separator {
+    border-top: solid 1px #cccccc;
 }

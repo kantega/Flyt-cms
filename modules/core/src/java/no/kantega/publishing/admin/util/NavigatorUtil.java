@@ -20,18 +20,29 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 
+/**
+ * Helper class for extracting properties associated with navigator menu items.
+ */
 public class NavigatorUtil {
 
+    /**
+     * Returns the name of the icon to be used in the navigator.
+     *
+     * @param type
+     * @param vStatus
+     * @param status
+     * @return
+     */
     public static String getIcon(ContentType type, int vStatus, int status) {
         if (vStatus == ContentVisibilityStatus.WAITING) {
-            return "waiting.gif";
+            return "waiting";
         } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
-            return "expired.gif";
+            return "expired";
         } else if (vStatus == ContentVisibilityStatus.ARCHIVED) {
-            return "expired.gif";
+            return "expired";
         } else {
             if (type == ContentType.SHORTCUT) {
-                return "shortcut.gif";
+                return "shortcut";
             } else {
                 String ico;
                 if (type == ContentType.LINK) {
@@ -43,14 +54,24 @@ public class NavigatorUtil {
                 }
 
                 if (status == ContentStatus.DRAFT) {
-                    ico = ico + "_draft";
+                    ico = ico + "-draft";
                 }
 
-                return ico + ".gif";
+                return ico;
             }
         }
     }
 
+
+    /**
+     * Returns the text associated with a menu item icon. Typically shown on mouseover.
+     *
+     * @param type
+     * @param vStatus
+     * @param status
+     * @return
+     */
+    //TODO: Use locale labels
     public static String getIconText(ContentType type, int vStatus, int status) {
         if (vStatus == ContentVisibilityStatus.WAITING) {
             return "Utsatt publisering";
@@ -79,6 +100,46 @@ public class NavigatorUtil {
 
                 return txt;
             }
+        }
+    }
+
+    /**
+     * Calculates a title for use by the navigator based on the objects complete title.
+     *
+     * Long titles are cropped.
+     *
+     *  @param type
+     * @param contentTitle
+     * @return
+     */
+    public static String getNavigatorTitle(ContentType type, String contentTitle) {
+        if (contentTitle.length() > 32) contentTitle = contentTitle.substring(0, 29) + "...";
+        if (type == ContentType.SHORTCUT) {
+            //TODO: use locale label
+            contentTitle = contentTitle + " (snarvei)";
+        }
+        return contentTitle;
+    }
+
+    /**
+     * Returns the kind of context menu an item should have, based on it's content type.
+     *
+     * @param type
+     * @param vStatus
+     * @param status
+     * @return
+     */
+    public static String getContextMenuType(ContentType type, int vStatus, int status) {
+        if (type == ContentType.LINK) {
+            return "link";
+        } else if (type == ContentType.FILE) {
+            return "file";
+        } else if (type == ContentType.SHORTCUT) {
+            return "shortcut";
+        } else if (type == ContentType.FORM) {
+            return "form";  
+        } else {
+            return "page";
         }
     }
 }

@@ -31,6 +31,10 @@
 
     <property name="mappings">
       <props>
+        <prop key="/admin/publish/Navigate.action">navigateController</prop>
+        <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAction</prop>
+
+
         <prop key="/">ContentRequestHandler</prop>
         <prop key="/content.ap">ContentRequestHandler</prop>
         <prop key="*.asp">ContentRequestHandler</prop>
@@ -103,6 +107,27 @@
       </props>
     </property>
   </bean>
+
+
+    <bean id="navigateController" class="no.kantega.publishing.admin.viewcontroller.navigate.NavigateController">
+        <property name="viewName" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
+    </bean>
+
+    <bean id="contentNavigatorAction" class="no.kantega.publishing.admin.content.ajax.ContentNavigatorAction">
+        <property name="viewName" value="/WEB-INF/jsp/admin/navigator/navigator.jsp"/>
+    </bean>
+
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+
+
+
+
+
+
+
+
+
+
 
   <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
 

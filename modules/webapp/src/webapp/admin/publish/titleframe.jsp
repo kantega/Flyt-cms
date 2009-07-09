@@ -126,7 +126,7 @@
 </head>
 <script language="Javascript">
 var activeTab  = "<%=activeTab%>";
-var thisURL = "" + window.parent.contentmain.location;
+    var thisURL = "" + window.parent.contentmain.location;
 
 function getId(ask) {
     var currentId = document.cid.currentId.value;
