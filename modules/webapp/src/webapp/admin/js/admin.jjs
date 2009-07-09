@@ -489,12 +489,12 @@ var Publish =  {
 
     newSubpage : function(thisId) {
         debug("Publish.newSubpage(): thisId: " + thisId);
-        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/AddContentAction.action?thisId="+thisId;
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/AddContent.action?thisId="+thisId;
     },
 
     edit: function(thisId) {
         debug("Publish.editItem(): thisId: " + thisId);
-        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/EditContentAction.action?thisId="+thisId;
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/EditContent.action?thisId="+thisId;
     },
 
     deleteItem: function(thisId) {
