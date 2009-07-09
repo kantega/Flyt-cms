@@ -1,10 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.data.attributes.Attribute"%>
-<%@ page import="no.kantega.publishing.security.SecuritySession"%>
-<%@ page import="java.util.List"%>
-<%@ page import="no.kantega.publishing.security.realm.SecurityRealmFactory"%>
+<%@ page import="no.kantega.publishing.common.data.attributes.Attribute"%>
 <%@ page import="org.springframework.context.ApplicationContext"%>
 <%@ page import="no.kantega.publishing.spring.RootContext"%>
 <%@ page import="java.util.Iterator"%>
@@ -25,7 +21,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     Attribute attribute = (Attribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
@@ -48,46 +43,31 @@
         }
     }
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <%
-                    if (manager != null) {
-                %>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.slett"/></a></td>
-                <%
-                    }
-                %>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <%
-            if (manager != null) {
-        %>
-                <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-                <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" style="width:600px;" tabindex="<%=attribute.getTabIndex()%>">
-                <script type="text/javascript">
-                    Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
-                </script>
-        <%
-            } else {
-        %>
-            <input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" style="width:600px;" tabindex="<%=attribute.getTabIndex()%>">
-        <%
-            }
-        %>
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<%
+    if (manager != null) {
+%>
+<div class="buttonGroup">
+    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button select"><kantega:label key="aksess.button.velg"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+</div>
+<%
+    }
+%>
+<div class="inputs">
+    <%
+        if (manager != null) {
+    %>
+            <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
+            <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+            <script type="text/javascript">
+                Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
+            </script>
+    <%
+        } else {
+    %>
+            <input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <%
+        }
+    %>
+</div>

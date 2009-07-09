@@ -29,22 +29,31 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SaveContentAction extends AbstractSaveContentAction {
-    private static String SOURCE = "aksess.SaveMetadataAction";
+    private String view;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
         HttpServletRequest request = param.getRequest();
         ValidationErrors   errors  = new ValidationErrors();
 
-        // Alle data er attributter, ikke nødvendig å sjekke mer
+        // Save all page attributes
         SaveContentHelper helper = new SaveContentHelper(request, content, AttributeDataType.CONTENT_DATA);
 
         return helper.getHttpParameters(errors);
     }
 
+    public String getView() {
+        return view;
+    }
 
-    public String getEditPage() {
-        return "editcontent";
+    Map<String, Object> getModel(Content content, HttpServletRequest request) {
+        return new HashMap<String, Object>();
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

@@ -45,30 +45,15 @@
 
 
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif" alt=""></td>
-                <td><a href="Javascript:selectUser(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectUser(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif" alt=""></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.slett"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-        <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" style="width:600px;" tabindex="<%=attribute.getTabIndex()%>">
-        <script type="text/javascript">
-            Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchUsersAsXML.action', 'minChars' :3 });
-        </script>
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="buttonGroup">
+    <a href="Javascript:selectUser(document.myform.<%=fieldName%>)" class="button select"><kantega:label key="aksess.button.velg"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+</div>
+<div class="inputs">
+    <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
+    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <script type="text/javascript">
+        Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchUsersAsXML.action', 'minChars' :3 });
+    </script>
+</div>

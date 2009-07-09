@@ -6,7 +6,10 @@
 <%@ page import="no.kantega.publishing.common.data.ContentTemplate" %>
 <%@ page import="no.kantega.publishing.common.data.DisplayTemplate" %>
 <%@ page import="no.kantega.publishing.common.data.AssociationCategory" %>
-<%@ include file="../include/jsp_header.jsf" %>
+<%@ page import="java.util.List" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="java.util.Locale" %>
+<%@ include file="../../../../admin/include/jsp_header.jsf" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -108,7 +111,7 @@ function doSelectTemplate() {
     <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr class="tableHeading">
-            <td><b><kantega:label key="aksess.selecttemplate.velgplassering"/></b></td>
+            <td><h1><kantega:label key="aksess.selecttemplate.velgplassering"/></h1></td>
         </tr>
         <tr>
             <td><img src="../bitmaps/blank.gif" width="2" height="2" alt=""></td>
@@ -212,7 +215,7 @@ function doSelectTemplate() {
                                 AssociationCategory a = ct.getDefaultAssociationCategory();
                                 if (a != null) {
                                     defaultAssociationCategoryForTemplate = a.getId();
-                                }                                
+                                }
                             }
                         } else if (t instanceof ContentTemplate) {
                             ContentTemplate ct = (ContentTemplate)t;
@@ -300,7 +303,7 @@ function doSelectTemplate() {
                         <%
                             if (tmp.getDescription() != null) {
                                 out.write(tmp.getDescription());
-                            }                            
+                            }
                         %>
                         </div>
                         <%
@@ -344,4 +347,4 @@ function doSelectTemplate() {
     </form>
 </body>
 </html>
-<%@ include file="../include/jsp_footer.jsf" %>
+<%@ include file="../../../../admin/include/jsp_footer.jsf" %>

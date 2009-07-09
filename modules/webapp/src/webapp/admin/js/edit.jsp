@@ -53,6 +53,15 @@ function blurField() {
    focusField = null;
 }
 
+function displayExpireAction() {
+   var d = document.myform.end_date.value;
+   var elm = document.getElementById('EndDateAction');
+   if (isDateFilled(d)) {
+      elm.style.display = "block";
+   } else {
+      elm.style.display = "none";
+   }
+}
 
 /*
  *  Used in URLs to force refresh

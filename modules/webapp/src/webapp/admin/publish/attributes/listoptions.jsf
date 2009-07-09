@@ -15,7 +15,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%!
     public boolean isSelected(ListOption option, String value) {
         String optText = option.getText();
@@ -45,59 +44,64 @@
 
 %>
 <%
-    String value = attribute.getValue();
-    List options = attribute.getListOptions(content.getLanguage());
-    if (attribute.getMultiple()) {
-        out.write("<div class=\"inpSelectList\">");
-        out.write("<table border=\"0\">");
-        if (options != null) {
-            for (int i = 0; i < options.size(); i++) {
-                ListOption option  = (ListOption)options.get(i);
-                String optText = option.getText();
-                String optVal  = option.getValue();
-                if (optVal == null || optVal.length() == 0) {
-                    optVal = optText;
+    {
+        Content content = (Content)request.getAttribute("content");
+        String fieldName = (String) request.getAttribute("fieldName");
+        
+        String value = attribute.getValue();
+        List options = attribute.getListOptions(content.getLanguage());
+        if (attribute.getMultiple()) {
+            out.write("<div class=\"inpSelectList\">");
+            out.write("<table border=\"0\">");
+            if (options != null) {
+                for (int i = 0; i < options.size(); i++) {
+                    ListOption option  = (ListOption)options.get(i);
+                    String optText = option.getText();
+                    String optVal  = option.getValue();
+                    if (optVal == null || optVal.length() == 0) {
+                        optVal = optText;
+                    }
+                    out.write("<tr>");
+                    out.write("<td><input type=\"checkbox\"");
+                    out.write(" name=\"" + fieldName + "\"");
+                    out.write(" value=\"" + optVal + "\"");
+                    if (isSelected(option, value)) {
+                        out.write(" checked=\"checked\"");
+                    }
+                    out.write(">");
+                    out.write("</td>");
+                    out.write("<td>");
+                    out.write("<a href=\"Javascript:toggleCheckbox(document.myform." + fieldName + ",'" + optVal + "')\" class=\"inpSelectItem\">" + optText + "</a>");
+                    out.write("</td>");
+                    out.write("</tr>");
                 }
-                out.write("<tr>");
-                out.write("<td><input type=\"checkbox\"");
-                out.write(" name=\"" + fieldName + "\"");
-                out.write(" value=\"" + optVal + "\"");
-                if (isSelected(option, value)) {
-                    out.write(" checked=\"checked\"");
-                }
-                out.write(">");
-                out.write("</td>");
-                out.write("<td>");
-                out.write("<a href=\"Javascript:toggleCheckbox(document.myform." + fieldName + ",'" + optVal + "')\" class=\"inpSelectItem\">" + optText + "</a>");
-                out.write("</td>");
-                out.write("</tr>");
             }
-        }
-        out.write("</table>");
-        out.write("</div>");
-    } else {
-        out.write("<select class=\"inp\" style=\"width:600px;\"");
-        out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
-        out.write(" name=\"" + fieldName + "\">");
-        if (options != null) {
-            for (int i = 0; i < options.size(); i++) {
-                ListOption option  = (ListOption)options.get(i);
-                String optText = option.getText();
-                String optVal  = option.getValue();
-                if (optVal == null || optVal.length() == 0) {
-                    optVal = optText;
-                }
+            out.write("</table>");
+            out.write("</div>");
+        } else {
+            out.write("<select class=\"inputFullWidth\"");
+            out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
+            out.write(" name=\"" + fieldName + "\">");
+            if (options != null) {
+                for (int i = 0; i < options.size(); i++) {
+                    ListOption option  = (ListOption)options.get(i);
+                    String optText = option.getText();
+                    String optVal  = option.getValue();
+                    if (optVal == null || optVal.length() == 0) {
+                        optVal = optText;
+                    }
 
-                out.write("<option");
-                out.write(" value=\"" + optVal + "\"");
-                if (isSelected(option, value)) {
-                    out.write(" selected=\"selected\"");
+                    out.write("<option");
+                    out.write(" value=\"" + optVal + "\"");
+                    if (isSelected(option, value)) {
+                        out.write(" selected=\"selected\"");
+                    }
+                    out.write(">");
+                    out.write(optText);
+                    out.write("</option>");
                 }
-                out.write(">");
-                out.write(optText);
-                out.write("</option>");
             }
+            out.write("</select>");
         }
-        out.write("</select>");
     }
 %>

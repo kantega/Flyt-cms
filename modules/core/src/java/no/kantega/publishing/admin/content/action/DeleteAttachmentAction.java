@@ -17,67 +17,48 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-public class DeleteAttachmentAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteAttachmentAction";
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+public class DeleteAttachmentAction implements Controller {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
-        try {
-            ContentManagementService aksessService = new ContentManagementService(request);
+        ContentManagementService aksessService = new ContentManagementService(request);
 
-            int attachmentId = param.getInt("attachmentId");
+        int attachmentId = param.getInt("attachmentId");
 
-            aksessService.deleteAttachment(attachmentId);
+        aksessService.deleteAttachment(attachmentId);
 
-            HttpSession session = request.getSession(true);
-            Content content = (Content)session.getAttribute("currentContent");
-            if (content != null) {
-                // Delete reference from current object in session
-                List attachments = content.getAttachments();
-                for (int i = 0; i < attachments.size(); i++) {
-                    Attachment attachment = (Attachment) attachments.get(i);
-                    if (attachment.getId() == attachmentId) {
-                        attachments.remove(i);
-                        break;
-                    }
+        HttpSession session = request.getSession(true);
+        Content content = (Content)session.getAttribute("currentContent");
+        if (content != null) {
+            // Delete reference from current object in session
+            List attachments = content.getAttachments();
+            for (int i = 0; i < attachments.size(); i++) {
+                Attachment attachment = (Attachment) attachments.get(i);
+                if (attachment.getId() == attachmentId) {
+                    attachments.remove(i);
+                    break;
                 }
             }
-
-            response.sendRedirect("editattachments.jsp?refresh=" + new Date().getTime());
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
         }
+
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("refresh", new Date().getTime());
+
+        return new ModelAndView(new RedirectView("SaveAttachments.action"), model);
     }
 }
 

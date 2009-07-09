@@ -47,6 +47,7 @@ import java.util.Map;
  * Time: 2:56:05 PM
  */
 public class AddContentAction implements Controller {
+    private String view;
 
     private TemplateConfigurationCache templateConfigurationCache;
 
@@ -55,26 +56,18 @@ public class AddContentAction implements Controller {
 
         RequestParameters param = new RequestParameters(request);
 
-        HttpSession session = request.getSession(true);
-
         ContentManagementService aksessService = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        Content parent = (Content)session.getAttribute("currentContent");
+        ContentIdentifier cidParent = new ContentIdentifier(request);
+        Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
-            return new ModelAndView(new RedirectView("/admin/publish/content.jsp?action=previewcontent"));
-        }
-
-        // Refresh object from database, might be modified in database, but not in session
-        parent = aksessService.getContent(parent.getContentIdentifier(), false);
-        if (parent == null) {
-            return new ModelAndView(new RedirectView("/admin/publish/content.jsp?action=previewcontent"));
+            return new ModelAndView(new RedirectView("Navigate.action"));
         }
 
         model.put("parent", parent);
 
         ContentTemplate parentTemplate = aksessService.getContentTemplate(parent.getContentTemplateId());
-
 
         List<AssociationCategory> allowedAssociations = getAllowedAssociationCategories(parentTemplate);
         model.put("allowedAssociations", allowedAssociations);
@@ -133,7 +126,7 @@ public class AddContentAction implements Controller {
         ContentListenerUtil.getContentNotifier().beforeSelectTemplate(model);
 
         // Show page where user selects template etc
-        return new ModelAndView("/admin/publish/selecttemplate_body.jsp", model);
+        return new ModelAndView(view, model);
     }
 
     private List<AssociationCategory> getAllowedAssociationCategories(ContentTemplate parentTemplate) throws ChildContentNotAllowedException {
@@ -159,5 +152,13 @@ public class AddContentAction implements Controller {
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
+    }
+
+    public String getView() {
+        return view;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

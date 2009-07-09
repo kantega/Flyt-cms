@@ -16,22 +16,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     ForumlistAttribute attribute = (ForumlistAttribute)request.getAttribute("attribute");
     String fieldName = (String)request.getAttribute("fieldName");
 %>
-<tr>
-    <td class="inpHeading"><b><%=attribute.getTitle()%></b></td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <select class="inp" style="width: 600px;" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>">
-            <option value="-1"><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>
-            <%=attribute.getForumListAsString()%>
-        </select>
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+    <select name="<%=fieldName%>" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+        <option value="-1"><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>
+        <%=attribute.getForumListAsString()%>
+    </select>
+</div>

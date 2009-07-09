@@ -41,7 +41,7 @@ public class ValidatorHelper {
 
         try {
             if (!RegExp.matches(regexp, alias)) {
-                errors.add(null, "aksess.feil.aliasulovlig");
+                errors.add(null, "aksess.error.aliasisillegal");
             }
         } catch (RegExpSyntaxException e) {
             e.printStackTrace();
@@ -53,7 +53,7 @@ public class ValidatorHelper {
                 Association association =  (Association)associations.get(i);
                 ContentIdentifier cid = ContentIdentifierCache.getContentIdentifierByAlias(association.getSiteId(), alias);
                 if (cid != null && cid.getContentId() != content.getId() && cid.getSiteId() == association.getSiteId()) {
-                    errors.add(null, "aksess.feil.aliasibruk");
+                    errors.add(null, "aksess.error.aliasinuse");
                     break;
                 }
             }

@@ -147,7 +147,7 @@ public class RequestParameters  {
         String value = request.getParameter(name);
         if ((value == null) || (value.length() == 0)) {
             return null;
-        } else if (value.indexOf("dd") != -1) {
+        } else if (!Character.isDigit(value.charAt(0))) {
             return null;
         }
 
@@ -167,7 +167,7 @@ public class RequestParameters  {
         }
 
         String time = request.getParameter(name + "_time");
-        if (time == null || time.length() == 0 || time.indexOf("tt") != -1) {
+        if (time == null || time.length() == 0 || !Character.isDigit(time.charAt(0))) {
             // Blankt tidspunkt eller tt:mm
             time = "00:00";
         }

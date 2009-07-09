@@ -26,7 +26,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
     Content   content   = (Content)request.getAttribute("content");
@@ -59,11 +58,8 @@
     }
     f = null;
 %>
-<tr>
-    <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-</tr>
-<tr>
-    <td class="inpHeading">
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="buttonRow">
         <table cellpadding="0" cellspacing="0" border="0">
             <tr valign="top">
                 <td width="165">
@@ -303,13 +299,8 @@
                 </td>
             </tr>
         </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
+</div>
+<div class="inputs">
     <IFRAME name="editor_<%=fieldName%>" id="editor_<%=fieldName%>" width="<%=width%>" height="<%=height%>" src="htmlpage.jsp" tabindex="<%=attribute.getTabIndex()%>"></IFRAME>
     <TEXTAREA name="<%=fieldName%>" type="hidden" style="display:none;"><%=value%></TEXTAREA><BR>
     <%
@@ -319,5 +310,4 @@
     <%
         }
     %>
-    </td>
-</tr>
+</div>

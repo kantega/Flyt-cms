@@ -14,7 +14,7 @@
   ~ limitations under the License.
   --%>
 
-<link rel="stylesheet" type="text/css" href="../css/calendar-<%=skin%>.css">
+<link rel="stylesheet" type="text/css" href="../css/calendar-default.css">
 <script type="text/javascript" src="../js/calendar/calendar.js"></script>
 <script type="text/javascript" src="../js/calendar/calendar-en.js"></script>
 <script type="text/javascript" src="../js/calendar/calendar-no.js" charset="utf-8"></script>

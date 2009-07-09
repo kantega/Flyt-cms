@@ -85,4 +85,12 @@ public class ValidationErrors {
     public List getErrors() {
         return errors;
     }
+
+    /**
+     * Add errors
+     * @param errors - errors
+     */
+    public void addAll(ValidationErrors errors) {
+        this.errors.addAll(errors.getErrors());
+    }
 }

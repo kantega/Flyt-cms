@@ -45,6 +45,28 @@
         </attribute>
     </tag>
     <tag>
+        <description>Format a date using admin locale</description>
+        <name>formatdate</name>
+        <tag-class>no.kantega.publishing.admin.taglib.FormatDateTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>date</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Format a date time using admin locale</description>
+        <name>formattime</name>
+        <tag-class>no.kantega.publishing.admin.taglib.FormatTimeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>date</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Create a locale specific button</description>
         <name>printnavigator</name>
         <tag-class>no.kantega.publishing.admin.taglib.PrintNavigatorTag</tag-class>

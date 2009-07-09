@@ -31,9 +31,13 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SaveNotesAction extends AbstractSaveContentAction {
     private static String SOURCE = "aksess.SaveNotesAction";
+
+    private String view;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
         HttpServletRequest request = param.getRequest();
@@ -66,7 +70,15 @@ public class SaveNotesAction extends AbstractSaveContentAction {
         return new ValidationErrors();
     }
 
-    public String getEditPage() {
-        return "editnotes";
+    public String getView() {
+        return view;
+    }
+
+    Map<String, Object> getModel(Content content, HttpServletRequest request) {
+        return new HashMap<String, Object>();
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

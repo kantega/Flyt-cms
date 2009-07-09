@@ -1,5 +1,8 @@
+<%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.commons.client.util.ValidationErrors"%>
 <%@ page import="no.kantega.publishing.admin.content.util.AttributeHelper"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
+
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -53,7 +56,7 @@
 </div>
 <%
         String infomessage = request.getParameter("infomessage");
-        if (infomessage != null) {
+        if (infomessage != null && infomessage.length() > 0) {
             String key = "aksess.infomessage." + infomessage;
 %>
             <div class="info">

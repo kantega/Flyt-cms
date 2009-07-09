@@ -19,7 +19,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     Attribute attribute = (Attribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
@@ -27,38 +26,26 @@
     String value = attribute.getValue();
 
     OrganizationManager manager = (OrganizationManager)
-            RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
-
-
+    RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
-                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.leggtil"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
-                <c:if test="${attribute.moveable}">
-                    <td><img src="../bitmaps/common/textseparator.gif"></td>
-                    <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.flyttopp"/></a></td>
-                    <td><img src="../bitmaps/common/textseparator.gif"></td>
-                    <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.flyttned"/></a></td>
-                </c:if>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<%
+    if (manager != null) {
+%>
+<div class="buttonGroup">
+    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.leggtil"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a>
+    <c:if test="${attribute.moveable}">
+        <a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button moveUp" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.flyttopp"/></a>
+        <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.flyttned"/></a>
+    </c:if>
+</div>
+<%
+    }
+%>
+<div class="inputs">
         <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-        <select name="<%=fieldName%>list" class="inp" style="width:600px;" size="6">
+        <select name="<%=fieldName%>list" class="inputFullWidth" size="6">
         <%
             if (value != null && value.length() > 0) {
                 String[] ids = value.split(",");
@@ -69,6 +56,4 @@
                 }
             }
         %>
-        </select>
-    </td>
-</tr>
+</div>

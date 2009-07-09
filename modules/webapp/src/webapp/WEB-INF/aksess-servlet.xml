@@ -78,13 +78,11 @@
         <prop key="/PreviewContent.action">PreviewContentAction</prop>
         <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
         <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
-        <prop key="/admin/publish/SaveEmpty.action">SaveEmptyAction</prop>
         <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
         <prop key="/admin/publish/SaveNotes.action">SaveNotesAction</prop>
         <prop key="/admin/multimedia/SaveMultimedia.action">SaveMultimediaAction</prop>
         <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
-        <prop key="/admin/publish/SavePublishInfo.action">SavePublishInfoAction</prop>
-        <prop key="/admin/publish/SaveVersionInfo.action">SaveVersionInfoAction</prop>
+        <!--<prop key="/admin/publish/SaveVersionInfo.action">SaveVersionInfoAction</prop>-->
         <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
         <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
         <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
@@ -165,7 +163,7 @@
         </props>
       </property>
     </bean>
-
+  <!-- Actions available for everyone -->
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ContentRequestHandler">
     <property name="servletClass">
       <value>no.kantega.publishing.client.ContentRequestHandler</value>
@@ -224,6 +222,8 @@
     <property name="profileConfiguration" ref="profileConfigurations"/>
     <property name="roleConfiguration" ref="roleConfigurations"/>
   </bean>
+
+    
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AddAttachmentAction">
     <property name="servletClass">
       <value>no.kantega.publishing.admin.content.action.AddAttachmentAction</value>
@@ -231,9 +231,6 @@
     <property name="servletName">
       <value>AddAttachmentAction</value>
     </property>
-  </bean>
-  <bean class="no.kantega.publishing.admin.content.action.AddContentAction" id="AddContentAction">
-       <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
   </bean>
   <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AddContentTopicAction">
@@ -253,14 +250,6 @@
       <value>ApproveOrRejectAction</value>
     </property>
   </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="CancelEditAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.CancelEditAction</value>
-    </property>
-    <property name="servletName">
-      <value>CancelEditAction</value>
-    </property>
-  </bean>
   <bean class="no.kantega.publishing.admin.content.action.CleanupHTMLAction" id="CleanupHTMLAction"/>
   <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
       <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
@@ -268,14 +257,9 @@
   <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction"/>
   <bean class="no.kantega.publishing.admin.content.action.CopyPasteContentAction" id="CopyPasteContentAction"/>
   <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction"/>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteAttachmentAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.DeleteAttachmentAction</value>
-    </property>
-    <property name="servletName">
-      <value>DeleteAttachmentAction</value>
-    </property>
-  </bean>
+
+  <bean class="no.kantega.publishing.admin.content.action.DeleteAttachmentAction" id="DeleteAttachmentAction"/>
+    
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteContentTopicAction">
     <property name="servletClass">
       <value>no.kantega.publishing.admin.content.action.DeleteContentTopicAction</value>
@@ -332,14 +316,33 @@
       <value>DeleteVersionAction</value>
     </property>
   </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="EditContentAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.EditContentAction</value>
-    </property>
-    <property name="servletName">
-      <value>EditContentAction</value>
-    </property>
+
+  <!-- Edit content -->
+  <bean class="no.kantega.publishing.admin.content.action.AddContentAction" id="AddContentAction">
+      <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+      <property name="view" value="/WEB-INF/jsp/admin/publish/selecttemplate.jsp"/>
   </bean>
+  <bean class="no.kantega.publishing.admin.content.action.SelectTemplateAction" id="SelectTemplateAction"/>
+  <bean class="no.kantega.publishing.admin.content.action.EditContentAction" id="EditContentAction"/>
+  <bean class="no.kantega.publishing.admin.content.action.SaveContentAction" id="SaveContentAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/editcontent.jsp"/>
+  </bean>
+  <bean class="no.kantega.publishing.admin.content.action.SaveMetadataAction" id="SaveMetadataAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/editmetadata.jsp"/>
+  </bean>
+  <bean class="no.kantega.publishing.admin.content.action.SaveNotesAction" id="SaveNotesAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/editnotes.jsp"/>
+  </bean>  
+  <bean class="no.kantega.publishing.admin.content.action.SaveAttachmentsAction" id="SaveAttachmentsAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/editattachments.jsp"/>
+  </bean>
+  <!--
+  <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveVersionInfoAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/editversions.jsp"/>
+  </bean>
+  -->
+  <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
+
   <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
   <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
   <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
@@ -368,52 +371,14 @@
     </property>
   </bean>
 
+  <!-- Mini Aksess -->
   <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
+
   <bean class="no.kantega.publishing.admin.content.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
 
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveAttachmentsAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveAttachmentsAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveAttachmentsAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveContentAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveContentAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveContentAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveEmptyAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveEmptyAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveEmptyAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMetadataAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveMetadataAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveMetadataAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveNotesAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveNotesAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveNotesAction</value>
-    </property>
-  </bean>
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMultimediaAction">
     <property name="servletClass">
       <value>no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction</value>
@@ -425,30 +390,6 @@
 
   <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>
     
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SavePublishInfoAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SavePublishInfoAction</value>
-    </property>
-    <property name="servletName">
-      <value>SavePublishInfoAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveVersionInfoAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SaveVersionInfoAction</value>
-    </property>
-    <property name="servletName">
-      <value>SaveVersionInfoAction</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SelectTemplateAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.SelectTemplateAction</value>
-    </property>
-    <property name="servletName">
-      <value>SelectTemplateAction</value>
-    </property>
-  </bean>
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UpdateTopicAction">
     <property name="servletClass">
       <value>no.kantega.publishing.admin.topicmaps.action.UpdateTopicAction</value>

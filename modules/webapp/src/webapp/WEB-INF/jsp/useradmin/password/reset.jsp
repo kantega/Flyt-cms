@@ -76,7 +76,6 @@
 
                 <p>
                     <label>Tekst:</label>
-
                     <textarea name="message" style="width: 600px; height: 110px"><c:out value="${mailtemplate}"/></textarea>
 
                 </p>

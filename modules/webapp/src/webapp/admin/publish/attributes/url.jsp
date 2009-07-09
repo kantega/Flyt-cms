@@ -28,41 +28,23 @@
 
     String value = attribute.getValue();
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.slett"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <input type="text" class="inp" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" maxlength="512" style="width:600px;" tabindex="<%=attribute.getTabIndex()%>">
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="buttonGroup">
+    <a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button select"><kantega:label key="aksess.button.velg"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+</div>
+<div class="inputs">
+    <input type="text" class="inputFullWidth" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
+
 <%
     if (!Aksess.doOpenLinksInNewWindow() && ContentProperty.URL.equalsIgnoreCase(attribute.getField())) {
-        // La bruker velge om den skal åpnes i eget vindu
+        // Let user choose if link should open in new window
         Configuration c = Aksess.getConfiguration();
         if (c.getBoolean("openinnewwindow.disabled", true)) {
 %>
-<tr>
-    <td>
-        <input type="checkbox" name="<%=fieldName%>_newwindow" value="true" <% if (content.isOpenInNewWindow()) out.write(" checked");%>> <kantega:label key="aksess.insertlink.opennewwindow"/>
-    </td>
-</tr>
+        <br><input type="checkbox" name="<%=fieldName%>_newwindow" value="true" <% if (content.isOpenInNewWindow()) out.write(" checked");%>> <kantega:label key="aksess.insertlink.opennewwindow"/>
 <%
         }
     }
 %>
+</div>

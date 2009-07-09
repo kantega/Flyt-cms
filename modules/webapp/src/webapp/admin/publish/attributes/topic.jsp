@@ -18,7 +18,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     TopicAttribute attribute = (TopicAttribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
@@ -36,29 +35,13 @@
             value = "";
         }
     }
-
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectTopic(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectTopic(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-        <input type="text" class="inpgrey" name="<%=fieldName%>text" value="<%=topicname%>" readonly onFocus="this.blur()" style="width: 600px;">
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="buttonGroup">
+    <a href="Javascript:selectTopic(document.myform.<%=fieldName%>)" class="button select" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a>
+</div>
+<div class="inputs">
+    <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
+    <input type="text" class="inputGrey inputFullWidth" name="<%=fieldName%>text" value="<%=topicname%>" readonly onFocus="this.blur()">
+</div>

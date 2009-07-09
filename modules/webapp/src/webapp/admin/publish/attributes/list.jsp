@@ -16,20 +16,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
-    Content content = (Content)request.getAttribute("content");
     ListAttribute attribute = (ListAttribute)request.getAttribute("attribute");
-    String fieldName = (String)request.getAttribute("fieldName");
 %>
-<tr>
-    <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <%@include file="listoptions.jsf"%>
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+    <%@include file="listoptions.jsf"%>
+</div>

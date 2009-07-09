@@ -20,6 +20,22 @@
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 %>
 
+function isDateNotEmpty(d) {
+    if (d != "" && !isNaN(parseInt(d))) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isTimeNotEmpty(d) {
+    if (d != "" && !isNaN(parseInt(d))) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function checkDate(date)
 {
    var day, month, year;

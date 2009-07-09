@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.data.attributes.Attribute,
                  no.kantega.publishing.common.data.Multimedia,
                  no.kantega.publishing.common.data.attributes.MediaAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.MultimediaService"%>
@@ -21,7 +20,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     MediaAttribute attribute = (MediaAttribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
@@ -51,30 +49,15 @@
     }
 
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
-        <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" onFocus="this.select()" style="width: 600px;">
-        <script type="text/javascript">
-            Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
-        </script>
-    </td>
-</tr>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="buttonGroup">
+    <a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')" class="button select" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a>
+</div>
+<div class="inputs">
+    <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
+    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" class="inputFullWidth" value="<%=mmname%>" onFocus="this.select()">
+    <script type="text/javascript">
+        Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
+    </script>
+</div>

@@ -136,23 +136,24 @@ public class InputScreenRenderer {
                 request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
 
                 try {
-                    pageContext.include("attributes/" + attr.getRenderer() +".jsp");
+                    out.print("\n<div class=\"contentAttribute\">\n");
+                    pageContext.include("../../../../admin/publish/attributes/" + attr.getRenderer() +".jsp");
+                    out.print("\n");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {
-                        out.print("<tr><td><div class=helpText>" + helptext + "</div></td></tr>\n");
+                        out.print("<div class=\"helpText\">" + helptext + "</div>\n");
                     }
                     if (attr.inheritsFromAncestors()) {
                         String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
-                        out.print("<tr><td><div class=helpText>" + inheritText + "</div></td></tr>\n");
+                        out.print("<div class=\"helpText\">" + inheritText + "</div>\n");
                     }
-
+                    out.print("</div>\n");
                 } catch (Exception e) {
+                    out.print("</div>\n");
                     Log.error(SOURCE, e, null, null);
                     String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
-                    out.print("<tr><td><div class=errorText>" + errorMessage + ":" + attr.getTitle() + "</div></td></tr>\n");
+                    out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
                 }
-
-                out.print("<tr><td><img src=\"../bitmaps/blank.gif\" width=\"2\" height=\"8\"></td></tr>");
             }
         }
     }

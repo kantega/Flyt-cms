@@ -52,6 +52,7 @@ public class Content extends BaseObject {
     private Date publishDate = null;
     private Date expireDate  = null;
     private Date revisionDate = null;
+    private Date changeFromDate = null;
     private int expireAction = ExpireAction.HIDE;
     private int visibilityStatus = ContentVisibilityStatus.ACTIVE;
     private int numberOfNotes = 0;
@@ -649,5 +650,13 @@ public class Content extends BaseObject {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public Date getChangeFromDate() {
+        return changeFromDate;
+    }
+
+    public void setChangeFromDate(Date changeFromDate) {
+        this.changeFromDate = changeFromDate;
     }
 }
