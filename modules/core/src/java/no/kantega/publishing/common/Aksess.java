@@ -120,7 +120,6 @@ public class Aksess {
 
     private static String htmlVersion;
 
-    private static String jQueryVersion;
     private static boolean javascriptDebugEnabled;
 
     private static Configuration c;
@@ -241,7 +240,6 @@ public class Aksess {
 
             htmlVersion = c.getString("html.version", HTMLVersion.HTML_401_TRANS);
 
-            jQueryVersion = c.getString("jquery.version", "1.3.2");
             javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
 
             databaseCacheTimeout = c.getInt("database.cache.timeout", -1);
@@ -500,14 +498,6 @@ public class Aksess {
 
     public static String getHtmlVersion() {
         return htmlVersion;
-    }
-
-    public static void setJQueryVersion(String jQueryVersion) {
-        Aksess.jQueryVersion = jQueryVersion;
-    }
-
-    public static String getJQueryVersion() {
-        return jQueryVersion;
     }
 
     public static boolean isJavascriptDebugEnabled() {
