@@ -75,5 +75,5 @@
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=categoryId%>">
-    <input type="text" class="inputGrey inputFullWidth" readonly onFocus="this.blur()"  name="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="text" class="disabled fullWidth" readonly onFocus="this.blur()"  name="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
 </div>

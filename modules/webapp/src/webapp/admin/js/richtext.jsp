@@ -747,6 +747,6 @@ function rtReplace(editorId) {
 
     focusField = editor;
 
-    var replacewin = window.open("../popups/replacetext.jsp?refresh=" + getRefresh(), "replaceWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
+    var replacewin = window.open("../popups/ReplaceText.action?refresh=" + getRefresh(), "replaceWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
     replacewin.focus();
 }

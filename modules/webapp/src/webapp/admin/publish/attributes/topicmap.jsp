@@ -33,7 +33,7 @@
     String value = attribute.getValue();
 
     List topicMaps = attribute.getTopicMaps();
-    out.write("<select class=\"inputFullWidth\"");
+    out.write("<select class=\"fullWidth\"");
     out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
     out.write(" name=\"" + fieldName + "\">");
     for (int i = 0; i < topicMaps.size(); i++) {

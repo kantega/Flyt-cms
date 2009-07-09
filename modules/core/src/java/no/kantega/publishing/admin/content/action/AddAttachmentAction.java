@@ -24,6 +24,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -34,30 +36,28 @@ import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class AddAttachmentAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteAttachmentAction";
+public class AddAttachmentAction implements Controller {
+    String formView;
+    String confirmView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
-
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute("currentContent");
 
-        try {
+        int attachmentId   = param.getInt("attachmentId");
+        boolean insertLink = param.getBoolean("insertLink");
+
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("refresh", new Date().getTime());
+        model.put("insertlink", insertLink);
+
+        if (request.getMethod().equalsIgnoreCase("POST")) {
             ContentManagementService aksessService = new ContentManagementService(request);
-            
-            int attachmentId   = param.getInt("attachmentId");
-            boolean insertLink = param.getBoolean("insertLink");
 
             MultipartFile file = param.getFile("attachment");
             if (file != null && content != null) {
@@ -88,15 +88,30 @@ public class AddAttachmentAction extends HttpServlet {
                     session.setAttribute("currentContent", content);
                 }
             }
-            response.sendRedirect("attachmentconfirm.jsp?attachmentId=" + attachmentId + "&insertLink=" + insertLink + "&refresh=" + new Date().getTime());
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);            
-
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+            model.put("attachmentId", attachmentId);
+            return new ModelAndView(confirmView, model);
+        } else {
+            if (attachmentId != -1) {
+                model.put("attachmentId", attachmentId);
+            }
+            return new ModelAndView(formView, model);
         }
+    }
+
+    public String getFormView() {
+        return formView;
+    }
+
+    public void setFormView(String formView) {
+        this.formView = formView;
+    }
+
+    public String getConfirmView() {
+        return confirmView;
+    }
+
+    public void setConfirmView(String confirmView) {
+        this.confirmView = confirmView;
     }
 }
 

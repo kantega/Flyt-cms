@@ -53,7 +53,7 @@
     %>><%
         } else {
     %>
-    <textarea rows="<%=rows%>" cols="72" class="inputFullWidth" wrap="soft" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
+    <textarea rows="<%=rows%>" cols="72" class="fullWidth" wrap="soft" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
  <%
     }
  %>

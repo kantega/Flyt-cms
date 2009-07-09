@@ -56,7 +56,7 @@
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <input type="text" name="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="inputFullWidth">
+    <input type="text" name="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="fullWidth">
     <script type="text/javascript">
         Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchContentAsXML.action', 'minChars' :3 });
     </script>

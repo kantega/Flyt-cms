@@ -79,7 +79,7 @@
             out.write("</table>");
             out.write("</div>");
         } else {
-            out.write("<select class=\"inputFullWidth\"");
+            out.write("<select class=\"fullWidth\"");
             out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
             out.write(" name=\"" + fieldName + "\">");
             if (options != null) {

@@ -32,46 +32,6 @@
 <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
 <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
-<style type="text/css">
-    #MainContent {
-        width: 1000px;
-        float: left;
-    }
-
-    #MainPane {
-        width: 600px;
-        float: left;
-    }
-
-    #PaneSeperator {
-        width: 10px;
-        float: left;
-    }
-
-    #PropertiesPane {
-        float: right;
-    }
-
-    #PropertiesPane label {
-        display: inline;
-    }
-
-    #PublishTabs {
-        height: 21px;
-        float:left;
-    }
-
-    #PublishTabs .tab {
-        height: 21px;
-        float:left;
-    }
-
-    #PublishButtons {
-        height: 40px;
-        clear: both;
-    }
-</style>
-
 <script type="text/javascript">
 function gotoTab(action) {
     document.myform.elements['action'].value = action;
@@ -80,24 +40,24 @@ function gotoTab(action) {
 </script>
 
 <body onLoad="initialize()" class="bodyWithMargin">
-    <div id="MainContent">
+    <div id="EditContentMain">
 
-        <div id="MainPane">
-            <div id="PublishTabs">
-                <div class="tab" id="PublishPreview">
+        <div id="EditContentMainPane">
+            <div id="EditContentTabs">
+                <div class="editContentTab" id="PublishPreview">
                     <a href="Javascript:gotoTab('Preview.action')">Preview</a>
                 </div>
-                <div class="tab" id="PublishContent">
+                <div class="editContentTab" id="PublishContent">
                     <a href="Javascript:gotoTab('SaveContent.action')">Content</a>
                 </div>
-                <div class="tab" id="PublishMetadata">
+                <div class="editContentTab" id="PublishMetadata">
                     <a href="Javascript:gotoTab('SaveMetadata.action')">Metadata</a>
                 </div>
-                <div class="tab" id="PublishAttachments">
+                <div class="editContentTab" id="PublishAttachments">
                     <a href="Javascript:gotoTab('SaveAttachments.action')">Attachments</a>
                 </div>
             </div>
-            <div id="PublishButtons">
+            <div id="EditContentButtons">
                 <c:choose>
                     <c:when test="${canPublish}">
                         <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><kantega:label key="aksess.button.publiser"/></a>
@@ -110,16 +70,16 @@ function gotoTab(action) {
                 <c:if test="${hearingEnabled}">
                     <a href="Javascript:saveContent(<%=ContentStatus.HEARING%>)" class="button hearing"><kantega:label key="aksess.button.hoering"/></a>
                 </c:if>
-                <a href="CancelEdit.action" class="button-cancel"><kantega:label key="aksess.button.avbryt"/></a>
+                <a href="CancelEdit.action" class="button cancel"><kantega:label key="aksess.button.avbryt"/></a>
             </div>
-            <div id="ContentPane">
+            <div id="EditContentPane">
                 <kantega:getsection id="content"/>
             </div>
         </div>
 
-        <div id="PaneSeperator"></div>
+        <div id="EditContentPaneSeperator"></div>
         
-        <div id="PropertiesPane">
+        <div id="EditContentPropertiesPane">
             <%@ include file="../publish/include/publishproperties.jsp" %>
         </div>
     </div>

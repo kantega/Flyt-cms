@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
                  no.kantega.commons.util.URLHelper"%>
-<%@ include file="../include/jsp_header.jsf" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -23,14 +22,8 @@
     int id = param.getInt("attachmentId");
     boolean insertLink = param.getBoolean("insertLink");
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-
-<html>
-<head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
-</head>
-<script language="Javascript">
+<kantega:section id="script">
+<script language="Javascript" type="text/javascript">
     if (window.opener) {
         <%
             if (insertLink) {
@@ -47,7 +40,5 @@
         window.close();
     }
 </script>
-<body class="bodyWithMargin">
-</body>
-</html>
-<%@ include file="../include/jsp_footer.jsf" %>
+</kantega:section>
+<%@ include file="../../design/popup.jsp" %>

@@ -17,7 +17,9 @@ a {
     clear: both;
 }
 
-
+input.disabled {
+    background-color: #eeeeed;
+}
 
 /************** Layout **************/
 #Top {}
@@ -407,4 +409,87 @@ a {
     border-top: solid 1px #cccccc;
 }
 
-/* Publish - content attributes */
+/************** Info / error boxes **************/
+.helpText {
+    background-color:#ffffe1;
+    border:1px solid #000000;
+    color:#000000;
+    margin: 4px 0;
+    padding:4px;
+}
+
+/************** Edit content **************/
+#EditContentMain {
+    float: left;
+}
+
+#EditContentMainPane {
+    float: left;
+}
+
+#EditContentPaneSeperator {
+    margin-left: 10px;
+    background-color: #cccccc;
+    width: 10px;
+    float: left;
+    height: 100%;
+}
+
+
+#EditContentPropertiesPane {
+    width: 250px;
+    float: left;
+}
+
+#PropertiesPane label {
+    display: inline;
+}
+
+#EditContentTabs {
+    height: 21px;
+    float:left;
+}
+
+#EditContentTabs .editContentTab {
+    background-color: #ff0000;
+    margin-left: 30px;
+    height: 21px;
+    float:left;
+}
+
+#EditContentButtons {
+    height: 40px;
+    clear: both;
+    text-align: right;
+}
+
+#EditContentButtons .button {
+    background-color: #00ff00;
+}
+
+#EditContentPane {
+    margin-left: 10px;
+}
+
+/************** Edit content - attributes **************/
+.contentAttribute {
+    width: 600px;
+    margin-bottom: 14px;
+}
+
+.contentAttribute .heading {
+    font-weight: bold;
+    float: left;
+}
+
+.contentAttribute .buttonGroup {
+    float: left;
+}
+
+.contentAttribute .inputs {
+    clear: both;
+}
+
+.fullWidth {
+    width: 100%;
+}

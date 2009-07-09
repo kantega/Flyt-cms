@@ -31,6 +31,6 @@
 </div>
 <%}%>
 <div class="inputs">
-    <input type="file" class="inputFullWidth" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="file" class="fullWidth" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
     <input type="hidden" name="delete_<%=fieldName%>" value="0">
 </div>

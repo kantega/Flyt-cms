@@ -50,7 +50,7 @@
     }
 
     function updateAttachment(id) {
-        var attwin = window.open("../popups/attachment.jsp?attachmentId=" + id, "attachmentWindow", "dependent,toolbar=no,width=310,height=130,resizable=no,scrollbars=no");
+        var attwin = window.open("popups/AddAttachment.action?attachmentId=" + id, "attachmentWindow", "dependent,toolbar=no,width=310,height=130,resizable=no,scrollbars=no");
         attwin.focus();
     }
 

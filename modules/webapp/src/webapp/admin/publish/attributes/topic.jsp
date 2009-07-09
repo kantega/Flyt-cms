@@ -43,5 +43,5 @@
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <input type="text" class="inputGrey inputFullWidth" name="<%=fieldName%>text" value="<%=topicname%>" readonly onFocus="this.blur()">
+    <input type="text" class="disabled fullWidth" name="<%=fieldName%>text" value="<%=topicname%>" readonly onFocus="this.blur()">
 </div>

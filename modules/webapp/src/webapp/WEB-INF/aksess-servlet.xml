@@ -90,6 +90,7 @@
         <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
         <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
         <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+        <prop key="/admin/popups/ReplaceText.action">ReplaceTextAction</prop>
         <prop key="/admin/publish/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
         <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
         <prop key="/ajax/SearchContentAsXML.action">SearchContentAsXMLAction</prop>
@@ -224,14 +225,6 @@
   </bean>
 
     
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AddAttachmentAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.AddAttachmentAction</value>
-    </property>
-    <property name="servletName">
-      <value>AddAttachmentAction</value>
-    </property>
-  </bean>
   <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AddContentTopicAction">
     <property name="servletClass">
@@ -342,6 +335,17 @@
   </bean>
   -->
   <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
+
+  <!-- Edit content - popups -->
+  <bean class="no.kantega.publishing.admin.content.action.AddAttachmentAction" id="AddAttachmentAction">
+      <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
+      <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
+  </bean>
+  <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="ReplaceTextAction">
+      <property name="view" value="/WEB-INF/jsp/admin/publish/popups/replacetext.jsp"/>
+  </bean>
+
+
 
   <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
   <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>

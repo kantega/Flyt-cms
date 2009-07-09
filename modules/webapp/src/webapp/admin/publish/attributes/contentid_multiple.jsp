@@ -39,7 +39,7 @@
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <select name="<%=fieldName%>list" size="10" class="inputFullWidth">
+    <select name="<%=fieldName%>list" size="10" class="fullWidth">
         <%
             if (value != null && value.length() > 0) {
                 int ids[] = StringHelper.getInts(value, ",");

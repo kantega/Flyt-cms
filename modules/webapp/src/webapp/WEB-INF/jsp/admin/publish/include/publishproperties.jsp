@@ -42,7 +42,7 @@
     }
 </script>
 
-<div id="PropertiesPane">
+<div id="ContentPropertiesPane">
     <c:if test="${!isStartPage}">
     <div class="PropertyPane">
         <fieldset>

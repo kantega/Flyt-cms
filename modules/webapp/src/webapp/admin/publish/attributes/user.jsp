@@ -52,7 +52,7 @@
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
     <script type="text/javascript">
         Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchUsersAsXML.action', 'minChars' :3 });
     </script>

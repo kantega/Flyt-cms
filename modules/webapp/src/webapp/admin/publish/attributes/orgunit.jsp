@@ -59,14 +59,14 @@
         if (manager != null) {
     %>
             <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-            <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+            <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
             <script type="text/javascript">
                 Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
             </script>
     <%
         } else {
     %>
-            <input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+            <input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
     <%
         }
     %>

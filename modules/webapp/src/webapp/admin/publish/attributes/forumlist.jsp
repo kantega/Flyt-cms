@@ -22,7 +22,7 @@
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
-    <select name="<%=fieldName%>" class="inputFullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <select name="<%=fieldName%>" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
         <option value="-1"><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>
         <%=attribute.getForumListAsString()%>
     </select>

@@ -374,7 +374,7 @@ function addAnchors() {
                 %>
                 </select>
                 </td>
-                <td align="right"><a href="attachment.jsp?insertLink=true" class="button"><kantega:label key="aksess.button.nyfil"/></a></td>
+                <td align="right"><a href="AddAttachment.action?insertLink=true" class="button"><kantega:label key="aksess.button.nyfil"/></a></td>
             </tr>
         </table>
         <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_multimedia" style="display:none;">

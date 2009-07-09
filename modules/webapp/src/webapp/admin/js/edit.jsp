@@ -122,16 +122,6 @@ function selectContent(formElement, maxItems) {
 
 
 /*
- *  Popup window for date
- */
-function selectDate(formElement) {
-    focusField = formElement;
-    doInsertTag = false;
-    var calwin = window.open("../popups/calendar.jsp?refresh=" + getRefresh(), "calWindow", "toolbar=no,width=300,height=200,resizable=yes,scrollbars=yes");
-    calwin.focus();
-}
-
-/*
  *  Popup window for selecting a user
  */
 function selectUser(formElement) {

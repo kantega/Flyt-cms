@@ -101,7 +101,7 @@
                     <div class="contentAttribute">
                         <div class="heading"><kantega:label key="aksess.editmetadata.doctype"/></div>
                         <div class="inputs">
-                            <select name="documenttype" class="inputFullWidth" tabindex="10">
+                            <select name="documenttype" class="fullWidth" tabindex="10">
                                 <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
                                 <c:forEach var="dt" items="${documentTypes}">
                                     <option value="${dt.id}" <c:if test="${dt.id == currentContent.documentTypeId}">selected</c:if>>${dt.name}</option>
@@ -113,7 +113,7 @@
                     <div class="contentAttribute">
                         <div class="heading"><kantega:label key="aksess.editmetadata.doctypeforchildren"/></div>
                         <div class="inputs">
-                            <select name="documenttype" class="inputFullWidth" tabindex="10">
+                            <select name="documenttype" class="fullWidth" tabindex="10">
                                 <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
                                 <c:forEach var="dt" items="${documentTypes}">
                                     <option value="${dt.id}" <c:if test="${dt.id == currentContent.documentTypeIdForChildren}">selected</c:if>>${dt.name}</option>
@@ -126,7 +126,7 @@
                     <div class="contentAttribute">
                         <div class="heading"><kantega:label key="aksess.editmetadata.alttitle"/></div>
                         <div class="inputs">
-                            <input type="text" name="alttitle" size="72" class="inputFullWidth" value="<c:out value="${currentContent.altTitle}"/>" maxlength="255" tabindex="20">
+                            <input type="text" name="alttitle" size="72" class="fullWidth" value="<c:out value="${currentContent.altTitle}"/>" maxlength="255" tabindex="20">
                          </div>
                     </div>
 
@@ -165,7 +165,7 @@
                     <div class="contentAttribute">
                         <div class="heading"><kantega:label key="aksess.editmetadata.language"/></div>
                         <div class="inputs">
-                            <select name="language" class="inputFullWidth" tabindex="60">
+                            <select name="language" class="fullWidth" tabindex="60">
                             <%
                                 int[] languages = Language.getLanguages();
                                 for (int i = 0; i < languages.length; i++) {

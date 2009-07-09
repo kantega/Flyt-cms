@@ -36,9 +36,9 @@
         <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.flyttned"/></a>
     </c:if>
 </div>
-<div>
+<div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <select name="<%=fieldName%>list" class="inputFullWidth" size="6">
+    <select name="<%=fieldName%>list" class="fullWidth" size="6">
         <%
             if (value != null && value.length() > 0) {
                 String[] ids = value.split(",");

@@ -45,7 +45,7 @@
 %>
 <div class="inputs">
         <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-        <select name="<%=fieldName%>list" class="inputFullWidth" size="6">
+        <select name="<%=fieldName%>list" class="fullWidth" size="6">
         <%
             if (value != null && value.length() > 0) {
                 String[] ids = value.split(",");
