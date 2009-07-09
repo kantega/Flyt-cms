@@ -533,6 +533,46 @@ var Publish =  {
 
 
 
+/********************************************************************************
+ * Search
+ ********************************************************************************/
+ $(document).ready(function(){
+     bindSearchInput();
+ });
+
+function bindSearchInput() {
+    $(".search input:submit").click(function(){
+        $(this).siblings("input:text").each(function(){
+            var textInput = $(this);
+            if (textInput.hasClass("query")) {
+                var query = textInput.val();
+                if (Search.inputValid(query)) {
+                    if(textInput.hasClass("content")) {
+                        Search.content(query);
+                    } else if (textInput.hasClass("multimedia")) {
+                        Search.multimedia(query);
+                    }
+                }
+            }
+        });
+    });
+}
+
+var Search = {
+    content : function(query){
+        debug("Search.content(): query: " + query);
+    },
+
+    multimedia : function(query) {
+        debug("Search.multimedia(): query: " + query);
+    },
+
+    inputValid : function(query){
+        debug("Search.inputValid(): query: " + query);
+        //TODO: Validate search input
+        return true;
+    }
+};
 
 
 

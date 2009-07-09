@@ -71,8 +71,10 @@
             <a href="#" class="button last"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
         </div>
         <div class="buttonGroup search">
-            <input type="text" name="q">
-            <input type="submit" value="" title="<kantega:label key="aksess.search.submit"/>">
+            <form action="" method="get">
+                <input type="text" class="query content" name="query content">
+                <input type="submit" value="" title="<kantega:label key="aksess.search.submit"/>">
+            </form>
         </div>
     </div>
     <div id="ToolsMenu">
