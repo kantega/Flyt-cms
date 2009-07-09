@@ -182,38 +182,39 @@ a {
     line-height: 25px;
     display: inline-block;
     height: 25px;
-    margin-right: 10px;
     background: url("../bitmaps/default/framework/tools_btn_separator.png") right center no-repeat;
 }
 #ToolsMenu .button span {
     display: inline-block;
-    padding-left: 20px;
+    padding-left: 30px;
     padding-right:10px;
     line-height: 25px;
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
 }
 #ToolsMenu .button .newSubpage {
-    background: url("../bitmaps/default/framework/tools_icon_newsubpage.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_newsubpage.png");
 }
 #ToolsMenu .button .edit{
-    background: url("../bitmaps/default/framework/tools_icon_edit.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_edit.png");
 }
 #ToolsMenu .button .delete{
-    background: url("../bitmaps/default/framework/tools_icon_delete.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_delete.png");
 }
 #ToolsMenu .button .cut {
-    background: url("../bitmaps/default/framework/tools_icon_copy.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_copy.png");
 }
 #ToolsMenu .button .copy {
-    background: url("../bitmaps/default/framework/tools_icon_copy.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_copy.png");
 }
 #ToolsMenu .button .paste {
-    background: url("../bitmaps/default/framework/tools_icon_paste.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_paste.png");
 }
 #ToolsMenu .button .displayPeriod {
-    background: url("../bitmaps/default/framework/tools_icon_displayperiod.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_displayperiod.png");
 }
 #ToolsMenu .button .privileges {
-    background: url("../bitmaps/default/framework/tools_icon_privileges.png") left center no-repeat;
+    background-image: url("../bitmaps/default/framework/tools_icon_privileges.png");
 }
 
 /************** Navigation (left column) **************/
@@ -317,31 +318,31 @@ a {
     background-image: url("../bitmaps/common/navigator/root.png");
 }
 .navigator .icon .waiting{
-    background-image: url("../bitmaps/common/navigator/waiting.gif");
+    background-image: url("../bitmaps/common/navigator/waiting.png");
 }
 .navigator .icon .expired {
-    background-image: url("../bitmaps/common/navigator/expired.gif");
+    background-image: url("../bitmaps/common/navigator/expired.png");
 }
 .navigator .icon .shortcut {
-    background-image: url("../bitmaps/common/navigator/shortcut.gif");
+    background-image: url("../bitmaps/common/navigator/shortcut.png");
 }
 .navigator .icon .link {
-    background-image: url("../bitmaps/common/navigator/link.gif");
+    background-image: url("../bitmaps/common/navigator/link.png");
 }
 .navigator .icon .file {
-    background-image: url("../bitmaps/common/navigator/file.gif");
+    background-image: url("../bitmaps/common/navigator/file.png");
 }
 .navigator .icon .page {
     background-image: url("../bitmaps/common/navigator/page.png");
 }
 .navigator .icon .link-draft {
-    background-image: url("../bitmaps/common/navigator/link_draft.gif");
+    background-image: url("../bitmaps/common/navigator/link_draft.png");
 }
 .navigator .icon .file-draft {
-    background-image: url("../bitmaps/common/navigator/file_draft.gif");
+    background-image: url("../bitmaps/common/navigator/file.png");
 }
 .navigator .icon .page-draft {
-    background-image: url("../bitmaps/common/navigator/page_draft.gif");
+    background-image: url("../bitmaps/common/navigator/page_draft.png");
 }
 .navigator .title {
 }

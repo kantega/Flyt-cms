@@ -49,7 +49,7 @@
 
 <div id="Top">
     <div id="TopMenu">
-        <a class="logo" href="javascript:alert('not yet implemented');" title="<kantega:label key="aksess.title"/>"></a>
+        <a class="logo" href="javascript:alert('not yet implemented');" title="<kantega:label key="aksess.title"/>">&nbsp;</a>
         <a href="#" class="menuitem"><kantega:label key="aksess.menu.mypage"/></a>
         <a href="#" class="menuitem"><kantega:label key="aksess.menu.administration"/></a>
         <a href="#" class="menuitem selected"><kantega:label key="aksess.menu.publish"/></a>
@@ -132,6 +132,9 @@
     <li class="newSubpage separator">
         <a href="#newSubpage">New subpage</a>
     </li>
+    <li class="edit">
+        <a href="#edit">Edit</a>
+    </li>
     <li class="delete">
         <a href="#delete">Delete</a>
     </li>
@@ -158,6 +161,9 @@
     </li>
     <li class="openInNewWindow">
         <a href="#openInNewWindow">Open in new window</a>
+    </li>
+    <li class="edit separator">
+        <a href="#edit">Edit</a>
     </li>
      <li class="delete">
         <a href="#delete">Delete</a>

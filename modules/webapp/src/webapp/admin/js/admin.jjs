@@ -17,7 +17,13 @@
  * limitations under the License.
  */
 
+
+/********************************************************************************
+ * Global functions
+ ********************************************************************************/
+
 var suppressNavigatorUpdate = false;
+var currentUrl = "";
 
 /**
  * Global load action
@@ -46,7 +52,7 @@ function setWinowSize() {
         var framesplitWidth = $("#Framesplit").width();
         debug("setWindowSize(): topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
 
-        $("#Navigator").css('height', ($(window).height()-topHeight-filteroptionsHeight-5) + 'px' )
+        $("#Navigator").css('height', ($(window).height()-topHeight-filteroptionsHeight-5) + 'px');
         $('#Content').css('height', ($(window).height()-topHeight-statusbarHeight) + 'px');
         $('#Content iframe').css('height', ($(window).height()-topHeight-statusbarHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
     });
@@ -57,7 +63,7 @@ function setWinowSize() {
  * New global listeners to this event should be added here.
  */
 function bindContentupdateEvents() {
-    //Enables the navigator to listen to contentupdate events
+    //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("contentupdate", function(e, url){
         debug("bindContentupdateEvents(): contentupdate event received");
         if (!suppressNavigatorUpdate) {
@@ -92,6 +98,7 @@ function setContentupdateTrigger() {
                 //TODO: Handle
             }
         });
+        currentUrl = currentContent;
         $.event.trigger("contentupdate",[currentContent]);
     });
 }
@@ -131,8 +138,12 @@ function updateContentFrame(url, suppressNavigatorUpdate) {
 }
 
 
+/********************************************************************************
+ * Navigator
+ *
+ * Functions and actions related to the navitator
+ ********************************************************************************/
 
-/***** Navigator *****/
 
 /**
  * Navigator actions
@@ -283,28 +294,37 @@ function setContextMenu(type, disabledOptions) {
  */
 function handleContextMenuClick_page(action, href) {
     debug("handleContextMenuClick_page(): action: " + action + ", href: " + href);
+    var thisId = getQueryParam("thisId", href);
     switch (action) {
         case 'open':
-            updateContentFrame(getContentUrlFromNavigatorHref(href), false);
+            Publish.open(thisId);
             break;
         case 'openInNewWindow':
-            window.open(getContentUrlFromNavigatorHref(href));
+            Publish.openInNewWindow(thisId);
             break;
         case 'newSubpage':
+            Publish.newSubpage(thisId);
+            break;
+        case 'edit':
+            Publish.edit(thisId);
             break;
         case 'delete':
+            Publish.deleteItem(thisId);
             break;
         case 'cut':
+            Publish.cut(thisId);
             break;
         case 'copy':
-            $("#ContextMenu-Page").enableContextMenuItems("#paste");
+            Publish.copy(thisId);
             break;
         case 'paste':
-            $("#ContextMenu-Page").disableContextMenuItems("#paste, #pasteAsShortcut");
+            Publish.paste(thisId);
             break;
         case 'pasteAsShortcut':
+            Publish.pasteAsShortcut(thisId);
             break;
         case 'managePrivileges':
+            Publish.managePrivileges(thisId);
             break;
     }
 }
@@ -317,26 +337,34 @@ function handleContextMenuClick_page(action, href) {
  */
 function handleContextMenuClick_link(action, href) {
     debug("handleContextMenuClick_link(): " + action + ", href: " + href);
+    var thisId = getQueryParam("thisId", href);
     switch (action) {
         case 'open':
-            updateContentFrame(getContentUrlFromNavigatorHref(href), false);
+            Publish.open(thisId);
             break;
         case 'openInNewWindow':
-            window.open(getContentUrlFromNavigatorHref(href));
+            Publish.openInNewWindow(thisId);
+            break;
+        case 'edit':
+            Publish.edit(thisId);
             break;
         case 'delete':
+            Publish.deleteItem(thisId);
             break;
         case 'cut':
+            Publish.cut(thisId);
             break;
         case 'copy':
-            $("#ContextMenu-Page").enableContextMenuItems("#paste");
+            Publish.copy(thisId);
             break;
         case 'paste':
-            $("#ContextMenu-Page").disableContextMenuItems("#paste, #pasteAsShortcut");
+            Publish.paste(thisId);
             break;
         case 'pasteAsShortcut':
+            Publish.pasteAsShortcut(thisId);
             break;
         case 'managePrivileges':
+            Publish.managePrivileges(thisId);
             break;
     }
 }
@@ -405,7 +433,115 @@ function setFolderClosed(id) {
 
 
 
-/**** Common *****/
+/********************************************************************************
+ * Publish tools
+ *
+ * These are actions associated with the publish view.
+ ********************************************************************************/
+$(document).ready(function(){
+    bindToolButtons();
+});
+
+/**
+ * Registers click event actions to each tool
+ */
+function bindToolButtons() {
+    $("#ToolsMenu .button .newSubpage").click(function(){
+        Publish.newSubpage(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .edit").click(function(){
+        Publish.edit(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .delete").click(function(){
+        Publish.deleteItem(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .cut").click(function(){
+        Publish.cut(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .copy").click(function(){
+        Publish.copy(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .paste").click(function(){
+        Publish.paste(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .displayPeriod").click(function(){
+        Publish.displayPeriod(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .privileges").click(function(){
+        Publish.managePrivileges(getQueryParam("thisId", currentUrl));
+    });
+}
+
+
+/**
+ * Actions associated with each tool.
+ */
+var Publish =  {
+    open : function(thisId) {
+        debug("Publish.open(): thisId: " + thisId);
+        updateContentFrame(getContentUrlFromAssociationId(thisId), false);
+    },
+
+    openInNewWindow : function(thisId) {
+        debug("Publish.openInNewWindow(): thisId: " + thisId);
+        window.open(getContentUrlFromAssociationId(thisId));
+    },
+
+    newSubpage : function(thisId) {
+        debug("Publish.newSubpage(): thisId: " + thisId);
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/AddContentAction.action?thisId="+thisId;
+    },
+
+    edit: function(thisId) {
+        debug("Publish.editItem(): thisId: " + thisId);
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/EditContentAction.action?thisId="+thisId;
+    },
+
+    deleteItem: function(thisId) {
+        debug("Publish.deleteItem(): thisId: " + thisId);
+    },
+
+    cut: function(thisId) {
+        debug("Publish.cut(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    copy: function(thisId) {
+        debug("Publish.copy(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    paste: function(thisId) {
+        debug("Publish.paste(): thisId: " + thisId);
+        $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    pasteAsShortcut: function(thisId) {
+        debug("Publish.pasteAsShortcut(): thisId: " + thisId);
+        $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    displayPeriod: function(thisId) {
+        debug("Publish.displayPeriod(): thisId: " + thisId);
+    },
+
+    managePrivileges: function(thisId) {
+        debug("Publish.managePrivileges(): thisId: " + thisId);
+    }
+};
+
+
+
+
+
+
+
+
+
+
+/********************************************************************************
+ * Common functions
+ ********************************************************************************/
 
 /**
  * Returns the value of a query string parameter
