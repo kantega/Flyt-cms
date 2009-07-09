@@ -13,14 +13,19 @@ a {
 input[type=submit] {
     cursor: pointer;
 }
+
+input.disabled {
+    background-color: #eeeeed;
+}
+
 /************** General classes **************/
 
 .clearing {
     clear: both;
 }
 
-input.disabled {
-    background-color: #eeeeed;
+.supportMenu {
+    float: right;
 }
 
 /************** Layout **************/
@@ -245,11 +250,13 @@ input.disabled {
 
 /************** Content frame (right column) **************/
 #ContentFrame .statusbar {
+    height: 22px;
     line-height: 22px;
     background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
     padding: 0 10px;
 }
 #ContentFrame .statusbar .breadcrumbs {
+    float: left;
     margin: 0;
     padding: 0;
 }
@@ -260,8 +267,24 @@ input.disabled {
 }
 #ContentFrame .statusbar .breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
-    background: url("../bitmaps/common/navigator/root.png") left center no-repeat;
+    background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
     padding-left: 18px;
+}
+#ContentFrame .statusbar .supportMenu a {
+    display: block;
+    float: left;
+    height: 22px;
+    padding-left: 20px;
+    margin-left: 20px;
+}
+#ContentFrame .statusbar .supportMenu a.brokenLink {
+    background: url("../bitmaps/default/framework/contentstatus_broken_link.png") left center no-repeat;
+}
+#ContentFrame .statusbar .supportMenu a.crossPublish {
+    background: url("../bitmaps/default/framework/contentstatus_cross_publish.png") left center no-repeat;
+}
+#ContentFrame .statusbar .supportMenu a.details {
+    background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
 }
 
 /************** Navigator **************/
@@ -494,4 +517,15 @@ input.disabled {
 
 .fullWidth {
     width: 100%;
+}
+
+/************** Search results **************/
+#SearchResults {
+    position: absolute;
+    top: 22px;/*Satusbar height*/
+    width: 100%;
+    background: #cccccc;
+    display: none;
+    min-height: 100px;
+
 }

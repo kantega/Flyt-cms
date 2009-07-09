@@ -541,7 +541,8 @@ var Publish =  {
  });
 
 function bindSearchInput() {
-    $(".search input:submit").click(function(){
+    $(".search input:submit").click(function(e){
+        e.preventDefault();//Preventing the form from being subitted the ordinary way.
         $(this).siblings("input:text").each(function(){
             var textInput = $(this);
             if (textInput.hasClass("query")) {
@@ -561,6 +562,14 @@ function bindSearchInput() {
 var Search = {
     content : function(query){
         debug("Search.content(): query: " + query);
+        //TODO: Implement properly. Fetch search results with ajax.
+        var searchResults = $("<div/>").attr("id", "SearchResults").html("<p>You searched: " + query + "</p>").slideDown("slow");
+        $("#ContentFrame").append(searchResults);
+        var closeLink = $("<a>").addClass("close").attr("href", "#").html("Close");
+        closeLink.click(function(){
+            $(this).parent().slideUp("slow");
+        });
+        searchResults.append(closeLink);
     },
 
     multimedia : function(query) {

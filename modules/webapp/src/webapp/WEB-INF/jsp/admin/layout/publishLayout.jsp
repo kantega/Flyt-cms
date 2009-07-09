@@ -17,29 +17,41 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-    <title><kantega:label key="aksess.edit.title"/></title>
-    <link rel="stylesheet" type="text/css" href="../css/default.css">
+
+
+
+<kantega:section id="head">
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
-</head>
-<script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
-<script type="text/javascript" language="Javascript" src="../js/common.js"></script>
-<script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
-<script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
-<script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
-<script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
-<script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
+    <script type="text/javascript" language="Javascript" src="../js/common.js"></script>
+    <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
+    <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
-<script type="text/javascript">
-function gotoTab(action) {
-    document.myform.elements['action'].value = action;
-    saveContent("");
-}
-</script>
+    <script type="text/javascript">
+    function gotoTab(action) {
+        document.myform.elements['action'].value = action;
+        saveContent("");
+    }
+    </script>
+</kantega:section>
 
-<body onLoad="initialize()" class="bodyWithMargin">
+<kantega:section id="topMenu">
+    <%@include file="fragments/topMenu.jsp"%>
+</kantega:section>
+
+<kantega:section id="modesMenu">
+    <%@include file="fragments/publishModesMenu.jsp"%>
+</kantega:section>
+
+<kantega:section id="toolsMenu">
+ 
+</kantega:section>
+
+<kantega:section id="body">
+
     <div id="EditContentMain">
 
         <div id="EditContentMainPane">
@@ -83,5 +95,6 @@ function gotoTab(action) {
             <%@ include file="../publish/include/publishproperties.jsp" %>
         </div>
     </div>
-</body>
-</html>
+</kantega:section>
+
+<%@include file="commonLayout.jsp"%>

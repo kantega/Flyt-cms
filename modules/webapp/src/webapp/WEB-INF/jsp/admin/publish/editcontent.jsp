@@ -20,6 +20,10 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title">
+    <kantega:label key="aksess.edit.title"/>
+</kantega:section>
+
 <kantega:section id="content">
 <%
     InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.CONTENT_DATA);
@@ -66,4 +70,4 @@
     <input type="hidden" name="isModified" value="${currentContent.modified}">
 </form>
 </kantega:section>
-<%@ include file="../design/publish.jsp" %>
+<%@ include file="../layout/publishLayout.jsp" %>

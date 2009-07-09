@@ -76,4 +76,4 @@
     </form>
     </div>
 </kantega:section>
-<%@ include file="../../design/popup.jsp" %>
+<%@ include file="../../layout/popupLayout.jsp" %>
