@@ -19,6 +19,7 @@ package no.kantega.publishing.admin.util;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.commons.util.StringHelper;
 
 /**
  * Helper class for extracting properties associated with navigator menu items.
@@ -141,5 +142,42 @@ public class NavigatorUtil {
         } else {
             return "page";
         }
+    }
+
+       /**
+     * Get a list of open folders. If "expand" parameter is set, path to select Content object will be added to list.
+     * @param expand
+     * @param path - path to current selected object
+     * @return - Comma separated list of open folders
+     */
+    public static String getOpenFolders(boolean expand, String openFoldersList, String path) {
+
+
+        // Liste med åpne foldere
+        int[] openFolders = StringHelper.getInts(openFoldersList, ",");
+
+        if (expand && path != null) {
+            // Vi må legge til id'er slik at treet åpnes og viser denne...
+
+            if (path.length() > 1) {
+                int pathIds[] = StringHelper.getInts(path, "/");
+                if (pathIds != null) {
+                    for (int pId : pathIds) {
+                        boolean exists = false;
+                        for (int openFolder : openFolders) {
+                            if (pId == openFolder) {
+                                exists = true;
+                                break;
+                            }
+                        }
+                        if (!exists) {
+                            openFoldersList += "," + pId;
+                        }
+                    }
+                }
+            }
+        }
+
+        return openFoldersList;
     }
 }

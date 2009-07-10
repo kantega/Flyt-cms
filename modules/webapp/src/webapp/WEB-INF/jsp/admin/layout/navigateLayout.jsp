@@ -14,6 +14,10 @@
 ~ limitations under the License.
 --%>
 
+<kantega:section id="head">
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/content.jjs"></script>
+</kantega:section>
+
 <kantega:section id="topMenu">
     <%@include file="fragments/topMenu.jsp"%>
 </kantega:section>

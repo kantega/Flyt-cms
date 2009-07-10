@@ -80,14 +80,14 @@ input.disabled {
     background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
 }
 
-#ContentFrame {
+#MainPane {
     float: left;
     position: relative;
     width: auto;
     height: 100%;
     background: #A0A0A0;
 }
-#ContentFrame iframe {
+#MainPane iframe {
     border: none;
 }
 
@@ -249,41 +249,41 @@ input.disabled {
 
 
 /************** Content frame (right column) **************/
-#ContentFrame .statusbar {
+#MainPane .statusbar {
     height: 22px;
     line-height: 22px;
     background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
     padding: 0 10px;
 }
-#ContentFrame .statusbar .breadcrumbs {
+#MainPane .statusbar .breadcrumbs {
     float: left;
     margin: 0;
     padding: 0;
 }
-#ContentFrame .statusbar .breadcrumbs li {
+#MainPane .statusbar .breadcrumbs li {
     display: inline;
     background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
     padding-left: 12px;
 }
-#ContentFrame .statusbar .breadcrumbs li:first-child {
+#MainPane .statusbar .breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
     background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
     padding-left: 18px;
 }
-#ContentFrame .statusbar .supportMenu a {
+#MainPane .statusbar .supportMenu a {
     display: block;
     float: left;
     height: 22px;
     padding-left: 20px;
     margin-left: 20px;
 }
-#ContentFrame .statusbar .supportMenu a.brokenLink {
+#MainPane .statusbar .supportMenu a.brokenLink {
     background: url("../bitmaps/default/framework/contentstatus_broken_link.png") left center no-repeat;
 }
-#ContentFrame .statusbar .supportMenu a.crossPublish {
+#MainPane .statusbar .supportMenu a.crossPublish {
     background: url("../bitmaps/default/framework/contentstatus_cross_publish.png") left center no-repeat;
 }
-#ContentFrame .statusbar .supportMenu a.details {
+#MainPane .statusbar .supportMenu a.details {
     background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
 }
 
@@ -452,7 +452,7 @@ input.disabled {
     float: left;
 }
 
-#EditContentPaneSeperator {
+#EditMainPaneSeperator {
     margin-left: 10px;
     background-color: #cccccc;
     width: 10px;
@@ -492,7 +492,7 @@ input.disabled {
     background-color: #00ff00;
 }
 
-#EditContentPane {
+#EditMainPane {
     margin-left: 10px;
 }
 

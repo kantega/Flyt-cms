@@ -1,0 +1,341 @@
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License
+ */
+
+var currentUrl = "";
+
+$(document).ready(function(){
+    bindContentupdateEvents();
+    setContentupdateTrigger();
+    setOpenElementFromSession();
+});
+
+
+
+/**
+ * Contains the binding of all elements that are listening to the contentupdate event.
+ * New global listeners to this event should be added here.
+ */
+function bindContentupdateEvents() {
+    //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
+    $("#Navigator").bind("contentupdate", function(e, url){
+        debug("bindContentupdateEvents(): contentupdate event received");
+        if (!suppressNavigatorUpdate) {
+            updateNavigator(url, true);
+        } else {
+            suppressNavigatorUpdate = false;
+            debug("bindContentupdateEvents(): navigationUpdate suppressed");
+        }
+    });
+//    New listeners can be added here:
+//    $([element listening to event]).bind("contentupdate", function(e, url) {
+//        [perform actions]
+//    });
+}
+
+/**
+ * Attaches an onload listener to the contentframe and triggers a contentupdate event every time this onload event is fired,
+ * i.e. on every page load in the iframe.
+ *
+ * Sends the current url as data with the event.
+ *
+ * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
+ */
+function setContentupdateTrigger() {
+    $("#Contentmain").load(function() {
+        var currentContent = getCurrentItemIdentifier().href;
+        ContentStateHandler.notifyContentUpdate(currentContent, function(success){
+            if(!success) {
+                debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() success");
+            } else {
+                debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() failed");
+                //TODO: Handle
+            }
+        });
+        currentUrl = currentContent;
+        $.event.trigger("contentupdate",[currentContent]);
+    });
+}
+
+/**
+ * Retrieves the last recently viewed content element from the session and sets this as current element
+ */
+function setOpenElementFromSession() {
+    ContentStateHandler.getCurrentContent(function(associationId){
+        updateNavigator(getContentUrlFromAssociationId(associationId), true);
+    });
+}
+
+function navigatorResizeOnStart() {
+    var height = $("#ContentFrame").height();
+    var width = $("#ContentFrame").width();
+    var contentoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "transparent").attr("id", "Contentoverlay");
+    $("#ContentFrame iframe").before(contentoverlay);
+}
+
+function navigatorResizeOnStop() {
+    debug("makeNavigatorResizable(): onStop");
+    $.event.trigger("resize");
+    $("#Contentoverlay").remove();
+}
+
+function navigatorResizeOnResize() {
+    var navigationWidth = $("#Navigation").width();
+    var framesplitWidth = $("#Framesplit").width();
+    $("#Contentoverlay, #ContentFrame iframe").css("width", ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+}
+
+/**
+ * Sets the context (right click) menus in the navigator.
+ */
+function setContextMenus() {
+    setContextMenu("page", ['paste', 'pasteAsShortcut']);
+    setContextMenu("link", ['paste', 'pasteAsShortcut']);
+}
+
+function getNavigatorAction() {
+    return "<%=Aksess.getContextPath()%>/admin/publish/ContentNavigator.action";
+}
+
+/**
+ * Handles selections in the context menu for menu items of type page.
+ *
+ * @param action The selected action e.g. 'copy'
+ * @param href The value of the href-attribute for the selected item.
+ */
+function handleContextMenuClick_page(action, href) {
+    debug("handleContextMenuClick_page(): action: " + action + ", href: " + href);
+    var thisId = getQueryParam("thisId", href);
+    switch (action) {
+        case 'open':
+            Publish.open(thisId);
+            break;
+        case 'openInNewWindow':
+            Publish.openInNewWindow(thisId);
+            break;
+        case 'newSubpage':
+            Publish.newSubpage(thisId);
+            break;
+        case 'edit':
+            Publish.edit(thisId);
+            break;
+        case 'delete':
+            Publish.deleteItem(thisId);
+            break;
+        case 'cut':
+            Publish.cut(thisId);
+            break;
+        case 'copy':
+            Publish.copy(thisId);
+            break;
+        case 'paste':
+            Publish.paste(thisId);
+            break;
+        case 'pasteAsShortcut':
+            Publish.pasteAsShortcut(thisId);
+            break;
+        case 'managePrivileges':
+            Publish.managePrivileges(thisId);
+            break;
+    }
+}
+
+/**
+ * Handles selections in the context menu for menu items of type link.
+ *
+ * @param action The selected action e.g. 'copy'
+ * @param href The value of the href-attribute for the selected item.
+ */
+function handleContextMenuClick_link(action, href) {
+    debug("handleContextMenuClick_link(): " + action + ", href: " + href);
+    var thisId = getQueryParam("thisId", href);
+    switch (action) {
+        case 'open':
+            Publish.open(thisId);
+            break;
+        case 'openInNewWindow':
+            Publish.openInNewWindow(thisId);
+            break;
+        case 'edit':
+            Publish.edit(thisId);
+            break;
+        case 'delete':
+            Publish.deleteItem(thisId);
+            break;
+        case 'cut':
+            Publish.cut(thisId);
+            break;
+        case 'copy':
+            Publish.copy(thisId);
+            break;
+        case 'paste':
+            Publish.paste(thisId);
+            break;
+        case 'pasteAsShortcut':
+            Publish.pasteAsShortcut(thisId);
+            break;
+        case 'managePrivileges':
+            Publish.managePrivileges(thisId);
+            break;
+    }
+}
+
+
+/********************************************************************************
+ * Publish tools
+ *
+ * These are actions associated with the publish view.
+ ********************************************************************************/
+$(document).ready(function(){
+    bindToolButtons();
+});
+
+/**
+ * Registers click event actions to each tool
+ */
+function bindToolButtons() {
+    $("#ToolsMenu .button .newSubpage").click(function(){
+        Publish.newSubpage(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .edit").click(function(){
+        Publish.edit(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .delete").click(function(){
+        Publish.deleteItem(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .cut").click(function(){
+        Publish.cut(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .copy").click(function(){
+        Publish.copy(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .paste").click(function(){
+        Publish.paste(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .displayPeriod").click(function(){
+        Publish.displayPeriod(getQueryParam("thisId", currentUrl));
+    });
+    $("#ToolsMenu .button .privileges").click(function(){
+        Publish.managePrivileges(getQueryParam("thisId", currentUrl));
+    });
+}
+
+
+/**
+ * Actions associated with each tool.
+ */
+var Publish =  {
+    open : function(thisId) {
+        debug("Publish.open(): thisId: " + thisId);
+        updateMainPane(getContentUrlFromAssociationId(thisId), false);
+    },
+
+    openInNewWindow : function(thisId) {
+        debug("Publish.openInNewWindow(): thisId: " + thisId);
+        window.open(getContentUrlFromAssociationId(thisId));
+    },
+
+    newSubpage : function(thisId) {
+        debug("Publish.newSubpage(): thisId: " + thisId);
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/AddContent.action?thisId="+thisId;
+    },
+
+    edit: function(thisId) {
+        debug("Publish.editItem(): thisId: " + thisId);
+        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/EditContent.action?thisId="+thisId;
+    },
+
+    deleteItem: function(thisId) {
+        debug("Publish.deleteItem(): thisId: " + thisId);
+    },
+
+    cut: function(thisId) {
+        debug("Publish.cut(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    copy: function(thisId) {
+        debug("Publish.copy(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    paste: function(thisId) {
+        debug("Publish.paste(): thisId: " + thisId);
+        $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    pasteAsShortcut: function(thisId) {
+        debug("Publish.pasteAsShortcut(): thisId: " + thisId);
+        $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
+    },
+
+    displayPeriod: function(thisId) {
+        debug("Publish.displayPeriod(): thisId: " + thisId);
+    },
+
+    managePrivileges: function(thisId) {
+        debug("Publish.managePrivileges(): thisId: " + thisId);
+    }
+};
+
+
+/**
+ * Returns the location object for the contentmain iframe.
+ */
+function getCurrentItemIdentifier() {
+    return document.getElementById("Contentmain").contentWindow.document.location;
+}
+
+
+/**
+ * Returns a uri for updating the location.href in contentmain, based on the special href-format used in the navigator.
+ *
+ * @param href Navigator href value
+ */
+function getItemIdentifierFromNavigatorHref(href) {
+    var thisId = getQueryParam("thisId", href);
+    var url = getContentUrlFromAssociationId(thisId);
+    debug("getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + url);
+    return url;
+}
+
+/**
+ * Changes the cotent of the contentmain iframe.
+ * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
+ *
+ * @param url
+ * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
+ */
+function updateMainPane(url, suppressNavigatorUpdate) {
+    debug("updateMainPane(): url: " + url);
+    if (suppressNavigatorUpdate) {
+        suppressNavigatorUpdate = true;
+    }
+    getCurrentItemIdentifier().href = url;
+}
+
+/**
+ * Returns the uri for a content with a given associationId
+ *
+ * @param associationId
+ */
+function getContentUrlFromAssociationId(associationId) {
+    var url = "<%=Aksess.getContextPath()+ "/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
+    debug("getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
+    return url;
+}

@@ -70,7 +70,9 @@ public class ContentStateHandler {
         HttpSession session = getSession();
         if (session != null) {
             Content current = (Content) session.getAttribute(AdminSessionAttributes.CURRENT_CONTENT);
-            return current.getAssociation().getId();
+            if (current != null) {
+                return current.getAssociation().getId();
+            }
         }
         return -1;
     }

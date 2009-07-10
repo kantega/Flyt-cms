@@ -30,6 +30,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.util.NavigatorUtil;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.StringHelper;
 
@@ -43,9 +44,9 @@ import java.util.HashMap;
  * Date: 03.jul.2009
  * Time: 14:13:45
  */
-public class ContentNavigatorAction implements Controller {
+public class NavigatorAction implements Controller {
 
-    public String viewName;
+    public String view;
 
     /**
      * Called on every request to render the content menu, typically triggerd by ajax. 
@@ -67,21 +68,41 @@ public class ContentNavigatorAction implements Controller {
         RequestParameters params = new RequestParameters(request);
 
         String sort = params.getString(AdminRequestParameters.NAVIGATION_SORT_ORDER);
-        String url = params.getString(AdminRequestParameters.URL);
+        String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
         //Extracting currently selected content from it's url
         Content currentContent = null;
         int currentId = -1;
+        String path = null;
         if (!"".equals(url)) {
-            ContentIdentifier cid = new ContentIdentifier(request, url);
-            currentContent = cms.getContent(cid);
+
+            ContentIdentifier cid = null;
+            try {
+                cid = new ContentIdentifier(request, url);
+                currentContent = cms.getContent(cid);
+            } catch (ContentNotFoundException e) {
+                // Do nothing
+            }
             if (currentContent != null) {
                 currentId = currentContent.getAssociation().getId();
+                path = currentContent.getAssociation().getPath();
             }
         }
 
+        String openFoldersList = params.getString(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS);
+        boolean expand = params.getBoolean(AdminRequestParameters.EXPAND, true);
 
-        String openFoldersList = getOpenFolders(request, currentContent);
+        if (openFoldersList == null || openFoldersList.length() == 0) {
+            try {
+                ContentIdentifier cid = new ContentIdentifier(request, "/");
+                openFoldersList = "0," + cid.getAssociationId();
+
+            } catch (ContentNotFoundException e) {
+                openFoldersList = "0";
+            }
+        }
+
+        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path);
 
         //Setting menu sort order.
         if (sort == null) {
@@ -110,62 +131,10 @@ public class ContentNavigatorAction implements Controller {
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.THIS_ID, currentId);
 
-        return new ModelAndView(viewName, model);
+        return new ModelAndView(view, model);
     }
 
-
-    /**
-     * Get a list of open folders. If "expand" parameter is set, path to select Content object will be added to list.
-     * @param request - current request
-     * @param currentContent - current selected Content object
-     * @return - Comma separated list of open folders
-     */
-    private String getOpenFolders(HttpServletRequest request, Content currentContent) {
-
-        RequestParameters params = new RequestParameters(request);
-        String openFoldersList = params.getString(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS);
-        boolean expand = params.getBoolean(AdminRequestParameters.EXPAND, true);
-
-        if (openFoldersList == null || openFoldersList.length() == 0) {
-            try {
-                ContentIdentifier cid = new ContentIdentifier(request, "/");
-                openFoldersList = "0," + cid.getAssociationId();
-
-            } catch (ContentNotFoundException e) {
-                openFoldersList = "0";
-            }
-        }
-
-        // Liste med åpne foldere
-        int[] openFolders = StringHelper.getInts(openFoldersList, ",");
-
-        if (expand && currentContent != null) {
-            // Vi må legge til id'er slik at treet åpnes og viser denne...
-
-            String path = currentContent.getAssociation().getPath();
-            if (path.length() > 1) {
-                int pathIds[] = StringHelper.getInts(path, "/");
-                if (pathIds != null) {
-                    for (int pId : pathIds) {
-                        boolean exists = false;
-                        for (int openFolder : openFolders) {
-                            if (pId == openFolder) {
-                                exists = true;
-                                break;
-                            }
-                        }
-                        if (!exists) {
-                            openFoldersList += "," + pId;
-                        }
-                    }
-                }
-            }
-        }
-
-        return openFoldersList;
-    }
-
-    public void setViewName(String viewName) {
-        this.viewName = viewName;
+    public void setView(String view) {
+        this.view = view;
     }
 }

@@ -1,4 +1,3 @@
-<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -19,7 +18,7 @@
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin"%>
 
 <c:forEach items="${sites}" var="site">
-    <admin:printnavigator site="${site}" currentId="${thisId}"/>
+    <admin:printcontentnavigator root="${site}" currentId="${thisId}"/>
 </c:forEach>
 
 

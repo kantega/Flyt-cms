@@ -67,15 +67,15 @@
         </attribute>
     </tag>
     <tag>
-        <description>Create a locale specific button</description>
-        <name>printnavigator</name>
-        <tag-class>no.kantega.publishing.admin.taglib.PrintNavigatorTag</tag-class>
+        <description>Prints a navigator for content</description>
+        <name>printcontentnavigator</name>
+        <tag-class>no.kantega.publishing.admin.taglib.PrintContentNavigatorTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <name>site</name>
+            <name>root</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
-            <type>no.kantega.publishing.common.data.SiteMapEntry</type>
+            <type>no.kantega.publishing.common.data.NavigationMapEntry</type>
         </attribute>
         <attribute>
             <name>currentId</name>
@@ -84,5 +84,24 @@
             <type>int</type>
         </attribute>
     </tag>
+    <tag>
+        <description>Prints a navigator for multimedia</description>
+        <name>printmultimedianavigator</name>
+        <tag-class>no.kantega.publishing.admin.taglib.PrintMultimediaNavigatorTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>root</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.NavigationMapEntry</type>
+        </attribute>
+        <attribute>
+            <name>currentId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
 </taglib>
 

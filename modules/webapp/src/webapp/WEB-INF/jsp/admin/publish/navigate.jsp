@@ -25,7 +25,7 @@
 <kantega:section id="content">
 
 
-        <div id="ContentFrame">
+        <div id="MainPane">
             <div class="statusbar">
                 <ul class="breadcrumbs">
                     <li>Forside</li>

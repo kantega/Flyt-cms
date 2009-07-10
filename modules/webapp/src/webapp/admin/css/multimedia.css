@@ -1,0 +1,21 @@
+
+
+#MultimediaFolders {
+    background: #ffffff;
+    padding: 20px;/*Important: Must be a px value.*/
+}
+
+#MultimediaFolders .folder, #MultimediaFolders .media {
+    height: 100px;
+    width: 100px;
+    float: left;
+    margin-right: 10px;
+    cursor: pointer;
+}
+#MultimediaFolders .folder {
+    background: gray;
+}
+
+#MultimediaFolders .media {
+    background: green;
+}

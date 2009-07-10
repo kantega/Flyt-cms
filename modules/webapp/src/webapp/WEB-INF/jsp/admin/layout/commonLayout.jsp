@@ -35,7 +35,7 @@
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/interface/ContentStateHandler.js'></script>
     <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/engine.js'></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/admin.jjs"></script>
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/common.jjs"></script>
     <kantega:getsection id="head"/>
 </head>
 <body>

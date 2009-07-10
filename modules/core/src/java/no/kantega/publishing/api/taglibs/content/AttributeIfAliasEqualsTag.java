@@ -20,16 +20,9 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.ao.ContentAO;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class AttributeIfAliasEqualsTag  extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.AttributeIfAliasEqualsTag";

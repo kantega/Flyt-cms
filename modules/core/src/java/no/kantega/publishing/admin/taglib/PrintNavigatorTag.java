@@ -18,12 +18,7 @@ package no.kantega.publishing.admin.taglib;
 
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
-import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.admin.util.NavigatorUtil;
-import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.common.data.NavigationMapEntry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,19 +31,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Prints the content navigator menu.
+ * Abstract base class to print navigator menu.
  *
- * Takes a SiteMapEntry containing all items to show as input.
+ * Takes a NaviagtionMapEntry containing all items to show as input.
  * It also requires the id of the current page as input in order to set proper classes etc.
  */
-public class PrintNavigatorTag extends SimpleTagSupport {
+public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
     private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintNavigatorTag";
 
-    private SiteMapEntry site;
+    private NavigationMapEntry site;
     private int currentId;
 
-    private List<SiteMapEntry> menuitems = null;
+    private List<NavigationMapEntry> menuitems = null;
     private int prevDepth = -1;
     private int nrul = 0;
     private CollectionLoopTagStatus status = null;
@@ -56,17 +51,28 @@ public class PrintNavigatorTag extends SimpleTagSupport {
     private String selectedClass = "selected";
     private String openClass ="open";
 
+    /**
+     * Prints the contents of each menu item, i.e. what's inside the li-elements
+     *
+     * @param item
+     * @throws IOException
+     */
+    protected abstract void printBody(NavigationMapEntry item) throws IOException;
 
     public void setCurrentId(int currentId) {
         this.currentId = currentId;
     }
 
-    public void setSite(SiteMapEntry site) {
+    public int getCurrentId() {
+        return currentId;
+    }
+
+    public void setRoot(NavigationMapEntry site) {
         this.site = site;
     }
 
 
-    private void addToSiteMap(SiteMapEntry sitemap, int currentDepth) {
+    private void addToSiteMap(NavigationMapEntry sitemap, int currentDepth) {
 
         sitemap.setDepth(currentDepth);
 
@@ -77,9 +83,9 @@ public class PrintNavigatorTag extends SimpleTagSupport {
         menuitems.add(sitemap);
 
 
-        List<SiteMapEntry> children = sitemap.getChildren();
+        List<NavigationMapEntry> children = sitemap.getChildren();
         if (children != null) {
-            for (SiteMapEntry child : children) {
+            for (NavigationMapEntry child : children) {
                 sitemap.setOpen(true);
                 addToSiteMap(child, currentDepth + 1);
             }
@@ -89,7 +95,7 @@ public class PrintNavigatorTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException, IOException {
-        menuitems = new ArrayList<SiteMapEntry>();
+        menuitems = new ArrayList<NavigationMapEntry>();
 
         try {
             HttpServletRequest request = (HttpServletRequest)((PageContext)getJspContext()).getRequest();
@@ -122,7 +128,7 @@ public class PrintNavigatorTag extends SimpleTagSupport {
      * @throws IOException
      */
     private void printListElement() throws IOException {
-        SiteMapEntry currentItem = (SiteMapEntry)status.getCurrent();
+        NavigationMapEntry currentItem = (NavigationMapEntry)status.getCurrent();
 
         String ulStartElem = "<ul class=\"navigator\">";
         String ulEndElem = "</ul>\n";
@@ -175,53 +181,5 @@ public class PrintNavigatorTag extends SimpleTagSupport {
             out.write("</li>\n");
             out.write(ulEndElem);
         }
-    }
-
-    /**
-     * Prints the contents of each menu item, i.e. what's inside the li-elements
-     *
-     * @param currentItem
-     * @throws IOException
-     */
-    private void printBody(SiteMapEntry currentItem) throws IOException {
-        JspWriter out = getJspContext().getOut();
-
-        StringBuilder href = new StringBuilder();
-        href.append("?");
-        href.append(AdminRequestParameters.THIS_ID).append("=").append(currentItem.getId()).append("&amp;");
-        href.append(AdminRequestParameters.CONTENT_ID).append("=").append(currentItem.getContentId());
-
-        String openState = currentItem.isOpen()? "open": "closed";
-        out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
-
-        ContentType type = currentItem.getType();
-        String title = NavigatorUtil.getNavigatorTitle(type, currentItem.getTitle());
-
-        String iconText = "";
-        String iconClass = "";
-        int visibilityStatus = currentItem.getVisibilityStatus();
-        if (currentItem.getParentId() == 0) {
-            iconClass = "root";
-            iconText = title;
-        } else {
-            iconClass = NavigatorUtil.getIcon(type, visibilityStatus, currentItem.getStatus());
-            iconText = NavigatorUtil.getIconText(type, visibilityStatus, currentItem.getStatus());
-        }
-        out.write("<span class=\"icon\"><a href=\"" + href + "\" class=\""+iconClass+"\" title=\""+iconText+"\"></a></span>");
-
-
-        boolean isSelected = false;
-        // Mark object (shortcuts will not be marked since you go directly to the object)
-        if (currentItem.getId() == currentId && type != ContentType.SHORTCUT) {
-            isSelected = true;
-        }
-
-        String titleClass = NavigatorUtil.getContextMenuType(type, visibilityStatus, currentItem.getStatus());
-        if (isSelected) {
-            titleClass += " selected";
-        }
-        out.write("<span class=\"title\"><a href=\""+ href +"\" class=\""+ titleClass +"\" title=\"" + title + "\">" + title +"</a></span>");
-
-        
     }
 }

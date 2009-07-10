@@ -29,12 +29,12 @@ import no.kantega.publishing.common.Aksess;
 /**
  *
  */
-public class SimpleAdminController implements Controller {
+public class SimpleAdminController extends AdminController {
     String view;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("aksess_locale", Aksess.getDefaultAdminLocale());
+
         return new ModelAndView(view, model);
     }
 

@@ -1,0 +1,377 @@
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/********************************************************************************
+ * Global functions
+ ********************************************************************************/
+
+var suppressNavigatorUpdate = false;
+
+
+/**
+ * Global load action
+ */
+$(document).ready(function() {
+    debug("$(document).ready(): common");
+    dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
+    setWindowSize();
+});
+
+
+/**
+ * Adjusts the height and width of the iframe onload and onresize.
+ */
+function setWindowSize() {
+    $(window).bind('resize load', function(e) {
+        debug("setWindowSize(): " + e.type + " event received");
+
+        var topHeight = $("#Top").height();
+        var statusbarHeight = $("#MainPane .statusbar").height();
+        var filteroptionsHeight = $("#Navigation .filteroptions").height();
+        var navigationWidth = $("#Navigation").width();
+        var framesplitWidth = $("#Framesplit").width();
+        debug("setWindowSize(): topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
+
+        $("#Navigator").css('height', ($(window).height()-topHeight-filteroptionsHeight-5) + 'px');
+        $('#Content').css('height', ($(window).height()-topHeight-statusbarHeight) + 'px');
+        $('#MainPane').css('height', ($(window).height()-topHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+        $('#MainPane iframe').css('height', ($(window).height()-topHeight-statusbarHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+        if (typeof setLayoutSpecificSizes == 'function') {
+            setLayoutSpecificSizes();
+        }
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/********************************************************************************
+ * Navigator
+ *
+ * Functions and actions related to the navitator
+ ********************************************************************************/
+
+
+/**
+ * Navigator actions
+ */
+$(document).ready(function(){
+    debug("$(document).ready(): Navigation");
+    makeNavigatorResizable();
+});
+
+/**
+ * Performes necessary actions to make the navigator frame (left column) resizable.
+ * Dragging the FramesplitDrag-element resizes the columns.
+ * When dragging the navigator column, the content frame must be resized accordingly.
+ *
+ * TODO: Fix height after resize for IE
+ */
+function makeNavigatorResizable() {
+    debug("makeNavigatorResizable(): Init");
+    $("#Navigation").Resizable(
+        {
+            minWidth: 50,
+            minHeight: 50,
+            handlers: {
+                e: '#FramesplitDrag'
+            },
+            onStart: function(){
+                if (typeof navigatorResizeOnStart == 'function') {
+                    navigatorResizeOnStart();
+                }
+            },
+            onStop: function() {
+                if (typeof navigatorResizeOnStop == 'function') {
+                    navigatorResizeOnStop();
+                }
+            },
+            onResize: function() {
+                if (typeof navigatorResizeOnResize == 'function') {
+                    navigatorResizeOnResize();
+                }
+            }
+        }
+    );
+}
+
+
+/**
+ * Defines actions for clicks in the navigator.
+ */
+function bindNavigatorClickEvents() {
+    //Click on the openState (+/-) icon of an expanded node.
+    $(".navigator span.openState > a.open").click(function(event){
+        debug("bindNavigatorClickEvents(): click closeTree");
+        event.preventDefault();
+        var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+        closeTree(itemIdentifier);
+    });
+    //Click on the openState (+/-) icon of a collapsed node.
+    $(".navigator span.openState > a.closed").click(function(event){
+        debug("bindNavigatorClickEvents(): click openTree");
+        event.preventDefault();
+        var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+        openTree(itemIdentifier);
+    });
+    //Click on the title
+    $(".navigator span.title > a").click(function(event){
+        debug("bindNavigatorClickEvents(): click openContent");
+        event.preventDefault();
+        var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+        if(typeof onNavigatorTitleClick == 'function') {
+            onNavigatorTitleClick(itemIdentifier);
+        }
+        updateMainPane(itemIdentifier, true);
+        updateNavigator(itemIdentifier, true);
+    });
+}
+
+
+/**
+ * Refreshes the navigator.
+ *
+ * @param itemIdentifier Current selected item
+ * @param expand Expand the menu down to selected item.
+ */
+function updateNavigator(itemIdentifier, expand) {
+    debug("updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
+    var params = new Object();
+    if (itemIdentifier) {
+        params.itemIdentifier = itemIdentifier;
+    }
+    if($("#NavigatorState .sort").html() != null) {
+        params.sort = $("#NavigatorState .sort").html();
+    }
+    if( $("#NavigatorState .openFolders").html() != null) {
+        params.openFolders = $("#NavigatorState .openFolders").html();
+    }
+    params.expand = expand;
+
+    $("#Navigator").load(getNavigatorAction(), params, function() {
+        debug("updateNavigator(): response from ContentNavigator.action received");
+        bindNavigatorClickEvents();
+        setContextMenus();
+    });
+}
+
+
+
+
+
+/**
+ * Binds a context menu to a specific navigator link type.
+ *
+ * @param type css class of the a-element in the navigator.
+ * @param disabledOptions Array of disabled options. Must be the href-value in the menu's a-element, without the leading hash (#).
+ */
+function setContextMenu(type, disabledOptions) {
+
+    $("#Navigator span.title a." + type).contextMenu(
+        {
+            menu: 'ContextMenu-'+type
+        },
+        function(action, el, pos) {
+            var href = $(el).attr("href");
+            debug("setContextMenu(): clicked url: "+ href);
+            eval("handleContextMenuClick_"+type+"(action, href)");
+        }
+    );
+    if (disabledOptions) {
+        var disable = "";
+        for(var i = 0; i < disabledOptions.length; i++) {
+            disable += "#"+disabledOptions[i];
+            if (i != (disabledOptions.length-1)) {
+                disable += ",";
+            }
+        }
+        debug("setContextMenu(): disabled options: "+ disable);
+        $("#ContextMenu-"+type).disableContextMenuItems(disable);
+    }
+    debug("setContextMenu(): "+ type +" menu set");
+}
+
+
+
+
+
+function openTree(itemIdentifier) {
+    debug("openTree(): itemIdentifier: " + itemIdentifier);
+    setFolderOpen(itemIdentifier);
+    updateNavigator(itemIdentifier, false);
+}
+
+
+function closeTree(itemIdentifier) {
+    debug("closeTree(): itemIdentifier: " + itemIdentifier);
+    setFolderClosed(itemIdentifier);
+    updateNavigator(itemIdentifier, false);
+}
+
+
+
+function setFolderOpen(id) {
+    var newList = $("#NavigatorState .openFolders").html();
+    debug("setFolderOpen(): newList: " + newList + ", id: " + id);
+
+    var openList = newList.split(",");
+    for (var i = 0; i < openList.length; i++) {
+        var current = openList[i];
+        if (id == current) {
+            return;
+        }
+    }
+
+    if (newList.length == 0) {
+        newList = "" + id;
+    } else {
+        newList = newList + "," + id;
+    }
+
+    debug("setFolderOpen(): newList: " + newList);
+
+    $("#NavigatorState .openFolders").html(newList);
+}
+
+
+function setFolderClosed(id) {
+    var openList = $("#NavigatorState .openFolders").html().split(",");
+    debug("setFolderClosed(): openList: " + openList + ", id: " + id);
+
+    var newOpenList  = "";
+    for (var i = 0; i < openList.length; i++) {
+       var current = openList[i];
+       if (id == current) {
+          // Skip
+       } else {
+          if (newOpenList.length > 0) newOpenList += ",";
+          newOpenList += current;
+       }
+    }
+
+    debug("setFolderClosed(): newOpenList: " + newOpenList);
+
+    $("#NavigatorState .openFolders").html(newOpenList);
+}
+
+
+
+
+
+
+
+
+/********************************************************************************
+ * Search
+ ********************************************************************************/
+ $(document).ready(function(){
+     bindSearchInput();
+ });
+
+function bindSearchInput() {
+    $(".search input:submit").click(function(e){
+        e.preventDefault();//Preventing the form from being subitted the ordinary way.
+        $(this).siblings("input:text").each(function(){
+            var textInput = $(this);
+            if (textInput.hasClass("query")) {
+                var query = textInput.val();
+                if (Search.inputValid(query)) {
+                    if(textInput.hasClass("content")) {
+                        Search.content(query);
+                    } else if (textInput.hasClass("multimedia")) {
+                        Search.multimedia(query);
+                    }
+                }
+            }
+        });
+    });
+}
+
+var Search = {
+    content : function(query){
+        debug("Search.content(): query: " + query);
+        //TODO: Implement properly. Fetch search results with ajax.
+        var searchResults = $("<div/>").attr("id", "SearchResults").html("<p>You searched: " + query + "</p>").slideDown("slow");
+        $("#ContentFrame").append(searchResults);
+        var closeLink = $("<a>").addClass("close").attr("href", "#").html("Close");
+        closeLink.click(function(){
+            $(this).parent().slideUp("slow");
+        });
+        searchResults.append(closeLink);
+    },
+
+    multimedia : function(query) {
+        debug("Search.multimedia(): query: " + query);
+    },
+
+    inputValid : function(query){
+        debug("Search.inputValid(): query: " + query);
+        //TODO: Validate search input
+        return true;
+    }
+};
+
+
+
+
+
+
+/********************************************************************************
+ * Common functions
+ ********************************************************************************/
+
+/**
+ * Returns the value of a query string parameter
+ *
+ * @param paramName Query parameter name
+ * @param queryString The total query string
+ */
+function getQueryParam(paramName, queryString) {
+    var val = null;
+    var inx = queryString.indexOf(paramName + "=");
+    if (inx != -1) {
+        val = queryString.substring(inx + paramName.length + 1, queryString.length);
+        if (val.indexOf("&") != -1) {
+            val = val.substring(0, val.indexOf("&"));
+        }
+    }
+    return val;
+}
+
+
+/**
+ * Prints a debug message to Firebug's debug console.
+ *
+ * @param msg Debug message. Convention: 'functionName(): value'
+ */
+function debug(msg) {
+    var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
+    if (debugEnabled && $.browser.mozilla) {
+        console.log(msg);
+    }
+}

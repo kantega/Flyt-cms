@@ -26,10 +26,12 @@ public abstract class NavigationMapEntry extends BaseObject {
     public String title = "";
 
     List children = null;
+    protected int depth = 0;
+    protected boolean isOpen = false;
+    protected boolean isSelected = false;
 
     public NavigationMapEntry() {
     }
-
 
     public void addChild(NavigationMapEntry child) {
         if (children == null) {
@@ -54,5 +56,29 @@ public abstract class NavigationMapEntry extends BaseObject {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

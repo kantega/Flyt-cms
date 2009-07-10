@@ -25,8 +25,9 @@ public class AdminSessionAttributes {
 
     public static final String CURRENT_CONTENT = "currentContent";
     public static final String SHOW_CONTENT = "showContent";
-    public static final String NAVIGATION_SORT_ORDER = "navigatorSortOrder";
+    public static final String CURRENT_MULTIMEDIA = "currentMultimedia";
 
+    public static final String NAVIGATION_SORT_ORDER = "navigatorSortOrder";
     public static final String CLIPBOARD_CONTENT = "contentClipboard";
     public static final String CLIPBOARD_MEDIA = "mediaClipboard";
 }

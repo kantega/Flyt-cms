@@ -171,10 +171,10 @@ public class MultimediaAO {
      * @return
      * @throws SystemException
      */
-    public static List getMultimediaList(int parentId) throws SystemException {
+    public static List<Multimedia> getMultimediaList(int parentId) throws SystemException {
         Connection c = null;
 
-        List mmList = new ArrayList();
+        List<Multimedia> mmList = new ArrayList<Multimedia>();
 
         String query = "select " + DB_COLS + " from multimedia where ParentId = " + parentId + " order by Type, Name";
 

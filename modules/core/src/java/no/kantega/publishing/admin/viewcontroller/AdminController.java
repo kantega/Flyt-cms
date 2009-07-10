@@ -18,6 +18,9 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
 
+import java.util.Map;
+import java.util.HashMap;
+
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 02.jul.2009
@@ -27,39 +30,23 @@ public abstract class AdminController implements Controller {
 
 
     public final ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        HttpSession session = request.getSession(true);
-        ContentManagementService aksessService = new ContentManagementService(request);
-        RequestParameters param = new RequestParameters(request);
-
-        String url = param.getString(AdminRequestParameters.URL);
-
-        Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_CONTENT);
-
-        if (url != null || request.getParameter(AdminRequestParameters.THIS_ID) != null || request.getParameter(AdminRequestParameters.CONTENT_ID) != null) {
-            ContentIdentifier cid = null;
-            if (url != null) {
-                cid = new ContentIdentifier(request, url);
-            } else {
-                cid = new ContentIdentifier(request);
-            }
-            current = aksessService.getContent(cid);
+        ModelAndView modelAndView = handleRequestInternal(request, response);
+        Map model = modelAndView.getModel();
+        if (model == null) {
+            model = new HashMap();
         }
+        model.put("aksess_locale", Aksess.getDefaultAdminLocale());
 
-        if (current == null ) {
-            // No current object, go to start page
-            ContentIdentifier cid = new ContentIdentifier(request, "/");
-            current = aksessService.getContent(cid);
+        String reqUri = request.getRequestURI();
+        int start = reqUri.indexOf("/admin/");
+        if (start != -1) {
+            reqUri = reqUri.substring(start+"/admin/".length());
+            reqUri = reqUri.substring(0, reqUri.indexOf("/"));
+            model.put(reqUri + "Selected", "selected");
         }
-
-
-        // Updating the session with the current content object
-        session.setAttribute(AdminSessionAttributes.CURRENT_CONTENT, current);
-        session.setAttribute(AdminSessionAttributes.SHOW_CONTENT, current);
-
-
-        return handleRequestInternal(request, response);
+        return modelAndView;
     }
 
-    public abstract ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response);
+    public abstract ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
 }
