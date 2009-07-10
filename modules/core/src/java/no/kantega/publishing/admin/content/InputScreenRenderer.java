@@ -35,6 +35,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class InputScreenRenderer {
@@ -74,8 +75,8 @@ public class InputScreenRenderer {
                     try {
                         Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
                         cssPath = "/css" + site.getAlias() + htmlAttr.getCss();
-                        File f = new File(pageContext.getServletContext().getRealPath(cssPath));
-                        if (!f.exists()) {
+                        InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
+                        if (is == null) {
                             cssPath = site.getAlias() + "css/" + htmlAttr.getCss();
                         }
                     } catch (SystemException e) {
