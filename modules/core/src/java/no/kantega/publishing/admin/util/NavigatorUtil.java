@@ -147,6 +147,7 @@ public class NavigatorUtil {
        /**
      * Get a list of open folders. If "expand" parameter is set, path to select Content object will be added to list.
      * @param expand
+     * @param openFoldersList
      * @param path - path to current selected object
      * @return - Comma separated list of open folders
      */

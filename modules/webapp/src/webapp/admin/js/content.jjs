@@ -61,6 +61,7 @@ function bindContentupdateEvents() {
 function setContentupdateTrigger() {
     $("#Contentmain").load(function() {
         var currentContent = getCurrentItemIdentifier().href;
+        debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
         ContentStateHandler.notifyContentUpdate(currentContent, function(success){
             if(!success) {
                 debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() success");
