@@ -23,6 +23,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ExceptionHandler;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,7 +63,7 @@ public class DeleteAssociationAction extends HttpServlet {
                     request.setAttribute("toBeDeleted", toBeDeleted);
                     view = "confirmdelete_multiple.jsp";
                 } else {
-                    Content current = (Content)session.getAttribute("currentContent");
+                    Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
                     if (current != null) {
                         ContentIdentifier cid = new ContentIdentifier();
                         cid.setAssociationId(current.getAssociation().getAssociationId());

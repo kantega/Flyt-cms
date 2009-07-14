@@ -20,6 +20,7 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -83,7 +84,7 @@ public class SelectTemplateAction implements Controller {
         Content content = cms.createNewContent(createParam);
 
         HttpSession session = request.getSession();
-        session.setAttribute("currentContent", content);
+        session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
         return new ModelAndView(new RedirectView("EditContent.action"));
     }

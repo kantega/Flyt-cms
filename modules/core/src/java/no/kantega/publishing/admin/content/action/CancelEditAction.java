@@ -21,6 +21,7 @@ import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,7 +38,7 @@ public class CancelEditAction implements Controller {
 
         ContentManagementService aksessService = new ContentManagementService(request);
 
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content != null) {
 
             LockManager.releaseLock(content.getId());
@@ -54,7 +55,7 @@ public class CancelEditAction implements Controller {
 
             content = aksessService.getContent(cid);
 
-            session.setAttribute("showContent", content);
+            session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
         }
 
         return new ModelAndView(new RedirectView("Navigate.action"));

@@ -37,6 +37,7 @@
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
                 <prop key="/admin/multimedia/MultimediaNavigator.action">multimediaNavigatorAjaxAction</prop>
                 <prop key="/admin/multimedia/ViewFolder.action">viewFolderAjaxAction</prop>
+                <prop key="/admin/multimedia/popups/SelectFolder.action">SelectFolderAction</prop>
 
                 <prop key="/">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
@@ -49,10 +50,9 @@
                 <prop key="/Login.action">LoginAction</prop>
                 <prop key="/Logout.action">LogoutAction</prop>
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
-                <prop key="/admin/popups/AddAttachment.action">AddAttachmentAction</prop>
                 <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
                 <prop key="/admin/security/AddContentRolePermission.action">AddContentRolePermissionAction</prop>
-                <prop key="/admin/publish/AddContentTopic.action">AddContentTopicAction</prop>
+                <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
                 <prop key="/admin/publish/CancelEdit.action">CancelEditAction</prop>
@@ -78,7 +78,8 @@
                 <prop key="/admin/EndAdminMode.action">EndAdminModeAction</prop>
                 <prop key="/admin/multimedia/ImageManipulation.action">ImageManipulationAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
-                <prop key="/PreviewContent.action">PreviewContentAction</prop>
+                <prop key="/admin/publish/ViewContentPreview.action">ViewContentPreviewAction</prop>
+                <prop key="/admin/publish/ViewContentPreviewFrame.action">ViewContentPreviewFrameAction</prop>
                 <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
                 <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
@@ -93,14 +94,18 @@
                 <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
-                <prop key="/admin/popups/ReplaceText.action">ReplaceTextAction</prop>
+                <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
+                <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
+                <prop key="/admin/publish/popups/InsertTable.action">InsertTableAction</prop>
+                <prop key="/admin/publish/popups/InsertCharacter.action">InsertCharacterAction</prop>
+                <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
                 <prop key="/admin/publish/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
                 <prop key="/ajax/SearchContentAsXML.action">SearchContentAsXMLAction</prop>
-                <prop key="/ajax/SearchFilenamesAsXML.action">SearchFilenamesAsXMLAction</prop>
                 <prop key="/ajax/SearchMultimediaAsXML.action">SearchMultimediaAsXMLAction</prop>
                 <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
                 <prop key="/ajax/SearchUsersAsXML.action">SearchUsersAsXMLAction</prop>
+                <prop key="/admin/publish/EditListOption.action">EditListOptionAction</prop>
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
                 <prop key="/admin/groovy.action">groovyConsole</prop>
@@ -237,14 +242,6 @@
 
 
     <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AddContentTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.AddContentTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>AddContentTopicAction</value>
-        </property>
-    </bean>
     <bean class="no.kantega.publishing.admin.content.action.AddTopicRoleAction" id="AddTopicRoleAction"/>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ApproveOrRejectAction">
         <property name="servletClass">
@@ -346,6 +343,18 @@
     </bean>
     -->
     <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
+    <!-- Preview  -->
+    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="ViewContentPreviewAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ViewContentPreviewFrameAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.ViewContentPreviewFrameAction</value>
+        </property>
+        <property name="servletName">
+            <value>PreviewContentAction</value>
+        </property>
+    </bean>
 
     <!-- Edit content - popups -->
     <bean class="no.kantega.publishing.admin.content.action.AddAttachmentAction" id="AddAttachmentAction">
@@ -355,8 +364,27 @@
     <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="ReplaceTextAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/replacetext.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertTableAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertCharacterAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-char.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="EditListOptionAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/listoption-edit.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="SelectFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-mediafolder.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
+    </bean>
 
 
+    <!-- Topic maps -->
+    <bean class="no.kantega.publishing.admin.content.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
+    </bean>
 
     <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
     <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
@@ -375,14 +403,6 @@
         </property>
         <property name="servletName">
             <value>ImageMapAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="PreviewContentAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.PreviewContentAction</value>
-        </property>
-        <property name="servletName">
-            <value>PreviewContentAction</value>
         </property>
     </bean>
 
@@ -495,13 +515,12 @@
     <bean class="no.kantega.publishing.admin.ajax.SearchContentAsXMLAction" id="SearchContentAsXMLAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.ajax.SearchFilenamesAsXMLAction" id="SearchFilenamesAsXMLAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchMultimediaAsXMLAction" id="SearchMultimediaAsXMLAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchOrgUnitsAsXMLAction" id="SearchOrgUnitsAsXMLAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchUsersAsXMLAction" id="SearchUsersAsXMLAction"/>
 
-    <bean class="no.kantega.publishing.admin.attributes.action.AddListOptionAction" id="AddListOptionAction"/>
-    <bean class="no.kantega.publishing.admin.attributes.action.RemoveListOptionAction" id="RemoveListOptionAction"/>
+    <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
+    <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>

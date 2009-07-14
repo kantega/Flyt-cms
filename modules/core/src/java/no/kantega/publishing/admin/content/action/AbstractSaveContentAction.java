@@ -164,6 +164,10 @@ public abstract class AbstractSaveContentAction implements Controller {
             }
         }
 
+        //if (Aksess.isTopicMapsEnabled()) {
+            model.put("topicMapsEnabled", Boolean.TRUE);    
+        //}
+
         model.put("saveStatus", saveStatus);
     }
 

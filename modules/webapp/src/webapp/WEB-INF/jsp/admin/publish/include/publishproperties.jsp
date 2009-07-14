@@ -1,3 +1,5 @@
+<%@ page import="no.kantega.publishing.common.data.enums.ExpireAction" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <script type="text/javascript">
     function validatePublishProperties() {
@@ -40,10 +42,22 @@
         }
         return true;
     }
+
+    $(document).ready(function() {
+        $("#ChooseTopicButton > a.button").click(function(event){
+            debug("bindTopicButtons(): click ChooseTopicButton");
+            event.preventDefault();
+            selectTopic(null);
+        });
+
+        // Load topics
+        var params = new Object();
+        updateTopics(params);
+    });
+
 </script>
 
-<div id="ContentPropertiesPane">
-    <c:if test="${!isStartPage}">
+<c:if test="${!isStartPage}">
     <div class="PropertyPane">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.period"/></legend>
@@ -81,8 +95,8 @@
             </div>
         </fieldset>
     </div>
-    </c:if>
-    <c:if test="${currentContent.id > 0}">
+</c:if>
+<c:if test="${currentContent.id > 0}">
     <div class="PropertyPane">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
@@ -98,16 +112,16 @@
             </script>
         </fieldset>
     </div>
-    </c:if>
-    <c:if test="${!isStartPage}">
+</c:if>
+<c:if test="${!isStartPage}">
     <div class="PropertyPane">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
             <input type="text" name="alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510">
         </fieldset>
     </div>
-    </c:if>
-    <c:if test="${canChangeTemplate}">
+</c:if>
+<c:if test="${canChangeTemplate}">
     <div class="PropertyPane">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
@@ -122,8 +136,21 @@
                 <c:if test="${isAdmin}">
                     <div class=helpText><kantega:label key="aksess.editpublishinfo.displaytemplate.hjelp"/></div>
                 </c:if>
-              </select>
+            </select>
         </fieldset>
     </div>
-    </c:if>
-</div>
+</c:if>
+<c:if test="${topicMapsEnabled}">
+    <div class="PropertyPane">
+        <fieldset>
+            <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
+
+
+            <div id="TopicList">...</div>
+            <div id="ChooseTopicButton">
+                <a href="#" class="button topics"><kantega:label key="aksess.publishinfo.topics.choose"/></a>
+            </div>
+
+        </fieldset>
+    </div>
+</c:if>

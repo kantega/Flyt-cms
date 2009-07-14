@@ -23,9 +23,9 @@ package no.kantega.publishing.admin;
  */
 public class AdminSessionAttributes {
 
-    public static final String CURRENT_CONTENT = "currentContent";
-    public static final String SHOW_CONTENT = "showContent";
-    public static final String CURRENT_MULTIMEDIA = "currentMultimedia";
+    public static final String CURRENT_EDIT_CONTENT = "currentContent";
+    public static final String CURRENT_NAVIGATE_CONTENT = "currentNavigateContent";
+    public static final String CURRENT_NAVIGATE_MULTIMEDIA = "currentNavigateMultimedia";
 
     public static final String NAVIGATION_SORT_ORDER = "navigatorSortOrder";
     public static final String CLIPBOARD_CONTENT = "contentClipboard";

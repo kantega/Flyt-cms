@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.attributes.action;
+package no.kantega.publishing.admin.attributes.ajax;
 
 import no.kantega.publishing.common.ao.EditableListAO;
 

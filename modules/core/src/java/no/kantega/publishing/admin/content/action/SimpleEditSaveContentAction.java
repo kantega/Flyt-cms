@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.Content;
@@ -43,7 +44,7 @@ public class SimpleEditSaveContentAction implements Controller {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
 
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         if (content != null && request.getMethod().equalsIgnoreCase("POST")) {
             // Lagre opplysninger
@@ -59,7 +60,7 @@ public class SimpleEditSaveContentAction implements Controller {
                     ContentManagementService cms = new ContentManagementService(request);
                     content = cms.checkInContent(content, ContentStatus.PUBLISHED);
                 }
-                session.removeAttribute("currentContent");
+                session.removeAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
                 String url;
                 String redirectUrl = param.getString("redirectUrl");
@@ -78,8 +79,8 @@ public class SimpleEditSaveContentAction implements Controller {
 
                 RequestHelper.setRequestAttributes(request, content);
 
-                request.setAttribute("currentContent", content);
-                session.setAttribute("currentContent", content);
+                request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+                session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
                 return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
 

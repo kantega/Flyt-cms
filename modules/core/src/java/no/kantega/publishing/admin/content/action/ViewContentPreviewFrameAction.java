@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,27 +16,31 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 
+import javax.servlet.ServletException;
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import java.io.IOException;
 
-public class PreviewContentAction extends HttpServlet {
-    private static String SOURCE = "aksess.PreviewContentAction";
+/**
+ *
+ */
+public class ViewContentPreviewFrameAction extends HttpServlet {
+    private static String SOURCE = "aksess.ViewContentPreviewFrameAction";
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
     }
@@ -49,8 +53,7 @@ public class PreviewContentAction extends HttpServlet {
         String template = Aksess.getStartPage();
 
         HttpSession session = request.getSession(true);
-        Content current = (Content)session.getAttribute("currentContent");
-
+        Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         try {
             if (current != null) {

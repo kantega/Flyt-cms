@@ -21,10 +21,12 @@
 <head>
     <title><kantega:getsection id="title"/></title>
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/default.css">
-    <kantega:getsection id="script"/>
+    <kantega:getsection id="head"/>
 </head>
 
 <body>
-    <kantega:getsection id="body"/>
+    <div id="PopupContent">
+        <kantega:getsection id="body"/>
+    </div>
 </body>
 </html>

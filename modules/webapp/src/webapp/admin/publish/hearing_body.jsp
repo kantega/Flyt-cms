@@ -45,7 +45,7 @@
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
     <%@ include file="include/calendarsetup.jsp"%>
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
-    <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
 
     <script type="text/javascript">

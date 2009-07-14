@@ -43,4 +43,4 @@
 
 </kantega:section>
 
-<%@include file="../layout/navigateLayout.jsp"%>
+<%@include file="../layout/contentNavigateLayout.jsp"%>

@@ -1,6 +1,3 @@
-<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
@@ -24,27 +21,10 @@
 </kantega:section>
 
 <kantega:section id="content">
-<%
-    InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.CONTENT_DATA);
-%>
 <script language="Javascript" type="text/javascript">
     var hasSubmitted = false;
 
-    function initialize() {
-    <%
-        screen.generatePreJavascript();
-    %>
-        try {
-            document.myform.elements[0].focus();
-        } catch (e) {
-            // Invisble field, can't get focus
-        }
-    }
-
     function saveContent(status) {
-    <%
-        screen.generatePostJavascript();
-    %>
         if (validatePublishProperties()) {
             if (!hasSubmitted) {
                 hasSubmitted = true;
@@ -53,17 +33,10 @@
             }
         }
     }
-
-    $(document).ready(function() {
-        initialize();
-    });
 </script>
-<form name="myform" action="SaveContent.action" method="post" enctype="multipart/form-data">
+<form name="myform" action="ViewContentPreview.action" method="post" enctype="multipart/form-data">
     <div id="EditPane">
-    <%@ include file="../../../../admin/include/infobox.jsf" %>
-    <%
-        screen.generateInputScreen();
-    %>
+            <iframe width="600" height="500" src="ViewContentPreviewFrame.action"></iframe>
     </div>
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">

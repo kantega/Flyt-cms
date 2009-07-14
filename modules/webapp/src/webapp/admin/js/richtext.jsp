@@ -458,7 +458,7 @@ function rtEditTable(editorId) {
     }
     if (selectedTable) {
         focusField = selectedTable;
-        var tablewin = window.open("../popups/inserttable.jsp?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=116,resizable=yes");
+        var tablewin = window.open("../popups/InsertTable.action?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=116,resizable=yes");
         tablewin.focus();
     } else {
         alert("<kantega:label key="aksess.js.advarsel.plasseritabellredigere"/>");
@@ -613,7 +613,7 @@ function rtDeleteColumn(editorId) {
 function rtInsertChar(editorId) {
     focusField = document.getElementById(editorId);
 
-    var charwin = window.open("../popups/insertchar.jsp?refresh=" + getRefresh(), "charWindow", "dependent,toolbar=no,width=410,height=256,resizable=yes");
+    var charwin = window.open(popups/InsertCharacter.action?refresh=" + getRefresh(), "charWindow", "dependent,toolbar=no,width=410,height=256,resizable=yes");
     charwin.focus();
 }
 
@@ -625,7 +625,7 @@ function rtInsertTable(editorId) {
 
     focusField = editor;
 
-    var tablewin = window.open("../popups/inserttable.jsp?refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
+    var tablewin = window.open("popups/InsertTable.action?refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
     tablewin.focus();
 }
 
@@ -747,6 +747,6 @@ function rtReplace(editorId) {
 
     focusField = editor;
 
-    var replacewin = window.open("../popups/ReplaceText.action?refresh=" + getRefresh(), "replaceWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
+    var replacewin = window.open("popups/ReplaceText.action?refresh=" + getRefresh(), "replaceWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
     replacewin.focus();
 }

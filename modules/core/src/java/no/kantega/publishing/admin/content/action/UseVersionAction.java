@@ -24,6 +24,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServlet;
@@ -49,7 +50,7 @@ public class UseVersionAction extends HttpServlet {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content == null) {
             response.sendRedirect("content.jsp?activetab=previewcontent");
         } else {
@@ -67,7 +68,7 @@ public class UseVersionAction extends HttpServlet {
                     // Last attributter fra XML fil
                     EditContentHelper.updateAttributesFromTemplate(content, SecuritySession.getInstance(request));
 
-                    session.setAttribute("currentContent", content);
+                    session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 }
                 response.sendRedirect("content.jsp?activetab=editcontent");
             } catch (Exception e) {

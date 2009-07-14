@@ -53,7 +53,7 @@ public class ContentStateHandler {
                 ContentManagementService cms = new ContentManagementService(getRequest());
                 ContentIdentifier cid = new ContentIdentifier(url);
                 Content current = cms.getContent(cid);
-                session.setAttribute(AdminSessionAttributes.CURRENT_CONTENT, current);
+                session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {
                 Log.error(this.getClass().getName(), e, null, null);
             } catch (NotAuthorizedException e) {
@@ -69,7 +69,7 @@ public class ContentStateHandler {
     public int getCurrentContent() {
         HttpSession session = getSession();
         if (session != null) {
-            Content current = (Content) session.getAttribute(AdminSessionAttributes.CURRENT_CONTENT);
+            Content current = (Content) session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
             if (current != null) {
                 return current.getAssociation().getId();
             }

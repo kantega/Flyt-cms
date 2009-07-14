@@ -48,7 +48,7 @@
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
 <script language="Javascript" src="../js/browserdetect.js"></script>
-<script language="Javascript" src="../js/edit.jsp"></script>
+<script language="Javascript" src="../js/edit.jjs"></script>
 <script language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
 <script language="Javascript" type="text/javascript">

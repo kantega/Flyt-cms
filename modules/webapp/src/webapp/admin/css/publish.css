@@ -1,0 +1,107 @@
+/************** Edit content **************/
+#EditContentMain {
+    float: left;
+    height: 100%;
+    min-height: 100%;    
+}
+
+#EditPane {
+    height: 100%;
+    min-height: 100%;
+}
+
+#EditContentMainPane {
+    float: left;
+}
+
+#EditContentPaneSeperator {
+    margin-left: 10px;
+    background-color: #cccccc;
+    width: 10px;
+    float: left;
+    height: 100%;
+    min-height: 100%;
+}
+
+
+#EditContentPropertiesPane {
+    background-color: #cccccc;
+    width: 250px;
+    float: left;
+    height: 100%;
+    min-height: 100%;
+}
+
+#PropertiesPane label {
+    display: inline;
+}
+
+#EditContentTabs {
+    height: 21px;
+    float:left;
+}
+
+#EditContentTabs .editContentTab {
+    background-color: #ff0000;
+    margin-left: 30px;
+    height: 21px;
+    float:left;
+}
+
+#EditContentButtons {
+    height: 40px;
+    clear: both;
+    text-align: right;
+}
+
+#EditContentButtons .button {
+    background-color: #00ff00;
+}
+
+#EditMainPane {
+    margin-left: 10px;
+}
+
+#EditPane {
+    margin-left: 10px;
+}
+
+
+
+#TopicList .topic {
+    border: 1px solid #30d3fc;
+    background-color: #c0e5f7;
+    padding: 5px;
+    float: left;
+    clear: left;
+    margin-bottom: 5px;
+}
+
+#TopicList .topic .topicname {
+    float: left;
+}
+
+#TopicList .topic .buttonGroup {
+    margin-left: 5px;
+    float: left;
+}
+
+
+#TopicList .topic a.delete {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background-color: #000000;
+}
+
+#ChooseTopicButton {
+    clear: left;
+}
+
+.buttonRow {
+    line-height: 20px;
+    clear:both;
+    /*height: 20px;*/
+    background-color: #ffccff;
+    width: 600px;
+}

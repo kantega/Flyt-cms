@@ -22,7 +22,7 @@
     int id = param.getInt("attachmentId");
     boolean insertLink = param.getBoolean("insertLink");
 %>
-<kantega:section id="script">
+<kantega:section id="head">
 <script language="Javascript" type="text/javascript">
     if (window.opener) {
         <%

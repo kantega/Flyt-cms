@@ -25,7 +25,7 @@
     </c:choose>
 </kantega:section>
 
-<kantega:section id="script">
+<kantega:section id="head">
     <script type="text/javascript">
         var hasSubmitted = false;
         function saveForm() {

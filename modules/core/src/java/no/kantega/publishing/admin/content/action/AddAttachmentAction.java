@@ -23,6 +23,7 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -47,7 +48,7 @@ public class AddAttachmentAction implements Controller {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         int attachmentId   = param.getInt("attachmentId");
         boolean insertLink = param.getBoolean("insertLink");
@@ -81,11 +82,11 @@ public class AddAttachmentAction implements Controller {
 
                 attachment.setId(attachmentId);
                 if (content.getId() <= 0) {
-                    // Legger til vedlegg i liste, disse oppdateres med riktig contentid ved lagring
-                    // Evt slettes ved avbryt
+                    // Add attachments to list, these are updated with a correct contentid when saved in datadata
+                    // Or deleted if user cancels
                     attachment.setData(null);
                     content.addAttachment(attachment);
-                    session.setAttribute("currentContent", content);
+                    session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 }
             }
             model.put("attachmentId", attachmentId);

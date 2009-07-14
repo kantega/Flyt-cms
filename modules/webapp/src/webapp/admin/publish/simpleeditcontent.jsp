@@ -73,7 +73,7 @@ function initialize() {
 </script>
 <%@ include file="../../admin/publish/include/calendarsetup.jsp"%>
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
-    <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
     <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 

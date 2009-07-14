@@ -29,6 +29,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.security.SecuritySession;
 
 import java.util.List;
@@ -66,8 +67,8 @@ public class SimpleEditContentAction implements Controller {
         if(redirectUrl != null && redirectUrl.length() > 0) {
             request.setAttribute("redirectUrl", redirectUrl);
         }
-        request.setAttribute("currentContent", content);
-        session.setAttribute("currentContent", content);
+        request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+        session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
         return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
     }

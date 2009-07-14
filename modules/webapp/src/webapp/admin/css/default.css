@@ -1,3 +1,8 @@
+html, body {
+    height: 100%;
+    min-height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     font-size: 11px;
@@ -16,6 +21,11 @@ input[type=submit] {
 
 input.disabled {
     background-color: #eeeeed;
+}
+
+fieldset {
+    border: 1px solid black;
+    padding: 4px;
 }
 
 /************** General classes **************/
@@ -443,58 +453,6 @@ input.disabled {
     padding:4px;
 }
 
-/************** Edit content **************/
-#EditContentMain {
-    float: left;
-}
-
-#EditContentMainPane {
-    float: left;
-}
-
-#EditMainPaneSeperator {
-    margin-left: 10px;
-    background-color: #cccccc;
-    width: 10px;
-    float: left;
-    height: 100%;
-}
-
-
-#EditContentPropertiesPane {
-    width: 250px;
-    float: left;
-}
-
-#PropertiesPane label {
-    display: inline;
-}
-
-#EditContentTabs {
-    height: 21px;
-    float:left;
-}
-
-#EditContentTabs .editContentTab {
-    background-color: #ff0000;
-    margin-left: 30px;
-    height: 21px;
-    float:left;
-}
-
-#EditContentButtons {
-    height: 40px;
-    clear: both;
-    text-align: right;
-}
-
-#EditContentButtons .button {
-    background-color: #00ff00;
-}
-
-#EditMainPane {
-    margin-left: 10px;
-}
 
 /************** Edit content - attributes **************/
 .contentAttribute {

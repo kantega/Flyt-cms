@@ -55,7 +55,7 @@ public class NavigatorAction implements Controller {
         }
 
         String path = null;
-        Multimedia currentMultimedia = (Multimedia)session.getAttribute(AdminSessionAttributes.CURRENT_MULTIMEDIA);
+        Multimedia currentMultimedia = (Multimedia)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA);
         if (currentMultimedia != null) {
             selectedId = currentMultimedia.getId();
             List<PathEntry> pathList = mediaService.getMultimediaPath(currentMultimedia);

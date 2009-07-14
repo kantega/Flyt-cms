@@ -25,6 +25,7 @@ import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +47,7 @@ public class EditContentAction implements Controller {
 
         ContentIdentifier cid = new ContentIdentifier(request);
         HttpSession session = request.getSession();
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         if (cid.getAssociationId() == -1 && content == null) {
             Connection c = null;
@@ -91,7 +92,7 @@ public class EditContentAction implements Controller {
             model.put("infomessage", infomessage);            
         }
 
-        session.setAttribute("currentContent", content);
+        session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
         return new ModelAndView(new RedirectView("SaveContent.action"), model);
     }

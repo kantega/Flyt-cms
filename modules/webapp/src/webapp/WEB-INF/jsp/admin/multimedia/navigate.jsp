@@ -40,4 +40,4 @@
 </kantega:section>
 
 
-<%@include file="../layout/multimediaLayout.jsp"%>
+<%@include file="../layout/multimediaNavigateLayout.jsp"%>

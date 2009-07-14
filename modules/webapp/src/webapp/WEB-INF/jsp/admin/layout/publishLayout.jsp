@@ -22,6 +22,7 @@
 
 <kantega:section id="head">
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/publish.css">
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" language="Javascript" src="../js/common.js"></script>
     <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
@@ -57,7 +58,7 @@
         <div id="EditContentMainPane">
             <div id="EditContentTabs">
                 <div class="editContentTab" id="PublishPreview">
-                    <a href="Javascript:gotoTab('Preview.action')">Preview</a>
+                    <a href="Javascript:gotoTab('ViewContentPreview.action')">Preview</a>
                 </div>
                 <div class="editContentTab" id="PublishContent">
                     <a href="Javascript:gotoTab('SaveContent.action')">Content</a>

@@ -1,5 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
+<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -15,20 +18,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title"><kantega:label key="${error}"/></kantega:section>
 
-<%
-    String q = "selectAssociationId=true";
-    if (request.getParameter("useContentId") != null) {
-        q = "selectContentId=true";
-    }
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title><kantega:label key="aksess.popup.selectcontent"/></title>
-</head>
-<frameset rows="*,40" frameborder="0" border="0">
-    <frame name="navtree" src="../publish/navigator.jsp?<%=q%>" marginwidth="0" marginheight="0" scrolling="auto">
-    <frame src="selectcontent_bottomframe.jsp" marginwidth="0" marginheight="0" scrolling="no">
-</frameset>
-</html>
+
+<kantega:section id="body">
+    <div id="ErrorMessage">
+        <div class="error">
+            <kantega:label key="${error}"/>
+        </div>
+        <div class="buttonGroup">
+            <a href="Javascript:window.close()" class="button ok"><kantega:label key="aksess.button.ok"/></a>
+        </div>
+   </div>
+</kantega:section>
+<%@ include file="../layout/popupLayout.jsp" %>

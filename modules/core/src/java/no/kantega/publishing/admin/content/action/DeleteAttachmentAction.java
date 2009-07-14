@@ -19,6 +19,7 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.client.util.RequestParameters;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +43,7 @@ public class DeleteAttachmentAction implements Controller {
         aksessService.deleteAttachment(attachmentId);
 
         HttpSession session = request.getSession(true);
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
         if (content != null) {
             // Delete reference from current object in session
             List attachments = content.getAttachments();

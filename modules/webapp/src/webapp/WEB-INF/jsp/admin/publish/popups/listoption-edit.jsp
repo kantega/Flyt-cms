@@ -22,7 +22,7 @@
     <kantega:label key="aksess.editablelist.title"/>
 </kantega:section>
 
-<kantega:section id="script">
+<kantega:section id="head">
     <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
     <script type="text/javascript" language="Javascript">
 
@@ -57,28 +57,7 @@
     </script>
 </kantega:section>
 
-<kantega:section id="body">
-    <table border="0" width="100%" cellspacing="0">
-        <tr>
-            <td class="tableHeading"><b></b></td>
-        </tr>
-        <tr>
-            <td>
-                <b><kantega:label key="aksess.editablelist.value"/></b><br>
-                <input type="text" name="optionValue" style="width:250px;" maxlength="255">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="checkbox" name="defaultSelected" value="true">
-                <kantega:label key="aksess.editablelist.defaultSelected"/>
-            </td>
-        </tr>
-    </table>
-    <p>
-        <a href="Javascript:addListOption()"><img src="../bitmaps/<%=skin%>/buttons/ok.gif" border="0"></a>&nbsp;&nbsp;<a href="Javascript:window.close()"><img src="../bitmaps/<%=skin%>/buttons/avbryt.gif" border="0"></a>
-    </p>
-
+<kantega:section id="body">    
     <div id="EditListOptionForm">
     <form name="myform" action="">
         <fieldset>
