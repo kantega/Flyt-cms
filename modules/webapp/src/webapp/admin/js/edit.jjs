@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 //<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+//<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
 
 var focusField = null;
 
@@ -159,7 +161,7 @@ function editForm(formElement) {
 function selectContentUrl(formElement) {
    focusField = formElement;
    doInsertTag = true;
-   var contentwin = window.open("../popups/SelectContent.action?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+   var contentwin = window.open("popups/SelectContent.action?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
    contentwin.focus();
 }
 
@@ -243,7 +245,7 @@ function selectMultimedia(formElement, filter) {
 function selectMediaFolder(formElement) {
     focusField = eval(formElement);
     doInsertTag = false;
-    var mmwin = window.open("../popups/selectmediafolder.jsp?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("popups/SelectMediaFolder.action.jsp?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 

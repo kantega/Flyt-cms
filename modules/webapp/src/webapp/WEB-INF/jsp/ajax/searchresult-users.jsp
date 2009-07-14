@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -13,8 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<?xml version="1.0" encoding="utf-8"?>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <values>
     <c:forEach var="user" items="${userlist}" varStatus="status">

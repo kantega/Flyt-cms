@@ -64,15 +64,15 @@
             <legend><kantega:label key="aksess.editablelist.title"/></legend>
 
             <div class="formElement">
-                <label for="search"><kantega:label key="aksess.editablelist.value"/></label>
-                <input type="text" name="optionValue" maxlength="255">
+                <div class="heading">
+                    <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>
+                </div>
+                <div class="inputs">
+                    <input type="text" id="optionValue" name="optionValue" maxlength="255"><br>
+                    <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
+                    <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
+                </div>
             </div>
-            
-            <div class="formElement">
-                <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
-                <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
-            </div>
-
         </fieldset>
         <div class="buttonGroup">
             <a href="Javascript:addListOption()" class="button ok"><kantega:label key="aksess.button.ok"/></a>

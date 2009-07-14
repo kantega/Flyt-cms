@@ -25,7 +25,7 @@
 </head>
 
 <body>
-    <div id="PopupContent">
+    <div class="dialogue">
         <kantega:getsection id="body"/>
     </div>
 </body>

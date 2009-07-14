@@ -81,14 +81,6 @@ function doInsert() {
                 url = "/content.ap?thisId=" + url;
             } else if (linktype == "contentId") {
                 url = "/content.ap?contentId=" + url + "&amp;contextId=$contextId$";
-            } else if (linktype == "multimedia") {
-                url = "/multimedia.ap?id=" + url;
-            } else if (linktype == "email") {
-                url = "mailto:" + url;
-                var subject = frm.subject.value;
-                if (subject != "") {
-                    url = url + "?subject=" + escape(subject);
-                }
             }
 
             var anchor = document.myform.anchor.value;
@@ -96,37 +88,15 @@ function doInsert() {
                 if (anchor.charAt(0) == '#') {
                     anchor = anchor.substring(0, anchor.length);
                 }
-                if (linktype == "attachment") {
-                    // AttachmentRequestHandler will send correct anchor for PDF/Word
-                    url = url + "&anchor=" + escape(anchor);
-                    url = url + "#" + anchor;
-                } else {
-                    url = url + "#" + anchor;
-                }
+                url = url + "#" + anchor;
             }
             if (url.charAt(0) == '/') {
                 url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
             }
 
-            if (linktype == "external" && frm.newwindow.checked) {
-                // Cant use CreateLink with target
-                var range = getRange(window.opener.focusField);
-                if (range) {
-                    var node = getNodeFromRange(range);
-                    var selectedText = getHTMLFromRange(range);
-                    try {
-                        // if user has selected a link, remove old link
-                        if (node.tagName == "A") {
-                            selectedText = node.innerHTML;
-                        }
-                        pasteHTML(window.opener.focusField, '<a href="' + url + '" onclick="window.open(this.href); return false">' + selectedText  + '</a>');
-                    } catch (e) {
 
-                    }
-                }
-            } else {
-                window.opener.createLink(url);
-            }            
+            window.opener.createLink(url);
+
         }
     }
     window.close();
@@ -205,19 +175,6 @@ function selectMultimedia() {
 }
 
 
-function addAnchors() {
-    if (window.opener) {
-        var fld = window.opener.focusField;
-        var imgs = fld.contentWindow.document.getElementsByTagName("img");
-        for (var j = 0; imgs && j < imgs.length; j++) {
-            var img = imgs[j];
-            if (img.src.indexOf("placeholder/anchor.gif") != -1) {
-                var n = img.name;
-                document.myform.url_anchor.options[document.myform.url_anchor.options.length] = new Option(n, '#' + n);
-            }
-        }
-    }
-}
 </script>
 
 <body class="bodyWithMargin" onLoad="addAnchors()">
@@ -250,40 +207,6 @@ function addAnchors() {
             </tr>
             <tr>
                 <td colspan="3"><img src="../bitmaps/blank.gif" width="2" height="4"></td>
-            </tr>
-        </table>
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_external" style="display:block;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.external.url"/></b></td>
-                <td><input type="text" name="url_external" value="<%=url%>" style="width:250px;" maxlength="1024"></td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td><input type="checkbox" name="newwindow" <%if (Aksess.doOpenLinksInNewWindow() || openInNewWindow) out.write("checked");%>><kantega:label key="aksess.insertlink.opennewwindow"/></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
-
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_anchor" style="display:none;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.anchor.title"/></b></td>
-                <td>
-                    <select name="url_anchor" style="width:250px;">
-                        <option value=""><kantega:label key="aksess.insertlink.anchor.select"/></option>
-                    </select>
-                </td>
-                <td>&nbsp;</td>
             </tr>
         </table>
 
@@ -319,79 +242,7 @@ function addAnchors() {
             </tr>
         </table>
 
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_email" style="display:none;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.email.recipient"/></b></td>
-                <td><input type="text" name="url_email" value="" style="width:250px;" maxlength="128"></td>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.email.subject"/></b></td>
-                <td><input type="text" name="subject" value="" style="width:250px;" maxlength="128"></td>
-                <td>&nbsp;</td>
-            </tr>
-        </table>
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_attachment" style="display:none;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
 
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.attachment.title"/></b></td>
-                <td>
-                <select name="url_attachment" style="width:250px;">
-                <option value=""><kantega:label key="aksess.insertlink.attachment.select"/></option>
-                <%
-                    if (current != null) {
-                        List attachments = null;
-                        if (current.getId() > 0) {
-                            ContentIdentifier cid = new ContentIdentifier();
-                            cid.setContentId(current.getId());
-                            cid.setLanguage(current.getLanguage());
-                            attachments = aksessService.getAttachmentList(cid);
-                        } else {
-                            attachments = current.getAttachments();
-                        }
-                        if (attachments != null) {
-                            for (int i=0; i < attachments.size(); i++) {
-                                Attachment a = (Attachment)attachments.get(i);
-                                String filename = a.getFilename();
-                                if (filename.length() > 40) {
-                                    filename = filename.substring(0, 37) + "...";
-                                }
-                                out.write("<option value=\"/attachment.ap?id=" + a.getId() + "\">" + filename + "</option>");
-                            }
-                        }
-                    }
-
-                %>
-                </select>
-                </td>
-                <td align="right"><a href="AddAttachment.action?insertLink=true" class="button"><kantega:label key="aksess.button.nyfil"/></a></td>
-            </tr>
-        </table>
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="linktype_multimedia" style="display:none;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
-            <tr>
-                <td><b><kantega:label key="aksess.insertlink.multimedia.file"/></b></td>
-                <td><input type="hidden" name="url_multimedia" id="url_multimedia" value=""><input type="text" name="url_multimediatext" id="url_multimediatext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.multimedia.hint"/>" style="width:250px;" maxlength="128"></td>
-                <td align="right"><a href="Javascript:selectMultimedia()" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-                <script type="text/javascript">
-                    Autocomplete.setup({'inputField' :'url_multimedia', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
-                </script>
-            </tr>
-        </table>
         <table border="0" width="370" cellspacing="0" cellpadding="0" id="smartlink" style="display:none;">
             <tr>
                 <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
@@ -417,18 +268,6 @@ function addAnchors() {
                 <td>&nbsp;</td>
             </tr>
 
-        </table>
-        <table border="0" width="370" cellspacing="0" cellpadding="0" id="anchor" style="display:block;">
-            <tr>
-                <td width="70"><img src="../bitmaps/blank.gif" width="70" height="1"></td>
-                <td width="250"><img src="../bitmaps/blank.gif" width="250" height="1"></td>
-                <td width="50"><img src="../bitmaps/blank.gif" width="50" height="1"></td>
-            </tr>
-            <tr>
-                 <td><b><kantega:label key="aksess.insertlink.anchor.title"/></b></td>
-                 <td><input type="text" name="anchor" style="width:250px;" maxlength="64" value="<%=anchor%>"></td>
-                 <td>&nbsp;</td>
-             </tr>
         </table>
         <table border="0" width="370" cellspacing="0" cellpadding="0">
             <tr>

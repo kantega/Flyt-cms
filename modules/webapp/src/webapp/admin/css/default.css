@@ -38,6 +38,13 @@ fieldset {
     float: right;
 }
 
+.info {
+    border: 1px solid #000000;
+    padding: 4px;
+    color: #000000;
+    background-color: #FFFFE1;
+    margin-bottom: 10px;
+}
 /************** Layout **************/
 #Top {}
 
@@ -454,28 +461,51 @@ fieldset {
 }
 
 
-/************** Edit content - attributes **************/
+/************** Form elements and content - attributes **************/
 .contentAttribute {
     width: 600px;
+}
+
+.contentAttribute, .formElement {
     margin-bottom: 14px;
 }
 
-.contentAttribute .heading {
+.contentAttribute .heading, .formElement .heading {
     font-weight: bold;
     float: left;
 }
 
-.contentAttribute .buttonGroup {
+.contentAttribute .buttonGroup, .formElement .buttonGroup {
+    margin-left: 15px;
     float: left;
 }
 
-.contentAttribute .inputs {
+.contentAttribute .inputs, .formElement .inputs {
     clear: both;
 }
 
 .fullWidth {
     width: 100%;
 }
+
+/************** Popups **************/
+.dialogue .tabGroup .tab {
+    background-color: #00cc00;
+}
+
+.dialogue .tabGroup .selected {
+    background-color: #cccccc;
+}
+
+
+.dialogue .buttonGroup .button {
+    background-color: #ff0000;
+}
+
+.formElement .buttonGroup .button {
+    background-color: #ffffff;
+}
+
 
 /************** Search results **************/
 #SearchResults {

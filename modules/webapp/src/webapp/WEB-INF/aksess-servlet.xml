@@ -31,14 +31,7 @@
 
         <property name="mappings">
             <props>
-                <prop key="/admin/publish/Navigate.action">contentNavigateAction</prop>
-                <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAjaxAction</prop>
-
-                <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
-                <prop key="/admin/multimedia/MultimediaNavigator.action">multimediaNavigatorAjaxAction</prop>
-                <prop key="/admin/multimedia/ViewFolder.action">viewFolderAjaxAction</prop>
-                <prop key="/admin/multimedia/popups/SelectFolder.action">SelectFolderAction</prop>
-
+                <!-- Base controllers -->
                 <prop key="/">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
                 <prop key="*.asp">ContentRequestHandler</prop>
@@ -49,100 +42,101 @@
                 <prop key="/rss.ap">RssRequestHandler</prop>
                 <prop key="/Login.action">LoginAction</prop>
                 <prop key="/Logout.action">LogoutAction</prop>
+                <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
+                <prop key="/robots.txt">RobotsController</prop>
+
+                <!-- Sites -->
+                <prop key="/admin/sites/CreateRoot.action">createRootAction</prop>
+
+                <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
                 <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
                 <prop key="/admin/security/AddContentRolePermission.action">AddContentRolePermissionAction</prop>
-                <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
+                <prop key="/admin/security/EditPermissions.action">EditPermissionsAction</prop>
+                <prop key="/admin/security/RemovePermission.action">RemovePermissionAction</prop>
+                <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
+
+                <!-- Publish navigator -->
+                <prop key="/admin/publish/Navigate.action">contentNavigateAction</prop>
+                <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAjaxAction</prop>
+                <prop key="/admin/publish/popups/SelectMediaFolder.action">SelectMediaFolderAction</prop>
+
+                <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
                 <prop key="/admin/publish/CancelEdit.action">CancelEditAction</prop>
                 <prop key="/admin/publish/ConfirmCopyPaste.action">ConfirmCopyPasteContentAction</prop>
-                <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
                 <prop key="/admin/publish/CopyPasteContent.action">CopyPasteContentAction</prop>
                 <prop key="/admin/publish/CleanupHTML.action">CleanupHTMLAction</prop>
-                <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
-                <prop key="/admin/sites/CreateRoot.action">createRootAction</prop>
                 <prop key="/admin/publish/DeleteAttachment.action">DeleteAttachmentAction</prop>
-                <prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>
                 <prop key="/admin/publish/SaveHearing.action">SaveHearingAction</prop>
-                <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/DeleteAssociation.action">DeleteAssociationAction</prop>
-                <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
-                <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
-                <prop key="/admin/topicmaps/admin/DeleteTopicMap.action">DeleteTopicMapAction</prop>
-                <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
                 <prop key="/admin/publish/DeleteVersion.action">DeleteVersionAction</prop>
                 <prop key="/admin/publish/EditContent.action">EditContentAction</prop>
-                <prop key="/admin/security/EditPermissions.action">EditPermissionsAction</prop>
-                <prop key="/admin/security/RemovePermission.action">RemovePermissionAction</prop>
                 <prop key="/admin/EndAdminMode.action">EndAdminModeAction</prop>
-                <prop key="/admin/multimedia/ImageManipulation.action">ImageManipulationAction</prop>
-                <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/publish/ViewContentPreview.action">ViewContentPreviewAction</prop>
                 <prop key="/admin/publish/ViewContentPreviewFrame.action">ViewContentPreviewFrameAction</prop>
                 <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
                 <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
                 <prop key="/admin/publish/SaveNotes.action">SaveNotesAction</prop>
-                <prop key="/admin/multimedia/SaveMultimedia.action">SaveMultimediaAction</prop>
-                <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
                 <!--<prop key="/admin/publish/SaveVersionInfo.action">SaveVersionInfoAction</prop>-->
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
                 <prop key="/admin/publish/SimpleEditCancel.action">SimpleEditCancelAction</prop>
                 <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
-                <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
-                <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+                <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
+
+                <!-- Popups for publishing -->
                 <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
-                <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
+                <prop key="/admin/publish/popups/InsertLink.action">InsertLinkAction</prop>
                 <prop key="/admin/publish/popups/InsertTable.action">InsertTableAction</prop>
                 <prop key="/admin/publish/popups/InsertCharacter.action">InsertCharacterAction</prop>
+                <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
+
+                <!-- Multimedia naviagator -->
+                <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
+                <prop key="/admin/multimedia/MultimediaNavigator.action">multimediaNavigatorAjaxAction</prop>
+                <prop key="/admin/multimedia/ViewFolder.action">viewFolderAjaxAction</prop>
+
+                <!-- Multimedia -->
+                <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
+                <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
+                <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
+                <prop key="/admin/multimedia/ImageManipulation.action">ImageManipulationAction</prop>
+                <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
+                <prop key="/admin/multimedia/SaveMultimedia.action">SaveMultimediaAction</prop>
+
+
+                <!-- Topic maps -->
+                <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
+                <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
+                <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
+                <!--<prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>-->                
+                <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
+                <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+
                 <prop key="/admin/publish/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
+
+                <!-- Search for autocomplete -->
                 <prop key="/ajax/SearchContentAsXML.action">SearchContentAsXMLAction</prop>
                 <prop key="/ajax/SearchMultimediaAsXML.action">SearchMultimediaAsXMLAction</prop>
                 <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
                 <prop key="/ajax/SearchUsersAsXML.action">SearchUsersAsXMLAction</prop>
+
+                <!-- List options -->
                 <prop key="/admin/publish/EditListOption.action">EditListOptionAction</prop>
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
+
+                <!-- Various -->
                 <prop key="/admin/groovy.action">groovyConsole</prop>
-                <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
-                <prop key="/robots.txt">RobotsController</prop>
             </props>
         </property>
     </bean>
-
-
-    <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
-    </bean>
-
-    <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
-    </bean>
-
-    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
-
-    <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigate.jsp"/>
-    </bean>
-
-    <bean id="multimediaNavigatorAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.NavigatorAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigator.jsp"/>
-    </bean>
-
-    <bean id="viewFolderAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.ViewFolderAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/viewfolder.jsp"/>
-    </bean>
-
-
-
-
-
-
 
     <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
 
@@ -166,8 +160,9 @@
                 <prop key="/admin/searchlog/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/contentexpiration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/userchanges/ListUserChanges.action">listUserChangesAction</prop>
-                <prop key="/admin/topicmaps/admin/ListTopicMaps.action">listTopicMapsAction</prop>
                 <prop key="/admin/topicmaps/admin/EditTopicMap.action">editTopicMapAction</prop>
+                <prop key="/admin/topicmaps/admin/DeleteTopicMap.action">DeleteTopicMapAction</prop>
+                <prop key="/admin/topicmaps/admin/ListTopicMaps.action">listTopicMapsAction</prop>
                 <!-- Site config controller -->
                 <prop key="/admin/sites/ListSites.action">listSitesAction</prop>
                 <prop key="/admin/sites/UpdateSite.action">updateSiteAction</prop>
@@ -180,7 +175,9 @@
             </props>
         </property>
     </bean>
-    <!-- Actions available for everyone -->
+
+
+    <!-- Base controllers -->
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ContentRequestHandler">
         <property name="servletClass">
             <value>no.kantega.publishing.client.ContentRequestHandler</value>
@@ -232,6 +229,17 @@
             <value>LogoutAction</value>
         </property>
     </bean>
+    <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
+    <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
+
+    <!-- Sites -->
+    <bean class="no.kantega.publishing.admin.sites.action.CreateRootAction" id="createRootAction">
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
+    <!-- Security -->
+    <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.AddTopicRoleAction" id="AddTopicRoleAction"/>
     <bean class="no.kantega.useradmin.controls.CreateInitialUserController" id="CreateInitialUserAction">
         <property name="defaultDomain">
             <value>${security.defaultdomain}</value>
@@ -239,68 +247,26 @@
         <property name="profileConfiguration" ref="profileConfigurations"/>
         <property name="roleConfiguration" ref="roleConfigurations"/>
     </bean>
+    <!-- Security -->
+    <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>
 
+    <!-- Future my page-->
+    <bean class="no.kantega.publishing.admin.content.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>    
 
-    <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.AddTopicRoleAction" id="AddTopicRoleAction"/>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ApproveOrRejectAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.ApproveOrRejectAction</value>
-        </property>
-        <property name="servletName">
-            <value>ApproveOrRejectAction</value>
-        </property>
+    <!-- Navigate content -->
+    <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.CleanupHTMLAction" id="CleanupHTMLAction"/>
+    <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
+    </bean>
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction"/>
     <bean class="no.kantega.publishing.admin.content.action.CopyPasteContentAction" id="CopyPasteContentAction"/>
-    <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction"/>
-
-    <bean class="no.kantega.publishing.admin.content.action.DeleteAttachmentAction" id="DeleteAttachmentAction"/>
-
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteContentTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteContentTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteContentTopicAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteMultimediaAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteMultimediaAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.topicmaps.action.DeleteTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteTopicAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicMapAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteTopicMapAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteRoleTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteRoleTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteRoleTopicAction</value>
-        </property>
-    </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteAssociationAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.DeleteAssociationAction</value>
@@ -309,22 +275,28 @@
             <value>DeleteAssociationAction</value>
         </property>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteVersionAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteVersionAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteVersionAction</value>
-        </property>
-    </bean>
 
     <!-- Edit content -->
     <bean class="no.kantega.publishing.admin.content.action.AddContentAction" id="AddContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/publish/selecttemplate.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SelectTemplateAction" id="SelectTemplateAction"/>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ApproveOrRejectAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.ApproveOrRejectAction</value>
+        </property>
+        <property name="servletName">
+            <value>ApproveOrRejectAction</value>
+        </property>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.CleanupHTMLAction" id="CleanupHTMLAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteAttachmentAction" id="DeleteAttachmentAction"/>
     <bean class="no.kantega.publishing.admin.content.action.EditContentAction" id="EditContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SelectTemplateAction" id="SelectTemplateAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SaveAttachmentsAction" id="SaveAttachmentsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/editattachments.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.content.action.SaveContentAction" id="SaveContentAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editcontent.jsp"/>
     </bean>
@@ -334,105 +306,11 @@
     <bean class="no.kantega.publishing.admin.content.action.SaveNotesAction" id="SaveNotesAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editnotes.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SaveAttachmentsAction" id="SaveAttachmentsAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/editattachments.jsp"/>
-    </bean>
     <!--
     <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveVersionInfoAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editversions.jsp"/>
     </bean>
     -->
-    <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
-    <!-- Preview  -->
-    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="ViewContentPreviewAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ViewContentPreviewFrameAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.ViewContentPreviewFrameAction</value>
-        </property>
-        <property name="servletName">
-            <value>PreviewContentAction</value>
-        </property>
-    </bean>
-
-    <!-- Edit content - popups -->
-    <bean class="no.kantega.publishing.admin.content.action.AddAttachmentAction" id="AddAttachmentAction">
-        <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
-        <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="ReplaceTextAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/replacetext.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertTableAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertCharacterAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-char.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="EditListOptionAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/listoption-edit.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="SelectFolderAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-mediafolder.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
-    </bean>
-
-
-    <!-- Topic maps -->
-    <bean class="no.kantega.publishing.admin.content.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
-        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
-    </bean>
-
-    <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageManipulationAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.ImageManipulationAction</value>
-        </property>
-        <property name="servletName">
-            <value>ImageManipulationAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageMapAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.ImageMapAction</value>
-        </property>
-        <property name="servletName">
-            <value>ImageMapAction</value>
-        </property>
-    </bean>
-
-    <!-- Mini Aksess -->
-    <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
-
-    <bean class="no.kantega.publishing.admin.content.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
-
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMultimediaAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveMultimediaAction</value>
-        </property>
-    </bean>
-
-    <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>
-
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UpdateTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.topicmaps.action.UpdateTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>UpdateTopicAction</value>
-        </property>
-    </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.SaveHearingAction</value>
@@ -457,6 +335,163 @@
             <value>UseVersionAction</value>
         </property>
     </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteVersionAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.DeleteVersionAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteVersionAction</value>
+        </property>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
+
+    <!-- Preview  -->
+    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="ViewContentPreviewAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ViewContentPreviewFrameAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.ViewContentPreviewFrameAction</value>
+        </property>
+        <property name="servletName">
+            <value>PreviewContentAction</value>
+        </property>
+    </bean>
+
+    <!-- Edit content - popups -->
+    <bean class="no.kantega.publishing.admin.content.action.AddAttachmentAction" id="AddAttachmentAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
+        <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="ReplaceTextAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/replacetext.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertTableAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertCharacterAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-char.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="EditListOptionAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/listoption-edit.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="SelectMediaFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-mediafolder.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
+    </bean>
+
+    <!-- Navigate multimedia -->
+    <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigate.jsp"/>
+    </bean>
+    <bean id="multimediaNavigatorAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.NavigatorAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigator.jsp"/>
+    </bean>
+    <bean id="viewFolderAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.ViewFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/viewfolder.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction"/>
+    <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction"/>
+
+    <!-- Multimedia -->
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteMultimediaAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteMultimediaAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageManipulationAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.multimedia.action.ImageManipulationAction</value>
+        </property>
+        <property name="servletName">
+            <value>ImageManipulationAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageMapAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.multimedia.action.ImageMapAction</value>
+        </property>
+        <property name="servletName">
+            <value>ImageMapAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMultimediaAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction</value>
+        </property>
+        <property name="servletName">
+            <value>SaveMultimediaAction</value>
+        </property>
+    </bean>
+
+
+
+    <!-- Topic maps -->
+    <bean class="no.kantega.publishing.admin.content.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UpdateTopicAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.topicmaps.action.UpdateTopicAction</value>
+        </property>
+        <property name="servletName">
+            <value>UpdateTopicAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.topicmaps.action.DeleteTopicAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteTopicAction</value>
+        </property>
+    </bean>
+
+
+
+    <!--
+    Gjøres om i forbindelse med emnekart
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteContentTopicAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.DeleteContentTopicAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteContentTopicAction</value>
+        </property>
+    </bean>
+    -->
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicMapAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteTopicMapAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteRoleTopicAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.DeleteRoleTopicAction</value>
+        </property>
+        <property name="servletName">
+            <value>DeleteRoleTopicAction</value>
+        </property>
+    </bean>
+
+
+    <!-- Mini Aksess -->
+    <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
 
     <!-- Administrator controllers -->
     <bean class="no.kantega.publishing.admin.content.action.ListContentLocksAction" id="listContentLocksAction"/>
@@ -484,25 +519,18 @@
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
     <bean class="no.kantega.publishing.admin.sites.action.UpdateSiteAction" id="updateSiteAction"/>
-    <bean class="no.kantega.publishing.admin.sites.action.CreateRootAction" id="createRootAction">
-        <property name="siteCache" ref="aksessSiteCache"/>
-    </bean>
 
     <!-- Template config -->
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListAssociationCategoriesAction" id="listAssociationCategoriesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
-
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListContentTemplatesAction" id="listContentTemplatesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
-
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplatesAction" id="listDisplayTemplatesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
-
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplateUsagesAction" id="listDisplayTemplateUsagesAction"/>
-
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ReloadTemplateConfigurationAction" id="reloadTemplateConfigurationAction">
         <property name="templateConfigurationFactory" ref="aksessTemplateConfigurationFactory"/>
         <property name="templateConfigurationValidator" ref="aksessTemplateConfigurationValidator"/>
@@ -526,11 +554,8 @@
         <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
     </bean>
 
-    <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
 
     <bean id="groovyConsole" class="no.kantega.publishing.admin.groovyconsole.GroovyConsole"/>
-
-    <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
 </beans>

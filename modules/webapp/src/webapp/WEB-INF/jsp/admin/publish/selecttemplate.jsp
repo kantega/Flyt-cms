@@ -42,8 +42,6 @@
 	<title>selecttemplate.jsp</title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
-<script language="Javascript" src="../js/common.js">
-</script>
 <script language="Javascript">
 
 var addedParents = "<c:out value="${addedParents}"/>"
@@ -104,6 +102,18 @@ function doSelectTemplate() {
 %>
     document.myform.submit();
 }
+
+function isChecked(elm) {
+    if (!elm) return false;
+    if (!elm.length) return true;
+
+    for (var i = 0; i < elm.length; i++) {
+        if (elm[i].checked) return true;
+    }
+
+    return false;
+}
+    
 </script>
 
 <body class="bodyWithMargin">

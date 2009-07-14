@@ -1,24 +1,22 @@
-<%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%--
-  ~ Copyright 2009 Kantega AS
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~    http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  --%>
-<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-%>
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+//<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+//<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
 
 /**
  Rich text editor functions
@@ -211,28 +209,6 @@ function rtToggleHTMLMode(editorId) {
     editor.HTMLmode = !oldHTMLmode;
 
     editor.contentWindow.focus()
-}
-
-function rtSpellCheck(editorId) {
-    var editor = document.getElementById(editorId);
-    if (editor.HTMLmode) {
-        alert("Stavekontroll kan ikke brukes i HTML modus");
-        return;
-    }
-
-    try {
-        var spellchecker = new ActiveXObject("ieSpell.ieSpellExtension");
-        var isChecked = spellchecker.CheckAllLinkedDocuments2(editor.document.body, true);
-        if (isChecked) {
-            alert("Stavekontrollen er ferdig");
-        }
-    } catch (e) {
-        if(e.number==-2146827859) {
-            var charwin = window.open("../popups/downloadspellchecker.jsp?refresh=" + getRefresh(), "charWindow", "dependent,toolbar=no,width=410,height=256,resizable=yes");
-        } else {
-            alert(e.message);
-        }
-    }
 }
 
 
@@ -458,7 +434,7 @@ function rtEditTable(editorId) {
     }
     if (selectedTable) {
         focusField = selectedTable;
-        var tablewin = window.open("../popups/InsertTable.action?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=116,resizable=yes");
+        var tablewin = window.open("popups/InsertTable.action?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=116,resizable=yes");
         tablewin.focus();
     } else {
         alert("<kantega:label key="aksess.js.advarsel.plasseritabellredigere"/>");
@@ -613,7 +589,7 @@ function rtDeleteColumn(editorId) {
 function rtInsertChar(editorId) {
     focusField = document.getElementById(editorId);
 
-    var charwin = window.open(popups/InsertCharacter.action?refresh=" + getRefresh(), "charWindow", "dependent,toolbar=no,width=410,height=256,resizable=yes");
+    var charwin = window.open("popups/InsertCharacter.action?refresh=" + getRefresh(), "charWindow", "dependent,toolbar=no,width=410,height=256,resizable=yes");
     charwin.focus();
 }
 
@@ -665,7 +641,7 @@ function rtInsertLink(editorId) {
 
     doInsertTag = true;
 
-    var linkwin = window.open("../popups/insertlink.jsp?url=" + url + "&anchor=" + anchor + "&openInNewWindow=" + openInNewWindow + "&refresh=" + getRefresh(), "linkSelectorWindow", "dependent,toolbar=no,width=380,height=260,resizable=no,scrollbars=no");
+    var linkwin = window.open("popups/InsertLink.action?url=" + url + "&anchor=" + anchor + "&openInNewWindow=" + openInNewWindow + "&refresh=" + getRefresh(), "linkSelectorWindow", "dependent,toolbar=no,width=380,height=260,resizable=no,scrollbars=no");
     linkwin.focus();
 }
 

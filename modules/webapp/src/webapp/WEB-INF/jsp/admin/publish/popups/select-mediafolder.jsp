@@ -81,7 +81,7 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <div id="SelectMediaFolder">
+    <div id="SelectMedia">
 
         <div id="Navigation">
             <div id="Navigator"></div>

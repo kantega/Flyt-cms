@@ -59,13 +59,21 @@
             <legend><kantega:label key="aksess.replacetext.title"/></legend>
 
             <div class="formElement">
-                <label for="search"><kantega:label key="aksess.replacetext.soketter"/></label>
-                <input type="text" id="search" size="20" maxlength="40" name="search" value="">
+                <div class="heading">
+                    <label for="search"><kantega:label key="aksess.replacetext.soketter"/></label>
+                </div>
+                <div class="inputs">
+                    <input type="text" id="search" size="20" maxlength="40" name="search" value="">
+                </div>
             </div>
 
             <div class="formElement">
-                <label for="replace"><kantega:label key="aksess.replacetext.erstattmed"/></label>
-                <input type="text" id="replace" size="20" maxlength="40" name="replace" value="">
+                <div class="heading">
+                    <label for="replace"><kantega:label key="aksess.replacetext.erstattmed"/></label>
+                </div>
+                <div class="inputs">
+                    <input type="text" id="replace" size="20" maxlength="40" name="replace" value="">
+                </div>
             </div>
         </fieldset>
 

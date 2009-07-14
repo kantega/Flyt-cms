@@ -48,7 +48,11 @@
                 </c:choose>
             </legend>
 
-            <input type="file" size="20" name="attachment" value="" style="width:300px;">
+            <div class="formElement">
+                <div class="inputs">
+                    <input type="file" size="20" name="attachment" value="" style="width:300px;">
+                </div>
+            </div>
 
         </fieldset>
         <div class="buttonGroup">
