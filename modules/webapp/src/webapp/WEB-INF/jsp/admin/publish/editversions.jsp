@@ -1,0 +1,140 @@
+<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
+<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="no.kantega.publishing.admin.AdminSessionAttributes" %>
+<%@ page import="no.kantega.publishing.security.data.enums.Privilege" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --%>
+<kantega:section id="title">
+    <kantega:label key="aksess.versions.title"/>
+</kantega:section>
+
+<kantega:section id="content">
+    <script language="Javascript" type="text/javascript">
+        var hasSubmitted = false;
+
+        function saveContent(status) {
+            if (validatePublishProperties()) {
+                if (!hasSubmitted) {
+                    hasSubmitted = true;
+                    document.myform.status.value = status;
+                    document.myform.submit();
+                }
+            }
+        }
+
+        function selectVersion(version) {
+            document.activeversion.version.value = version;
+            document.activeversion.submit();
+        }
+
+        function deleteVersion(version) {
+            document.deleteversion.version.value = version;
+            document.deleteversion.submit();
+        }
+        <%
+        System.out.println(" OK 1");
+        %>
+    </script>
+    <form name="myform" action="SaveVersion.action" method="post" enctype="multipart/form-data">
+        <div id="EditPane">
+            <%@ include file="../../../../admin/include/infobox.jsf" %>
+
+            <form name="activeversion" action="UseVersion.action" target="content" method="post">
+                <input type="hidden" name="version" value="-1">
+            </form>
+            <form name="deleteversion" action="DeleteVersion.action" target="content" method="post">
+                <input type="hidden" name="version" value="-1">
+            </form>
+
+            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <thead>
+                <tr>
+                    <th colspan="2"><kantega:label key="aksess.versions.version"/></th>
+                    <th><kantega:label key="aksess.versions.lastmodified"/></th>
+                    <th><kantega:label key="aksess.versions.modifiedby"/></th>
+                    <th><kantega:label key="aksess.versions.status"/></th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%
+                    SecuritySession securitySession = SecuritySession.getInstance(request);
+                    List allVersions = (List)request.getAttribute("allVersions");
+                    Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+                    for (int i = 0; i < allVersions.size(); i++) {
+                        Content c = (Content)allVersions.get(i);
+                        Date d = c.getLastModified();
+                        DateFormat df = new SimpleDateFormat(Aksess.getDefaultDateFormat());
+                        String modifiedDate = "";
+                        try {
+                            modifiedDate = df.format(d);
+                        } catch (NumberFormatException e) {
+                        }
+                        String title = c.getTitle();
+                        if (title.length() > 30) {
+                            title = title.substring(0, 27) + "...";
+                        }
+                        String statusKey = "aksess.versions.status." + c.getStatus();
+                        if (c.getStatus() == ContentStatus.PUBLISHED) {
+                            statusKey += "_" + c.getVisibilityStatus();
+                        }
+                %>
+                <tr class="tableRow<%=(i%2)%>">
+                    <td><%=c.getVersion()%></td>
+                    <td><%=title%></td>
+                    <td><%=modifiedDate%></td>
+                    <td><%=c.getModifiedBy()%></td>
+                    <td><kantega:label key="<%=statusKey%>"/></td>
+                    <td>
+                        <a href="<%=current.getUrl()%>&version=<%=c.getVersion()%>" target="_new" class="button show"><span><kantega:label key="aksess.button.vis"/></span></a>
+                        <a href="Javascript:selectVersion(<%=c.getVersion()%>)" class="button edit"><span><kantega:label key="aksess.button.rediger"/></span></a>
+                        <% if (c.getStatus() != ContentStatus.PUBLISHED && securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {%>
+                                <a href="Javascript:deleteVersion(<%=c.getVersion()%>)" class="button delete"><span><kantega:label key="aksess.button.slett"/></span></a>
+                        <%}%>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+
+            <div class="helpText">
+                <kantega:label key="aksess.versions.hjelp"/>
+                <c:if test="${showMaxVersions}">
+                    <br><kantega:label key="aksess.versions.hjelp2"/> ${maxVersions} <kantega:label key="aksess.versions.hjelp3"/>
+                </c:if>                
+            </div>
+
+
+        </div>
+        <input type="hidden" name="status" value="">
+        <input type="hidden" name="action" value="">
+        <input type="hidden" name="currentId" value="${currentContent.id}">
+        <input type="hidden" name="isModified" value="${currentContent.modified}">
+    </form>
+</kantega:section>
+<%@ include file="../layout/publishLayout.jsp" %>

@@ -69,7 +69,7 @@
 <div class="formElement">
     <div class="heading"><label><kantega:label key="aksess.insertlink.internal.url"/></label></div>
     <div class="buttonGroup">
-        <a href="#" onclick="selectPage()" class="button select"><kantega:label key="aksess.button.velg"/></a>
+        <a href="#" onclick="selectPage()" class="button select"><span><kantega:label key="aksess.button.velg"/></span></a>
     </div>
     <div class="inputs">
 

@@ -17,68 +17,47 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.security.SecuritySession;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 
-public class UseVersionAction extends HttpServlet {
-    private static String SOURCE = "aksess.UseVersionAction";
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+public class UseVersionAction implements Controller {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content == null) {
-            response.sendRedirect("content.jsp?activetab=previewcontent");
+            return new ModelAndView(new RedirectView("Navigate.action"));
         } else {
-            try {
-                ContentManagementService aksessService = new ContentManagementService(request);
+            ContentManagementService aksessService = new ContentManagementService(request);
 
-                int version = param.getInt("version");
-                if (version != -1) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(content.getAssociation().getId());
-                    cid.setVersion(version);
-                    cid.setLanguage(content.getLanguage());
-                    content = aksessService.checkOutContent(cid);
+            int version = param.getInt("version");
+            if (version != -1) {
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setAssociationId(content.getAssociation().getId());
+                cid.setVersion(version);
+                cid.setLanguage(content.getLanguage());
+                content = aksessService.checkOutContent(cid);
 
-                    // Last attributter fra XML fil
-                    EditContentHelper.updateAttributesFromTemplate(content, SecuritySession.getInstance(request));
+                // Reload attributes from XML template
+                EditContentHelper.updateAttributesFromTemplate(content, SecuritySession.getInstance(request));
 
-                    session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
-                }
-                response.sendRedirect("content.jsp?activetab=editcontent");
-            } catch (Exception e) {
-                Log.error(SOURCE, e, null, null);
-
-                ExceptionHandler handler = new ExceptionHandler();
-                handler.setThrowable(e, SOURCE);
-                request.getSession(true).setAttribute("handler", handler);
-                request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+                session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
             }
+            return new ModelAndView(new RedirectView("SaveContent.action"));
         }
     }
 }

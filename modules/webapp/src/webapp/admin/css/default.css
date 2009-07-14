@@ -461,7 +461,7 @@ fieldset {
 }
 
 
-/************** Form elements and content - attributes **************/
+/************** Form elements and content attributes **************/
 .contentAttribute {
     width: 600px;
 }
@@ -487,6 +487,54 @@ fieldset {
 .fullWidth {
     width: 100%;
 }
+
+.contentAttribute .button, .contentAttribute .button {
+    margin-left: 10px;
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+}
+
+.contentAttribute .button span, .contentAttribute .button span {
+    margin-left: 25px;
+}
+
+.contentAttribute a.button, .formElement a.button, td a.button {
+    color:#1780b9;
+}
+
+.contentAttribute a.button:hover, .formElement a.button:hover, td a.button:hover {
+    text-decoration: underline; 
+}
+
+.contentAttribute .add {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .edit {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .delete {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .moveDown {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .moveUp {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .select {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+.contentAttribute .show {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
 
 /************** Popups **************/
 .dialogue .tabGroup .tab {

@@ -56,8 +56,8 @@
 
         </fieldset>
         <div class="buttonGroup">
-            <a href="Javascript:saveForm()" class="button ok"><kantega:label key="aksess.button.ok"/></a>
-            <a href="Javascript:window.close()" class="button cancel"><kantega:label key="aksess.button.avbryt"/></a>
+            <a href="Javascript:saveForm()" class="button ok"><span><kantega:label key="aksess.button.ok"/><span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/><span></a>
         </div>
     </form>
    </div>

@@ -55,34 +55,37 @@
     <div id="EditContentMain">
 
         <div id="EditContentMainPane">
-            <div id="EditContentTabs">
-                <div class="editContentTab" id="PublishPreview">
+            <div id="EditContentTabs" class="tabGroup">
+                <div class="tab" id="PublishPreview">
                     <a href="Javascript:gotoTab('ViewContentPreview.action')">Preview</a>
                 </div>
-                <div class="editContentTab" id="PublishContent">
+                <div class="tab" id="PublishContent">
                     <a href="Javascript:gotoTab('SaveContent.action')">Content</a>
                 </div>
-                <div class="editContentTab" id="PublishMetadata">
+                <div class="tab" id="PublishMetadata">
                     <a href="Javascript:gotoTab('SaveMetadata.action')">Metadata</a>
                 </div>
-                <div class="editContentTab" id="PublishAttachments">
+                <div class="tab" id="PublishVersions">
+                    <a href="Javascript:gotoTab('SaveVersion.action')">Historikk</a>
+                </div>
+                <div class="tab" id="PublishAttachments">
                     <a href="Javascript:gotoTab('SaveAttachments.action')">Attachments</a>
                 </div>
             </div>
             <div id="EditContentButtons">
                 <c:choose>
                     <c:when test="${canPublish}">
-                        <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><kantega:label key="aksess.button.publiser"/></a>
+                        <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><span><kantega:label key="aksess.button.publiser"/></span></a>
                     </c:when>
                     <c:otherwise>
-                        <a href="Javascript:saveContent(<%=ContentStatus.WAITING%>)" class="button save"><kantega:label key="aksess.button.lagre"/></a>
+                        <a href="Javascript:saveContent(<%=ContentStatus.WAITING%>)" class="button save"><span><kantega:label key="aksess.button.lagre"/></span></a>
                     </c:otherwise>
                 </c:choose>
-                <a href="Javascript:saveContent(<%=ContentStatus.DRAFT%>)" class="button draft"><kantega:label key="aksess.button.kladd"/></a>
+                <a href="Javascript:saveContent(<%=ContentStatus.DRAFT%>)" class="button savedraft"><span><kantega:label key="aksess.button.kladd"/></span></a>
                 <c:if test="${hearingEnabled}">
-                    <a href="Javascript:saveContent(<%=ContentStatus.HEARING%>)" class="button hearing"><kantega:label key="aksess.button.hoering"/></a>
+                    <a href="Javascript:saveContent(<%=ContentStatus.HEARING%>)" class="button hearing"><span><kantega:label key="aksess.button.hoering"/></span></a>
                 </c:if>
-                <a href="CancelEdit.action" class="button cancel"><kantega:label key="aksess.button.avbryt"/></a>
+                <a href="CancelEdit.action" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
             </div>
             <div id="EditContentPane">
                 <kantega:getsection id="content"/>

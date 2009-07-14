@@ -34,7 +34,7 @@
         <label><kantega:label key="aksess.insertlink.attachment.title"/></label>
     </div>
     <div class="buttonGroup">
-        <a href="AddAttachment.action?insertLink=true" class="button add"><kantega:label key="aksess.button.nyfil"/></a>
+        <a href="AddAttachment.action?insertLink=true" class="button add"><span><kantega:label key="aksess.button.nyfil"/></span></a>
     </div>
     <div class="inputs">
         <select name="url" class="fullWidth">

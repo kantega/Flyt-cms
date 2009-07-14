@@ -8,6 +8,8 @@
 #EditPane {
     height: 100%;
     min-height: 100%;
+    margin-left: 10px;
+    width: 600px;    
 }
 
 #EditContentMainPane {
@@ -41,7 +43,7 @@
     float:left;
 }
 
-#EditContentTabs .editContentTab {
+#EditContentTabs .tab {
     background-color: #ff0000;
     margin-left: 30px;
     height: 21px;
@@ -55,15 +57,31 @@
 }
 
 #EditContentButtons .button {
+    display: inline-block;
+    margin-left: 20px;
+    height: 24px;
+    line-height: 24px;
     background-color: #00ff00;
 }
 
-#EditMainPane {
-    margin-left: 10px;
+#EditContentButtons .button span {
+    margin-left: 25px;
 }
 
-#EditPane {
-    margin-left: 10px;
+#EditContentButtons .publish {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+#EditContentButtons .cancel {
+    background: url("../bitmaps/common/buttons/cancel.png") no-repeat center left;
+}
+
+#EditContentButtons .save {
+    background: url("../bitmaps/common/buttons/save.png") no-repeat center left;
+}
+
+#EditContentButtons .savedraft {
+    background: url("../bitmaps/common/buttons/savedraft.png") no-repeat center left;
 }
 
 

@@ -30,8 +30,8 @@
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="buttonGroup">
-    <a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button select"><kantega:label key="aksess.button.velg"/></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+    <a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button select"><span><kantega:label key="aksess.button.velg"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><span><kantega:label key="aksess.button.slett"/></span></a>
 </div>
 <div class="inputs">
     <input type="text" class="fullWidth" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">

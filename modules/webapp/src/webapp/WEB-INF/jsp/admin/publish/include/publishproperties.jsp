@@ -148,7 +148,7 @@
 
             <div id="TopicList">...</div>
             <div id="ChooseTopicButton">
-                <a href="#" class="button topics"><kantega:label key="aksess.publishinfo.topics.choose"/></a>
+                <a href="#" class="button topics"><span><kantega:label key="aksess.publishinfo.topics.choose"/></span></a>
             </div>
 
         </fieldset>

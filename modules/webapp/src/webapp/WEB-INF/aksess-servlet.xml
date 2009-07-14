@@ -80,7 +80,7 @@
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
                 <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
                 <prop key="/admin/publish/SaveNotes.action">SaveNotesAction</prop>
-                <!--<prop key="/admin/publish/SaveVersionInfo.action">SaveVersionInfoAction</prop>-->
+                <prop key="/admin/publish/SaveVersion.action">SaveVersionAction</prop>
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
@@ -306,11 +306,13 @@
     <bean class="no.kantega.publishing.admin.content.action.SaveNotesAction" id="SaveNotesAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editnotes.jsp"/>
     </bean>
-    <!--
-    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveVersionInfoAction">
+    <bean class="no.kantega.publishing.admin.content.action.SaveVersionAction" id="SaveVersionAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editversions.jsp"/>
     </bean>
-    -->
+    <bean class="no.kantega.publishing.admin.content.action.UseVersionAction" id="UseVersionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteVersionAction" id="DeleteVersionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
+
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.SaveHearingAction</value>
@@ -327,23 +329,6 @@
             <value>SaveHearingAction</value>
         </property>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UseVersionAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.UseVersionAction</value>
-        </property>
-        <property name="servletName">
-            <value>UseVersionAction</value>
-        </property>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteVersionAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteVersionAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteVersionAction</value>
-        </property>
-    </bean>
-    <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
 
     <!-- Preview  -->
     <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="ViewContentPreviewAction">
@@ -432,8 +417,6 @@
             <value>SaveMultimediaAction</value>
         </property>
     </bean>
-
-
 
     <!-- Topic maps -->
     <bean class="no.kantega.publishing.admin.content.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">

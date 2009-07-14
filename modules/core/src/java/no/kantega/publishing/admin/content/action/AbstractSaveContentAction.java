@@ -31,6 +31,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 
@@ -52,7 +53,7 @@ public abstract class AbstractSaveContentAction implements Controller {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         HttpSession session = request.getSession();
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
@@ -121,7 +122,7 @@ public abstract class AbstractSaveContentAction implements Controller {
 
                     return new ModelAndView(new RedirectView("Navigate.action"));
                 }
-                session.setAttribute("currentContent", content);
+                session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 if (action == null || action.length() == 0) {
                     // Go back to current tab
                     return new ModelAndView(getView(), model);

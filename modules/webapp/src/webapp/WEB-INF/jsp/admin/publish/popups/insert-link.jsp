@@ -32,12 +32,12 @@
 
     <div id="SelectLinkType">
         <div class="tabGroup">
-            <a href="?linkType=external" class="tab ${externalSelected}"><kantega:label key="aksess.insertlink.external"/></a>
-            <a href="?linkType=internal" class="tab ${internalSelected}"><kantega:label key="aksess.insertlink.internal"/></a>
-            <a href="?linkType=anchor" class="tab ${anchorSelected}"><kantega:label key="aksess.insertlink.anchor"/></a>
-            <a href="?linkType=attachment" class="tab ${attachmentSelected}"><kantega:label key="aksess.insertlink.attachment"/></a>
-            <a href="?linkType=email" class="tab ${emailSelected}"><kantega:label key="aksess.insertlink.email"/></a>
-            <a href="?linkType=multimedia" class="tab ${multimediaSelected}"><kantega:label key="aksess.insertlink.multimedia"/></a>
+            <a href="?linkType=external" class="tab ${externalSelected}"><span><kantega:label key="aksess.insertlink.external"/></span></a>
+            <a href="?linkType=internal" class="tab ${internalSelected}"><span><kantega:label key="aksess.insertlink.internal"/></span></a>
+            <a href="?linkType=anchor" class="tab ${anchorSelected}"><span><kantega:label key="aksess.insertlink.anchor"/></span></a>
+            <a href="?linkType=attachment" class="tab ${attachmentSelected}"><span><kantega:label key="aksess.insertlink.attachment"/></span></a>
+            <a href="?linkType=email" class="tab ${emailSelected}"><span><kantega:label key="aksess.insertlink.email"/></span></a>
+            <a href="?linkType=multimedia" class="tab ${multimediaSelected}"><span><kantega:label key="aksess.insertlink.multimedia"/></span></a>
         </div>
     </div>
 
@@ -51,8 +51,8 @@
             </fieldset>
         </form>
         <div class="buttonGroup">
-            <a href="Javascript:insertLink()" class="button ok"><kantega:label key="aksess.button.ok"/></a>
-            <a href="Javascript:window.close()" class="button cancel"><kantega:label key="aksess.button.avbryt"/></a>
+            <a href="Javascript:insertLink()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
         </div>
     </div>
 </kantega:section>
