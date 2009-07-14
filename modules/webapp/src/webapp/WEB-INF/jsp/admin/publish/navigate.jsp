@@ -38,7 +38,7 @@
                     <a href="#" class="details">Details</a>
                 </div>
             </div>
-            <iframe name="contentmain" id="Contentmain" src="${showContent.url}" height="100%" width="100%"></iframe>
+            <iframe name="contentmain" id="Contentmain" src="${currentNavigateContent.url}" height="100%" width="100%"></iframe>
         </div>
 
 </kantega:section>
