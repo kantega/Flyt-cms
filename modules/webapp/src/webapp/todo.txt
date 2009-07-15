@@ -1,0 +1,22 @@
+
+Implementasjon av design
+ - publish/* (popups + redigeringssider)
+
+Fikse bugs/design
+ - administrationLayout.jsp
+ 
+
+
+Kode om HTML
+ - emnekart
+ - adminfunksjoner - f.eks eventlog
+
+
+Funksjonalitet
+ - Implementere "endringen gjelder fra"
+ X Min side
+ - Multimedia
+ - Lenkesjekker
+ - Statistikk
+
+ 

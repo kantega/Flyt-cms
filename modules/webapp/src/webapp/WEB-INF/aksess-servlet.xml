@@ -56,6 +56,10 @@
                 <prop key="/admin/security/RemovePermission.action">RemovePermissionAction</prop>
                 <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
 
+                <!-- My page -->
+                <prop key="/admin/mypage/ViewMyPage.action">ViewMyPageAction</prop>
+                <prop key="/admin/mypage/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
+
                 <!-- Publish navigator -->
                 <prop key="/admin/publish/Navigate.action">contentNavigateAction</prop>
                 <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAjaxAction</prop>
@@ -109,7 +113,6 @@
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/multimedia/SaveMultimedia.action">SaveMultimediaAction</prop>
 
-
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
                 <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
@@ -118,7 +121,6 @@
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
 
-                <prop key="/admin/publish/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
 
                 <!-- Search for autocomplete -->
@@ -152,26 +154,29 @@
         <property name="mappings">
             <props>
                 <!-- Administrator controllers -->
-                <prop key="/admin/locks/ListContentLocks.action">listContentLocksAction</prop>
-                <prop key="/admin/locks/RemoveContentLock.action">removeContentLockAction</prop>
-                <prop key="/admin/eventlog/SearchEventLog.action">searchEventLogAction</prop>
-                <prop key="/admin/mailsubscription/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
-                <prop key="/admin/search/RebuildIndex.action">rebuildIndexController</prop>
-                <prop key="/admin/searchlog/ViewSearchLog.action">viewSearchLogAction</prop>
-                <prop key="/admin/contentexpiration/ListContentExpiration.action">listContentExpirationAction</prop>
-                <prop key="/admin/userchanges/ListUserChanges.action">listUserChangesAction</prop>
-                <prop key="/admin/topicmaps/admin/EditTopicMap.action">editTopicMapAction</prop>
-                <prop key="/admin/topicmaps/admin/DeleteTopicMap.action">DeleteTopicMapAction</prop>
-                <prop key="/admin/topicmaps/admin/ListTopicMaps.action">listTopicMapsAction</prop>
-                <!-- Site config controller -->
-                <prop key="/admin/sites/ListSites.action">listSitesAction</prop>
-                <prop key="/admin/sites/UpdateSite.action">updateSiteAction</prop>
+                <prop key="/admin/administration/ViewSystemInformation.action">ViewSystemInformationAction</prop>
+                <prop key="/admin/administration/ListContentLocks.action">listContentLocksAction</prop>
+                <prop key="/admin/administration/RemoveContentLock.action">removeContentLockAction</prop>
+                <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
+
+                <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
+                <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
+                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
+                <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
+                <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
+                <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
+                <prop key="/admin/administration//EditTopicMap.action">editTopicMapAction</prop>
+                <prop key="/admin/administration/admin/DeleteTopicMap.action">DeleteTopicMapAction</prop>
+                <prop key="/admin/administration/admin/ListTopicMaps.action">listTopicMapsAction</prop>
+                <!-- Site config controllers -->
+                <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
+                <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
                 <!-- Display templateconfig controllers -->
-                <prop key="/admin/templates/ListAssociationCategories.action">listAssociationCategoriesAction</prop>
-                <prop key="/admin/templates/ListContentTemplates.action">listContentTemplatesAction</prop>
-                <prop key="/admin/templates/ListDisplayTemplates.action">listDisplayTemplatesAction</prop>
-                <prop key="/admin/templates/ListDisplayTemplateUsages.action">listDisplayTemplateUsagesAction</prop>
-                <prop key="/admin/templates/ReloadTemplateConfiguration.action">reloadTemplateConfigurationAction</prop>
+                <prop key="/admin/administration/ListAssociationCategories.action">listAssociationCategoriesAction</prop>
+                <prop key="/admin/administration/ListContentTemplates.action">listContentTemplatesAction</prop>
+                <prop key="/admin/administration/ListDisplayTemplates.action">listDisplayTemplatesAction</prop>
+                <prop key="/admin/administration/ListDisplayTemplateUsages.action">listDisplayTemplateUsagesAction</prop>
+                <prop key="/admin/administration/ReloadTemplateConfiguration.action">reloadTemplateConfigurationAction</prop>
             </props>
         </property>
     </bean>
@@ -233,7 +238,7 @@
     <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 
     <!-- Sites -->
-    <bean class="no.kantega.publishing.admin.sites.action.CreateRootAction" id="createRootAction">
+    <bean class="no.kantega.publishing.admin.administration.action.CreateRootAction" id="createRootAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
 
@@ -252,9 +257,11 @@
     <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
     <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>
 
-    <!-- Future my page-->
-    <bean class="no.kantega.publishing.admin.content.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>    
-
+    <!-- My page-->
+    <bean class="no.kantega.publishing.admin.mypage.action.ViewMyPageAction" id="ViewMyPageAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/mypage.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
     <!-- Navigate content -->
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
@@ -477,48 +484,74 @@
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
 
     <!-- Administrator controllers -->
-    <bean class="no.kantega.publishing.admin.content.action.ListContentLocksAction" id="listContentLocksAction"/>
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSystemInformationAction" id="ViewSystemInformationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/systeminformation.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListContentLocksAction" id="listContentLocksAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentlocks.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListAliasesAction" id="listAliasesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listaliases.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.content.action.RemoveContentLockAction" id="removeContentLockAction"/>
-    <bean class="no.kantega.publishing.admin.eventlog.action.SearchEventLogAction" id="searchEventLogAction"/>
-    <bean class="no.kantega.publishing.admin.mailsubscriptions.action.ViewMailSubscribersAction" id="viewMailSubscribersAction"/>
-    <bean id="rebuildIndexController" class="no.kantega.publishing.search.web.control.RebuildIndexController">
+    <bean class="no.kantega.publishing.admin.administration.action.SearchEventLogAction" id="searchEventLogAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/administration/eventlog-form.jsp"/>
+        <property name="resultsView" value="/WEB-INF/jsp/admin/administration/eventlog-result.jsp"/>    
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
+    </bean>
+    <bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
         <property name="indexManager">
             <ref bean="indexManager"/>
         </property>
-        <property name="indexSearcherManager">
-            <ref bean="indexSearcherManager"/>
-        </property>
+        <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
+        <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.searchlog.action.ViewSearchLogAction" id="viewSearchLogAction">
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.ListUserChangesAction" id="listUserChangesAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.ListContentExpirationAction" id="listContentExpirationAction"/>
+    <bean class="no.kantega.publishing.admin.administration.action.ListUserChangesAction" id="listUserChangesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/userchanges.jsp"/>
+        <property name="viewDocuments" value="/WEB-INF/jsp/admin/administration/userchanges-documents.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListContentExpirationAction" id="listContentExpirationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentexpiration.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction"/>
     <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction"/>
 
     <!-- Site config -->
-    <bean class="no.kantega.publishing.admin.sites.action.ListSitesAction" id="listSitesAction">
+    <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.sites.action.UpdateSiteAction" id="updateSiteAction"/>
-
+    <bean class="no.kantega.publishing.admin.administration.action.EditDomainNamesAction" id="EditDomainNamesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/editdomainnames.jsp"/>
+    </bean>
     <!-- Template config -->
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListAssociationCategoriesAction" id="listAssociationCategoriesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listassociationcategories.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListContentTemplatesAction" id="listContentTemplatesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listcontenttemplates.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplatesAction" id="listDisplayTemplatesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listdisplaytemplates.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplateUsagesAction" id="listDisplayTemplateUsagesAction"/>
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplateUsagesAction" id="listDisplayTemplateUsagesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listdisplaytemplateusages.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.templateconfiguration.action.ReloadTemplateConfigurationAction" id="reloadTemplateConfigurationAction">
         <property name="templateConfigurationFactory" ref="aksessTemplateConfigurationFactory"/>
         <property name="templateConfigurationValidator" ref="aksessTemplateConfigurationValidator"/>
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
         <property name="templateValidator" ref="aksessTemplateValidator"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
 
     <!-- Various -->

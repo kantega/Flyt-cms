@@ -319,7 +319,7 @@ function init() {
                             <%if (canDelete) {%>
                                 <td><img src="../bitmaps/common/textseparator.gif"></td>
                                 <td><a href="Javascript:deleteObject()"><img src="../bitmaps/common/buttons/topp_slett.gif" border="0"></a></td>
-                                <td><a href="Javascript:deleteObject()" class="topButton"><kantega:label key="aksess.button.slettsiden"/></a></td>
+                                <td><a href="Javascript:deleteObject()" class="topButton"><kantega:label key="aksess.button.deletesiden"/></a></td>
                                 <td>&nbsp;</td>
                             <%}%>
                             <%if (showId != -1) {%>

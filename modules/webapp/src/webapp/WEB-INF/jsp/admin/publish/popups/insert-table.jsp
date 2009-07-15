@@ -161,7 +161,7 @@
 
             <div class="buttonGroup">
                 <a href="Javascript:doInsert()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-                <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+                <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
             </div>
         </form>
     </div>

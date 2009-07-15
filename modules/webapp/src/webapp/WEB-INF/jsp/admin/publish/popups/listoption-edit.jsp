@@ -60,7 +60,8 @@
 <kantega:section id="body">    
     <div id="EditListOptionForm">
     <form name="myform" action="">
-        <fieldset>
+        <div class="fieldset">
+            <fieldset>
             <legend><kantega:label key="aksess.editablelist.title"/></legend>
 
             <div class="formElement">
@@ -73,10 +74,11 @@
                     <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
                 </div>
             </div>
-        </fieldset>
+            </fieldset>
+        </div>    
         <div class="buttonGroup">
             <a href="Javascript:addListOption()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
         </div>
     </form>
    </div>

@@ -75,17 +75,17 @@
             <div id="EditContentButtons">
                 <c:choose>
                     <c:when test="${canPublish}">
-                        <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><span><kantega:label key="aksess.button.publiser"/></span></a>
+                        <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><span><kantega:label key="aksess.button.publish"/></span></a>
                     </c:when>
                     <c:otherwise>
-                        <a href="Javascript:saveContent(<%=ContentStatus.WAITING%>)" class="button save"><span><kantega:label key="aksess.button.lagre"/></span></a>
+                        <a href="Javascript:saveContent(<%=ContentStatus.WAITING%>)" class="button save"><span><kantega:label key="aksess.button.save"/></span></a>
                     </c:otherwise>
                 </c:choose>
-                <a href="Javascript:saveContent(<%=ContentStatus.DRAFT%>)" class="button savedraft"><span><kantega:label key="aksess.button.kladd"/></span></a>
+                <a href="Javascript:saveContent(<%=ContentStatus.DRAFT%>)" class="button savedraft"><span><kantega:label key="aksess.button.savedraft"/></span></a>
                 <c:if test="${hearingEnabled}">
                     <a href="Javascript:saveContent(<%=ContentStatus.HEARING%>)" class="button hearing"><span><kantega:label key="aksess.button.hoering"/></span></a>
                 </c:if>
-                <a href="CancelEdit.action" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+                <a href="CancelEdit.action" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
             </div>
             <div id="EditContentPane">
                 <kantega:getsection id="content"/>

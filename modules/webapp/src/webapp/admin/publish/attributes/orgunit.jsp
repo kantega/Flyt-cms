@@ -48,8 +48,8 @@
     if (manager != null) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button select"><kantega:label key="aksess.button.velg"/></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button choose"><kantega:label key="aksess.button.choose"/></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.delete"/></a>
 </div>
 <%
     }

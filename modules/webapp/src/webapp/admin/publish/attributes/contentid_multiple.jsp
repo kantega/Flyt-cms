@@ -33,9 +33,9 @@
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="buttonGroup">
     <a href="Javascript:selectContent(document.myform.<%=fieldName%>, <%=maxitems%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+2)%>"><span><kantega:label key="aksess.button.slett"/></span></a>
-    <a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button moveUp" tabindex="<%=attribute.getTabIndex()+3%>"><span><kantega:label key="aksess.button.flyttopp"/></span></a>
-    <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+4)%>"><span><kantega:label key="aksess.button.flyttned"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+2)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
+    <a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button moveUp" tabindex="<%=attribute.getTabIndex()+3%>"><span><kantega:label key="aksess.button.moveup"/></span></a>
+    <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+4)%>"><span><kantega:label key="aksess.button.movedown"/></span></a>
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">

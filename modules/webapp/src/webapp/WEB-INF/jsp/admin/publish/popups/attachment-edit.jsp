@@ -40,7 +40,8 @@
 <kantega:section id="body">
     <div id="AddAttachmentForm">
     <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
-        <fieldset>
+        <div class="fieldset">
+            <fieldset>
             <legend>
                 <c:choose>
                     <c:when test="${attachmentId != -1}"><kantega:label key="aksess.attachment.add"/></c:when>
@@ -54,10 +55,11 @@
                 </div>
             </div>
 
-        </fieldset>
+            </fieldset>
+        </div>
         <div class="buttonGroup">
             <a href="Javascript:saveForm()" class="button ok"><span><kantega:label key="aksess.button.ok"/><span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/><span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/><span></a>
         </div>
     </form>
    </div>

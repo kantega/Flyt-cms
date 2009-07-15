@@ -25,16 +25,15 @@ import java.util.Map;
 import java.util.HashMap;
 
 import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.client.util.RequestParameters;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Feb 4, 2009
- * Time: 10:45:29 AM
  */
-public class ListDisplayTemplateUsagesAction extends AbstractController {
+public class ListDisplayTemplateUsagesAction extends AdminController {
+    private String view;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         RequestParameters param = new RequestParameters(request);
@@ -45,6 +44,10 @@ public class ListDisplayTemplateUsagesAction extends AbstractController {
 
         model.put("query", query);
 
-        return new ModelAndView("/WEB-INF/jsp/admin/templates/listdisplaytemplateusages.jsp", model);
+        return new ModelAndView(view, model);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

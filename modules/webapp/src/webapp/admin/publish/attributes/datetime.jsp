@@ -35,7 +35,7 @@
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="buttonGroup">
-    <a href="#" id="velgdato<%=fieldName%>" class="button select"><span><kantega:label key="aksess.button.velg.dato"/></span></a>
+    <a href="#" id="velgdato<%=fieldName%>" class="button choose"><span><kantega:label key="aksess.button.choose-date"/></span></a>
 </div>
 <div class="inputs">
     <kantega:label key="aksess.attribute.datetime.date"/>&nbsp;<input type="text" id="date_<%=fieldName%>" size="<%=dateLen%>" maxlength="<%=dateLen%>" name="date_<%=fieldName%>" value="<%=dateValue%>" tabindex="<%=attribute.getTabIndex()%>" onfocus="clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')">

@@ -91,8 +91,8 @@
             </c:if>
 
             <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.lagre"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
-                <input type="button" class="button" onclick="location='search?domain=<c:out value="${profile.identity.domain}"/>'" value="<kantega:label key="aksess.button.avbryt"/>">
+                <input type="submit" class="button" value="<kantega:label key="aksess.button.save"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
+                <input type="button" class="button" onclick="location='search?domain=<c:out value="${profile.identity.domain}"/>'" value="<kantega:label key="aksess.button.cancel"/>">
             </p>
         </fieldset>
     </form>

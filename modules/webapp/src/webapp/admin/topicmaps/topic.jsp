@@ -175,7 +175,7 @@ function removeRole(roleId) {
                     <table border="0">
                         <tr>
                             <td><a href="Javascript:removeContent(<%=content.getId()%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></td>
-                            <td><a href="Javascript:removeContent(<%=content.getId()%>)" class="button"><kantega:label key="aksess.button.slett"/></td>
+                            <td><a href="Javascript:removeContent(<%=content.getId()%>)" class="button"><kantega:label key="aksess.button.delete"/></td>
                         </tr>
                     </table>
             <%
@@ -218,7 +218,7 @@ function removeRole(roleId) {
             <table border="0">
                 <tr>
                     <td><a href="Javascript:removeRole('<%=role.getId()%>')"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></td>
-                    <td><a href="Javascript:removeRole('<%=role.getId()%>')" class="button"><kantega:label key="aksess.button.slett"/></td>
+                    <td><a href="Javascript:removeRole('<%=role.getId()%>')" class="button"><kantega:label key="aksess.button.delete"/></td>
                 </tr>
             </table>
             <%

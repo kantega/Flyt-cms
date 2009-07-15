@@ -17,7 +17,7 @@
   --%>
 
 <p>
-        <input type="button" value="<kantega:label key="aksess.button.publiser"/>" onClick="saveContent(<%=ContentStatus.PUBLISHED%>)">
-        <input type="button" value="<kantega:label key="aksess.button.kladd"/>" onClick="saveContent(<%=ContentStatus.DRAFT%>)">
-        <input type="button" value="<kantega:label key="aksess.button.avbryt"/>">
+        <input type="button" value="<kantega:label key="aksess.button.publish"/>" onClick="saveContent(<%=ContentStatus.PUBLISHED%>)">
+        <input type="button" value="<kantega:label key="aksess.button.savedraft"/>" onClick="saveContent(<%=ContentStatus.DRAFT%>)">
+        <input type="button" value="<kantega:label key="aksess.button.cancel"/>">
 </p>

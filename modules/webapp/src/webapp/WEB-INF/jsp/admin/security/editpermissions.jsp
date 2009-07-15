@@ -91,7 +91,7 @@
                                             <table border="0" cellpadding="0" cellspacing="0">
                                                 <tr>
                                                     <td><a href="RemovePermission.action?removeId=${status.index}"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                                                    <td><a href="RemovePermission.action?removeId=${status.index}" class="button"><kantega:label key="aksess.button.slett"/></a></td>
+                                                    <td><a href="RemovePermission.action?removeId=${status.index}" class="button"><kantega:label key="aksess.button.delete"/></a></td>
                                                 </tr>
                                             </table>
                                         </c:when>

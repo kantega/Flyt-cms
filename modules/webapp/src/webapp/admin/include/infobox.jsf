@@ -21,15 +21,11 @@
 
 <%
     {
-        ValidationErrors errors = (ValidationErrors)session.getAttribute("errors");
-        if (errors == null) {
-            errors = (ValidationErrors)request.getAttribute("errors");
-        }
+        ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
         String display = "none";
         if ((errors != null) && (errors.getLength() > 0)) {
             display = "block";
         }
-        session.removeAttribute("errors");
 %>
 <div id="errorMessageArea" style="display:<%=display%>;">
     <div class="error">

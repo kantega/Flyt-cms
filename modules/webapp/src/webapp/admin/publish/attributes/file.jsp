@@ -27,7 +27,7 @@
 <% if (value != null && value.length() > 0) {%>
 <div class="buttonGroup">
     <a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new" class="button show"><kantega:label key="aksess.button.visfil"/></a>
-    <a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.slett"/></a>
+    <a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.delete"/></a>
 </div>
 <%}%>
 <div class="inputs">

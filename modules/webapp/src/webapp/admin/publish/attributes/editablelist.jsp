@@ -31,7 +31,7 @@
 %>
 <div class="buttonGroup">
     <a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.slett"/></span></a>
+    <a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
 </div>
 <%
     }

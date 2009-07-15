@@ -65,7 +65,8 @@
 
 <kantega:section id="body">
     <div id="InsertCharForm">
-        <fieldset>
+        <div class="fieldset">
+            <fieldset>
             <legend><kantega:label key="aksess.insertchar.title"/></legend>
             <table border="0" cellspacing="1" cellpadding="0" width="100%">
                 <%
@@ -84,10 +85,10 @@
                 %>
             </table>
 
-        </fieldset>
-
+            </fieldset>
+        </div>
         <div class="buttonGroup">
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
         </div>
     </div>
 </kantega:section>

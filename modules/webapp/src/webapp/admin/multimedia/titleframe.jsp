@@ -108,7 +108,7 @@
                                     %>
                                         <td><img src="../bitmaps/common/textseparator.gif"></td>
                                         <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')"><img src="../bitmaps/common/buttons/topp_slett.gif" border="0"></a></td>
-                                        <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')" class="topButton"><kantega:label key="aksess.button.slett"/></a></td>
+                                        <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')" class="topButton"><kantega:label key="aksess.button.delete"/></a></td>
                                 <%
                                         }
                                     } else if (mm.getParentId() > 0) {

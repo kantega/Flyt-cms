@@ -102,7 +102,7 @@
                 <td><%=modifiedDate%></td>
                 <td align="right">
                     <a href="Javascript:updateAttachment(<%=a.getId()%>)" class="buttonEdit"><kantega:label key="aksess.button.erstattfil"/></a>
-                    <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="buttonDelete"><kantega:label key="aksess.button.slettvedlegg"/></a>
+                    <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="buttonDelete"><kantega:label key="aksess.button.deleteattachment"/></a>
                 </td>
             </tr>
     <%

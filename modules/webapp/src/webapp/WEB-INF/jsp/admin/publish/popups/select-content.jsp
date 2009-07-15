@@ -94,7 +94,7 @@
             <div id="Navigator"></div>
         </div>
         <div class="buttonGroup">
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
         </div>
     </div>
 </kantega:section>

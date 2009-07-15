@@ -40,7 +40,7 @@
         <label><kantega:label key="aksess.insertlink.multimedia.file"/></label>
     </div>
     <div class="buttonGroup">
-        <a href="Javascript:selectMultimedia()" class="button select"><span><kantega:label key="aksess.button.velg"/></span></a>
+        <a href="Javascript:selectMultimedia()" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
     </div>
     <div class="inputs">
         <input type="hidden" name="url" id="url" value=""><input type="text" class="fullWidth" name="urltext" id="urltext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.multimedia.hint"/>" maxlength="128">

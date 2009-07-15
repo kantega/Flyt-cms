@@ -55,7 +55,8 @@
 <kantega:section id="body">
     <div id="ReplaceTextForm">
     <form name="myform" action="">
-        <fieldset>
+        <div class="fieldset">
+            <fieldset>
             <legend><kantega:label key="aksess.replacetext.title"/></legend>
 
             <div class="formElement">
@@ -75,11 +76,12 @@
                     <input type="text" id="replace" size="20" maxlength="40" name="replace" value="">
                 </div>
             </div>
-        </fieldset>
+            </fieldset>
+        </div>
 
         <div class="buttonGroup">
             <a href="Javascript:doReplace()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.avbryt"/></span></a>
+            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
         </div>
     </form>
     </div>

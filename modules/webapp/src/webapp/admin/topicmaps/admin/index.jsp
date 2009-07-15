@@ -61,7 +61,7 @@ function editTopicMap(id) {
                         <td><a href="Javascript:editTopicMap(<%=topicmap.getId()%>)" class="button"><kantega:label key="aksess.button.rediger"/></a></td>
                         <td><img src="../../bitmaps/common/textseparator.gif"></td>
                         <td><a href="Javascript:deleteTopicMap(<%=topicmap.getId()%>, '<%=topicmap.getName()%>')"><img src="../../bitmaps/common/buttons/mini_slett.gif" border="0"></td>
-                        <td><a href="Javascript:deleteTopicMap(<%=topicmap.getId()%>, '<%=topicmap.getName()%>')" class="button"><kantega:label key="aksess.button.slett"/></td>
+                        <td><a href="Javascript:deleteTopicMap(<%=topicmap.getId()%>, '<%=topicmap.getName()%>')" class="button"><kantega:label key="aksess.button.delete"/></td>
                     </tr>
                 </table>
             </td>

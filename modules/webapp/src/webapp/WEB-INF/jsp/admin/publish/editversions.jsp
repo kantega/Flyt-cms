@@ -112,7 +112,7 @@
                         <a href="<%=current.getUrl()%>&version=<%=c.getVersion()%>" target="_new" class="button show"><span><kantega:label key="aksess.button.vis"/></span></a>
                         <a href="Javascript:selectVersion(<%=c.getVersion()%>)" class="button edit"><span><kantega:label key="aksess.button.rediger"/></span></a>
                         <% if (c.getStatus() != ContentStatus.PUBLISHED && securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {%>
-                                <a href="Javascript:deleteVersion(<%=c.getVersion()%>)" class="button delete"><span><kantega:label key="aksess.button.slett"/></span></a>
+                                <a href="Javascript:deleteVersion(<%=c.getVersion()%>)" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
                         <%}%>
                     </td>
                 </tr>

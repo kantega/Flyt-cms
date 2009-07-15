@@ -43,6 +43,7 @@ public class SortOrder {
             sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
             sort1.equalsIgnoreCase(ContentProperty.EXPIRE_DATE) ||
             sort1.equalsIgnoreCase(ContentProperty.DEPTH) ||
+            sort1.equalsIgnoreCase(ContentProperty.ALIAS) ||
             sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_VIEWS) ||
             sort1.equalsIgnoreCase(ContentProperty.PRIORITY)) {
             sort = " order by " + sort1;

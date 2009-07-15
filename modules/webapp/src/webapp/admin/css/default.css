@@ -28,6 +28,14 @@ fieldset {
     padding: 4px;
 }
 
+td a {
+    color:#1780b9;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
+
 /************** General classes **************/
 
 .clearing {
@@ -45,6 +53,14 @@ fieldset {
     background-color: #FFFFE1;
     margin-bottom: 10px;
 }
+
+a.calendar {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+}
+
 /************** Layout **************/
 #Top {}
 
@@ -480,7 +496,7 @@ fieldset {
     float: left;
 }
 
-.contentAttribute .inputs, .formElement .inputs {
+.contentAttribute .inputs, .formElement .inputs, .contentAttribute .content, .formElement .content {
     clear: both;
 }
 
@@ -499,11 +515,11 @@ fieldset {
     margin-left: 25px;
 }
 
-.contentAttribute a.button, .formElement a.button, td a.button {
+.contentAttribute a.button, .formElement a.button, {
     color:#1780b9;
 }
 
-.contentAttribute a.button:hover, .formElement a.button:hover, td a.button:hover {
+.contentAttribute a.button:hover, .formElement a.button:hover {
     text-decoration: underline; 
 }
 
@@ -564,4 +580,19 @@ fieldset {
     display: none;
     min-height: 100px;
 
+}
+
+
+/************** Mypage **************/
+
+#MainContentPane {
+    margin: 10px;
+}
+
+#MainContentPane table .title{
+    width: 200px;
+}
+
+#MainContentPane table .date{
+    width: 80px;
 }

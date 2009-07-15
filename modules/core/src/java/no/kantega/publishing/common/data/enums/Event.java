@@ -17,31 +17,31 @@
 package no.kantega.publishing.common.data.enums;
 
 public class Event {
-    public static final String PUBLISH_CONTENT = "Publisert innhold";
-    public static final String MOVE_CONTENT = "Flyttet innhold";
-    public static final String SAVE_DRAFT = "Lagret kladd";
-    public static final String SEND_FOR_APPROVAL = "Sendt til godkjenning";
-    public static final String DELETE_CONTENT = "Slettet innhold";
-    public static final String DELETE_CONTENT_TRASH = "Slettet fra søppelkurv";
-    public static final String DELETE_CONTENT_EXPIRE = "Slettet - utløpt på dato";
-    public static final String DELETE_CONTENT_VERSION = "Slettet innholdsversjon";
-    public static final String APPROVED = "Godkjent";
-    public static final String REJECTED = "Forkastet";
+    public static final String PUBLISH_CONTENT = "PUBLISH_CONTENT";
+    public static final String MOVE_CONTENT = "MOVE_CONTENT";
+    public static final String SAVE_DRAFT = "SAVE_DRAFT";
+    public static final String SEND_FOR_APPROVAL = "SEND_FOR_APPROVAL";
+    public static final String DELETE_CONTENT = "DELETE_CONTENT";
+    public static final String DELETE_CONTENT_TRASH = "DELETE_CONTENT_TRASH";
+    public static final String DELETE_CONTENT_EXPIRE = "DELETE_CONTENT_EXPIRE";
+    public static final String DELETE_CONTENT_VERSION = "DELETE_CONTENT_VERSION";
+    public static final String APPROVED = "APPROVED";
+    public static final String REJECTED = "REJECTED";
 
-    public static final String DELETE_ATTACHMENT = "Slettet vedlegg";
-    public static final String SAVE_ATTACHMENT = "Lagret vedlegg";
+    public static final String DELETE_ATTACHMENT = "DELETE_ATTACHMENT";
+    public static final String SAVE_ATTACHMENT = "SAVE_ATTACHMENT";
 
-    public static final String DELETE_MULTIMEDIA = "Slettet multimediaobjekt";
-    public static final String SAVE_MULTIMEDIA = "Lagret multimediaobjekt";
+    public static final String DELETE_MULTIMEDIA = "DELETE_MULTIMEDIA";
+    public static final String SAVE_MULTIMEDIA = "SAVE_MULTIMEDIA";
 
-    public static final String DELETE_TOPIC = "Slettet emne";
-    public static final String SAVE_TOPIC = "Lagret emne";
+    public static final String DELETE_TOPIC = "DELETE_TOPIC";
+    public static final String SAVE_TOPIC = "SAVE_TOPIC";
 
-    public static final String SAVE_SITE = "Lagret nettsted";
+    public static final String SAVE_SITE = "SAVE_SITE";
 
-    public static final String SET_PERMISSIONS = "Endret rettigeter";
+    public static final String SET_PERMISSIONS = "SET_PERMISSIONS";
 
-    public static final String FAILED_LOGIN = "Feilet pålogging";
+    public static final String FAILED_LOGIN = "FAILED_LOGIN";
 
     public static final String[] ALL_EVENTS = {PUBLISH_CONTENT, MOVE_CONTENT, SAVE_DRAFT, SEND_FOR_APPROVAL, DELETE_CONTENT, DELETE_CONTENT_TRASH, DELETE_CONTENT_EXPIRE, DELETE_CONTENT_VERSION, DELETE_ATTACHMENT,
     APPROVED, REJECTED, SAVE_ATTACHMENT, DELETE_TOPIC, SAVE_TOPIC, DELETE_MULTIMEDIA, SAVE_MULTIMEDIA, SAVE_SITE, SET_PERMISSIONS, FAILED_LOGIN};

@@ -82,7 +82,7 @@
                                 %>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
                                     <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/buttons/topp_slett.gif" border="0"></a></td>
-                                    <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.slett"/></a></td>
+                                    <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.delete"/></a></td>
                                 <%
                                     }
                                 %>

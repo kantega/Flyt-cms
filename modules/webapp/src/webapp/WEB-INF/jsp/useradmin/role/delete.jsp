@@ -31,8 +31,8 @@
             </p>
 
             <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.slett"/>">
-                <input type="button" class="button" onclick="history.back();" value="<kantega:label key="aksess.button.avbryt"/>">
+                <input type="submit" class="button" value="<kantega:label key="aksess.button.delete"/>">
+                <input type="button" class="button" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>">
             </p>
     </form>
 </kantega:section>

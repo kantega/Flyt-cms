@@ -36,19 +36,19 @@ import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Feb 5, 2009
- * Time: 12:33:00 PM
- */
-public class ReloadTemplateConfigurationAction extends AbstractController {
+*/
+public class ReloadTemplateConfigurationAction extends AdminController {
     private TemplateConfigurationFactory templateConfigurationFactory;
     private TemplateConfigurationValidator  templateConfigurationValidator;
     private TemplateConfigurationCache  templateConfigurationCache;
     private ContentTemplateValidator templateValidator;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private String view;
+    
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
@@ -80,7 +80,7 @@ public class ReloadTemplateConfigurationAction extends AbstractController {
 
         model.put("templateConfiguration", templateConfigurationCache.getTemplateConfiguration());
 
-        return new ModelAndView("/WEB-INF/jsp/admin/templates/templateconfiguration.jsp", model);
+        return new ModelAndView(view, model);
     }
 
     public void setTemplateConfigurationFactory(TemplateConfigurationFactory configurationFactory) {
@@ -97,5 +97,9 @@ public class ReloadTemplateConfigurationAction extends AbstractController {
 
     public void setTemplateValidator(ContentTemplateValidator templateValidator) {
         this.templateValidator = templateValidator;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

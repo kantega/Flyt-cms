@@ -170,7 +170,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
                         handler.handleDocument(d);
                         //Log.debug(SOURCE, "Handled document " + content.getContentId(), null, null);
                         c.increment();
-                        reporter.reportProgress(c.getI(), "aksess-dokument", getTotalDocumentCount());
+                        reporter.reportProgress(c.getI(), "aksess-document", getTotalDocumentCount());
                     }
                 } catch (Throwable e) {
                     Log.error(SOURCE, "Caught throwable during indexing of document #" +c.getI() +" (id: " +content.getId() +")", null, null);

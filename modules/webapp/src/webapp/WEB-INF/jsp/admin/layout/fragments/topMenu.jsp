@@ -18,8 +18,8 @@
 
 
 <a class="logo" href="javascript:alert('not yet implemented');" title="<kantega:label key="aksess.title"/>">&nbsp;</a>
-<a href="#" class="menuitem ${mypageSelected}"><kantega:label key="aksess.menu.mypage"/></a>
-<a href="#" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
+<a href="<%=Aksess.getContextPath()%>/admin/mypage/ViewMyPage.action" class="menuitem ${mypageSelected}"><kantega:label key="aksess.menu.mypage"/></a>
+<a href="<%=Aksess.getContextPath()%>/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
 <a href="<%=Aksess.getContextPath()%>/admin/publish/Navigate.action" class="menuitem ${publishSelected}"><kantega:label key="aksess.menu.publish"/></a>
 <a href="<%=Aksess.getContextPath()%>/admin/multimedia/Navigate.action" class="menuitem ${multimediaSelected}"><kantega:label key="aksess.menu.multimedia"/></a>
 <a href="#" class="menuitem ${topicMapsSelected}"><kantega:label key="aksess.menu.topicmaps"/></a>

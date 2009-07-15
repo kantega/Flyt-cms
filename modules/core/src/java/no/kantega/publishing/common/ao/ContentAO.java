@@ -434,7 +434,7 @@ public class ContentAO {
             st.close();
             rs.close();
 
-            // Get the 20 last modified pages
+            // Get the 10 last modified pages
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and LastModified > ? order by contentversion.LastModified desc");
             st.setInt(1, ContentStatus.PUBLISHED);
             st.setString(2, user.getId());
@@ -442,7 +442,7 @@ public class ContentAO {
             rs = st.executeQuery();
             int i = 0;
             prevContentId = -1;
-            while (rs.next() && i < 20) {
+            while (rs.next() && i < 10) {
                 Content content = ContentAOHelper.getContentFromRS(rs, true);
                 if (content.getId() != prevContentId) {
                     prevContentId = content.getId();

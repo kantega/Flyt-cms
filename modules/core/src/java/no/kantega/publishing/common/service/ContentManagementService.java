@@ -891,6 +891,7 @@ public class ContentManagementService {
      */
     public void restoreDeletedItem(int id) throws SystemException {
         AssociationAO.restoreAssociations(id);
+        DeletedItemsAO.purgeDeletedItem(id);
     }
 
     /**

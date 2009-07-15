@@ -70,8 +70,8 @@
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="buttonGroup">
-    <a href="Javascript:selectCategory(document.myform.<%=fieldName%>)" class="button select"><span><kantega:label key="aksess.button.velg"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><span><kantega:label key="aksess.button.slett"/></span></a>
+    <a href="Javascript:selectCategory(document.myform.<%=fieldName%>)" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
 </div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=categoryId%>">
