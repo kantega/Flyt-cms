@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.action;
+package no.kantega.publishing.admin.security.action;
 
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.SecurityIdentifier;
@@ -22,9 +22,9 @@ import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.admin.security.action.EditPermissionsAction;
 import no.kantega.commons.client.util.RequestParameters;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +36,8 @@ import java.util.HashMap;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 
-public class AddContentRolePermissionAction extends AbstractController {
+public class AddUserRolePermissionAction extends AbstractController {
+    private String view;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -96,6 +97,10 @@ public class AddContentRolePermissionAction extends AbstractController {
 
         model.put("reloadWindow", Boolean.TRUE);
 
-        return new ModelAndView("/WEB-INF/jsp/admin/generic/windowclose.jsp", model);
+        return new ModelAndView(view, model);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

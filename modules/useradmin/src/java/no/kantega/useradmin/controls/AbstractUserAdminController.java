@@ -19,6 +19,7 @@ package no.kantega.useradmin.controls;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.useradmin.model.ProfileManagementConfiguration;
 import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
@@ -33,7 +34,7 @@ import java.util.List;
  * Date: Jun 26, 2007
  * Time: 2:05:18 PM
  */
-public abstract class AbstractUserAdminController implements Controller {
+public abstract class AbstractUserAdminController extends AdminController {
     private final static String SOURCE = "AbstractUserAdminController";
 
     protected List profileConfiguration;
@@ -87,7 +88,7 @@ public abstract class AbstractUserAdminController implements Controller {
         this.roleConfiguration = roleConfiguration;
     }
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SecuritySession session = SecuritySession.getInstance(request);
         if (!session.isUserInRole(Aksess.getAdminRole())) {
             throw new NotAuthorizedException("Need admin role", SOURCE);

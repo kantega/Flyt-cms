@@ -17,15 +17,21 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
-
+<kantega:section id="title">
+    <kantega:label key="useradmin.role.title"/>
 </kantega:section>
 
-<kantega:section id="innhold">
-    <%@ include file="/admin/include/infobox.jsf" %>
+
+<kantega:section id="content">
     <form action="edit" name="myform" method="post">
         <input type="hidden" name="save" value="true">
+        <div class="fieldset">
+
         <fieldset>
+            <legend>
+                <kantega:label key="useradmin.role.title"/>            
+            </legend>
+            <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
             <c:choose>
                 <c:when test="${numConfigurations > 1}">
                     <p>
@@ -59,7 +65,8 @@
                 <input type="button" class="button" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>">
             </p>
         </fieldset>
+        </div>            
     </form>
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

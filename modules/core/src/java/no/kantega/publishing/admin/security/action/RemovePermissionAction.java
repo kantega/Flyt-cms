@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.action;
+package no.kantega.publishing.admin.security.action;
 
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +26,7 @@ import javax.servlet.http.HttpSession;
 import java.util.List;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.security.action.EditPermissionsAction;
 
 /**
  * User: Anders Skar, Kantega AS

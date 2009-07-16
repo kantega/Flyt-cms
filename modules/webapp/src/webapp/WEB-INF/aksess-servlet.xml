@@ -51,10 +51,12 @@
                 <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
                 <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
-                <prop key="/admin/security/AddContentRolePermission.action">AddContentRolePermissionAction</prop>
+                <prop key="/admin/security/AddUserRolePermission.action">AddUserRolePermissionAction</prop>
                 <prop key="/admin/security/EditPermissions.action">EditPermissionsAction</prop>
                 <prop key="/admin/security/RemovePermission.action">RemovePermissionAction</prop>
                 <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
+                <prop key="/admin/security/SelectRoles.action">SelectRolesAction</prop>
+                <prop key="/admin/security/SelectUsers.action">SelectUsersAction</prop>
 
                 <!-- My page -->
                 <prop key="/admin/mypage/ViewMyPage.action">ViewMyPageAction</prop>
@@ -177,6 +179,8 @@
                 <prop key="/admin/administration/ListDisplayTemplates.action">listDisplayTemplatesAction</prop>
                 <prop key="/admin/administration/ListDisplayTemplateUsages.action">listDisplayTemplateUsagesAction</prop>
                 <prop key="/admin/administration/ReloadTemplateConfiguration.action">reloadTemplateConfigurationAction</prop>
+                <!-- Security -->
+                <prop key="/admin/administration/ViewAllPermissions.action">ViewAllPermissionsAction</prop>
             </props>
         </property>
     </bean>
@@ -243,8 +247,12 @@
     </bean>
 
     <!-- Security -->
-    <bean class="no.kantega.publishing.admin.content.action.AddContentRolePermissionAction" id="AddContentRolePermissionAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.AddTopicRoleAction" id="AddTopicRoleAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.AddUserRolePermissionAction" id="AddUserRolePermissionAction">
+        <property name="view" value="/WEB-INF/admin/generic/windowclose.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.AddTopicRoleAction" id="AddTopicRoleAction">
+        <property name="view" value="/WEB-INF/admin/generic/windowclose.jsp"/>
+    </bean>
     <bean class="no.kantega.useradmin.controls.CreateInitialUserController" id="CreateInitialUserAction">
         <property name="defaultDomain">
             <value>${security.defaultdomain}</value>
@@ -252,10 +260,20 @@
         <property name="profileConfiguration" ref="profileConfigurations"/>
         <property name="roleConfiguration" ref="roleConfigurations"/>
     </bean>
-    <!-- Security -->
-    <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.EditPermissionsAction" id="EditPermissionsAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.RemovePermissionAction" id="RemovePermissionAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.SavePermissionsAction" id="SavePermissionsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.SelectUsersAction" id="SelectUsersAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/selectuser.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.SelectRolesAction" id="SelectRolesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/selectrole.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.ViewAllPermissionsAction" id="ViewAllPermissionsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/viewallpermissions.jsp"/>
+    </bean>
 
     <!-- My page-->
     <bean class="no.kantega.publishing.admin.mypage.action.ViewMyPageAction" id="ViewMyPageAction">

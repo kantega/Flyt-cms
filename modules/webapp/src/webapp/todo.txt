@@ -9,7 +9,9 @@ Fikse bugs/design
 
 Kode om HTML
  - emnekart
- - adminfunksjoner - f.eks eventlog
+ X adminfunksjoner - f.eks eventlog
+ - popups for flytting
+ - popups for bekreft
 
 
 Funksjonalitet

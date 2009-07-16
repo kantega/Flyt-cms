@@ -20,7 +20,7 @@
 <html>
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="<%=Aksess.getContextPath()%>/admin/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/reset.css">
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/base.css">

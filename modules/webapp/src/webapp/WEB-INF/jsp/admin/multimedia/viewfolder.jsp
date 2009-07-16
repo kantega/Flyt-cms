@@ -1,4 +1,8 @@
+<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
+<%@ page import="no.kantega.publishing.common.util.MultimediaHelper" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -23,12 +27,38 @@
     <c:choose>
         <c:when test="${media.type eq 'FOLDER'}">
             <div class="folder" id="Media${media.id}">
-                ${media.name}
+                <div class="folderIcon"></div>
+                <div class="mediaInfo">
+                    <div class="name">${media.name}</div>
+                    <div class="details">0 objekter</div>
+                </div>
             </div>
         </c:when>
         <c:otherwise>
             <div class="media">
-                image ${media.name}<br>
+                <div class="imageIcon">
+                    <a href="ViewMultimedia.action?id=${media.id}">
+                        <%
+                            Multimedia mm = (Multimedia)pageContext.getAttribute("media");
+                            String mimeType = mm.getMimeType().getType();
+                            mimeType = mimeType.replace('/', '-');
+                            if (mimeType.indexOf("image") != -1) {
+                                out.write(MultimediaHelper.mm2HtmlTag(mm, 100, 100));
+                            } else {
+                                out.write("<div class=\"media " + mimeType + "\"></div>");
+                            }
+                        %>
+                    </a>
+                </div>
+                <div class="mediaInfo">
+                    <div class="name">${media.name}</div>
+                    <div class="details">
+                        <c:if test="${media.height > 0 &&media.width > 0}">
+                            <kantega:label key="aksess.multimedia.size"/> ${media.width}x${media.height}<br>
+                        </c:if>
+                            ${media.fileType}
+                    </div>
+                </div>
             </div>
         </c:otherwise>
     </c:choose>

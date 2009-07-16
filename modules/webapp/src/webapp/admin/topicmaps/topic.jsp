@@ -64,7 +64,7 @@ function addRole() {
 <%
     if (topic != null) {
 %>
-    var rolewin = window.open("../security/addroleoruser.jsp?roletype=<%=new Role().getType()%>&action=AddTopicRole", "rolewin", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+    var rolewin = window.open("../security/SelectRoles.action?action=AddTopicRole", "rolewin", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
     rolewin.focus();
 <%
     }

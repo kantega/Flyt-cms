@@ -150,7 +150,7 @@ public class Multimedia extends BaseObject {
 
     public String getFileType() {
         if (type == MultimediaType.FOLDER) {
-            return "Mappe";
+            return "Folder";
         } else {
             return MimeTypes.getMimeType(filename).getDescription();
         }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.action;
+package no.kantega.publishing.admin.security.action;
 
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.SecurityIdentifier;
@@ -25,30 +25,15 @@ import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.publishing.topicmaps.data.TopicMap;
+import no.kantega.publishing.admin.security.action.EditPermissionsAction;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Enumeration;
 import java.util.ArrayList;
@@ -57,7 +42,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 
 public class SavePermissionsAction extends AbstractController {
-    private static String SOURCE = "aksess.SavePermissionsAction";
+    private String view;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -110,7 +95,10 @@ public class SavePermissionsAction extends AbstractController {
         session.removeAttribute(EditPermissionsAction.PERMISSIONS_OBJECT);
         session.removeAttribute(EditPermissionsAction.PERMISSIONS_LIST);
 
-        return new ModelAndView("/WEB-INF/jsp/admin/generic/windowclose.jsp");
+        return new ModelAndView(view);
     }
 
+    public void setView(String view) {
+        this.view = view;
+    }
 }

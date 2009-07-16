@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.action;
+package no.kantega.publishing.admin.security.action;
 
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.security.data.User;
@@ -33,6 +33,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 
 public class AddTopicRoleAction extends AbstractController {
+    private String view;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -49,7 +50,7 @@ public class AddTopicRoleAction extends AbstractController {
             for (int i = 0; i < roles.length; i++) {
                 String role = roles[i];
 
-                // Legg til rolle/bruker
+                // Add role / user
                 SecurityIdentifier newRole;
                 if (RoleType.USER.equalsIgnoreCase(roletype)) {
                     newRole = new User();
@@ -65,7 +66,10 @@ public class AddTopicRoleAction extends AbstractController {
         Map model = new HashMap();
         model.put("reloadWindow", Boolean.TRUE);
 
-        return new ModelAndView("/WEB-INF/admin/generic/windowclose.jsp", model);
+        return new ModelAndView(view, model);
     }
 
+    public void setView(String view) {
+        this.view = view;
+    }
 }

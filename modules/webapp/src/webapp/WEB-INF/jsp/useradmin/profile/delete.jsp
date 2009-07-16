@@ -16,12 +16,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<kantega:section id="head">
-
+<kantega:section id="title">
+    <kantega:label key="useradmin.deleteprofile.title"/>
 </kantega:section>
 
-<kantega:section id="innhold">
+<kantega:section id="content">
     <form action="delete" name="myform" method="post">
         <input type="hidden" name="domain" value="<c:out value="${profile.identity.domain}"/>">
         <input type="hidden" name="userId" value="<c:out value="${profile.identity.userId}"/>">
@@ -37,4 +36,4 @@
     </form>
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

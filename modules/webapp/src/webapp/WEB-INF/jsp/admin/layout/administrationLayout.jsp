@@ -33,46 +33,49 @@
 </kantega:section>
 
 <kantega:section id="body">
+    <%
+        String root = Aksess.getContextPath() + "/admin/administration/";
+    %>
     <div id="Content">
         <div id="Navigation">
             <div id="Navigator">
                 <ul>
-                    <li><a href="ViewSystemInformation.action"><kantega:label key="aksess.systeminfo.title"/></a></li>
-                    <li><a href="ListSites.action"><kantega:label key="aksess.sites.title"/></a></li>
-                    <li><a href="ReloadTemplateConfiguration.action"><kantega:label key="aksess.templateconfig.title"/></a></li>
+                    <li><a href="<%=root%>ViewSystemInformation.action"><kantega:label key="aksess.systeminfo.title"/></a></li>
+                    <li><a href="<%=root%>ListSites.action"><kantega:label key="aksess.sites.title"/></a></li>
+                    <li><a href="<%=root%>ReloadTemplateConfiguration.action"><kantega:label key="aksess.templateconfig.title"/></a></li>
                     <%
                         if (Aksess.isTopicMapsEnabled()) {
                     %>
-                    <li><a href="ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></li>
+                    <li><a href="<%=root%>ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></li>
                     <%
                         }
                     %>
                     <li><kantega:label key="aksess.search.title"/></li>
                     <ul>
-                        <li><a href="ViewSearchLog.action"><kantega:label key="aksess.search.log.title"/></a></li>
-                        <li><a href="RebuildIndex.action"><kantega:label key="aksess.search.rebuild.title"/></a></li>
+                        <li><a href="<%=root%>ViewSearchLog.action"><kantega:label key="aksess.search.log.title"/></a></li>
+                        <li><a href="<%=root%>RebuildIndex.action"><kantega:label key="aksess.search.rebuild.title"/></a></li>
                     </ul>
                     <li><kantega:label key="aksess.security.title"/>
                         <ul>
-                            <li><a href="../useradmin/profile/"><kantega:label key="aksess.useradmin.profile.title"/></a></li>
-                            <li><a href="../useradmin/role/"><kantega:label key="aksess.useradmin.role.title"/></a></li>
-                            <li><a href="XXX"><kantega:label key="aksess.viewpermissions.title"/></a></li>
+                            <li><a href="<%=root%>useradmin/profile/"><kantega:label key="aksess.useradmin.profile.title"/></a></li>
+                            <li><a href="<%=root%>useradmin/role/"><kantega:label key="aksess.useradmin.role.title"/></a></li>
+                            <li><a href="<%=root%>ViewAllPermissions.action"><kantega:label key="aksess.viewpermissions.title"/></a></li>
                             <%
                                 if (Aksess.isEventLogEnabled()) {
                             %>
-                            <li><a href="SearchEventLog.action"><kantega:label key="aksess.eventlog.title"/></a></li>
+                            <li><a href="<%=root%>SearchEventLog.action"><kantega:label key="aksess.eventlog.title"/></a></li>
                             <%
                                 }
                             %>
-                            <li><a href="ListContentLocks.action"><kantega:label key="aksess.locks.title"/></a></li>
+                            <li><a href="<%=root%>ListContentLocks.action"><kantega:label key="aksess.locks.title"/></a></li>
                         </ul>
                     </li>
                     <li><kantega:label key="aksess.overview.title"/>
                         <ul>
-                            <li><a href="ListAliases.action"><kantega:label key="aksess.aliases.title"/></a></li>
-                            <li><a href="ListContentExpiration.action"><kantega:label key="aksess.contentexpire.title"/></a></li>                            
-                            <li><a href="ListUserChanges.action"><kantega:label key="aksess.userchanges.title"/></a></li>
-                            <li><a href="ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></li>
+                            <li><a href="<%=root%>ListAliases.action"><kantega:label key="aksess.aliases.title"/></a></li>
+                            <li><a href="<%=root%>ListContentExpiration.action"><kantega:label key="aksess.contentexpire.title"/></a></li>
+                            <li><a href="<%=root%>ListUserChanges.action"><kantega:label key="aksess.userchanges.title"/></a></li>
+                            <li><a href="<%=root%>ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></li>
                         </ul>
                     </li>
                     

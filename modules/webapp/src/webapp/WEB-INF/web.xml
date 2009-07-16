@@ -135,15 +135,13 @@
 
     <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
-        <url-pattern>/admin/useradmin/*</url-pattern>
+        <url-pattern>/admin/administration/useradmin/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>dwr-invoker</servlet-name>
         <url-pattern>/admin/dwr/*</url-pattern>
     </servlet-mapping>
-
-
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
