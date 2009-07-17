@@ -42,9 +42,7 @@
                             <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
                         </c:forEach>
                     </select>
-
-                    <input type="submit" value="Vis">
-
+                    <input type="submit" class="button show" value="<kantega:label key="useradmin.searchroles.show"/>">
                 </form>
             </c:if>
             <table border="0" cellspacing="0" cellpadding="0" width="400">
@@ -78,6 +76,15 @@
                 </c:if>
                 </tbody>
             </table>
+            <c:if test="${canEdit}">
+                <div class="buttonGroup">
+                    <form action="edit">
+                        <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
+                        <input type="submit" class="button add" value="<kantega:label key="useradmin.searchroles.newrole"/>">
+                    </form>
+                </div>
+            </c:if>
+
         </fieldset>
     </div>
     <form action="edit" name="actionform" method="post">

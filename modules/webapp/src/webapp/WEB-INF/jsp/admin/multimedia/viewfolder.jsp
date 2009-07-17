@@ -1,8 +1,8 @@
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ page import="no.kantega.publishing.common.util.MultimediaHelper" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -27,7 +27,7 @@
     <c:choose>
         <c:when test="${media.type eq 'FOLDER'}">
             <div class="folder" id="Media${media.id}">
-                <div class="folderIcon"></div>
+                <div class="icon"></div>
                 <div class="mediaInfo">
                     <div class="name">${media.name}</div>
                     <div class="details">0 objekter</div>
@@ -36,12 +36,13 @@
         </c:when>
         <c:otherwise>
             <div class="media">
-                <div class="imageIcon">
+                <div class="icon">
                     <a href="ViewMultimedia.action?id=${media.id}">
                         <%
                             Multimedia mm = (Multimedia)pageContext.getAttribute("media");
                             String mimeType = mm.getMimeType().getType();
                             mimeType = mimeType.replace('/', '-');
+                            mimeType = mimeType.replace('.', '-');
                             if (mimeType.indexOf("image") != -1) {
                                 out.write(MultimediaHelper.mm2HtmlTag(mm, 100, 100));
                             } else {
@@ -53,10 +54,15 @@
                 <div class="mediaInfo">
                     <div class="name">${media.name}</div>
                     <div class="details">
-                        <c:if test="${media.height > 0 &&media.width > 0}">
-                            <kantega:label key="aksess.multimedia.size"/> ${media.width}x${media.height}<br>
-                        </c:if>
-                            ${media.fileType}
+                        <c:choose>
+                            <c:when test="${media.height > 0 &&media.width > 0}">
+                                <kantega:label key="aksess.multimedia.size"/> ${media.width}x${media.height}<br>
+                            </c:when>
+                            <c:otherwise>
+                                ${media.fileType}<br>
+                            </c:otherwise>
+                        </c:choose>
+                        <kantega:label key="aksess.multimedia.lastmodified"/> <admin:formatdate date="${media.lastModified}"/>                        
                     </div>
                 </div>
             </div>

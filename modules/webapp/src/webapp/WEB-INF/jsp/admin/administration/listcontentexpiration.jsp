@@ -22,24 +22,7 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <script language="Javascript" type="text/javascript">
-        function showExpired() {
-            var form = document.myform;
-
-            // Reset validationErrors
-            validationErrors.length = 0;
-
-            validateDate(form.from_date, false, false);
-            validateDate(form.end_date, false, false);
-
-            if (showValidationErrors()) {
-                form.submit();
-            }
-
-        }
-    </script>
     <form name="myform" action="ListContentExpiration.action" method="post">
-
         <div class="fieldset">
             <fieldset>
                 <legend><kantega:label key="aksess.contentexpire.title"/></legend>
@@ -69,7 +52,7 @@
                 </div>
 
                 <div class="buttonGroup">
-                    <a href="Javascript:showExpired()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
+                    <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
                 </div>
 
                 <table>

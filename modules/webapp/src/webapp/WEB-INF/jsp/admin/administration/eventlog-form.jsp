@@ -98,7 +98,9 @@
             </div>
 
             <div class="buttonGroup">
-                <a href="#" onclick="document.eventlog.submit()" class="button search"><kantega:label key="aksess.button.search"/></a>
+                <div class="buttonGroup">
+                    <input type="submit" class="button search" value="<kantega:label key="aksess.button.search"/>">
+                </div>
             </div>
 
 

@@ -59,12 +59,10 @@
     });
 </script>
 <form name="myform" action="SaveContent.action" method="post" enctype="multipart/form-data">
-    <div id="EditPane">
     <%@ include file="../../../../admin/include/infobox.jsf" %>
     <%
         screen.generateInputScreen();
     %>
-    </div>
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">
     <input type="hidden" name="currentId" value="${currentContent.id}">

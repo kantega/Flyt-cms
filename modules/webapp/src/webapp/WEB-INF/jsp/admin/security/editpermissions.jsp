@@ -31,12 +31,12 @@
 
 <kantega:section id="body">
     <script language="Javascript">
-        function savePermissions() {
-            document.permissionsForm.submit();
+        function addRole() {
+            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=350,resizable=yes,scrollbars=no");
+            rolewin.focus();
         }
-
-        function addGroupOrUser(roletype) {
-            var rolewin = window.open("AddRoleOrUser.action?roletype=" + roletype, "rolewin", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+        function addUser() {
+            var rolewin = window.open("SelectUsers.action", "rolewin", "toolbar=no,width=450,height=400,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
 
@@ -132,8 +132,8 @@
                             <c:if test="${canModifyPermissions}">
                                 <tr>
                                     <td colspan="4" align="right">
-                                        <a href="Javascript:addGroupOrUser('<%=new Role().getType()%>')"><kantega:label key="aksess.editpermissions.addrole"/></a><br>
-                                        <a href="Javascript:addGroupOrUser('<%=new User().getType()%>')"><kantega:label key="aksess.editpermissions.adduser"/></a>
+                                        <a href="Javascript:addRole('<%=new Role().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.addrole"/></a><br>
+                                        <a href="Javascript:addUser('<%=new User().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.adduser"/></a>
                                     </td>
                                 </tr>
                             </c:if>
@@ -163,9 +163,10 @@
                 </fieldset>
             </div>
         </form>
+
         <div class="buttonGroup">
-            <a href="Javascript:savePermissions()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+            <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 </kantega:section>

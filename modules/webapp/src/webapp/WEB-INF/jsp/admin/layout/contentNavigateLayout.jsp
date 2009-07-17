@@ -15,6 +15,8 @@
 --%>
 
 <kantega:section id="head">
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/content.jjs"></script>
 </kantega:section>
 

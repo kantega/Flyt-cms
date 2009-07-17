@@ -36,27 +36,26 @@
     </script>
 
     <div id="SelectRoleForm">
-        <form action="" name="linkform">
-            <div class="fieldset">
-                <fieldset>
-                    <legend><kantega:label key="aksess.adduser.title"/></legend>
+        <div class="fieldset">
+            <fieldset>
+                <legend><kantega:label key="aksess.adduser.title"/></legend>
 
-                    <form name="search" action="SelectUser.action" method="post">
-                        <input type="hidden" name="action" value="${action}">
-                        <input type="hidden" name="select" value="${select}">
-                        <strong><kantega:label key="aksess.adduser.search"/>:</strong> <input type="text" name="name" value="${name}" size="10" maxlength="30">
-                        <a href="Javascript:document.search.submit()" class="button search"><span><kantega:label key="aksess.button.search"/></span></a>
-                        <c:if test="${notFound}">
-                            <div class="info"><kantega:label key="aksess.adduser.search.notfound"/></div>
-                        </c:if>
-                    </form>
+                <form name="searchform" action="SelectUsers.action" method="post">
+                    <input type="hidden" name="action" value="${action}">
+                    <input type="hidden" name="select" value="${select}">
+                    <strong><kantega:label key="aksess.adduser.search"/>:</strong> <input type="text" name="name" value="${name}" size="10" maxlength="30">
+                    <input type="button" onclick="document.searchform.submit()" class="button search" value="<kantega:label key="aksess.button.search"/>">
+                    <c:if test="${notFound}">
+                        <div class="info"><kantega:label key="aksess.adduser.search.notfound"/></div>
+                    </c:if>
+                </form>
 
-                    <div style="height: 250px; overflow-y:auto">
+                <div style="height: 250px; overflow-y:auto">
                     <form name="roles" action="${action}" method="post">
                         <input type="hidden" name="roletype" value="User">
-                        <table border="0" width="370" cellspacing="0" cellpadding="0">
+                        <table width="370">
                             <tr>
-                                <c:if test="${select}">
+                                <c:if test="${!select}">
                                     <td width="20">&nbsp;</td>
                                 </c:if>
                                 <td width="350">&nbsp;</td>
@@ -75,12 +74,12 @@
                             %>
                             <tr class="tableRow<%=(i%2)%>">
                                 <c:choose>
-                                    <c:when test="${select}">
-                                        <td><input type="checkbox" name="role" value="<c:out value="${user.id}'"/>"></td>
-                                        <td title="<c:out value="${user.id}'"/>">${displayName}</td>
+                                    <c:when test="${!select}">
+                                        <td><input type="checkbox" name="role" value="<c:out value="${user.id}"/>"></td>
+                                        <td title="<c:out value="${user.id}"/>">${displayName}</td>
                                     </c:when>
                                     <c:otherwise>
-                                        <td><a title="<c:out value="${user.id}'"/>" href="javascript:selectUser('<c:out value="${user.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>
+                                        <td><a title="<c:out value="${user.id}"/>" href="javascript:selectUser('<c:out value="${user.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>
@@ -89,15 +88,17 @@
                             %>
                         </table>
                     </form>
-                    </div>
+                </div>
 
-                </fieldset>
-            </div>
-        </form>
-        <div class="buttonGroup">
-            <a href="Javascript:selectUser()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+            </fieldset>
         </div>
+        <div class="buttonGroup">
+            <c:if test="${!select}">
+                <input type="button" onclick="document.roles.submit()" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+            </c:if>
+            <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+        </div>
+
     </div>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

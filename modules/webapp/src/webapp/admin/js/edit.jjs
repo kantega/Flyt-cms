@@ -199,7 +199,7 @@ function selectContent(formElement, maxItems) {
 function selectUser(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var userwin = window.open("../security/SelectUsers.action?select=true&refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+    var userwin = window.open("../security/SelectUsers.action?select=true&refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
     userwin.focus();
 }
 
@@ -255,7 +255,7 @@ function selectMediaFolder(formElement) {
  */
 function selectRole(formElement) {
     focusField = formElement;
-    var rolewin = window.open("../security/SelectRoles.action?select=true&refresh=" + getRefresh(), "roleWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+    var rolewin = window.open("../security/SelectRoles.action?select=true&refresh=" + getRefresh(), "roleWindow", "toolbar=no,width=450,height=350,resizable=yes,scrollbars=no");
     rolewin.focus();
 }
 

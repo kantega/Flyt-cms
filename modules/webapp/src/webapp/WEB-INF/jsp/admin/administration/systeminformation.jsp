@@ -138,7 +138,7 @@
 
         <form action="" method="get">
             <input type="hidden" name="reload" value="true">
-            <input type="submit" value="<kantega:label key="aksess.systeminfo.reloadconfig"/>">
+            <input type="submit" class="button ok" value="<kantega:label key="aksess.systeminfo.reloadconfig"/>">
             <c:if test="${param.reload}">
                 <div class="info">
                     <kantega:label key="aksess.systeminfo.reloadconfig.done"/>

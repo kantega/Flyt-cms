@@ -39,53 +39,57 @@
         }
     </script>
 
+
     <div id="SelectRoleForm">
-        <form action="" name="linkform">
+        <form name="roles" action="${action}" method="post">
+
             <div class="fieldset">
                 <fieldset>
                     <legend><kantega:label key="aksess.addrole.title"/></legend>
 
                     <div style="height: 250px; overflow-y:auto">
-                        <form name="roles" action="${action}" method="post">
-                            <input type="hidden" name="roletype" value="Role">
-                            <table border="0" width="370" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <c:if test="${select}">
-                                        <td width="20">&nbsp;</td>
-                                    </c:if>
-                                    <td width="350">&nbsp;</td>
-                                </tr>
-                                <%
-                                    List users = (List)request.getAttribute("roles");
-                                    for (int i = 0; i < users.size(); i++) {
-                                        Role r = (Role)users.get(i);
-                                        request.setAttribute("displayName", r.getName());
-                                        request.setAttribute("role", r);
-                                %>
-                                <tr class="tableRow<%=(i%2)%>">
-                                    <c:choose>
-                                        <c:when test="${select}">
-                                            <td><input type="checkbox" name="role" value="<c:out value="${role.id}'"/>"></td>
-                                            <td>${displayName}</td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <td><a href="javascript:selectUser('<c:out value="${role.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </tr>
-                                <%
-                                    }
-                                %>
-                            </table>
-                        </form>
+                        <input type="hidden" name="roletype" value="Role">
+                        <table>
+                            <tr>
+                                <c:if test="${!select}">
+                                    <td width="20">&nbsp;</td>
+                                </c:if>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <%
+                                List users = (List)request.getAttribute("roles");
+                                for (int i = 0; i < users.size(); i++) {
+                                    Role r = (Role)users.get(i);
+                                    request.setAttribute("displayName", r.getName());
+                                    request.setAttribute("role", r);
+                            %>
+                            <tr class="tableRow<%=(i%2)%>">
+                                <c:choose>
+                                    <c:when test="${!select}">
+                                        <td><input type="checkbox" name="role" value="<c:out value="${role.id}"/>"></td>
+                                        <td>${displayName}</td>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <td><a href="javascript:selectRole('<c:out value="${role.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tr>
+                            <%
+                                }
+                            %>
+                        </table>
                     </div>
                 </fieldset>
             </div>
+
+            <div class="buttonGroup">
+                <c:if test="${!select}">
+                    <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+                </c:if>
+                <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+            </div>
         </form>
-        <div class="buttonGroup">
-            <a href="Javascript:selectRole()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
-        </div>
     </div>
+
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

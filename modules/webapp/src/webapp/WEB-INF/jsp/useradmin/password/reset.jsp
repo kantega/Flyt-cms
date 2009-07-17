@@ -78,10 +78,10 @@
 
                 </p>
 
-                <p>
-                    <input type="submit" name="mailsubmit" class="button" value="Send">
-                    <input type="button" class="button" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
-                </p>
+                <div class="buttonGroup">
+                    <input type="submit" name="mailsubmit" class="button ok" value="Send">
+                    <input type="button" class="button cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
+                </div>
             </fieldset>
             </div>
         </form>
@@ -103,10 +103,10 @@
                 <input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64">
             </p>
 
-            <p>
-                <input type="submit" name="passwordsubmit" class="button" value="<kantega:label key="aksess.button.save"/>">
-                <input type="button" class="button" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
-            </p>
+            <div class="buttonGroup">
+                <input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>">
+                <input type="button" class="button cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
+            </div>
         </fieldset>
         </div>
     </form>

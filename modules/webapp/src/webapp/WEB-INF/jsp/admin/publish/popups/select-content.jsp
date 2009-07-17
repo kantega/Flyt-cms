@@ -28,6 +28,7 @@
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.interface.js"></script>
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/common.jjs"></script>
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigator.jjs"></script>
     <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         var currentItemIdentifier = -1;

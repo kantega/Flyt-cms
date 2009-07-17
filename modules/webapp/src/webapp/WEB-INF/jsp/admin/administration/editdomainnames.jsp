@@ -81,8 +81,8 @@
     </form>
 
     <div class="buttonGroup">
-        <a href="Javascript:document.myform.submit()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-        <a href="ListSites.action" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+        <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+        <input type="button" onclick="location.href='ListSites.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
     </div>
     
 </kantega:section>

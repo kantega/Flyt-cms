@@ -1,22 +1,40 @@
 
 
 #MultimediaFolders {
-    background: #ffffff;
+    background: #767676;
     padding: 20px;/*Important: Must be a px value.*/
 }
 
 #MultimediaFolders .folder, #MultimediaFolders .media {
-    height: 100px;
-    width: 100px;
+    background-color: #ffccff;
+    padding: 10px;
+    width: 250px;
     float: left;
     margin-right: 10px;
     cursor: pointer;
 }
-#MultimediaFolders .folder {
-    background: gray;
+
+
+.folder .icon, .media .icon {
+    float: left;
+    width: 102px;
+    height: 102px;
 }
 
-#MultimediaFolders .media {
-    background: green;
+.folder .icon {
+    background: url("../bitmaps/common/mm/icon_folder.png") no-repeat top left;
 }
 
+.folder .mediaInfo, .media .mediaInfo {
+    color: #ffffff;
+    padding-left: 7px;
+    padding-right: 7px;
+    padding-top: 12px;
+    padding-bottom: 8px;
+    float: left;
+}
+
+.mediaInfo .name {
+    font-weight: bold;
+    padding-bottom: 14px;
+}

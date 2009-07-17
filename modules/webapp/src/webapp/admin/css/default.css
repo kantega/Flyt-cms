@@ -1,4 +1,4 @@
-html, body {
+dhtml, body {
     height: 100%;
     min-height: 100%;
 }
@@ -80,48 +80,25 @@ a.calendar {
     padding: 0 5px;
     background: #E3E3E3 url("../bitmaps/default/framework/tools_background.png") center left repeat-x;
 }
-#Content {
 
-}
-#Navigation {
-    position: relative;
+#TwoPaneContent {
     float: left;
-    width: 190px;
-    padding-right: 10px;/*Framesplit.width*/
-    background: #ffffff;
-}
-#Navigator {
-    overflow: auto;
-    padding-top: 5px;
 }
 
-#Framesplit {
-    position: absolute;
-    top: 0;
-    right: 0;
+#TwoPaneMainPane {
+    float: left;
+    width: 620px;
+}
+
+#SideBar {
+    float: left;
+}
+
+#SideBarSplit {
+    float: left;
     width: 10px;
     height: 100%;
     background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
-}
-
-#FramesplitDrag {
-    cursor: e-resize;
-    position: relative;
-    top: 50%;
-    height: 17px;
-    width: 10px;
-    background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
-}
-
-#MainPane {
-    float: left;
-    position: relative;
-    width: auto;
-    height: 100%;
-    background: #A0A0A0;
-}
-#MainPane iframe {
-    border: none;
 }
 
 /************** Top menu **************/
@@ -281,192 +258,6 @@ a.calendar {
 }
 
 
-/************** Content frame (right column) **************/
-#MainPane .statusbar {
-    height: 22px;
-    line-height: 22px;
-    background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
-    padding: 0 10px;
-}
-#MainPane .statusbar .breadcrumbs {
-    float: left;
-    margin: 0;
-    padding: 0;
-}
-#MainPane .statusbar .breadcrumbs li {
-    display: inline;
-    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
-    padding-left: 12px;
-}
-#MainPane .statusbar .breadcrumbs li:first-child {
-    /*TODO: Change bitmap*/
-    background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
-    padding-left: 18px;
-}
-#MainPane .statusbar .supportMenu a {
-    display: block;
-    float: left;
-    height: 22px;
-    padding-left: 20px;
-    margin-left: 20px;
-}
-#MainPane .statusbar .supportMenu a.brokenLink {
-    background: url("../bitmaps/default/framework/contentstatus_broken_link.png") left center no-repeat;
-}
-#MainPane .statusbar .supportMenu a.crossPublish {
-    background: url("../bitmaps/default/framework/contentstatus_cross_publish.png") left center no-repeat;
-}
-#MainPane .statusbar .supportMenu a.details {
-    background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
-}
-
-/************** Navigator **************/
-.navigator {
-    margin: 0 0 0 0.25em;
-}
-.navigator li{
-    list-style: none;
-    margin-top: 0.25em;
-    white-space: nowrap;
-}
-.navigator li li {
-    margin-left: 1em;
-}
-
-.navigator li span {
-
-}
-
-.navigator .openState {
-    margin-right: 2px;
-}
-
-.navigator .openState a {
-    display: inline-block;
-    position: relative;
-    top: 1px;
-    width: 9px;
-    height: 9px;
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-.navigator .openState a.open {
-    background-image: url("../bitmaps/common/navigator/nav_open.png");;
-}
-.navigator .openState a.closed {
-    background-image: url("../bitmaps/common/navigator/nav_closed.png");
-}
-.navigator .openState a.noChildren {
-    background-image: none;
-}
-
-.navigator .icon {
-}
-.navigator .icon a {
-    display: inline-block;
-    position: relative;
-    top: 4px;
-    width: 13px;
-    height: 15px;
-    background-position: center center;
-    background-repeat: no-repeat;
-}
-.navigator .icon .root{
-    width: 14px;
-    height: 14px;
-    top: 3px;
-    background-image: url("../bitmaps/common/navigator/root.png");
-}
-.navigator .icon .waiting{
-    background-image: url("../bitmaps/common/navigator/waiting.png");
-}
-.navigator .icon .expired {
-    background-image: url("../bitmaps/common/navigator/expired.png");
-}
-.navigator .icon .shortcut {
-    background-image: url("../bitmaps/common/navigator/shortcut.png");
-}
-.navigator .icon .link {
-    background-image: url("../bitmaps/common/navigator/link.png");
-}
-.navigator .icon .file {
-    background-image: url("../bitmaps/common/navigator/file.png");
-}
-.navigator .icon .page {
-    background-image: url("../bitmaps/common/navigator/page.png");
-}
-.navigator .icon .link-draft {
-    background-image: url("../bitmaps/common/navigator/link_draft.png");
-}
-.navigator .icon .file-draft {
-    background-image: url("../bitmaps/common/navigator/file.png");
-}
-.navigator .icon .page-draft {
-    background-image: url("../bitmaps/common/navigator/page_draft.png");
-}
-.navigator .title {
-}
-.navigator .title a {
-    padding: 2px;
-    text-decoration: none;
-}
-
-.navigator .title a:hover {
-    background: #dddddd;
-}
-
-.navigator .title a.selected {
-    color: #ffffff;
-    font-weight: bold;
-    text-decoration: none;
-    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
-}
-
-/* Generic context menu styles */
-.contextMenu {
-    position: absolute;
-    width: 130px;
-    z-index: 99999;
-    border: solid 1px #cccccc;
-    background: #ffffff;
-    padding: 0;
-    margin: 0;
-    display: none;
-}
-
-.contextMenu li {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.contextMenu a {
-    color: #333;
-    text-decoration: none;
-    display: block;
-    line-height: 20px;
-    outline: none;
-    padding: 1px 5px;
-}
-
-.contextMenu li.hover a {
-    color: #ffffff;
-    background-color: #3399ff;
-}
-
-.contextMenu li.disabled a {
-    color: #aaaaaa;
-    cursor: default;
-}
-
-.contextMenu li.hover.disabled a {
-    background-color: transparent;
-}
-
-.contextMenu li.separator {
-    border-top: solid 1px #cccccc;
-}
-
 /************** Info / error boxes **************/
 .helpText {
     background-color:#ffffe1;
@@ -476,6 +267,31 @@ a.calendar {
     padding:4px;
 }
 
+input.button {
+    cursor: pointer;
+    margin-left: 10px;
+    padding-left: 25px;
+    height: 24px;
+    line-height: 24px;
+    background-color: #00ff00;
+    border: 0;
+}
+
+input.publish {
+    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+}
+
+input.cancel {
+    background: url("../bitmaps/common/buttons/cancel.png") no-repeat center left;
+}
+
+input.save {
+    background: url("../bitmaps/common/buttons/save.png") no-repeat center left;
+}
+
+input.savedraft {
+    background: url("../bitmaps/common/buttons/savedraft.png") no-repeat center left;
+}
 
 /************** Form elements and content attributes **************/
 .contentAttribute {

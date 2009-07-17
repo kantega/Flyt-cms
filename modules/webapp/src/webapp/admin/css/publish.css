@@ -1,30 +1,13 @@
 /************** Edit content **************/
 #EditContentMain {
     float: left;
-    height: 100%;
-    min-height: 100%;    
 }
 
-#EditPane {
-    height: 100%;
-    min-height: 100%;
+#EditContentPane {
     margin-left: 10px;
-    width: 600px;    
+    margin-right: 10px;
+    /*width: 600px;*/    
 }
-
-#EditContentMainPane {
-    float: left;
-}
-
-#EditContentPaneSeperator {
-    margin-left: 10px;
-    background-color: #cccccc;
-    width: 10px;
-    float: left;
-    height: 100%;
-    min-height: 100%;
-}
-
 
 #EditContentPropertiesPane {
     background-color: #cccccc;
@@ -51,40 +34,11 @@
 }
 
 #EditContentButtons {
+    background-color: #eeeeee;
     height: 40px;
     clear: both;
     text-align: right;
 }
-
-#EditContentButtons .button {
-    display: inline-block;
-    margin-left: 20px;
-    height: 24px;
-    line-height: 24px;
-    background-color: #00ff00;
-}
-
-#EditContentButtons .button span {
-    margin-left: 25px;
-}
-
-#EditContentButtons .publish {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
-}
-
-#EditContentButtons .cancel {
-    background: url("../bitmaps/common/buttons/cancel.png") no-repeat center left;
-}
-
-#EditContentButtons .save {
-    background: url("../bitmaps/common/buttons/save.png") no-repeat center left;
-}
-
-#EditContentButtons .savedraft {
-    background: url("../bitmaps/common/buttons/savedraft.png") no-repeat center left;
-}
-
-
 
 #TopicList .topic {
     border: 1px solid #30d3fc;
@@ -117,9 +71,155 @@
 }
 
 .buttonRow {
-    line-height: 20px;
+    padding: 2px;
     clear:both;
     /*height: 20px;*/
-    background-color: #ffccff;
     width: 600px;
+}
+
+.buttonRow .button {
+    vertical-align: middle;
+    margin-left: 2px;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    background-color: #aaffff;
+}
+
+.buttonRow .seperator {
+    vertical-align: middle;
+    display: inline-block;
+    background: url("../bitmaps/editor/editor_seperator.gif") no-repeat;
+    width: 4px;
+    height: 18px;
+}
+
+.buttonRow .remove-formatting {
+    background: url("../bitmaps/editor/editor_removeformat.gif") no-repeat;
+    width: 23px;
+}
+
+.buttonRow .strong {
+    background: url("../bitmaps/editor/editor_bold.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .italic {
+    background: url("../bitmaps/editor/editor_italic.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .underline {
+    background: url("../bitmaps/editor/editor_underline.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .justify-left {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-center {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-right {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .unorderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .orderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .indent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .outdent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .redo {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .undo {
+    background: url("../bitmaps/editor/editor_undo.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .link {
+    background: url("../bitmaps/editor/editor_link.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .anchor {
+    background: url("../bitmaps/editor/editor_anchor.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .media {
+    background: url("../bitmaps/editor/editor_multimedia.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .inserttable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .edittable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertcol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertrow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removecol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removerow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertchar {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .subscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .superscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .replace {
+    background: url("../bitmaps/editor/editor_replace.gif") no-repeat;
+    width: 18px;
 }

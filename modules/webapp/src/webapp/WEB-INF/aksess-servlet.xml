@@ -113,7 +113,7 @@
                 <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
                 <prop key="/admin/multimedia/ImageManipulation.action">ImageManipulationAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
-                <prop key="/admin/multimedia/SaveMultimedia.action">SaveMultimediaAction</prop>
+                <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
 
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
@@ -248,10 +248,10 @@
 
     <!-- Security -->
     <bean class="no.kantega.publishing.admin.security.action.AddUserRolePermissionAction" id="AddUserRolePermissionAction">
-        <property name="view" value="/WEB-INF/admin/generic/windowclose.jsp"/>
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.security.action.AddTopicRoleAction" id="AddTopicRoleAction">
-        <property name="view" value="/WEB-INF/admin/generic/windowclose.jsp"/>
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
     </bean>
     <bean class="no.kantega.useradmin.controls.CreateInitialUserController" id="CreateInitialUserAction">
         <property name="defaultDomain">
@@ -434,13 +434,8 @@
             <value>ImageMapAction</value>
         </property>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMultimediaAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveMultimediaAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.multimedia.action.EditMultimediaAction" id="EditMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>
     </bean>
 
     <!-- Topic maps -->

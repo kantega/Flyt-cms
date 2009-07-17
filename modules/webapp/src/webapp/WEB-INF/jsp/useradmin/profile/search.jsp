@@ -44,7 +44,7 @@
                     </select>
                 </c:if>
                 <input type="text" name="q" value="<c:out value="${query}"/>">
-                <input type="submit" value="Søk">
+                <input type="submit" class="button search" value="<kantega:label key="aksess.button.search"/>">
             </form>
 
             <table>
@@ -71,19 +71,16 @@
                     </td>
                 </tr>
                 </c:forEach>
-
-                <c:if test="${canEdit}">
-                <tr>
-                    <td colspan="3" align="right">
-                        <form action="edit">
-                            <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-                            <input type="submit" value="<kantega:label key="useradmin.searchprofiles.newprofile"/>">
-                        </form>
-                    </td>
-                </tr>
-                </c:if>
             </table>
 
+            <c:if test="${canEdit}">
+                <div class="buttonGroup">
+                    <form action="edit">
+                        <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
+                        <input type="submit" class="button add" value="<kantega:label key="useradmin.searchprofiles.newprofile"/>">
+                    </form>
+                </div>
+            </c:if>
         </fieldset>
     </div>
 

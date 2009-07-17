@@ -60,10 +60,12 @@
                 <input type="text" name="roleId" class="textInput" value="<c:out value="${role.id}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
             </p>
 
-            <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.save"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
-                <input type="button" class="button" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>">
-            </p>
+            <div class="buttonGroup">
+                <c:if test="${canEdit}">
+                    <input type="submit" class="button save" value="<kantega:label key="aksess.button.save"/>">
+                </c:if>
+                <input type="button" class="button cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>">
+            </div>
         </fieldset>
         </div>            
     </form>

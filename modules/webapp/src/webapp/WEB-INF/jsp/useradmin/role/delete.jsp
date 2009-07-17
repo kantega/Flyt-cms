@@ -26,14 +26,14 @@
         <input type="hidden" name="domain" value="<c:out value="${role.domain}"/>">
         <input type="hidden" name="roleId" value="<c:out value="${role.id}"/>">
         <input type="hidden" name="confirm" value="true">
-            <p>
-                <kantega:label key="useradmin.deleterole.confirm"/> <c:out value="${role.name}"/> ?
-            </p>
+        <p>
+            <kantega:label key="useradmin.deleterole.confirm"/> <c:out value="${role.name}"/> ?
+        </p>
 
-            <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.delete"/>">
-                <input type="button" class="button" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>">
-            </p>
+        <div class="buttonGroup">
+            <input type="submit" class="button delete" value="<kantega:label key="aksess.button.delete"/>">
+            <input type="button" class="button cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>">
+        </div>
     </form>
 </kantega:section>
 

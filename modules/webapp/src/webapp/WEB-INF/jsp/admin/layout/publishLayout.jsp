@@ -23,18 +23,20 @@
 <kantega:section id="head">
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/publish.css">
+    <script type="text/javascript" language="Javascript" src="../js/sidebar.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
     <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/richtext.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
+
     <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
     <script type="text/javascript">
-    function gotoTab(action) {
-        document.myform.elements['action'].value = action;
-        saveContent("");
-    }
+        function gotoTab(action) {
+            document.myform.elements['action'].value = action;
+            saveContent("");
+        }
     </script>
 </kantega:section>
 
@@ -47,14 +49,13 @@
 </kantega:section>
 
 <kantega:section id="toolsMenu">
- 
+
 </kantega:section>
 
 <kantega:section id="body">
 
-    <div id="EditContentMain">
-
-        <div id="EditContentMainPane">
+    <div id="TwoPaneContent">
+        <div id="TwoPaneMainPane">
             <div id="EditContentTabs" class="tabGroup">
                 <div class="tab" id="PublishPreview">
                     <a href="Javascript:gotoTab('ViewContentPreview.action')">Preview</a>
@@ -75,26 +76,24 @@
             <div id="EditContentButtons">
                 <c:choose>
                     <c:when test="${canPublish}">
-                        <a href="Javascript:saveContent(<%=ContentStatus.PUBLISHED%>)" class="button publish"><span><kantega:label key="aksess.button.publish"/></span></a>
+                        <input type="button" class="button publish" onclick="saveContent(<%=ContentStatus.PUBLISHED%>)" value="<kantega:label key="aksess.button.publish"/>">
                     </c:when>
                     <c:otherwise>
-                        <a href="Javascript:saveContent(<%=ContentStatus.WAITING%>)" class="button save"><span><kantega:label key="aksess.button.save"/></span></a>
+                        <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING%>)" value="<kantega:label key="aksess.button.save"/>">
                     </c:otherwise>
                 </c:choose>
-                <a href="Javascript:saveContent(<%=ContentStatus.DRAFT%>)" class="button savedraft"><span><kantega:label key="aksess.button.savedraft"/></span></a>
+                <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING%>)" value="<kantega:label key="aksess.button.save"/>">
                 <c:if test="${hearingEnabled}">
-                    <a href="Javascript:saveContent(<%=ContentStatus.HEARING%>)" class="button hearing"><span><kantega:label key="aksess.button.hoering"/></span></a>
+                    <input type="button" class="button hearing" onclick="saveContent(<%=ContentStatus.HEARING%>)" value="<kantega:label key="aksess.button.hoering"/>">
                 </c:if>
-                <a href="CancelEdit.action" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+                <input type="button" class="button cancel" onclick="location.href='CancelEdit.action'" value="<kantega:label key="aksess.button.cancel"/>">
             </div>
             <div id="EditContentPane">
                 <kantega:getsection id="content"/>
             </div>
         </div>
-
-        <div id="EditContentPaneSeperator"></div>
-        
-        <div id="EditContentPropertiesPane">
+        <div id="SideBarSplit"></div>
+        <div id="SideBar">
             <%@ include file="../publish/include/publishproperties.jsp" %>
         </div>
     </div>

@@ -53,7 +53,7 @@
                             <td><c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/></td>
                             <td align="right">
                                 <c:if test="${profileSet.isEditable}">
-                                    <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')"><kantega:label key="useradmin.userroles.remove"/></a>
+                                    <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')" class="button delete"><kantega:label key="useradmin.userroles.remove"/></a>
                                 </c:if>
                             </td>
                         </tr>

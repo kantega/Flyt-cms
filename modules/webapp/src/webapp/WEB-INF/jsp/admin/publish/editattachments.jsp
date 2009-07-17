@@ -67,8 +67,6 @@
 
 </script>
 <form name="myform" action="SaveAttachments.action" method="post" enctype="multipart/form-data">
-    <div id="EditPane">
-
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr class="tableHeading">
             <td><strong><kantega:label key="aksess.attachments.attachment"/></strong></td>
@@ -123,7 +121,6 @@
     <%
         }
     %>
-    </div>
 
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">
