@@ -17,8 +17,10 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -44,7 +46,30 @@ public class EditMultimediaAction extends AdminController {
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             // Show image / media object
             Map<String, Object> model = new HashMap<String, Object>();
+
+            Configuration c = Aksess.getConfiguration();
+
+            model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
+            model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
             model.put("media", mm);
+
+            if (mm.getMimeType().userMustInputDimension()) {
+                model.put("showDimension", Boolean.TRUE);
+                if (mm.getWidth() <= 0  || mm.getHeight() <= 0) {
+                    model.put("showDimensionInfo", Boolean.TRUE);
+                }
+            }
+
+            if (mm.getMimeType().getType().indexOf("image") != -1) {
+                // Can crop image
+                model.put("showImageCrop", Boolean.TRUE);
+            }
+
+            // Find usages of this image/file
+            List usages = mediaService.getUsages(mm.getId());
+            model.put("usages", usages);
+
+
             return new ModelAndView(view, model);
         } else {
             // Save changes to object

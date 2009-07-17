@@ -212,28 +212,28 @@ a.calendar {
     background-repeat: no-repeat;
 }
 #ToolsMenu .button .newSubpage {
-    background-image: url("../bitmaps/default/framework/tools_icon_newsubpage.png");
+    background-image: url("../bitmaps/common/tools/newsubpage.png");
 }
 #ToolsMenu .button .edit{
-    background-image: url("../bitmaps/default/framework/tools_icon_edit.png");
+    background-image: url("../bitmaps/common/tools/edit.png");
 }
 #ToolsMenu .button .delete{
-    background-image: url("../bitmaps/default/framework/tools_icon_delete.png");
+    background-image: url("../bitmaps/common/tools/delete.png");
 }
 #ToolsMenu .button .cut {
-    background-image: url("../bitmaps/default/framework/tools_icon_copy.png");
+    background-image: url("../bitmaps/common/tools/copy.png");
 }
 #ToolsMenu .button .copy {
-    background-image: url("../bitmaps/default/framework/tools_icon_copy.png");
+    background-image: url("../bitmaps/common/tools/copy.png");
 }
 #ToolsMenu .button .paste {
-    background-image: url("../bitmaps/default/framework/tools_icon_paste.png");
+    background-image: url("../bitmaps/common/tools/paste.png");
 }
 #ToolsMenu .button .displayPeriod {
-    background-image: url("../bitmaps/default/framework/tools_icon_displayperiod.png");
+    background-image: url("../bitmaps/common/tools/displayperiod.png");
 }
 #ToolsMenu .button .privileges {
-    background-image: url("../bitmaps/default/framework/tools_icon_privileges.png");
+    background-image: url("../bitmaps/common/tools/privileges.png");
 }
 
 /************** Navigation (left column) **************/

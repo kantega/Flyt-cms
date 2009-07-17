@@ -58,8 +58,8 @@
 </script>
 
 <c:if test="${!isStartPage}">
-    <div class="PropertyPane">
-        <div class="fieldset"><fieldset>
+    <div class="fieldset">
+        <fieldset>
             <legend><kantega:label key="aksess.publishinfo.period"/></legend>
             <div id="FromDate">
                 <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
@@ -97,8 +97,8 @@
     </div>
 </c:if>
 <c:if test="${currentContent.id > 0}">
-    <div class="PropertyPane">
-        <div class="fieldset"><fieldset>
+    <div class="fieldset">
+        <fieldset>
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
             <div id="ChangeDate">
                 <!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>-->
@@ -114,16 +114,16 @@
     </div>
 </c:if>
 <c:if test="${!isStartPage}">
-    <div class="PropertyPane">
-        <div class="fieldset"><fieldset>
+    <div class="fieldset">
+        <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
             <input type="text" name="alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510">
         </fieldset>
     </div>
 </c:if>
 <c:if test="${canChangeTemplate}">
-    <div class="PropertyPane">
-        <div class="fieldset"><fieldset>
+    <div class="fieldset">
+        <fieldset>
             <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
             <select name="displaytemplate" tabindex="60" onchange="setIsUpdated()">
                 <c:forEach var="template" items="${allowedTemplates}">
@@ -141,8 +141,8 @@
     </div>
 </c:if>
 <c:if test="${topicMapsEnabled}">
-    <div class="PropertyPane">
-        <div class="fieldset"><fieldset>
+    <div class="fieldset">
+        <fieldset>
             <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
 
 

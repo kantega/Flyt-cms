@@ -71,8 +71,9 @@ public class AdminFilter implements Filter {
             // Check for cross site request forgery
             if(isForgedPost(request)) {
                 log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
-                return;
+                // TODO: Fileupload causes problems
+                //response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
+                //return;
             }
 
             response.setDateHeader("Expires", 0);

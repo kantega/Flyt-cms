@@ -1,4 +1,5 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -19,17 +20,24 @@
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/multimedia.css">
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigate.jjs"></script>
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/ajaxupload.3.5.js"></script>
     <script type="text/javascript">
-        var currentItemIdentifier = -1;
+
+        var currentItemIdentifier = 0;
 
         $(document).ready(function(){
             debug("$(document).ready(): multimedia");
             bindMultimediaupdateEvents();
             triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
+            bindToolButtons();
         });
 
-
-
+        /**
+         * Registers click event actions to each tool
+         */
+        function bindToolButtons() {
+            bindMediaAjaxUpload();
+        }
         /**
          * Contains the binding of all elements that are listening to the multimediaupdate event.
          * New global listeners to this event should be added here.
@@ -75,13 +83,13 @@
                 triggerMultimediaupdateEvent();
             });
 
-            $("#MultimediaFolders .media").click(function(){
-                debug("addMediaitemClickListeners(): media click recieved");
-                var idAttr = $(this).attr("id");
-                currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                alert("Nå skal bilderedigeringssiden åpnes");
-                //window.location.href = 'xxxx';
-            });
+            /*
+             $("#MultimediaFolders .media").click(function(){
+             debug("addMediaitemClickListeners(): media click recieved");
+             var idAttr = $(this).attr("id");
+             currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
+             window.location.href = 'EditMultimedia.action?id=' + currentItemIdentifier;
+             });*/
         }
 
         /**
@@ -134,6 +142,48 @@
             var params = new Object();
             return params;
         }
+
+        function bindAjaxFileUpload() {
+            var button = $('#UploadButton');
+            new AjaxUpload(button, {
+                action: 'UploadMultimedia.action',
+                name: 'file',
+                onSubmit : function(file, ext){
+                    this.setData({
+                        'parentId': getCurrentItemIdentifier(),
+                        'id' : -1
+                    });
+                    button.text('Uploading...');
+                    this.disable();
+
+                },
+                onComplete: function(file, response){
+                    button.text('New file');
+                    // enable upload button
+                    this.enable();
+                    displayResults(response);
+                }
+            });
+        }
+
+        function displayResults(xml) {
+            var files = xml.getElementsByTagName("file");
+
+            if (files) {
+                if (files.length == 1) {
+                    var id = files[0].getAttribute("id");
+                    location.href = "EditMultimedia.action?id=" + id;
+                } else {
+                    alert(files.length + " files uploaded");
+                }
+            } else {
+                alert("Upload failed!");
+            }
+        }
+
+
+
+
     </script>
 
 </kantega:section>
@@ -147,7 +197,8 @@
 </kantega:section>
 
 <kantega:section id="toolsMenu">
-
+    <!-- TODO: Menyen her må lastes via ajax eller noe for at riktige knapper skal vises  -->
+    <a href="#" class="button" id="UploadButton"><span class="upload"><kantega:label key="aksess.tools.upload"/></span></a>
 </kantega:section>
 
 <kantega:section id="body">

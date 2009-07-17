@@ -19,7 +19,26 @@
   --%>
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/multimedia.css">
-    <script type="text/javascript" language="Javascript" src="../js/sidebar.jjs"></script>
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/jquery.Jcrop.css">
+    <script type="text/javascript" language="Javascript" src="<%=Aksess.getContextPath()%>/admin/js/sidebar.jjs"></script>
+    <script type="text/javascript" language="Javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            bindToolButtons();
+        });
+
+        /**
+         * Registers click event actions to each tool
+         */
+        function bindToolButtons() {
+            <c:if test="${showImageCrop}">
+                $("#ToolsMenu .button .crop").click(function(){
+                    startImageCrop();
+                });
+            </c:if>
+        }
+    </script>
+
 </kantega:section>
 
 <kantega:section id="topMenu">
@@ -28,7 +47,11 @@
 
 
 <kantega:section id="toolsMenu">
-    Slett - Bildebeskjæring - +++
+    <div class="buttonGroup">
+        <c:if test="${showImageCrop}">
+            <a href="#" class="button"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
+        </c:if>
+    </div>
 </kantega:section>
 
 <kantega:section id="body">

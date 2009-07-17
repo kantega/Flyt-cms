@@ -37,7 +37,7 @@
         <c:otherwise>
             <div class="media">
                 <div class="icon">
-                    <a href="ViewMultimedia.action?id=${media.id}">
+                    <a href="EditMultimedia.action?id=${media.id}">
                         <%
                             Multimedia mm = (Multimedia)pageContext.getAttribute("media");
                             String mimeType = mm.getMimeType().getType();

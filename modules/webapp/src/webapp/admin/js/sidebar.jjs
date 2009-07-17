@@ -41,6 +41,7 @@ function setWindowSize() {
         var contentHeight = $("#TwoPaneMainPane").height();
 
         var height = Math.max(contentHeight, sideBarHeight);
+        height = Math.max($(window).height(), height);
 
         var sideBarWidth = $("#SideBar").width();
         var framesplitWidth = $("#SideBarSplit").width();
