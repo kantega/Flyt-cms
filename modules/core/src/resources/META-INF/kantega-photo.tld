@@ -24,6 +24,29 @@
     <short-name>photo</short-name>
     <uri>http://www.kantega.no/aksess/tags/photo</uri>
     <tag>
+        <description>Generate a list of all images in a folder.</description>
+        <name>getimagecollection</name>
+        <tag-class>no.kantega.publishing.api.taglibs.photoalbum.PhotoGetImageCollectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>folder</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute for image</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>    
+    <tag>
         <description>Navigate between next/previous image</description>
         <name>navigate</name>
         <tag-class>no.kantega.publishing.api.taglibs.photoalbum.PhotoNavigateTag</tag-class>

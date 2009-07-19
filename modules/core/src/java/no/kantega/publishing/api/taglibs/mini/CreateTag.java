@@ -130,7 +130,7 @@ public class CreateTag extends AbstractSimpleEditTag {
     }
 
     public void setContenttemplatename(String contenttemplatename) {
-        ContentTemplate template = ContentTemplateCache.getTemplateByName(contenttemplatename);
+        ContentTemplate template = ContentTemplateCache.getTemplateByPublicId(contenttemplatename);
         this.contentTemplateId = template.getId();
     }
 
