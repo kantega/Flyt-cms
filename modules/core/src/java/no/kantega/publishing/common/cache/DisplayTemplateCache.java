@@ -38,6 +38,10 @@ public class DisplayTemplateCache {
     }
 
     public static DisplayTemplate getTemplateByPublicId(String id) {
+        if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
+            reloadCache();
+        }
+        
         for (Object o : displaytemplates.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             DisplayTemplate template = (DisplayTemplate) entry.getValue();

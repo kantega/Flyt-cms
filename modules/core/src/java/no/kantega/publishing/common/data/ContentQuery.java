@@ -531,7 +531,7 @@ public class ContentQuery {
             try {
                 id = Integer.parseInt(template);
             } catch (NumberFormatException e) {
-                ContentTemplate ct = ContentTemplateCache.getTemplateByName(template);
+                ContentTemplate ct = ContentTemplateCache.getTemplateByPublicId(template);
                 if (ct != null) {
                     id = ct.getId();
                 } else {

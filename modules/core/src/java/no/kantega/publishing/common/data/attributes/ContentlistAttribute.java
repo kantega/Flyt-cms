@@ -45,7 +45,7 @@ public class ContentlistAttribute extends ListAttribute {
         if (config != null) {
             String template = config.getAttribute("contenttemplate");
             if (template != null && template.length() > 0) {
-                ContentTemplate ct = ContentTemplateCache.getTemplateByName(template);
+                ContentTemplate ct = ContentTemplateCache.getTemplateByPublicId(template);
                 if (ct != null) {
                     contentTemplateId = ct.getId();
                 }

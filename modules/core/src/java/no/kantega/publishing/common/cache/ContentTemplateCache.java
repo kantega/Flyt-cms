@@ -38,17 +38,15 @@ public class ContentTemplateCache  {
         }
     }
 
-    public static ContentTemplate getTemplateByName(String name) {
-        String id = null;
-        if (name.startsWith("#")) {
-            id = name.substring(1, name.length());
-            name = null;
+    public static ContentTemplate getTemplateByPublicId(String id) {
+        if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
+            reloadCache();
         }
 
         for (Object o : templates.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             ContentTemplate template = (ContentTemplate) entry.getValue();
-            if (id != null && id.equalsIgnoreCase(template.getPublicId()) || name != null && name.equalsIgnoreCase(template.getName())) {
+            if (id != null && id.equalsIgnoreCase(template.getPublicId())) {
                 return template;
             }
         }
