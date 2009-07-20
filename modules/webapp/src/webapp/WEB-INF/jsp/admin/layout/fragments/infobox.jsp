@@ -30,7 +30,6 @@
 %>
 <div id="errorMessageArea" style="display:<%=display%>;">
     <div class="error">
-        <div id="errorMessage">
             <strong><kantega:label key="aksess.editcontent.error"/></strong>
             <ul>
                 <%
@@ -48,7 +47,6 @@
                     }
                 %>
             </ul>
-        </div>
     </div>
 </div>
 <%

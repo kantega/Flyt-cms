@@ -23,9 +23,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.event.ContentListener;
-
-import java.util.Date;
 
 /**
  *
@@ -59,11 +58,22 @@ public class ContentStateChangeJob  {
                 cid.setContentId(i);
                 Content content = ContentAO.getContent(cid, false);
                 if (content != null) {
-                    ContentAO.setContentVisibilityStatus(content.getId(), ContentVisibilityStatus.ACTIVE);
-                    contentNotifier.contentActivated(content);
+                    boolean activated = false;
+                    if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
+                        Log.debug(SOURCE, content.getTitle() + " page was made visible due to publish date", null, null);
+                        ContentAO.setContentVisibilityStatus(content.getId(), ContentVisibilityStatus.ACTIVE);
+                        activated = true;
+                    } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
+                        Log.debug(SOURCE, content.getTitle() + " new version was activated due to change from date", null, null);
+                        ContentAO.setContentStatus(cid, ContentStatus.PUBLISHED, "");
+                        activated = true;                        
+                    }
+                    if (activated) {
+                        contentNotifier.contentActivated(content);
+                    }
                 }
-
             }
+
         } catch (SystemException e) {
             e.printStackTrace();
         }

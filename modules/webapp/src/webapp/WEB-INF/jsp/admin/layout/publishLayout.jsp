@@ -53,6 +53,7 @@
 </kantega:section>
 
 <kantega:section id="body">
+    <form name="myform" action="" method="post" enctype="multipart/form-data">
 
     <div id="TwoPaneContent">
         <div id="TwoPaneMainPane">
@@ -79,10 +80,10 @@
                         <input type="button" class="button publish" onclick="saveContent(<%=ContentStatus.PUBLISHED%>)" value="<kantega:label key="aksess.button.publish"/>">
                     </c:when>
                     <c:otherwise>
-                        <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING%>)" value="<kantega:label key="aksess.button.save"/>">
+                        <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>)" value="<kantega:label key="aksess.button.save"/>">
                     </c:otherwise>
                 </c:choose>
-                <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING%>)" value="<kantega:label key="aksess.button.save"/>">
+                <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>)" value="<kantega:label key="aksess.button.save"/>">
                 <c:if test="${hearingEnabled}">
                     <input type="button" class="button hearing" onclick="saveContent(<%=ContentStatus.HEARING%>)" value="<kantega:label key="aksess.button.hoering"/>">
                 </c:if>
@@ -97,6 +98,7 @@
             <%@ include file="../publish/include/publishproperties.jsp" %>
         </div>
     </div>
+    </form>
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>

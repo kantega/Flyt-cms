@@ -74,9 +74,9 @@
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.memory"/></div>
                 <div class="content">
-                    <kantega:label key="aksess.systeminfo.memory.free"/>: ${freeMemory},
-                    <kantega:label key="aksess.systeminfo.memory.total"/>: ${totalMemory},
-                    <kantega:label key="aksess.systeminfo.memory.max"/>: ${maxMemory},
+                    <kantega:label key="aksess.systeminfo.memory.free"/>: ${freeMemory} MB,
+                    <kantega:label key="aksess.systeminfo.memory.total"/>: ${totalMemory} MB,
+                    <kantega:label key="aksess.systeminfo.memory.max"/>: ${maxMemory} MB
                 </div>
             </div>
         </fieldset>

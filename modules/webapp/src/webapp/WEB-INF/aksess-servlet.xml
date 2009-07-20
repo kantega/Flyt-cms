@@ -93,6 +93,7 @@
                 <prop key="/admin/publish/SimpleEditCancel.action">SimpleEditCancelAction</prop>
                 <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
+                <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
 
                 <!-- Popups for publishing -->
                 <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
@@ -122,7 +123,8 @@
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
                 <!--<prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>-->                
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
-                <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+                <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
+
 
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
 
@@ -168,9 +170,9 @@
                 <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
-                <prop key="/admin/administration//EditTopicMap.action">editTopicMapAction</prop>
-                <prop key="/admin/administration/admin/DeleteTopicMap.action">DeleteTopicMapAction</prop>
-                <prop key="/admin/administration/admin/ListTopicMaps.action">listTopicMapsAction</prop>
+                <prop key="/admin/administration/topicmaps/DeleteTopicMap.action">deleteTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/EditTopicMap.action">editTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/ListTopicMaps.action">listTopicMapsAction</prop>
                 <!-- Site config controllers -->
                 <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
                 <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
@@ -442,8 +444,11 @@
         <property name="view" value="/WEB-INF/jsp/ajax/fileupload.jsp"/>
     </bean>
     <!-- Topic maps -->
-    <bean class="no.kantega.publishing.admin.content.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.SelectTopicsAction" id="SelectTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/select-topic.jsp"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UpdateTopicAction">
         <property name="servletClass">
@@ -475,14 +480,6 @@
         </property>
     </bean>
     -->
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicMapAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteTopicMapAction</value>
-        </property>
-    </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteRoleTopicAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.DeleteRoleTopicAction</value>
@@ -535,9 +532,13 @@
     <bean class="no.kantega.publishing.admin.administration.action.ListContentExpirationAction" id="listContentExpirationAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentexpiration.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction"/>
-    <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction"/>
-
+    <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction" id="deleteTopicMapAction"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopicmap.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopicmaps.jsp"/>
+    </bean>
     <!-- Site config -->
     <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>

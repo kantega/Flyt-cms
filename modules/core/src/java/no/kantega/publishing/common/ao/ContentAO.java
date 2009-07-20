@@ -272,7 +272,7 @@ public class ContentAO {
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
                 int activeversion = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by Version desc" , "Version");
-                version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND Version > " +activeversion +" order by Version desc" , "Version");
+                version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " + ContentStatus.HEARING +" AND Version > " +activeversion +" order by Version desc" , "Version");
 
             } else {
                 // Others should see active version
@@ -390,7 +390,7 @@ public class ContentAO {
             // Get drafts, pages waiting for approval and rejected pages
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? order by contentversion.Status, contentversion.LastModified desc");
             st.setInt(1, ContentStatus.DRAFT);
-            st.setInt(2, ContentStatus.WAITING);
+            st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL);
             st.setInt(3, ContentStatus.REJECTED);
             st.setString(4, user.getId());
             ResultSet rs = st.executeQuery();
@@ -402,7 +402,7 @@ public class ContentAO {
                     prevContentId = content.getId();
                     if (content.getStatus() == ContentStatus.DRAFT) {
                         draft.add(content);
-                    } else if (content.getStatus() == ContentStatus.WAITING) {
+                    } else if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
                         waiting.add(content);
                     } else if (content.getStatus() == ContentStatus.REJECTED) {
                         rejected.add(content);
@@ -498,7 +498,7 @@ public class ContentAO {
             c = dbConnectionFactory.getConnection();
             // Hent content og contentversion
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 order by contentversion.Title");
-            st.setInt(1, ContentStatus.WAITING);
+            st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL);
             ResultSet rs = st.executeQuery();
             int prevContentId = -1;
             while (rs.next()) {
@@ -771,8 +771,8 @@ public class ContentAO {
             }
 
             // If this is a draft, rejected page etc delete previous version
-            if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING || content.getStatus() == ContentStatus.REJECTED) {
-                // Slett denne (forrige) versjon
+            if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
+                // Delete this (previous) version
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setAssociationId(content.getAssociation().getId());
                 cid.setVersion(content.getVersion());
@@ -818,7 +818,7 @@ public class ContentAO {
             }
 
             // Insert new version
-            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"ContentVersionId"});
+            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"ContentVersionId"});
             st.setInt(1, content.getId());
             st.setInt(2, content.getVersion());
             st.setInt(3, newStatus);
@@ -834,6 +834,8 @@ public class ContentAO {
             st.setString(13, content.getModifiedBy());
             st.setString(14, content.getChangeDescription());
             st.setString(15, content.getApprovedBy());
+            st.setTimestamp(16, content.getChangeFromDate() == null ? null : new java.sql.Timestamp(content.getChangeFromDate().getTime()));
+
             st.execute();
 
             ResultSet rs = st.getGeneratedKeys();
@@ -1116,15 +1118,26 @@ public class ContentAO {
     }
 
 
+    /**
+     * Return the id of the next content id which should be activated
+     * - because publish date was reached (on a new page or existing page)
+     * - because changefrom date was reached (on a existing page)
+     * @param after - which content id to start at
+     * @return
+     * @throws SystemException
+     */
     public static int getNextActivationContentId(int after) throws SystemException {
 
         Connection c = null;
         try {
+            long now = new Date().getTime() + 1000*60*1;
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE PublishDate < ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
-            p.setTimestamp(1, new Timestamp(new Date().getTime() + 1000*60*1));
+            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE (PublishDate < ? AND VisibilityStatus = ?) OR (ContentId IN (SELECT ContentId FROM ContentVersion WHERE Status = ? AND ChangeFrom < ?)) AND ContentId > ? ORDER BY ContentId");
+            p.setTimestamp(1, new Timestamp(now));
             p.setInt(2, ContentVisibilityStatus.WAITING);
-            p.setInt(3, after);
+            p.setTimestamp(3, new Timestamp(now));
+            p.setInt(4, ContentStatus.PUBLISHED_WAITING);
+            p.setInt(5, after);
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
                 return -1;

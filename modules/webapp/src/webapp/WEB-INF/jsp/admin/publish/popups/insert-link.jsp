@@ -53,8 +53,8 @@
             </div>    
         </form>
         <div class="buttonGroup">
-            <a href="Javascript:insertLink()" class="button ok"><span><kantega:label key="aksess.button.ok"/></span></a>
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+            <input type="button" class="button ok" onclick="insertLink()" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 </kantega:section>

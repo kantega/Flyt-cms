@@ -19,6 +19,7 @@
   --%>
 
 <kantega:section id="head">
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
 </kantega:section>
 
@@ -46,7 +47,7 @@
                     <%
                         if (Aksess.isTopicMapsEnabled()) {
                     %>
-                    <li><a href="<%=root%>ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></li>
+                    <li><a href="<%=root%>topicmaps/ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></li>
                     <%
                         }
                     %>

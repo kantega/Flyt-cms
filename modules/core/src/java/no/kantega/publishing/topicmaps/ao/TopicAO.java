@@ -391,7 +391,7 @@ public class TopicAO {
         try {
             c = dbConnectionFactory.getConnection();
             String sql = "";
-            sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
+            sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
             sql += "   FROM tmtopic";
             sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 
@@ -418,6 +418,7 @@ public class TopicAO {
 
                 topic.setIsTopicType(rs.getInt("IsTopicType") == 1);
                 topic.setIsAssociation(rs.getInt("IsAssociation") == 1);
+                topic.setIsSelectable(rs.getInt("IsSelectable") == 1);
 
                 topics.add(topic);
             }

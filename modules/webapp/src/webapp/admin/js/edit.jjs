@@ -101,9 +101,9 @@ function updateTopics(params) {
 /**
  *  Let user select a topic
  */
-function selectTopic(formElement) {
+function selectTopic(formElement, multiple) {
     focusField = formElement;
-    var topicwin = window.open("../topicmaps/index.jsp?refresh=" + getRefresh(), "topicwin",  "toolbar=no,width=880,height=500,resizable=yes,scrollbars=yes");
+    var topicwin = window.open("../topicmaps/SelectTopics.action?selectMultiple=" + multiple + "&refresh=" + getRefresh(), "topicwin",  "toolbar=no,width=250,height=500,resizable=yes,scrollbars=yes");
     topicwin.focus();
 }
 
@@ -245,7 +245,7 @@ function selectMultimedia(formElement, filter) {
 function selectMediaFolder(formElement) {
     focusField = eval(formElement);
     doInsertTag = false;
-    var mmwin = window.open("popups/SelectMediaFolder.action.jsp?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("popups/SelectMediaFolder.action?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 

@@ -23,6 +23,7 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.exception.ExceptionHandler;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
 
@@ -40,10 +41,11 @@ import org.springframework.web.servlet.view.RedirectView;
 
 /**
  */
-public class EditTopicMapAction extends AbstractController {
+public class EditTopicMapAction extends AdminController {
     private static String SOURCE = "aksess.EditTopicMapAction";
+    private String view;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
@@ -67,9 +69,6 @@ public class EditTopicMapAction extends AbstractController {
 
             topicMap.setName(param.getString("name", 40));
             topicMap.setEditable(param.getBoolean("iseditable"));
-            topicMap.setWSOperation(param.getString("wsoperation", 64));
-            topicMap.setWSSoapAction(param.getString("wssoapaction", 255));
-            topicMap.setWSEndPoint(param.getString("wsendpoint", 255));
 
             topicMap = topicService.setTopicMap(topicMap);
 
@@ -100,8 +99,12 @@ public class EditTopicMapAction extends AbstractController {
             return new ModelAndView(new RedirectView("ListTopicMaps.action"));
         } else {
             model.put("topicMap", topicMap);
-            return new ModelAndView("/WEB-INF/jsp/admin/topicmaps/admin/edittopicmap.jsp", model);
+            return new ModelAndView(view, model);
         }
 
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

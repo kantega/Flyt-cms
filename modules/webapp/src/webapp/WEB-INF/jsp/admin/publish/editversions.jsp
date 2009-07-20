@@ -55,7 +55,6 @@
             document.deleteversion.submit();
         }
     </script>
-    <form name="myform" action="SaveVersion.action" method="post" enctype="multipart/form-data">
         <%@ include file="../../../../admin/include/infobox.jsf" %>
 
         <form name="activeversion" action="UseVersion.action" target="content" method="post">
@@ -130,6 +129,5 @@
         <input type="hidden" name="action" value="">
         <input type="hidden" name="currentId" value="${currentContent.id}">
         <input type="hidden" name="isModified" value="${currentContent.modified}">
-    </form>
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.ajax;
+package no.kantega.publishing.admin.topicmaps.ajax;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;

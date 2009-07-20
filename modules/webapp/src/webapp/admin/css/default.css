@@ -46,12 +46,21 @@ td a:hover {
     float: right;
 }
 
-.info {
+.info, .error {
     border: 1px solid #000000;
     padding: 4px;
     color: #000000;
     background-color: #FFFFE1;
     margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.info {
+    background-color: #FFFFE1;
+}
+
+.error {
+    background-color: #FFCCCC;
 }
 
 a.calendar {

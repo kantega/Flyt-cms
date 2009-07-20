@@ -66,8 +66,8 @@
                             <tr class="tableRow<%=(i%2)%>">
                                 <c:choose>
                                     <c:when test="${!select}">
-                                        <td><input type="checkbox" name="role" value="<c:out value="${role.id}"/>"></td>
-                                        <td>${displayName}</td>
+                                        <td><input type="checkbox" name="role" id="role<%=i%>" value="<c:out value="${role.id}"/>"></td>
+                                        <td><label for="role<%=i%>">${displayName}</label></td>
                                     </c:when>
                                     <c:otherwise>
                                         <td><a href="javascript:selectRole('<c:out value="${role.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>

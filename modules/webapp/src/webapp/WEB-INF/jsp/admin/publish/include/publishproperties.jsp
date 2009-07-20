@@ -47,7 +47,7 @@
         $("#ChooseTopicButton > a.button").click(function(event){
             debug("bindTopicButtons(): click ChooseTopicButton");
             event.preventDefault();
-            selectTopic(null);
+            selectTopic(null, true);
         });
 
         // Load topics

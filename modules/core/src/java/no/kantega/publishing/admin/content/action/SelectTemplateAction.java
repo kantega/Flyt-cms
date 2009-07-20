@@ -86,7 +86,7 @@ public class SelectTemplateAction implements Controller {
         HttpSession session = request.getSession();
         session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
-        return new ModelAndView(new RedirectView("EditContent.action"));
+        return new ModelAndView(new RedirectView("SaveContent.action"));
     }
 
 }

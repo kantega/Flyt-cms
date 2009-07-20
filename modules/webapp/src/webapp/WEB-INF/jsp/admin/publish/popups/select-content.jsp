@@ -24,6 +24,7 @@
 </kantega:section>
 
 <kantega:section id="head">
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.interface.js"></script>
@@ -95,7 +96,7 @@
             <div id="Navigator"></div>
         </div>
         <div class="buttonGroup">
-            <a href="Javascript:window.close()" class="button cancel"><span><kantega:label key="aksess.button.cancel"/></span></a>
+            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 </kantega:section>

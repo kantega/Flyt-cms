@@ -32,6 +32,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 
@@ -44,12 +45,13 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-public abstract class AbstractSaveContentAction implements Controller {
+public abstract class AbstractSaveContentAction extends AdminController {
+
     abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
     abstract String getView();
     abstract Map<String, Object> getModel(Content content, HttpServletRequest request);
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         HttpSession session = request.getSession();
@@ -111,7 +113,7 @@ public abstract class AbstractSaveContentAction implements Controller {
                         case ContentStatus.PUBLISHED:
                             message += "published";
                             break;
-                        case ContentStatus.WAITING:
+                        case ContentStatus.WAITING_FOR_APPROVAL:
                             message += "waiting";
                             break;
                         case ContentStatus.HEARING:
@@ -153,7 +155,7 @@ public abstract class AbstractSaveContentAction implements Controller {
             model.put("hearingEnabled", Boolean.TRUE);
         }
 
-        int saveStatus = ContentStatus.WAITING;
+        int saveStatus = ContentStatus.WAITING_FOR_APPROVAL;
         if (securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {
             // User is authorized to publish page
             saveStatus = ContentStatus.PUBLISHED;
@@ -297,4 +299,5 @@ public abstract class AbstractSaveContentAction implements Controller {
         */
         return errors;
     }
+
 }

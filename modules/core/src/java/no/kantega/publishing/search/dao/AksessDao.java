@@ -17,7 +17,6 @@
 package no.kantega.publishing.search.dao;
 
 import no.kantega.publishing.search.index.model.TmBaseName;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 
 import javax.sql.DataSource;
 import java.sql.Connection;

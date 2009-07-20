@@ -198,17 +198,34 @@ public class ContentManagementService {
 
         content.setModifiedBy(securitySession.getUser().getId());
 
-        // Sjekk om brukeren har rett til å publisere, hvis ikke sett ventestatus
+        // Check if user is authorized to publish directly
         if (status == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
-            status = ContentStatus.WAITING;
+            // User is not authorized, set waiting status
+            status = ContentStatus.WAITING_FOR_APPROVAL;
             content.setApprovedBy("");
         } else {
             content.setApprovedBy(securitySession.getUser().getId());
         }
 
+        // Check if change should be active now
+        if (content.getChangeFromDate() != null) {
+            if (content.getChangeFromDate().getTime() > new Date().getTime()) {
+                // Change should not be active yet
+                if (status == ContentStatus.PUBLISHED) {
+                    status = ContentStatus.PUBLISHED_WAITING;
+                }
+            } else {
+                // Reset change from date, since it has passed
+                content.setChangeFromDate(null);
+            }
+        }
+
+        // Set visibilitystatus depending on date
         if (content.getPublishDate() != null && content.getPublishDate().getTime() > new Date().getTime()) {
+            // Waiting to be published
             content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
         } else if (content.getExpireDate() != null && content.getExpireDate().getTime() < new Date().getTime()) {
+            // Has expired
             if (content.getExpireAction () == ExpireAction.ARCHIVE) {
                 content.setVisibilityStatus(ContentVisibilityStatus.ARCHIVED);
             } else {
@@ -217,6 +234,7 @@ public class ContentManagementService {
         } else {
             content.setVisibilityStatus(ContentVisibilityStatus.ACTIVE);
         }
+
 
         ContentListenerUtil.getContentNotifier().beforeContentSave(content);
 
@@ -230,7 +248,7 @@ public class ContentManagementService {
                 case ContentStatus.DRAFT:
                     event = Event.SAVE_DRAFT;
                     break;
-                case ContentStatus.WAITING:
+                case ContentStatus.WAITING_FOR_APPROVAL:
                     event = Event.SEND_FOR_APPROVAL;
                     break;
                 default:

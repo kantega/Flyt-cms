@@ -81,7 +81,7 @@ public class EditContentAction implements Controller {
             if (content.getStatus() == ContentStatus.DRAFT && content.getVersion() > 1) {
                 // Tell user this is a draft
                 infomessage = "editdraft";
-            } else if (content.getStatus() == ContentStatus.WAITING) {
+            } else if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
                 // Tell user this page is waiting for approval
                 infomessage = "editwaiting";
             }

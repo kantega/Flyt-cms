@@ -66,7 +66,6 @@
             initialize();
         });
     </script>
-    <form name="myform" action="SaveMetadata.action" method="post" enctype="multipart/form-data">
         <%@ include file="../../../../admin/include/infobox.jsf" %>
         <c:if test="${fn:length(documentTypes) > 1}">
             <div class="contentAttribute">
@@ -190,6 +189,5 @@
         <input type="hidden" name="action" value="">
         <input type="hidden" name="currentId" value="${currentContent.id}">
         <input type="hidden" name="isModified" value="${currentContent.modified}">
-    </form>
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>

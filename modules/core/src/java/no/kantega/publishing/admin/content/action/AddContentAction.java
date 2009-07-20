@@ -29,6 +29,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -46,12 +47,12 @@ import java.util.Map;
  * Date: Nov 12, 2007
  * Time: 2:56:05 PM
  */
-public class AddContentAction implements Controller {
+public class AddContentAction extends AdminController {
     private String view;
 
     private TemplateConfigurationCache templateConfigurationCache;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
 
         RequestParameters param = new RequestParameters(request);
@@ -113,7 +114,7 @@ public class AddContentAction implements Controller {
                             Association a = aksessService.getAssociationById(parents[i]);
                             associations.add(a);
                         } else {
-                            model.put("error", LocaleLabels.getLabel("aksess.selecttemplate.ikketilgang", Aksess.getDefaultAdminLocale()));
+                            model.put("notAuthorized", Boolean.TRUE);
                         }
                     }
                 }
@@ -152,10 +153,6 @@ public class AddContentAction implements Controller {
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
-    }
-
-    public String getView() {
-        return view;
     }
 
     public void setView(String view) {

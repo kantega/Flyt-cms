@@ -20,22 +20,22 @@
 <html>
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
-    <link rel="shortcut icon" href="<%=Aksess.getContextPath()%>/admin/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="<%=request.getContextPath()%>/admin/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/base.css">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/default.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/base.css">
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/default.css">
     <!--[if lt IE 8]>
-        <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/default_ie7.css">
+        <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/default_ie7.css">
     <![endif]-->
 
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.contextMenu.js"></script>
-    <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/interface/ContentStateHandler.js'></script>
-    <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/engine.js'></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/common.jjs"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.contextMenu.js"></script>
+    <script type="text/javascript" src='<%=request.getContextPath()%>/admin/dwr/interface/ContentStateHandler.js'></script>
+    <script type="text/javascript" src='<%=request.getContextPath()%>/admin/dwr/engine.js'></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/common.jjs"></script>
     <kantega:getsection id="head"/>
 </head>
 <body>

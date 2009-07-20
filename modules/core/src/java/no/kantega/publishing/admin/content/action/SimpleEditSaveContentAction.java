@@ -35,9 +35,6 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
 
-import java.util.Map;
-import java.util.HashMap;
-
 public class SimpleEditSaveContentAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

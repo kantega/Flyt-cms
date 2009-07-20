@@ -129,6 +129,7 @@
         <column name="LastModifiedBy" required="false" type="VARCHAR" size="64"/>
         <column name="ChangeDescription" required="false" type="CLOB" size="2147483647"/>
         <column name="ApprovedBy" required="false" type="VARCHAR" size="64"/>
+        <column name="ChangeFrom" required="false" type="TIMESTAMP" size="23,3"/>
         <index name="idx_contentversion">
             <index-column name="ContentId"/>
             <index-column name="Version"/>
