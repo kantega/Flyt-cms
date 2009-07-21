@@ -56,8 +56,8 @@
 
 <kantega:section id="body">
 
-    <div id="TwoPaneContent">
-        <div id="TwoPaneMainPane">
+    <div id="Content" class="sidebar">
+        <div id="MainPane">
             <kantega:getsection id="content"/>
         </div>
         <div id="SideBarSplit"></div>

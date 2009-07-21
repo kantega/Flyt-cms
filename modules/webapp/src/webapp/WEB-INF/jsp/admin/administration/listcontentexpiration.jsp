@@ -34,7 +34,7 @@
                         <div id="FromDate">
                             <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
                             <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${expireFromDate}"/>">
-                            <a href="#" id="chooseFromDate" class="calendar"></a>
+                            <a href="#" id="chooseFromDate" class="dateselect"></a>
                         </div>
                         <script type="text/javascript">
                             Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
@@ -42,7 +42,7 @@
                         <div id="EndDate">
                             <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
                             <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${expireToDate}"/>">
-                            <a href="#" id="chooseEndDate" class="calendar"></a>
+                            <a href="#" id="chooseEndDate" class="dateselect"></a>
                         </div>
                         <script type="text/javascript">
                             Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );

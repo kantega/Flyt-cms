@@ -29,13 +29,7 @@
     background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
 }
 
-#MainPane {
-    float: left;
-    position: relative;
-    width: auto;
-    height: 100%;
-    background: #A0A0A0;
-}
+
 #MainPane iframe {
     border: none;
 }

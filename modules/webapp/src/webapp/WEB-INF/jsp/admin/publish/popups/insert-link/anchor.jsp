@@ -2,7 +2,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
-    function insertLink() {
+    function buttonOkPressed() {
         var frm = document.linkform;
 
         var url = frm.url.options[frm.url.selectedIndex].value;

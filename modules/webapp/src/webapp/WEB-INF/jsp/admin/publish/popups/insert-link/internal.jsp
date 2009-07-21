@@ -5,7 +5,7 @@
     // Used by popup when sending data back to this form
     var doInsertTag = false;
 
-    function insertLink() {
+    function buttonOkPressed() {
         var frm = document.linkform;
 
         var url = frm.url.value;

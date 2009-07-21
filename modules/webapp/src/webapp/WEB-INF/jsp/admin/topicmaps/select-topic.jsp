@@ -24,23 +24,23 @@
 <kantega:section id="head">
     <script type="text/javascript">
         // For multiple items
-        function addSelectedTopics() {
+        function buttonOkPressed() {
             $('.checkbox:checked').each(
                     function() {
                         var topicMapIdAndId = this.value.split(":");
                         var topicMapId = topicMapIdAndId[0];
                         var topicId = topicMapIdAndId[1];
-                        window.opener.addTopic(topicMapId, topicId, '');
+                        getParent().addTopic(topicMapId, topicId, '');
 
                     }
                     );
-            window.close();
+            return true;
         }
 
         // When only one item can be selected
         function addTopic(topicMapId, topicId, topicName) {
-            window.opener.addTopic(topicMapId, topicId, topicName);
-            window.close();
+            getParent().addTopic(topicMapId, topicId, topicName);
+            closeWindow();
         }
 
 
@@ -106,10 +106,10 @@
 
         <div class="buttonGroup">
             <c:if test="${selectMultiple}">
-                <input type="button" onclick="addSelectedTopics()" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+                <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
             </c:if>
 
-            <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </form>
 </kantega:section>

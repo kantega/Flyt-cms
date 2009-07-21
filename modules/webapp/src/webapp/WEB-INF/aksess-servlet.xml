@@ -382,8 +382,7 @@
     <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
     </bean>
-
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertTableAction">
+    <bean class="no.kantega.publishing.admin.content.action.InsertTableAction" id="InsertTableAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertCharacterAction">

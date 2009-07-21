@@ -17,17 +17,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%
-<%
-    RequestParameters param = new RequestParameters(request);
-    boolean modifyExisting = param.getBoolean("edit");
-%>
-%>
 <kantega:section id="title"><kantega:label key="aksess.inserttable.title"/></kantega:section>
 
 <kantega:section id="head">
     <script language="Javascript" type="text/javascript">
-        function doInsert() {
+        function buttonOkPressed() {
             var cellpadding = parseInt(document.myform.cellpadding.value);
             var border = 1;
 
@@ -39,57 +33,80 @@
                 cellpadding = 0;
             }
 
-            if ("<%=modifyExisting%>" == "true") {
+            var summary = document.myform.summary.value;
+
+            if ("${modifyExisting}" == "true") {
                 if (window.opener.focusField && window.opener.focusField.tagName == "TABLE") {
                     var table = window.opener.focusField;
                     table.border = border;
                     table.cellPadding = cellpadding;
+                    table.summary = summary;
                 }
             } else {
                 var cols = parseInt(document.myform.cols.value);
                 var rows = parseInt(document.myform.rows.value);
 
                 if (cols < 1) {
-                    alert("Angi antall kolonner");
-                    document.ftable.cols.focus();
-                    return;
+                    alert("<kantega:label key="aksess.inserttable.col.missing"/>");
+                    document.myform.cols.focus();
+                    return false;
                 }
 
                 if (rows < 1) {
-                    alert("Angi antall rader");
-                    document.ftable.rows.focus();
-                    return;
+                    alert("<kantega:label key="aksess.inserttable.rows.missing"/>");
+                    document.myform.rows.focus();
+                    return false;
+                }
+
+                var insertHeader = document.myform.firstrowisheading.checked;
+                if (insertHeader) {
+                    rows--;
+
                 }
 
                 var html = "";
-                html += '<TABLE border=' + border + ' cellspacing=1 cellpadding=' + cellpadding + '>';
+                html += '<TABLE border="' + border + '"';
+                if (summary != "") {
+                    html+= 'summary="' + summary + '"';
+                }
+                html += 'cellspacing="1" cellpadding="' + cellpadding + '">';
+                if (insertHeader) {
+                    html += "<THEAD><TR>";
+                    for (var j = 0; j < cols; j++) {
+                        html += '<TH>&nbsp;</TH>';
+                    }
+                    html += "</TR></THEAD>";
+                }
+                html += "<TBODY>";
                 for (var i = 0; i < rows; i++) {
                     html += '<TR valign="top">';
-
                     for (var j = 0; j < cols; j++) {
                         html += '<TD>&nbsp;</TD>';
                     }
                     html += '</TR>';
                 }
-                html += '</TABLE>';
+                html += '</TBODY></TABLE>';
 
-                if (window.opener) {
-                    window.opener.insertTag(html);
-                }
+                getParent().insertTag(html);
             }
-            window.close();
+            return true;
         }
 
         function initTable() {
             var border = 0;
             var cellpadding = 2;
-            if ("<%=modifyExisting%>" == "true") {
-                var table = window.opener.focusField;
+            var summary = "";
+            if ("${modifyExisting}" == "true") {
+                var table = getParent().focusField;
                 border = table.border;
                 cellpadding = table.cellPadding;
+                if (table.summary) {
+                    summary = table.summary;
+                }                
             }
 
             document.myform.cellpadding.value = cellpadding;
+            document.myform.summary.value = summary;
 
             if (border > 0) {
                 document.myform.border[1].checked = false
@@ -109,61 +126,62 @@
 </kantega:section>
 
 <kantega:section id="body">
+    <form action="" name="myform">
     <div id="InsertTableForm">
-        <!-- Todo fix layout -->
-        <form name="myform" action="">
-            <table border="0" width="100%" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td colspan="2" class="tableHeading"><b><kantega:label key="aksess.inserttable.title"/></b></td>
-                </tr>
-                <%
-                    if (!modifyExisting) {
-                %>
-                <tr>
-                    <td colspan="2"><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="inpHeading"><b><kantega:label key="aksess.inserttable.storrelse"/></b></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-                </tr>
-                <tr>
-                    <td width="50%"><b><kantega:label key="aksess.inserttable.kolonner"/></b></td>
-                    <td width="50%"><b><kantega:label key="aksess.inserttable.rader"/></b></td>
-                </tr>
-                <tr>
-                    <td><input type="text" size="2" maxlength="2" name="cols" value="2"></td>
-                    <td><input type="text" size="2" maxlength="2" name="rows" value="2"></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="../bitmaps/blank.gif" width="2" height="8"></td>
-                </tr>
+        <div class="fieldset">
+            <fieldset>
+                <legend><kantega:label key="aksess.inserttable.title"/></legend>
+                <c:if test="${!modifyExisting}">
+                    <div class="formElement">
+                        <div class="heading">
+                            <kantega:label key="aksess.inserttable.size"/>
+                        </div>
+                        <div class="inputs">
+                            <label for="TableCols"><kantega:label key="aksess.inserttable.cols"/></label>
+                            <input type="text" id="TableCols" size="2" maxlength="2" name="cols" value="2">
+                            <label for="TableRows"><kantega:label key="aksess.inserttable.rows"/></label>
+                            <input type="text" id="TableRows" size="2" maxlength="2" name="rows" value="5"><br>
+                            <input type="checkbox" name="firstrowisheading" checked="checked"><kantega:label key="aksess.inserttable.firstrowisheading"/>
+                        </div>
+                    </div>
+                </c:if>
+                <div class="formElement">
+                    <div class="heading">
+                        <kantega:label key="aksess.inserttable.summary"/>
+                    </div>
+                    <div class="inputs">
+                        <textarea rows="3" cols="20" class="fullWidth" wrap="soft" name="summary" value=""></textarea>
+                    </div>
+                </div>
+                <div class="formElement">
+                    <div class="heading">
+                        <kantega:label key="aksess.inserttable.border"/>
+                    </div>
+                    <div class="inputs">
+                        <input type="radio" id="TableBorder" name="border" value="1">
+                        <label for="TableBorder"><kantega:label key="aksess.text.ja"/></label>
+                        <input type="radio" id="TableNoBorder" name="border" value="0">
+                        <label for="TableNoBorder"><kantega:label key="aksess.text.nei"/></label>
+                    </div>
+                </div>
+                <div class="formElement">
+                    <div class="heading">
+                        <kantega:label key="aksess.inserttable.spacing"/>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" size="2" maxlength="2" name="cellpadding" value=""> (<kantega:label key="aksess.inserttable.pixels"/>)
+                    </div>
+                </div>
 
-                <tr>
-                    <td colspan="2" class="inpHeading"><b><kantega:label key="aksess.inserttable.andreegenskaper"/></b></td>
-                </tr>
-                <%
-                    }
-                %>
-                <tr>
-                    <td colspan="2"><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-                </tr>
-                <tr>
-                    <td><b><kantega:label key="aksess.inserttable.visramme"/></b></td>
-                    <td><b><kantega:label key="aksess.inserttable.mellomrom"/></b></td>
-                </tr>
-                <tr>
-                    <td><input type="radio" name="border" value="1"><kantega:label key="aksess.text.ja"/> <input type="radio" name="border" value="0"> <kantega:label key="aksess.text.nei"/></td>
-                    <td><input type="text" size="2" maxlength="2" name="cellpadding" value=""> (<kantega:label key="aksess.inserttable.antallpixler"/>)</td>
-                </tr>
-            </table>
+            </fieldset>
 
-            <div class="buttonGroup">
-                <input type="button" class="button ok" onclick="doInsert()" value="<kantega:label key="aksess.button.ok"/>">
-                <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
-            </div>
-        </form>
+        </div>
+
+        <div class="buttonGroup">
+            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+        </div>
     </div>
+    </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

@@ -32,11 +32,14 @@
 <kantega:section id="body">
     <script type="text/javascript">
         function selectRole(role, name) {
-            if (window.opener) {
-                window.opener.insertIdAndValueIntoForm(role, name);
-            }
-            window.close();
+            getParent().insertIdAndValueIntoForm(role, name);
+            closeWindow();
         }
+
+        function buttonOkPressed() {
+            document.roles.submit();
+            return false;
+        }        
     </script>
 
 
@@ -84,9 +87,9 @@
 
             <div class="buttonGroup">
                 <c:if test="${!select}">
-                    <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+                    <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
                 </c:if>
-                <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+                <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
             </div>
         </form>
     </div>

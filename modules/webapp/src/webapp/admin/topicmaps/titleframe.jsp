@@ -72,7 +72,7 @@
                                     if (topic != null && activetab.equalsIgnoreCase("topic") && canUpdate) {
                                 %>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:editTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/buttons/topp_rediger.gif" border="0"></a></td>
+                                    <td><a href="Javascript:editTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/icons/topp_rediger.gif" border="0"></a></td>
                                     <td><a href="Javascript:editTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.rediger"/></a></td>
                                 <%
                                     }
@@ -81,7 +81,7 @@
                                     if (topic != null && activetab.equalsIgnoreCase("topic") && canUpdate) {
                                 %>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/buttons/topp_slett.gif" border="0"></a></td>
+                                    <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/icons/topp_slett.gif" border="0"></a></td>
                                     <td><a href="Javascript:deleteTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.delete"/></a></td>
                                 <%
                                     }
@@ -91,7 +91,7 @@
                                     if (topic != null && activetab.equalsIgnoreCase("topic") && topicMap.isEditable() && canUpdate) {
                                 %>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/buttons/topp_ny_side.gif" border="0"></a></td>
+                                    <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/icons/topp_ny_side.gif" border="0"></a></td>
                                     <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.nyttrelatertemne"/></a></td>
                                 <%
                                     }
@@ -99,7 +99,7 @@
                                     if (topic != null && activetab.equalsIgnoreCase("instances") && topicMap.isEditable() && canUpdate) {
                                 %>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/buttons/topp_ny_side.gif" border="0"></a></td>
+                                    <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')"><img src="../bitmaps/common/icons/topp_ny_side.gif" border="0"></a></td>
                                     <td><a href="Javascript:addTopic(<%=topic.getTopicMapId()%>, '<%=topic.getId()%>')" class="topButton"><kantega:label key="aksess.button.nyttemne"/> <%=topic.getBaseName()%></a></td>
                                 <%
                                     }

@@ -434,7 +434,7 @@ function rtEditTable(editorId) {
     }
     if (selectedTable) {
         focusField = selectedTable;
-        var tablewin = window.open("popups/InsertTable.action?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=116,resizable=yes");
+        var tablewin = window.open("popups/InsertTable.action?edit=true&refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=300,height=200,resizable=yes");
         tablewin.focus();
     } else {
         alert("<kantega:label key="aksess.js.advarsel.plasseritabellredigere"/>");
@@ -601,7 +601,7 @@ function rtInsertTable(editorId) {
 
     focusField = editor;
 
-    var tablewin = window.open("popups/InsertTable.action?refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=480,height=256,resizable=yes");
+    var tablewin = window.open("popups/InsertTable.action?refresh=" + getRefresh(), "tableWindow", "dependent,toolbar=no,width=300,height=300,resizable=yes");
     tablewin.focus();
 }
 

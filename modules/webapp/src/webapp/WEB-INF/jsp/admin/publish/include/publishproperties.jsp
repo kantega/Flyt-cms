@@ -64,7 +64,7 @@
             <div id="FromDate">
                 <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
                 <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
-                <a href="#" id="chooseFromDate" class="calendar"></a>
+                <a href="#" id="chooseFromDate" class="dateselect"></a>
                 <label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
                 <input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()">
             </div>
@@ -74,7 +74,7 @@
             <div id="EndDate">
                 <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
                 <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="setFocusField(this)" onchange="displayExpireAction()" onBlur="blurField()">
-                <a href="#" id="chooseEndDate" class="calendar"></a>
+                <a href="#" id="chooseEndDate" class="dateselect"></a>
                 <label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
                 <input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="503" onFocus="setFocusField(this)" onBlur="blurField()">
             </div>
@@ -96,14 +96,14 @@
         </fieldset>
     </div>
 </c:if>
-<c:if test="${currentContent.id > 0}">
+<c:if test="${currentContent.id > 0 && canPublish}">
     <div class="fieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
             <div id="ChangeDate">
                 <!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>-->
                 <input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
-                <a href="#" id="chooseChangeDate" class="calendar"></a>
+                <a href="#" id="chooseChangeDate" class="dateselect"></a>
                 <label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label>
                 <input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()">
             </div>

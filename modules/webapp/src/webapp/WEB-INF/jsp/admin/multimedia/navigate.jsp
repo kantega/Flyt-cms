@@ -23,20 +23,7 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div id="Content">
-        <div id="Navigation">
-
-            <div id="Navigator"></div>
-            <div id="Framesplit">
-                <div id="FramesplitDrag"></div>
-            </div>
-        </div>
-
-        <div id="MainPane">
-            <div id="MultimediaFolders"></div>
-        </div>
-    </div>
-
+    <div id="MultimediaFolders"></div>
 </kantega:section>
 
 

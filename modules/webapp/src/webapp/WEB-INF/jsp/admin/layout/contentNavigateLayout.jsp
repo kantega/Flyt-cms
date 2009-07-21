@@ -48,7 +48,7 @@
 
 
 <kantega:section id="body">
-    <div id="Content">
+    <div id="Content" class="navigateContent">
         <div id="Navigation">
             <div class="filteroptions">
                 <a href="#" class="filteroption filter">Filtreringsvalg</a>

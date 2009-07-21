@@ -30,8 +30,7 @@
 </kantega:section>
 
 <kantega:section id="body">
-
-    <div id="MainContentPane">
+    <div id="MainPane" class="mypage">
         <kantega:getsection id="content"/>
     </div>
 </kantega:section>

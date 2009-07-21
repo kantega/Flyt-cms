@@ -45,7 +45,7 @@
         if (maxLength <  72) {
             out.write(" size=" + maxLength);
         } else {
-            out.write(" style=\"width:600px;\"");
+            out.write(" class=\"fullWidth\"");
         }
         if (maxLength != -1) {
             out.write(" maxlength=" + maxLength);

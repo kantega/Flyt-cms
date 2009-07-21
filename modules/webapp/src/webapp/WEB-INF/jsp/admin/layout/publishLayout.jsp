@@ -33,7 +33,64 @@
     <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
     <script type="text/javascript">
-        function gotoTab(action) {
+        $(document).ready(function(){
+            bindPublishButtons();
+        });
+
+        function bindPublishButtons() {
+            $("#ModesMenu .button .preview").click(function(){
+                gotoMode("ViewContentPreview");
+            });
+            $("#ModesMenu .button .edit").click(function(){
+                gotoMode("SaveContent");
+            });
+            $("#EditContentTabs .tab .content").click(function(){
+                gotoMode("SaveContent");
+            });
+            $("#EditContentTabs .tab metadata").click(function(){
+                gotoMode("SaveMetadata");
+            });
+            $("#EditContentTabs .tab .versions").click(function(){
+                gotoMode("SaveVersion");
+            });
+            $("#EditContentTabs .tab .attachments").click(function(){
+                gotoMode("SaveAttachments");
+            });
+
+            $("#EditContentButtons input.publish").click(function(){
+                saveContent(<%=ContentStatus.PUBLISHED%>);
+            });
+            $("#EditContentButtons input.save").click(function(){
+                saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
+            });
+            $("#EditContentButtons input.savedraft").click(function(){
+                saveContent(<%=ContentStatus.DRAFT%>);
+            });
+            $("#EditContentButtons input.hearing").click(function(){
+                saveContent(<%=ContentStatus.HEARING%>);
+            });
+            $("#EditContentButtons input.cancel").click(function(){
+                location.href = 'CancelEdit.action';
+            });
+        }
+
+
+        function setLayoutSpecificSizes( ) {
+            var maxHeight = $("#MainPane").height() - $("#EditContentTabs").height() - $("#EditContentButtons").height();
+            var width = $("#MainPane").width();
+
+            $('#MainPane iframe').css('height', (maxHeight-20) + 'px').css('width', (width-20) + 'px'); 
+
+        }
+        
+        function gotoMode(action) {
+            action = action + ".action";
+            var href = "" + window.location.href;
+            if (href.indexOf(action) != -1) {
+                // Tried to click current tab
+                return;
+            }
+
             document.myform.elements['action'].value = action;
             saveContent("");
         }
@@ -45,59 +102,51 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
-    <%@include file="fragments/publishModesMenu.jsp"%>
-</kantega:section>
-
-<kantega:section id="toolsMenu">
+    <div class="buttonGroup">
+        <a href="#" class="button"><span class="preview"><kantega:label key="aksess.mode.preview"/></span></a>
+        <span class="buttonSeparator"></span>
+        <a href="#" class="button last"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
+    </div>
 
 </kantega:section>
 
 <kantega:section id="body">
     <form name="myform" action="" method="post" enctype="multipart/form-data">
 
-    <div id="TwoPaneContent">
-        <div id="TwoPaneMainPane">
-            <div id="EditContentTabs" class="tabGroup">
-                <div class="tab" id="PublishPreview">
-                    <a href="Javascript:gotoTab('ViewContentPreview.action')">Preview</a>
+        <div id="Content" class="publish">
+            <div id="MainPane">
+                <div id="EditContentTabs" class="tabGroup">
+                    <a href="#" class="tab"><span class="content"><kantega:label key="aksess.tools.content"/></span></a>
+                    <a href="#" class="tab"><span class="metadata"><kantega:label key="aksess.tools.metadata"/></span></a>
+                    <a href="#" class="tab"><span class="attachments"><kantega:label key="aksess.tools.attachments"/></span></a>
+                    <a href="#" class="tab"><span class="versions"><kantega:label key="aksess.tools.versions"/></span></a>
                 </div>
-                <div class="tab" id="PublishContent">
-                    <a href="Javascript:gotoTab('SaveContent.action')">Content</a>
+                <div id="EditContentButtons">
+                    <div class="buttonGroup">
+                        <c:choose>
+                            <c:when test="${canPublish}">
+                                <input type="button" class="button publish" value="<kantega:label key="aksess.button.publish"/>">
+                            </c:when>
+                            <c:otherwise>
+                                <input type="button" class="button save" value="<kantega:label key="aksess.button.save"/>">
+                            </c:otherwise>
+                        </c:choose>
+                        <input type="button" class="button savedraft" value="<kantega:label key="aksess.button.save"/>">
+                        <c:if test="${hearingEnabled}">
+                            <input type="button" class="button hearing" value="<kantega:label key="aksess.button.hoering"/>">
+                        </c:if>
+                        <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+                    </div>
                 </div>
-                <div class="tab" id="PublishMetadata">
-                    <a href="Javascript:gotoTab('SaveMetadata.action')">Metadata</a>
-                </div>
-                <div class="tab" id="PublishVersions">
-                    <a href="Javascript:gotoTab('SaveVersion.action')">Historikk</a>
-                </div>
-                <div class="tab" id="PublishAttachments">
-                    <a href="Javascript:gotoTab('SaveAttachments.action')">Attachments</a>
+                <div id="EditContentPane">
+                    <kantega:getsection id="content"/>
                 </div>
             </div>
-            <div id="EditContentButtons">
-                <c:choose>
-                    <c:when test="${canPublish}">
-                        <input type="button" class="button publish" onclick="saveContent(<%=ContentStatus.PUBLISHED%>)" value="<kantega:label key="aksess.button.publish"/>">
-                    </c:when>
-                    <c:otherwise>
-                        <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>)" value="<kantega:label key="aksess.button.save"/>">
-                    </c:otherwise>
-                </c:choose>
-                <input type="button" class="button save" onclick="saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>)" value="<kantega:label key="aksess.button.save"/>">
-                <c:if test="${hearingEnabled}">
-                    <input type="button" class="button hearing" onclick="saveContent(<%=ContentStatus.HEARING%>)" value="<kantega:label key="aksess.button.hoering"/>">
-                </c:if>
-                <input type="button" class="button cancel" onclick="location.href='CancelEdit.action'" value="<kantega:label key="aksess.button.cancel"/>">
-            </div>
-            <div id="EditContentPane">
-                <kantega:getsection id="content"/>
+            <div id="SideBarSplit"></div>
+            <div id="SideBar">
+                <%@ include file="../publish/include/publishproperties.jsp" %>
             </div>
         </div>
-        <div id="SideBarSplit"></div>
-        <div id="SideBar">
-            <%@ include file="../publish/include/publishproperties.jsp" %>
-        </div>
-    </div>
     </form>
 </kantega:section>
 

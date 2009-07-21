@@ -70,7 +70,7 @@
                     w.insertIdAndValueIntoForm(currentItemIdentifier, title);
                 }
             }
-            window.close();
+            closeWindow();
         }
 
         function getNavigatorParams() {
@@ -89,7 +89,7 @@
             <div id="Navigator"></div>
         </div>
         <div class="buttonGroup">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 

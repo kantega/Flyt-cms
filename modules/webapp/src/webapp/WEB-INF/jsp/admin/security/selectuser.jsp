@@ -28,11 +28,15 @@
 <kantega:section id="body">
     <script type="text/javascript">
         function selectUser(user, name) {
-            if (window.opener) {
-                window.opener.insertIdAndValueIntoForm(user, name);
-            }
-            window.close();
+            getParent().insertIdAndValueIntoForm(user, name);            
+            closeWindow();
         }
+
+        function buttonOkPressed() {
+            document.roles.submit();
+            return false;
+        }
+        
     </script>
 
     <div id="SelectRoleForm">
@@ -94,9 +98,9 @@
         </div>
         <div class="buttonGroup">
             <c:if test="${!select}">
-                <input type="button" onclick="document.roles.submit()" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+                <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
             </c:if>
-            <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
 
     </div>

@@ -74,40 +74,40 @@
                                     <td><b><%=mm.getName()%> (<%=mm.getFileType()%>)</b></td>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
 
-                                    <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')"><img src="../bitmaps/common/buttons/topp_tilbake.gif" border="0"></a></td>
+                                    <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')"><img src="../bitmaps/common/icons/topp_tilbake.gif" border="0"></a></td>
                                     <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')" class="topButton"><kantega:label key="aksess.button.tilbake"/></a></td>
                                     <%
                                         if (canUpdate) {
                                             if (mm.getType() == MultimediaType.FOLDER) {
                                     %>
                                             <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                            <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.FOLDER.getTypeAsInt()%>)"><img src="../bitmaps/common/buttons/topp_ny_mappe.gif" border="0"></a></td>
+                                            <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.FOLDER.getTypeAsInt()%>)"><img src="../bitmaps/common/icons/topp_ny_mappe.gif" border="0"></a></td>
                                             <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.FOLDER.getTypeAsInt()%>)" class="topButton"><kantega:label key="aksess.button.nymappe"/></a></td>
                                             <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                            <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.MEDIA.getTypeAsInt()%>)"><img src="../bitmaps/common/buttons/topp_legg_til_fil.gif" border="0"></a></td>
+                                            <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.MEDIA.getTypeAsInt()%>)"><img src="../bitmaps/common/icons/topp_legg_til_fil.gif" border="0"></a></td>
                                             <td><a href="Javascript:newMMObject(<%=mm.getId()%>, <%=MultimediaType.MEDIA.getTypeAsInt()%>)" class="topButton"><kantega:label key="aksess.button.nyfil"/></a></td>
                                     <%
                                             }
                                     %>
                                         <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                        <td><a href="Javascript:editMMObject()"><img src="../bitmaps/common/buttons/topp_rediger.gif" border="0"></a></td>
+                                        <td><a href="Javascript:editMMObject()"><img src="../bitmaps/common/icons/topp_rediger.gif" border="0"></a></td>
                                         <td><a href="Javascript:editMMObject()" class="topButton"><kantega:label key="aksess.button.rediger"/></a></td>
                                     <%
                                         if (mm.getMimeType().getType().indexOf("image") != -1) {
                                     %>
                                             <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                            <td><a href="Javascript:manipulateMMObject()"><img src="../bitmaps/common/buttons/topp_billedbehandling.gif" border="0"></a></td>
+                                            <td><a href="Javascript:manipulateMMObject()"><img src="../bitmaps/common/icons/topp_billedbehandling.gif" border="0"></a></td>
                                             <td><a href="Javascript:manipulateMMObject()" class="topButton"><kantega:label key="aksess.button.bildebehandling"/></a></td>
 
                                             <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                            <td><a href="Javascript:imagemapMMObject()"><img src="../bitmaps/common/buttons/topp_billedbehandling.gif" border="0"></a></td>
+                                            <td><a href="Javascript:imagemapMMObject()"><img src="../bitmaps/common/icons/topp_billedbehandling.gif" border="0"></a></td>
                                             <td><a href="Javascript:imagemapMMObject()" class="topButton"><kantega:label key="aksess.button.imagemap"/></a></td>
 
                                     <%
                                         }
                                     %>
                                         <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                        <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')"><img src="../bitmaps/common/buttons/topp_slett.gif" border="0"></a></td>
+                                        <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')"><img src="../bitmaps/common/icons/topp_slett.gif" border="0"></a></td>
                                         <td><a href="Javascript:deleteMMObject(<%=mm.getId()%>, '<%=mm.getName()%>')" class="topButton"><kantega:label key="aksess.button.delete"/></a></td>
                                 <%
                                         }
@@ -115,7 +115,7 @@
                                 %>
                                     <td><b><kantega:label key="aksess.multimedia.title"/></b></td>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')"><img src="../bitmaps/common/buttons/topp_tilbake.gif" border="0"></a></td>
+                                    <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')"><img src="../bitmaps/common/icons/topp_tilbake.gif" border="0"></a></td>
                                     <td><a href="Javascript:gotoMMObject(<%=mm.getParentId()%>, 'folder')" class="topButton"><kantega:label key="aksess.button.tilbake"/></a></td>
 
                                 <%
@@ -123,7 +123,7 @@
                                 %>
                                     <td><b><kantega:label key="aksess.multimedia.title"/></b></td>
                                     <td><img src="../bitmaps/common/textseparator.gif"></td>
-                                    <td><a href="Javascript:newMMObject(0, <%=MultimediaType.FOLDER.getTypeAsInt()%>)"><img src="../bitmaps/common/buttons/topp_ny_mappe.gif" border="0"></a></td>
+                                    <td><a href="Javascript:newMMObject(0, <%=MultimediaType.FOLDER.getTypeAsInt()%>)"><img src="../bitmaps/common/icons/topp_ny_mappe.gif" border="0"></a></td>
                                     <td><a href="Javascript:newMMObject(0, <%=MultimediaType.FOLDER.getTypeAsInt()%>)" class="topButton"><kantega:label key="aksess.button.nymappe"/></a></td>
                                 <% } %>
                             </tr>

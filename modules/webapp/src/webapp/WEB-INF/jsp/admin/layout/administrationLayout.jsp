@@ -37,7 +37,7 @@
     <%
         String root = Aksess.getContextPath() + "/admin/administration/";
     %>
-    <div id="Content">
+    <div id="Content" class="administration">
         <div id="Navigation">
             <div id="Navigator">
                 <ul>
@@ -87,7 +87,7 @@
             </div>
         </div>
 
-        <div id="MainContentPane">
+        <div id="MainPane">
             <kantega:getsection id="content"/>
             <div class="clearing"></div>
         </div>

@@ -56,9 +56,9 @@
         function doInsert(code) {
             var char = '<SPAN class="symbol">&#' + code + ';</SPAN> ';
             if (window.opener) {
-                window.opener.insertValueIntoForm(char);
+                getParent().insertValueIntoForm(char);
             }
-            window.close();
+            closeWindow();
         }
     </script>
 </kantega:section>
@@ -88,7 +88,7 @@
             </fieldset>
         </div>
         <div class="buttonGroup">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 </kantega:section>

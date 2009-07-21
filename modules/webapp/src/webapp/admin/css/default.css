@@ -63,13 +63,6 @@ td a:hover {
     background-color: #FFCCCC;
 }
 
-a.calendar {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    background-color: #ff0000;
-}
-
 /************** Layout **************/
 #Top {}
 
@@ -90,15 +83,6 @@ a.calendar {
     background: #E3E3E3 url("../bitmaps/default/framework/tools_background.png") center left repeat-x;
 }
 
-#TwoPaneContent {
-    float: left;
-}
-
-#TwoPaneMainPane {
-    float: left;
-    width: 620px;
-}
-
 #SideBar {
     float: left;
 }
@@ -109,6 +93,45 @@ a.calendar {
     height: 100%;
     background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
 }
+
+/************** Generic content pane styles  **************/
+
+#MainPane {
+    margin: 10px;
+}
+
+#MainPane table .title{
+    width: 200px;
+}
+
+#Content.mypage table .date{
+    width: 80px;
+}
+
+/************** Specific content panes styles ********/
+#Content.publish #MainPane {
+    float: left;
+    margin: 0;
+}
+
+#Content.navigateContent #MainPane, #Content.navigateMultimedia #MainPane {
+    float: left;
+    position: relative;
+    width: auto;
+    height: 100%;
+    background: #A0A0A0;
+    margin: 0;
+}
+
+#Content.sidebar {
+    float: left;
+}
+
+#Content.sidebar #MainPane {
+    float: left;
+    width: 620px;
+}
+
 
 /************** Top menu **************/
 #TopMenu .logo {
@@ -190,16 +213,22 @@ a.calendar {
     padding-left: 20px;
 }
 #ModesMenu .button .navigate {
-    background: url("../bitmaps/default/framework/modus_icon_navigate.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/navigate.png") left center no-repeat;
 }
 #ModesMenu .button .organize {
-    background: url("../bitmaps/default/framework/modus_icon_organize.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/organize.png") left center no-repeat;
 }
 #ModesMenu .button .linkcheck {
-    background: url("../bitmaps/default/framework/modus_icon_linkcheck.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/linkcheck.png") left center no-repeat;
 }
 #ModesMenu .button .statistics {
-    background: url("../bitmaps/default/framework/modus_icon_statistics.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/statistics.png") left center no-repeat;
+}
+#ModesMenu .button .edit {
+    background: url("../bitmaps/common/icons/small/edit.png") left center no-repeat;
+}
+#ModesMenu .button .preview {
+    background: url("../bitmaps/common/icons/small/preview.png") left center no-repeat;
 }
 
 /************** Tools menu **************/
@@ -221,28 +250,28 @@ a.calendar {
     background-repeat: no-repeat;
 }
 #ToolsMenu .button .newSubpage {
-    background-image: url("../bitmaps/common/tools/newsubpage.png");
+    background-image: url("../bitmaps/common/icons/small/newsubpage.png");
 }
 #ToolsMenu .button .edit{
-    background-image: url("../bitmaps/common/tools/edit.png");
+    background-image: url("../bitmaps/common/icons/small/edit.png");
 }
 #ToolsMenu .button .delete{
-    background-image: url("../bitmaps/common/tools/delete.png");
+    background-image: url("../bitmaps/common/icons/small/delete.png");
 }
 #ToolsMenu .button .cut {
-    background-image: url("../bitmaps/common/tools/copy.png");
+    background-image: url("../bitmaps/common/icons/small/copy.png");
 }
 #ToolsMenu .button .copy {
-    background-image: url("../bitmaps/common/tools/copy.png");
+    background-image: url("../bitmaps/common/icons/small/copy.png");
 }
 #ToolsMenu .button .paste {
-    background-image: url("../bitmaps/common/tools/paste.png");
+    background-image: url("../bitmaps/common/icons/small/paste.png");
 }
 #ToolsMenu .button .displayPeriod {
-    background-image: url("../bitmaps/common/tools/displayperiod.png");
+    background-image: url("../bitmaps/common/icons/small/calendar.png");
 }
 #ToolsMenu .button .privileges {
-    background-image: url("../bitmaps/common/tools/privileges.png");
+    background-image: url("../bitmaps/common/icons/small/privileges.png");
 }
 
 /************** Navigation (left column) **************/
@@ -276,6 +305,7 @@ a.calendar {
     padding:4px;
 }
 
+/************** Buttons **************/
 input.button {
     cursor: pointer;
     margin-left: 10px;
@@ -287,25 +317,31 @@ input.button {
 }
 
 input.publish {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
 }
 
 input.cancel {
-    background: url("../bitmaps/common/buttons/cancel.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
 }
 
 input.save {
-    background: url("../bitmaps/common/buttons/save.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
 }
 
 input.savedraft {
-    background: url("../bitmaps/common/buttons/savedraft.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
 }
 
-/************** Form elements and content attributes **************/
-.contentAttribute {
-    width: 600px;
+/************** Inline buttons **************/
+a.dateselect {
+    display: inline-block;
+    width: 14px;
+    height: 16px;
+    background: url("../bitmaps/common/tools/calendar.png") no-repeat left 50%;
 }
+
+
+/************** Form elements and content attributes **************/
 
 .contentAttribute, .formElement {
     margin-bottom: 14px;
@@ -349,31 +385,31 @@ input.savedraft {
 }
 
 .contentAttribute .add {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .edit {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .delete {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .moveDown {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .moveUp {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .select {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 .contentAttribute .show {
-    background: url("../bitmaps/common/buttons/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
 }
 
 
@@ -407,17 +443,3 @@ input.savedraft {
 
 }
 
-
-/************** Mypage **************/
-
-#MainContentPane {
-    margin: 10px;
-}
-
-#MainContentPane table .title{
-    width: 200px;
-}
-
-#MainContentPane table .date{
-    width: 80px;
-}

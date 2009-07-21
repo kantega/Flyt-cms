@@ -26,7 +26,7 @@
     <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
     <script type="text/javascript" language="Javascript">
 
-        function addListOption() {
+        function buttonOkPressed() {
 
             var optionValue = document.myform.optionValue.value;
             var attributeKey = '<%=param.getString("attributeKey")%>';
@@ -35,8 +35,7 @@
 
             if (optionValue == "") {
                 alert("<kantega:label key="aksess.editablelist.missingvalue"/>");
-            }
-            else {
+            } else {
                 var xmlhttp = getXmlHttp();
                 xmlhttp.open("POST",  "../publish/AddListOption.action", true);
                 xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
@@ -44,7 +43,7 @@
                     if (xmlhttp.readyState==4) {
                         if(xmlhttp.responseText == "success") {
                             window.opener.insertOptionIntoList(optionValue);
-                            setTimeout("window.close()", 1);
+                            setTimeout("closeWindow()", 1);
                         }
                         else {
                             alert("<kantega:label key="aksess.editablelist.error"/>");
@@ -53,6 +52,8 @@
                 }
                 xmlhttp.send("value=" + optionValue + "&attributeKey=" + attributeKey + "&defaultSelected=" + defaultSelected + "&language=" + language);
             }
+
+            return false;
         }
     </script>
 </kantega:section>
@@ -77,8 +78,8 @@
             </fieldset>
         </div>    
         <div class="buttonGroup">
-            <input type="button" class="button ok" onclick="addListOption()" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </form>
    </div>

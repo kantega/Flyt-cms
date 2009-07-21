@@ -27,27 +27,27 @@
 
 <kantega:section id="head">
     <script type="text/javascript">
-        function doReplace()
+        function buttonOkPressed()
         {
             var search  = document.myform.search.value;
             var replace = document.myform.replace.value;
 
             if (search == "") {
                 alert("<kantega:label key="aksess.replacetext.notext"/>");
-                return;
+                return false;
             }
 
             var txt = "<kantega:label key="aksess.replacetext.confirm"/>";
             txt = txt.replace("${search}", search);
 
             if ((replace == "") && (!confirm(txt))) {
-                return;
+                return false;
             }
 
             if (window.opener) {
-                window.opener.replaceString(search, replace);
+                getParent().replaceString(search, replace);
             }
-            window.close();
+            return true;
         }
     </script>
 </kantega:section>
@@ -80,8 +80,8 @@
         </div>
 
         <div class="buttonGroup">
-            <input type="button" class="button ok" onclick="doReplace()" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </form>
     </div>

@@ -53,7 +53,7 @@
             </div>    
         </form>
         <div class="buttonGroup">
-            <input type="button" class="button ok" onclick="insertLink()" value="<kantega:label key="aksess.button.ok"/>">
+            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
             <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>

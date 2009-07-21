@@ -63,9 +63,6 @@ public abstract class AbstractSaveContentAction extends AdminController {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         Map<String, Object> model = getModel(content, request);
-
-        setRequestVariables(request, content, aksessService, model);
-
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Submit from user
 
@@ -127,6 +124,7 @@ public abstract class AbstractSaveContentAction extends AdminController {
                 session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 if (action == null || action.length() == 0) {
                     // Go back to current tab
+                    setRequestVariables(request, content, aksessService, model);
                     return new ModelAndView(getView(), model);
                 } else {
                     // Go to another tab
@@ -135,6 +133,7 @@ public abstract class AbstractSaveContentAction extends AdminController {
             }
         } else {
             // No submit
+            setRequestVariables(request, content, aksessService, model);            
             return new ModelAndView(getView(), model);
         }
     }

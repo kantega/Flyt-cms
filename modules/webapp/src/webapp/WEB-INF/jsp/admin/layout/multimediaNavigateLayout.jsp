@@ -143,7 +143,7 @@
             return params;
         }
 
-        function bindAjaxFileUpload() {
+        function bindMediaAjaxUpload() {
             var button = $('#UploadButton');
             new AjaxUpload(button, {
                 action: 'UploadMultimedia.action',
@@ -202,7 +202,20 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <kantega:getsection id="content"/>
+    <div id="Content" class="navigateMultimedia">
+        <div id="Navigation">
+
+            <div id="Navigator"></div>
+            <div id="Framesplit">
+                <div id="FramesplitDrag"></div>
+            </div>
+        </div>
+
+        <div id="MainPane">
+            <kantega:getsection id="content"/>            
+        </div>
+    </div>
+
 </kantega:section>
 
 

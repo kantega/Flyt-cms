@@ -37,11 +37,12 @@ function setWindowSize() {
     $(window).bind('resize load', function(e) {
         debug("setWindowSize(): " + e.type + " event received");
 
+        var topHeight = $("#Top").height();
         var sideBarHeight = $("#SideBar").height();
-        var contentHeight = $("#TwoPaneMainPane").height();
+        var contentHeight = $("#MainPane").height();
 
         var height = Math.max(contentHeight, sideBarHeight);
-        height = Math.max($(window).height(), height);
+        height = Math.max($(window).height()-topHeight, height);
 
         var sideBarWidth = $("#SideBar").width();
         var framesplitWidth = $("#SideBarSplit").width();
@@ -51,7 +52,10 @@ function setWindowSize() {
 
         var width = ($(window).width()-sideBarWidth-framesplitWidth-25);
         if (width < 620) width = 620;
-        $("#TwoPaneMainPane").css('height', height + 'px').css('width', width + 'px');
+        $("#MainPane").css('height', height + 'px').css('width', width + 'px');
+        if (typeof setLayoutSpecificSizes == 'function') {
+            setLayoutSpecificSizes();
+        }
     });
 }
 

@@ -28,11 +28,12 @@
 <kantega:section id="head">
     <script type="text/javascript">
         var hasSubmitted = false;
-        function saveForm() {
+        function buttonOkPressed() {
             if (!hasSubmitted) {
                 hasSubmitted = true;
                 document.myform.submit();
             }
+            return false;
         }
     </script>
 </kantega:section>
@@ -59,7 +60,7 @@
         </div>
         <div class="buttonGroup">
             <input type="button" class="button ok" onclick="saveForm()" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
+            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </form>
    </div>

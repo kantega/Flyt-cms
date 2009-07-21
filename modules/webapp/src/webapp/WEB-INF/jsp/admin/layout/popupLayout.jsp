@@ -31,7 +31,29 @@
 </head>
 
 <body>
-    <div class="dialogue">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#Content .buttonGroup .ok").click(function(){
+                if (buttonOkPressed()) {
+                    closeWindow();
+                }
+
+            });
+            $("#Content .buttonGroup .cancel").click(function(){
+                closeWindow();
+            });
+        });
+
+        function closeWindow() {
+            window.close();
+        }
+
+        function getParent() {
+            return window.opener;
+        }
+
+    </script>
+    <div id="MainPane" class="popup">
         <kantega:getsection id="body"/>
     </div>
 </body>
