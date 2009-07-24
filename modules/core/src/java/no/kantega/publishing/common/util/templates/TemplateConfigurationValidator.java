@@ -19,10 +19,7 @@ package no.kantega.publishing.common.util.templates;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.api.model.PublicIdObject;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -45,7 +42,19 @@ public class TemplateConfigurationValidator {
         errors.addAll(validateDisplayTemplates(configuration));
         errors.addAll(validateContentTemplates(configuration));
         errors.addAll(validateMetadataTemplates(configuration));
+        errors.addAll(validateAssociationCategories(configuration));
 
+        return errors;
+    }
+
+    private List<TemplateConfigurationValidationError> validateAssociationCategories(TemplateConfiguration configuration) {
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+
+        List duplicates = getDuplicates(configuration.getAssociationCategories());
+        for (int i = 0; i < duplicates.size(); i++) {
+            AssociationCategory category = (AssociationCategory)duplicates.get(i);
+            errors.add(new TemplateConfigurationValidationError(category.getName(), "aksess.templateconfig.error.duplicateid", category.toString()));
+        }
         return errors;
     }
 
