@@ -112,10 +112,6 @@
             return getQueryParam("itemIdentifier", href);
         }
 
-        function getCurrentItemIdentifier() {
-            return currentItemIdentifier;
-        }
-
         function onNavigatorTitleClick(elm) {
             var href = elm.attr("href");
             var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
@@ -123,6 +119,7 @@
             currentItemIdentifier = itemIdentifier;
             triggerMultimediaupdateEvent();
         }
+        
         function triggerMultimediaupdateEvent() {
             debug("triggerMultimediaupdateEvent(): mediaupdate event triggered");
             $.event.trigger("multimediaupdate",currentItemIdentifier);
@@ -150,7 +147,7 @@
                 name: 'file',
                 onSubmit : function(file, ext){
                     this.setData({
-                        'parentId': getCurrentItemIdentifier(),
+                        'parentId': currentItemIdentifier,
                         'id' : -1
                     });
                     button.text('Uploading...');

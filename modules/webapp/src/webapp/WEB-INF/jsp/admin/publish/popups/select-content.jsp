@@ -46,10 +46,6 @@
             return "<%=Aksess.getContextPath()%>/admin/publish/ContentNavigator.action";
         }
 
-        function getCurrentItemIdentifier() {
-            return currentItemIdentifier;
-        }
-
         function onNavigatorTitleClick(elm) {
             var href = elm.attr("href");
             var title = elm.attr("title");

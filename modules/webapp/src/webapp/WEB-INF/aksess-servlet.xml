@@ -67,6 +67,10 @@
                 <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAjaxAction</prop>
                 <prop key="/admin/publish/popups/SelectMediaFolder.action">SelectMediaFolderAction</prop>
 
+                <!-- Organize subpages -->
+                <prop key="/admin/publish/Organize.action">OrganizeSubPagesAction</prop>
+                <prop key="/admin/publish/ListSubPages.action">ListSubPagesAction</prop>
+
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
@@ -283,6 +287,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/mypage/mypage.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.mypage.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
+
     <!-- Navigate content -->
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
@@ -291,6 +296,17 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+
+    <!-- Organize subpages -->
+    <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/organizesubpages.jsp"/>
+    </bean>
+    <bean id="ListSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ListSubPagesAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listsubpages.jsp"/>
+    </bean>
+
+    <!-- Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>

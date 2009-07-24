@@ -440,10 +440,10 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
+    public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List list = ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
 
-        List approved = new ArrayList();
+        List<Content> approved = new ArrayList<Content>();
         // Legg kun til elementer som brukeren har tilgang til
         for (int i = 0; i < list.size(); i++) {
             Content c = (Content)list.get(i);
@@ -477,7 +477,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getContentSummaryList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
+    public List<Content> getContentSummaryList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, false, false);
     }
 

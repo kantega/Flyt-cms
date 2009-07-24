@@ -23,23 +23,73 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <script type="text/javascript">
+        $(document).ready(function(){
+            setContentupdateTrigger();
+        });
+        
+        /**
+         * Attaches an onload listener to the contentframe and triggers a contentupdate event every time this onload event is fired,
+         * i.e. on every page load in the iframe.
+         *
+         * Sends the current url as data with the event.
+         *
+         * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
+         */
+        function setContentupdateTrigger() {
+            $("#Contentmain").load(function() {
+                var currentContent = getCurrentLocation().href;
+                debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
+                ContentStateHandler.notifyContentUpdate(currentContent, function(success){
+                    if(!success) {
+                        debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() success");
+                    } else {
+                        debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() failed");
+                        //TODO: Handle
+                    }
+                });
+                currentUrl = currentContent;
+                $.event.trigger("contentupdate",[currentContent]);
+            });
+        }
 
 
-        <div id="MainPane">
-            <div class="statusbar">
-                <ul class="breadcrumbs">
-                    <li>Forside</li>
-                    <li>Lorem ipsum</li>
-                    <li>Dolor sit amet</li>
-                </ul>
-                <div class="supportMenu">
-                    <a href="#" class="brokenLink">Lenkebrudd</a>
-                    <a href="#" class="crossPublish">Krysspublisert</a>
-                    <a href="#" class="details">Details</a>
-                </div>
+        /**
+         * Changes the content of the contentmain iframe.
+         * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
+         *
+         * @param id
+         * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
+         */
+        function updateMainPane(id, suppressNavigatorUpdate) {
+            debug("updateMainPane(): id: " + id);
+            if (suppressNavigatorUpdate) {
+                suppressNavigatorUpdate = true;
+            }
+            var iframe = document.getElementById("Contentmain");
+            if (iframe) {
+                iframe.contentWindow.document.location.href = getContentUrlFromAssociationId(id);
+            }
+        }
+
+
+    </script>
+
+    <div id="MainPane">
+        <div class="statusbar">
+            <ul class="breadcrumbs">
+                <li>Forside</li>
+                <li>Lorem ipsum</li>
+                <li>Dolor sit amet</li>
+            </ul>
+            <div class="supportMenu">
+                <a href="#" class="brokenLink">Lenkebrudd</a>
+                <a href="#" class="crossPublish">Krysspublisert</a>
+                <a href="#" class="details">Details</a>
             </div>
-            <iframe name="contentmain" id="Contentmain" src="${currentNavigateContent.url}" height="100%" width="100%"></iframe>
         </div>
+        <iframe name="contentmain" id="Contentmain" src="${currentNavigateContent.url}" height="100%" width="100%"></iframe>
+    </div>
 
 </kantega:section>
 

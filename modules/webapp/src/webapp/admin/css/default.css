@@ -443,3 +443,15 @@ a.dateselect {
 
 }
 
+/************** Organize subpages **************/
+#SubPages li {
+    list-style: none;
+}
+
+#SubPages li.menu {
+    font-weight: bold;
+}
+
+#SubPages li.page {
+    cursor:move;
+}

@@ -23,7 +23,6 @@ var currentUrl = "";
 
 $(document).ready(function(){
     bindContentupdateEvents();
-    setContentupdateTrigger();
     setOpenElementFromSession();
 });
 
@@ -50,30 +49,6 @@ function bindContentupdateEvents() {
 //    });
 }
 
-/**
- * Attaches an onload listener to the contentframe and triggers a contentupdate event every time this onload event is fired,
- * i.e. on every page load in the iframe.
- *
- * Sends the current url as data with the event.
- *
- * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
- */
-function setContentupdateTrigger() {
-    $("#Contentmain").load(function() {
-        var currentContent = getCurrentItemIdentifier().href;
-        debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
-        ContentStateHandler.notifyContentUpdate(currentContent, function(success){
-            if(!success) {
-                debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() success");
-            } else {
-                debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() failed");
-                //TODO: Handle
-            }
-        });
-        currentUrl = currentContent;
-        $.event.trigger("contentupdate",[currentContent]);
-    });
-}
 
 /**
  * Retrieves the last recently viewed content element from the session and sets this as current element
@@ -300,7 +275,7 @@ var Publish =  {
 /**
  * Returns the location object for the contentmain iframe.
  */
-function getCurrentItemIdentifier() {
+function  getCurrentLocation() {
     return document.getElementById("Contentmain").contentWindow.document.location;
 }
 
@@ -314,21 +289,6 @@ function getItemIdentifierFromNavigatorHref(href) {
     //var url = getContentUrlFromAssociationId(thisId);
     debug("getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
     return thisId;
-}
-
-/**
- * Changes the content of the contentmain iframe.
- * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
- *
- * @param id
- * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
- */
-function updateMainPane(id, suppressNavigatorUpdate) {
-    debug("updateMainPane(): id: " + id);
-    if (suppressNavigatorUpdate) {
-        suppressNavigatorUpdate = true;
-    }
-    getCurrentItemIdentifier().href = getContentUrlFromAssociationId(id);
 }
 
 /**

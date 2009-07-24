@@ -51,10 +51,6 @@
             return getQueryParam("itemIdentifier", href);
         }
 
-        function getCurrentItemIdentifier() {
-            return currentItemIdentifier;
-        }
-
         function onNavigatorTitleClick(elm) {
             var href = elm.attr("href");
             currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);

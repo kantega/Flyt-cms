@@ -522,13 +522,13 @@ public class ContentAO {
         return contentList;
     }
 
-    public static List getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
+    public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
         return getContentList(contentQuery, maxElements, sort, getAttributes, false);
     }
 
-    public static List getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
-        final Map contentMap   = new HashMap();
-        final List contentList = new ArrayList();
+    public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
+        final Map<String, Content> contentMap  = new HashMap<String, Content>();
+        final List<Content> contentList = new ArrayList<Content>();
 
         final StringBuffer cvids = new StringBuffer();
 
@@ -630,17 +630,16 @@ public class ContentAO {
                 return;
             }
 
-            Map contentIds = new HashMap();
+            Map<Integer, Integer> contentIds = new HashMap<Integer, Integer>();
 
             // Get content objects
             ResultSet rs = st.executeQuery();
             int count = 0;
             while (rs.next() && (maxElements == -1 || count < maxElements)) {
                 Content content = ContentAOHelper.getContentFromRS(rs, true);
-                Integer key = new Integer(content.getId());
-                if (contentIds.get(key) == null) {
+                if (contentIds.get(content.getId()) == null) {
                     // Only get if not duplicate (join may cause duplicate)
-                    contentIds.put(key, key);
+                    contentIds.put(content.getId(), content.getId());
                     handler.handleContent(content);
                     count++;
                 }

@@ -41,30 +41,30 @@ public class NavigateController extends SimpleAdminController{
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession(true);
-         ContentManagementService aksessService = new ContentManagementService(request);
-         RequestParameters param = new RequestParameters(request);
+        ContentManagementService aksessService = new ContentManagementService(request);
+        RequestParameters param = new RequestParameters(request);
 
-         String url = param.getString(AdminRequestParameters.URL);
+        String url = param.getString(AdminRequestParameters.URL);
 
-         Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
+        Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
 
-         if (url != null || request.getParameter(AdminRequestParameters.THIS_ID) != null || request.getParameter(AdminRequestParameters.CONTENT_ID) != null) {
-             ContentIdentifier cid = null;
-             if (url != null) {
-                 cid = new ContentIdentifier(request, url);
-             } else {
-                 cid = new ContentIdentifier(request);
-             }
-             current = aksessService.getContent(cid);
-         }
+        if (url != null || request.getParameter(AdminRequestParameters.THIS_ID) != null || request.getParameter(AdminRequestParameters.CONTENT_ID) != null) {
+            ContentIdentifier cid = null;
+            if (url != null) {
+                cid = new ContentIdentifier(request, url);
+            } else {
+                cid = new ContentIdentifier(request);
+            }
+            current = aksessService.getContent(cid);
+        }
 
-         if (current == null ) {
-             // No current object, go to start page
-             ContentIdentifier cid = new ContentIdentifier(request, "/");
-             current = aksessService.getContent(cid);
-         }
+        if (current == null ) {
+            // No current object, go to start page
+            ContentIdentifier cid = new ContentIdentifier(request, "/");
+            current = aksessService.getContent(cid);
+        }
 
-         session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
+        session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
 
 
         return new ModelAndView(getView());

@@ -20,6 +20,7 @@ import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
@@ -70,7 +71,8 @@ public class AddContentAction extends AdminController {
 
         ContentTemplate parentTemplate = aksessService.getContentTemplate(parent.getContentTemplateId());
 
-        List<AssociationCategory> allowedAssociations = getAllowedAssociationCategories(parentTemplate);
+        AssociationCategoryHelper helper = new AssociationCategoryHelper(templateConfigurationCache);
+        List<AssociationCategory> allowedAssociations = helper.getAllowedAssociationCategories(parentTemplate);
         model.put("allowedAssociations", allowedAssociations);
 
 
@@ -128,27 +130,6 @@ public class AddContentAction extends AdminController {
 
         // Show page where user selects template etc
         return new ModelAndView(view, model);
-    }
-
-    private List<AssociationCategory> getAllowedAssociationCategories(ContentTemplate parentTemplate) throws ChildContentNotAllowedException {
-        List<AssociationCategory> tmpAllowedAssociations = parentTemplate.getAssociationCategories();
-        if (tmpAllowedAssociations == null || tmpAllowedAssociations.size() == 0) {
-            throw new ChildContentNotAllowedException();
-        } else if (parentTemplate.getContentType() != ContentType.PAGE) {
-            throw new ChildContentNotAllowedException();
-        }
-
-        // Template only holds id of AssociationCategory, get complete AssociationCategory from cache
-        List<AssociationCategory> allAssociations = templateConfigurationCache.getTemplateConfiguration().getAssociationCategories();
-        List<AssociationCategory> allowedAssociations = new ArrayList<AssociationCategory>();
-        for (AssociationCategory allowedAssociation : tmpAllowedAssociations) {
-            for (AssociationCategory allAssociation : allAssociations) {
-                if (allAssociation.getId() == allowedAssociation.getId()) {
-                    allowedAssociations.add(allAssociation);
-                }
-            }
-        }
-        return allowedAssociations;
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
