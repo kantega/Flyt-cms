@@ -144,15 +144,9 @@
       </property>
     </bean>
 
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ContentRequestHandler">
-    <property name="servletClass">
-      <value>no.kantega.publishing.client.ContentRequestHandler</value>
-    </property>
-    <property name="servletName">
-      <value>ContentRequestHandler</value>
-    </property>
-  </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
+  <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler"/>
+
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
     <property name="servletClass">
       <value>no.kantega.publishing.client.MultimediaRequestHandler</value>
     </property>

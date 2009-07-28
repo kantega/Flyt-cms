@@ -16,18 +16,20 @@
 
 package no.kantega.publishing.client;
 
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.CharResponseWrapper;
 import no.kantega.publishing.common.util.URLRewriter;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
@@ -41,14 +43,23 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.kantega.jexmec.PluginManager;
+
 /**
  *
  */
-public class ContentRequestHandler extends HttpServlet {
+public class ContentRequestHandler extends AbstractController {
     private static String SOURCE = "ContentRequestHandler";
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+    private PluginManager<OpenAksessPlugin> pluginManager;
+
+    private SiteCache siteCache;
+
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = new Date().getTime();
 
         boolean isAdminMode = HttpHelper.isAdminMode(request);
@@ -56,7 +67,7 @@ public class ContentRequestHandler extends HttpServlet {
         try {
             ContentManagementService cms = new ContentManagementService(request);
 
-            Site currentSite = SiteCache.getSiteByHostname(request.getServerName());
+            Site currentSite = siteCache.getSiteByHostname(request.getServerName());
 
             ContentIdentifier cid;
             String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
@@ -87,7 +98,7 @@ public class ContentRequestHandler extends HttpServlet {
                     if(!isAdminMode && content.getAssociation().getSiteId() != currentSite.getId()) {
                         // Send user to correct domain if page is from other site
                         String url = content.getUrl();
-                        Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
+                        Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
                         List hostnames = site.getHostnames();
                         if (hostnames.size() > 0) {
                             String hostname = (String)hostnames.get(0);
@@ -98,12 +109,12 @@ public class ContentRequestHandler extends HttpServlet {
                             }
                             url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             response.sendRedirect(url);
-                            return;
+                            return null;
                         }
                     }
 
                     int siteId = content.getAssociation().getSiteId();
-                    Site site = SiteCache.getSiteById(siteId);
+                    Site site = siteCache.getSiteById(siteId);
                     String alias = site.getAlias();
 
                     RequestHelper.setRequestAttributes(request, content);
@@ -209,9 +220,16 @@ public class ContentRequestHandler extends HttpServlet {
             Log.error(SOURCE, e, null, null);
             throw new ServletException(e);
         }
+        return null;
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+    @Autowired
+    public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+    @Autowired
+    public void setSiteCache(SiteCache siteCache) {
+        this.siteCache = siteCache;
     }
 }

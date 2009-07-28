@@ -32,4 +32,6 @@ public interface Site {
     String getAlias();
 
     List<String> getHostnames();
+
+    String getScheme();
 }
