@@ -25,7 +25,7 @@
     <artifactId>openaksess-useradmin</artifactId>
     <packaging>jar</packaging>
 
-    <name>OpenAksess Useradmin</name>
+    <name>OpenAksess user admin</name>
 
     <dependencies>
         <dependency>

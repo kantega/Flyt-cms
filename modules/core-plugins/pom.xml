@@ -22,7 +22,7 @@
         <version>6.0.3-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-core-plugins</artifactId>
-    <name>Openaksess Core Plugins</name>
+    <name>OpenAksess core plugins</name>
     <dependencies>
         <dependency>
             <groupId>${pom.groupId}</groupId>
