@@ -30,6 +30,7 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentRequestListener;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
@@ -138,11 +139,22 @@ public class ContentRequestHandler extends AbstractController {
                         RequestHelper.runTemplateControllers(dt, request, response, getServletContext());
 
                         // Check if we need to filter URLs - unable to rewrite using filter if call is via 404 (alias)
-                        if (!isAdminMode && Aksess.isUrlRewritingEnabled() && originalUri != null) {
+                        CharResponseWrapper wrapper = null;
+                        if (shouldFilterOutput(isAdminMode, originalUri)) {
                             // Rewrite URLs
-                            CharResponseWrapper wrapper = new CharResponseWrapper(response);
-                            // Forward request
-                            request.getRequestDispatcher(template).forward(request, wrapper);
+                            wrapper = new CharResponseWrapper(response);
+                            response = wrapper;
+                        }
+
+                        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+                            for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
+                                listener.beforeDisplayTemplateDispatch(new DefaultDispatchContext(request, response, template));
+                            }
+                        }
+                        // Forward request
+                        request.getRequestDispatcher(template).forward(request, response);
+
+                        if(shouldFilterOutput(isAdminMode, originalUri)) {
                             // Write output
                             if (wrapper.isWrapped()) {
                                 String result  = URLRewriter.rewriteURLs(request, wrapper.toString());
@@ -150,9 +162,6 @@ public class ContentRequestHandler extends AbstractController {
                                 out.write(result);
                                 out.flush();
                             }
-                        } else {
-                            // No rewriting - just forward request
-                            request.getRequestDispatcher(template).forward(request, response);
                         }
 
                         long end = new Date().getTime();
@@ -223,6 +232,10 @@ public class ContentRequestHandler extends AbstractController {
         return null;
     }
 
+    private boolean shouldFilterOutput(boolean adminMode, String originalUri) {
+        return !adminMode && Aksess.isUrlRewritingEnabled() && originalUri != null;
+    }
+
     @Autowired
     public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
         this.pluginManager = pluginManager;
@@ -231,5 +244,29 @@ public class ContentRequestHandler extends AbstractController {
     @Autowired
     public void setSiteCache(SiteCache siteCache) {
         this.siteCache = siteCache;
+    }
+
+    class DefaultDispatchContext implements ContentRequestListener.DispatchContext {
+        private HttpServletRequest request;
+        private HttpServletResponse response;
+        private String templateUrl;
+
+        DefaultDispatchContext(HttpServletRequest request, HttpServletResponse response, String templateUrl) {
+            this.request = request;
+            this.response = response;
+            this.templateUrl = templateUrl;
+        }
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public HttpServletResponse getResponse() {
+            return response;
+        }
+
+        public String getTemplateUrl() {
+            return templateUrl;
+        }
     }
 }

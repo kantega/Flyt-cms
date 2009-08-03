@@ -6,11 +6,15 @@ import org.springframework.web.servlet.HandlerMapping;
 import java.util.List;
 import java.util.Collections;
 
+import no.kantega.publishing.api.content.ContentRequestListener;
+
 /**
  */
 public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAksessPlugin {
 
     private List<HandlerMapping> handlerMappings = Collections.emptyList();
+
+    private List<ContentRequestListener> contentRequestListeners = Collections.emptyList();
 
     public OpenAksessPluginAdapter(String pluginId) {
         super(pluginId);
@@ -24,4 +28,11 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
         return handlerMappings;
     }
 
+    public List<ContentRequestListener> getContentRequestListeners() {
+        return contentRequestListeners;
+    }
+
+    public void setContentRequestListeners(List<ContentRequestListener> contentRequestListeners) {
+        this.contentRequestListeners = contentRequestListeners;
+    }
 }
