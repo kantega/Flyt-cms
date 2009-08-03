@@ -28,7 +28,9 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URL;
+import java.net.URLConnection;
 import java.io.IOException;
+import java.io.File;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
@@ -62,12 +64,14 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
 
 
-                    if (!scripts.containsKey(groovyPath)) {
+
+
+                    if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified() ) {
                         Class clazz = classLoader.parseClass(new GroovyCodeSource(resource));
                         Method method = getMethod(clazz, context, allowedParameters);
                         Object script = clazz.newInstance();
-                        scripts.put(groovyPath, new ExecutionContext(method, script));
-                    }
+                        scripts.put(groovyPath, new ExecutionContext(method, script, getLastModified(resource)));
+                    } 
 
                     ExecutionContext ex = scripts.get(groovyPath);
 
@@ -95,6 +99,23 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
             }
         }
 
+    }
+
+    private long getLastModified(URL source) {
+        if (source.getProtocol().equals("file")) {
+            String path = source.getPath().replace('/', File.separatorChar).replace('|', ':');
+            File file = new File(path);
+            return file.lastModified();
+        } else {
+            try {
+                URLConnection conn = source.openConnection();
+                long lastMod = conn.getLastModified();
+                conn.getInputStream().close();
+                return lastMod;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     private Object[] getParameters(Method method, Map<Class, Object> allowedParameters) {
@@ -146,10 +167,12 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
     class ExecutionContext {
         private Method method;
         private Object script;
+        private long lastModified;
 
-        ExecutionContext(Method method, Object script) {
+        ExecutionContext(Method method, Object script, long lastModified) {
             this.method = method;
             this.script = script;
+            this.lastModified = lastModified;
         }
 
         public Method getMethod() {
@@ -158,6 +181,10 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
         public Object getScript() {
             return script;
+        }
+
+        public long getLastModified() {
+            return lastModified;
         }
     }
 }
