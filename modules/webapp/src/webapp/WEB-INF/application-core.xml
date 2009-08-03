@@ -19,7 +19,7 @@
 
 <beans>
     <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">        
-        <property name="resource" value="/WEB-INF/aksess-templateconfig.xml"/>
+        <property name="resource" value="${templateconfig.location}"/>
     </bean>
 
     <bean id="aksessTemplateConfigurationFactory" class="no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory">
