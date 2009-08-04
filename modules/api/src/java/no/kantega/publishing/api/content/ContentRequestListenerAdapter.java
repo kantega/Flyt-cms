@@ -19,6 +19,12 @@ package no.kantega.publishing.api.content;
 /**
  */
 public class ContentRequestListenerAdapter implements ContentRequestListener {
+
+    public void beforeIncludeTemplateDispatch(DispatchContext context) {
+
+    }
+
     public void beforeDisplayTemplateDispatch(DispatchContext context) {
+
     }
 }

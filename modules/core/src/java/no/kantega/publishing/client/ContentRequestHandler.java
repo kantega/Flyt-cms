@@ -246,27 +246,5 @@ public class ContentRequestHandler extends AbstractController {
         this.siteCache = siteCache;
     }
 
-    class DefaultDispatchContext implements ContentRequestListener.DispatchContext {
-        private HttpServletRequest request;
-        private HttpServletResponse response;
-        private String templateUrl;
-
-        DefaultDispatchContext(HttpServletRequest request, HttpServletResponse response, String templateUrl) {
-            this.request = request;
-            this.response = response;
-            this.templateUrl = templateUrl;
-        }
-
-        public HttpServletRequest getRequest() {
-            return request;
-        }
-
-        public HttpServletResponse getResponse() {
-            return response;
-        }
-
-        public String getTemplateUrl() {
-            return templateUrl;
-        }
-    }
+    
 }

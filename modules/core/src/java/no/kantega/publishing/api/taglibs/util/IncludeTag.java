@@ -19,11 +19,23 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.api.content.ContentRequestListener;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.client.ContentRequestHandler;
+import no.kantega.publishing.client.DefaultDispatchContext;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import org.kantega.jexmec.PluginManager;
 
 public class IncludeTag  extends TagSupport {
     String url = null;
@@ -34,8 +46,25 @@ public class IncludeTag  extends TagSupport {
 
     public int doStartTag() throws JspException {
         if (url != null) {
+
+            PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
+
             try {
+                for(String name : (List <String>) Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE))) {
+                    System.out.println(name + ": " + pageContext.getAttribute(name, PageContext.REQUEST_SCOPE));
+                }
                 url = AttributeTagHelper.replaceMacros(url, pageContext);
+                String absoluteUrl = url;
+
+                if(!url.startsWith("/")) {
+                    String include_url = (String) pageContext.getRequest().getAttribute("javax.servlet.include.servlet_path");
+                    absoluteUrl = include_url.substring(0, include_url.lastIndexOf("/") ) + "/" + url;
+                }
+                for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+                    for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
+                        listener.beforeIncludeTemplateDispatch(new DefaultDispatchContext((HttpServletRequest)pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), absoluteUrl));
+                    }
+                }
                 pageContext.include(url);
             } catch (ServletException e) {
                 throw new JspException(e);

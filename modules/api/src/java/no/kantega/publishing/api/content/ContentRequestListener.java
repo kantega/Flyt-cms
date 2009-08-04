@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface ContentRequestListener {
     void beforeDisplayTemplateDispatch(DispatchContext context);
+    void beforeIncludeTemplateDispatch(DispatchContext context);
 
     interface DispatchContext {
         HttpServletRequest getRequest();

@@ -48,6 +48,16 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
     @Override
     public void beforeDisplayTemplateDispatch(DispatchContext context) {
+        executeTemplate(context);
+
+    }
+
+    @Override
+    public void beforeIncludeTemplateDispatch(DispatchContext context) {
+        executeTemplate(context);
+    }
+
+    private void executeTemplate(DispatchContext context) {
         String template = context.getTemplateUrl();
         if (template.contains(".")) {
             String groovyPath = template.substring(0, template.lastIndexOf(".")) + ".groovy";
@@ -64,14 +74,12 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
 
 
-
-
-                    if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified() ) {
+                    if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified()) {
                         Class clazz = classLoader.parseClass(new GroovyCodeSource(resource));
-                        Method method = getMethod(clazz, context, allowedParameters);
+                        Method method = getMethod(clazz, groovyPath, allowedParameters);
                         Object script = clazz.newInstance();
                         scripts.put(groovyPath, new ExecutionContext(method, script, getLastModified(resource)));
-                    } 
+                    }
 
                     ExecutionContext ex = scripts.get(groovyPath);
 
@@ -98,7 +106,6 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 throw new RuntimeException(e);
             }
         }
-
     }
 
     private long getLastModified(URL source) {
@@ -129,11 +136,12 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
         return parameters;
     }
 
-    private Method getMethod(Class clazz, DispatchContext context, Map<Class, Object> allowedParameters) {
+    private Method getMethod(Class clazz, String groovyPath, Map<Class, Object> allowedParameters) {
 
         Method[] methods = clazz.getDeclaredMethods();
 
 
+        method:
         for (Method method : methods) {
 
             if (method.isSynthetic()) {
@@ -143,21 +151,17 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 continue;
             }
 
-            Object[] parameters = new Object[method.getParameterTypes().length];
             for (int i = 0; i < method.getParameterTypes().length; i++) {
                 Class paramClazz = method.getParameterTypes()[i];
 
                 if (!allowedParameters.containsKey(paramClazz)) {
-                    break;
-
-                } else {
-                    parameters[i] = allowedParameters.get(paramClazz);
+                    continue method;
                 }
             }
 
             return method;
         }
-        throw new IllegalArgumentException("Groovy class: " + clazz + " contains no valid method taking parameters");
+        throw new IllegalArgumentException("Groovy class: " + clazz + " contains no valid method taking allowed parameters");
     }
 
     public void setServletContext(ServletContext servletContext) {
