@@ -44,7 +44,7 @@ public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
         int prev = 0;
         while(matcher.find()) {
             builder.append(content.substring(prev, matcher.end()));
-            builder.append("<input type=\"hidden\" name=\"" + CSRF_KEY +"\" value=\"" + generateKey(request) + "\">");
+            builder.append("<div><input type=\"hidden\" name=\"" + CSRF_KEY +"\" value=\"" + generateKey(request) + "\"></div>");
             prev = matcher.end();
         }
         if(prev < content.length()) {

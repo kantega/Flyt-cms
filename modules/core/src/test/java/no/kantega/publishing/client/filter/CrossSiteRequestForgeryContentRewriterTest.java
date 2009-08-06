@@ -45,13 +45,13 @@ public class CrossSiteRequestForgeryContentRewriterTest {
     @Test
     public void testRewriteContent() {
 
-        assertEquals("<form><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\">", rewriter.rewriteContent(null, "<form>"));
+        assertEquals("<form><div><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></div>", rewriter.rewriteContent(null, "<form>"));
 
-        assertEquals("<form><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></form>", rewriter.rewriteContent(null, "<form></form>"));
+        assertEquals("<form><div><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></div></form>", rewriter.rewriteContent(null, "<form></form>"));
 
-        assertEquals("<FORM><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></form>", rewriter.rewriteContent(null, "<FORM></form>"));
+        assertEquals("<FORM><div><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></div></form>", rewriter.rewriteContent(null, "<FORM></form>"));
 
-        assertEquals("foo<form><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"><input type=submit></form>bar", rewriter.rewriteContent(null, "foo<form><input type=submit></form>bar"));
+        assertEquals("foo<form><div><input type=\"hidden\" name=\"csrfkey\" value=\"KEY\"></div><input type=submit></form>bar", rewriter.rewriteContent(null, "foo<form><input type=submit></form>bar"));
     }
 
 
