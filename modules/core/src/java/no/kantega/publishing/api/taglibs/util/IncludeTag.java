@@ -50,9 +50,6 @@ public class IncludeTag  extends TagSupport {
             PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
 
             try {
-                for(String name : (List <String>) Collections.list(pageContext.getAttributeNamesInScope(PageContext.REQUEST_SCOPE))) {
-                    System.out.println(name + ": " + pageContext.getAttribute(name, PageContext.REQUEST_SCOPE));
-                }
                 url = AttributeTagHelper.replaceMacros(url, pageContext);
                 String absoluteUrl = url;
 
