@@ -54,7 +54,8 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
     private ApplicationContext rootApplicationContext;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String show() {
+    public String show(HttpServletRequest request, ModelMap model) {
+        model.put("contextPath", request.getContextPath());
         return view;
     }
 
@@ -118,6 +119,8 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
             model.put("out", sw.toString());
 
         }
+
+        model.put("contextPath", request.getContextPath());
 
         return view;
     }
