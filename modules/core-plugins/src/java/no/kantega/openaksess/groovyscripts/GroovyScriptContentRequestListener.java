@@ -21,6 +21,8 @@ import no.kantega.publishing.api.content.ContentRequestListener;
 import no.kantega.publishing.common.data.Content;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.ServletContextAware;
+import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 
@@ -36,6 +38,7 @@ import java.util.HashMap;
 import java.util.Collections;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Annotation;
 
 /**
  */
@@ -45,6 +48,8 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
     private GroovyClassLoader classLoader = new GroovyClassLoader(getClass().getClassLoader());
     private ServletContext servletContext;
     private Map<String, ExecutionContext> scripts = Collections.synchronizedMap(new HashMap<String, ExecutionContext>());
+
+    private ApplicationContext rootApplicationContext;
 
     @Override
     public void beforeDisplayTemplateDispatch(DispatchContext context) {
@@ -130,7 +135,27 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
         for (int i = 0; i < method.getParameterTypes().length; i++) {
             Class paramClazz = method.getParameterTypes()[i];
 
-            parameters[i] = allowedParameters.get(paramClazz);
+            if (allowedParameters.containsKey(paramClazz)) {
+                parameters[i] = allowedParameters.get(paramClazz);
+            } else {
+                final Map beans = rootApplicationContext.getBeansOfType(paramClazz);
+                if (beans.size() == 1) {
+                    parameters[i] = beans.values().iterator().next();
+                } else {
+                    final Annotation[] annotations = method.getParameterAnnotations()[i];
+
+                    for (Annotation annotation : annotations) {
+                        if (annotation instanceof Qualifier) {
+                            Qualifier q = (Qualifier) annotation;
+                            if (beans.containsKey(q.value())) {
+                                parameters[i] = beans.get(q.value());
+                                break;
+                            }
+
+                        }
+                    }
+                }
+            }
 
         }
         return parameters;
@@ -154,18 +179,40 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
             for (int i = 0; i < method.getParameterTypes().length; i++) {
                 Class paramClazz = method.getParameterTypes()[i];
 
-                if (!allowedParameters.containsKey(paramClazz)) {
+                final Annotation[] annotations = method.getParameterAnnotations()[i];
+
+                if (allowedParameters.containsKey(paramClazz)) {
+                    return method;
+                } else {
+                    final Map beans = rootApplicationContext.getBeansOfType(paramClazz);
+                    if (beans.size() == 1) {
+                        return method;
+                    } else {
+                        for (Annotation annotation : annotations) {
+                            if (annotation instanceof Qualifier) {
+                                Qualifier q = (Qualifier) annotation;
+                                if (beans.containsKey(q.value())) {
+                                    return method;
+                                }
+
+                            }
+                        }
+                    }
                     continue method;
                 }
             }
 
-            return method;
+
         }
         throw new IllegalArgumentException("Groovy class: " + clazz + " contains no valid method taking allowed parameters");
     }
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public void setRootApplicationContext(ApplicationContext rootApplicationContext) {
+        this.rootApplicationContext = rootApplicationContext;
     }
 
     class ExecutionContext {

@@ -21,7 +21,9 @@
     <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
         <constructor-arg value="org.kantega.openaksess.groovyplugin"/>
         <property name="contentRequestListeners">
-            <bean class="no.kantega.openaksess.groovyscripts.GroovyScriptContentRequestListener"/>
+            <bean class="no.kantega.openaksess.groovyscripts.GroovyScriptContentRequestListener">
+                <property name="rootApplicationContext" ref="rootApplicationContext"/>
+            </bean>
         </property>
     </bean>
 
