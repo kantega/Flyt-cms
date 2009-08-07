@@ -99,6 +99,7 @@
         <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
         <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
         <prop key="/robots.txt">RobotsController</prop>
+        <prop key="/oap/static/**">PluginStaticContentController</prop>
       </props>
     </property>
   </bean>
@@ -519,6 +520,10 @@
   <bean class="no.kantega.publishing.admin.attributes.action.AddListOptionAction" id="AddListOptionAction"/>
   <bean class="no.kantega.publishing.admin.attributes.action.RemoveListOptionAction" id="RemoveListOptionAction"/>
 
+
+    <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
 
     <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
         <property name="resourceLoaderPath" value="classpath:"/>
