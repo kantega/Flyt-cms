@@ -53,11 +53,11 @@
 
     // Let etter /css/site/editor.css og /site/css/editor.css
     String cssPath = "/css" + site.getAlias() + attribute.getCss();
-    File f = new File(pageContext.getServletContext().getRealPath(cssPath));
-    if (!f.exists()) {
+    InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
+    if (is == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
-    f = null;
+    is.close();
 %>
 <tr>
     <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
@@ -224,7 +224,8 @@
 
                         try {
                             String cssLine = "";
-                            InputStream in = new FileInputStream(pageContext.getServletContext().getRealPath(cssPath));
+
+                            InputStream in = pageContext.getServletContext().getResourceAsStream(cssPath);
                             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
                             while(null != (cssLine = reader.readLine())) {
