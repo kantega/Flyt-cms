@@ -77,7 +77,7 @@ public class ContentRequestHandler extends AbstractController {
                 cid = new ContentIdentifier(request);
             } else {
                 // Kall via 404 handler
-                // request_uri inneholder også subsite info (http://angel/buffy, må fjerne dette
+                // request_uri inneholder ogsï¿½ subsite info (http://angel/buffy, mï¿½ fjerne dette
                 String contextPath = Aksess.getContextPath();
                 if (contextPath != null && contextPath.length() != 0 && originalUri.indexOf(contextPath) != -1) {
                     originalUri = originalUri.substring(contextPath.length(), originalUri.length());
@@ -139,11 +139,13 @@ public class ContentRequestHandler extends AbstractController {
                         RequestHelper.runTemplateControllers(dt, request, response, getServletContext());
 
                         // Check if we need to filter URLs - unable to rewrite using filter if call is via 404 (alias)
-                        CharResponseWrapper wrapper = null;
+                        CharResponseWrapper wrappedResponse = null;
+                        HttpServletResponse originalResponse = response;
+
                         if (shouldFilterOutput(isAdminMode, originalUri)) {
                             // Rewrite URLs
-                            wrapper = new CharResponseWrapper(response);
-                            response = wrapper;
+                            wrappedResponse = new CharResponseWrapper(response);
+                            response = wrappedResponse;
                         }
 
                         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
@@ -156,9 +158,9 @@ public class ContentRequestHandler extends AbstractController {
 
                         if(shouldFilterOutput(isAdminMode, originalUri)) {
                             // Write output
-                            if (wrapper.isWrapped()) {
-                                String result  = URLRewriter.rewriteURLs(request, wrapper.toString());
-                                PrintWriter out = response.getWriter();
+                            if (wrappedResponse.isWrapped()) {
+                                String result  = URLRewriter.rewriteURLs(request, wrappedResponse.toString());
+                                PrintWriter out = originalResponse.getWriter();
                                 out.write(result);
                                 out.flush();
                             }
