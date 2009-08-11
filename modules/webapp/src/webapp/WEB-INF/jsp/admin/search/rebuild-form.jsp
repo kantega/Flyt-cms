@@ -23,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
 <body class="bodyWithMargin">
-<form action="Rebuild.action" method="POST">
+<form action="RebuildIndex.action" method="POST">
     <input type="checkbox" checked="true" name="rebuild">Gjenoppbygg indeks<br>
     <input type="checkbox" checked="true" name="optimize">Optimaliser indeks<br>
     <input type="checkbox" checked="true" name="spelling">Oppdater ordliste for stavekontroll<br>

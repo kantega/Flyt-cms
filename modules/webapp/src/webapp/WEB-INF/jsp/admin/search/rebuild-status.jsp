@@ -25,7 +25,7 @@
 <html>
 <head>
 	<title>rebuild-form.jsp</title>
-    <META HTTP-EQUIV=Refresh CONTENT="2; URL=rebuild.action">
+    <META HTTP-EQUIV=Refresh CONTENT="2; URL=RebuildIndex.action">
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
 <body class="bodyWithMargin">
