@@ -28,6 +28,7 @@
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
         <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
     </scm>
 
     <modules>
@@ -98,7 +99,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
-                <version>1.0-beta-3</version>
+                <version>1.0-beta-1</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>
@@ -107,10 +108,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <doCheck>true</doCheck>
-                    <doUpdate>true</doUpdate>
-                </configuration>
             </plugin>
         </plugins>
     </build>
