@@ -55,7 +55,15 @@ public class IncludeTag  extends TagSupport {
 
                 if(!url.startsWith("/")) {
                     String include_url = (String) pageContext.getRequest().getAttribute("javax.servlet.include.servlet_path");
-                    absoluteUrl = include_url.substring(0, include_url.lastIndexOf("/") ) + "/" + url;
+                    if(include_url != null) {
+                        absoluteUrl = include_url.substring(0, include_url.lastIndexOf("/") ) + "/" + url;
+                    } else {
+                        String servletPath = ((HttpServletRequest) pageContext.getRequest()).getServletPath();
+                        if (servletPath.contains("/")) {
+                            servletPath = servletPath.substring(0, servletPath.lastIndexOf('/'));
+                            absoluteUrl = servletPath + "/" +url;
+                        }
+                    }
                 }
                 for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
                     for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
