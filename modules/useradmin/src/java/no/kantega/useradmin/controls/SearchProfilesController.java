@@ -38,7 +38,7 @@ import java.util.Map;
  * Date: Jun 26, 2007
  * Time: 10:10:35 AM
  */
-public class SearchProfilesController extends AbstractUserAdminController implements InitializingBean {
+public class SearchProfilesController extends AbstractUserAdminController  {
 
     private int minQueryLength = -1;
     
@@ -64,9 +64,9 @@ public class SearchProfilesController extends AbstractUserAdminController implem
             }
             ProfileManager manager = config.getProfileManager();
 
-            if (query != null && query.length() >= minQueryLength) {
+            if (minQueryLength <= 0 || (query != null && query.length() >= minQueryLength)) {
                 // Søkt etter bruker
-                SearchResult result = manager.searchProfiles(query);
+                SearchResult result = manager.searchProfiles(query == null ? "" : query);
                 if (result != null) {
                     model.put("users", result.getAllResults());                    
                 }
@@ -86,13 +86,6 @@ public class SearchProfilesController extends AbstractUserAdminController implem
         }
 
         return new ModelAndView("/profile/search", model);
-    }
-
-    public void afterPropertiesSet() throws Exception {
-        if(minQueryLength == -1) {
-            minQueryLength = Aksess.getConfiguration().getInt("security.profiles.minquerylength", 3);
-        }
-
     }
 
     public void setMinQueryLength(int minQueryLength) {
