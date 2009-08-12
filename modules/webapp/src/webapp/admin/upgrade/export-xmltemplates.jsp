@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="iso-8859-1"?><%@ page contentType="text/xml;charset=iso-8859-1" language="java" pageEncoding="iso-8859-1" %><%@ page import="no.kantega.publishing.common.util.templates.TemplateConfigurationExportHelper" %><%@ page import="com.thoughtworks.xstream.XStream" %><%@ page import="no.kantega.publishing.common.data.*" %><%@ page import="no.kantega.publishing.common.util.templates.XStreamTemplateHelper" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -14,6 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+
+<?xml version="1.0" encoding="iso-8859-1"?><%@ page contentType="text/xml;charset=iso-8859-1" language="java" pageEncoding="iso-8859-1" %><%@ page import="no.kantega.publishing.common.util.templates.TemplateConfigurationExportHelper" %><%@ page import="com.thoughtworks.xstream.XStream" %><%@ page import="no.kantega.publishing.common.data.*" %><%@ page import="no.kantega.publishing.common.util.templates.XStreamTemplateHelper" %>
 <%
     TemplateConfiguration tc = TemplateConfigurationExportHelper.getConfigururationFromDatabase();
     XStream xstream = XStreamTemplateHelper.getXStream();
