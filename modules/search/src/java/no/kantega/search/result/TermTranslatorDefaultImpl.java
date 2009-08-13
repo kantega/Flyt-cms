@@ -16,6 +16,17 @@
 
 package no.kantega.search.result;
 
+import no.kantega.commons.log.Log;
+import no.kantega.search.index.Fields;
+import no.kantega.search.index.IndexSearcherManager;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
+
+import java.io.IOException;
+
 /**
  * Date: Jan 28, 2009
  * Time: 10:14:45 AM
@@ -26,13 +37,40 @@ public class TermTranslatorDefaultImpl implements TermTranslator {
 
     private static final String SOURCE = TermTranslatorDefaultImpl.class.getName();
 
+    private IndexSearcherManager indexSearcherManager;
+
 
     public String fromField(String field) {
         return field;
     }
 
     public String fromTerm(String field, String term) {
-        return term;
+        String retVal = null;
+
+        if (Fields.CONTENT_PARENTS.equals(field)) {
+            retVal = lookupContentTitle(term);
+        }
+
+        return retVal != null ? retVal : term;
+    }
+
+    public void setIndexSearcherManager(IndexSearcherManager indexSearcherManager) {
+        this.indexSearcherManager = indexSearcherManager;
+    }
+
+    private String lookupContentTitle(String term) {
+        String retVal = null;
+        try {
+            Query query = new TermQuery(new Term(Fields.CONTENT_ID, term));
+            IndexSearcher searcher = indexSearcherManager.getSearcher("aksess");
+            TopDocs topDocs = searcher.search(query, 1);
+            if (topDocs.scoreDocs.length > 0) {
+                retVal = searcher.doc(topDocs.scoreDocs[0].doc).get(Fields.TITLE);
+            }
+        } catch (IOException e) {
+            Log.error(SOURCE, e, "fromTerm", null);
+        }
+        return retVal;
     }
 
 }
