@@ -73,10 +73,10 @@ public class SecurityService {
     public static boolean isAuthorized(User user, BaseObject object, int privilege) throws SystemException {
 
         String ownerUnit = object.getOwner();
-        if ("".equals(ownerUnit)) ownerUnit = "";
+        if ("".equals(ownerUnit)) ownerUnit = null;
 
         String ownerPerson = object.getOwnerPerson();
-        if ("".equals(ownerPerson)) ownerPerson = "";
+        if ("".equals(ownerPerson)) ownerPerson = null;
 
         if (object instanceof Content) {
             Content c = (Content)object;
@@ -110,10 +110,10 @@ public class SecurityService {
     public static boolean isApprover(User user, Content object) throws SystemException {
 
         String ownerUnit = object.getOwner();
-        if ("".equals(ownerUnit)) ownerUnit = "";
+        if ("".equals(ownerUnit)) ownerUnit = null;
 
         String ownerPerson = object.getOwnerPerson();
-        if ("".equals(ownerPerson)) ownerPerson = "";
+        if ("".equals(ownerPerson)) ownerPerson = null;
 
         List<Permission> permissions = PermissionsCache.getPermissions(object.getAssociation());
         if (permissions == null || permissions.size() == 0) {
