@@ -113,7 +113,7 @@ public class MultimediaMapWorker {
         }
         query.append(") ");
         if (getOnlyFolders) {
-            query.append(" and Type = " + MultimediaType.FOLDER);
+            query.append(" and Type = " + MultimediaType.FOLDER.getTypeAsInt());
         }
         query.append(" order by ParentId, Type, Name");
         return getSiteMapBySQL(query.toString());
