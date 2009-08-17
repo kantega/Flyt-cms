@@ -57,7 +57,10 @@
     if (is == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
-    is.close();
+
+    if(is != null) {
+        is.close();
+    }
 %>
 <tr>
     <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
