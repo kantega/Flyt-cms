@@ -53,13 +53,9 @@
 
     // Let etter /css/site/editor.css og /site/css/editor.css
     String cssPath = "/css" + site.getAlias() + attribute.getCss();
-    InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
-    if (is == null) {
-        cssPath = site.getAlias() + "css/" + attribute.getCss();
-    }
 
-    if(is != null) {
-        is.close();
+    if (pageContext.getServletContext().getResource(cssPath) == null) {
+        cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
 %>
 <tr>
