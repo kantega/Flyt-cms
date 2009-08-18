@@ -19,13 +19,12 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.util.LocaleLabels;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.service.ContentManagementService;
 
 import java.util.*;
@@ -106,6 +105,24 @@ public class SavePublishInfoAction extends AbstractSaveContentAction {
                         content.setMetaDataTemplateId(mt.getId());
                     } else {
                         content.setMetaDataTemplateId(-1);
+                    }
+                    if (content.getId() > 0) {
+                        // Update group id
+                        if (template.isNewGroup()) {
+                            content.setGroupId(content.getId());
+                        } else {
+                            ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
+                            Content parent = null;
+                            try {
+                                parent = aksessService.getContent(parentCid);
+                            } catch (NotAuthorizedException e) {
+                                Log.error(getClass().getName(), "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")", null, null);
+                            }
+                            if (parent != null) {
+                                content.setGroupId(parent.getGroupId());
+                            }
+                        }
+
                     }
                 }
             }

@@ -714,7 +714,7 @@ public class ContentAO {
                 st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ContentId"});
             } else {
                 // Update
-                st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ? where ContentId = ?");
+                st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ? where ContentId = ?");
             }
 
             int p = 1;
@@ -723,9 +723,7 @@ public class ContentAO {
             st.setInt(p++, content.getMetaDataTemplateId());
             st.setInt(p++, content.getDisplayTemplateId());
             st.setInt(p++, content.getDocumentTypeId());
-            if (isNew) {
-                st.setInt(p++, content.getGroupId());
-            }
+            st.setInt(p++, content.getGroupId());
             st.setString(p++, content.getOwner());
             st.setString(p++, content.getOwnerPerson());
             st.setString(p++, content.getLocation());
@@ -783,11 +781,14 @@ public class ContentAO {
 
             // Update subpages if these fields are changed
             if(oldContent != null ) {
-                if(!oldContent.getOwner().equals(content.getOwner())) {
+                if (!oldContent.getOwner().equals(content.getOwner())) {
                     updateChildren(c, content.getAssociation().getId(), "owner", content.getOwner(), oldContent.getOwner());
                 }
-                if(!oldContent.getOwnerPerson().equals(content.getOwnerPerson())) {
+                if (!oldContent.getOwnerPerson().equals(content.getOwnerPerson())) {
                     updateChildren(c, content.getAssociation().getId(), "ownerperson", content.getOwnerPerson(), oldContent.getOwnerPerson());
+                }
+                if (oldContent.getGroupId() != content.getGroupId()) {
+                    updateChildren(c, content.getAssociation().getId(), "GroupId", "" + content.getGroupId(), "" + oldContent.getGroupId());
                 }
             }
 
