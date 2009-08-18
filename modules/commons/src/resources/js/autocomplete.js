@@ -190,6 +190,8 @@ function acGetValues(id) {
         xmlhttp = new XMLHttpRequest();
     }
 
+    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+
     if (ac.inputField) {
         var val = ac.inputField.value;
         var q = "";

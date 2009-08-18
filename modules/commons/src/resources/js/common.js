@@ -45,5 +45,8 @@ function getXmlHttp() {
     if (!xmlhttp && typeof XMLHttpRequest != 'undefined') {
         xmlhttp = new XMLHttpRequest();
     }
+
+    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    
     return xmlhttp;
 }
