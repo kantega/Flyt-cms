@@ -21,6 +21,8 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
@@ -274,6 +276,25 @@ public abstract class AbstractSaveContentAction extends AdminController {
                     } else {
                         content.setMetaDataTemplateId(-1);
                     }
+                    if (content.getId() > 0) {
+                        // Update group id
+                        if (template.isNewGroup()) {
+                            content.setGroupId(content.getId());
+                        } else {
+                            ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
+                            Content parent = null;
+                            try {
+                                parent = aksessService.getContent(parentCid);
+                            } catch (NotAuthorizedException e) {
+                                Log.error(getClass().getName(), "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")", null, null);
+                            }
+                            if (parent != null) {
+                                content.setGroupId(parent.getGroupId());
+                            }
+                        }
+
+                    }
+                    
                 }
             }
         }
