@@ -175,7 +175,16 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
             if (method.getName().contains("$")) {
                 continue;
             }
+            if (method.getName().equals("run")) {
+                continue;
+            }
+            if (method.getName().equals("main")) {
+                continue;
+            }
 
+            if(method.getParameterTypes().length == 0) {
+                return method;
+            }
             for (int i = 0; i < method.getParameterTypes().length; i++) {
                 Class paramClazz = method.getParameterTypes()[i];
 
