@@ -79,11 +79,13 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
 
 
-                    if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified()) {
-                        Class clazz = classLoader.parseClass(new GroovyCodeSource(resource));
-                        Method method = getMethod(clazz, groovyPath, allowedParameters);
-                        Object script = clazz.newInstance();
-                        scripts.put(groovyPath, new ExecutionContext(method, script, getLastModified(resource)));
+                    synchronized (scripts) {
+                        if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified()) {
+                            Class clazz = classLoader.parseClass(new GroovyCodeSource(resource));
+                            Method method = getMethod(clazz, groovyPath, allowedParameters);
+                            Object script = clazz.newInstance();
+                            scripts.put(groovyPath, new ExecutionContext(method, script, getLastModified(resource)));
+                        }
                     }
 
                     ExecutionContext ex = scripts.get(groovyPath);
