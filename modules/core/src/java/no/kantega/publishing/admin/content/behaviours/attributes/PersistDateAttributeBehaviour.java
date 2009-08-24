@@ -51,8 +51,12 @@ public class PersistDateAttributeBehaviour implements PersistAttributeBehaviour 
         String value = attribute.getValue();
         if (attribute instanceof DateAttribute) {
             Date dateValue = ((DateAttribute)attribute).getValueAsDate();
-            DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-            value = df.format(dateValue);
+            if (dateValue != null) {
+                DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+                value = df.format(dateValue);
+            } else {
+                value = "";
+            }
         }
         st.setString(5, value);
 
