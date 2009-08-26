@@ -248,6 +248,50 @@ public class TopicAO {
         }
     }
 
+    
+    /**
+     * Adds topic to specified content id
+     * @param topic - topic
+     * @param contentId - id of content object
+     * @throws SystemException
+     */
+    public static void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
+
+        // Remove old association if exists
+        removeTopicContentAssociation(topic, contentId);
+
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            // Add association
+            PreparedStatement st = c.prepareStatement("INSERT INTO ct2topic VALUES (?,?,?)");
+            st.setInt(1, contentId);
+            st.setInt(2, topic.getTopicMapId());
+            st.setString(3, topic.getId());
+            st.execute();
+
+        } catch (SQLException e) {
+            throw new SystemException("SQL feil", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+
+    }
+
+
+    /**
+     * Remove topic from specified content id
+     * @param topic - topic
+     * @param contentId - id of content object
+     * @throws SystemException
+     */
     public static void removeTopicContentAssociation(Topic topic, int contentId) throws SystemException {
         Connection c = null;
         try {

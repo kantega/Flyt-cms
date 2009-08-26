@@ -138,6 +138,24 @@ public class TopicMapService {
         return TopicAO.getRolesByTopic(topic);
     }
 
+
+    /**
+     * Adds topic to specified content id
+     * @param topic - topic
+     * @param contentId - id of content object
+     * @throws SystemException
+     */
+    public void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
+        TopicAO.addTopicContentAssociation(topic, contentId);
+    }
+
+
+    /**
+     * Remove topic from specified content id
+     * @param topic - topic
+     * @param contentId - id of content object
+     * @throws SystemException
+     */
     public void removeTopicContentAssociation(Topic topic, int contentId) throws SystemException {
         TopicAO.removeTopicContentAssociation(topic, contentId);
     }
