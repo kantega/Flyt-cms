@@ -65,7 +65,7 @@ public class AddTopicRoleAction extends AbstractController {
         Map model = new HashMap();
         model.put("reloadWindow", Boolean.TRUE);
 
-        return new ModelAndView("/WEB-INF/admin/generic/windowclose.jsp", model);
+        return new ModelAndView("/WEB-INF/jsp/admin/generic/windowclose.jsp", model);
     }
 
 }

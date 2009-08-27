@@ -100,7 +100,7 @@
                     }
         %>
                     <tr class="tableRow<%=(i%2)%>">
-                        <%if(select) { %>
+                        <%if(!select) { %>
                             <td><input type="checkbox" name="role" value="<%=s.getId()%>"></td>
                             <% if (s instanceof User) { %>
                                 <td title="<%=s.getId()%>"><%=displayName%></td>

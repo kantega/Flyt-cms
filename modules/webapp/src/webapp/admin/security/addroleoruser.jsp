@@ -48,7 +48,7 @@ function addRoles() {
          <tr>
              <td class="framework">
                  <%
-                     if (select) {
+                     if (!select) {
                  %>
                  <a href="Javascript:addRoles()"><img src="../bitmaps/<%=skin%>/buttons/ok.gif" border="0" hspace="4" vspace="4"></a>
                  <%
