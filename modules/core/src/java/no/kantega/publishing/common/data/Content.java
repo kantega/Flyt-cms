@@ -511,6 +511,11 @@ public class Content extends BaseObject {
     }
 
     public void addAttribute(Attribute attr, int type) {
+        Attribute a = getAttribute(attr.getName(), type);
+        if (a != null) {
+            throw new IllegalArgumentException("Attribute " + attr.getName() + " already exists");
+        }
+
         if (type == AttributeDataType.CONTENT_DATA) {
             contentAttributes.add(attr);
         } else {
