@@ -18,10 +18,7 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapDateAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateDatetimeAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.common.Aksess;
 
 import java.text.SimpleDateFormat;
@@ -30,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 24.jan.2008
  * Time: 12:16:04
  */
@@ -109,5 +106,15 @@ public class DatetimeAttribute extends DateAttribute {
     @Override
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
         return new UpdateDatetimeAttributeFromRequestBehaviour();
+    }
+
+    @Override
+    public PersistAttributeBehaviour getSaveBehaviour() {
+        return new PersistDateTimeAttributeBehaviour();
+    }
+
+    @Override
+    public UnPersistAttributeBehaviour getFetchBehaviour() {
+        return new UnPersistDateTimeAttributeBehaviour();
     }
 }

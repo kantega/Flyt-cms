@@ -58,7 +58,7 @@ public class DateAttribute extends Attribute {
         if (dateValue != null) {
             DateFormat df;
 
-            // Oppdater verdi basert på nytt format
+            // Oppdater verdi basert pï¿½ nytt format
             if (locale != null) {
                 df = new SimpleDateFormat(dateFormat, locale);
             } else {
@@ -198,7 +198,7 @@ public class DateAttribute extends Attribute {
     public UnPersistAttributeBehaviour getFetchBehaviour() {
         return new UnPersistDateAttributeBehaviour();
     }
-    
+
     @Override
     public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
         return new MapDateAttributeValueToContentPropertyBehaviour();
