@@ -98,7 +98,7 @@
                                         </table>
                                     </td>
                                 </tr>
-                                <form action="http://opensource.kantega.no/feedback/error" target="_new" method="post" name="errorreport">
+                                <form action="http://opensource.kantega.no/aksess/feedback/error" target="_new" method="post" name="errorreport">
                                     <input type="hidden" name="product" value="Aksess">
                                     <input type="hidden" name="timestamp" value="<%=df.format(new Date())%>">
                                     <input type="hidden" name="error" value="<%=error%>">
