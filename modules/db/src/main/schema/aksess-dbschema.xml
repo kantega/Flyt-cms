@@ -346,7 +346,7 @@
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
         <column name="Query" required="true" type="VARCHAR" size="255"/>
-        <column name="ExactQuery" required="true" type="VARCHAR" size="255"/>
+        <column name="ExactQuery" required="true" type="VARCHAR" size="8000"/>
         <column name="SiteId" required="true" type="INTEGER" size="10"/>
         <column name="NumberOfHits" required="true" type="INTEGER" size="10"/>
     </table>

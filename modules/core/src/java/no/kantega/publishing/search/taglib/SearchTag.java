@@ -264,7 +264,11 @@ public class SearchTag extends TagSupport {
 
                 if (Aksess.isSearchLogEnabled() && words.toString().length() > 0) {
                     // Register number of hits for this query
-                    SearchAO.registerSearch(words.toString(), bq.toString(), siteId, hits.length());
+                    try {
+                        SearchAO.registerSearch(words.toString(), bq.toString(), siteId, hits.length());
+                    } catch (Exception e) {
+                        Log.error(SOURCE, e, null, null);
+                    }
                 }
                 
                 map.put("numhits", new Integer(hits.length()));
