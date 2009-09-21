@@ -157,6 +157,13 @@ public class GetLinkTag extends BodyTagSupport{
 
             if (url != null) {
                 if (queryParams != null) {
+                    if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?"))) {
+                        if (url.indexOf("?") == -1) {
+                            queryParams = "?" + queryParams;
+                        } else {
+                            queryParams = "&amp;" + queryParams;
+                        }
+                    }
                     url = url + queryParams;
                 }
 

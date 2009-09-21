@@ -786,7 +786,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Queryparameters which should be added to the generated A tag</description>
+            <description>Extra query parameters which should be added to the generated A tag</description>
             <name>queryparams</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
