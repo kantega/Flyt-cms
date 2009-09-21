@@ -34,6 +34,7 @@ public class DisplayTemplate implements PublicIdObject {
     private String image = "";
     private String view;
     private String miniView;
+    private String rssView;
 
     private Boolean allowMultipleUsages;
     private Boolean isNewGroup;
@@ -114,6 +115,14 @@ public class DisplayTemplate implements PublicIdObject {
 
     public void setMiniView(String miniView) {
         this.miniView = miniView;
+    }
+
+    public String getRssView() {
+        return rssView;
+    }
+
+    public void setRssView(String rssView) {
+        this.rssView = rssView;
     }
 
     public boolean allowMultipleUsages() {

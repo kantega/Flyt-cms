@@ -26,18 +26,14 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.service.ContentManagementService;
 
 import java.util.Map;
 import java.util.HashMap;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 20.des.2006
- * Time: 13:40:48
- */
 public class RssRequestHandler implements Controller {
-
-
     /**
      *
      * @param request
@@ -46,26 +42,38 @@ public class RssRequestHandler implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
         RequestParameters params = new RequestParameters(request);
 
+        String view = "/WEB-INF/jsp/rss/rss.jsp";
         int parentId = params.getInt("thisId");
         int max = (params.getInt("max")!= -1)? params.getInt("max") : 20;
-        model.put("max", new Integer(max));
+        model.put("max", max);
 
         if(parentId != -1){
-            ContentQuery query = new ContentQuery();
+            ContentManagementService cms = new ContentManagementService(request);
+
             ContentIdentifier parent = new ContentIdentifier();
             parent.setAssociationId(parentId);
+
+            Content content = cms.getContent(parent);
+            if (content != null && content.getDisplayTemplateId() > 0) {
+                DisplayTemplate template = cms.getDisplayTemplate(content.getDisplayTemplateId());
+                if (template.getRssView() != null && template.getRssView().length() > 0) {
+                    view = template.getRssView();
+                }
+            }
+
+            ContentQuery query = new ContentQuery();
             query.setAssociatedId(parent);
 
             model.put("contentQuery", query);
             model.put("baseUrl", URLHelper.getServerURL(request));
-            
-        }else {
+
+        } else {
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         }
 
-        return new ModelAndView("/WEB-INF/jsp/rss/rss.jsp", model);
+        return new ModelAndView(view, model);
     }
 }
