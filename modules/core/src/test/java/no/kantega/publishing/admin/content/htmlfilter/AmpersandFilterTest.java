@@ -53,8 +53,8 @@ public class AmpersandFilterTest {
         assertEquals(expectedOutput, sw.toString());
 
         // Several "&amp;" entities missing
-        input = "<a href=\"http://kantega.no/content.ap?thisId=123&someThing&anotherThing\">link text</a>";
-        expectedOutput = "<a href=\"http://kantega.no/content.ap?thisId=123&amp;someThing&amp;anotherThing\">link text</a>";
+        input = "<img src=\"image.gif?width=10&height=10\"><a href=\"http://kantega.no/content.ap?thisId=123&someThing&anotherThing\">link text</a>";
+        expectedOutput = "<img src=\"image.gif?width=10&amp;height=10\"><a href=\"http://kantega.no/content.ap?thisId=123&amp;someThing&amp;anotherThing\">link text</a>";
         sw = new StringWriter();
         pipeline.filter(new StringReader(input), sw);
         assertEquals(expectedOutput, sw.toString());

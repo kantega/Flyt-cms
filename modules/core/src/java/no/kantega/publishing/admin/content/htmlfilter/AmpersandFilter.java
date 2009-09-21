@@ -31,23 +31,27 @@ import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
 public class AmpersandFilter extends XMLFilterImpl {
 
     /**
-     * This method replaces "&" with "&amp;" in A "href" attribute values. If the value already contains "&amp;" 
+     * This method replaces "&" with "&amp;" in "href" and "src" attribute values. If the value already contains "&amp;"
      * entities, it remains unchanged.
      *
      * @param string
      * @param localName
      * @param name
-     * @param attributes The SAX attributes in which the "href" attribute value can be found.
+     * @param attributes The SAX attributes in which the "href" or "src" attribute value can be found.
      * @throws SAXException
      */
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        if(name.equalsIgnoreCase("a")) {
-            String href = attributes.getValue("href");
-            if (href != null) {
-                href = href.replaceAll("&amp;", "&");   // To avoid getting "&amp;amp;" when performing the replacements in the next line.
-                href = href.replaceAll("&", "&amp;");
-                attributes = HtmlFilterHelper.setAttribute("href", href, attributes);
-            }
+        String href = attributes.getValue("href");
+        if (href != null && href.indexOf("&") != -1) {
+            href = href.replaceAll("&amp;", "&");   // To avoid getting "&amp;amp;" when performing the replacements in the next line.
+            href = href.replaceAll("&", "&amp;");
+            attributes = HtmlFilterHelper.setAttribute("href", href, attributes);
+        }
+        String src = attributes.getValue("src");
+        if (src != null && src.indexOf("&") != -1) {
+            src = src.replaceAll("&amp;", "&");   // To avoid getting "&amp;amp;" when performing the replacements in the next line.
+            src = src.replaceAll("&", "&amp;");
+            attributes = HtmlFilterHelper.setAttribute("src", src, attributes);
         }
         super.startElement(string, localName, name, attributes);
     }
