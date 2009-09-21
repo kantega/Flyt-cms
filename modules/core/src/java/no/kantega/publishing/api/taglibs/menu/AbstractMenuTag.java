@@ -64,6 +64,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     protected boolean ignoreLanguage = false;
     protected boolean checkAuthorization = false;
     String associationCategory = null;
+    protected boolean expandAll = false;
 
     private List menuitems = null;
 
@@ -206,6 +207,9 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         this.checkAuthorization = checkAuthorization;
     }
 
+    public void setExpandall(boolean expandAll) {
+        this.expandAll = expandAll;
+    }
 
     private void addToSiteMap(SecuritySession securitySession, SiteMapEntry sitemap, int currentDepth) {
         sitemap.setDepth(currentDepth);
@@ -228,7 +232,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         if (children != null) {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
-                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1) {
+                if (expandAll || child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1) {
                     sitemap.setOpen(true);
                     // We get one more level than we need, don't display all
                     int maxDepth = depth - Math.max(startDepth, 0);
@@ -394,7 +398,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         ignoreLanguage = false;
         startDepth = -1;
         checkAuthorization = false;
-
+        expandAll = false;
         menuitems = null;
 
         reset();

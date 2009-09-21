@@ -245,6 +245,13 @@
             <rtexprvalue>false</rtexprvalue>
             <type>boolean</type>
         </attribute>
+        <attribute>
+            <description>Set to true to print all menu items regardless of current page</description>
+            <name>expandall</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
         <example>
             <![CDATA[
                     Print a basic menu with pages published in the "Global menu":
