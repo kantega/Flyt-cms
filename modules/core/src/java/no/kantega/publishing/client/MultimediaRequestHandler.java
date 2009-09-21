@@ -21,6 +21,7 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
@@ -84,12 +85,18 @@ public class MultimediaRequestHandler extends HttpServlet {
             String key = mmId + "-" + width + "-" + height + "-" + mm.getLastModified().getTime();
 
             if (HttpHelper.isInClientCache(request, response, key, mm.getLastModified())) {
-                // Finnes allerede hos klienten
+                // Exists in browser cache
                 response.setContentType(mimetype);
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
             }
+
+            // Add cache control headers
+            Configuration config = Aksess.getConfiguration();
+            int expire = config.getInt("multimedia.expire", -1);
+            HttpHelper.addCacheControlHeaders(response, expire);
+
 
             if ((mimetype.indexOf("image") != -1) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
                 byte[] bytes = null;

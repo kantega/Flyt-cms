@@ -49,6 +49,20 @@ public class HttpHelper {
         return isCached;
     }
 
+    public static void addCacheControlHeaders(HttpServletResponse response, int expire) {
+        if (expire != -1) {
+            if (expire == 0) {
+                response.setHeader("Cache-Control","no-cache");
+                response.setHeader("Pragma","no-cache");
+                response.setDateHeader ("Expires", -1);
+            } else {
+                long now = System.currentTimeMillis();
+                response.addHeader("Cache-Control", "max-age=" + expire + ", must-revalidate");
+                response.setDateHeader("Expires", now + expire*1000);
+            }
+        }
+    }    
+
     public static boolean isAdminMode(HttpServletRequest request) {
         if (request == null) {
             return true;

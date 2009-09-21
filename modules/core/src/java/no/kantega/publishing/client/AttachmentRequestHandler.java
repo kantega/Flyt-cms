@@ -22,8 +22,10 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.commons.configuration.Configuration;
 
 
 import javax.servlet.http.HttpServlet;
@@ -99,6 +101,11 @@ public class AttachmentRequestHandler extends HttpServlet {
                 return;
             }
 
+            // Add cache control headers
+            Configuration config = Aksess.getConfiguration();
+            int expire = config.getInt("attachments.expire", -1);
+            HttpHelper.addCacheControlHeaders(response, expire);
+            
             ServletOutputStream out = response.getOutputStream();
 
             try {
