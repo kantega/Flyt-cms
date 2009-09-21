@@ -23,8 +23,8 @@
   <h1>Velg versjon</h1>
   <ul>
       <li><a href="upgrade-512x-5127.jsp">Oppgrader fra 5.12.0-6 til 5.12.7</a></li>
-      <li><a href="upgrade-513x-514x.jsp">Oppgrader fra 5.13.X til 5.14.0 - databaseendringer (trinn 1)</a></li>
-      <li><a href="../tools/generatemultimediausage.jsp">Oppgrader fra 5.13.X til 5.14.0 - generer bildebruk (trinn 2)</a></li>
+      <li><a href="upgrade-513x-514x.jsp">Oppgrader fra 5.13.X til 5.14.0 - databaseendringer</a></li>
+      <li><a href="../tools/generatemultimediausage.jsp">Oppgrader fra 5.13.X til 5.14.0 - generer bildebruk (må gjøres etter alle andre databaseendringer)</a></li>
       <li><a href="upgrade-514x-515x.jsp">Oppgrader fra 5.14.X til 5.15.0 - databaseendringer</a></li>
   </ul>
 
