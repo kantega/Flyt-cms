@@ -2204,6 +2204,38 @@
         </attribute>
     </tag>
     <tag>
+        <description>Iterate over the topics for the given topic type</description>
+        <name>foreachtopicintype</name>
+        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.ForEachTopicInTypeTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of request attribute which holds topic</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of status object (LoopTagStatus)</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topicmap</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Id of topictype</description>
+            <name>topictypeid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>    
+    <tag>
         <description>Transform and display XML document in cache with given xslt</description>
         <name>transformxml</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.TransformXMLTag</tag-class>

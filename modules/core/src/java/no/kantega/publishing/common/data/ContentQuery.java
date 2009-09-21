@@ -64,6 +64,7 @@ public class ContentQuery {
     private String ownerPerson = null;
     private List topics = null;
     private int topicMapId = -1;
+    private Topic topicType = null;
     private String sql = null;
     private boolean showArchived = false;
     private boolean showExpired = false;
@@ -366,6 +367,12 @@ public class ContentQuery {
             parameters.add(new Integer(topicMapId));
         }
 
+        if (topicType != null) {
+            query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ? and TopicId in (select tmtopic.TopicId from tmtopic where InstanceOf = ?))");
+            parameters.add(new Integer(topicType.getTopicMapId()));
+            parameters.add(topicType.getId());
+        }
+        
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
@@ -697,6 +704,10 @@ public class ContentQuery {
         this.topicMapId = topicMapId;
     }
 
+    public void setTopicType(Topic topicType) {
+        this.topicType = topicType;
+    }
+    
     public void setOwnerPerson(String ownerPerson) {
         this.ownerPerson = ownerPerson;
     }
