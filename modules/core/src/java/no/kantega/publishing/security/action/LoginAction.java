@@ -135,21 +135,7 @@ public class LoginAction implements Controller {
                 }
             }
         }
-
-        /*
-         * User may have existing session from HTTP, invalidate old session
-         */
-        if(Aksess.isInvalidateSessionBeforeLogin()) {
-            HttpSession session = request.getSession();
-            if (session != null) {
-                try {
-                    session.invalidate();
-                } catch (Exception e) {
-                    // Already invalidated
-                }
-            }
-        }
-        
+       
         model.put("redirect", redirect);
         model.put("username", username);
 
