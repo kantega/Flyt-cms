@@ -81,6 +81,7 @@ public class EditTopicMapAction extends AbstractController {
                     type = new Topic("emne", topicMap.getId());
                     type.setIsTopicType(true);
                     type.setBaseName("Emne");
+                    type.setIsSelectable(true);
                     topicService.setTopic(type);
 
                     Topic associationType = new Topic("emne-emne", topicMap.getId());
