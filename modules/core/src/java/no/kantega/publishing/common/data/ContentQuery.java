@@ -72,6 +72,7 @@ public class ContentQuery {
     private SortOrder sortOrder = null;
 
     private int maxRecords = -1;
+    private int offset = 0;
 
     private List attributes  = null;
 
@@ -99,7 +100,7 @@ public class ContentQuery {
 
         if (maxRecords != -1 && useSqlSort && driver.indexOf("jtds") != -1 && joinTables.size() == 0) {
             // Only limit if not using join
-            query.append("select top ").append(maxRecords);
+            query.append("select top ").append(maxRecords + offset);
         } else {
             query.append("select");
         }
@@ -448,7 +449,7 @@ public class ContentQuery {
 
         if (maxRecords != -1 && useSqlSort && driver.indexOf("mysql") != -1 && joinTables.size() == 0) {
             // Only limit if not using join
-            query.append(" limit ").append(maxRecords);
+            query.append(" limit ").append(maxRecords + offset);
         }
 
         //Log.debug(SOURCE, "Query:" + query, null, null);
@@ -730,5 +731,13 @@ public class ContentQuery {
 
     public void setIntersectingTopics(boolean intersectingTopics) {
         this.intersectingTopics = intersectingTopics;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 }

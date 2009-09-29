@@ -75,6 +75,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
     protected int siteId = -1;
 
+    protected int offset = 0;
     protected int max = -1;
     protected boolean descending = false;
     protected boolean findAll = false;
@@ -128,7 +129,8 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         showExpired = false;
         shuffle = false;
         shuffleMax = -1;
-
+        offset = 0;
+        max = -1;
 
         return EVAL_PAGE;
     }
@@ -316,7 +318,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             query = contentQuery;
         }
 
-
+        query.setOffset(offset);
 
         if (query != null) {
             collection = cs.getContentList(query, max, new SortOrder(orderBy, descending), !skipAttributes, !skipTopics);
@@ -571,6 +573,10 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
     public void setMax(int max) {
         this.max = max;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 
     public void setContentquery(ContentQuery contentQuery) {

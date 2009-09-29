@@ -395,6 +395,12 @@
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if contentId is NOT in path</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Prints the specified attribute for current page (or page specified using collection or obj)</description>
@@ -1081,6 +1087,11 @@
         <attribute>
             <description>Return only shuffleMax items from the shuffled collection</description>
             <name>shuffleMax</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only get items from offset n + 1</description>
+            <name>offset</name>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <example>

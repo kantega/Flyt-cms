@@ -35,9 +35,14 @@ public class IsInPathTag extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsInPathTag";
 
     private String contentId = null;
+    private boolean negate = false;
 
     public void setContentid(String contentId) {
         this.contentId = contentId;
+    }
+
+    public void setNegate(boolean negate) {
+        this.negate = negate;
     }
 
     protected boolean condition() {
@@ -57,7 +62,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                     }
 
                     if (content == null) {
-                        return false;
+                        return negate;
                     }
 
                     Association association = content.getAssociation();
@@ -74,7 +79,7 @@ public class IsInPathTag extends ConditionalTagSupport {
 
                     String path = association.getPath();
                     if (content.getAssociation().getId() == cid.getAssociationId() || path.indexOf("/" + cid.getAssociationId() + "/") != -1) {
-                        return true;
+                        return !negate;
                     }                   
 
                 } catch (NotAuthorizedException e) {
@@ -94,6 +99,6 @@ public class IsInPathTag extends ConditionalTagSupport {
             Log.error(SOURCE, e, null, null);
         }
 
-        return false;
+        return negate;
     }
 }

@@ -635,13 +635,15 @@ public class ContentAO {
             // Get content objects
             ResultSet rs = st.executeQuery();
             int count = 0;
-            while (rs.next() && (maxElements == -1 || count < maxElements)) {
+            while (rs.next() && (maxElements == -1 || count < maxElements + contentQuery.getOffset())) {
                 Content content = ContentAOHelper.getContentFromRS(rs, true);
                 Integer key = new Integer(content.getId());
                 if (contentIds.get(key) == null) {
                     // Only get if not duplicate (join may cause duplicate)
-                    contentIds.put(key, key);
-                    handler.handleContent(content);
+                    if (count >= contentQuery.getOffset()) {
+                        contentIds.put(key, key);
+                        handler.handleContent(content);
+                    }
                     count++;
                 }
             }
