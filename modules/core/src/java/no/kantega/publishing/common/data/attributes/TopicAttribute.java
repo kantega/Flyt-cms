@@ -29,7 +29,7 @@ public class TopicAttribute  extends Attribute {
     }
 
     public Topic getValueAsTopic() {
-        if (value == null || value.indexOf("") == -1) {
+        if (value == null || value.indexOf(":") == -1) {
             return null;
         }
 
@@ -43,7 +43,7 @@ public class TopicAttribute  extends Attribute {
     }
 
     public String getTopicId() {
-        if (value == null || value.indexOf("") == -1) {
+        if (value == null || value.indexOf(":") == -1) {
             return null;
         }
 
@@ -51,7 +51,7 @@ public class TopicAttribute  extends Attribute {
     }
 
     public int getTopicMapId() {
-        if (value == null || value.indexOf("") == -1) {
+        if (value == null || value.indexOf(":") == -1) {
             return -1;
         }
 
