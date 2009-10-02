@@ -34,7 +34,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="useradmin.userroles.title"/></legend>
+            <h1><kantega:label key="useradmin.userroles.title"/></h1>
 
             <form action="removeuserrole" name="removerole" method="post">
                 <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
@@ -72,7 +72,7 @@
                                             <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
                                         </c:forEach>
                                     </select>
-                                    <input type="submit" class="button add" value="<kantega:label key="aksess.button.leggtil"/>">
+                                    <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.leggtil"/>"></span>
                                 </form>
                             </td>
                         </tr>

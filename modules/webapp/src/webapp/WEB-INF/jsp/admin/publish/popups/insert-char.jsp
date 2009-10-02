@@ -67,28 +67,27 @@
     <div id="InsertCharForm">
         <div class="fieldset">
             <fieldset>
-            <legend><kantega:label key="aksess.insertchar.title"/></legend>
-            <table border="0" cellspacing="1" cellpadding="0" width="100%">
-                <%
-                    int rowPos = 0;
-                    rowPos = printRange(out, 169, 169, rowPos);
-                    rowPos = printRange(out, 177, 177, rowPos);
-                    rowPos = printRange(out, 188, 190, rowPos);
-                    rowPos = printRange(out, 913, 937, rowPos);
-                    rowPos = printRange(out, 913, 937, rowPos);
-                    rowPos = printRange(out, 945, 969, rowPos);
-                    rowPos = printRange(out, 977, 978, rowPos);
-                    rowPos = printRange(out, 982, 982, rowPos);
-                    rowPos = printRange(out, 8704, 8901, rowPos);
-                    rowPos = printRange(out, 8968, 8971, rowPos);
-                    printEnd(out, rowPos);
-                %>
-            </table>
-
+                <h1><kantega:label key="aksess.insertchar.title"/></h1>
+                <table border="0" cellspacing="1" cellpadding="0" width="100%">
+                    <%
+                        int rowPos = 0;
+                        rowPos = printRange(out, 169, 169, rowPos);
+                        rowPos = printRange(out, 177, 177, rowPos);
+                        rowPos = printRange(out, 188, 190, rowPos);
+                        rowPos = printRange(out, 913, 937, rowPos);
+                        rowPos = printRange(out, 913, 937, rowPos);
+                        rowPos = printRange(out, 945, 969, rowPos);
+                        rowPos = printRange(out, 977, 978, rowPos);
+                        rowPos = printRange(out, 982, 982, rowPos);
+                        rowPos = printRange(out, 8704, 8901, rowPos);
+                        rowPos = printRange(out, 8968, 8971, rowPos);
+                        printEnd(out, rowPos);
+                    %>
+                </table>
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
-        </div>
-        <div class="buttonGroup">
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
     </div>
 </kantega:section>

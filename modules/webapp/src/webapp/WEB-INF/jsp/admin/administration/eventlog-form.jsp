@@ -29,29 +29,25 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <form name="eventlog" action="SearchEventLog.action" method="post">
+    <form name="eventlog" action="SearchEventLog.action" method="post" class="inline">
 
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.eventlog.title"/></legend>
+                <h1><kantega:label key="aksess.eventlog.title"/></h1>
                 <div class="formElement">
                     <div class="heading">
                         <kantega:label key="aksess.eventlog.period"/>
                     </div>
                     <div class="inputs">
-                        <div id="FromDate">
                             <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
                             <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${fromDate}"/>">
                             <a href="#" id="chooseFromDate" class="dateselect"></a>
-                        </div>
                         <script type="text/javascript">
                             Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
                         </script>
-                        <div id="EndDate">
                             <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
                             <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="">
                             <a href="#" id="chooseEndDate" class="dateselect"></a>
-                        </div>
                         <script type="text/javascript">
                             Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );
                         </script>
@@ -98,9 +94,7 @@
             </div>
 
             <div class="buttonGroup">
-                <div class="buttonGroup">
-                    <input type="submit" class="button search" value="<kantega:label key="aksess.button.search"/>">
-                </div>
+                <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
             </div>
 
 

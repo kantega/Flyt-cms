@@ -35,7 +35,7 @@
     <c:if test="${fn:length(contentForApproval) > 1}">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.mypage.approval"/></legend>
+                <h1><kantega:label key="aksess.mypage.approval"/></h1>
                 <table class="fullWidth">
                     <thead>
                         <tr>
@@ -67,7 +67,7 @@
             %>
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="${workListTitle}"/></legend>
+                    <h1><kantega:label key="${workListTitle}"/></h1>
                     <table class="fullWidth">
                         <thead>
                             <tr>
@@ -92,7 +92,7 @@
     <c:if test="${fn:length(myDeletedItems) > 1}">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.mypage.deleted"/></legend>
+                <h1><kantega:label key="aksess.mypage.deleted"/></h1>
                 <table class="fullWidth">
                     <thead>
                         <tr>

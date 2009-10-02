@@ -24,7 +24,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.displaytemplates.title"/></legend>
+            <h1><kantega:label key="aksess.displaytemplates.title"/></h1>
             <c:if test="${!empty templates}">
                 <table>
                     <tr>

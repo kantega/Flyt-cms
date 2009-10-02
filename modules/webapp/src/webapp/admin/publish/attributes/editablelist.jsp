@@ -26,16 +26,16 @@
     String fieldName = (String) request.getAttribute("fieldName");
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+<%@include file="listoptions.jsf"%>
+</div>
 <%
     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
+    <a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
+    <a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
     }
 %>
-<div class="inputs">
-<%@include file="listoptions.jsf"%>
-</div>

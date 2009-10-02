@@ -44,16 +44,6 @@
     }
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<%
-    if (manager != null) {
-%>
-<div class="buttonGroup">
-    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button choose"><kantega:label key="aksess.button.choose"/></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.delete"/></a>
-</div>
-<%
-    }
-%>
 <div class="inputs">
     <%
         if (manager != null) {
@@ -71,3 +61,13 @@
         }
     %>
 </div>
+<%
+    if (manager != null) {
+%>
+<div class="buttonGroup">
+    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+</div>
+<%
+    }
+%>

@@ -24,7 +24,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.displaytemplates.usages.title"/></legend>
+            <h1><kantega:label key="aksess.displaytemplates.usages.title"/></h1>
             <div class="helpText"><kantega:label key="aksess.displaytemplates.usages.help"/></div>
             <table border="0" cellspacing="0" cellpadding="0" width="600">
                 <tr>

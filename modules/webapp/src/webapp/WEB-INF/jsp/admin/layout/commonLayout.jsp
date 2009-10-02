@@ -33,10 +33,16 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.contextMenu.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src='<%=request.getContextPath()%>/admin/dwr/interface/ContentStateHandler.js'></script>
     <script type="text/javascript" src='<%=request.getContextPath()%>/admin/dwr/engine.js'></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/common.jjs"></script>
     <kantega:getsection id="head"/>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("div.fieldset").roundCorners();
+        });
+    </script>
 </head>
 <body>
 
@@ -56,6 +62,11 @@
     <kantega:hassection id="toolsMenu">
         <div id="ToolsMenu">
             <kantega:getsection id="toolsMenu"/>
+        </div>
+    </kantega:hassection>
+    <kantega:hassection id="tabToolsMenu">
+        <div id="TabToolsMenu">
+            <kantega:getsection id="tabToolsMenu"/>
         </div>
     </kantega:hassection>
 </div>

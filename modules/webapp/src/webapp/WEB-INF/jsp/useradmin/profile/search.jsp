@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -33,7 +34,7 @@
     </script>
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="useradmin.searchprofiles.title"/></legend>
+            <h1><kantega:label key="useradmin.searchprofiles.title"/></h1>
 
             <form action="search" method="post">
                 <c:if test="${numProfileConfigurations > 1}">
@@ -44,7 +45,7 @@
                     </select>
                 </c:if>
                 <input type="text" name="q" value="<c:out value="${query}"/>">
-                <input type="submit" class="button search" value="<kantega:label key="aksess.button.search"/>">
+                <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
             </form>
 
             <table>
@@ -62,22 +63,21 @@
                     <td><c:out value="${user.department}"/></td>
                     <td>
                         <c:if test="${canSetPassword}">
-                            <a href="Javascript:doAction('../password/reset', '${user.identity.domain}', '${user.identity.userId}')" class="button password"><span><kantega:label key="useradmin.searchprofiles.password"/></span></a>
+                            <a href="Javascript:doAction('../password/reset', '${user.identity.domain}', '${user.identity.userId}')" class="button"><span class="password"><kantega:label key="useradmin.searchprofiles.password"/></span></a>
                         </c:if>
                         <c:if test="${canEdit}">
-                            <a href="Javascript:doAction('delete', '${user.identity.domain}', '${user.identity.userId}')" class="button edit"><span><kantega:label key="useradmin.searchprofiles.delete"/></span></a>
+                            <a href="Javascript:doAction('delete', '${user.identity.domain}', '${user.identity.userId}')" class="button"><span class="edit"><kantega:label key="useradmin.searchprofiles.delete"/></span></a>
                         </c:if>
-                        <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')" class="button roles"><span><kantega:label key="useradmin.searchprofiles.roles"/></span></a>
+                        <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')" class="button"><span class="roles"><kantega:label key="useradmin.searchprofiles.roles"/></span></a>
                     </td>
                 </tr>
                 </c:forEach>
             </table>
-
             <c:if test="${canEdit}">
                 <div class="buttonGroup">
                     <form action="edit">
                         <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-                        <input type="submit" class="button add" value="<kantega:label key="useradmin.searchprofiles.newprofile"/>">
+                        <span class="button"><input type="submit" class="add" value="<kantega:label key="useradmin.searchprofiles.newprofile"/>"></span>
                     </form>
                 </div>
             </c:if>

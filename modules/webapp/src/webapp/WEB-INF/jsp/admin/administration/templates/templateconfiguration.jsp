@@ -20,7 +20,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    <kantega:label key="templateconfig"/>
+    <kantega:label key="aksess.templateconfig.title"/>
 </kantega:section>
 
 <kantega:section id="content">
@@ -29,7 +29,7 @@
     %>
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.templateconfig.info"/></legend>
+            <h1><kantega:label key="aksess.templateconfig.title"/></h1>
             <table>
                 <tr>
                     <th>&nbsp;</th>
@@ -49,8 +49,12 @@
                 </tr>
             </table>
 
+            <div class="info"><kantega:label key="aksess.templateconfig.info"/></div>
+
             <form action="ReloadTemplateConfiguration.action" method="post">
-                <input type="submit" name="submit" value="<kantega:label key="aksess.templateconfig.reload"/>">
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" name="submit" value="<kantega:label key="aksess.templateconfig.reload"/>"></span>
+                </div>
             </form>
 
         </fieldset>
@@ -60,7 +64,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.templateconfig.error"/></legend>
+            <h1><kantega:label key="aksess.templateconfig.error"/></h1>
                 <table>
                     <tr>
                         <th><kantega:label key="aksess.templateconfig.error.object"/></th>

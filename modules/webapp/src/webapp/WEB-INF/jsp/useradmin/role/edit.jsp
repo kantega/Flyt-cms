@@ -28,9 +28,9 @@
         <div class="fieldset">
 
         <fieldset>
-            <legend>
+            <h1>
                 <kantega:label key="useradmin.role.title"/>            
-            </legend>
+            </h1>
             <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
             <c:choose>
                 <c:when test="${numConfigurations > 1}">
@@ -62,9 +62,9 @@
 
             <div class="buttonGroup">
                 <c:if test="${canEdit}">
-                    <input type="submit" class="button save" value="<kantega:label key="aksess.button.save"/>">
+                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
                 </c:if>
-                <input type="button" class="button cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>">
+                <span class="button"><input type="submit" class="cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </fieldset>
         </div>            

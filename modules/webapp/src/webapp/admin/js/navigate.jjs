@@ -49,7 +49,7 @@ function setWindowSize() {
 
         $("#Navigator").css('height', ($(window).height()-topHeight-filteroptionsHeight-5) + 'px');
         $('#Content').css('height', ($(window).height()-topHeight-statusbarHeight) + 'px');
-        $('#MainPane').css('height', ($(window).height()-topHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+        $('#MainPane').css('height', ($(window).height()-topHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-40) + 'px');
         $('#MainPane iframe').css('height', ($(window).height()-topHeight-statusbarHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
         if (typeof setLayoutSpecificSizes == 'function') {
             setLayoutSpecificSizes();

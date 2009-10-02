@@ -25,7 +25,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.search.log.title"/></legend>
+            <h1><kantega:label key="aksess.search.log.title"/></h1>
 
             <form name="myform" action="" method="get">
                 <strong><kantega:label key="aksess.statistics.velgsite"/>:</strong>

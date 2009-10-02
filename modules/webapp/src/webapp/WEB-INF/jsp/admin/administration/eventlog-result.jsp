@@ -30,7 +30,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.eventlog.title"/></legend>
+            <h1><kantega:label key="aksess.eventlog.title"/></h1>
             <table>
                 <tr>
                     <th><strong><kantega:label key="aksess.eventlog.datetime"/></strong></th>

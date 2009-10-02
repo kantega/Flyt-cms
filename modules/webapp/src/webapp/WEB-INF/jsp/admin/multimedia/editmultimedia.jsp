@@ -96,19 +96,19 @@
 
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.multimedia.medianame"/></legend>
+                <h1><kantega:label key="aksess.multimedia.medianame"/></h1>
                 <input type="text" class="fullWidth" name="name" value="<c:out value="${media.name}"/>" maxlength="255">
             </fieldset>
         </div>
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.multimedia.author"/></legend>
+                <h1><kantega:label key="aksess.multimedia.author"/></h1>
                 <input type="text" class="fullWidth" name="altname" value="<c:out value="${media.altname}"/>" maxlength="255">
             </fieldset>
         </div>
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.multimedia.author"/></legend>
+                <h1><kantega:label key="aksess.multimedia.author"/></h1>
                 <input type="text" class="fullWidth" name="author" value="<c:out value="${media.author}"/>" maxlength="255">
             </fieldset>
         </div>
@@ -116,7 +116,7 @@
         <c:if test="showDimension">
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="aksess.multimedia.size"/></legend>
+                    <h1><kantega:label key="aksess.multimedia.size"/></h1>
                     <label for="width"><kantega:label key="aksess.multimedia.width"/></label> <input type="text" size="5" id="width" name="width" value="<c:if test="${media.width > 0}">${media.width}</c:if>">
                     <label for="height"><kantega:label key="aksess.multimedia.height"/></label> <input type="text" size="5" id="height" name="height" value="<c:if test="${media.height > 0}">${media.height}</c:if>">
                     <c:if test="${showDimensionInfo}">
@@ -128,13 +128,13 @@
 
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.multimedia.usage"/></legend>
+                <h1><kantega:label key="aksess.multimedia.usage"/></h1>
                 <textarea name="usage" rows="4" cols="20" class="fullWidth" wrap="soft"><c:out value="${media.usage}"/></textarea>
             </fieldset>
         </div>
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.multimedia.description"/></legend>
+                <h1><kantega:label key="aksess.multimedia.description"/></h1>
                 <textarea name="description" rows="4" cols="20" class="fullWidth" wrap="soft"><c:out value="${media.description}"/></textarea>
             </fieldset>
         </div>
@@ -142,7 +142,7 @@
         <c:if test="${not empty usages}">
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="aksess.multimedia.pages.using"/></legend>
+                    <h1><kantega:label key="aksess.multimedia.pages.using"/></h1>
                     <ul id="MultimediaPagesUsing">
                         <c:forEach items="${usages}" var="page">
                             <li>

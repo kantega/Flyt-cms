@@ -45,17 +45,16 @@
         <form action="" name="linkform">
             <div class="fieldset">
                 <fieldset>
-                <legend><kantega:label key="aksess.insertlink.title"/></legend>
+                    <h1><kantega:label key="aksess.insertlink.title"/></h1>
 
-                <jsp:include page="insert-link/${linkType}.jsp"/>
-
+                    <jsp:include page="insert-link/${linkType}.jsp"/>
+                    <div class="buttonGroup">
+                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="submit" class="cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    </div>
                 </fieldset>
-            </div>    
+            </div>
         </form>
-        <div class="buttonGroup">
-            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
     </div>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

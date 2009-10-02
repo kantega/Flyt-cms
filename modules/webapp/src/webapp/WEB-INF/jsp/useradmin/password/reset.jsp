@@ -79,8 +79,8 @@
                 </p>
 
                 <div class="buttonGroup">
-                    <input type="submit" name="mailsubmit" class="button ok" value="Send">
-                    <input type="button" class="button cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
+                    <span class="button"><input type="submit" name="mailsubmit" class="button ok" value="<kantega:label key="aksess.button.send"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
             </fieldset>
             </div>
@@ -104,8 +104,8 @@
             </p>
 
             <div class="buttonGroup">
-                <input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>">
-                <input type="button" class="button cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>">
+                <span class="button"><input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>"></span>
+                <span class="button"><input type="submit" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </fieldset>
         </div>

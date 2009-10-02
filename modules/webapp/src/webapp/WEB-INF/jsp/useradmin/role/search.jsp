@@ -33,7 +33,7 @@
     </script>
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="useradmin.searchroles.title"/></legend>
+            <h1><kantega:label key="useradmin.searchroles.title"/></h1>
 
             <c:if test="${numRoleConfigurations > 1}">
                 <form action="search" method="post">
@@ -42,7 +42,7 @@
                             <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
                         </c:forEach>
                     </select>
-                    <input type="submit" class="button show" value="<kantega:label key="useradmin.searchroles.show"/>">
+                    <span class="button"><input type="submit" class="show" value="<kantega:label key="useradmin.searchroles.show"/>"></span>
                 </form>
             </c:if>
             <table border="0" cellspacing="0" cellpadding="0" width="400">
@@ -64,23 +64,13 @@
                         </td>
                     </tr>
                 </c:forEach>
-                <c:if test="${canEdit}">
-                    <tr>
-                        <td colspan="2" align="right">
-                            <form action="edit">
-                                <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-                                <input type="submit" value="<kantega:label key="useradmin.searchroles.newrole"/>">
-                            </form>
-                        </td>
-                    </tr>
-                </c:if>
                 </tbody>
             </table>
             <c:if test="${canEdit}">
                 <div class="buttonGroup">
                     <form action="edit">
                         <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-                        <input type="submit" class="button add" value="<kantega:label key="useradmin.searchroles.newrole"/>">
+                        <span class="button"><input type="submit" class="add" value="<kantega:label key="useradmin.searchroles.newrole"/>"></span>
                     </form>
                 </div>
             </c:if>

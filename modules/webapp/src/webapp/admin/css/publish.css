@@ -48,13 +48,23 @@
     background-image: url("../bitmaps/common/icons/small/metadata.png");
 }
 
-#EditContentButtons {
-    margin-top: 10px;
-    background-color: #eeccee;
-    height: 40px;
-    clear: both;
-    text-align: right;
-    width: 610px;
+
+#EditContentButtons input.publish {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+}
+
+#EditContentButtons input.cancel {
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+}
+
+#EditContentButtons input.save {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+}
+
+#EditContentButtons input.savedraft {
+    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
 }
 
 #TopicList .topic {

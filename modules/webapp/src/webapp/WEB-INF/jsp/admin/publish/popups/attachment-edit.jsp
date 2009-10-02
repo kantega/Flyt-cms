@@ -40,29 +40,28 @@
 
 <kantega:section id="body">
     <div id="AddAttachmentForm">
-    <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
-        <div class="fieldset">
-            <fieldset>
-            <legend>
-                <c:choose>
-                    <c:when test="${attachmentId != -1}"><kantega:label key="aksess.attachment.add"/></c:when>
-                    <c:otherwise><kantega:label key="aksess.attachment.update"/></c:otherwise>
-                </c:choose>
-            </legend>
+        <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
+            <div class="fieldset">
+                <fieldset>
+                    <h1>
+                        <c:choose>
+                            <c:when test="${attachmentId != -1}"><kantega:label key="aksess.attachment.add"/></c:when>
+                            <c:otherwise><kantega:label key="aksess.attachment.update"/></c:otherwise>
+                        </c:choose>
+                    </h1>
 
-            <div class="formElement">
-                <div class="inputs">
-                    <input type="file" size="20" name="attachment" value="" style="width:300px;">
-                </div>
+                    <div class="formElement">
+                        <div class="inputs">
+                            <input type="file" size="20" name="attachment" value="" style="width:300px;">
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <span class="button"><input type="submit" class="ok" onclick="saveForm()" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    </div>
+                </fieldset>
             </div>
-
-            </fieldset>
-        </div>
-        <div class="buttonGroup">
-            <input type="button" class="button ok" onclick="saveForm()" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
-    </form>
-   </div>
+        </form>
+    </div>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

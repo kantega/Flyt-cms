@@ -24,13 +24,13 @@
     String value = attribute.getValue();
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<% if (value != null && value.length() > 0) {%>
-<div class="buttonGroup">
-    <a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new" class="button show"><kantega:label key="aksess.button.visfil"/></a>
-    <a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button delete"><kantega:label key="aksess.button.delete"/></a>
-</div>
-<%}%>
 <div class="inputs">
     <input type="file" class="fullWidth" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
     <input type="hidden" name="delete_<%=fieldName%>" value="0">
 </div>
+<% if (value != null && value.length() > 0) {%>
+<div class="buttonGroup">
+    <a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.visfil"/></span></a>
+    <a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
+</div>
+<%}%>

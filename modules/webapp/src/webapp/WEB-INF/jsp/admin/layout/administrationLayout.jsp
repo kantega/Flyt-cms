@@ -20,6 +20,8 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
+    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/administration.css">
+    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigate.jjs"></script>    
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
 </kantega:section>
 
@@ -40,43 +42,44 @@
     <div id="Content" class="administration">
         <div id="Navigation">
             <div id="Navigator">
-                <ul>
-                    <li><a href="<%=root%>ViewSystemInformation.action"><kantega:label key="aksess.systeminfo.title"/></a></li>
-                    <li><a href="<%=root%>ListSites.action"><kantega:label key="aksess.sites.title"/></a></li>
-                    <li><a href="<%=root%>ReloadTemplateConfiguration.action"><kantega:label key="aksess.templateconfig.title"/></a></li>
+                <ul class="navigator">
+                    <li><span class="title"><a href="<%=root%>ViewSystemInformation.action"><kantega:label key="aksess.systeminfo.title"/></a></span></li>
+                    <li><span class="title"><a href="<%=root%>ListSites.action"><kantega:label key="aksess.sites.title"/></a></span></li>
+                    <li><span class="title"><a href="<%=root%>ReloadTemplateConfiguration.action"><kantega:label key="aksess.templateconfig.title"/></a></span></li>
                     <%
                         if (Aksess.isTopicMapsEnabled()) {
                     %>
-                    <li><a href="<%=root%>topicmaps/ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></li>
+                    <li><span class="title"><a href="<%=root%>topicmaps/ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></span></li>
                     <%
                         }
                     %>
-                    <li><kantega:label key="aksess.search.title"/></li>
-                    <ul>
-                        <li><a href="<%=root%>ViewSearchLog.action"><kantega:label key="aksess.search.log.title"/></a></li>
-                        <li><a href="<%=root%>RebuildIndex.action"><kantega:label key="aksess.search.rebuild.title"/></a></li>
+                    <li class="open"><kantega:label key="aksess.search.title"/>
+                    <ul class="navigator">
+                        <li><span class="title"><a href="<%=root%>ViewSearchLog.action"><kantega:label key="aksess.search.log.title"/></a></span></li>
+                        <li><span class="title"><a href="<%=root%>RebuildIndex.action"><kantega:label key="aksess.search.rebuild.title"/></a></span></li>
                     </ul>
+                    </li>
                     <li><kantega:label key="aksess.security.title"/>
-                        <ul>
-                            <li><a href="<%=root%>useradmin/profile/"><kantega:label key="aksess.useradmin.profile.title"/></a></li>
-                            <li><a href="<%=root%>useradmin/role/"><kantega:label key="aksess.useradmin.role.title"/></a></li>
-                            <li><a href="<%=root%>ViewAllPermissions.action"><kantega:label key="aksess.viewpermissions.title"/></a></li>
+                        <ul class="navigator">
+                            <li><span class="title"><a href="<%=root%>useradmin/profile/"><kantega:label key="aksess.useradmin.profile.title"/></a></span></li>
+                            <li><span class="title"><a href="<%=root%>useradmin/role/"><kantega:label key="aksess.useradmin.role.title"/></a></span></li>
+                            <li><span class="title"><a href="<%=root%>ViewAllPermissions.action"><kantega:label key="aksess.viewpermissions.title"/></a></span></li>
                             <%
                                 if (Aksess.isEventLogEnabled()) {
                             %>
-                            <li><a href="<%=root%>SearchEventLog.action"><kantega:label key="aksess.eventlog.title"/></a></li>
+                            <li><span class="title"><a href="<%=root%>SearchEventLog.action"><kantega:label key="aksess.eventlog.title"/></a></span></li>
                             <%
                                 }
                             %>
-                            <li><a href="<%=root%>ListContentLocks.action"><kantega:label key="aksess.locks.title"/></a></li>
+                            <li><span class="title"><a href="<%=root%>ListContentLocks.action"><kantega:label key="aksess.locks.title"/></a></span></li>
                         </ul>
                     </li>
                     <li><kantega:label key="aksess.overview.title"/>
-                        <ul>
-                            <li><a href="<%=root%>ListAliases.action"><kantega:label key="aksess.aliases.title"/></a></li>
-                            <li><a href="<%=root%>ListContentExpiration.action"><kantega:label key="aksess.contentexpire.title"/></a></li>
-                            <li><a href="<%=root%>ListUserChanges.action"><kantega:label key="aksess.userchanges.title"/></a></li>
-                            <li><a href="<%=root%>ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></li>
+                        <ul class="navigator">
+                            <li><span class="title"><a href="<%=root%>ListAliases.action"><kantega:label key="aksess.aliases.title"/></a></span></li>
+                            <li><span class="title"><a href="<%=root%>ListContentExpiration.action"><kantega:label key="aksess.contentexpire.title"/></a></span></li>
+                            <li><span class="title"><a href="<%=root%>ListUserChanges.action"><kantega:label key="aksess.userchanges.title"/></a></span></li>
+                            <li><span class="title"><a href="<%=root%>ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></span></li>
                         </ul>
                     </li>
                     
@@ -88,7 +91,9 @@
         </div>
 
         <div id="MainPane">
+            <div id="MainPaneContent">
             <kantega:getsection id="content"/>
+            </div>
             <div class="clearing"></div>
         </div>
     </div>

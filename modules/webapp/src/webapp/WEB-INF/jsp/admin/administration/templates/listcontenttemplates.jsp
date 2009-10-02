@@ -24,7 +24,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.associationcategories.title"/></legend>
+            <h1><kantega:label key="aksess.associationcategories.title"/></h1>
             <c:if test="${!empty templates}">
                 <table border="0" cellspacing="0" cellpadding="0" width="600">
                     <tr class="tableHeading">

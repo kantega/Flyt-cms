@@ -36,7 +36,7 @@
     <form name="permissions" action="" method="post">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.viewpermissions.title"/></legend>
+                <h1><kantega:label key="aksess.viewpermissions.title"/></h1>
                 <strong><kantega:label key="aksess.viewpermissions.selecttype"/>:</strong>
                 <select name="objectType" onchange="document.permissions.submit()">
                     <option value="-1"></option>

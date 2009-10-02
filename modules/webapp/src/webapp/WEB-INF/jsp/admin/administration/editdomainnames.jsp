@@ -33,7 +33,7 @@
         <input type="hidden" name="siteId" value="${site.id}">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.sites.title"/></legend>
+                <h1><kantega:label key="aksess.sites.title"/></h1>
 
 
                 <div class="formElement">
@@ -81,8 +81,8 @@
     </form>
 
     <div class="buttonGroup">
-        <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-        <input type="button" onclick="location.href='ListSites.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+        <span class="button"><input type="button" onclick="location.href='ListSites.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
     </div>
     
 </kantega:section>

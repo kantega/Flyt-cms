@@ -110,7 +110,7 @@
     <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.selecttemplate.parent"/></legend>
+            <h1><kantega:label key="aksess.selecttemplate.parent"/></h1>
 
             <table width="100%">
                 <%
@@ -163,7 +163,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.selecttemplate.template"/></legend>
+            <h1><kantega:label key="aksess.selecttemplate.template"/></h1>
             <%
                 List allowedTemplates = (List) request.getAttribute("allowedTemplates");
                 boolean foundDefault = false;
@@ -236,7 +236,7 @@
         <c:when test="${fn:length(allowedAssociations) > 1}">
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="aksess.selecttemplate.menu"/></legend>
+                    <h1><kantega:label key="aksess.selecttemplate.menu"/></h1>
                     <%
                         if (defaultAssociationCategory == -1 && parent.getAssociation() != null) {
                             defaultAssociationCategory = parent.getAssociation().getCategory().getId();
@@ -281,8 +281,8 @@
     </c:choose>
 
     <div class="buttonGroup">
-        <input type="button" onclick="doSelectTemplate()" class="button ok" value="<kantega:label key="aksess.button.continue"/>">
-        <input type="button" onclick="window.location.href='Navigate.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
+        <span class="button"><input type="button" onclick="doSelectTemplate()" class="button ok" value="<kantega:label key="aksess.button.continue"/>"></span>
+        <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
     </div>
 
 </form>

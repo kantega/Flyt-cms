@@ -1,4 +1,4 @@
-dhtml, body {
+budhtml, body {
     height: 100%;
     min-height: 100%;
 }
@@ -7,6 +7,7 @@ body {
     font-family: Arial, sans-serif;
     font-size: 11px;
     color: #000000;
+    background-color: #f7f7f7;
 }
 
 /************** General styles **************/
@@ -31,11 +32,6 @@ fieldset {
 td a {
     color:#1780b9;
 }
-
-td a:hover {
-    text-decoration: underline;
-}
-
 /************** General classes **************/
 
 .clearing {
@@ -77,13 +73,21 @@ td a:hover {
     height: 37px;
     background: #333333 url("../bitmaps/default/framework/modus_background.png") center left repeat-x;
 }
+
 #ToolsMenu {
     height: 25px;
     padding: 0 5px;
     background: #E3E3E3 url("../bitmaps/default/framework/tools_background.png") center left repeat-x;
 }
 
+#TabToolsMenu {
+    height: 26px;
+    padding: 0 5px;
+    background: #E3E3E3 url("../bitmaps/default/framework/toolstab_background.png") center left repeat-x;
+}
+
 #SideBar {
+    background-color: #cccccc;
     float: left;
 }
 
@@ -95,13 +99,17 @@ td a:hover {
 }
 
 /************** Generic content pane styles  **************/
-
 #MainPane {
+    float: left;
     margin: 10px;
 }
 
 #MainPane table .title{
     width: 200px;
+}
+
+#MainPane table {
+    width: 100%;
 }
 
 #Content.mypage table .date{
@@ -110,12 +118,10 @@ td a:hover {
 
 /************** Specific content panes styles ********/
 #Content.publish #MainPane {
-    float: left;
     margin: 0;
 }
 
 #Content.navigateContent #MainPane, #Content.navigateMultimedia #MainPane {
-    float: left;
     position: relative;
     width: auto;
     height: 100%;
@@ -132,7 +138,9 @@ td a:hover {
     width: 620px;
 }
 
-
+#Content.administration #MainPaneContent {
+    width: 600px;
+}
 /************** Top menu **************/
 #TopMenu .logo {
     background: transparent url("../bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;
@@ -249,29 +257,51 @@ td a:hover {
     background-position: 10px 50%;
     background-repeat: no-repeat;
 }
-#ToolsMenu .button .newSubpage {
-    background-image: url("../bitmaps/common/icons/small/newsubpage.png");
+
+#TabToolsMenu .tabGroup {
+    display: inline;
 }
-#ToolsMenu .button .edit{
-    background-image: url("../bitmaps/common/icons/small/edit.png");
+
+#TabToolsMenu .active {
+    margin-right: 3px;
+    background-image: url("../bitmaps/default/framework/toolstab_active.png");
 }
-#ToolsMenu .button .delete{
+
+#TabToolsMenu .active span {
+    background: url("../bitmaps/default/framework/toolstab_active_right.png") no-repeat right;
+}
+
+#TabToolsMenu .tab span {
+    display: inline-block;
+    line-height: 26px;
+}
+
+#TabToolsMenu .tab span span {
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:10px;
+    line-height: 26px;
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
+}
+
+#TabToolsMenu .tab {
+    line-height: 26px;
+    display: inline-block;
+    height: 26px;
+}
+
+#TabToolsMenu .tab .content {
+    background-image: url("../bitmaps/common/icons/small/content.png");
+}
+#TabToolsMenu .tab .metadata{
+    background-image: url("../bitmaps/common/icons/small/metadata.png");
+}
+#TabToolsMenu .tab .versions{
     background-image: url("../bitmaps/common/icons/small/delete.png");
 }
-#ToolsMenu .button .cut {
+#TabToolsMenu .tab .attachments {
     background-image: url("../bitmaps/common/icons/small/copy.png");
-}
-#ToolsMenu .button .copy {
-    background-image: url("../bitmaps/common/icons/small/copy.png");
-}
-#ToolsMenu .button .paste {
-    background-image: url("../bitmaps/common/icons/small/paste.png");
-}
-#ToolsMenu .button .displayPeriod {
-    background-image: url("../bitmaps/common/icons/small/calendar.png");
-}
-#ToolsMenu .button .privileges {
-    background-image: url("../bitmaps/common/icons/small/privileges.png");
 }
 
 /************** Navigation (left column) **************/
@@ -306,31 +336,107 @@ td a:hover {
 }
 
 /************** Buttons **************/
-input.button {
-    cursor: pointer;
-    margin-left: 10px;
-    padding-left: 25px;
-    height: 24px;
-    line-height: 24px;
-    background-color: #00ff00;
+#Content .buttonBar {
+    height: 41px;
+    line-height: 41px;
+    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
+    margin-bottom: 10px;
+}
+
+#Content .buttonBar .barButton {
+    margin-right: 10px;
+    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") no-repeat;
+}
+
+#Content .buttonBar input {
+    padding-left: 24px;
+    line-height: 26px;
+    height: 26px;
     border: 0;
 }
 
-input.publish {
-    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+#Content .buttonGroup {
+    padding-top: 10px;
 }
 
-input.cancel {
-    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+#Content .button {
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #cccccc;
+    background: url("../bitmaps/common/button.png") repeat-x;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
-input.save {
-    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+#Content .button:hover {
+    border: 1px solid #3ed7fd;
 }
 
-input.savedraft {
-    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
+
+#Content .button input {
+    background-color: transparent;
+    display: inline-block;
+    padding-left: 5px;
+    padding-right:5px;
+    line-height: 25px;
+    border: 0;
 }
+
+#Content .button input[class] {
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:5px;
+    line-height: 25px;
+    background-position: 5px 50%;
+    background-repeat: no-repeat;
+    border: 0;
+}
+
+
+#Content .button span {
+    background-color: transparent;
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:5px;
+    line-height: 25px;
+    background-position: 5px 50%;
+    background-repeat: no-repeat;
+}
+
+.button .cancel {
+    background-image: url("../bitmaps/common/icons/small/cancel.png");
+}
+.button .copy {
+    background-image: url("../bitmaps/common/icons/small/copy.png");
+}
+.button .cut {
+    background-image: url("../bitmaps/common/icons/small/copy.png");
+}
+.button .delete{
+    background-image: url("../bitmaps/common/icons/small/delete.png");
+}
+.button .displayPeriod {
+    background-image: url("../bitmaps/common/icons/small/calendar.png");
+}
+.button .edit{
+    background-image: url("../bitmaps/common/icons/small/edit.png");
+}
+.button .newSubpage {
+    background-image: url("../bitmaps/common/icons/small/newsubpage.png");
+}
+.button .ok{
+    background-image: url("../bitmaps/common/icons/small/ok.png");
+}
+.button .paste {
+    background-image: url("../bitmaps/common/icons/small/paste.png");
+}
+.button .privileges {
+    background-image: url("../bitmaps/common/icons/small/privileges.png");
+}
+.button .remove{
+    background-image: url("../bitmaps/common/icons/small/remove.png");
+}
+
 
 /************** Inline buttons **************/
 a.dateselect {
@@ -352,64 +458,106 @@ a.dateselect {
     float: left;
 }
 
-.contentAttribute .buttonGroup, .formElement .buttonGroup {
+#Content .contentAttribute .buttonGroup, .formElement .buttonGroup {
+    padding-top: 2px;
+    text-align: right;
     margin-left: 15px;
-    float: left;
 }
 
 .contentAttribute .inputs, .formElement .inputs, .contentAttribute .content, .formElement .content {
     clear: both;
 }
 
+.inline .formElement .inputs {
+    line-height: 24px;
+    clear:none;
+}
+
+.inline .formElement div.heading {
+    line-height: 24px;
+    width: 100px;
+}
+
 .fullWidth {
     width: 100%;
 }
 
-.contentAttribute .button, .contentAttribute .button {
-    margin-left: 10px;
-    display: inline-block;
-    height: 20px;
-    line-height: 20px;
+#Content .contentAttribute .button {
+    background: transparent;
+    border: 0;
+    color: #3ed7fd;
 }
 
-.contentAttribute .button span, .contentAttribute .button span {
-    margin-left: 25px;
+#Content td .button, #Content td .button:hover {
+    background: transparent;
+    border: 0;    
 }
 
-.contentAttribute a.button, .formElement a.button, {
-    color:#1780b9;
+
+/************** Boxes **************/
+div.roundCorners {
+    padding-bottom: 20px;
 }
 
-.contentAttribute a.button:hover, .formElement a.button:hover {
-    text-decoration: underline; 
+div.roundCorners div.top {
+    background: url("../bitmaps/default/boxes/grouptopleft.png") no-repeat top left;
+    height: 17px;
+    position: relative;
 }
 
-.contentAttribute .add {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.roundCorners div.top div.corner {
+    background: url("../bitmaps/default/boxes/grouptopright.png") no-repeat top right;
+    width: 5px;
+    height: 17px;
+    position: absolute;
+    right: 0;
 }
 
-.contentAttribute .edit {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.roundCorners div.bottom {
+    background: url("../bitmaps/default/boxes/groupbottomleft.png") no-repeat top left;
+    height: 5px;
+    position: relative;
 }
 
-.contentAttribute .delete {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.roundCorners div.bottom div.corner {
+    background: url("../bitmaps/default/boxes/groupbottomright.png") no-repeat top right;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    right: 0;
 }
 
-.contentAttribute .moveDown {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.roundCorners div.body {
+    background: url("../bitmaps/default/boxes/groupleft.png") repeat-y left;
 }
 
-.contentAttribute .moveUp {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.roundCorners div.body div.right {
+    margin-left: 5px;
+    padding: 5px 15px 15px 15px;
+    background: #ffffff url("../bitmaps/default/boxes/groupright.png") repeat-y right;
 }
 
-.contentAttribute .select {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.fieldset fieldset {
+    border: 0;
+    padding: 0;
 }
 
-.contentAttribute .show {
-    background: url("../bitmaps/common/icons/publish.png") no-repeat center left;
+div.fieldset h1 {
+    padding: 0 0 3px 0;
+    margin: -5px -10px 10px -15px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+div.sidebarFieldset {
+    background: #f7f7f7 url("../bitmaps/default/framework/rightbox_background.jpg") repeat-x;
+    border-bottom: 1px solid #999999;
+}
+
+div.sidebarFieldset fieldset {
+    border: 0;
+    padding: 5px;
 }
 
 

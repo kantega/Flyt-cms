@@ -25,7 +25,7 @@
     <form action="RebuildIndex.action" name="searchindex" method="POST">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.search.title"/></legend>
+            <h1><kantega:label key="aksess.search.title"/></h1>
 
             <input type="checkbox" checked="true" name="rebuild" id="rebuild"><label for="rebuild"><kantega:label key="aksess.search.rebuild.rebuild"/></label><br>
             <input type="checkbox" checked="true" name="optimize" id="optimize"><label for="optimize"><kantega:label key="aksess.search.rebuild.optimize"/></label><br>

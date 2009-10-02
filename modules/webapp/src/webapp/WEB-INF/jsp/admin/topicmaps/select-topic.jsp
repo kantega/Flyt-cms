@@ -52,7 +52,7 @@
         <input type="hidden" name="selectMultiple" value="${selectMultiple}">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.selecttopic.title"/></legend>
+                <h1><kantega:label key="aksess.selecttopic.title"/></h1>
 
                 <div class="formElement">
                     <div class="heading">
@@ -101,16 +101,15 @@
                         </table>
                     </div>
                 </div>
+                <div class="buttonGroup">
+                    <c:if test="${selectMultiple}">
+                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                    </c:if>
+                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
         </div>
 
-        <div class="buttonGroup">
-            <c:if test="${selectMultiple}">
-                <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            </c:if>
-
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
     </form>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

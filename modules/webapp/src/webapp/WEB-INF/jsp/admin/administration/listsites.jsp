@@ -26,7 +26,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.sites.title"/></legend>
+            <h1><kantega:label key="aksess.sites.title"/></h1>
 
             <table>
                 <tr>

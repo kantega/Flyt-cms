@@ -25,7 +25,7 @@
     <form name="myform" action="ListContentExpiration.action" method="post">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.contentexpire.title"/></legend>
+                <h1><kantega:label key="aksess.contentexpire.title"/></h1>
 
                 <div class="formElement">
                     <div class="heading"><kantega:label key="aksess.contentexpire.period"/></div>
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="buttonGroup">
-                    <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                 </div>
 
                 <table>

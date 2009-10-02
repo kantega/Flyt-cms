@@ -58,30 +58,30 @@
     </script>
 </kantega:section>
 
-<kantega:section id="body">    
+<kantega:section id="body">
     <div id="EditListOptionForm">
-    <form name="myform" action="">
-        <div class="fieldset">
-            <fieldset>
-            <legend><kantega:label key="aksess.editablelist.title"/></legend>
+        <form name="myform" action="">
+            <div class="fieldset">
+                <fieldset>
+                    <h1><kantega:label key="aksess.editablelist.title"/></h1>
 
-            <div class="formElement">
-                <div class="heading">
-                    <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>
-                </div>
-                <div class="inputs">
-                    <input type="text" id="optionValue" name="optionValue" maxlength="255"><br>
-                    <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
-                    <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
-                </div>
+                    <div class="formElement">
+                        <div class="heading">
+                            <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>
+                        </div>
+                        <div class="inputs">
+                            <input type="text" id="optionValue" name="optionValue" maxlength="255"><br>
+                            <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
+                            <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
+                        </div>
+                    </div>
+                    <div class="buttonGroup">
+                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    </div>
+                </fieldset>
             </div>
-            </fieldset>
-        </div>    
-        <div class="buttonGroup">
-            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
-    </form>
-   </div>
+        </form>
+    </div>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

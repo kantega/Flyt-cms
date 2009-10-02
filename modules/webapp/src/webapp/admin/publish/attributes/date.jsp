@@ -29,12 +29,12 @@
     String value = attribute.getValue();
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="#" id="velgdato<%=fieldName%>" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-</div>
 <div class="inputs">
     <input type="text" id="<%=fieldName%>" size="<%=len%>" maxlength="<%=len%>" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)<br>
     <script type="text/javascript">
         Calendar.setup( { inputField  : "<%=fieldName%>", ifFormat : "%d.%m.%Y", button : "velgdato<%=fieldName%>", firstDay: 1} );
     </script>
+</div>
+<div class="buttonGroup">
+    <a href="#" id="velgdato<%=fieldName%>" class="button"><span class="calendar"><kantega:label key="aksess.button.choose"/></span></a>
 </div>

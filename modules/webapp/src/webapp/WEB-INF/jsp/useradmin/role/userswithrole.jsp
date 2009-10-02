@@ -34,7 +34,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="useradmin.userroles.title"/></legend>
+            <h1><kantega:label key="useradmin.userroles.title"/></h1>
 
             <form action="removeuserrole" name="removerole" method="post">
                 <input type="hidden" name="roleId" value="<c:out value="${roleId}"/>">

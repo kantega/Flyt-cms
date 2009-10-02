@@ -38,25 +38,36 @@
         });
 
         function bindPublishButtons() {
-            $("#ModesMenu .button .preview").click(function(){
+        <c:if test="${!previewActive}">
+            $("#ModesMenu input .preview").click(function(){
                 gotoMode("ViewContentPreview");
             });
-            $("#ModesMenu .button .edit").click(function(){
+        </c:if>
+        <c:if test="${previewActive}">
+            $("#ModesMenu input .edit").click(function(){
                 gotoMode("SaveContent");
             });
-            $("#EditContentTabs .tab .content").click(function(){
+        </c:if>
+        <c:if test="${!contentActive}">
+            $("#TabToolsMenu .tab .content").click(function(){
                 gotoMode("SaveContent");
             });
-            $("#EditContentTabs .tab metadata").click(function(){
+        </c:if>
+        <c:if test="${!metadataActive}">
+            $("#TabToolsMenu .tab .metadata").click(function(){
                 gotoMode("SaveMetadata");
             });
-            $("#EditContentTabs .tab .versions").click(function(){
+        </c:if>
+        <c:if test="${!versionsActive}">
+            $("#TabToolsMenu .tab .versions").click(function(){
                 gotoMode("SaveVersion");
             });
-            $("#EditContentTabs .tab .attachments").click(function(){
+        </c:if>
+        <c:if test="${!attachmentsActive}">
+            $("#TabToolsMenu .tab .attachments").click(function(){
                 gotoMode("SaveAttachments");
             });
-
+        </c:if>
             $("#EditContentButtons input.publish").click(function(){
                 saveContent(<%=ContentStatus.PUBLISHED%>);
             });
@@ -79,10 +90,10 @@
             var maxHeight = $("#MainPane").height() - $("#EditContentTabs").height() - $("#EditContentButtons").height();
             var width = $("#MainPane").width();
 
-            $('#MainPane iframe').css('height', (maxHeight-20) + 'px').css('width', (width-20) + 'px'); 
+            $('#MainPane iframe').css('height', (maxHeight-20) + 'px').css('width', (width-20) + 'px');
 
         }
-        
+
         function gotoMode(action) {
             action = action + ".action";
             var href = "" + window.location.href;
@@ -103,11 +114,19 @@
 
 <kantega:section id="modesMenu">
     <div class="buttonGroup">
-        <a href="#" class="button"><span class="preview"><kantega:label key="aksess.mode.preview"/></span></a>
+        <a href="#" class="button<c:if test="${previewActive}"> active</c:if>"><span class="preview"><kantega:label key="aksess.mode.preview"/></span></a>
         <span class="buttonSeparator"></span>
-        <a href="#" class="button last"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
+        <a href="#" class="button last<c:if test="${!previewActive}"> active</c:if>"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
     </div>
+</kantega:section>
 
+<kantega:section id="tabToolsMenu">
+    <div class="tabGroup">
+        <a href="#" class="tab<c:if test="${contentActive}"> active</c:if>"><span><span class="content"><kantega:label key="aksess.tools.content"/></span></span></a>
+        <a href="#" class="tab<c:if test="${metadataActive}"> active</c:if>"><span><span class="metadata"><kantega:label key="aksess.tools.metadata"/></span></span></a>
+        <a href="#" class="tab<c:if test="${attachmentsActive}"> active</c:if>"><span><span class="attachments"><kantega:label key="aksess.tools.attachments"/></span></span></a>
+        <a href="#" class="tab<c:if test="${versionsActive}"> active</c:if>"><span><span class="versions"><kantega:label key="aksess.tools.versions"/></span></span></a>
+    </div>
 </kantega:section>
 
 <kantega:section id="body">
@@ -115,28 +134,20 @@
 
         <div id="Content" class="publish">
             <div id="MainPane">
-                <div id="EditContentTabs" class="tabGroup">
-                    <a href="#" class="tab"><span class="content"><kantega:label key="aksess.tools.content"/></span></a>
-                    <a href="#" class="tab"><span class="metadata"><kantega:label key="aksess.tools.metadata"/></span></a>
-                    <a href="#" class="tab"><span class="attachments"><kantega:label key="aksess.tools.attachments"/></span></a>
-                    <a href="#" class="tab"><span class="versions"><kantega:label key="aksess.tools.versions"/></span></a>
-                </div>
-                <div id="EditContentButtons">
-                    <div class="buttonGroup">
-                        <c:choose>
-                            <c:when test="${canPublish}">
-                                <input type="button" class="button publish" value="<kantega:label key="aksess.button.publish"/>">
-                            </c:when>
-                            <c:otherwise>
-                                <input type="button" class="button save" value="<kantega:label key="aksess.button.save"/>">
-                            </c:otherwise>
-                        </c:choose>
-                        <input type="button" class="button savedraft" value="<kantega:label key="aksess.button.save"/>">
+                <div id="EditContentButtons" class="buttonBar">
+                    <c:choose>
+                        <c:when test="${canPublish}">
+                            <span class="barButton"><input type="submit" class="publish" value="<kantega:label key="aksess.button.publish"/>"></span>
+                        </c:when>
+                        <c:otherwise>
+                            <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                        </c:otherwise>
+                    </c:choose>
+                        <span class="barButton"><input type="submit" class="savedraft" value="<kantega:label key="aksess.button.save"/>"></span>
                         <c:if test="${hearingEnabled}">
-                            <input type="button" class="button hearing" value="<kantega:label key="aksess.button.hoering"/>">
-                        </c:if>
-                        <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-                    </div>
+                            <span class="barButton"><input type="submit" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
+                    </c:if>
+                    <span class="barButton"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
                 <div id="EditContentPane">
                     <kantega:getsection id="content"/>
@@ -144,7 +155,7 @@
             </div>
             <div id="SideBarSplit"></div>
             <div id="SideBar">
-                <%@ include file="../publish/include/publishproperties.jsp" %>
+                <%@ include file="../publish/fragments/publishproperties.jsp" %>
             </div>
         </div>
     </form>

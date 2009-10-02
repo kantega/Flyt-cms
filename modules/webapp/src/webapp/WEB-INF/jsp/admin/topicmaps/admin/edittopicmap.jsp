@@ -41,7 +41,7 @@
     <form name="myform" action="EditTopicMap.action" method="post">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.topicmaps.title"/></legend>
+                <h1><kantega:label key="aksess.topicmaps.title"/></h1>
 
                 <input type="hidden" name="id" value="${topicMap.id}">
 
@@ -59,13 +59,12 @@
                         <input name="iseditable" id="isnoteditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><label for="isnoteditable"><kantega:label key="aksess.text.nei"/></label>                        
                     </div>
                 </div>
-
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
 
-            <div class="buttonGroup">
-                <input type="submit" class="button save" value="<kantega:label key="aksess.button.save"/>">
-                <input type="button" class="button cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>">
-            </div>
         </div>
     </form>
 </kantega:section>

@@ -33,7 +33,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.systeminfo.title"/></legend>
+            <h1><kantega:label key="aksess.systeminfo.title"/></h1>
 
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.version"/></div>
@@ -85,7 +85,7 @@
     <c:if test="${fn:length(xmlCache) > 1}">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.systeminfo.xmlcache"/></legend>
+                <h1><kantega:label key="aksess.systeminfo.xmlcache"/></h1>
 
                 <table>
                     <thead>
@@ -109,7 +109,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.systeminfo.config"/></legend>
+            <h1><kantega:label key="aksess.systeminfo.config"/></h1>
 
             <table>
                 <thead>
@@ -134,17 +134,18 @@
                 %>
                 </tbody>
             </table>
-        </fieldset>
-
-        <form action="" method="get">
-            <input type="hidden" name="reload" value="true">
-            <input type="submit" class="button ok" value="<kantega:label key="aksess.systeminfo.reloadconfig"/>">
-            <c:if test="${param.reload}">
-                <div class="info">
-                    <kantega:label key="aksess.systeminfo.reloadconfig.done"/>
+            <form action="" method="get">
+                <input type="hidden" name="reload" value="true">
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.systeminfo.reloadconfig"/>"></span>
                 </div>
-            </c:if>
-        </form>
+                <c:if test="${param.reload}">
+                    <div class="info">
+                        <kantega:label key="aksess.systeminfo.reloadconfig.done"/>
+                    </div>
+                </c:if>
+            </form>
+        </fieldset>
     </div>
 
 </kantega:section>

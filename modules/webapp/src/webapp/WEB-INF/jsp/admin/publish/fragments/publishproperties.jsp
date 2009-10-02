@@ -44,9 +44,8 @@
     }
 
     $(document).ready(function() {
-        $("#ChooseTopicButton > a.button").click(function(event){
+        $("#ChooseTopicButton > input.button").click(function(event){
             debug("bindTopicButtons(): click ChooseTopicButton");
-            event.preventDefault();
             selectTopic(null, true);
         });
 
@@ -58,9 +57,9 @@
 </script>
 
 <c:if test="${!isStartPage}">
-    <div class="fieldset">
+    <div class="chho">
         <fieldset>
-            <legend><kantega:label key="aksess.publishinfo.period"/></legend>
+            <h1><kantega:label key="aksess.publishinfo.period"/></h1>
             <div id="FromDate">
                 <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
                 <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
@@ -97,9 +96,9 @@
     </div>
 </c:if>
 <c:if test="${currentContent.id > 0 && canPublish}">
-    <div class="fieldset">
+    <div class="sidebarFieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.publishinfo.change"/></legend>
+            <h1><kantega:label key="aksess.publishinfo.change"/></h1>
             <div id="ChangeDate">
                 <!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>-->
                 <input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
@@ -114,17 +113,17 @@
     </div>
 </c:if>
 <c:if test="${!isStartPage}">
-    <div class="fieldset">
+    <div class="sidebarFieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
+            <h1><kantega:label key="aksess.publishinfo.alias"/></h1>
             <input type="text" name="alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510">
         </fieldset>
     </div>
 </c:if>
 <c:if test="${canChangeTemplate}">
-    <div class="fieldset">
+    <div class="sidebarFieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
+            <h1><kantega:label key="aksess.publishinfo.displaytemplate"/></h1>
             <select name="displaytemplate" tabindex="60" onchange="setIsUpdated()">
                 <c:forEach var="template" items="${allowedTemplates}">
                     <c:set var="templateName" value="${template.name}"/>
@@ -141,14 +140,14 @@
     </div>
 </c:if>
 <c:if test="${topicMapsEnabled}">
-    <div class="fieldset">
+    <div class="sidebarFieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
+            <h1><kantega:label key="aksess.publishinfo.topics"/></h1>
 
 
             <div id="TopicList">...</div>
             <div id="ChooseTopicButton">
-                <a href="#" class="button topics"><span><kantega:label key="aksess.publishinfo.topics.choose"/></span></a>
+                <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
             </div>
 
         </fieldset>

@@ -42,13 +42,13 @@
     <div id="SelectRoleForm">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.adduser.title"/></legend>
+                <h1><kantega:label key="aksess.adduser.title"/></h1>
 
                 <form name="searchform" action="SelectUsers.action" method="post">
                     <input type="hidden" name="action" value="${action}">
                     <input type="hidden" name="select" value="${select}">
                     <strong><kantega:label key="aksess.adduser.search"/>:</strong> <input type="text" name="name" value="${name}" size="10" maxlength="30">
-                    <input type="button" onclick="document.searchform.submit()" class="button search" value="<kantega:label key="aksess.button.search"/>">
+                    <span class="button"><input type="button" onclick="document.searchform.submit()" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
                     <c:if test="${notFound}">
                         <div class="info"><kantega:label key="aksess.adduser.search.notfound"/></div>
                     </c:if>
@@ -93,14 +93,13 @@
                         </table>
                     </form>
                 </div>
-
+                <div class="buttonGroup">
+                    <c:if test="${!select}">
+                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                    </c:if>
+                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
-        </div>
-        <div class="buttonGroup">
-            <c:if test="${!select}">
-                <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            </c:if>
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
         </div>
 
     </div>

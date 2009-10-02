@@ -50,14 +50,14 @@
 
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')" class="button choose" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
-</div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
     <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
     <script type="text/javascript">
         Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
     </script>
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

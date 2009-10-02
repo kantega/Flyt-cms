@@ -130,7 +130,7 @@
     <div id="InsertTableForm">
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.inserttable.title"/></legend>
+                <h1><kantega:label key="aksess.inserttable.title"/></h1>
                 <c:if test="${!modifyExisting}">
                     <div class="formElement">
                         <div class="heading">
@@ -172,15 +172,14 @@
                         <input type="text" size="2" maxlength="2" name="cellpadding" value=""> (<kantega:label key="aksess.inserttable.pixels"/>)
                     </div>
                 </div>
-
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
 
         </div>
 
-        <div class="buttonGroup">
-            <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
     </div>
     </form>
 </kantega:section>

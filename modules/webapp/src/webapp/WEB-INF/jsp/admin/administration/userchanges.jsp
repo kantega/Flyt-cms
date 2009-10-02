@@ -28,12 +28,11 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.userchanges.title"/></legend>
+            <h1><kantega:label key="aksess.userchanges.title"/></h1>
 
             <div class="formElement">
-                <div class="heading"><kantega:label key="aksess.userchanges.month"/></div>
-            </div>
             <div class="inputs">
+                <kantega:label key="aksess.userchanges.month"/>
                 <select name="months" onchange="document.myform.submit()">
                     <option value="1" <c:if test="${month == 1}">selected</c:if>>1</option>
                     <option value="3" <c:if test="${month == 3}">selected</c:if>>3</option>
@@ -42,6 +41,7 @@
                 </select>
             </div>
 
+            </div>
             <table>
             <%
                 List userchanges = (List)request.getAttribute("userChanges");

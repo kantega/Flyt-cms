@@ -27,7 +27,7 @@
 <kantega:section id="content">
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.mailsubscription.title"/></legend>
+            <h1><kantega:label key="aksess.mailsubscription.title"/></h1>
             <table>
                 <tr class="tableHeading">
                     <td><strong><kantega:label key="aksess.mailsubscription.email"/></strong></td>

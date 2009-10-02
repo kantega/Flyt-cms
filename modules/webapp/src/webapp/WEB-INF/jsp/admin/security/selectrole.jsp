@@ -48,7 +48,7 @@
 
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="aksess.addrole.title"/></legend>
+                    <h1><kantega:label key="aksess.addrole.title"/></h1>
 
                     <div style="height: 250px; overflow-y:auto">
                         <input type="hidden" name="roletype" value="Role">
@@ -82,15 +82,16 @@
                             %>
                         </table>
                     </div>
+                    <div class="buttonGroup">
+                        <c:if test="${!select}">
+                            <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        </c:if>
+                        <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    </div>
+
                 </fieldset>
             </div>
 
-            <div class="buttonGroup">
-                <c:if test="${!select}">
-                    <input type="button" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-                </c:if>
-                <input type="button" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-            </div>
         </form>
     </div>
 

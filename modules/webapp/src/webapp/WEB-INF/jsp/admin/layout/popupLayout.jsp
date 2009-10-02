@@ -26,6 +26,12 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.roundcorners.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("div.fieldset").roundCorners();
+        });
+    </script>
 
     <kantega:getsection id="head"/>
 </head>
@@ -33,13 +39,13 @@
 <body>
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#Content .buttonGroup .ok").click(function(){
+            $("#Content .button .ok").click(function(){
                 if (buttonOkPressed()) {
                     closeWindow();
                 }
 
             });
-            $("#Content .buttonGroup .cancel").click(function(){
+            $("#Content .button .cancel").click(function(){
                 closeWindow();
             });
         });
@@ -53,7 +59,7 @@
         }
 
     </script>
-    <div id="MainPane" class="popup">
+    <div id="Content" class="popup">
         <kantega:getsection id="body"/>
     </div>
 </body>

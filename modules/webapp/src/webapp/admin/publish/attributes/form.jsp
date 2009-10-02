@@ -23,9 +23,9 @@
     String fieldName = (String)request.getAttribute("fieldName");
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="Javascript:editForm(document.myform.<%=fieldName%>)" class="button edit" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.redigerskjema"/></span></a>
-</div>
 <div class="inputs">
     <%@include file="listoptions.jsf"%>
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:editForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="edit"><kantega:label key="aksess.button.redigerskjema"/></span></a>
 </div>

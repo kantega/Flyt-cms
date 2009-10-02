@@ -27,6 +27,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<c:set var="versionsActive" value="true"/>
 <kantega:section id="title">
     <kantega:label key="aksess.versions.title"/>
 </kantega:section>

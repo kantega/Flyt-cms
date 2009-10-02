@@ -35,7 +35,7 @@
 
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.locks.title"/></legend>
+            <h1><kantega:label key="aksess.locks.title"/></h1>
 
             <%
                 Map locks = (Map)request.getAttribute("locks");

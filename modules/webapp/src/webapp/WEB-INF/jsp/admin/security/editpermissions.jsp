@@ -57,7 +57,7 @@
         <form action="" name="linkform">
             <div class="fieldset">
                 <fieldset>
-                    <legend><kantega:label key="aksess.editpermissions.title"/> - ${title}</legend>
+                    <h1><kantega:label key="aksess.editpermissions.title"/> - ${title}</h1>
 
                     <div class="padded">
                         <table border="0" width="580" cellspacing="0" cellpadding="0">
@@ -158,16 +158,14 @@
                             </div>
                         </c:if>
                     </div>
-
-
+                    <div class="buttonGroup">
+                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    </div>
                 </fieldset>
             </div>
         </form>
 
-        <div class="buttonGroup">
-            <input type="submit" class="button ok" value="<kantega:label key="aksess.button.ok"/>">
-            <input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>">
-        </div>
     </div>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

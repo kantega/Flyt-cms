@@ -29,20 +29,6 @@
     RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<%
-    if (manager != null) {
-%>
-<div class="buttonGroup">
-    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
-    <c:if test="${attribute.moveable}">
-        <a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button moveUp" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.moveup"/></span></a>
-        <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.movedown"/></span></a>
-    </c:if>
-</div>
-<%
-    }
-%>
 <div class="inputs">
         <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
         <select name="<%=fieldName%>list" class="fullWidth" size="6">
@@ -57,3 +43,17 @@
             }
         %>
 </div>
+<%
+    if (manager != null) {
+%>
+<div class="buttonGroup">
+    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
+    <c:if test="${attribute.moveable}">
+        <a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="moveUp"><kantega:label key="aksess.button.moveup"/></span></a>
+        <a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="moveDown"><kantega:label key="aksess.button.movedown"/></span></a>
+    </c:if>
+</div>
+<%
+    }
+%>

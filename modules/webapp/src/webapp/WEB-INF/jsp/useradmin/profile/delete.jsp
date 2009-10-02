@@ -28,10 +28,9 @@
         <p>
             <kantega:label key="useradmin.deleteprofile.confirm"/> <c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/> ?
         </p>
-
         <div class="buttonGroup">
-            <input type="submit" class="button delete" value="<kantega:label key="aksess.button.delete"/>">
-            <input type="button" class="button cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>">
+            <span class="button"></span><input type="submit" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="submit" class="cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>"></span>
         </div>
     </form>
 </kantega:section>

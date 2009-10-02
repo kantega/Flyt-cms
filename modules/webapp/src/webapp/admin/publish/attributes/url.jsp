@@ -29,10 +29,6 @@
     String value = attribute.getValue();
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
-</div>
 <div class="inputs">
     <input type="text" class="fullWidth" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
 
@@ -47,4 +43,8 @@
         }
     }
 %>
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:selectContentUrl(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

@@ -28,7 +28,7 @@
 
         <div class="fieldset">
             <fieldset>
-                <legend><kantega:label key="aksess.userchanges.username"/>:</strong> ${username}</legend>
+                <h1><kantega:label key="aksess.userchanges.username"/>:</strong> ${username}</h1>
                 <table>
                     <tr>
                         <th><strong><kantega:label key="aksess.userchanges.documents.title"/></strong></th>

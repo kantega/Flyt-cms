@@ -32,7 +32,7 @@
     </script>
     <div class="fieldset">
         <fieldset>
-            <legend><kantega:label key="aksess.topicmaps.title"/></legend>
+            <h1><kantega:label key="aksess.topicmaps.title"/></h1>
             <table>
                 <tr class="tableHeading">
                     <td><strong><kantega:label key="aksess.topicmaps.admin.topicmap"/></strong></td>
