@@ -147,7 +147,7 @@
 
   <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler"/>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
+  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
     <property name="servletClass">
       <value>no.kantega.publishing.client.MultimediaRequestHandler</value>
     </property>
@@ -332,15 +332,7 @@
       <value>ImageMapAction</value>
     </property>
   </bean>
-  <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="PreviewContentAction">
-    <property name="servletClass">
-      <value>no.kantega.publishing.admin.content.action.PreviewContentAction</value>
-    </property>
-    <property name="servletName">
-      <value>PreviewContentAction</value>
-    </property>
-  </bean>
-
+  <bean class="no.kantega.publishing.admin.content.action.PreviewContentAction" id="PreviewContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction"/>
   <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>

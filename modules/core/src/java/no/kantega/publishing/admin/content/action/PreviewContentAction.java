@@ -17,75 +17,34 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
+import no.kantega.publishing.client.ContentRequestDispatcher;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 
-public class PreviewContentAction extends HttpServlet {
-    private static String SOURCE = "aksess.PreviewContentAction";
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.beans.factory.annotation.Autowired;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
+public class PreviewContentAction  extends AbstractController {
+    private ContentRequestDispatcher contentRequestDispatcher;
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String template = Aksess.getStartPage();
 
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession(true);
-        Content current = (Content)session.getAttribute("currentContent");
-
-
-        try {
-            if (current != null) {
-                RequestHelper.setRequestAttributes(request, current);
-
-                int siteId = current.getAssociation().getSiteId();
-                Site site = SiteCache.getSiteById(siteId);
-                String alias = site.getAlias();
-
-                if (current.getType() == ContentType.PAGE) {
-                    DisplayTemplate dt = null;
-                    try {
-                        dt = DisplayTemplateCache.getTemplateById(current.getDisplayTemplateId());
-                    } catch (SystemException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                    if (dt != null) {
-                        RequestHelper.runTemplateControllers(dt, request, response, getServletContext());
-                        template = dt.getView();
-                        // Dersom malnavn inneholder $SITE, erstatt med riktig site
-                        if (template.indexOf("$SITE") != -1) {
-                            template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
-                        }
-                    }
-
-                } else {
-                    template = "/admin/showcontentinframe.jsp";
-                }
-            }
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (Exception e) {
-            throw new ServletException(e);
+        Content content = (Content)session.getAttribute("currentContent");
+        if (content != null) {
+            contentRequestDispatcher.dispatchContentRequest(content, getServletContext(), request, response);
+        } else {
+            request.getRequestDispatcher(Aksess.getStartPage()).forward(request, response);
         }
+        return null;
+    }
 
-        request.getRequestDispatcher(template).forward(request, response);
+    @Autowired
+    public void setContentRequestDispatcher(ContentRequestDispatcher contentRequestDispatcher) {
+        this.contentRequestDispatcher = contentRequestDispatcher;
     }
 }
