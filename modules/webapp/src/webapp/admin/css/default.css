@@ -592,14 +592,38 @@ div.sidebarFieldset fieldset {
 }
 
 /************** Organize subpages **************/
+#SubPages {
+    background: #ffffff;
+    padding: 10px 0;
+}
+#SubPages ul {
+    margin: 0 0 2em;
+}
 #SubPages li {
     list-style: none;
+    height: 2em;
+    border-bottom: 1px solid #cccccc;
 }
 
 #SubPages li.menu {
+    color: #cccccc;
+}
+
+#SubPages li.menu .name{
     font-weight: bold;
+    color: #000000;
 }
 
 #SubPages li.page {
     cursor:move;
+}
+
+#SubPages li .name {
+    padding-left: 2em;
+}
+
+#SubPages li span {
+    display: inline-block;
+    width: 18%;
+    line-height: 2em;
 }

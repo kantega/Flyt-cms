@@ -18,10 +18,22 @@
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin"%>
 
 <c:forEach items="${menus}" var="menu">
-    <h2>${menu.name}</h2>
-    <ul id="${menu.id}">
+    <ul id="${menu.id}" class="associationCategory">
+        <li class="menu">
+            <span class="name">${menu.name}</span>
+            <span class="status">Status</span>
+            <span class="lastModified">Last modified</span>
+            <span class="publisher">Published by</span>
+            <span class="views">Page views</span>
+        </li>
         <c:forEach var="page" items="${menu.subPages}">
-            <li id="${page.association.id}" class="page">${page.title}</li>
+            <li id="${page.association.id}" class="page">
+                <span class="name">${page.title}</span>
+                <span class="status">${page.visibilityStatus}</span>
+                <span class="lastModified">${page.lastModified}</span>
+                <span class="publisher">${page.publisher}</span>
+                <span class="views">0</span>
+            </li>
         </c:forEach>
     </ul>
 </c:forEach>

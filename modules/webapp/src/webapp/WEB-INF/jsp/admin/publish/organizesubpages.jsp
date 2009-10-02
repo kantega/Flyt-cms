@@ -40,21 +40,25 @@
         function updateSubPageList(url) {
             $("#SubPages").load("<%=Aksess.getContextPath()%>/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
                 debug("updateSubPageList(): response from ListSubPages.action received");
-                $('#SubPages ul').Sortable(
-                {
-                    accept :    'page',
-                    opacity: 	0.8,
-                    fx:			200,
-                    axis:		'vertically',
-                    revert:		true,
-                    onChange: function(objs) {
+                    $("#SubPages ul").sortable({
+                        connectWith: '.associationCategory',
+                        axis: 'y',
+                        stop: function(e, ui){
+                            //
+                        }
+                    }).disableSelection();
 
-                    }
-                }
-                );
             });
         }
 
+        function setLayoutSpecificSizes() {
+            var mainPaneHeight = $("#MainPane").height();
+            var statusbarHeight = $("#MainPane .statusbar").height();
+            var subPages = $("#SubPages");
+            var subPagesPaddingTop = parseInt(subPages.css("paddingTop"));
+            var subPagesPaddingBottom = parseInt(subPages.css("paddingBottom"));
+            $("#SubPages").css("height", (mainPaneHeight-statusbarHeight-subPagesPaddingTop-subPagesPaddingBottom) + "px");
+        }
 
     </script>
 
