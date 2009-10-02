@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
+ //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 /********************************************************************************
@@ -40,20 +40,36 @@ function setWindowSize() {
     $(window).bind('resize load', function(e) {
         debug("setWindowSize(): " + e.type + " event received");
 
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
         var topHeight = $("#Top").height();
         var statusbarHeight = $("#MainPane .statusbar").height();
         var filteroptionsHeight = $("#Navigation .filteroptions").height();
         var navigationWidth = $("#Navigation").width();
         var framesplitWidth = $("#Framesplit").width();
-        debug("setWindowSize(): topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
+        debug("setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
 
-        $("#Navigator").css('height', ($(window).height()-topHeight-filteroptionsHeight-5) + 'px');
-        $('#Content').css('height', ($(window).height()-topHeight-statusbarHeight) + 'px');
-        $('#MainPane').css('height', ($(window).height()-topHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-40) + 'px');
-        $('#MainPane iframe').css('height', ($(window).height()-topHeight-statusbarHeight-3) + 'px').css('width', ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+        $("#Navigator").css('height', (windowHeight-topHeight-filteroptionsHeight-5) + 'px');
+        $('#Content').css('height', (windowHeight-topHeight-statusbarHeight) + 'px');
+        $('#MainPane').css('height', (windowHeight-topHeight) + 'px').css('width', (windowWidth-navigationWidth-framesplitWidth) + 'px');
+        $('#MainPane iframe').css('height', (windowHeight-topHeight-statusbarHeight) + 'px');
         if (typeof setLayoutSpecificSizes == 'function') {
             setLayoutSpecificSizes();
         }
+
+        /*
+        //FireFox calculates the width before it removes the vertical scrollbar.
+        //To get the total with after the scrollbar is removed, we need to add the scrollbarwidth
+        //to the current MainPane width after it's removed. The scrollbar is removed by FireFox after appr. 150ms.
+        jQuery.each(jQuery.browser, function(i) {
+            if(i=="mozilla") {
+                setTimeout(function(){
+                    var scrollbarWidth = 17;
+                    $('#MainPane').css('width', ($("#MainPane").width() + scrollbarWidth) + 'px');
+                }, 200);
+            }
+        });
+        */
     });
 }
 
@@ -92,24 +108,22 @@ $(document).ready(function(){
  */
 function makeNavigatorResizable() {
     debug("makeNavigatorResizable(): Init");
-    $("#Navigation").Resizable(
+    $("#Navigation").resizable(
         {
             minWidth: 50,
             minHeight: 50,
-            handlers: {
-                e: '#FramesplitDrag'
-            },
-            onStart: function(){
+            handles: 'e',
+            start: function(){
                 if (typeof navigatorResizeOnStart == 'function') {
                     navigatorResizeOnStart();
                 }
             },
-            onStop: function() {
+            stop: function() {
                 if (typeof navigatorResizeOnStop == 'function') {
                     navigatorResizeOnStop();
                 }
             },
-            onResize: function() {
+            resize: function() {
                 if (typeof navigatorResizeOnResize == 'function') {
                     navigatorResizeOnResize();
                 }

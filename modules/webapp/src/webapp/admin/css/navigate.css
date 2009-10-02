@@ -20,12 +20,14 @@
     background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
 }
 
-#FramesplitDrag {
-    cursor: e-resize;
-    position: relative;
-    top: 50%;
+/* Frame resize handle */
+.ui-resizable-handle.ui-resizable-e {
+    position: absolute;
     height: 17px;
     width: 10px;
+    right: 0;
+    top: 50%;
+    cursor: e-resize;
     background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
 }
 

@@ -58,9 +58,7 @@
                 </div>
             </div>
             <div id="Navigator"></div>
-            <div id="Framesplit">
-                <div id="FramesplitDrag"></div>
-            </div>
+            <div id="Framesplit"></div>
         </div>
         <kantega:getsection id="content"/>
 

@@ -178,7 +178,13 @@
             }
         }
 
-
+        /**
+         * Navigation layout specific implementation of the navigatorResizeOnResize-function.
+         * See navigate.jjs
+         */
+        function navigatorResizeOnResize() {
+            $.event.trigger("resize");
+        }
 
 
     </script>

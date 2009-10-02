@@ -31,7 +31,7 @@
 
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-ui-core-interactions-effects-1.7.2.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src='<%=request.getContextPath()%>/admin/dwr/interface/ContentStateHandler.js'></script>

@@ -1,0 +1,37 @@
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+
+/**
+ * Administration layout specific implementation of the setLayoutSpecificSizes-function.
+ * See navigate.jjs
+ */
+function setLayoutSpecificSizes(){
+    var mainPaneContentHeight = $("#MainPaneContent").height();
+    var windowHeight = $(window).height();
+    var navHeight = Math.max(windowHeight, mainPaneContentHeight) + parseInt($("#MainPaneContent").css("marginTop"),10) +  + parseInt($("#MainPaneContent").css("marginBottom"),10);
+    debug("administrationLayout.setLayoutSpecificSizes(): Setting heights. MainPaneContent.height=" + mainPaneContentHeight + ", window.height=" + windowHeight + ". Setting Navigatior.height=" + navHeight);
+    $("#Navigator").css("height", navHeight + "px");
+}
+
+/**
+ * Administration layout specific implementation of the navigatorResizeOnResize-function.
+ * See navigate.jjs
+ */
+function navigatorResizeOnResize() {
+    $.event.trigger("resize");
+}

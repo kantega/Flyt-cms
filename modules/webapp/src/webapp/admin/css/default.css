@@ -101,7 +101,6 @@ td a {
 /************** Generic content pane styles  **************/
 #MainPane {
     float: left;
-    margin: 10px;
 }
 
 #MainPane table .title{
@@ -140,6 +139,7 @@ td a {
 
 #Content.administration #MainPaneContent {
     width: 600px;
+    margin: 10px;
 }
 /************** Top menu **************/
 #TopMenu .logo {
