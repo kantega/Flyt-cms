@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -13,8 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<?xml version="1.0" encoding="UTF-8"?>
 <%@ page contentType="text/xml;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
