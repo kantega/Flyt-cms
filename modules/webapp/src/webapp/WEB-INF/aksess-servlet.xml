@@ -145,7 +145,14 @@
       </property>
     </bean>
 
-  <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler"/>
+    <bean id="ContentRequestDispatcher" class="no.kantega.publishing.client.ContentRequestDispatcher">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
+
+  <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler">
+    <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
+      <property name="siteCache" ref="aksessSiteCache"/>
+  </bean>
 
   <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
     <property name="servletClass">
@@ -542,4 +549,5 @@
   <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 
   <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+
 </beans>
