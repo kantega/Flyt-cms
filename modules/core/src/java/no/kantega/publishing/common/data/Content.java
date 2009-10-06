@@ -23,9 +23,7 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.commons.util.HttpHelper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  *
@@ -78,16 +76,17 @@ public class Content extends BaseObject {
     private long forumId = -1;
 
     // Associations to this content object
-    private List associations = new ArrayList();
+    private List<Association> associations = new ArrayList<Association>();
 
     // Attributes
-    private List contentAttributes = new ArrayList();
-    private List metaAttributes = new ArrayList();
+    private List<Attribute> contentAttributes = new ArrayList<Attribute>();
+    private List<Attribute> metaAttributes = new ArrayList<Attribute>();
 
     // File attachments
-    private List attachments = new ArrayList();
+    private List<Attachment> attachments = new ArrayList<Attachment>();
 
-    private List topics = new ArrayList();
+    // Topics
+    private List<Topic> topics = new ArrayList<Topic>();
 
     // Status
     boolean isModified = false;
@@ -241,13 +240,12 @@ public class Content extends BaseObject {
 
     public Association getAssociation() {
         if (associations.size() == 1) {
-            return (Association)associations.get(0);
+            return associations.get(0);
         }
 
-        for (int i = 0; i < associations.size(); i++) {
-            Association tmp = (Association)associations.get(i);
-            if (tmp.isCurrent()) {
-                return tmp;
+        for (Association association : associations) {
+            if (association.isCurrent()) {
+                return association;
             }
         }
         return null;
@@ -257,7 +255,7 @@ public class Content extends BaseObject {
         return associations;
     }
 
-    public void setAssociations(List associations) {
+    public void setAssociations(List<Association> associations) {
         this.associations = associations;
     }
 
@@ -455,7 +453,28 @@ public class Content extends BaseObject {
         }
     }
 
-    public void setAttributes(List attr, int type) {
+    public Map getContentAttributes() {
+        Map<String, Attribute> map = new HashMap<String, Attribute>();
+        if (contentAttributes != null) {
+            for (Attribute a : contentAttributes) {
+                map.put(a.getName(), a);
+            }
+        }
+        return map;
+    }
+
+    public Map getMetaAttributes() {
+        Map<String, Attribute> map = new HashMap<String, Attribute>();
+        if (metaAttributes != null) {
+            for (Attribute a : metaAttributes) {
+                map.put(a.getName(), a);
+            }
+        }
+        return map;
+    }
+
+
+    public void setAttributes(List<Attribute> attr, int type) {
         if (type == AttributeDataType.CONTENT_DATA) {
             contentAttributes = attr;
         } else {
@@ -490,19 +509,18 @@ public class Content extends BaseObject {
         if (name == null || name.length() == 0) {
             return null;
         }
-        List list = null;
+        List<Attribute> list;
         if (type == AttributeDataType.CONTENT_DATA) {
             list = contentAttributes;
         } else if (type == AttributeDataType.META_DATA) {
             list = metaAttributes;
         } else {
-            list = new ArrayList();
+            list = new ArrayList<Attribute>();
             list.addAll(contentAttributes);
             list.addAll(metaAttributes);
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            Attribute attr = (Attribute)list.get(i);
+        for (Attribute attr : list) {
             if (attr.getName().equalsIgnoreCase(name)) {
                 return attr;
             }
@@ -524,7 +542,7 @@ public class Content extends BaseObject {
     }
 
     public void removeAttribute(String name, int type) {
-        List list = null;
+        List list;
         if (type == AttributeDataType.CONTENT_DATA) {
             list = contentAttributes;
         } else {
@@ -552,18 +570,17 @@ public class Content extends BaseObject {
     }
 
 
-    public void setTopics(List topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 
 
     public void addTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList();
+            topics = new ArrayList<Topic>();
         }
         boolean found = false;
-        for (int i = 0; i < topics.size(); i++) {
-            Topic t = (Topic)topics.get(i);
+        for (Topic t : topics) {
             if (t.getId().equalsIgnoreCase(topic.getId()) && t.getTopicMapId() == topic.getTopicMapId()) {
                 found = true;
                 break;
