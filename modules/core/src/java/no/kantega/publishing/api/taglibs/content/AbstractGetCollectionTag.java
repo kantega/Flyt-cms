@@ -17,6 +17,7 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.Aksess;
@@ -26,6 +27,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -449,26 +451,14 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     }
 
     public void setAssociatedid(String id) throws JspException {
-        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
         if (id != null && id.length() > 0) {
-            char c = id.charAt(0);
-            if (Character.isDigit(c)) {
-                int tmp = Integer.parseInt(id);
-                RequestParameters param = new RequestParameters(request);
-                int language = param.getInt("language");
-                associatedId = new ContentIdentifier();
-                associatedId.setAssociationId(tmp);
-                if (language != -1) {
-                    associatedId.setLanguage(language);
+            try {
+                Content content = AttributeTagHelper.getContent(pageContext, null, id);
+                if (content != null) {
+                    associatedId = content.getContentIdentifier();
                 }
-            } else {
-                // Alias was specified
-                try {
-                    associatedId = new ContentIdentifier(request, id);
-                } catch (Exception e) {
+            } catch (NotAuthorizedException e) {
 
-                }
             }
         }
     }
