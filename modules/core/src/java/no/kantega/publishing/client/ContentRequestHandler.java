@@ -54,6 +54,9 @@ public class ContentRequestHandler extends AbstractController {
 
         boolean isAdminMode = HttpHelper.isAdminMode(request);
 
+        // Force getting a session since Tomcat does not always create a session
+        request.getSession(true);
+
         try {
             ContentManagementService cms = new ContentManagementService(request);
 
@@ -62,11 +65,11 @@ public class ContentRequestHandler extends AbstractController {
             ContentIdentifier cid;
             String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
             if (originalUri == null) {
-                // Direkte kall
+                // Direct call
                 cid = new ContentIdentifier(request);
             } else {
-                // Kall via 404 handler
-                // request_uri inneholder ogs� subsite info (http://angel/buffy, m� fjerne dette
+                // Called via 404 mechanism, eg. could be a page alias
+                // request_uri contains contextpath, must remove contextpath
                 String contextPath = Aksess.getContextPath();
                 if (contextPath != null && contextPath.length() != 0 && originalUri.indexOf(contextPath) != -1) {
                     originalUri = originalUri.substring(contextPath.length(), originalUri.length());
