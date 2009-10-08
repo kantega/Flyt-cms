@@ -12,7 +12,7 @@ public class ChainableVelocityViewResolver extends VelocityViewResolver {
     @Override
     public View resolveViewName(String viewName, Locale locale) throws Exception {
         try {
-            if(getClass().getResource(getPrefix() + viewName + getSuffix()) != null) {
+            if(getClass().getClassLoader().getResource(getPrefix() + viewName + getSuffix()) != null) {
                 return super.resolveViewName(viewName, locale);
             } else {
                 return null;
