@@ -22,6 +22,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.commons.exception.InvalidFileException;
 
@@ -61,7 +62,9 @@ public class ContentTemplateValidator {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
                 return errors;
             }
-            Document def = XMLHelper.openDocument(resource);
+            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader);
+
+            Document def = XMLHelper.openDocument(resource, entityResolver);
 
             boolean foundUrl = false;
             boolean foundForm = false;

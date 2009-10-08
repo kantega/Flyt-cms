@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+         version="2.0">
+    <description>Aksess CMS Forms Taglib API</description>
+    <tlib-version>2.0</tlib-version>
+    <short-name>aksess</short-name>
+    <uri>http://www.kantega.no/aksess/tags/form</uri>
+    <tag>
+        <description>Creates form tags for form</description>
+        <name>form</name>
+        <tag-class>no.kantega.publishing.modules.forms.tags.FormTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Enables client side validation (needs JQuery)</description>
+            <name>clientvalidation</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set custom action for form (default is current page)</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <form:form>
+                        <form:render/>
+                        <input type="submit" value="Send">
+                    </form:form>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Renders form attribute</description>
+        <name>render</name>
+        <tag-class>no.kantega.publishing.modules.forms.tags.RenderFormTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+</taglib>

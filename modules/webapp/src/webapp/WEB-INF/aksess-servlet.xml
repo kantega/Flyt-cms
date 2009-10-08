@@ -552,6 +552,12 @@
     <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
   </bean>
 
+    <bean id="viewResolverExcel" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+      <property name="order">
+          <value>0</value>
+      </property>
+    </bean>    
+
   <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
 
 

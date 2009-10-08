@@ -320,18 +320,17 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             query = contentQuery;
         }
 
-        query.setOffset(offset);
 
         if (query != null) {
+            query.setOffset(offset);
             collection = cs.getContentList(query, max, new SortOrder(orderBy, descending), !skipAttributes, !skipTopics);
-        }
-        if(shuffle) {
-            Collections.shuffle(collection);
-            if(shuffleMax != -1 && collection.size() > shuffleMax) {
-                collection = collection.subList(0, shuffleMax);
+            if(shuffle) {
+                Collections.shuffle(collection);
+                if(shuffleMax != -1 && collection.size() > shuffleMax) {
+                    collection = collection.subList(0, shuffleMax);
+                }
             }
         }
-
 
         return collection;
     }

@@ -28,12 +28,16 @@
 <head>
 	<title>editcontent.jsp</title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
+    <link rel="stylesheet" type="text/css" href="../css/formeditor.css">
     <%@ include file="include/calendarsetup.jsp"%>
 </head>
 <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
 <script type="text/javascript" language="Javascript" src="../js/common.js"></script>
+<script type="text/javascript" language="Javascript" src="../js/jquery-1.3.2.min.js"></script>
+<script type="text/javascript" language="Javascript" src="../js/jquery-ui-1.7.2.min.js"></script>
 <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
 <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
+<script type="text/javascript" language="Javascript" src="../js/formeditor.jsp"></script>
 <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
 <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
@@ -57,6 +61,7 @@ function saveContent(status) {
     %>
     if (!hasSubmitted) {
         hasSubmitted = true;
+        formSave();
         document.myform.status.value = status;
         document.myform.submit();
     }
