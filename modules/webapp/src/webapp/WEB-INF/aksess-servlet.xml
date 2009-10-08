@@ -97,6 +97,8 @@
         <prop key="/ajax/SearchUsersAsXML.action">SearchUsersAsXMLAction</prop>
         <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
         <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
+        <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop>
+        <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>                    
         <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
         <prop key="/robots.txt">RobotsController</prop>
         <prop key="/oap/static/**">PluginStaticContentController</prop>
@@ -519,6 +521,13 @@
   <bean class="no.kantega.publishing.admin.attributes.action.AddListOptionAction" id="AddListOptionAction"/>
   <bean class="no.kantega.publishing.admin.attributes.action.RemoveListOptionAction" id="RemoveListOptionAction"/>
 
+    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelController" id="FormSubmissionsExportExcelAction"/>
+    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelView" id="FormSubmissionsExportExcelView">
+        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
+    </bean>
+    <bean class="no.kantega.publishing.modules.forms.control.DeleteFormSubmissionsAction" id="DeleteFormSubmissionsAction">
+        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
+    </bean>
 
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
         <property name="pluginManager" ref="pluginManager"/>

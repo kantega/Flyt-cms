@@ -192,63 +192,22 @@
         <column name="SubjectType" required="false" type="INTEGER" size="10"/>
         <column name="SubjectId" required="false" type="INTEGER" size="10"/>
     </table>
-    <table name="form">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="name" required="true" type="VARCHAR" size="128"/>
-        <column name="wizard" required="false" type="BLOB" size="2147483647"/>
-        <column name="xslfo" required="false" type="BLOB" size="2147483647"/>
-        <column name="email" required="true" type="VARCHAR" size="50"/>
-        <column name="importsource" required="false" type="VARCHAR" size="255"/>
-        <column name="importid" required="false" type="VARCHAR" size="255"/>
-        <column name="importversion" required="false" type="VARCHAR" size="255"/>
-        <column name="importdirty" required="false" type="SMALLINT" size="5"/>
-        <column name="approvable" required="false" type="SMALLINT" size="5"/>
-        <column name="authenticationContext" required="false" type="VARCHAR" size="255"/>
-        <column name="signatureStrategy" required="false" type="VARCHAR" size="255"/>
-        <column name="deliveryService" required="false" type="VARCHAR" size="255"/>
-        <column name="wsDeliveryTemplate" required="false" type="BLOB" size="2147483647"/>
-        <column name="version" required="false" type="INTEGER" size="10" default="1"/>
-        <column name="allowAttachments" required="false" type="INTEGER" size="10"/>
+
+    <table name="formsubmission">
+        <column name="FormSubmissionId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="FormId" required="true" type="INTEGER" size="10"/>
+        <column name="SubmittedBy" required="false" type="VARCHAR" size="255"/>
+        <column name="AuthenticatedIdentity" required="false" type="VARCHAR" size="255"/>
+        <column name="Password" required="false" type="VARCHAR" size="255"/>
+        <column name="Email" required="false" type="VARCHAR" size="255"/>
+        <column name="SubmittedDate" required="true" type="TIMESTAMP" size="23,3"/>
     </table>
-    <table name="formdelegation">
-        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="Delegator" required="true" type="VARCHAR" size="255"/>
-        <column name="Delegee" required="true" type="VARCHAR" size="255"/>
-    </table>
-    <table name="formfilled">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="ref" required="true" type="VARCHAR" size="100"/>
-        <column name="formid" required="true" type="INTEGER" size="10"/>
-        <column name="resultxml" required="true" type="BLOB" size="2147483647"/>
-        <column name="status" required="true" type="INTEGER" size="10"/>
-        <column name="filluser" required="false" type="VARCHAR" size="255"/>
-        <column name="approver" required="false" type="VARCHAR" size="255"/>
-        <column name="filldate" required="false" type="TIMESTAMP" size="23,3"/>
-        <column name="approvedate" required="false" type="TIMESTAMP" size="23,3"/>
-        <column name="delegee" required="false" type="VARCHAR" size="255"/>
-        <column name="realapprover" required="false" type="VARCHAR" size="255"/>
-        <column name="authenticatedId" required="false" type="VARCHAR" size="255"/>
-    </table>
-    <table name="formfilledfile">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="formfilledid" required="true" type="INTEGER" size="10"/>
-        <column name="filedata" required="true" type="BLOB" size="2147483647"/>
-        <column name="mimetype" required="false" type="VARCHAR" size="128"/>
-        <column name="filename" required="false" type="VARCHAR" size="128"/>
-    </table>
-    <table name="formpdfimage">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="formid" required="true" type="INTEGER" size="10"/>
-        <column name="filedata" required="true" type="BLOB" size="2147483647"/>
-        <column name="filename" required="true" type="VARCHAR" size="300"/>
-        <column name="mimetype" required="false" type="VARCHAR" size="128"/>
-    </table>
-    <table name="formversion">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="formid" required="true" type="INTEGER" size="10"/>
-        <column name="wizard" required="true" type="BLOB" size="2147483647"/>
-        <column name="version" required="false" type="INTEGER" size="10" default="1"/>
-        <column name="importversion" required="false" type="VARCHAR" size="128"/>
+
+    <table name="formsubmissionvalues">
+        <column name="FormSubmissionId" required="true" type="INTEGER" size="10"/>
+        <column name="FieldNumber" required="true" type="INTEGER" size="10"/>
+        <column name="FieldName" required="true" type="VARCHAR" size="255"/>
+        <column name="FieldValue" required="false" type="CLOB" size="2147483647"/>
     </table>
 
     <table name="link">

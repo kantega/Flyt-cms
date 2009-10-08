@@ -389,7 +389,8 @@ public class EditContentHelper {
     private static Document getTemplateAsDocument(String templateFile) throws InvalidFileException {
         ResourceLoader loader = (ResourceLoader) RootContext.getInstance().getBean("contentTemplateResourceLoader");
         Resource resource = loader.getResource(templateFile);
-        return XMLHelper.openDocument(resource);
+        ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(loader);
+        return XMLHelper.openDocument(resource, entityResolver);
     }
 
     private static void setDefaultProperties(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {

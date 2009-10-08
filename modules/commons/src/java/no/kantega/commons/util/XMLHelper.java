@@ -19,6 +19,7 @@ package no.kantega.commons.util;
 import org.w3c.dom.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.helpers.AttributesImpl;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -114,12 +115,30 @@ public class XMLHelper {
         }
     }
 
+    public static Document openDocument(Resource resource, EntityResolver er) throws InvalidFileException {
+        try {
+            return openDocument(resource.getInputStream(), er);
+        } catch (IOException e) {
+            throw new InvalidFileException("Feil ved åpning av XML document", SOURCE, e);
+        }
+    }
+
     public static Document openDocument(InputStream is) throws SystemException {
+        try {
+            return openDocument(is, null);
+        } catch (Exception e) {
+            throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
+        }
+    }
+
+    public static Document openDocument(InputStream is, EntityResolver er) throws SystemException {
         Document doc = null;
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = docFactory.newDocumentBuilder();
-
+            if (er != null) {
+                builder.setEntityResolver(er);
+            }
             doc = builder.parse(is);
         } catch (Exception e) {
             throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
@@ -127,6 +146,7 @@ public class XMLHelper {
 
         return doc;
     }
+
 
     public static Document openDocument(File file) throws InvalidFileException {
         try {

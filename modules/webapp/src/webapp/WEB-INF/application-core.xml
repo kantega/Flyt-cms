@@ -18,7 +18,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">        
+    <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
         <property name="resource" value="${templateconfig.location}"/>
     </bean>
 
@@ -46,13 +46,17 @@
         <property name="servicesClass" value="no.kantega.publishing.api.plugin.OpenAksessServices"/>
         <property name="pluginClass" value="no.kantega.publishing.api.plugin.OpenAksessPlugin"/>
         <property name="postProcessors">
-            <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
-                <property name="exposedBeanNames">
-                    <list></list>
-                </property>
-            </bean>
+            <list>
+                <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
+                    <property name="exposedBeanNames">
+                        <list>                            
+                        </list>
+                    </property>
+                </bean>
+                <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+            </list>
         </property>
-        
+
     </bean>
 
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
