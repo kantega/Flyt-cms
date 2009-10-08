@@ -17,20 +17,21 @@
   --%>
 
 <html>
-  <head><title>Oppgradering av database for Aksess</title></head>
+  <head><title>Upgrade Aksess</title></head>
   <body>
 
-  <h1>Velg versjon</h1>
+  <h1>Select version to upgrade</h1>
   <ul>
       <li><a href="upgrade-512x-5127.jsp">Oppgrader fra 5.12.0-6 til 5.12.7</a></li>
       <li><a href="upgrade-513x-514x.jsp">Oppgrader fra 5.13.X til 5.14.0 - databaseendringer</a></li>
       <li><a href="../tools/generatemultimediausage.jsp">Oppgrader fra 5.13.X til 5.14.0 - generer bildebruk (må gjøres etter alle andre databaseendringer)</a></li>
       <li><a href="upgrade-514x-515x.jsp">Oppgrader fra 5.14.X til 5.15.0 - databaseendringer</a></li>
+      <li><a href="upgrade-60x-61x.jsp">Oppgrader fra 6.0.X til 6.1.X - databasechanges new forms module</a></li>
   </ul>
 
-  <h1>Eksport av databasemaler til XML</h1>
+  <h1>Export database templates to XML</h1>
   <ul>
-      <li><a href="export-xmltemplates.jsp">Lager XML config fra database</a> (Lagre som /WEB-INF/aksess-templateconfig.xml i prosjektet)</li>
+      <li><a href="export-xmltemplates.jsp">Creates XML config from database</a> (Save as /WEB-INF/aksess-templateconfig.xml in your project)</li>
   </ul>
 
   </body>
