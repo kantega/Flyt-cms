@@ -31,6 +31,8 @@
 <head>
 	<title>viewmultimedia.jsp</title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
+    <script type="text/javascript" src="../../aksess/js/aksessmultimedia.jjs"></script>		
+    <script type="text/javascript" src="../../aksess/js/swfobject.js"></script>
 </head>
 <body class="bodyWithMargin">
 <%=MultimediaHelper.mm2HtmlTag(mm)%>

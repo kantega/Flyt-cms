@@ -17,7 +17,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
 <%
     Multimedia mm = new Multimedia();
     RequestParameters param = new RequestParameters(request, "utf-8");
@@ -27,7 +26,7 @@
     String cssClass = "align-center";
     if ("left".equalsIgnoreCase(align)) cssClass="align-left";
     if ("right".equalsIgnoreCase(align)) cssClass="align-right";
-    
+
     if (id != -1) {
         mm = mediaService.getMultimedia(id);
     }
@@ -46,7 +45,7 @@
 function insertMMObject() {
     if (window.parent && window.parent.parent && window.parent.parent.opener && <%=mm.getId()%> != -1) {
         if (window.parent.parent.opener.doInsertTag) {
-            var str = '<%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, align, -1, -1, cssClass)%>';
+            var str = document.mediaform.tag.value;
             window.parent.parent.opener.insertTag(str);
         } else {
             // Vanlig form felt for valg av mediaobjekt
@@ -58,6 +57,9 @@ function insertMMObject() {
 }
 </script>
 <body onLoad="insertMMObject()">
+<form name="mediaform" style="display:none;">
+    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, align, -1, -1, cssClass)%></textarea>
+</form>
 </body>
 </html>
 <%@ include file="../include/jsp_footer.jsf" %>

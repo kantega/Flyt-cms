@@ -55,6 +55,7 @@ public class Aksess {
     private static String[] internalIpSegment = null;
 
     private static String flashPluginVersion;
+    private static boolean flashUseJavascript = false;
     private static String version = "unknown";
 
     private static String roleEveryone = "everyone";
@@ -88,7 +89,6 @@ public class Aksess {
 
     private static boolean flashVideoAutoplay;
     private static String flashVideoPlayerUrl;
-    private static String flashVideoSkinUrl;
 
     private static String multimediaAltFormat = "";
     private static String multimediaTitleFormat = "";
@@ -122,8 +122,6 @@ public class Aksess {
 
     private static Configuration c;
 
-    private static boolean invalidateSessionBeforeLogin = true;
-
     public static void loadConfiguration() {
 
         try {
@@ -142,7 +140,6 @@ public class Aksess {
 
             }
 
-            flashPluginVersion = c.getString("default.flashversion", "8,0,0,0");
             dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
 
             // Format og kvalitet på bilder
@@ -150,16 +147,18 @@ public class Aksess {
             outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
             pngPixelLimit = c.getLong("default.thumbnail.pngpixellimit", pngPixelLimit);
 
-            defaultMediaWidth = c.getInt("multimedia.defaultwidth", 512);
-            defaultMediaHeight = c.getInt("multimedia.defaultheight", 288);
+            defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
+            defaultMediaHeight = c.getInt("multimedia.defaultheight", 306);
 
             maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
             maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
 
             imageConversionEnabled = c.getBoolean("multimedia.convertimages", false);
+
+            flashPluginVersion = c.getString("multimedia.swf.defaultversion", "9.0.0.54");
+            flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
             flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
             flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
-            flashVideoSkinUrl = c.getString("multimedia.flv.skinurl", "/aksess/multimedia/SteelExternalPlayMute.swf");
 
             historyMaxVersions = c.getInt("history.maxversions", 20);
 
@@ -173,8 +172,6 @@ public class Aksess {
             Log.debug(SOURCE, "Bruker sikkerhetsrealm:" + securityRealm, null, null);
 
             securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
-
-            invalidateSessionBeforeLogin = c.getBoolean("security.invalidatesessionbeforelogin", true);
 
             // Rewrite URLs to userfriendly URLS
             urlRewritingEnabled = c.getBoolean("links.rewrite.enabled", true);
@@ -520,10 +517,6 @@ public class Aksess {
         return flashVideoPlayerUrl;
     }
 
-    public static String getFlashVideoSkinUrl() {
-        return flashVideoSkinUrl;
-    }
-
     public static boolean isUrlRewritingEnabled() {
         return urlRewritingEnabled;
     }
@@ -544,9 +537,10 @@ public class Aksess {
         return maxMediaHeight;
     }
 
-    public static boolean isInvalidateSessionBeforeLogin() {
-        return invalidateSessionBeforeLogin;
+    public static boolean isFlashUseJavascript() {
+        return flashUseJavascript;
     }
+
 
     public static void setConfiguration(Configuration configuration) {
         Aksess.c = configuration;

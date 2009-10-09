@@ -158,32 +158,61 @@ public class MultimediaHelper {
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }
-
         } else if (mimeType.indexOf("flash") != -1) {
             int width  = mm.getWidth();
             int height = mm.getHeight();
-            String version = Aksess.getDefaultFlashVersion();
-            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=" + version + "\" width=\"" + width + "\" height=\"" + height + "\">");
+            if (Aksess.isFlashUseJavascript()) {
+                tag.append("<script type=\"text/javascript\">");
+                tag.append("try {");
+                tag.append("aksessMultimedia.embedFlash(\"" + url + "\", " + mm.getId() + ", " + width + ", " + height + ");");
+                tag.append("} catch (e) {");
+                tag.append("}");
+                tag.append("</script>");
+                tag.append("<div id=\"swf" + mm.getId() + "\">");
+                tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>");
+                tag.append("</div>");
+                tag.append("<noscript>");
+            }
+            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"" + width + "\" height=\"" + height + "\">");
             tag.append("<PARAM name=\"movie\" value=\"" + url + "\">");
             tag.append("<PARAM name=\"quality\" value=\"high\">");
             tag.append("<EMBED src=\"" + url + "\" quality=\"high\" pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
+            if (Aksess.isFlashUseJavascript()) {
+                tag.append("</noscript>");
+            }
         } else if (mimeType.equals("video/x-flv")) {
             int width  = Aksess.getDefaultMediaWidth();
-            int height = Aksess.getDefaultMediaHeight() + 42;
-            String version = "9.0.0.0";
+            if (maxW != -1) {
+                width = maxW;
+            }
+            int height = Aksess.getDefaultMediaHeight();
+            if (maxH != -1) {
+                height = maxH;
+            }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();
-            String skinUrl = Aksess.getFlashVideoSkinUrl();
-            String playerStr = baseUrl + playerUrl + "?movieUrl=" + baseUrl + "/multimedia/" + mm.getId() + "." + mm.getMimeType().getFileExtension();
-            if (skinUrl != null && skinUrl.length() > 0) {
-                playerStr += "&skinUrl=" + baseUrl + skinUrl;
+            String movieUrl = baseUrl + "/multimedia/" + mm.getId() + "." + mm.getMimeType().getFileExtension();
+            String playerStr = baseUrl + playerUrl + "?autoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
+            if (Aksess.isFlashUseJavascript()) {
+                String id = "swf" + mm.getId();
+                tag.append("<script type=\"text/javascript\">\n");
+                tag.append("try {\n");
+                tag.append("aksessMultimedia.embedFlashVideo(\"" + movieUrl + "\", " + mm.getId() + ", " + width + ", " + height + ");\n");
+                tag.append("} catch (e) {\n");
+                tag.append("}\n");
+                tag.append("</script>\n");
+                tag.append("<div id=\"" + id + "\">\n");
+                tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>\n");
+                tag.append("</div>\n");
+                tag.append("<noscript>");
             }
-            if (Aksess.isFlashVideoAutoplay()) {
-                playerStr += "&movieAutoPlay=true";
-            }
-            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=" + version + "\" width=\"" + width + "\" height=\"" + height + "\">");
+            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"" + width + "\" height=\"" + height + "\">");
             tag.append("<PARAM name=\"movie\" value=\"" + playerStr + "\">");
             tag.append("<PARAM name=\"quality\" value=\"high\">");
-            tag.append("<EMBED src=\"" + playerStr + "\" quality=\"high\" pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
+            tag.append("<PARAM name=\"allowFullScreen\" value=\"true\" />");
+            tag.append("<EMBED src=\"" + playerStr + "\" quality=\"high\" allowFullScreen=\"true\"  pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
+            if (Aksess.isFlashUseJavascript()) {
+                tag.append("</noscript>");
+            }
         } else if (mimeType.indexOf("quicktime") != -1) {
             int width  = mm.getWidth();
             int height = mm.getHeight();
