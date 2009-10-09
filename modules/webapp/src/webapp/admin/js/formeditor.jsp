@@ -16,8 +16,8 @@
  * limitations under the License.
  */
 
-var editedElement = null;
-var prevType = null;
+var formEditedElement = null;
+var formPrevType = null;
 var formEditorHTML = null;
 
 function formDeleteElement(element) {
@@ -28,7 +28,7 @@ function formEditElement(element) {
     // Show previous edited element and remove editor if visible
     formRemoveEditor();
 
-    editedElement = element;
+    formEditedElement = element;
 
     // Move edit form to current position
     $(element).after(formEditorHTML);
@@ -38,10 +38,10 @@ function formEditElement(element) {
 
     $("#form_ChildNo").val($("#form_FormElements .formElement").index(element));
 
-    var fieldName = $("div.heading label", element).text();
+    fieldName = $("div.heading label", element).text();
     $("#form_FieldName").val(fieldName);
 
-    var helpText = $("div.helpText", element).html();
+    helpText = $("div.helpText", element).html();
     if (helpText == undefined || helpText == null) helpText = "";
     $("#form_HelpText").val(helpText);
 
@@ -57,8 +57,8 @@ function formEditElement(element) {
         $("#form_NoBreak").attr("checked", false);
     }
 
-    var inputClasses = $("div.inputs", element).attr("class").split(" ");
-    var type = "text";
+    inputClasses = $("div.inputs", element).attr("class").split(" ");
+    type = "text";
     if (inputClasses.length > 1) {
         type = inputClasses[inputClasses.length - 1];
     }
@@ -68,9 +68,9 @@ function formEditElement(element) {
     $("#form_FieldType").val(type);
 
     $("#form_FieldType").change(function() {
-        var type = $("#form_FieldType").val();
+        type = $("#form_FieldType").val();
         for (n in formElementTypes) {
-            if (formElementTypes[n].type == prevType) {
+            if (formElementTypes[n].type == formPrevType) {
                 formElementTypes[n].onActive(false);
             }
         }
@@ -79,10 +79,10 @@ function formEditElement(element) {
                 formElementTypes[n].onActive(true);
             }
         }
-        prevType = type;
+        formPrevType = type;
     });
 
-    prevType = type;
+    formPrevType = type;
 
 
     $("#form_Cancel").unbind("click");
@@ -96,7 +96,7 @@ function formEditElement(element) {
         $("#EditFormElement").hide();
     });
 
-    var handler = formGetElementTypeHandler(type);
+    handler = formGetElementTypeHandler(type);
     if (handler) {
         handler.onEdit(element);
         handler.onActive(true);
@@ -113,23 +113,23 @@ function formGetElementTypeHandler(type) {
 }
 
 function formRemoveEditor() {
-    if (editedElement != null) {
-        $(editedElement).show();
+    if (formEditedElement != null) {
+        $(formEditedElement).show();
     }
     $("#EditFormElement").remove();
-    editedElement = null;
+    formEditedElement = null;
 }
 
 function formNewElement() {
     $("#form_ChildNo").val(-1);
 
-    var fieldName = "Felt " + ($("#form_FormElements .formElement").length + 1);
+    fieldName = "Felt " + ($("#form_FormElements .formElement").length + 1);
 
     formAddOrSaveElement(fieldName, "text", "", -1);
     formBindSort();
 
     // Edit this element
-    var elm = $("#form_FormElements .formElement:last-child");
+    elm = $("#form_FormElements .formElement:last-child");
     formEditElement(elm);
 
 
@@ -138,7 +138,7 @@ function formNewElement() {
 }
 
 function formAddInputValue(type, fieldName, value, checked) {
-    var html = "<div>";
+    html = "<div>";
     html += '<input type="' + type + '" name="ValuesCheckbox"';
     if (checked) {
         html += ' checked="checked"';
@@ -157,11 +157,11 @@ function formAddInputValue(type, fieldName, value, checked) {
 }
 
 function formAddOrSaveElement(fieldName, type, helpText, childNo) {
-    var html = "";
+    html = "";
     html += '<div class="heading"><label>' + fieldName + '</label></div>';
     html += '<div class="inputs ' + type + '">';
 
-    var handler = formGetElementTypeHandler(type);
+    handler = formGetElementTypeHandler(type);
     if (handler != null) {
         html += handler.onSave(fieldName);
     }
@@ -171,7 +171,7 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
         html += '<div class="helpText">' + helpText + '</div>';
     }
 
-    var elementClz = "formElement";
+    elementClz = "formElement";
     if ($("#form_FieldMandatory:checked").length == 1) {
         elementClz += " mandatory";
     }
@@ -190,11 +190,11 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
 }
 
 function formSaveElement() {
-    var fieldName = $("#form_FieldName").val();
-    var type = $("#form_FieldType").val();
-    var helpText = $("#form_HelpText").val();
+    fieldName = $("#form_FieldName").val();
+    type = $("#form_FieldType").val();
+    helpText = $("#form_HelpText").val();
 
-    var childNo = $("#form_ChildNo").val();
+    childNo = $("#form_ChildNo").val();
 
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
@@ -234,7 +234,7 @@ function formSave() {
     $("#form_FormElements .formElementButtons").remove();
 
     // Get HTML
-    var html = $("#form_FormElements").html();
+    html = $("#form_FormElements").html();
     $("#form_Value").val(html);
 
     // Add disabled attribute to prevent form elements being saved
@@ -266,14 +266,15 @@ function formBindHover() {
             );
 }
 
+var formNextId = 0;
 function formGetUniqueId(prefix) {
-    var i = 0;
-    var e = document.getElementById(prefix + i);
+    var e = document.getElementById(prefix + formNextId);
     while (e) {
-        i++;
-        e = document.getElementById(prefix + i);
+        formNextId++;
+        e = document.getElementById(prefix + formNextId);
     }
-    return prefix + i;
+    formNextId++;
+    return prefix + formNextId;
 }
 
 function formDeleteSubmissions(formId) {
@@ -402,7 +403,7 @@ formElementCheckbox.onEdit = function(element) {
     });
 }
 formElementCheckbox.onSave = function (fieldName) {
-    var html = "";
+    html = "";
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
         if (val != "") {
@@ -445,7 +446,7 @@ formElementRadio.onEdit = function(element) {
     });
 }
 formElementRadio.onSave = function (fieldName) {
-    var html = "";
+    html = "";
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
         if (val != "") {
@@ -488,9 +489,9 @@ formElementSelect.onEdit = function(element) {
 }
 
 formElementSelect.onSave = function (fieldName) {
-    var html = '<select name="' + fieldName + '" disabled>';
+    html = '<select name="' + fieldName + '" disabled>';
     $("#form_Values div").each(function (i) {
-        var val = $("input[type=text]", this).val();
+        val = $("input[type=text]", this).val();
         if (val != "") {
             html += '<option value="' + val + '" ';
             if ($("input[type=radio]", this).is(":checked")) {
@@ -507,11 +508,11 @@ formElementSelect.onActive = function (isSelected) {
         $("#form_AddElement").unbind("click");
         $("#form_AddElement").click(function(event) {
             event.preventDefault();
-            var fieldName = $("#form_FieldName").val();
+            fieldName = $("#form_FieldName").val();
             formAddInputValue("radio", fieldName, "", false);
         });
         if ($("#form_Values input").length == 0) {
-            var fieldName = $("#form_FieldName").val();
+            fieldName = $("#form_FieldName").val();
             formAddInputValue("radio", fieldName, "", false);
         }
         $(".form_params_list").show();
