@@ -94,8 +94,7 @@ public class MultimediaService {
             mm.setModifiedBy(securitySession.getUser().getId());
         }
 
-
-        if (mm.getType() == MultimediaType.MEDIA && mm.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+        if (mm.getType() == MultimediaType.MEDIA && mm.getData() != null && mm.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
             if (mm.getWidth() > Aksess.getMaxMediaWidth() ||  mm.getHeight() > Aksess.getMaxMediaHeight()) {
                 try {
                     mm = ImageHelper.resizeImage(mm, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
