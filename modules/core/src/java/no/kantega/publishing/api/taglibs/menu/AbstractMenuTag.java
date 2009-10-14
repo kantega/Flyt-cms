@@ -232,8 +232,14 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         if (children != null) {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
-                if (expandAll || child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1) {
-                    sitemap.setOpen(true);
+                boolean isOpen = false;
+                if(child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1){
+                    isOpen = true;
+                }
+                if (expandAll || isOpen) {
+                    if(isOpen){
+                        sitemap.setOpen(true);
+                    }
                     // We get one more level than we need, don't display all
                     int maxDepth = depth - Math.max(startDepth, 0);
                     if (depth == -1 || currentDepth < maxDepth) {
@@ -345,7 +351,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     }
 
     private int doIter() {
-   
+
         if (status.getIndex() < status.getCount()) {
             pageContext.setAttribute("aksess_menu_" + name, status.getCurrent());
             if(var != null) {
