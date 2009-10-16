@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kantega.no" xmlns="http://www.kantega.no" elementFormDefault="qualified">
+    <xs:element name="template">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="attributes" maxOccurs="1" minOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="attributes">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="attribute" minOccurs="1"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="attribute">
+        <xs:complexType>
+            <xs:all minOccurs="0">
+                <xs:element ref="helptext" maxOccurs="1"/>
+                <xs:element ref="options" maxOccurs="1"/>
+            </xs:all>
+            <xs:attribute name="contenttemplate" type="xs:string"/>
+            <xs:attribute name="documenttype" type="xs:string"/>
+            <xs:attribute name="default"  type="xs:string"/>
+            <xs:attribute name="displaytemplate" type="xs:string"/>
+            <xs:attribute name="editable">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="false"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="editableby" type="xs:string"/>
+            <xs:attribute name="featureset" type="xs:string"/>
+            <xs:attribute name="height" type="xs:integer"/>
+            <xs:attribute name="width" type="xs:integer"/>
+            <xs:attribute name="hideinsites" type="xs:string"/>
+            <xs:attribute name="ignorevariant">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="true"/>
+                        <xs:enumeration value="false"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="mandatory" type="xs:boolean"/>
+            <xs:attribute name="mapto">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="title"/>
+                        <xs:enumeration value="description"/>
+                        <xs:enumeration value="image"/>
+                        <xs:enumeration value="expiredate"/>
+                        <xs:enumeration value="owner"/>
+                        <xs:enumeration value="ownerperson"/>
+                        <xs:enumeration value="publishdate"/>
+                        <xs:enumeration value="revisiondate"/>
+                        <xs:enumeration value="url"/>
+                        <xs:enumeration value="alttitle"/>
+                        <xs:enumeration value="topics"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="maxlength" type="xs:integer"/>
+            <xs:attribute name="maxitems" type="xs:integer"/>
+            <xs:attribute name="multiple" type="xs:boolean"/>
+            <xs:attribute name="name" use="required" type="xs:string"/>
+            <xs:attribute name="regexp" type="xs:string"/>
+            <xs:attribute name="site" type="xs:string"/>
+            <xs:attribute name="showinsites" type="xs:string"/>
+            <xs:attribute name="title" type="xs:string"/>
+            <xs:attribute name="type" use="required">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="bean"/>
+                        <xs:enumeration value="contentid"/>
+                        <xs:enumeration value="contentlist"/>
+                        <xs:enumeration value="date"/>
+                        <xs:enumeration value="datetime"/>
+                        <xs:enumeration value="documenttype"/>
+                        <xs:enumeration value="editableform"/>
+                        <xs:enumeration value="editablelist"/>
+                        <xs:enumeration value="email"/>
+                        <xs:enumeration value="file"/>
+                        <xs:enumeration value="form"/>
+                        <xs:enumeration value="htmltext"/>
+                        <xs:enumeration value="image"/>
+                        <xs:enumeration value="list"/>
+                        <xs:enumeration value="media"/>
+                        <xs:enumeration value="mediafolder"/>
+                        <xs:enumeration value="number"/>
+                        <xs:enumeration value="role"/>
+                        <xs:enumeration value="text"/>
+                        <xs:enumeration value="topic"/>
+                        <xs:enumeration value="topiclist"/>
+                        <xs:enumeration value="topicmap"/>
+                        <xs:enumeration value="url"/>
+                        <xs:enumeration value="user"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="helptext" type="xs:string"/>
+    <xs:element name="options">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="option"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="option">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="value"  type="xs:string"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
