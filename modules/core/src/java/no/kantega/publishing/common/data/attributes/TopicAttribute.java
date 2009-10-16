@@ -18,49 +18,94 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapTopiclistAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapTopicAttributeValueToContentPropertyBehaviour;
+import no.kantega.commons.exception.SystemException;
 
 import java.text.ParseException;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.w3c.dom.Element;
 
 public class TopicAttribute  extends Attribute {
+    protected boolean multiple = false;
+
+    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+        super.setConfig(config, model);
+
+        if (config != null) {
+            String multiple = config.getAttribute("multiple");
+            if ("true".equalsIgnoreCase(multiple)) {
+                this.multiple = true;
+            }
+        }
+    }
 
     public String getRenderer() {
-        return "topic";
+        if (multiple) {
+            return "topic_multiple";
+        } else {
+            return "topic";
+        }
     }
 
     public Topic getValueAsTopic() {
-        if (value == null || value.indexOf(":") == -1) {
+        List<Topic> topics = getValueAsTopics();
+        if (topics.size() == 0) {
             return null;
+        } else {
+            return topics.get(0);
+        }
+    }
+
+    public List<Topic> getValueAsTopics() {
+        List<Topic> topicList = new ArrayList<Topic>();
+
+        if (value == null || value.indexOf("") == -1) {
+            return topicList;
         }
 
-        String topicMapId = value.substring(0, value.indexOf(":"));
-        String topicId = value.substring(value.indexOf(":") + 1, value.length());
-        try {
-            return new Topic(topicId, Integer.parseInt(topicMapId));
-        } catch (NumberFormatException e) {
-            return null;
+        String[] topics = getValue().split(",");
+        for (int i = 0; i < topics.length; i++) {
+            String[] topicStrings = topics[i].split(":");
+            if(topicStrings.length == 2) {
+                int topicMapId = Integer.parseInt(topicStrings[0]);
+                String topicId = topicStrings[1];
+                Topic topic = TopicAO.getTopic(topicMapId, topicId);
+                if (topic != null) {
+                    topicList.add(topic);
+                }
+            }
         }
+        return topicList;
     }
 
     public String getTopicId() {
-        if (value == null || value.indexOf(":") == -1) {
+        Topic topic = getValueAsTopic();
+        if (topic == null) {
             return null;
+        } else {
+            return topic.getId();
         }
-
-        return  value.substring(value.indexOf(":") + 1, value.length());
     }
 
     public int getTopicMapId() {
-        if (value == null || value.indexOf(":") == -1) {
+        Topic topic = getValueAsTopic();
+        if (topic == null) {
             return -1;
-        }
-
-        String topicMapId = value.substring(0, value.indexOf(":"));
-        try {
-            return Integer.parseInt(topicMapId);
-        } catch (NumberFormatException e) {
-            return -1;
+        } else {
+            return topic.getTopicMapId();
         }
     }
+
+    public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
+        return new MapTopicAttributeValueToContentPropertyBehaviour();
+    }    
 }
 

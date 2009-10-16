@@ -207,13 +207,8 @@ function addTopic(topicMap, topicId, topicName) {
     if (focusField == null) {
         window.parent.location = "../publish/AddContentTopic.action?topicMapId=" + topicMap + "&topicId=" + topicId;
     } else {
-        // Topic should be inserted into a input field
-        var name = focusField.name;
-        var textField = document.myform.elements[name + 'text'];
-        if (textField) {
-            focusField.value = "" + topicMap + ":" + topicId;
-            textField.value = topicName;
-        }
+        // Topic should be inserted into a input field / list
+        insertIdAndValueIntoForm(topicMap + ":" + topicId, topicName);
     }
 }
 
