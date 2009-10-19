@@ -83,21 +83,34 @@ public class MultimediaService {
     }
 
     /**
-     * Saves multimediaobject in database.  Resizes image if dimensions are greater than max 
-     * @param mm - Multimedia object
+     * Saves multimediaobject in database.
+     * @param multimedia - Multimedia object
      * @return
      * @throws SystemException
      */
-    public int setMultimedia(Multimedia mm) throws SystemException {
-        if (mm.getType() == MultimediaType.FOLDER || mm.getData() != null) {
-            // Sett status som oppdatert for bilder kun dersom nytt bilde er lagt inn...
-            mm.setModifiedBy(securitySession.getUser().getId());
+    public int setMultimedia(Multimedia multimedia) throws SystemException {
+        return setMultimedia(multimedia, true);
+    }
+
+    
+    /**
+     * Saves multimediaobject in database.
+     * @param multimedia - Multimedia object
+     * @param preserveImageSize - Resizes image if false and dimensions are greater than max
+     *
+     * @return
+     * @throws SystemException
+     */
+    public int setMultimedia(Multimedia multimedia, boolean preserveImageSize) throws SystemException {
+        if (multimedia.getType() == MultimediaType.FOLDER || multimedia.getData() != null) {
+            // For images / media files is updated is only set if a new file is uploaded
+            multimedia.setModifiedBy(securitySession.getUser().getId());
         }
 
-        if (mm.getType() == MultimediaType.MEDIA && mm.getData() != null && mm.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-            if (mm.getWidth() > Aksess.getMaxMediaWidth() ||  mm.getHeight() > Aksess.getMaxMediaHeight()) {
+        if ((!preserveImageSize) && multimedia.getType() == MultimediaType.MEDIA && multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+            if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
                 try {
-                    mm = ImageHelper.resizeImage(mm, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                    multimedia = ImageHelper.resizeImage(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
                 } catch (InterruptedException e) {
                     throw new SystemException(SOURCE, "InterruptedException", e);
                 } catch (IOException e) {
@@ -106,17 +119,18 @@ public class MultimediaService {
             }
         }
 
-        int id = MultimediaAO.setMultimedia(mm);
-        mm.setId(id);
-        if (mm != null && Aksess.isEventLogEnabled()) {
-            if (mm.getType() == MultimediaType.FOLDER) {
-                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, mm.getName());
+        int id = MultimediaAO.setMultimedia(multimedia);
+        multimedia.setId(id);
+        if (multimedia != null && Aksess.isEventLogEnabled()) {
+            if (multimedia.getType() == MultimediaType.FOLDER) {
+                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName());
             } else {
-                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, mm.getName(), mm);
+                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
             }
         }
         return id;
     }
+
 
     public void moveMultimedia(int mmId, int newParentId) throws SystemException, NotAuthorizedException {
         Multimedia mm = getMultimedia(mmId);
