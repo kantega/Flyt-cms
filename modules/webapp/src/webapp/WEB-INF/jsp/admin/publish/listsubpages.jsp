@@ -18,6 +18,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
 <c:forEach items="${menus}" var="menu">
     <ul id="${menu.id}" class="associationCategory">
@@ -31,9 +33,18 @@
         <c:forEach var="page" items="${menu.subPages}">
             <li id="${page.association.id}" class="page">
                 <span class="name">${page.title}</span>
-                <span class="status">${page.status}</span>
+                <c:choose>
+                    <c:when test="${page.status == 30}">
+                        <c:set var="statusId" value="${page.status}_${page.visibilityStatus}"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="statusId" value="${page.status}"/>
+                    </c:otherwise>
+                </c:choose>
+                <span class="contentStatus status${statusId}"><kantega:label key="aksess.versions.status.${statusId}"/></span>
                 <span class="lastModified"><fmt:formatDate value="${page.lastModified}" pattern="<%=Aksess.getDefaultDatetimeFormat()%>"/></span>
-                <span class="publisher">${page.publisher}</span>
+                <aksess:getuser name="publisher" userid="${page.publisher}"/>
+                <span class="publisher">${publisher.name}</span>
                 <span class="views">0</span>
             </li>
         </c:forEach>

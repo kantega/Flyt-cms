@@ -18,6 +18,7 @@
 ~ limitations under the License.
 --%>
 
+
 <kantega:section id="title">
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
@@ -28,6 +29,7 @@
 
         $(document).ready(function(){
             updateSubPageList(currentUrl);
+            
         });
 
         function updateMainPane(id, suppressNavigatorUpdate) {
@@ -40,14 +42,26 @@
         function updateSubPageList(url) {
             $("#SubPages").load("<%=Aksess.getContextPath()%>/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
                 debug("updateSubPageList(): response from ListSubPages.action received");
-                    $("#SubPages ul").sortable({
-                        connectWith: '.associationCategory',
-                        axis: 'y',
-                        stop: function(e, ui){
-                            //
-                        }
-                    }).disableSelection();
+                $("#SubPages ul").sortable({
+                    connectWith: '.associationCategory',
+                    items: 'li:not(.menu)',
+                    axis: 'y',
+                    stop: function(e, ui){
 
+                    }
+                });
+
+                $("#SubPages li.page").click(function(event){
+                    var allSelected = $("#SubPages li.page.selected");
+                    if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
+                        $(this).toggleClass('selected');
+                    } else {
+                        $(allSelected).each(function(){
+                            $(this).removeClass("selected");
+                        });
+                        $(this).addClass("selected");
+                    }
+                });
             });
         }
 

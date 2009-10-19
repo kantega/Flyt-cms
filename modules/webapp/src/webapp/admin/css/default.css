@@ -599,9 +599,13 @@ div.sidebarFieldset fieldset {
 #SubPages ul {
     margin: 0 0 2em;
 }
+#SubPages ul .ui-selected {
+    background: #cccccc;
+}
+
 #SubPages li {
     list-style: none;
-    height: 2em;
+    height: 17px;
     border-bottom: 1px solid #cccccc;
 }
 
@@ -615,15 +619,42 @@ div.sidebarFieldset fieldset {
 }
 
 #SubPages li.page {
-    cursor:move;
+    cursor: n-resize;
 }
-
-#SubPages li .name {
-    padding-left: 2em;
+#SubPages li.page.selected {
+    background: url("../bitmaps/default/framework/organizesubpages_selected.png") repeat-x center left;
+    color: #ffffff;
 }
 
 #SubPages li span {
     display: inline-block;
     width: 18%;
-    line-height: 2em;
+    line-height: 17px;
 }
+
+#SubPages li .name {
+    padding-left: 2em;
+}
+#SubPages li .contentStatus {
+    padding-left: 18px;
+}
+#SubPages li .contentStatus.status0 {}
+#SubPages li .contentStatus.status5 {}
+#SubPages li .contentStatus.status10 {}
+#SubPages li .contentStatus.status20 {}
+#SubPages li .contentStatus.status25 {}
+#SubPages li .contentStatus.status30 {}
+#SubPages li .contentStatus.status30_0 {
+    background: url("../bitmaps/default/framework/organizesubpages_published_posponed.png") left center no-repeat;
+}
+#SubPages li .contentStatus.status30_10 {
+    background: url("../bitmaps/default/framework/organizesubpages_published.png") left center no-repeat;
+}
+#SubPages li .contentStatus.status30_15 {
+    background: url("../bitmaps/default/framework/organizesubpages_expired.png") left center no-repeat;
+}
+#SubPages li .contentStatus.status30_20 {
+    background: url("../bitmaps/default/framework/organizesubpages_expired.png") left center no-repeat;
+}
+#SubPages li .contentStatus.status40 {}
+
