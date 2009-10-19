@@ -66,6 +66,7 @@ public class Aksess {
     private static String roleUnit;
     private static String roleOwner = "owner";
     private static String roleDeveloper;
+    private static String[] rolePhotographer;
     private static String roleQualityAdmin;
 
     private static String outputImageFormat = "jpg";
@@ -228,7 +229,8 @@ public class Aksess {
             roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin);
             roleUnit = c.getString("security.role.unit", "enhet*");
             roleDeveloper = c.getString("security.role.developer", "developer");
-            roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");            
+            roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");
+            rolePhotographer = c.getStrings("security.role.photographer", "photographer");            
 
             // ContentLock
             lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
@@ -389,6 +391,10 @@ public class Aksess {
         return roleOwner;
     }
 
+    public static String[] getPhotographerRoles() {
+        return roleHtmlEditor;
+    }
+
     public static String getQualityAdminRole() {
         return roleQualityAdmin;
     }    
@@ -423,18 +429,6 @@ public class Aksess {
 
     public static Configuration getConfiguration() throws ConfigurationException {
         return c;
-    }
-
-    public static String getKsiAdminServiceCodeBase() {
-        return null;
-    }
-
-    public static String getKsiAdminServiceSessionKey() {
-        return null;
-    }
-
-    public static String getKsiUsernameAttributeName() {
-        return null;
     }
 
     public static boolean doOpenLinksInNewWindow() {

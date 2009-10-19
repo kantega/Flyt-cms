@@ -171,7 +171,9 @@ public class SaveMultimediaAction extends HttpServlet {
 
                 }
 
-                int newId = mediaService.setMultimedia(mm);
+                boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
+
+                int newId = mediaService.setMultimedia(mm, preserveImageSize);
 
                 if (mm.getType() == MultimediaType.FOLDER) {
                     response.sendRedirect("multimedia.jsp?activetab=viewfolder&id=" + newId + "&updatetree=true");
@@ -292,8 +294,8 @@ public class SaveMultimediaAction extends HttpServlet {
                                 }
                                 mm.setFilename(entryfilename);
 
-
-                                mediaService.setMultimedia(mm);
+                                boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
+                                mediaService.setMultimedia(mm, preserveImageSize);
                             }
 
                         }

@@ -149,7 +149,15 @@ function initialize() {
             <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
         </tr>
         <tr>
-            <td><input type="file" name="file" size="55" style="width:500px;"></td>
+            <td><input type="file" name="file" size="55" style="width:500px;">
+                <%
+                    if (securitySession.isUserInRole(Aksess.getPhotographerRoles())) {
+                %>
+                    <input type="checkbox" name="preserveImageSize" value="true"><kantega:label key="aksess.multimedia.preserveimagesize"/>
+                <%
+                    }
+                %>
+            </td>
         </tr>
         <tr>
             <td><img src="../bitmaps/blank.gif" width="2" height="2">
