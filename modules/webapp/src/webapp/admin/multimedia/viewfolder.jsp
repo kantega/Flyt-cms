@@ -101,7 +101,8 @@
                 out.write("<td align=\"center\"  class=\"mmbackground\" onClick=\"gotoMMObject(" + mm.getId() + ", 'multimedia')\">");
                 String mimeType = mm.getMimeType().getType();
                 if (mimeType.indexOf("image") != -1) {
-                    out.write(MultimediaHelper.mm2HtmlTag(mm, 156, 120));
+                    String url = mm.getUrl() + "&amp;width=156&amp;height=120";
+                    out.write("<img src=\"" + url + "\">");
                 } else if (mimeType.indexOf("flash") != -1) {
                     out.write("<img src=\"../bitmaps/common/mm/icon_flash.gif\" alt=\"Flash fil\">");
                 } else if (mimeType.indexOf("x-ms-wmv") != -1 || mimeType.indexOf("x-msvideo") != -1) {
