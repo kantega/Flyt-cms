@@ -147,7 +147,7 @@ public class dbConnectionFactory {
                 bds.setNumTestsPerEvictionRun(dbMaxConnections);
                 if (dbRemoveAbandonedTimeout > 0) {
                     bds.setRemoveAbandoned(true);
-                    bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
+                    bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout*1000);
                     bds.setLogAbandoned(true);
                 }
             }
