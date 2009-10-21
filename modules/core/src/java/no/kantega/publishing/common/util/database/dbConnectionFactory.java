@@ -54,6 +54,9 @@ public class dbConnectionFactory {
     private static DataSource proxyDs = null;
 
     private static int dbMaxConnections = -1;
+    private static int dbMaxIdleConnections = -1;
+    private static int dbMinIdleConnections = -1;
+    private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
 
     private static boolean dbEnablePooling = false;
@@ -75,7 +78,10 @@ public class dbConnectionFactory {
             dbUsername = configuration.getString("database.username", "root");
             dbPassword = configuration.getString("database.password", "");
             dbMaxConnections = configuration.getInt("database.maxconnections", 50);
+            dbMaxIdleConnections = configuration.getInt("database.maxidleconnections", 16);
+            dbMinIdleConnections = configuration.getInt("database.minidleconnections", 8);
             dbMaxWait = configuration.getInt("database.maxwait", 30);
+            dbRemoveAbandonedTimeout = configuration.getInt("database.removeabandonedtimeout", -1);
             dbEnablePooling = configuration.getBoolean("database.enablepooling", true);
             dbCheckConnections = configuration.getBoolean("database.checkconnections", true);
             debugConnections = configuration.getBoolean("database.debugconnections", false);
@@ -110,7 +116,8 @@ public class dbConnectionFactory {
                 // Enable DBCP pooling
                 BasicDataSource bds = new BasicDataSource();
                 bds.setMaxActive(dbMaxConnections);
-                bds.setMinIdle(dbMaxConnections);
+                bds.setMaxIdle(dbMaxIdleConnections);
+                bds.setMinIdle(dbMinIdleConnections);
                 if (dbMaxWait != -1) {
                     bds.setMaxWait(1000*dbMaxWait);
                 }
@@ -137,6 +144,12 @@ public class dbConnectionFactory {
                 bds.setValidationQuery("SELECT max(ContentId) from content");
                 bds.setTimeBetweenEvictionRunsMillis(1000*60*2);
                 bds.setMinEvictableIdleTimeMillis(1000*60*5);
+                bds.setNumTestsPerEvictionRun(dbMaxConnections);
+                if (dbRemoveAbandonedTimeout > 0) {
+                    bds.setRemoveAbandoned(true);
+                    bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
+                    bds.setLogAbandoned(true);
+                }
             }
 
             if(debugConnections) {
@@ -262,7 +275,7 @@ public class dbConnectionFactory {
 
             return c;
         } catch (SQLException se) {
-            Log.info(SOURCE, "Klarte ikke å koble opp til databasen: url=" + dbUrl, null, null);
+            Log.info(SOURCE, "Unable to connect to database: url=" + dbUrl, null, null);
             Log.error(SOURCE, se, null, null);
             throw new DatabaseConnectionException(SOURCE, se);
         }
