@@ -23,7 +23,7 @@ import java.util.*;
 /**
  *
  */
-public class AksessSearchController implements AksessController {
+public class ContentSearchController implements AksessController {
 
     private String description = "Performs search for Aksess content";
 
