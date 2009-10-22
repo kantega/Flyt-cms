@@ -71,7 +71,7 @@
         <property name="indexManager" ref="indexManager"/>
     </bean>
 
-    <bean id="termTranslator" class="no.kantega.search.result.TermTranslatorDefaultImpl">
+    <bean id="termTranslator" class="no.kantega.publishing.search.result.AksessSearchTermTranslator">
         <property name="indexSearcherManager" ref="indexSearcherManager"/>
     </bean>
 
