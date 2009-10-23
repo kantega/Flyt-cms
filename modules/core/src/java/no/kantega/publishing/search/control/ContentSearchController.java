@@ -15,6 +15,7 @@ import no.kantega.search.result.SearchResultExtendedImpl;
 import no.kantega.search.result.HitCount;
 import no.kantega.search.index.Fields;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.client.util.RequestParameters;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -156,7 +157,7 @@ public class ContentSearchController implements AksessController {
                         hitCounts.put(name, urlPrefix + url);
                     }
                 } else {
-                    if (query.getStringParam(hitCount.getField()) == null) {
+                    if (query.getStringParam(hitCount.getField()) == null || Fields.CONTENT_PARENTS.equals(hitCount.getField())) {
                         String name = hitCount.getField() + "." + hitCount.getTerm();
                         hitCounts.put(name, urlPrefix + QueryStringGenerator.replaceParam(query, hitCount.getField(), hitCount.getTerm()));
                     }
@@ -175,10 +176,26 @@ public class ContentSearchController implements AksessController {
         return docTypeIds;
     }
 
+    /**
+     * Gets a list of subpages based on parentid, if no parentid is specified, gets subpages under root
+     * @param siteId
+     * @param request
+     * @return
+     */
     private String[] getParents(int siteId, HttpServletRequest request) {
         ContentManagementService cms = new ContentManagementService(request);
+
+        RequestParameters param = new RequestParameters(request);
+        int parentId = param.getInt(Fields.CONTENT_PARENTS);
+
         try {
-            ContentIdentifier cid = new ContentIdentifier(siteId, "/");
+            ContentIdentifier cid;
+            if (parentId == -1) {
+                cid = new ContentIdentifier(siteId, "/");
+            } else {
+                cid = new ContentIdentifier();
+                cid.setAssociationId(parentId);
+            }
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(cid);
             List<Content> pages = cms.getContentSummaryList(query, -1, new SortOrder(ContentProperty.TITLE, false));

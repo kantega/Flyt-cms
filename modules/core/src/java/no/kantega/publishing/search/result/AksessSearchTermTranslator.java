@@ -9,6 +9,9 @@ import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.ao.ContentAO;
 
 import java.io.IOException;
 import java.util.Date;
@@ -32,8 +35,6 @@ public class AksessSearchTermTranslator implements TermTranslator {
 
     private DateFormat fromFormat = new SimpleDateFormat("yyyyMMddHHmm");
     private DateFormat toFormat = new SimpleDateFormat("dd.MM.yy");
-
-    private IndexSearcherManager indexSearcherManager;
 
     public String fromField(String field) {
         String retVal = "search.other";
@@ -98,21 +99,13 @@ public class AksessSearchTermTranslator implements TermTranslator {
         return retVal;
     }
 
-    public void setIndexSearcherManager(IndexSearcherManager indexSearcherManager) {
-        this.indexSearcherManager = indexSearcherManager;
-    }
-
     private String lookupContentTitle(String term) {
         String retVal = null;
-        try {
-            Query query = new TermQuery(new Term(Fields.CONTENT_ID, term));
-            IndexSearcher searcher = indexSearcherManager.getSearcher("aksess");
-            TopDocs topDocs = searcher.search(query, 1);
-            if (topDocs.scoreDocs.length > 0) {
-                retVal = searcher.doc(topDocs.scoreDocs[0].doc).get(Fields.TITLE);
-            }
-        } catch (IOException e) {
-            Log.error(SOURCE, e, null, null);
+        ContentIdentifier cid = new ContentIdentifier();
+        cid.setAssociationId(Integer.parseInt(term));
+        Content content = ContentAO.getContent(cid, false);
+        if (content != null) {
+            return content.getTitle();
         }
         return retVal;
     }
