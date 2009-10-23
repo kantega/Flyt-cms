@@ -35,13 +35,6 @@ public class CleanupHTMLAction  implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String html = request.getParameter("html");
 
-        for (int i = 0; i < html.length(); i++) {
-            int c = (int)html.charAt(i);
-            char ch = html.charAt(i);
-            System.out.println(ch + "=" + c);
-
-        }
-
         html = StringHelper.replace(html, "\u2022", "<li>");
 
         HTMLEditorHelper helper = new  HTMLEditorHelper(request);
