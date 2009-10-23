@@ -47,6 +47,8 @@ public class HTMLEditorHelper {
     public String cleanupHTML(String value) {
         FilterPipeline pipe = new FilterPipeline();
 
+        // Remove all comments
+
         // Remove Word markup
         pipe.addFilter(new MSWordFilter());
 
@@ -60,6 +62,11 @@ public class HTMLEditorHelper {
             value = "<html><body>" + value + "</body></html>";
 
             StringWriter sw = new StringWriter();
+            pipe.filter(new StringReader(value), sw);
+            value = sw.getBuffer().toString();
+
+            // Filter twice to remove comments leftover from removed STYLE tags
+            sw = new StringWriter();
             pipe.filter(new StringReader(value), sw);
             value = sw.getBuffer().toString();
 

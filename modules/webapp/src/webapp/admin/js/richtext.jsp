@@ -101,6 +101,7 @@ function rtCleanupHTML(editorId) {
 
     xmlhttp.open("POST",  "CleanupHTML.action", true);
     xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4) {
             rtCleanupHTMLCallback(editor, xmlhttp.responseText)

@@ -46,7 +46,5 @@ function getXmlHttp() {
         xmlhttp = new XMLHttpRequest();
     }
 
-    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-
     return xmlhttp;
 }

@@ -50,6 +50,7 @@
             var xmlhttp = getXmlHttp();
             xmlhttp.open("POST",  "../publish/AddListOption.action", true);
             xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+            xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
             xmlhttp.onreadystatechange=function() {
                 if (xmlhttp.readyState==4) {
                     if(xmlhttp.responseText == "success") {

@@ -419,6 +419,7 @@ function validateRemote(url) {
     var xmlhttp = validatorGetXmlHttp();
     xmlhttp.open("POST",  url, true);
     xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xmlhttp.onreadystatechange=function() {
         if (xmlhttp.readyState==4) {
             var xml = xmlhttp.responseXML;
