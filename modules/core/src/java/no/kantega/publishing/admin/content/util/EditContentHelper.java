@@ -381,7 +381,7 @@ public class EditContentHelper {
                     }
                 }
             } catch (TransformerException e) {
-                throw new InvalidTemplateException("Feil ved lesing av mal:" + templateFile, SOURCE, e);
+                throw new InvalidTemplateException("Error reading template:" + templateFile, SOURCE, e);
             }
         }
     }
@@ -390,11 +390,13 @@ public class EditContentHelper {
         ResourceLoader loader = (ResourceLoader) RootContext.getInstance().getBean("contentTemplateResourceLoader");
         Resource resource = loader.getResource(templateFile);
         ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(loader);
+        if (resource == null) {
+            throw new InvalidFileException(templateFile, SOURCE, null);
+        }
         return XMLHelper.openDocument(resource, entityResolver);
     }
 
     private static void setDefaultProperties(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
-
         if (content.getMetaDataTemplateId() > 0) {
             inheritPropertiesByTemplate(content, content.getMetaDataTemplateId());
         }
