@@ -392,7 +392,7 @@ public class Aksess {
     }
 
     public static String[] getPhotographerRoles() {
-        return roleHtmlEditor;
+        return rolePhotographer;
     }
 
     public static String getQualityAdminRole() {

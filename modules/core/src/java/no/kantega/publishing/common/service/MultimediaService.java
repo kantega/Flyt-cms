@@ -92,7 +92,7 @@ public class MultimediaService {
         return setMultimedia(multimedia, true);
     }
 
-    
+
     /**
      * Saves multimediaobject in database.
      * @param multimedia - Multimedia object
@@ -107,14 +107,16 @@ public class MultimediaService {
             multimedia.setModifiedBy(securitySession.getUser().getId());
         }
 
-        if ((!preserveImageSize) && multimedia.getType() == MultimediaType.MEDIA && multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-            if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                try {
-                    multimedia = ImageHelper.resizeImage(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                } catch (InterruptedException e) {
-                    throw new SystemException(SOURCE, "InterruptedException", e);
-                } catch (IOException e) {
-                    throw new SystemException(SOURCE, "IOException", e);
+        if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
+            if ((!preserveImageSize) && multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
+                    try {
+                        multimedia = ImageHelper.resizeImage(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                    } catch (InterruptedException e) {
+                        throw new SystemException(SOURCE, "InterruptedException", e);
+                    } catch (IOException e) {
+                        throw new SystemException(SOURCE, "IOException", e);
+                    }
                 }
             }
         }
@@ -205,7 +207,7 @@ public class MultimediaService {
             cid.setContentId((Integer)contentIds.get(i));
             Content content = ContentAO.getContent(cid, true);
             if (content != null) {
-                pages.add(content);                
+                pages.add(content);
             }
         }
 
