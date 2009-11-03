@@ -42,39 +42,49 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
-        Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
+        boolean jobDisabled = false;
         try {
-            Configuration config = Aksess.getConfiguration();
+            jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
+        } catch (ConfigurationException e) {
+            Log.debug(SOURCE, "Unable to read aksess configuration", null, null);
+        }
+        if(jobDisabled){
+            Log.debug(SOURCE, "Mailsubscriptionjob disabled", null, null);
+        }else{
+            Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
+            try {
+                Configuration config = Aksess.getConfiguration();
 
-            Date previousRun = ScheduleLogAO.getLastRun(SOURCE + "-" + interval);
-            ScheduleLogAO.setLastrun(SOURCE + "-" + interval, new Date());
+                Date previousRun = ScheduleLogAO.getLastRun(SOURCE + "-" + interval);
+                ScheduleLogAO.setLastrun(SOURCE + "-" + interval, new Date());
 
-            if (previousRun != null) {
-                // Send ut epost med alle nye meldinger
-                MailSubscriptionAgent agent = new MailSubscriptionAgent();
+                if (previousRun != null) {
+                    // Send ut epost med alle nye meldinger
+                    MailSubscriptionAgent agent = new MailSubscriptionAgent();
 
-                boolean groupEmails = config.getBoolean("mail.subscription.groupemails", false);
+                    boolean groupEmails = config.getBoolean("mail.subscription.groupemails", false);
 
-                if (groupEmails) {
-                    // Send en epost for alle sites
-                    Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
-                    agent.emailNewContentSincePreviousDate(previousRun, interval, null);
-                } else {
-                    // Send en epost for hver site
-                    List sites = SiteCache.getSites();
-                    for (int i = 0; i < sites.size(); i++) {
-                        Site site = (Site) sites.get(i);
-                        Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
-                        agent.emailNewContentSincePreviousDate(previousRun, interval, site);
+                    if (groupEmails) {
+                        // Send en epost for alle sites
+                        Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
+                        agent.emailNewContentSincePreviousDate(previousRun, interval, null);
+                    } else {
+                        // Send en epost for hver site
+                        List sites = SiteCache.getSites();
+                        for (int i = 0; i < sites.size(); i++) {
+                            Site site = (Site) sites.get(i);
+                            Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
+                            agent.emailNewContentSincePreviousDate(previousRun, interval, site);
+                        }
                     }
                 }
+            } catch (SystemException e) {
+                Log.error(SOURCE, e, null, null);
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            } catch (ConfigurationException e) {
+                Log.error(SOURCE, e, null, null);
             }
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (SQLException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (ConfigurationException e) {
-            Log.error(SOURCE, e, null, null);
         }
     }
 
