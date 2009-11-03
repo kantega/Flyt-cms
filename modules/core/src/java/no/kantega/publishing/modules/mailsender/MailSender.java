@@ -182,7 +182,10 @@ public class MailSender {
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(templateFile);
 
-            String templateText = IOUtils.toString(resource.getInputStream());
+            Configuration config = Aksess.getConfiguration();
+
+            String encoding = config.getString("mail.templates.encoding", "ISO-8859-1");
+            String templateText = IOUtils.toString(resource.getInputStream(), encoding);
 
             VelocityContext context = new VelocityContext(parameters);
 
