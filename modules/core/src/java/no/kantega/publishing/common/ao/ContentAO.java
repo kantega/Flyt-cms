@@ -526,9 +526,9 @@ public class ContentAO {
         return getContentList(contentQuery, maxElements, sort, getAttributes, false);
     }
 
-    public static List getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
+    public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         final Map contentMap   = new HashMap();
-        final List contentList = new ArrayList();
+        final List<Content> contentList = new ArrayList<Content>();
 
         final StringBuffer cvids = new StringBuffer();
 

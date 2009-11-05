@@ -422,7 +422,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
+    public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List list = ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
 
         List approved = new ArrayList();
@@ -446,7 +446,7 @@ public class ContentManagementService {
      * @return
      * @throws SystemException
      */
-    public List getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
+    public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, true, false);
     }
     
@@ -459,7 +459,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getContentSummaryList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
+    public List<Content> getContentSummaryList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, false, false);
     }
 
