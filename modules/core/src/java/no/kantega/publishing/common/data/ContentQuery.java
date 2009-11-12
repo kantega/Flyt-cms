@@ -249,25 +249,22 @@ public class ContentQuery {
         if (expireDateFrom != null) {
             query.append(" and content.ExpireDate >= ?");
             parameters.add(expireDateFrom);
+            showExpired = true;
         }
         if (expireDateTo != null) {
             query.append(" and content.ExpireDate <= ?");
             parameters.add(expireDateTo);
+            showExpired = true; 
         }
 
-        if (expireDateFrom == null && expireDateTo == null) {
-            // Fetch archived pages if specified
-            if (showExpired) {
-                query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ", " + ContentVisibilityStatus.EXPIRED + ")");
-            } else if (showArchived) {
-                query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ")");
-            } else {
-                query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ")");
-            }
+        // Fetch archived pages if specified
+        if (showExpired) {
+            query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ", " + ContentVisibilityStatus.EXPIRED + ")");
+        } else if (showArchived) {
+            query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ")");
         } else {
             query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ")");
         }
-
 
         if (owner != null) {
             query.append(" and content.Owner in (");
