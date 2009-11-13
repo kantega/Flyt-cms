@@ -8,6 +8,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.search.query.hitcount.HitCountQuery;
 import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
 import no.kantega.search.query.hitcount.DateHitCountQuery;
@@ -16,23 +17,29 @@ import no.kantega.search.result.HitCount;
 import no.kantega.search.index.Fields;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.ConfigurationException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import org.springframework.beans.factory.InitializingBean;
+
 /**
  *
  */
-public class ContentSearchController implements AksessController {
+public class ContentSearchController implements AksessController, InitializingBean {
 
     private String description = "Performs search for Aksess content";
 
     private SearchService searchService;
+    private String queryStringEncoding = "iso-8859-1"; // Must be iso-8859-1 in Tomcat, utf-8 in Jetty
 
     private boolean hitCountDocumentType = true;
     private boolean hitCountParents = true;
     private boolean hitCountLastModified = true;
+
+    private QueryStringGenerator queryStringGenerator;
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
@@ -91,7 +98,7 @@ public class ContentSearchController implements AksessController {
      * @return
      */
     private String getPrevPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
-        String prevPageUrl = QueryStringGenerator.prevPage(query, result.getCurrentPage());
+        String prevPageUrl = queryStringGenerator.prevPage(query, result.getCurrentPage());
         return prevPageUrl == null || "".equals(prevPageUrl) ? null : prevPageUrl;
     }
 
@@ -102,7 +109,7 @@ public class ContentSearchController implements AksessController {
      * @return
      */
     private String getNextPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
-        String nextPageUrl = QueryStringGenerator.nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), result.getSearchResult().getNumberOfHits());
+        String nextPageUrl = queryStringGenerator.nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), result.getSearchResult().getNumberOfHits());
         return nextPageUrl == null || "".equals(nextPageUrl) ? null : nextPageUrl;
     }
 
@@ -129,7 +136,7 @@ public class ContentSearchController implements AksessController {
         for (int i = startPage; i <= endPage; i++) {
             String[] keys = new String[]{ SearchServiceQuery.METAPARAM_PAGE };
             String[] values = new String[]{ "" + (i-1) };
-            pageUrls.put("" + i, urlPrefix + QueryStringGenerator.replaceParams(query, keys, values));
+            pageUrls.put("" + i, urlPrefix + queryStringGenerator.replaceParams(query, keys, values));
         }
         return pageUrls;
     }
@@ -151,7 +158,7 @@ public class ContentSearchController implements AksessController {
 
             for (HitCount hitCount : sr.getHitCounts()) {
                 if (Fields.LAST_MODIFIED.equals(hitCount.getField())) {
-                    String url = QueryStringGenerator.createLastModifiedUrl(query, hitCount);
+                    String url = queryStringGenerator.createLastModifiedUrl(query, hitCount);
                     if (url != null) {
                         String name = hitCount.getField() + "." + hitCount.getTerm();
                         hitCounts.put(name, urlPrefix + url);
@@ -159,7 +166,7 @@ public class ContentSearchController implements AksessController {
                 } else {
                     if (query.getStringParam(hitCount.getField()) == null || Fields.CONTENT_PARENTS.equals(hitCount.getField())) {
                         String name = hitCount.getField() + "." + hitCount.getTerm();
-                        hitCounts.put(name, urlPrefix + QueryStringGenerator.replaceParam(query, hitCount.getField(), hitCount.getTerm()));
+                        hitCounts.put(name, urlPrefix + queryStringGenerator.replaceParam(query, hitCount.getField(), hitCount.getTerm()));
                     }
                 }
             }
@@ -265,5 +272,19 @@ public class ContentSearchController implements AksessController {
 
     public void setHitCountLastModified(boolean hitCountLastModified) {
         this.hitCountLastModified = hitCountLastModified;
+    }
+
+    public void setQueryStringEncoding(String queryStringEncoding) {
+        this.queryStringEncoding = queryStringEncoding;
+    }
+
+
+    public void afterPropertiesSet() throws Exception {
+        try {
+            queryStringEncoding = Aksess.getConfiguration().getString("querystring.encoding", queryStringEncoding);
+            queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
+        } catch (ConfigurationException e) {
+            Log.error(this.getClass().getName(), e, null, null);
+        }
     }
 }

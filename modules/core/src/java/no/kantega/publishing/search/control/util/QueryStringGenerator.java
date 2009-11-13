@@ -28,7 +28,13 @@ import java.io.UnsupportedEncodingException;
 
 
 public class QueryStringGenerator {
-    private static String queryString(SearchServiceQuery query, Map<String, String> newParams) {
+    private String encoding;
+
+    public QueryStringGenerator(String encoding) {
+        this.encoding = encoding;
+    }
+
+    private String queryString(SearchServiceQuery query, Map<String, String> newParams) {
         List<String> paramNames = new ArrayList<String>(query.getParamNames());
         Map<String, String> params = new HashMap<String, String>();
         for (String name : paramNames) {
@@ -41,13 +47,13 @@ public class QueryStringGenerator {
         return queryString(params);
     }
 
-    public static String queryString(Map<String, String> params) {
+    public String queryString(Map<String, String> params) {
         StringBuilder queryStringBuilder = new StringBuilder();
         for (String name : params.keySet()) {
             String p = params.get(name);
             if (p != null) {
                 try {
-                    p = URLEncoder.encode(p, "iso-8859-1");
+                    p = URLEncoder.encode(p, encoding);
                 } catch (UnsupportedEncodingException e) {
 
                 }
@@ -60,11 +66,11 @@ public class QueryStringGenerator {
         return queryStringBuilder.toString();
     }
 
-    public static String prevPage(SearchServiceQuery query, int currentPage) {
+    public String prevPage(SearchServiceQuery query, int currentPage) {
         return prevPage(query, new String[0], currentPage);
     }
 
-    public static String prevPage(SearchServiceQuery query, String[] ignores, int currentPage) {
+    public String prevPage(SearchServiceQuery query, String[] ignores, int currentPage) {
         String prevPageUrl = "";
         if (currentPage > 0) {
             String[] keys;
@@ -78,11 +84,11 @@ public class QueryStringGenerator {
         return prevPageUrl;
     }
 
-    public static String nextPage(SearchServiceQuery query, int currentPage, int hitsPerPage, int documentCount) {
+    public String nextPage(SearchServiceQuery query, int currentPage, int hitsPerPage, int documentCount) {
         return nextPage(query, new String[0], currentPage, hitsPerPage, documentCount);
     }
 
-    public static String nextPage(SearchServiceQuery query, String[] ignores, int currentPage, int hitsPerPage, int documentCount) {
+    public String nextPage(SearchServiceQuery query, String[] ignores, int currentPage, int hitsPerPage, int documentCount) {
         String nextPageUrl = "";
         if ((currentPage + 1) * hitsPerPage < documentCount) {
             String[] keys;
@@ -96,17 +102,17 @@ public class QueryStringGenerator {
         return nextPageUrl;
     }
 
-    public static String addParam(SearchServiceQuery query, String key, String value) {
+    public String addParam(SearchServiceQuery query, String key, String value) {
         return replaceParam(query, key, value);
     }
 
-    public static String replaceParam(SearchServiceQuery query, String key, String value) {
+    public String replaceParam(SearchServiceQuery query, String key, String value) {
         Map<String, String> newParams = new HashMap<String, String>();
         newParams.put(key, value);
         return queryString(query, newParams);
     }
 
-    public static String replaceParams(SearchServiceQuery query, String[] keys, String[] values) {
+    public String replaceParams(SearchServiceQuery query, String[] keys, String[] values) {
         Map<String, String> newParams = new HashMap<String, String>();
         for (int i = 0; i < keys.length; i++) {
             newParams.put(keys[i], values[i]);
@@ -114,11 +120,11 @@ public class QueryStringGenerator {
         return queryString(query, newParams);
     }
 
-    public static String replaceParams(SearchServiceQuery query, String[] oldKeys, String key, String value) {
+    public String replaceParams(SearchServiceQuery query, String[] oldKeys, String key, String value) {
         return replaceParams(query, oldKeys, new String[]{ key }, new String[]{ value });
     }
 
-    public static String replaceParams(SearchServiceQuery query, String[] oldKeys, String[] keys, String[] values) {
+    public String replaceParams(SearchServiceQuery query, String[] oldKeys, String[] keys, String[] values) {
         List<String> paramNames = new ArrayList<String>(query.getParamNames());
         for (String s : oldKeys) {
             paramNames.remove(s);
@@ -135,7 +141,7 @@ public class QueryStringGenerator {
         return queryString(params);
     }
 
-    public static String removeParam(SearchServiceQuery query, String key) {
+    public String removeParam(SearchServiceQuery query, String key) {
         List<String> paramNames = new ArrayList<String>(query.getParamNames());
         paramNames.remove(key);
         Map<String, String> params = new HashMap<String, String>();
@@ -147,7 +153,7 @@ public class QueryStringGenerator {
         return queryString(params);
     }
 
-    public static String createLastModifiedUrl(SearchServiceQuery query, HitCount hitCount) {
+    public String createLastModifiedUrl(SearchServiceQuery query, HitCount hitCount) {
         String retVal = null;
         if (query.getDateParamAsString(SearchServiceQuery.PARAM_LAST_MODIFIED_FROM) == null
                 || query.getDateParamAsString(SearchServiceQuery.PARAM_LAST_MODIFIED_TO) == null) {
@@ -156,7 +162,7 @@ public class QueryStringGenerator {
             if (terms.length == 2) {
                 String[] keys = new String[]{ hitCount.getField() + "_fra", hitCount.getField() + "_til" };
                 String[] values = new String[]{ terms[0].trim(), terms[1].trim() };
-                retVal = QueryStringGenerator.replaceParams(query, keys, values);
+                retVal = replaceParams(query, keys, values);
             }
         }
         return retVal;
