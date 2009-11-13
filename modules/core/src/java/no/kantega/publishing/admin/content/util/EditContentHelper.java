@@ -350,9 +350,7 @@ public class EditContentHelper {
     }
 
 
-    private static void inheritPropertiesByTemplate(Content content, int templateId) throws SystemException, InvalidFileException, InvalidTemplateException {
-
-        ContentTemplate template = ContentTemplateCache.getTemplateById(templateId);
+    private static void inheritPropertiesByTemplate(Content content, ContentTemplate template) throws SystemException, InvalidFileException, InvalidTemplateException {
 
         String templateFile = template.getTemplateFile();
 
@@ -398,10 +396,16 @@ public class EditContentHelper {
 
     private static void setDefaultProperties(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
         if (content.getMetaDataTemplateId() > 0) {
-            inheritPropertiesByTemplate(content, content.getMetaDataTemplateId());
+            ContentTemplate template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId());
+            if (template != null) {
+                inheritPropertiesByTemplate(content, template);
+            }
         }
         if (content.getContentTemplateId() > 0) {
-            inheritPropertiesByTemplate(content, content.getContentTemplateId());
+            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getMetaDataTemplateId());
+            if (template != null) {
+                inheritPropertiesByTemplate(content, template);
+            }
         }
     }
 }
