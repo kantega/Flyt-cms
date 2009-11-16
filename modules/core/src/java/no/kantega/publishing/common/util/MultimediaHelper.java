@@ -142,7 +142,7 @@ public class MultimediaHelper {
                         if (coord != null) {
                             String target = "";
                             if (mim.getCoordUrlMap()[i].openInNewWindow()) {
-                                target = " target=\"_blank\"";
+                                target = " onclick=\"window.open(this.href); return false\"";
                             }
                             tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
                         }
