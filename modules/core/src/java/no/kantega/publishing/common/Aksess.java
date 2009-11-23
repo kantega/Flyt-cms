@@ -149,7 +149,7 @@ public class Aksess {
             pngPixelLimit = c.getLong("default.thumbnail.pngpixellimit", pngPixelLimit);
 
             defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
-            defaultMediaHeight = c.getInt("multimedia.defaultheight", 306);
+            defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
 
             maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
             maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
