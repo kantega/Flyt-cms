@@ -147,9 +147,6 @@ public class HTMLEditorHelper {
         // Replace illegal chars in id, name and href
         pipe.addFilter(new IdAndNameFilter());
 
-        // Replace "&" with "&amp;" in A "href" attribute values
-        pipe.addFilter(new AmpersandFilter());
-
         // Remove cellspacing from tables
   	    pipe.addFilter(new RemoveCellspacingFilter());
 
