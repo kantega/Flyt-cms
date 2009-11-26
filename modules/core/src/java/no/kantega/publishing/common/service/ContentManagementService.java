@@ -276,10 +276,12 @@ public class ContentManagementService {
         sourceContent.setOwnerPerson(destParent.getOwnerPerson());
         sourceContent.setLanguage(destParent.getLanguage());
 
-        DisplayTemplate displayTemplate = DisplayTemplateCache.getTemplateById(sourceContent.getDisplayTemplateId());
-        if (displayTemplate.isNewGroup()) {
-            // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
-            sourceContent.setGroupId(destParent.getGroupId());
+        if (sourceContent.getDisplayTemplateId() > 0) {
+            DisplayTemplate displayTemplate = DisplayTemplateCache.getTemplateById(sourceContent.getDisplayTemplateId());
+            if (displayTemplate.isNewGroup()) {
+                // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
+                sourceContent.setGroupId(destParent.getGroupId());
+            }            
         }
 
         // Kjør plugins
