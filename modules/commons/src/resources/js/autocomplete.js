@@ -190,7 +190,6 @@ function acGetValues(id) {
         xmlhttp = new XMLHttpRequest();
     }
 
-    xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
     if (ac.inputField) {
         var val = ac.inputField.value;
@@ -200,6 +199,7 @@ function acGetValues(id) {
             ac.url = ac.url.substring(0, ac.url.indexOf("?"));
         }
         xmlhttp.open("POST",  ac.url, true);
+        xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
         xmlhttp.onreadystatechange=function() {
             if (xmlhttp.readyState==4) {

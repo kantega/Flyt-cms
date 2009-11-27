@@ -100,11 +100,23 @@ public class XMLHelper {
     }
 
     public static Document openDocument(URL url) throws SystemException {
+        Document doc = null;
         try {
-            return openDocument(url.openStream());
-        } catch (IOException e) {
+            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = docFactory.newDocumentBuilder();
+
+            InputStream is = url.openStream();
+            doc = builder.parse(is);
+            try {
+                is.close();
+            } catch (Exception e) {
+
+            }
+        } catch (Exception e) {
             throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
         }
+
+        return doc;
     }
 
     public static Document openDocument(Resource resource) throws InvalidFileException {
