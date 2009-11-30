@@ -135,7 +135,7 @@ public class TrafficLogAO {
             end = calendar.getTime();
         }
 
-        Date start = query.getEnd();
+        Date start = query.getStart();
         if (start == null) {
             calendar.add(Calendar.MONTH, -1);
             start = calendar.getTime();
