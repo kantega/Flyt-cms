@@ -74,6 +74,7 @@ public class ListSubPagesAction implements Controller {
             for (AssociationCategory a : allowedAssociations) {
                 MenuList menu = new MenuList();
                 menu.setName(a.getName());
+                menu.setId(a.getId());
                 menus.put(a.getId(), menu);
             }
 

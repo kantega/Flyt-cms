@@ -70,6 +70,7 @@
                 <!-- Organize subpages -->
                 <prop key="/admin/publish/Organize.action">OrganizeSubPagesAction</prop>
                 <prop key="/admin/publish/ListSubPages.action">ListSubPagesAction</prop>
+                <prop key="/admin/publish/ReorderSubPages.action">ReorderSubPagesAction</prop>
 
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
@@ -307,6 +308,7 @@
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/publish/listsubpages.jsp"/>
     </bean>
+    <bean id="ReorderSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ReorderSubpagesAction"/>
 
     <!-- Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">

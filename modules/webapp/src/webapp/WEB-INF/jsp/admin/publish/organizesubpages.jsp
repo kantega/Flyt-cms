@@ -29,7 +29,7 @@
 
         $(document).ready(function(){
             updateSubPageList(currentUrl);
-            
+
         });
 
         function updateMainPane(id, suppressNavigatorUpdate) {
@@ -47,7 +47,8 @@
                     items: 'li:not(.menu)',
                     axis: 'y',
                     stop: function(e, ui){
-
+                        $.post("<%=Aksess.getContextPath()%>/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam());
+                        $.event.trigger("contentupdate");
                     }
                 });
 
@@ -64,6 +65,28 @@
                 });
             });
         }
+
+        function getAssociationIdsAsParam() {
+            var params = new Object();
+            var categories = $("#SubPages ul.associationCategory");
+            for (var i = 0; i < categories.length; i ++) {
+                var currentCategory = $(categories[i]);
+                var associations = currentCategory.find("li.page");
+                var ids = "'";
+                for (var j = 0; j < associations.length; j++) {
+                    ids += $(associations[j]).attr("id");
+                    if (j < (associations.length-1) ) {
+                        ids += ",";
+                    }
+                }
+                ids += "'";
+
+                eval("params.associationCategory" + currentCategory.attr("id") + "=" + ids);
+            }
+
+            return params;
+        }
+
 
         function setLayoutSpecificSizes() {
             var mainPaneHeight = $("#MainPane").height();
