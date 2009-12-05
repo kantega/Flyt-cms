@@ -31,8 +31,6 @@ public class TrafficLogQuery {
     private Date start = null;
     private Date end = null;
     private int trafficOrigin = TrafficOrigin.ALL_USERS;
-    private int minDepth = -1;
-    private String documentType = null;
 
     public ContentIdentifier getCid() {
         return cid;
@@ -72,21 +70,5 @@ public class TrafficLogQuery {
 
     public void setTrafficOrigin(int trafficOrigin) {
         this.trafficOrigin = trafficOrigin;
-    }
-
-    public int getMinDepth() {
-        return minDepth;
-    }
-
-    public void setMinDepth(int minDepth) {
-        this.minDepth = minDepth;
-    }
-
-    public String getDocumentType() {
-        return documentType;
-    }
-
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
     }
 }

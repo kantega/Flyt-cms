@@ -234,7 +234,7 @@ function selectMultimedia(formElement, filter) {
     }
 
     doInsertTag = false;
-    var mmwin = window.open("../multimedia/?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=880,height=620,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("../multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=880,height=620,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 

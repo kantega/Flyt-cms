@@ -31,6 +31,7 @@ import java.util.*;
 
 public class EditMultimediaAction extends AdminController {
     private String view;
+    private String selectMediaView;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -42,6 +43,9 @@ public class EditMultimediaAction extends AdminController {
         if (mm == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
+
+        boolean changed = param.getBoolean("changed", false);
+        boolean insert = param.getBoolean("insert", false);
 
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             // Show image / media object
@@ -73,32 +77,44 @@ public class EditMultimediaAction extends AdminController {
             return new ModelAndView(view, model);
         } else {
             // Save changes to object
-            mm.setName(param.getString("name", 255));
+            if (changed) {
+                mm.setName(param.getString("name", 255));
 
-            mm.setAltname(param.getString("altname", 255));
-            mm.setAuthor(param.getString("author", 255));
-            mm.setDescription(param.getString("description", 4000));
-            mm.setUsage(param.getString("usage", 4000));
+                mm.setAltname(param.getString("altname", 255));
+                mm.setAuthor(param.getString("author", 255));
+                mm.setDescription(param.getString("description", 4000));
+                mm.setUsage(param.getString("usage", 4000));
 
-            int width = param.getInt("width");
-            int height = param.getInt("height");
-            if (width != -1) {
-                mm.setWidth(width);
+                int width = param.getInt("width");
+                int height = param.getInt("height");
+                if (width != -1) {
+                    mm.setWidth(width);
+                }
+                if (height != -1) {
+                    mm.setHeight(height);
+                }
+
+                id = mediaService.setMultimedia(mm);
+                mm.setId(id);
             }
-            if (height != -1) {
-                mm.setHeight(height);
-            }
-
-            mediaService.setMultimedia(mm);
 
             Map<String, Object> model = new HashMap<String, Object>();
-            model.put("id", mm.getParentId());
-            return new ModelAndView(new RedirectView("Navigate.action"), model);
+            if (insert) {
+                model.put("mediaObject", mm);                        
+                return new ModelAndView(selectMediaView, model);
+            } else {
+                model.put("id", mm.getParentId());
+                return new ModelAndView(new RedirectView("Navigate.action"), model);
+            }
         }
     }
 
     public void setView(String view) {
         this.view = view;
+    }
+
+    public void setSelectMediaView(String selectMediaView) {
+        this.selectMediaView = selectMediaView;
     }
 }
 

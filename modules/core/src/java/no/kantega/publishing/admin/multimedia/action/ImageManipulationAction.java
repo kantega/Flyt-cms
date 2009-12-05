@@ -23,70 +23,92 @@ import no.kantega.publishing.common.util.ImageHelper;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.util.Map;
+import java.util.HashMap;
 
-public class ImageManipulationAction  extends HttpServlet {
-    private static String SOURCE = "ImageManipulationAction";
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+public class ImageManipulationAction extends AdminController {
+
+    private String view;
+
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        try {
-            MultimediaService mediaService = new MultimediaService(request);
+        MultimediaService mediaService = new MultimediaService(request);
 
-            int mmId = param.getInt("id");
-            int width  = param.getInt("sizewidth");
-            int height = param.getInt("sizeheight");
-            if (mmId == -1 || width == -1 || height == -1) {
-                throw new InvalidParameterException("-", SOURCE);
-            }
+        int mmId = param.getInt("id");
+        int width  = param.getInt("sizewidth");
+        int height = param.getInt("sizeheight");
 
-            int cropx = param.getInt("cropx");
-            int cropy = param.getInt("cropy");
-            int cropwidth = param.getInt("cropwidth");
-            int cropheight = param.getInt("cropheight");
+        if (request.getMethod().equalsIgnoreCase("POST")) {
+            try {
+                if (mmId == -1 || width == -1 || height == -1) {
+                    throw new InvalidParameterException("-", this.getClass().getName());
+                }
 
-            Multimedia mm = mediaService.getMultimedia(mmId);
+                int cropx = param.getInt("cropx");
+                int cropy = param.getInt("cropy");
+                int cropwidth = param.getInt("cropwidth");
+                int cropheight = param.getInt("cropheight");
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            mediaService.streamMultimediaData(mmId, new InputStreamHandler(bos));
+                Multimedia mm = mediaService.getMultimedia(mmId);
 
-            mm.setData(bos.toByteArray());
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                mediaService.streamMultimediaData(mmId, new InputStreamHandler(bos));
 
-            if (mm.getMimeType().getType().indexOf("image") != -1) {
-                mm = ImageHelper.resizeAndCropImage(mm, width, height, cropx, cropy, cropwidth, cropheight);
+                mm.setData(bos.toByteArray());
 
-                if (!param.getBoolean("overwrite")) {
-                    // Gi nytt navn på bildet
-                    String name = mm.getName();
-                    String suffix = " (" + mm.getWidth() + " x " + mm.getHeight() + ")";
-                    if (name.length() + suffix.length() > 255) {
-                        name = name.substring(0, 250 - suffix.length()) + "...";
+                if (mm.getMimeType().getType().indexOf("image") != -1) {
+                    mm = ImageHelper.resizeAndCropImage(mm, width, height, cropx, cropy, cropwidth, cropheight);
+
+                    if (!param.getBoolean("overwrite")) {
+                        // Name new image
+                        String name = mm.getName();
+                        String suffix = " (" + mm.getWidth() + " x " + mm.getHeight() + ")";
+                        if (name.length() + suffix.length() > 255) {
+                            name = name.substring(0, 250 - suffix.length()) + "...";
+                        }
+                        mm.setName(name + suffix);
+                        mm.setId(-1);
                     }
-                    mm.setName(name + suffix);
-                    mm.setId(-1);
-                }
 
-                // Lag nytt filnavn med png/jpg ending etc
-                String filename = mm.getFilename();
-                if (filename.indexOf(".") != -1) {
-                    filename = filename.substring(0, filename.lastIndexOf(".") + 1) + mm.getMimeType().getFileExtension();
-                }
+                    // Add file ending (jpg/png)
+                    String filename = mm.getFilename();
+                    if (filename.indexOf(".") != -1) {
+                        filename = filename.substring(0, filename.lastIndexOf(".") + 1) + mm.getMimeType().getFileExtension();
+                    }
+                    mm.setFilename(filename);
 
-                int newId = mediaService.setMultimedia(mm);
-                mm.setId(newId);
+                    mmId = mediaService.setMultimedia(mm);
+                    mm.setId(mmId);
+                }
+            } catch (Exception e) {
+                Log.error(this.getClass().getName(), e, null, null);
             }
+            Map<String, Integer> model = new HashMap<String, Integer>();
+            model.put("id", mmId);
 
-            response.sendRedirect("multimedia.jsp?activetab=viewmultimedia&id=" + mm.getId());
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
+
+        } else {
+
+            Map<String, Multimedia> model = new HashMap<String, Multimedia>();
+            Multimedia mm = mediaService.getMultimedia(mmId);
+            model.put("media", mm);
+
+            return new ModelAndView(view, model);
         }
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }
 

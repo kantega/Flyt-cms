@@ -22,7 +22,6 @@
 
 <h1>${currentFolder.name}</h1>
 
-
 <c:forEach items="${mediaList}" var="media">
     <c:choose>
         <c:when test="${media.type eq 'FOLDER'}">
@@ -35,7 +34,7 @@
             </div>
         </c:when>
         <c:otherwise>
-            <div class="media">
+            <div class="media" id="Media${media.id}">
                 <div class="icon">
                     <a href="EditMultimedia.action?id=${media.id}">
                         <%
@@ -62,7 +61,7 @@
                                 ${media.fileType}<br>
                             </c:otherwise>
                         </c:choose>
-                        <kantega:label key="aksess.multimedia.lastmodified"/> <admin:formatdate date="${media.lastModified}"/>                        
+                        <kantega:label key="aksess.multimedia.lastmodified"/> <admin:formatdate date="${media.lastModified}"/>
                     </div>
                 </div>
             </div>

@@ -49,7 +49,7 @@ function getQueryParam(paramName, queryString) {
  */
 function debug(msg) {
     var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
-    if (debugEnabled && $.browser.mozilla) {
+    if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
         console.log(msg);
     }
 }

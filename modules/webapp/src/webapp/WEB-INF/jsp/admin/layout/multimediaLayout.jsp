@@ -31,11 +31,6 @@
          * Registers click event actions to each tool
          */
         function bindToolButtons() {
-            <c:if test="${showImageCrop}">
-                $("#ToolsMenu .button .crop").click(function(){
-                    startImageCrop();
-                });
-            </c:if>
         }
     </script>
 
@@ -49,16 +44,23 @@
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
         <c:if test="${showImageCrop}">
-            <a href="#" class="button"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
+            <a href="ImageManipulation.action?id=${media.id}" class="button"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
         </c:if>
     </div>
 </kantega:section>
 
 <kantega:section id="body">
 
-    <div id="Content" class="sidebar">
+    <div id="Content" class="multimedia">
         <div id="MainPane">
-            <kantega:getsection id="content"/>
+            <div id="EditMultimediaButtons" class="buttonBar">
+                <span class="barButton hidden"><input type="submit" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
+                <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                <span class="barButton"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+            <div id="MultimediaPane">
+                <kantega:getsection id="content"/>
+            </div>
         </div>
         <div id="SideBarSplit"></div>
         <div id="SideBar">

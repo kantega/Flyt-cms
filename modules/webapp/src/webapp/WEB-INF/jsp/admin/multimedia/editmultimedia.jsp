@@ -34,8 +34,7 @@
             $('#CropInfo').show();
         }
 
-        function updateCoords(c)
-        {
+        function updateCoords(c) {
             $('#cropx').val(c.x);
             $('#cropy').val(c.y);
             $('#x2').val(c.x2);
@@ -57,14 +56,14 @@
             }
 
             if (${altNameRequired} && document.myform.elements['altname'].value == "") {
-            alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
-            return;
-        }
+                alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
+                return;
+            }
 
             if (${descriptionRequired} && document.myform.elements['description'].value == "") {
-            alert('<kantega:label key="aksess.multimedia.description.missing"/>');
-            return;
-        }
+                alert('<kantega:label key="aksess.multimedia.description.missing"/>');
+                return;
+            }
 
             if (!hasSubmitted) {
                 hasSubmitted = true;
@@ -72,8 +71,38 @@
             }
         }
 
-        $(document).ready(function(){
+        $(document).ready(function() {
             document.myform.elements['name'].focus();
+            if (window.opener) {
+                $("#EditMultimediaButtons .insert").each(function() {
+                    $(this).parent().show();
+                });
+            }
+
+            // Disable save button until something is changed
+            $("#EditMultimediaButtons .save").addClass("disabled");
+            $("#EditMultimediaButtons .save").attr("disabled", "disabled");
+            $("#EditMultimediaButtons .save").click(function () {
+                document.myform.insert.value = false    ;
+                saveForm();
+            });
+
+            $("#EditMultimediaButtons .insert").click(function (){
+                document.myform.insert.value = true;
+                saveForm();
+            });
+
+            $("#EditMultimediaButtons .cancel").click(function (){
+                location.href = "Navigate.action";
+            });
+
+            // Active button when something is changed
+            $(".sidebarFieldset input").keypress(function(e) {
+                debug("Element changed, enable save button");
+                document.myform.changed = true;
+                $("#EditMultimediaButtons .save").removeClass("disabled");
+                $("#EditMultimediaButtons .save").removeAttr("disabled");
+            });
         });
     </script>
 
@@ -88,33 +117,28 @@
 <kantega:section id="sidebar">
     <form name="myform" action="EditMultimedia.action" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" value="${media.id}">
+        <input type="hidden" name="changed" value="false">
+        <input type="hidden" name="insert" value="false">
         <input type="hidden" id="cropx" name="cropx" value="-1">
         <input type="hidden" id="cropy" name="cropy" value="-1">
         <input type="hidden" id="cropwidth" name="cropwidth" value="-1">
         <input type="hidden" id="cropheight" name="cropheight" value="-1">
 
 
-        <div class="fieldset">
+        <div class="sidebarFieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.multimedia.medianame"/></h1>
                 <input type="text" class="fullWidth" name="name" value="<c:out value="${media.name}"/>" maxlength="255">
             </fieldset>
         </div>
-        <div class="fieldset">
+        <div class="sidebarFieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.multimedia.author"/></h1>
                 <input type="text" class="fullWidth" name="altname" value="<c:out value="${media.altname}"/>" maxlength="255">
             </fieldset>
         </div>
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.multimedia.author"/></h1>
-                <input type="text" class="fullWidth" name="author" value="<c:out value="${media.author}"/>" maxlength="255">
-            </fieldset>
-        </div>
-
         <c:if test="showDimension">
-            <div class="fieldset">
+            <div class="sidebarFieldset">
                 <fieldset>
                     <h1><kantega:label key="aksess.multimedia.size"/></h1>
                     <label for="width"><kantega:label key="aksess.multimedia.width"/></label> <input type="text" size="5" id="width" name="width" value="<c:if test="${media.width > 0}">${media.width}</c:if>">
@@ -126,13 +150,13 @@
             </div>
         </c:if>
 
-        <div class="fieldset">
+        <div class="sidebarFieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.multimedia.usage"/></h1>
                 <textarea name="usage" rows="4" cols="20" class="fullWidth" wrap="soft"><c:out value="${media.usage}"/></textarea>
             </fieldset>
         </div>
-        <div class="fieldset">
+        <div class="sidebarFieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.multimedia.description"/></h1>
                 <textarea name="description" rows="4" cols="20" class="fullWidth" wrap="soft"><c:out value="${media.description}"/></textarea>
@@ -140,7 +164,7 @@
         </div>
 
         <c:if test="${not empty usages}">
-            <div class="fieldset">
+            <div class="sidebarFieldset">
                 <fieldset>
                     <h1><kantega:label key="aksess.multimedia.pages.using"/></h1>
                     <ul id="MultimediaPagesUsing">

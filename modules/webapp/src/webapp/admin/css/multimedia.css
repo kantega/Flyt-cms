@@ -1,3 +1,7 @@
+#MultimediaPane {
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 
 #MultimediaFolders {
@@ -6,19 +10,29 @@
 }
 
 #MultimediaFolders .folder, #MultimediaFolders .media {
-    background-color: #ffccff;
     padding: 10px;
-    width: 250px;
+    width: 230px;
     float: left;
     margin-right: 10px;
     cursor: pointer;
 }
 
+#MultimediaFolders .folder:hover, #MultimediaFolders .media:hover {
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background-color: #5e5e5e;
+}
+
+#MultimediaFolders .folder:hover .mediaInfo .name, #MultimediaFolders .media:hover .mediaInfo .name{
+    background: url("../bitmaps/common/mm/editname.png") no-repeat right top;
+}
+
 
 .folder .icon, .media .icon {
     float: left;
-    width: 102px;
-    height: 102px;
+    width: 100px;
+    height: 100px;
 }
 
 .folder .icon {
@@ -26,15 +40,34 @@
 }
 
 .folder .mediaInfo, .media .mediaInfo {
+    width: 123px;
     color: #ffffff;
     padding-left: 7px;
-    padding-right: 7px;
-    padding-top: 12px;
-    padding-bottom: 8px;
+    padding-top: 10px;
     float: left;
 }
 
 .mediaInfo .name {
+    padding-right: 25px;
     font-weight: bold;
-    padding-bottom: 14px;
+    margin-bottom: 14px;
 }
+
+.mediaInfo .name input {
+    width: 120px;
+}
+
+#EditMultimediaButtons input.insert {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+}
+
+#EditMultimediaButtons input.cancel {
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+}
+
+#EditMultimediaButtons input.save {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+}
+
