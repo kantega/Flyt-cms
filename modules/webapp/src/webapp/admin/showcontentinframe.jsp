@@ -56,7 +56,7 @@
 </head>
 
 <frameset rows="80,*" frameborder="no" border="0" framespacing="0">
-   <frame src="<%=Aksess.getContextPath()%>/admin/showcontentinframetip.jsp?type=<%=type%>" scrolling="auto" marginwidth="0" marginheight="0">
+   <frame src="${pageContext.request.contextPath}/admin/showcontentinframetip.jsp?type=<%=type%>" scrolling="auto" marginwidth="0" marginheight="0">
    <%
        if (url != null) {
    %>

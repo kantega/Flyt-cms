@@ -23,14 +23,14 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/multimedia.css">
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/common.jjs"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigator.jjs"></script>
-    <script type="text/javascript" src='<%=Aksess.getContextPath()%>/admin/dwr/engine.js'></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigator.jjs"></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         var currentItemIdentifier = -1;
 
@@ -44,7 +44,7 @@
         }
 
         function getNavigatorAction() {
-            return "<%=Aksess.getContextPath()%>/admin/multimedia/MultimediaNavigator.action";
+            return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
         }
 
         function getItemIdentifierFromNavigatorHref(href) {

@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.admin.util;
 
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 
 /**
  * Helper class for extracting properties associated with navigator menu items.
@@ -149,10 +149,22 @@ public class NavigatorUtil {
      * @param expand
      * @param openFoldersList
      * @param path - path to current selected object
-     * @return - Comma separated list of open folders
+     * @param currentId
+        * @return - Comma separated list of open folders
      */
-    public static String getOpenFolders(boolean expand, String openFoldersList, String path) {
+    public static String getOpenFolders(boolean expand, String openFoldersList, String path, int currentId) {
 
+        if (currentId != -1) {
+            if (openFoldersList != null) {
+                if (openFoldersList.endsWith(",")) {
+                    openFoldersList += currentId;
+                } else {
+                    openFoldersList += ","+currentId;
+                }
+            } else {
+                openFoldersList = ""+currentId;
+            }
+        }
 
         // Liste med åpne foldere
         int[] openFolders = StringHelper.getInts(openFoldersList, ",");

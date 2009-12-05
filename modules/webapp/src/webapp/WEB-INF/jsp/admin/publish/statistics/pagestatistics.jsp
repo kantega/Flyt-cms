@@ -40,14 +40,7 @@
             $("#Contentmain").load(function() {
                 var currentContent = getCurrentLocation().href;
                 debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
-                ContentStateHandler.notifyContentUpdate(currentContent, function(success){
-                    if(!success) {
-                        debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() success");
-                    } else {
-                        debug("setContentupdateTrigger(): dwr ContentStateHandler.notifyContentUpdate() failed");
-                        //TODO: Handle
-                    }
-                });
+                notifyContentUpdate(currentContent);
                 currentUrl = currentContent;
                 $.event.trigger("contentupdate",[currentContent]);
             });

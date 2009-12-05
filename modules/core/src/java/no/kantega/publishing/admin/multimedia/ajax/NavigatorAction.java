@@ -25,7 +25,6 @@ import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Arrays;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.StringHelper;
@@ -33,7 +32,6 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.util.NavigatorUtil;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.MultimediaService;
 
 public class NavigatorAction implements Controller {
@@ -72,7 +70,7 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path);
+        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, -1);
          int[] openIds = StringHelper.getInts(openFoldersList, ",");
         MultimediaMapEntry mediaArchiveRoot = mediaService.getPartialMultimediaMap(openIds, getFoldersOnly);
 

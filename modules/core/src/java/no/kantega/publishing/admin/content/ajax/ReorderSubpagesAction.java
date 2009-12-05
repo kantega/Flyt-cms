@@ -12,11 +12,22 @@ import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 
-
+/**
+ * Called with ajax when the user has reordered subpages in the Organize sub pages view.
+ */
 public class ReorderSubpagesAction implements Controller {
 
 
-    
+    /**
+     * The controller expects the data to be sent as request parameters on the following format:
+     * ?associationCategory[categoryId]=[association1],[association2],[association3]&associationCategory[categoryId]=[association1],[association2]
+     *
+     * Example:
+     * ?associationCategory1=39,54,3465&associationCategory4=545,274,23423,673,324
+     *
+     * @see Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) 
+     */
+    @SuppressWarnings("unchecked")
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, String[]> parameters = request.getParameterMap();
         if (parameters != null && parameters.size() > 0) {

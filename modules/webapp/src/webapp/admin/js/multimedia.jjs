@@ -105,11 +105,11 @@ function setContextMenus() {
 }
 
 function getNavigatorAction() {
-    return "<%=Aksess.getContextPath()%>/admin/multimedia/MultimediaNavigator.action";
+    return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
 }
 
 function getViewFolderAction() {
-    return "<%=Aksess.getContextPath()%>/admin/multimedia/ViewFolder.action";
+    return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
 }
 
 function getItemIdentifierFromNavigatorHref(href) {
@@ -220,7 +220,7 @@ function updateMediaName(obj) {
 
     if (oldName != newName) {
         debug("updateMediaName(): id: " + id + ", name: " + newName);
-        $.post("<%=Aksess.getContextPath()%>/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
+        $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
             // Update navigation menu
             updateNavigator(currentItemIdentifier, true);            
         });
@@ -233,7 +233,7 @@ function createMediaFolder() {
     var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
     if (folderName != null && folderName != "") {
         debug("createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
-        $.post("<%=Aksess.getContextPath()%>/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
+        $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
             triggerMultimediaupdateEvent();            
         });
     }

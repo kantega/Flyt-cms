@@ -17,9 +17,9 @@
 
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <div class="buttonGroup">
-    <a href="<%=Aksess.getContextPath()%>/admin/publish/Navigate.action" class="button"><span class="navigate"><kantega:label key="aksess.mode.navigate"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="navigate"><kantega:label key="aksess.mode.navigate"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="<%=Aksess.getContextPath()%>/admin/publish/Organize.action" class="button last"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
 </div>
 <div class="buttonGroup">
     <a href="#" class="button"><span class="linkcheck"><kantega:label key="aksess.mode.linkcheck"/></span></a>

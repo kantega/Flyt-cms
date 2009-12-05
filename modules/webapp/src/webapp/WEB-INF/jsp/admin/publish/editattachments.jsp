@@ -95,7 +95,7 @@
             }
     %>
             <tr class="tableRow<%=(i%2)%>">
-                <td><a href="<%=Aksess.getContextPath()%>/attachment.ap?id=<%=a.getId()%>"><%=filename%></a></td>
+                <td><a href="${pageContext.request.contextPath}/attachment.ap?id=<%=a.getId()%>"><%=filename%></a></td>
                 <td><%=FormatHelper.formatSize(a.getSize())%></td>
                 <td><%=modifiedDate%></td>
                 <td align="right">

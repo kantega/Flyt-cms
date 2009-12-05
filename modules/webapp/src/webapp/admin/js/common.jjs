@@ -53,3 +53,19 @@ function debug(msg) {
         console.log(msg);
     }
 }
+
+/**
+ * Saves the currently viewed content in the user's session.
+ * 
+ * @param url - Relative url to the current content.
+ */
+function notifyContentUpdate(url) {
+    ContentStateHandler.notifyContentUpdate(url, function(success){
+        if(!success) {
+            debug("common.notifyContentUpdate(): dwr ContentStateHandler.notifyContentUpdate() success");
+        } else {
+            debug("common.notifyContentUpdate(): dwr ContentStateHandler.notifyContentUpdate() failed");
+            //TODO: Handle
+        }
+    });
+}

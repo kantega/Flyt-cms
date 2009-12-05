@@ -41,7 +41,7 @@
                         <c:set var="statusId" value="${page.status}"/>
                     </c:otherwise>
                 </c:choose>
-                <span class="contentStatus status${statusId}"><kantega:label key="aksess.versions.status.${statusId}"/></span>
+                <span class="contentStatus"><span class="description status${statusId}"><kantega:label key="aksess.versions.status.${statusId}"/></span></span>
                 <span class="lastModified"><fmt:formatDate value="${page.lastModified}" pattern="<%=Aksess.getDefaultDatetimeFormat()%>"/></span>
                 <aksess:getuser name="publisher" userid="${page.publisher}"/>
                 <span class="publisher">${publisher.name}</span>

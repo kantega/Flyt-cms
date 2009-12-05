@@ -96,10 +96,10 @@ function initialize() {
                 %>
                 <table border="0" cellspacing="0" cellpadding="0" width="615">
                     <tr>
-                        <td width="1" rowspan="3" class="frame"><img src="<%=Aksess.getContextPath()%>/login/bitmaps/blank.gif" width="1" height="1"></td>
-                        <td width="610" class="frame"><img src="<%=Aksess.getContextPath()%>/login/bitmaps/blank.gif" width="1" height="1"></td>
-                        <td width="1" rowspan="3" class="frame"><img src="<%=Aksess.getContextPath()%>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
-                        <td width="2" rowspan="3" class="shadow" valign="top"><img src="<%=Aksess.getContextPath()%>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
+                        <td width="1" rowspan="3" class="frame"><img src="${pageContext.request.contextPath}/login/bitmaps/blank.gif" width="1" height="1"></td>
+                        <td width="610" class="frame"><img src="${pageContext.request.contextPath}/login/bitmaps/blank.gif" width="1" height="1"></td>
+                        <td width="1" rowspan="3" class="frame"><img src="${pageContext.request.contextPath}/login/bitmaps/blank.gif" width="1" heigth="1"></td>
+                        <td width="2" rowspan="3" class="shadow" valign="top"><img src="${pageContext.request.contextPath}/login/bitmaps/corner.gif" width="2" heigth="2"></td>
                      </tr>
                      <tr>
                         <td class="box">
@@ -117,7 +117,7 @@ function initialize() {
                         <td class="frame"><img src="../bitmaps/blank.gif" width="1" height="1"></td>
                      </tr>
                      <tr>
-                        <td colspan="4" class="shadow"><img src="<%=Aksess.getContextPath()%>/login/bitmaps/corner.gif" width="2" height="2"></td>
+                        <td colspan="4" class="shadow"><img src="${pageContext.request.contextPath}/login/bitmaps/corner.gif" width="2" height="2"></td>
                     </tr>
                     <tr>
                         <td colspan="4"><br>

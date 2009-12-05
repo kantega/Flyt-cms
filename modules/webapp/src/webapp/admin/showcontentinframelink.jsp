@@ -36,7 +36,7 @@
 <html>
 <head>
 	<title>Untitled</title>
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/<%=skin%>.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/<%=skin%>.css">
 </head>
 
 <body class="bodyWithMargin">

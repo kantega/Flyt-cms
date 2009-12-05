@@ -23,81 +23,11 @@
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
 
+<kantega:section id="head extras">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
+</kantega:section>
+
 <kantega:section id="content">
-    <script type="text/javascript">
-        var currentUrl = "${currentNavigateContent.url}";
-
-        $(document).ready(function(){
-            updateSubPageList(currentUrl);
-
-        });
-
-        function updateMainPane(id, suppressNavigatorUpdate) {
-            debug("updateMainPane(): id: " + id);
-
-            currentUrl = getContentUrlFromAssociationId(id);
-            updateSubPageList(currentUrl);
-        }
-
-        function updateSubPageList(url) {
-            $("#SubPages").load("<%=Aksess.getContextPath()%>/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
-                debug("updateSubPageList(): response from ListSubPages.action received");
-                $("#SubPages ul").sortable({
-                    connectWith: '.associationCategory',
-                    items: 'li:not(.menu)',
-                    axis: 'y',
-                    stop: function(e, ui){
-                        $.post("<%=Aksess.getContextPath()%>/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam());
-                        $.event.trigger("contentupdate");
-                    }
-                });
-
-                $("#SubPages li.page").click(function(event){
-                    var allSelected = $("#SubPages li.page.selected");
-                    if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
-                        $(this).toggleClass('selected');
-                    } else {
-                        $(allSelected).each(function(){
-                            $(this).removeClass("selected");
-                        });
-                        $(this).addClass("selected");
-                    }
-                });
-            });
-        }
-
-        function getAssociationIdsAsParam() {
-            var params = new Object();
-            var categories = $("#SubPages ul.associationCategory");
-            for (var i = 0; i < categories.length; i ++) {
-                var currentCategory = $(categories[i]);
-                var associations = currentCategory.find("li.page");
-                var ids = "'";
-                for (var j = 0; j < associations.length; j++) {
-                    ids += $(associations[j]).attr("id");
-                    if (j < (associations.length-1) ) {
-                        ids += ",";
-                    }
-                }
-                ids += "'";
-
-                eval("params.associationCategory" + currentCategory.attr("id") + "=" + ids);
-            }
-
-            return params;
-        }
-
-
-        function setLayoutSpecificSizes() {
-            var mainPaneHeight = $("#MainPane").height();
-            var statusbarHeight = $("#MainPane .statusbar").height();
-            var subPages = $("#SubPages");
-            var subPagesPaddingTop = parseInt(subPages.css("paddingTop"));
-            var subPagesPaddingBottom = parseInt(subPages.css("paddingBottom"));
-            $("#SubPages").css("height", (mainPaneHeight-statusbarHeight-subPagesPaddingTop-subPagesPaddingBottom) + "px");
-        }
-
-    </script>
 
     <div id="MainPane">
         <div class="statusbar">

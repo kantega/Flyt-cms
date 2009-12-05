@@ -75,7 +75,7 @@
                 %>
                 <tr>
                     <td><input type="checkbox" name="cvid" value="<%=cvId%>" checked="checked"></td>
-                    <td><a href="<%=Aksess.getContextPath()%>/content.ap?contentId=<%=contentId%>" target="_new"><%=title%></a></td>
+                    <td><a href="${pageContext.request.contextPath}/content.ap?contentId=<%=contentId%>" target="_new"><%=title%></a></td>
                 </tr>
                 <%
             }

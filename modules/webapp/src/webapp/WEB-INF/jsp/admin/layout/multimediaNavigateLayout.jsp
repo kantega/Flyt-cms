@@ -17,11 +17,11 @@
   --%>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/navigate.css">
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/multimedia.css">
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/navigate.jjs"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/ajaxupload.3.5.js"></script>
-    <script type="text/javascript" src="<%=Aksess.getContextPath()%>/admin/js/multimedia.jjs"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/ajaxupload.3.5.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
 
 </kantega:section>
 

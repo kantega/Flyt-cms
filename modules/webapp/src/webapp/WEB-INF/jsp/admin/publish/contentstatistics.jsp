@@ -37,7 +37,7 @@
 
         function updateStatistics(pageId, siteId) {
             $("#Statistics").html('<div class="info"><kantega:label key="aksess.statistics.wait"/></div>');
-            $("#Statistics").load("<%=Aksess.getContextPath()%>/admin/publish/Statistics.action", {pageId: pageId, siteId: siteId}, function(success){
+            $("#Statistics").load("${pageContext.request.contextPath}/admin/publish/Statistics.action", {pageId: pageId, siteId: siteId}, function(success){
                 debug("showStatisticsForPage(): response from Statistics.action received");
             });
         }

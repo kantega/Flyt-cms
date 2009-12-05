@@ -96,6 +96,7 @@ function setWindowSize() {
  */
 $(document).ready(function(){
     debug("$(document).ready(): Navigation");
+    bindNavigatorClickEvents();
     makeNavigatorResizable();
 });
 
@@ -138,21 +139,21 @@ function makeNavigatorResizable() {
  */
 function bindNavigatorClickEvents() {
     //Click on the openState (+/-) icon of an expanded node.
-    $(".navigator span.openState > a.open").click(function(event){
+    $(".navigator span.openState > a.open").live('click', function(event){
         debug("bindNavigatorClickEvents(): click closeTree");
         event.preventDefault();
         var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
         closeTree(itemIdentifier);
     });
     //Click on the openState (+/-) icon of a collapsed node.
-    $(".navigator span.openState > a.closed").click(function(event){
+    $(".navigator span.openState > a.closed").live('click', function(event){
         debug("bindNavigatorClickEvents(): click openTree");
         event.preventDefault();
         var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
         openTree(itemIdentifier);
     });
     //Click on the title
-    $(".navigator span.title > a").click(function(event){
+    $(".navigator span.title > a").live('click', function(event){
         debug("bindNavigatorClickEvents(): click openContent");
         event.preventDefault();
         var href = $(this).attr("href");
@@ -163,7 +164,6 @@ function bindNavigatorClickEvents() {
         if(typeof updateMainPane == 'function') {
             updateMainPane(itemIdentifier, true);
         }
-        updateNavigator(itemIdentifier, true);
     });
 }
 
@@ -186,8 +186,7 @@ function updateNavigator(itemIdentifier, expand) {
     params.expand = expand;
 
     $("#Navigator").load(getNavigatorAction(), params, function() {
-        debug("updateNavigator(): response from ContentNavigator.action received");
-        bindNavigatorClickEvents();
+        debug("updateNavigator(): response from " + getNavigatorAction() + " received");
         setContextMenus();
     });
 }

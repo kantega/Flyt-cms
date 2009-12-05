@@ -26,7 +26,7 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <script language="Javascript" type="text/javascript" src="<%=Aksess.getContextPath()%>/aksess/js/autocomplete.js"></script>
+    <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/autocomplete.js"></script>
 </kantega:section>
 
 <kantega:section id="body">

@@ -103,7 +103,8 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path);
+        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, currentId);
+
 
         //Setting menu sort order.
         if (sort == null) {

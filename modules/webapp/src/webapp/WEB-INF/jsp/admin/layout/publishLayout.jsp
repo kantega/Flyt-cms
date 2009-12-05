@@ -22,7 +22,7 @@
 
 <kantega:section id="head">
     <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
-    <link rel="stylesheet" type="text/css" href="<%=Aksess.getContextPath()%>/admin/css/publish.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/publish.css">
     <script type="text/javascript" language="Javascript" src="../js/sidebar.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>

@@ -89,7 +89,7 @@ function setContextMenus() {
 }
 
 function getNavigatorAction() {
-    return "<%=Aksess.getContextPath()%>/admin/publish/ContentNavigator.action";
+    return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
 }
 
 /**
@@ -232,12 +232,12 @@ var Publish =  {
 
     newSubpage : function(thisId) {
         debug("Publish.newSubpage(): thisId: " + thisId);
-        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/AddContent.action?thisId="+thisId;
+        window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?thisId="+thisId;
     },
 
     edit: function(thisId) {
         debug("Publish.editItem(): thisId: " + thisId);
-        window.location.href = "<%=Aksess.getContextPath()%>/admin/publish/EditContent.action?thisId="+thisId;
+        window.location.href = "${pageContext.request.contextPath}/admin/publish/EditContent.action?thisId="+thisId;
     },
 
     deleteItem: function(thisId) {
