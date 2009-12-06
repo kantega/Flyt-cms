@@ -22,7 +22,7 @@
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
 
-<kantega:section id="content">
+<kantega:section id="head extras">
     <script type="text/javascript">
         var currentId = "${currentNavigateContent.id}";
 
@@ -53,6 +53,13 @@
         }
 
     </script>
+   
+
+</kantega:section>
+
+<kantega:section id="contentclass">navigateContent</kantega:section>
+
+<kantega:section id="content">
 
     <div id="MainPane">
         <div class="statusbar">

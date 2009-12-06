@@ -22,6 +22,7 @@
 var currentUrl = "";
 
 $(document).ready(function(){
+    debug("content.$(document).ready()");
     bindContentupdateEvents();
     setOpenElementFromSession();
 });
@@ -35,14 +36,20 @@ $(document).ready(function(){
 function bindContentupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("contentupdate", function(e, url){
-        debug("bindContentupdateEvents(): contentupdate event received");
+        debug("content.bindContentupdateEvents(): #Navigator has received contentupdate event. Url: " + url);
         if (!suppressNavigatorUpdate) {
             updateNavigator(url, true);
         } else {
             suppressNavigatorUpdate = false;
-            debug("bindContentupdateEvents(): navigationUpdate suppressed");
+            debug("content.bindContentupdateEvents(): navigationUpdate suppressed");
         }
     });
+
+    $("#Breadcrumbs").bind("contentupdate", function(e, url){
+        debug("content.bindContentupdateEvents(): #Breadcrumbs has received contentupdate event. Url: " + url);
+        $(this).load("${pageContext.request.contextPath}/admin/publish/BreadCrumbs.action", {url: url});
+    });
+
 //    New listeners can be added here:
 //    $([element listening to event]).bind("contentupdate", function(e, url) {
 //        [perform actions]
@@ -67,7 +74,7 @@ function navigatorResizeOnStart() {
 }
 
 function navigatorResizeOnStop() {
-    debug("makeNavigatorResizable(): onStop");
+    debug("content.makeNavigatorResizable(): onStop");
     $.event.trigger("resize");
     $("#Contentoverlay").remove();
 }
@@ -99,7 +106,7 @@ function getNavigatorAction() {
  * @param href The value of the href-attribute for the selected item.
  */
 function handleContextMenuClick_page(action, href) {
-    debug("handleContextMenuClick_page(): action: " + action + ", href: " + href);
+    debug("content.handleContextMenuClick_page(): action: " + action + ", href: " + href);
     var thisId = getQueryParam("thisId", href);
     switch (action) {
         case 'open':
@@ -142,7 +149,7 @@ function handleContextMenuClick_page(action, href) {
  * @param href The value of the href-attribute for the selected item.
  */
 function handleContextMenuClick_link(action, href) {
-    debug("handleContextMenuClick_link(): " + action + ", href: " + href);
+    debug("content.handleContextMenuClick_link(): " + action + ", href: " + href);
     var thisId = getQueryParam("thisId", href);
     switch (action) {
         case 'open':
@@ -221,55 +228,55 @@ function bindToolButtons() {
  */
 var Publish =  {
     open : function(thisId) {
-        debug("Publish.open(): thisId: " + thisId);
+        debug("content.Publish.open(): thisId: " + thisId);
         updateMainPane(getContentUrlFromAssociationId(thisId), false);
     },
 
     openInNewWindow : function(thisId) {
-        debug("Publish.openInNewWindow(): thisId: " + thisId);
+        debug("content.Publish.openInNewWindow(): thisId: " + thisId);
         window.open(getContentUrlFromAssociationId(thisId));
     },
 
     newSubpage : function(thisId) {
-        debug("Publish.newSubpage(): thisId: " + thisId);
+        debug("content.Publish.newSubpage(): thisId: " + thisId);
         window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?thisId="+thisId;
     },
 
     edit: function(thisId) {
-        debug("Publish.editItem(): thisId: " + thisId);
+        debug("content.Publish.editItem(): thisId: " + thisId);
         window.location.href = "${pageContext.request.contextPath}/admin/publish/EditContent.action?thisId="+thisId;
     },
 
     deleteItem: function(thisId) {
-        debug("Publish.deleteItem(): thisId: " + thisId);
+        debug("content.Publish.deleteItem(): thisId: " + thisId);
     },
 
     cut: function(thisId) {
-        debug("Publish.cut(): thisId: " + thisId);
+        debug("content.Publish.cut(): thisId: " + thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
     },
 
     copy: function(thisId) {
-        debug("Publish.copy(): thisId: " + thisId);
+        debug("content.Publish.copy(): thisId: " + thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
     },
 
     paste: function(thisId) {
-        debug("Publish.paste(): thisId: " + thisId);
+        debug("content.Publish.paste(): thisId: " + thisId);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
     },
 
     pasteAsShortcut: function(thisId) {
-        debug("Publish.pasteAsShortcut(): thisId: " + thisId);
+        debug("content.Publish.pasteAsShortcut(): thisId: " + thisId);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
     },
 
     displayPeriod: function(thisId) {
-        debug("Publish.displayPeriod(): thisId: " + thisId);
+        debug("content.Publish.displayPeriod(): thisId: " + thisId);
     },
 
     managePrivileges: function(thisId) {
-        debug("Publish.managePrivileges(): thisId: " + thisId);
+        debug("content.Publish.managePrivileges(): thisId: " + thisId);
     }
 };
 
@@ -289,7 +296,7 @@ function  getCurrentLocation() {
 function getItemIdentifierFromNavigatorHref(href) {
     var thisId = getQueryParam("thisId", href);
     //var url = getContentUrlFromAssociationId(thisId);
-    debug("getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
+    debug("content.getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
     return thisId;
 }
 
@@ -299,8 +306,8 @@ function getItemIdentifierFromNavigatorHref(href) {
  * @param associationId
  */
 function getContentUrlFromAssociationId(associationId) {
-    var url = "<%=Aksess.getContextPath()+ "/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
-    debug("getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
+    var url = " ${pageContext.request.contextPath}<%="/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
+    debug("content.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
     return url;
 }
 

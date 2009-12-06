@@ -151,6 +151,12 @@ td a {
     width: 600px;
     margin: 10px;
 }
+
+#Content.selecttemplate #MainPaneContent {
+    width: 600px;
+    margin: 10px;
+}
+
 /************** Top menu **************/
 #TopMenu .logo {
     background: transparent url("../bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;

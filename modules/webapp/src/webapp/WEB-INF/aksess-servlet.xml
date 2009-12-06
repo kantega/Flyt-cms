@@ -99,6 +99,7 @@
                 <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+                <prop key="/admin/publish/BreadCrumbs.action">breadCrumbsAction</prop>
 
                 <!-- Popups for publishing -->
                 <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
@@ -298,6 +299,10 @@
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
+    <bean id="breadCrumbsAction" class="no.kantega.publishing.admin.content.ajax.BreadCrumbsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/breadcrumbs.jsp"/>
+    </bean>
+
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
 
     <!-- Organize subpages -->

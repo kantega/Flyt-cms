@@ -17,19 +17,23 @@
  //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+
 /********************************************************************************
- * Global functions
+ * Navigator
+ *
+ * Functions and actions related to the navitator
  ********************************************************************************/
 
 var suppressNavigatorUpdate = false;
 
-
 /**
- * Global load action
+ * Navigator actions
  */
-$(document).ready(function() {
-    debug("$(document).ready(): navigate");
+$(document).ready(function(){
+    debug("navigate.$(document).ready()");
     setWindowSize();
+    bindNavigatorClickEvents();
+    makeNavigatorResizable();
 });
 
 
@@ -38,7 +42,7 @@ $(document).ready(function() {
  */
 function setWindowSize() {
     $(window).bind('resize load', function(e) {
-        debug("setWindowSize(): " + e.type + " event received");
+        debug("navigate.setWindowSize(): " + e.type + " event received");
 
         var windowHeight = $(window).height();
         var windowWidth = $(window).width();
@@ -47,7 +51,7 @@ function setWindowSize() {
         var filteroptionsHeight = $("#Navigation .filteroptions").height();
         var navigationWidth = $("#Navigation").width();
         var framesplitWidth = $("#Framesplit").width();
-        debug("setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
+        debug("navigate.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
 
         $("#Navigator").css('height', (windowHeight-topHeight-filteroptionsHeight-5) + 'px');
         $('#Content').css('height', (windowHeight-topHeight-statusbarHeight) + 'px');
@@ -74,32 +78,6 @@ function setWindowSize() {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-/********************************************************************************
- * Navigator
- *
- * Functions and actions related to the navitator
- ********************************************************************************/
-
-
-/**
- * Navigator actions
- */
-$(document).ready(function(){
-    debug("$(document).ready(): Navigation");
-    bindNavigatorClickEvents();
-    makeNavigatorResizable();
-});
-
 /**
  * Performes necessary actions to make the navigator frame (left column) resizable.
  * Dragging the FramesplitDrag-element resizes the columns.
@@ -108,7 +86,7 @@ $(document).ready(function(){
  * TODO: Fix height after resize for IE
  */
 function makeNavigatorResizable() {
-    debug("makeNavigatorResizable(): Init");
+    debug("navigate.makeNavigatorResizable(): Init");
     $("#Navigation").resizable(
         {
             minWidth: 50,
@@ -140,21 +118,21 @@ function makeNavigatorResizable() {
 function bindNavigatorClickEvents() {
     //Click on the openState (+/-) icon of an expanded node.
     $(".navigator span.openState > a.open").live('click', function(event){
-        debug("bindNavigatorClickEvents(): click closeTree");
+        debug("navigate.bindNavigatorClickEvents(): click closeTree");
         event.preventDefault();
         var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
         closeTree(itemIdentifier);
     });
     //Click on the openState (+/-) icon of a collapsed node.
     $(".navigator span.openState > a.closed").live('click', function(event){
-        debug("bindNavigatorClickEvents(): click openTree");
+        debug("navigate.bindNavigatorClickEvents(): click openTree");
         event.preventDefault();
         var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
         openTree(itemIdentifier);
     });
     //Click on the title
-    $(".navigator span.title > a").live('click', function(event){
-        debug("bindNavigatorClickEvents(): click openContent");
+    $(".navigator span.title > a, #Breadcrumbs a").live('click', function(event){
+        debug("navigate.bindNavigatorClickEvents(): click openContent");
         event.preventDefault();
         var href = $(this).attr("href");
         var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
@@ -175,7 +153,7 @@ function bindNavigatorClickEvents() {
  * @param expand Expand the menu down to selected item.
  */
 function updateNavigator(itemIdentifier, expand) {
-    debug("updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
+    debug("navigate.updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
     var params = getNavigatorParams();
     if (itemIdentifier) {
         params.itemIdentifier = itemIdentifier;
@@ -186,7 +164,7 @@ function updateNavigator(itemIdentifier, expand) {
     params.expand = expand;
 
     $("#Navigator").load(getNavigatorAction(), params, function() {
-        debug("updateNavigator(): response from " + getNavigatorAction() + " received");
+        debug("navigate.updateNavigator(): response from " + getNavigatorAction() + " received");
         setContextMenus();
     });
 }
@@ -209,7 +187,7 @@ function setContextMenu(type, disabledOptions) {
         },
         function(action, el, pos) {
             var href = $(el).attr("href");
-            debug("setContextMenu(): clicked url: "+ href);
+            debug("navigate.setContextMenu(): clicked url: "+ href);
             eval("handleContextMenuClick_"+type+"(action, href)");
         }
     );
@@ -221,10 +199,10 @@ function setContextMenu(type, disabledOptions) {
                 disable += ",";
             }
         }
-        debug("setContextMenu(): disabled options: "+ disable);
+        debug("navigate.setContextMenu(): disabled options: "+ disable);
         $("#ContextMenu-"+type).disableContextMenuItems(disable);
     }
-    debug("setContextMenu(): "+ type +" menu set");
+    debug("navigate.setContextMenu(): "+ type +" menu set");
 }
 
 
@@ -232,14 +210,14 @@ function setContextMenu(type, disabledOptions) {
 
 
 function openTree(itemIdentifier) {
-    debug("openTree(): itemIdentifier: " + itemIdentifier);
+    debug("navigate.openTree(): itemIdentifier: " + itemIdentifier);
     setFolderOpen(itemIdentifier);
     updateNavigator(itemIdentifier, false);
 }
 
 
 function closeTree(itemIdentifier) {
-    debug("closeTree(): itemIdentifier: " + itemIdentifier);
+    debug("navigate.closeTree(): itemIdentifier: " + itemIdentifier);
     setFolderClosed(itemIdentifier);
     updateNavigator(itemIdentifier, false);
 }
@@ -248,7 +226,7 @@ function closeTree(itemIdentifier) {
 
 function setFolderOpen(id) {
     var newList = $("#NavigatorState .openFolders").html();
-    debug("setFolderOpen(): newList: " + newList + ", id: " + id);
+    debug("navigate.setFolderOpen(): newList: " + newList + ", id: " + id);
 
     var openList = newList.split(",");
     for (var i = 0; i < openList.length; i++) {
@@ -264,7 +242,7 @@ function setFolderOpen(id) {
         newList = newList + "," + id;
     }
 
-    debug("setFolderOpen(): newList: " + newList);
+    debug("navigate.setFolderOpen(): newList: " + newList);
 
     $("#NavigatorState .openFolders").html(newList);
 }
@@ -272,7 +250,7 @@ function setFolderOpen(id) {
 
 function setFolderClosed(id) {
     var openList = $("#NavigatorState .openFolders").html().split(",");
-    debug("setFolderClosed(): openList: " + openList + ", id: " + id);
+    debug("navigate.setFolderClosed(): openList: " + openList + ", id: " + id);
 
     var newOpenList  = "";
     for (var i = 0; i < openList.length; i++) {
@@ -285,7 +263,7 @@ function setFolderClosed(id) {
        }
     }
 
-    debug("setFolderClosed(): newOpenList: " + newOpenList);
+    debug("navigate.setFolderClosed(): newOpenList: " + newOpenList);
 
     $("#NavigatorState .openFolders").html(newOpenList);
 }
@@ -325,7 +303,7 @@ function bindSearchInput() {
 
 var Search = {
     content : function(query){
-        debug("Search.content(): query: " + query);
+        debug("navigate.Search.content(): query: " + query);
         //TODO: Implement properly. Fetch search results with ajax.
         var searchResults = $("<div/>").attr("id", "SearchResults").html("<p>You searched: " + query + "</p>").slideDown("slow");
         $("#ContentFrame").append(searchResults);
@@ -337,11 +315,11 @@ var Search = {
     },
 
     multimedia : function(query) {
-        debug("Search.multimedia(): query: " + query);
+        debug("navigate.Search.multimedia(): query: " + query);
     },
 
     inputValid : function(query){
-        debug("Search.inputValid(): query: " + query);
+        debug("navigate.Search.inputValid(): query: " + query);
         //TODO: Validate search input
         return true;
     }

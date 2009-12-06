@@ -23,6 +23,8 @@
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
 
+<kantega:section id="contentclass">navigateContent</kantega:section>
+
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
 </kantega:section>
@@ -30,18 +32,9 @@
 <kantega:section id="content">
 
     <div id="MainPane">
-        <div class="statusbar">
-            <ul class="breadcrumbs">
-                <li>Forside</li>
-                <li>Lorem ipsum</li>
-                <li>Dolor sit amet</li>
-            </ul>
-            <div class="supportMenu">
-                <a href="#" class="brokenLink">Lenkebrudd</a>
-                <a href="#" class="crossPublish">Krysspublisert</a>
-                <a href="#" class="details">Details</a>
-            </div>
-        </div>
+
+        <%@include file="fragments/statusbar.jsp"%>
+
         <div id="SubPages"></div>
     </div>
 

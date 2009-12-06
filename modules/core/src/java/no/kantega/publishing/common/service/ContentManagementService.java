@@ -613,7 +613,7 @@ public class ContentManagementService {
      * @return Liste med PathEntry objekter
      * @throws SystemException
      */
-    public List getPathByAssociation(Association association) throws SystemException {
+    public List<PathEntry> getPathByAssociation(Association association) throws SystemException {
         return PathWorker.getPathByAssociation(association);
     }
 

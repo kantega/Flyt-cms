@@ -70,6 +70,10 @@ public class SiteMapEntry extends NavigationMapEntry {
         return status;
     }
 
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
     public int getUniqueId() {
         return uniqueId;
     }

@@ -43,17 +43,17 @@
     background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
     padding: 0 10px;
 }
-#MainPane .statusbar .breadcrumbs {
+#MainPane .statusbar #Breadcrumbs ul {
     float: left;
     margin: 0;
     padding: 0;
 }
-#MainPane .statusbar .breadcrumbs li {
+#MainPane .statusbar #Breadcrumbs li {
     display: inline;
     background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
     padding-left: 12px;
 }
-#MainPane .statusbar .breadcrumbs li:first-child {
+#MainPane .statusbar #Breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
     background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
     padding-left: 18px;

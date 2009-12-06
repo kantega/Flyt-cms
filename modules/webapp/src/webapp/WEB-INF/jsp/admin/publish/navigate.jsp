@@ -22,12 +22,12 @@
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
 
-<kantega:section id="content">
-    <script type="text/javascript">
+<kantega:section id="head extras">
+        <script type="text/javascript">
         $(document).ready(function(){
             setContentupdateTrigger();
         });
-        
+
         /**
          * Attaches an onload listener to the contentframe and triggers a contentupdate event every time this onload event is fired,
          * i.e. on every page load in the iframe.
@@ -67,20 +67,15 @@
 
 
     </script>
+</kantega:section>
+
+<kantega:section id="contentclass">navigateContent</kantega:section>
+
+<kantega:section id="content">
+
 
     <div id="MainPane">
-        <div class="statusbar">
-            <ul class="breadcrumbs">
-                <li>Forside</li>
-                <li>Lorem ipsum</li>
-                <li>Dolor sit amet</li>
-            </ul>
-            <div class="supportMenu">
-                <a href="#" class="brokenLink">Lenkebrudd</a>
-                <a href="#" class="crossPublish">Krysspublisert</a>
-                <a href="#" class="details">Details</a>
-            </div>
-        </div>
+        <%@include file="fragments/statusbar.jsp"%>
         <iframe name="contentmain" id="Contentmain" src="${currentNavigateContent.url}" height="100%" width="100%"></iframe>
     </div>
 
