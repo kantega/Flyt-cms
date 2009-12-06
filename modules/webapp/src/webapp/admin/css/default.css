@@ -641,6 +641,10 @@ div.sidebarFieldset fieldset {
     background: url("../bitmaps/default/framework/organizesubpages_selected.png") repeat-x center left;
     color: #ffffff;
 }
+#SubPages li.ui-sortable-helper { /* Item while dragging */
+    border-top: 1px solid #cccccc;
+    background: #eeeeee; /* TODO: replace with proper styling */
+}
 
 #SubPages li span {
     display: inline-block;
