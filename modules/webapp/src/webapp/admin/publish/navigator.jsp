@@ -550,7 +550,7 @@ function editPermissions() {
     for (int i = 0; i < sites.size(); i++) {
         Site site = (Site)sites.get(i);
         if (!site.isDisabled()) {
-            SiteMapEntry sitemap = aksess.getNavigatorMenu(site.getId(), openFolders, -1, sort);
+            SiteMapEntry sitemap = aksess.getNavigatorMenu(site.getId(), openFolders, -1, sort, true);
             if (sitemap != null) {
                 sitemap.setTitle(site.getName());
                 printFolder(sitemap, 0, selectedId, openFolders, selectAssociationId, selectContentId, out);

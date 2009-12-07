@@ -25,6 +25,7 @@ $(document).ready(function(){
     debug("content.$(document).ready()");
     bindContentupdateEvents();
     setOpenElementFromSession();
+    bindFilterEvents();
 });
 
 
@@ -37,8 +38,11 @@ function bindContentupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("contentupdate", function(e, url){
         debug("content.bindContentupdateEvents(): #Navigator has received contentupdate event. Url: " + url);
+        if(url) {
+            currentUrl = url;
+        }
         if (!suppressNavigatorUpdate) {
-            updateNavigator(url, true);
+            updateNavigator(currentUrl, true);
         } else {
             suppressNavigatorUpdate = false;
             debug("content.bindContentupdateEvents(): navigationUpdate suppressed");
@@ -47,7 +51,10 @@ function bindContentupdateEvents() {
 
     $("#Breadcrumbs").bind("contentupdate", function(e, url){
         debug("content.bindContentupdateEvents(): #Breadcrumbs has received contentupdate event. Url: " + url);
-        $(this).load("${pageContext.request.contextPath}/admin/publish/BreadCrumbs.action", {url: url});
+        if(url) {
+            currentUrl = url;
+        }
+        $(this).load("${pageContext.request.contextPath}/admin/publish/BreadCrumbs.action", {url: currentUrl});
     });
 
 //    New listeners can be added here:
@@ -65,6 +72,22 @@ function setOpenElementFromSession() {
         updateNavigator(getContentUrlFromAssociationId(associationId), true);
     });
 }
+
+/**
+ * Binds click/select events to the content filters, such as 'Hide expired'.
+ */
+function bindFilterEvents() {
+    var filterOptions = $("#Filteroptions");
+    filterOptions.find("#FilteroptionHideExpired").live('click', function(){
+        var value = $(this).is(":checked");
+        debug("content.bindFilterEvents(): Hide expired clicked: " + value);
+        UserPreferences.setPreference({key:'hideExpired', value:value, permanent:false}, new function(){
+            
+        });
+        $.event.trigger("contentupdate");
+    });
+}
+
 
 function navigatorResizeOnStart() {
     var height = $("#MainPane").height();
@@ -316,5 +339,6 @@ function getNavigatorParams() {
     if($("#NavigatorState .sort").html() != null) {
         params.sort = $("#NavigatorState .sort").html();
     }
+    params.showExpired = !$("#FilteroptionHideExpired").is(":checked");
     return params;
 }

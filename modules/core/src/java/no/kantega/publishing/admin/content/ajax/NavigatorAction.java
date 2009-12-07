@@ -69,6 +69,7 @@ public class NavigatorAction implements Controller {
 
         String sort = params.getString(AdminRequestParameters.NAVIGATION_SORT_ORDER);
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
+        boolean showExpired = params.getBoolean(AdminRequestParameters.SHOW_EXPIRED, true);
 
         //Extracting currently selected content from it's url
         Content currentContent = null;
@@ -119,7 +120,7 @@ public class NavigatorAction implements Controller {
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
         for (Site site : siteService.getSites()) {
             if (!site.isDisabled()) {
-                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, -1, sort);
+                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, -1, sort, showExpired);
                 if (sitemap != null) {
                     sitemap.setTitle(site.getName());
                     sites.add(sitemap);

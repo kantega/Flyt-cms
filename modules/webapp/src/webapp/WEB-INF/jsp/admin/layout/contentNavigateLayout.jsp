@@ -51,11 +51,11 @@
 <kantega:section id="body">
     <div id="Content"<kantega:hassection id="contentclass"> class="<kantega:getsection id="contentclass"/>"</kantega:hassection>>
         <div id="Navigation">
-            <div class="filteroptions">
+            <div id="Filteroptions">
                 <a href="#" class="filteroption filter">Filtreringsvalg</a>
                 <div class="filteroption">
-                    <input type="checkbox" id="filteroptionHideExpired">
-                    <label for="filteroptionHideExpired">Skjul utløpte</label>
+                    <input type="checkbox" id="FilteroptionHideExpired">
+                    <label for="FilteroptionHideExpired">Skjul utløpte</label>
                 </div>
             </div>
             <div id="Navigator"></div>

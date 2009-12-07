@@ -48,7 +48,7 @@ function setWindowSize() {
         var windowWidth = $(window).width();
         var topHeight = $("#Top").height();
         var statusbarHeight = $("#MainPane .statusbar").height();
-        var filteroptionsHeight = $("#Navigation .filteroptions").height();
+        var filteroptionsHeight = $("#Filteroptions").height();
         var navigationWidth = $("#Navigation").width();
         var framesplitWidth = $("#Framesplit").width();
         debug("navigate.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);

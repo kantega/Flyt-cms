@@ -37,9 +37,6 @@ function updateMainPane(id, suppressNavigatorUpdate) {
     debug("organizesubpages.updateMainPane(): currentUrl: " + currentUrl);
     updateSubPageList(currentUrl);
     notifyContentUpdate(currentUrl);
-    //updateNavigator(getContentUrlFromAssociationId(id), true);
-    debug("organizesubpages.updateMainPane(): Triggering contentupdate event");
-    $.event.trigger("contentupdate", currentUrl);
 }
 
 
@@ -48,6 +45,10 @@ function updateMainPane(id, suppressNavigatorUpdate) {
  * @param url
  */
 function updateSubPageList(url) {
+
+    debug("organizesubpages.updateSubPageList(): Triggering contentupdate event");
+    $.event.trigger("contentupdate", url);
+
     debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action");
     $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
         debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");

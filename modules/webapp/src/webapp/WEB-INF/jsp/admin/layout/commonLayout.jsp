@@ -35,6 +35,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferences.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
     <kantega:getsection id="head"/>

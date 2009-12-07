@@ -303,7 +303,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/breadcrumbs.jsp"/>
     </bean>
 
-    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+    
 
     <!-- Organize subpages -->
     <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction">

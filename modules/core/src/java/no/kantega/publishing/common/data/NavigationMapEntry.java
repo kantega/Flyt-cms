@@ -25,7 +25,7 @@ public abstract class NavigationMapEntry extends BaseObject {
     public int status = 0;
     public String title = "";
 
-    List children = null;
+    List<NavigationMapEntry> children = null;
     protected int depth = 0;
     protected boolean isOpen = false;
     protected boolean isSelected = false;
@@ -35,12 +35,12 @@ public abstract class NavigationMapEntry extends BaseObject {
 
     public void addChild(NavigationMapEntry child) {
         if (children == null) {
-            children = new ArrayList();
+            children = new ArrayList<NavigationMapEntry>();
         }
         children.add(child);
     }
 
-    public List getChildren() {
+    public List<NavigationMapEntry> getChildren() {
         return children;
     }
 

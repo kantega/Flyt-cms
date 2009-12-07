@@ -83,9 +83,9 @@
     </servlet>
 
     <servlet>
-        <servlet-name>dwr-invoker</servlet-name>
-        <display-name>DWR Servlet</display-name>
-        <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+        <servlet-name>dwr</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
         <init-param>
             <param-name>debug</param-name>
             <param-value>true</param-value>
@@ -136,7 +136,7 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>dwr-invoker</servlet-name>
+        <servlet-name>dwr</servlet-name>
         <url-pattern>/admin/dwr/*</url-pattern>
     </servlet-mapping>
 

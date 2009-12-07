@@ -17,6 +17,8 @@
 package no.kantega.publishing.admin.dwr;
 
 import org.directwebremoting.WebContextFactory;
+import org.directwebremoting.annotations.RemoteProxy;
+import org.directwebremoting.annotations.RemoteMethod;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +40,8 @@ import no.kantega.commons.log.Log;
  * Date: 03.jul.2009
  * Time: 09:20:13
  */
-public class ContentStateHandler {
+@RemoteProxy(name="ContentStateHandler")
+public class ContentStateHandler extends AbstractDwrController {
 
 
     /**
@@ -46,6 +49,7 @@ public class ContentStateHandler {
      *
      * @param url Url of currently viewed page.
      */
+    @RemoteMethod
     public void notifyContentUpdate(String url) {
         HttpSession session = getSession();
         if (session != null) {
@@ -66,6 +70,7 @@ public class ContentStateHandler {
      * Returns the last viewed content from the user's session.
       * @return associationId
      */
+    @RemoteMethod
     public int getCurrentContent() {
         HttpSession session = getSession();
         if (session != null) {
@@ -76,22 +81,5 @@ public class ContentStateHandler {
         }
         return -1;
     }
-
-    /**
-     * Helper method to retrieve the HttpSession
-     * @return session
-     */
-    private HttpSession getSession() {
-        return WebContextFactory.get().getSession();
-    }
-
-    /**
-     * Helper method to retrieve the HttpServletRequest
-     * @return request
-     */
-    private HttpServletRequest getRequest() {
-        return WebContextFactory.get().getHttpServletRequest();
-    }
-
 
 }

@@ -567,11 +567,13 @@ public class ContentManagementService {
      * @param siteId - Site det skal hentes for
      * @param idList - Liste med åpne element i menyen, henter alle med parent som ligger i lista
      * @param language - Språk det skal hentes for
+     * @param sort
+     * @param showExpired
      * @return
      * @throws SystemException
      */
-    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, int language, String sort) throws SystemException {
-        return SiteMapWorker.getPartialSiteMap(siteId, idList, language, true, sort);
+    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, int language, String sort, boolean showExpired) throws SystemException {
+        return SiteMapWorker.getPartialSiteMap(siteId, idList, language, true, sort, showExpired);
     }
 
 

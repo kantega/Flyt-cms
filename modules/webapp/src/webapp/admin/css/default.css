@@ -325,7 +325,7 @@ td a {
 }
 
 /************** Navigation (left column) **************/
-.filteroptions {
+#Filteroptions {
     background: url("../bitmaps/default/framework/filteroptions_background.png") left center repeat-x;
     height: 22px;
 }

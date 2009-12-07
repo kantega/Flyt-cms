@@ -25,6 +25,7 @@ public class AdminRequestParameters {
     public static final String CONTENT_ID = "contentId";
     public static final String URL = "url";
     public static final String ITEM_IDENTIFIER = "itemIdentifier";
+    public static final String SHOW_EXPIRED = "showExpired";
 
     public static final String NAVIGATION_SORT_ORDER = "sort";
     public static final String NAVIGATION_OPEN_FOLDERS = "openFolders";
@@ -43,4 +44,5 @@ public class AdminRequestParameters {
     public static final String MULTIMEDIA_ARCHIVE_ROOT = "mediaArchiveRoot";
     public static final String MULTIMEDIA_ITEMS_LIST = "mediaList";
     public static final String MULTIMEDIA_CURRENT_FOLDER = "currentFolder";
+
 }

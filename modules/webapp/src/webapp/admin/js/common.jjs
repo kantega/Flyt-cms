@@ -50,7 +50,8 @@ function getQueryParam(paramName, queryString) {
 function debug(msg) {
     var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
     if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
-        console.log(msg);
+        var now = new Date();
+        console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
     }
 }
 
