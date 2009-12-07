@@ -29,6 +29,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MultimediaHelper {
     private static final String SOURCE = "aksess.MultimediaHelper";
@@ -141,7 +143,7 @@ public class MultimediaHelper {
                         String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
                         if (coord != null) {
                             String target = "";
-                            if (mim.getCoordUrlMap()[i].openInNewWindow()) {
+                            if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
                                 target = " target=\"_blank\"";
                             }
                             tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
@@ -229,4 +231,48 @@ public class MultimediaHelper {
             return source;
         }
     }
+
+    public static List<Integer> getMultimediaIdsFromText(String text) {
+        List<Integer> ids = new ArrayList<Integer>();
+        if (text != null) {
+            ids.addAll(findUsagesInText(text, "multimedia.ap?id="));
+            ids.addAll(findUsagesInText(text, "/multimedia/"));
+        }
+        return ids;
+    }
+
+
+    private static List<Integer> findUsagesInText(String value, String key) {
+        List<Integer> ids = new ArrayList<Integer>();
+
+        int foundPos = value.indexOf(key);
+        while (foundPos != -1) {
+            value = value.substring(foundPos + key.length(), value.length());
+
+            int endPos = 0;
+            char c = value.charAt(endPos);
+            while (c >= '0' && c <= '9') {
+                ++endPos;
+                if (endPos < value.length()) {
+                    c = value.charAt(endPos);
+                } else {
+                    break;                    
+                }
+            }
+            String id = value.substring(0, endPos);
+
+            try {
+                int multimediaId = Integer.parseInt(id);
+                ids.add(multimediaId);
+            } catch (NumberFormatException e) {
+                // Error in URL
+            }
+
+            // Find next
+            foundPos = value.indexOf(key, foundPos);
+        }
+
+        return ids;
+    }
+
 }

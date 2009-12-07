@@ -119,7 +119,7 @@
                 <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
                 <prop key="/admin/multimedia/CreateMediaFolder.action">CreateMediaFolderAction</prop>
                 <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
-                <prop key="/admin/multimedia/ImageManipulation.action">ImageManipulationAction</prop>
+                <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
@@ -448,17 +448,12 @@
             <value>DeleteMultimediaAction</value>
         </property>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.action.ImageManipulationAction" id="ImageManipulationAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagemanipulation.jsp"/>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageCropAction" id="ImageCropAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagecrop.jsp"/>
     </bean>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageMapAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.ImageMapAction</value>
-        </property>
-        <property name="servletName">
-            <value>ImageMapAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageMapAction" id="ImageMapAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagemap.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.action.EditMultimediaAction" id="EditMultimediaAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>

@@ -20,6 +20,7 @@
 //<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
 
 var focusField = null;
+var focusFieldDefaultMaxWidth = 600;
 
 var doInsertTag  = false;
 

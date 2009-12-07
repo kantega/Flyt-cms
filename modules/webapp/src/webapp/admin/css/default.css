@@ -16,6 +16,10 @@ a {
     text-decoration: none;
 }
 
+a.disabled {
+    color:#5e5e5e;
+}
+
 input[type=submit] {
     cursor: pointer;
 }

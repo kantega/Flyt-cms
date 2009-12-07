@@ -689,12 +689,18 @@ function rtInsertAnchor(editorId) {
 }
 
 
-function rtInsertMedia(editorId) {
+function rtInsertMedia(editorId, maxWidth) {
     var editor = document.getElementById(editorId);
 
     if (!checkEditorMode(editor)) return;
 
     focusField = editor;
+
+    if (maxWidth) {
+        focusFieldMaxWidth = maxWidth;
+    } else {
+        focusFieldMaxWidth = focusFieldDefaultMaxWidth;
+    }
 
     doInsertTag = true;
 
@@ -711,7 +717,7 @@ function rtInsertMedia(editorId) {
         }
     }
 
-    var mmwin = window.open("../multimedia/?id=" + id + "&refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=780,height=450,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("../multimedia/Navigate.action?id=" + id + "&refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=780,height=450,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 

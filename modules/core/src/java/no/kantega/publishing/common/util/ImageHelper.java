@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.util;
 
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.Aksess;
 
 import javax.imageio.ImageWriter;
@@ -102,72 +103,84 @@ public class ImageHelper {
         return mm;
     }
 
-    private static ResizedImage resizeImage(Image img, int targetWidth, int targetHeight) throws InterruptedException {
-        boolean higherQuality = true;
-        int type = BufferedImage.TYPE_INT_RGB;
-
-        MediaTracker mediaTracker = new MediaTracker(new Container());
-        mediaTracker.addImage(img, 0);
-        mediaTracker.waitForID(0);
-
-        BufferedImage ret = null;
-
-        // get size of src-image
-        int w = img.getWidth(null);
-        int h = img.getHeight(null);
-
-        // make sure target-size is valid
-        if (targetWidth == -1 || targetWidth > w) {
-            targetWidth = w;
+    /**
+     * Get dimensions of resized image with correct aspect ratio
+     * @param originalWidth - original width of image
+     * @param originalHeight  - original height of image
+     * @param targetWidth - max width of resized image
+     * @param targetHeight - max height of resized image
+     * @return - MultimediaDimensions - dimensions of resized image
+     */
+    public static MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight) {
+                // make sure target-size is valid
+        if (targetWidth == -1 || targetWidth > originalWidth) {
+            targetWidth = originalWidth;
         }
 
-        if (targetHeight == -1 || targetHeight > h) {
-            targetHeight = h;
+        if (targetHeight == -1 || targetHeight > originalHeight) {
+            targetHeight = originalHeight;
         }
 
-        // make sure target is smaller that src-image
-        if (w < targetWidth || h < targetHeight) {
-            if (w < targetWidth) {
-                w = targetWidth;
+        // Make sure target is smaller that src-image
+        if (originalWidth < targetWidth || originalHeight < targetHeight) {
+            if (originalWidth < targetWidth) {
+                originalWidth = targetWidth;
             }
 
-            if (h < targetHeight) {
-                h = targetHeight;
+            if (originalHeight < targetHeight) {
+                originalHeight = targetHeight;
             }
         }
 
-        // hints for rendering
-        Map map = new HashMap();
-        map.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        map.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        map.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // keep AR
+        // Keep aspect ratio
         double thumbRatio = (double) targetWidth / (double) targetHeight;
-        double imageRatio = (double) w / (double) h;
+        double imageRatio = (double) originalWidth / (double) originalHeight;
         if (thumbRatio < imageRatio) {
             targetHeight = (int) (targetWidth / imageRatio);
         } else {
             targetWidth = (int) (targetHeight * imageRatio);
         }
 
+        return new MultimediaDimensions(targetWidth, targetHeight);
+    }
 
-        if (!higherQuality) {
-            w = targetWidth;
-            h = targetHeight;
-        }
+    private static ResizedImage resizeImage(Image img, int targetWidth, int targetHeight) throws InterruptedException {
+        int type = BufferedImage.TYPE_INT_RGB;
 
-        // do the resize
+        MediaTracker mediaTracker = new MediaTracker(new Container());
+        mediaTracker.addImage(img, 0);
+        mediaTracker.waitForID(0);
+
+
+        BufferedImage ret = null;
+
+        // Get size of src-image
+        int w = img.getWidth(null);
+        int h = img.getHeight(null);
+
+        // Get resized image dimensions with correct aspect ratio
+        MultimediaDimensions d = getResizedImageDimensions(w, h, targetWidth, targetHeight);
+        targetWidth = d.getWidth();
+        targetHeight = d.getHeight();
+
+        // hints for rendering
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        map.put(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        map.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        map.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        // Resize in iterations for best quality
         int iter = 0;
         do {
-            if (higherQuality && w > targetWidth) {
+            if (w > targetWidth) {
                 w >>= 1;
                 if (w < targetWidth) {
                     w = targetWidth;
                 }
             }
 
-            if (higherQuality && h > targetHeight) {
+            if (h > targetHeight) {
                 h >>= 1;
                 if (h < targetHeight) {
                     h = targetHeight;

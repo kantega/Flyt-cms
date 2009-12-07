@@ -41,8 +41,8 @@ public class HTMLEditorHelper {
 
     /**
      * Extended cleanup of HTML code, used when pasting from Word
-     * @param value
-     * @return
+     * @param value - input HTML text
+     * @return - cleaned HTML
      */
     public String cleanupHTML(String value) {
         FilterPipeline pipe = new FilterPipeline();
@@ -92,8 +92,8 @@ public class HTMLEditorHelper {
 
     /**
      * Cleanup / replacement done after editing content
-     * @param value
-     * @return
+     * @param value - HTML text
+     * @return - cleaned HTML
      */
     public String postEditFilter(String value) {
         FilterPipeline pipe = new FilterPipeline();
@@ -149,6 +149,9 @@ public class HTMLEditorHelper {
         // Replace the align attribute from p elements with inline style
         pipe.addFilter(new ReplaceAlignAttributeFilter());
 
+        // Fix image width and height, shrink images automatically
+        pipe.addFilter(new ImgHeightAndWidthFilter());
+
         // Replace context path with <@WEB@>
         ContextPathFilter contextPathFilter = new ContextPathFilter();
         contextPathFilter.setContextPath(Aksess.getContextPath());
@@ -199,8 +202,8 @@ public class HTMLEditorHelper {
 
     /**
      * Replacements done before editing content
-     * @param value
-     * @return
+     * @param value - HTML text
+     * @return - cleaned HTML
      */
     public String preEditFilter(String value) {
 

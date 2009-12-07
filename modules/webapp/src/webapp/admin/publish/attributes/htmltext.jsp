@@ -198,7 +198,7 @@
         }
         if (conf.getBoolean(confPrefix + "multimedia", true)) {
     %>
-            <a class="button media" href="Javascript:rtInsertLink('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.multimedia"/>"></a>
+            <a class="button media" href="Javascript:rtInsertMedia('editor_<%=fieldName%>', <%=width%>)" title="<kantega:label key="aksess.editor.multimedia"/>"></a>
     <%
         }
         if (conf.getBoolean(confPrefix + "link", true) || conf.getBoolean(confPrefix + "multimedia", true)) {

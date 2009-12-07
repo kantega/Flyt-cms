@@ -31,6 +31,16 @@
          * Registers click event actions to each tool
          */
         function bindToolButtons() {
+            <c:if test="${canEdit && isImage}">
+                $("#ToolsMenu .button .crop").click(function(){
+                    location.href = "ImageCrop.action?id=${media.id}";
+                });
+            </c:if>
+            <c:if test="${canEdit && isImage}">
+                $("#ToolsMenu .button .imagemap").click(function(){
+                    location.href = "ImageMap.action?id=${media.id}";
+                });
+            </c:if>
         }
     </script>
 
@@ -43,9 +53,8 @@
 
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
-        <c:if test="${showImageCrop}">
-            <a href="ImageManipulation.action?id=${media.id}" class="button"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
-        </c:if>
+        <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
+        <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="imagemap"><kantega:label key="aksess.tools.imagemap"/></span></a>
     </div>
 </kantega:section>
 
@@ -54,9 +63,7 @@
     <div id="Content" class="multimedia">
         <div id="MainPane">
             <div id="EditMultimediaButtons" class="buttonBar">
-                <span class="barButton hidden"><input type="submit" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
-                <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
-                <span class="barButton"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <kantega:getsection id="editbuttons"/>
             </div>
             <div id="MultimediaPane">
                 <kantega:getsection id="content"/>
@@ -64,8 +71,71 @@
         </div>
         <div id="SideBarSplit"></div>
         <div id="SideBar">
-            <kantega:getsection id="sidebar"/>
+            <c:if test="${isPropertyPaneEditable}">
+            <form name="editmediaform" id="EditMultimediaForm" action="EditMultimedia.action" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="${media.id}">
+                <input type="hidden" name="changed" value="false">
+                <input type="hidden" name="insert" value="false">
+                <input type="hidden" id="MaxWidth" name="maxWidth" value="-1">
+                </c:if>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <h1><kantega:label key="aksess.multimedia.medianame"/></h1>
+                        <input type="text" class="fullWidth" name="name" id="MultimediaName" value="<c:out value="${media.name}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                    </fieldset>
+                </div>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <h1><kantega:label key="aksess.multimedia.author"/></h1>
+                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="<c:out value="${media.altname}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                    </fieldset>
+                </div>
+                <c:if test="${isPropertyPaneEditable && showDimension}">
+                    <div class="sidebarFieldset">
+                        <fieldset>
+                            <h1><kantega:label key="aksess.multimedia.size"/></h1>
+                            <label for="width"><kantega:label key="aksess.multimedia.width"/></label> <input type="text" size="5" id="width" name="width" value="<c:if test="${media.width > 0}">${media.width}</c:if>">
+                            <label for="height"><kantega:label key="aksess.multimedia.height"/></label> <input type="text" size="5" id="height" name="height" value="<c:if test="${media.height > 0}">${media.height}</c:if>">
+                            <c:if test="${showDimensionInfo}">
+                                <div class="info"><kantega:label key="aksess.multimedia.sizeinfo"/></div>
+                            </c:if>
+                        </fieldset>
+                    </div>
+                </c:if>
+
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <h1><kantega:label key="aksess.multimedia.usage"/></h1>
+                        <textarea name="usage" id="MultimediaUsage" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.usage}"/></textarea>
+                    </fieldset>
+                </div>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <h1><kantega:label key="aksess.multimedia.description"/></h1>
+                        <textarea name="description" id="MultimediaDescription" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.description}"/></textarea>
+                    </fieldset>
+                </div>
+
+                <c:if test="${not empty usages}">
+                    <div class="sidebarFieldset">
+                        <fieldset>
+                            <h1><kantega:label key="aksess.multimedia.pages.using"/></h1>
+                            <ul id="MultimediaPagesUsing">
+                                <c:forEach items="${usages}" var="page">
+                                    <li>
+                                        <a href="${page.url}" target="_new">${page.title}</a>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </fieldset>
+                    </div>
+                </c:if>
+                <c:if test="${isEditable}">
+            </form>
+            </c:if>
         </div>
+
+
     </div>
 
 </kantega:section>

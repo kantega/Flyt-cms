@@ -39,12 +39,12 @@
 
         function bindPublishButtons() {
         <c:if test="${!previewActive}">
-            $("#ModesMenu input .preview").click(function(){
+            $("#ModesMenu .button .preview").click(function(){
                 gotoMode("ViewContentPreview");
             });
         </c:if>
         <c:if test="${previewActive}">
-            $("#ModesMenu input .edit").click(function(){
+            $("#ModesMenu .button .edit").click(function(){
                 gotoMode("SaveContent");
             });
         </c:if>

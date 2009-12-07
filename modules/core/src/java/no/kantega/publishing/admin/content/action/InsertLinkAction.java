@@ -75,9 +75,9 @@ public class InsertLinkAction extends AdminController {
         model.put("url", url);
         model.put("anchor", anchor);
 
-        boolean openInNewWindow = param.getBoolean("openInNewWindow", false);
+        boolean openInNewWindow = param.getBoolean("isOpenInNewWindow", false);
         if (openInNewWindow || Aksess.doOpenLinksInNewWindow()) {
-            model.put("openInNewWindow", Boolean.TRUE);
+            model.put("isOpenInNewWindow", Boolean.TRUE);
         }
 
         model.put(linkType + "Selected", "selected");

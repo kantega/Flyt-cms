@@ -21,7 +21,8 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -29,29 +30,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-public class EditMultimediaAction extends AdminController {
+/**
+ * Edit metadata for a multimedia object
+ */
+public class EditMultimediaAction extends AbstractEditMultimediaAction {
     private String view;
     private String selectMediaView;
 
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestParameters param = new RequestParameters(request, "utf-8");
+    protected ModelAndView handleGet(Multimedia mm, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Configuration c = Aksess.getConfiguration();
 
-        MultimediaService mediaService = new MultimediaService(request);
-
-        int id = param.getInt("id");
-        Multimedia mm = mediaService.getMultimedia(id);
-        if (mm == null) {
-            return new ModelAndView(new RedirectView("Navigate.action"));
-        }
-
-        boolean changed = param.getBoolean("changed", false);
-        boolean insert = param.getBoolean("insert", false);
-
-        if (!request.getMethod().equalsIgnoreCase("POST")) {
-            // Show image / media object
-            Map<String, Object> model = new HashMap<String, Object>();
-
-            Configuration c = Aksess.getConfiguration();
+        // Show image / media object
+        Map<String, Object> model = new HashMap<String, Object>();
 
             model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
             model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
@@ -64,49 +54,54 @@ public class EditMultimediaAction extends AdminController {
                 }
             }
 
-            if (mm.getMimeType().getType().indexOf("image") != -1) {
-                // Can crop image
-                model.put("showImageCrop", Boolean.TRUE);
+            boolean canEdit = SecuritySession.getInstance(request).isAuthorized(mm, Privilege.UPDATE_CONTENT);
+            if (canEdit) {
+                model.put("isPropertyPaneEditable", Boolean.TRUE);
             }
-
-            // Find usages of this image/file
-            List usages = mediaService.getUsages(mm.getId());
-            model.put("usages", usages);
-
 
             return new ModelAndView(view, model);
-        } else {
-            // Save changes to object
-            if (changed) {
-                mm.setName(param.getString("name", 255));
+    }
 
-                mm.setAltname(param.getString("altname", 255));
-                mm.setAuthor(param.getString("author", 255));
-                mm.setDescription(param.getString("description", 4000));
-                mm.setUsage(param.getString("usage", 4000));
+    protected ModelAndView handlePost(Multimedia mm, HttpServletRequest request, HttpServletResponse response) {
+        RequestParameters param = new RequestParameters(request, "utf-8");
 
-                int width = param.getInt("width");
-                int height = param.getInt("height");
-                if (width != -1) {
-                    mm.setWidth(width);
-                }
-                if (height != -1) {
-                    mm.setHeight(height);
-                }
+        boolean changed = param.getBoolean("changed", false);
+        boolean insert = param.getBoolean("insert", false);
 
-                id = mediaService.setMultimedia(mm);
-                mm.setId(id);
+        boolean canEdit = SecuritySession.getInstance(request).isAuthorized(mm, Privilege.UPDATE_CONTENT);
+
+        MultimediaService mediaService = new MultimediaService(request);
+
+        // Save changes to object
+        if (changed && canEdit) {
+            mm.setName(param.getString("name", 255));
+
+            mm.setAltname(param.getString("altname", 255));
+            mm.setAuthor(param.getString("author", 255));
+            mm.setDescription(param.getString("description", 4000));
+            mm.setUsage(param.getString("usage", 4000));
+
+            int width = param.getInt("width");
+            int height = param.getInt("height");
+            if (width != -1) {
+                mm.setWidth(width);
+            }
+            if (height != -1) {
+                mm.setHeight(height);
             }
 
-            Map<String, Object> model = new HashMap<String, Object>();
-            if (insert) {
-                model.put("mediaObject", mm);                        
-                return new ModelAndView(selectMediaView, model);
-            } else {
-                model.put("id", mm.getParentId());
-                return new ModelAndView(new RedirectView("Navigate.action"), model);
-            }
+            mm.setId(mediaService.setMultimedia(mm));
         }
+
+        Map<String, Object> model = new HashMap<String, Object>();
+        if (insert) {
+            model.put("media", mm);
+            return new ModelAndView(selectMediaView, model);
+        } else {
+            model.put("id", mm.getParentId());
+            return new ModelAndView(new RedirectView("Navigate.action"), model);
+        }
+
     }
 
     public void setView(String view) {

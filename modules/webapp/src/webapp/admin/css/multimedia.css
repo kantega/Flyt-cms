@@ -57,6 +57,10 @@
     width: 120px;
 }
 
+#CropOptions {
+    margin-top: 20px;
+}
+
 #EditMultimediaButtons input.insert {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
@@ -71,3 +75,48 @@
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
 }
 
+div.imagemap {
+    margin: 0;
+    padding: 0;
+    border: 1px dotted black;
+}
+
+.imagemap0 {
+    background-color: #ff0000;
+}
+
+.imagemap1 {
+    background-color: #ffff00;
+}
+
+.imagemap2 {
+    background-color: #ffaa00;
+}
+
+.imagemap3 {
+    background-color: #ccff00;
+}
+
+.imagemap4 {
+    background-color: #ffcc00;
+}
+
+.imagemap5 {
+    background-color: #00ccff;
+}
+
+.imagemap6 {
+    background-color: #00ffcc;
+}
+
+.imagemap7 {
+    background-color: #ff00aa;
+}
+
+.imagemap8 {
+    background-color: #aaffaa;
+}
+
+.imagemap9 {
+    background-color: #ffaaff;
+}

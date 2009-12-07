@@ -31,6 +31,8 @@
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 
+    int maxWidth = param.getInt("maxWidth");
+
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
@@ -56,7 +58,7 @@
 </script>
 <body onLoad="insertMMObject()">
 <form name="mediaform" style="display:none;">
-    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, align, -1, -1, cssClass)%></textarea>
+    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, align, maxWidth, -1, cssClass)%></textarea>
 </form>
 </body>
 </html>
