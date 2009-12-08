@@ -1,5 +1,6 @@
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ page import="no.kantega.publishing.common.util.MultimediaHelper" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -43,7 +44,7 @@
                             mimeType = mimeType.replace('/', '-');
                             mimeType = mimeType.replace('.', '-');
                             if (mimeType.indexOf("image") != -1) {
-                                out.write(MultimediaHelper.mm2HtmlTag(mm, 100, 100));
+                                out.write(MultimediaHelper.mm2HtmlTag(Aksess.getContextPath(), mm, null, 100, 100, null, true));
                             } else {
                                 out.write("<div class=\"media " + mimeType + "\"></div>");
                             }

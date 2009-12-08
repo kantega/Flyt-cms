@@ -120,3 +120,23 @@ div.imagemap {
 .imagemap9 {
     background-color: #ffaaff;
 }
+
+#MainPane #ImageMapTable {
+    width: 600px;
+}
+
+th.imageMapLink {
+    width: 250px;
+}
+
+th.imageMapAltTitle {
+    width: 200px;
+}
+
+th.imageMapNewWindow {
+    width: 75px;
+}
+
+th.imageMapDelete {
+    width: 75px;
+}

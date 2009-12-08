@@ -36,25 +36,29 @@ public class MultimediaHelper {
     private static final String SOURCE = "aksess.MultimediaHelper";
 
     public static String mm2HtmlTag(Multimedia mm) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String cssClass) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, int maxW, int maxH) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, maxW, maxH, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, maxW, maxH, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH, String cssClass) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass, false);
     }
     public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass) {
+        return mm2HtmlTag(baseUrl, mm, align, maxW, maxH, cssClass, false);
+    }
+
+    public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass, boolean skipImageMap) {
         StringBuffer tag = new StringBuffer();
 
         String url = mm.getUrl();
@@ -123,37 +127,39 @@ public class MultimediaHelper {
             }
             tag.append(" src=\"" + url + "\"");
 
-            try {
-                MultimediaImageMap mim = MultimediaImageMapAO.loadImageMap(mm.getId());
-                if (mim.getCoordUrlMap().length > 0) {
-                    Date dt = new Date();
-                    String mapId = "imagemap" + mm.getId() + dt.getTime();
+            if (!skipImageMap) {
+                try {
+                    MultimediaImageMap mim = MultimediaImageMapAO.loadImageMap(mm.getId());
+                    if (mim.getCoordUrlMap().length > 0) {
+                        Date dt = new Date();
+                        String mapId = "imagemap" + mm.getId() + dt.getTime();
 
-                    // Avslutter bildet med referanse til bildekart
-                    tag.append(" usemap=\"#").append(mapId).append("\">");
-                    tag.append("<map id=\"").append(mapId).append("\" name=\"").append(mapId).append("\">");
+                        // Avslutter bildet med referanse til bildekart
+                        tag.append(" usemap=\"#").append(mapId).append("\">");
+                        tag.append("<map id=\"").append(mapId).append("\" name=\"").append(mapId).append("\">");
 
-                    for (int i=0; i < mim.getCoordUrlMap().length; i++){
-                        String mapURL = mim.getCoordUrlMap()[i].getUrl();
-                        if (mapURL.startsWith("/")) {
-                            mapURL = Aksess.getContextPath() + mapURL;
-                        }
-
-                        // Henter eventuelle resizede koordinater
-                        String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
-                        if (coord != null) {
-                            String target = "";
-                            if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
-                                target = " target=\"_blank\"";
+                        for (int i=0; i < mim.getCoordUrlMap().length; i++){
+                            String mapURL = mim.getCoordUrlMap()[i].getUrl();
+                            if (mapURL.startsWith("/")) {
+                                mapURL = Aksess.getContextPath() + mapURL;
                             }
-                            tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
+
+                            // Henter eventuelle resizede koordinater
+                            String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
+                            if (coord != null) {
+                                String target = "";
+                                if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
+                                    target = " target=\"_blank\"";
+                                }
+                                tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
+                            }
                         }
+                        tag.append("</map>");
                     }
-                    tag.append("</map>");
+                } catch(SystemException e){
+                    System.err.println(e);
+                    Log.error(SOURCE, e, null, null);
                 }
-            } catch(SystemException e){
-                System.err.println(e);
-                Log.error(SOURCE, e, null, null);
             }
 
             // Legg til > på slutten hvis ikke avsluttet

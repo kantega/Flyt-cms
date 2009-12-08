@@ -94,7 +94,7 @@
     </script>
 
     <div id="MediaObject">
-        <%=MultimediaHelper.mm2HtmlTag((Multimedia)request.getAttribute("media"))%>
+        <%=MultimediaHelper.mm2HtmlTag(Aksess.getContextPath(), (Multimedia)request.getAttribute("media"), null, -1, -1, null, true)%>
     </div>
 </kantega:section>
 

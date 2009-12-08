@@ -73,10 +73,13 @@
                 if (y < startY + 10) {
                     y = startY + 10;
                 }
-                if (x > $("#MediaObject img").width()) {
 
+                // Make sure user does not drag outside right edge of image
+                var ref = $("#MediaObject img");
+                var maxX = ref.position().left + ref.width();
+                if (x > maxX) {
+                    x = maxX;
                 }
-
 
                 if (!detectCollision(startX, startY, x, y)) {
                     current.width(x - startX);
@@ -238,10 +241,10 @@
 
             <table id="ImageMapTable">
                 <thead>
-                        <th width="215"><kantega:label key="aksess.multimedia.imagemap.lenke"/></th>
-                        <th width="215"><kantega:label key="aksess.multimedia.imagemap.altnavn"/></th>
-                        <th width="100"><kantega:label key="aksess.multimedia.imagemap.nyttvindu"/></th>
-                        <th width="70">&nbsp;</th>
+                        <th class="imageMapLink"><kantega:label key="aksess.multimedia.imagemap.lenke"/></th>
+                        <th class="imageMapAltTitle" width="215"><kantega:label key="aksess.multimedia.imagemap.altnavn"/></th>
+                        <th class="imageMapNewWindow"><kantega:label key="aksess.multimedia.imagemap.nyttvindu"/></th>
+                        <th class="imageMapDelete">&nbsp;</th>
                 </thead>
                 <tbody>
                 </tbody>
