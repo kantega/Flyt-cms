@@ -90,7 +90,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             st.execute();
 
             // Slett knytninger som ikke finnes i trash lenger
-            c.prepareStatement("delete from associations where IsDeleted = 1 and DeletedItemsId not in (select Id from deleteditems)");
+            st = c.prepareStatement("delete from associations where IsDeleted = 1 and DeletedItemsId not in (select Id from deleteditems)");
             st.execute();
 
             // Slett sider som ikke har knytninger lenger
