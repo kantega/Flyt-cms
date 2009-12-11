@@ -56,14 +56,14 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getTrafficLogMaxAge());
 
-            Log.info(SOURCE, "Sletter trafikklog eldre enn " + Aksess.getTrafficLogMaxAge() + " mnd", null, null);
+            Log.info(SOURCE, "Deleting trafficlog older than " + Aksess.getTrafficLogMaxAge() + " months", null, null);
 
             st = c.prepareStatement("delete from trafficlog where Time < ?");
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
 
             // Oppdater antall visninger i loggen
-            Log.info(SOURCE, "Oppdaterer antall visninger basert på trafikklog", null, null);
+            Log.info(SOURCE, "Updating number of views based on trafficlog", null, null);
 
             st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId)");
             st.execute();
@@ -73,7 +73,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getEventLogMaxAge());
 
-            Log.info(SOURCE, "Sletter eventlog eldre enn " + Aksess.getEventLogMaxAge() + " mnd", null, null);
+            Log.info(SOURCE, "Deleting event log entries older than " + Aksess.getEventLogMaxAge() + " months", null, null);
 
             st = c.prepareStatement("delete from eventlog where Time < ?");
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -83,7 +83,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getDeletedItemsMaxAge());
 
-            Log.info(SOURCE, "Sletter deleteditems eldre enn " + Aksess.getDeletedItemsMaxAge() + " mnd", null, null);
+            Log.info(SOURCE, "Deleting deleted items older than " + Aksess.getDeletedItemsMaxAge() + " months", null, null);
 
             st = c.prepareStatement("delete from deleteditems where DeletedDate < ?");
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
