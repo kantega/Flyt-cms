@@ -44,7 +44,7 @@
 
         function setLayoutSpecificSizes() {
             /*var mainPaneHeight = $("#MainPane").height();
-            var statusbarHeight = $("#MainPane .statusbar").height();
+            var statusbarHeight = $("#Statusbar").height();
             var subPages = $("#SubPages");
             var subPagesPaddingTop = parseInt(subPages.css("paddingTop"));
             var subPagesPaddingBottom = parseInt(subPages.css("paddingBottom"));

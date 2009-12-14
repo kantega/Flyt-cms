@@ -14,7 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<div class="statusbar">
+<div id="Statusbar">
     <div id="Breadcrumbs"></div>
     <div class="supportMenu">
         <a href="#" class="brokenLink">Lenkebrudd</a>

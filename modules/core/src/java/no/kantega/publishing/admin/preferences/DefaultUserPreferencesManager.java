@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class DefaultUserPreferencesManager implements UserPreferencesManager {
 
@@ -52,5 +54,14 @@ public class DefaultUserPreferencesManager implements UserPreferencesManager {
             session.setAttribute(PREFERENCES_ATTRIBUTE, preferences);
         }
         return preferences.get(key);
+    }
+
+    public List<UserPreference> getAllPreferences(HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        Map<String, UserPreference> preferences = (Map<String, UserPreference>) session.getAttribute(PREFERENCES_ATTRIBUTE);
+        if (preferences != null) {
+            return new ArrayList<UserPreference>(preferences.values());
+        }
+        return null;
     }
 }

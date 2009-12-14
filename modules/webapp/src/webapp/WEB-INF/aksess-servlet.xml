@@ -99,7 +99,7 @@
                 <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
-                <prop key="/admin/publish/BreadCrumbs.action">breadCrumbsAction</prop>
+                <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
 
                 <!-- Popups for publishing -->
                 <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
@@ -129,7 +129,7 @@
                 <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
                 <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
-                <!--<prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>-->                
+                <!--<prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>-->
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
 
@@ -299,11 +299,11 @@
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
-    <bean id="breadCrumbsAction" class="no.kantega.publishing.admin.content.ajax.BreadCrumbsAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/breadcrumbs.jsp"/>
-    </bean>
 
-    
+
+    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
+
+
 
     <!-- Organize subpages -->
     <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction">
@@ -531,7 +531,7 @@
     <bean class="no.kantega.publishing.admin.content.action.RemoveContentLockAction" id="removeContentLockAction"/>
     <bean class="no.kantega.publishing.admin.administration.action.SearchEventLogAction" id="searchEventLogAction">
         <property name="formView" value="/WEB-INF/jsp/admin/administration/eventlog-form.jsp"/>
-        <property name="resultsView" value="/WEB-INF/jsp/admin/administration/eventlog-result.jsp"/>    
+        <property name="resultsView" value="/WEB-INF/jsp/admin/administration/eventlog-result.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
@@ -593,6 +593,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
 
+
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchContentAsXMLAction" id="SearchContentAsXMLAction">
@@ -608,7 +609,6 @@
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
     </bean>
-
 
     <bean id="groovyConsole" class="no.kantega.publishing.admin.groovyconsole.GroovyConsole"/>
 

@@ -17,10 +17,13 @@
 package no.kantega.publishing.admin.preferences;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 public interface UserPreferencesManager {
 
     public void setPreference(UserPreference preference, HttpServletRequest request);
 
     public UserPreference getPreference(String key, HttpServletRequest request);
+    
+    public List<UserPreference> getAllPreferences(HttpServletRequest request);
 }

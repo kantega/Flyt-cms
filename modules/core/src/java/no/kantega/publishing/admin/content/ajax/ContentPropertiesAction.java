@@ -16,32 +16,36 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.PathEntry;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 
-public class BreadCrumbsAction implements Controller {
+public class ContentPropertiesAction implements Controller {
 
-    @Autowired
-    private SiteCache aksessSiteCache;
-    private String view;
+    @Autowired private SiteCache aksessSiteCache;
+    @Autowired private LinkDao aksessLinkDao;
+    @Autowired private View aksessJsonView;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -49,12 +53,13 @@ public class BreadCrumbsAction implements Controller {
         String url = request.getParameter("url");
         ContentManagementService cms = new ContentManagementService(request);
 
-
         try {
             ContentIdentifier cid = new ContentIdentifier(url);
             Content content = cms.getContent(cid, false);
 
             if (content != null) {
+
+                //Breadcrumbs
                 List<PathEntry> path = cms.getPathByAssociation(content.getAssociation());
                 if (path == null) {
                     path = new ArrayList<PathEntry>();
@@ -69,8 +74,26 @@ public class BreadCrumbsAction implements Controller {
                 path.get(0).setTitle(aksessSiteCache.getSiteById(siteId).getName());
 
                 model.put("path", path);
+
+
+                //Broken links
+                model.put("links", aksessLinkDao.getLinksforContentId(content.getId()));
+
+
+                //Associations
+                List<Association> associations = new ArrayList<Association>();
+                for (Association association : content.getAssociations()) {
+                    if (association.getAssociationtype() != AssociationType.SHORTCUT) {
+                        associations.add(association);
+                    }
+                }
+                model.put("associations", associations);
+
+                
             }
-            return new ModelAndView(view, model);
+
+
+            return new ModelAndView(aksessJsonView, model);
 
 
         } catch (ContentNotFoundException e) {
@@ -85,7 +108,5 @@ public class BreadCrumbsAction implements Controller {
         }
     }
 
-    public void setView(String view) {
-        this.view = view;
-    }
+
 }

@@ -37,41 +37,41 @@
 }
 
 /************** Content frame (right column) **************/
-#MainPane .statusbar {
+#MainPane #Statusbar {
     height: 22px;
     line-height: 22px;
     background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
     padding: 0 10px;
 }
-#MainPane .statusbar #Breadcrumbs ul {
+#MainPane #Statusbar #Breadcrumbs ul {
     float: left;
     margin: 0;
     padding: 0;
 }
-#MainPane .statusbar #Breadcrumbs li {
+#MainPane #Statusbar #Breadcrumbs li {
     display: inline;
     background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
     padding-left: 12px;
 }
-#MainPane .statusbar #Breadcrumbs li:first-child {
+#MainPane #Statusbar #Breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
     background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
     padding-left: 18px;
 }
-#MainPane .statusbar .supportMenu a {
-    display: block;
+#MainPane #Statusbar .supportMenu a {
+    display: none;
     float: left;
     height: 22px;
     padding-left: 20px;
     margin-left: 20px;
 }
-#MainPane .statusbar .supportMenu a.brokenLink {
+#MainPane #Statusbar .supportMenu a.brokenLink {
     background: url("../bitmaps/default/framework/contentstatus_broken_link.png") left center no-repeat;
 }
-#MainPane .statusbar .supportMenu a.crossPublish {
+#MainPane #Statusbar .supportMenu a.crossPublish {
     background: url("../bitmaps/default/framework/contentstatus_cross_publish.png") left center no-repeat;
 }
-#MainPane .statusbar .supportMenu a.details {
+#MainPane #Statusbar .supportMenu a.details {
     background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
 }
 

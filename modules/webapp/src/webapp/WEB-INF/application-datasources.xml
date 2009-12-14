@@ -33,4 +33,9 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean id="aksessLinkDao" class="no.kantega.publishing.common.ao.JdbcLinkDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="sqlDialect" ref="sqlDialect"/>
+    </bean>
+
 </beans>

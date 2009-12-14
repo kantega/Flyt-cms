@@ -79,7 +79,7 @@ public class Content extends BaseObject {
     private long forumId = -1;
 
     // Associations to this content object
-    private List associations = new ArrayList();
+    private List<Association> associations = new ArrayList<Association>();
 
     // Attributes
     private List contentAttributes = new ArrayList();
@@ -242,23 +242,22 @@ public class Content extends BaseObject {
 
     public Association getAssociation() {
         if (associations.size() == 1) {
-            return (Association)associations.get(0);
+            return associations.get(0);
         }
 
-        for (int i = 0; i < associations.size(); i++) {
-            Association tmp = (Association)associations.get(i);
-            if (tmp.isCurrent()) {
-                return tmp;
+        for (Association association : associations) {
+            if (association.isCurrent()) {
+                return association;
             }
         }
         return null;
     }
 
-    public List getAssociations() {
+    public List<Association> getAssociations() {
         return associations;
     }
 
-    public void setAssociations(List associations) {
+    public void setAssociations(List<Association> associations) {
         this.associations = associations;
     }
 

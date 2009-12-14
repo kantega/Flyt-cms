@@ -27,7 +27,7 @@
 
     <context:annotation-config/>
     <dwr:configuration>
-        <dwr:convert type="bean" class="no.kantega.publishing.admin.preferences.UserPreference" />           
+        <dwr:convert type="bean" class="no.kantega.publishing.admin.preferences.UserPreference" />
     </dwr:configuration>
     <dwr:annotation-config/>
     <dwr:url-mapping/>

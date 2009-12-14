@@ -42,6 +42,8 @@
         <property name="hostnamesDao" ref="aksessHostnamesDao"/>
     </bean>
 
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView"/>
+
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
         <constructor-arg>
             <list>

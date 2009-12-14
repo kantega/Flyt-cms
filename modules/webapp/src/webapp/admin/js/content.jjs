@@ -49,12 +49,16 @@ function bindContentupdateEvents() {
         }
     });
 
-    $("#Breadcrumbs").bind("contentupdate", function(e, url){
-        debug("content.bindContentupdateEvents(): #Breadcrumbs has received contentupdate event. Url: " + url);
+    $("#Statusbar").bind("contentupdate", function(e, url){
+        debug("content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
         if(url) {
             currentUrl = url;
         }
-        $(this).load("${pageContext.request.contextPath}/admin/publish/BreadCrumbs.action", {url: currentUrl});
+        $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: currentUrl}, function(data){
+            ContentStatus.breadcrumbs(data.path);
+            ContentStatus.brokenLinks(data.links);
+            ContentStatus.associations(data.associations);
+        }, "json");
     });
 
 //    New listeners can be added here:
@@ -62,6 +66,7 @@ function bindContentupdateEvents() {
 //        [perform actions]
 //    });
 }
+
 
 
 /**
@@ -300,6 +305,34 @@ var Publish =  {
 
     managePrivileges: function(thisId) {
         debug("content.Publish.managePrivileges(): thisId: " + thisId);
+    }
+};
+
+/**
+ * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
+ */
+var ContentStatus = {
+
+    breadcrumbs: function (path) {
+        if (path) {
+            var crumbs = "<ul>";
+            for (var i=0; i<path.length; i++) {
+                crumbs += "<li><a href=\"?thisId="+path[i].id+"\">"+path[i].title+"</a></li>";
+            }
+            crumbs += "</ul>";
+            $("#Breadcrumbs").html(crumbs);
+        }
+    },
+
+    brokenLinks: function (links) {
+        if (links && links.length > 0) {
+            $("#Statusbar .brokenLink").show();
+        }
+    },
+    associations: function (associations) {
+        if (associations && associations.length > 1) {
+            $("#Statusbar .crossPublished").show();
+        }
     }
 };
 

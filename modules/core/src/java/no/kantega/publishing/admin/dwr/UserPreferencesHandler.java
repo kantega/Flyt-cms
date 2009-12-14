@@ -18,9 +18,12 @@ package no.kantega.publishing.admin.dwr;
 
 import no.kantega.publishing.admin.preferences.UserPreference;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.directwebremoting.annotations.RemoteProxy;
 import org.directwebremoting.annotations.RemoteMethod;
+import org.directwebremoting.annotations.RemoteProxy;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -50,5 +53,14 @@ public class UserPreferencesHandler extends AbstractDwrController {
     @RemoteMethod
     public UserPreference getPreference(String key) {
         return userPreferencesManager.getPreference(key, getRequest());
+    }
+
+    /**
+     * Returns all preferences for the current user.
+     * @return List of all preferences, permanent and non-permanent.
+     */
+    @RemoteMethod
+    public List<UserPreference> getAllPreferences() {
+        return userPreferencesManager.getAllPreferences(getRequest());
     }
 }
