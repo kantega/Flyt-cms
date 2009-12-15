@@ -30,7 +30,8 @@
 </div>
 <div class="buttonGroup search">
     <form action="" method="get">
-        <input type="text" class="query content" name="query content">
-        <input type="submit" value="" title="<kantega:label key="aksess.search.submit"/>">
+        <input type="text" id="SearchQuery" class="query content" name="query content">
+        <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
     </form>
+    <div id="SearchResults"></div>
 </div>

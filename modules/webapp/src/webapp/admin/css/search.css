@@ -1,0 +1,19 @@
+div.hit {
+    margin-top: 1em;
+}
+
+div.hitCount {
+    font-weight: bold;
+}
+
+div.hit a {
+    font-weight: bold;
+}
+
+div.paging {
+    margin-top: 1.5em;
+}
+
+div.pagenumbers {
+    display: inline-block;
+}

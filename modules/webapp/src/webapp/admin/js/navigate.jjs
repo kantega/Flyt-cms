@@ -283,28 +283,25 @@ function setFolderClosed(id) {
  });
 
 function bindSearchInput() {
-    $(".search input:submit").click(function(e){
-        e.preventDefault();//Preventing the form from being subitted the ordinary way.
-        $(this).siblings("input:text").each(function(){
-            var textInput = $(this);
-            if (textInput.hasClass("query")) {
-                var query = textInput.val();
-                if (Search.inputValid(query)) {
-                    if(textInput.hasClass("content")) {
-                        Search.content(query);
-                    } else if (textInput.hasClass("multimedia")) {
-                        Search.multimedia(query);
-                    }
-                }
+    $("#SearchButton").click(function(e){
+            e.preventDefault(); //Preventing the form from being subitted the ordinary way.
+            var textInput = $("#SearchQuery");
+            var query = textInput.val();
+            if (Search.inputValid(query)) {
+                Search.search(query);
             }
-        });
     });
 }
 
 var Search = {
-    content : function(query){
-        debug("navigate.Search.content(): query: " + query);
+    search : function(query){
+        debug("navigate.Search.search(): query: " + query);
+        var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
+        //getSearchAction();
+        var searchResult = $("#SearchResults");
+        searchResult.html('<iframe src="' + searchUrl + '">');
         //TODO: Implement properly. Fetch search results with ajax.
+        /*
         var searchResults = $("<div/>").attr("id", "SearchResults").html("<p>You searched: " + query + "</p>").slideDown("slow");
         $("#ContentFrame").append(searchResults);
         var closeLink = $("<a>").addClass("close").attr("href", "#").html("Close");
@@ -312,16 +309,19 @@ var Search = {
             $(this).parent().slideUp("slow");
         });
         searchResults.append(closeLink);
-    },
-
-    multimedia : function(query) {
-        debug("navigate.Search.multimedia(): query: " + query);
+        */
+        debug("show searchresults");
+        searchResult.slideDown("slow");
     },
 
     inputValid : function(query){
         debug("navigate.Search.inputValid(): query: " + query);
-        //TODO: Validate search input
-        return true;
+        query = query.trim();
+        if (query.length >= 3) {
+            return true;
+        } else {
+            return false;
+        }
     }
 };
 

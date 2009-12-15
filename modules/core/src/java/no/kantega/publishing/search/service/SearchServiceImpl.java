@@ -178,7 +178,12 @@ public class SearchServiceImpl implements SearchService {
         return alternatives;
     }
 
-    private List<Criterion> getDefaultFilters() {
+    
+    /**
+     * Returns default filters: only search visible published pages
+     * @return - List of criterion
+     */
+    protected List<Criterion> getDefaultFilters() {
         List<Criterion> criterions = new ArrayList<Criterion>();
 
         // Bare søk i aktivt innhold
