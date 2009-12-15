@@ -16,17 +16,20 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
     <title><kantega:getsection id="title"/></title>
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/base.css">
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/default.css">
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.roundcorners.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/base.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.7.2.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.7.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $("div.fieldset").roundCorners();
@@ -46,12 +49,13 @@
 
             });
             $("#Content .button .cancel").click(function(){
+                debug("popupLayout: close clicked");                
                 closeWindow();
             });
         });
 
         function closeWindow() {
-            window.close();
+            getParent().ModalWindow.close();
         }
 
         function getParent() {

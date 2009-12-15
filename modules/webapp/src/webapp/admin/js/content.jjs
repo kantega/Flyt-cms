@@ -91,6 +91,10 @@ function bindFilterEvents() {
         });
         $.event.trigger("contentupdate");
     });
+
+    filterOptions.find(".filter").live('click', function(){
+        debug("content.bindFilterEvents(): Filter clicked");
+    });
 }
 
 

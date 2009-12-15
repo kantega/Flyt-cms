@@ -25,11 +25,7 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigator.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         var currentItemIdentifier = -1;

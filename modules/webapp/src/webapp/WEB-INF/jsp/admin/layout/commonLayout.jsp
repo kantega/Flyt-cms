@@ -28,12 +28,14 @@
     <!--[if lt IE 8]>
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.7.2.css">
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.3.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-core-interactions-effects-1.7.2.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.7.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.colorbox-min.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferences.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>

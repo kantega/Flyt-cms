@@ -162,8 +162,9 @@ function editForm(formElement) {
 function selectContentUrl(formElement) {
    focusField = formElement;
    doInsertTag = true;
-   var contentwin = window.open("popups/SelectContent.action?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-   contentwin.focus();
+   ModalWindow.open({title:'Velg innholdselement', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+   //var contentwin = window.open("popups/SelectContent.action?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+   //contentwin.focus();
 }
 
 

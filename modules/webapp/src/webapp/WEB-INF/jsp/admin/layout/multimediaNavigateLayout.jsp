@@ -44,9 +44,7 @@
         <div id="Navigation">
 
             <div id="Navigator"></div>
-            <div id="Framesplit">
-                <div id="FramesplitDrag"></div>
-            </div>
+            <div id="Framesplit"></div>
         </div>
 
         <div id="MainPane">

@@ -69,7 +69,6 @@
                 <kantega:getsection id="content"/>
             </div>
         </div>
-        <div id="SideBarSplit"></div>
         <div id="SideBar">
             <c:if test="${isPropertyPaneEditable}">
             <form name="editmediaform" id="EditMultimediaForm" action="EditMultimedia.action" method="post" enctype="multipart/form-data">

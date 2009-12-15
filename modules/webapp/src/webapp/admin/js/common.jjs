@@ -70,3 +70,71 @@ function notifyContentUpdate(url) {
         }
     });
 }
+
+
+/**
+ * 
+ */
+var ModalWindow = {
+
+    $content: '',
+
+    config: {
+        title: 'OpenAksess',
+        titlebar: true,
+        resizable: true,
+        modal: true,
+        iframe: false,
+        closeOnEscape: true,
+        height: 400,
+        width: 600,
+        horizontalPadding: 0,
+        verticalPadding: 0,
+        open: function(){
+                $.event.trigger("resize");
+        },
+        autoResize: true,
+        autoOpen: true,
+        overlay: {
+            opacity: 0.2,
+            background: "black"
+        }
+    },
+
+    open: function(config){
+        debug("common.ModalWindow.open(): config: " + config);
+
+        if (config && typeof(config) == 'object') {
+            debug("common.ModalWindow.open(): Extending default config with user supplied config.");
+            $.extend(ModalWindow.config, config);
+        }
+        
+        if (!ModalWindow.config.position) {
+            ModalWindow.config.position = [(($(window).width()-ModalWindow.config.width)/2),(($(window).height()-ModalWindow.config.height)/2)];
+        }
+
+
+        if (ModalWindow.config.iframe) {
+            $content = $('<iframe id="externalSite" src="' + ModalWindow.config.href + '" />');
+        } else {
+            $content = $("<div/>").load(ModalWindow.config.href);
+        }
+        
+        debug("common.ModalWindow.open(): Opening modal window.");
+
+        $content.dialog(ModalWindow.config);
+
+        if (ModalWindow.config.iframe) {
+                $content.width(ModalWindow.config.width - ModalWindow.config.horizontalPadding).height(ModalWindow.config.height - ModalWindow.config.verticalPadding);
+        }
+
+        debug("common.ModalWindow.open(): Modal window opened.");
+
+    },
+
+    close: function(){
+        debug("common.ModalWindow.close()");
+        $content.dialog('close');    
+    }
+
+};
