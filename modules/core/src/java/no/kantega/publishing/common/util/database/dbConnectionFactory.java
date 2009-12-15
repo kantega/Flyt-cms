@@ -229,7 +229,7 @@ public class dbConnectionFactory {
             throw new RuntimeException("Unknow database product " + productName +", can't create database tables");
         }
 
-        final URL resource = dbConnectionFactory.class.getClassLoader().getResource("/dbschema/aksess-database-" + dbType + ".sql");
+        final URL resource = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
 
 
         if(resource != null) {
