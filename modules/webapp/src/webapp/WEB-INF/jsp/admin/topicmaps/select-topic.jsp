@@ -19,7 +19,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<kantega:section id="title"><kantega:label key=""/></kantega:section>
+<kantega:section id="title"><kantega:label key="aksess.p"/></kantega:section>
 
 <kantega:section id="head">
     <script type="text/javascript">
@@ -52,8 +52,6 @@
         <input type="hidden" name="selectMultiple" value="${selectMultiple}">
         <div class="fieldset">
             <fieldset>
-                <h1><kantega:label key="aksess.selecttopic.title"/></h1>
-
                 <div class="formElement">
                     <div class="heading">
                         <label for="topictype"><kantega:label key="aksess.selecttopic.topictype"/></label>
@@ -66,7 +64,7 @@
                                     <optgroup label="${topicMap.name}">
                                 </c:if>
                                 <c:forEach var="topicType" items="${topicMap.topicTypes}">
-                                    <option value="${topicMap.id}:<c:out value="${topicType.id}"/>"><c:out value="${topicType.baseName}"/></option>
+                                    <option value="${topicMap.id}:<c:out value="${topicType.id}"/>" <c:if test="${topicType.id == instanceOf.id && topicMap.id == instanceOf.topicMapId}">selected</c:if>><c:out value="${topicType.baseName}"/></option>
                                 </c:forEach>
                                 <c:if test="${fn:length(topicMaps) > 1}">
                                     </optgroup>
@@ -105,7 +103,7 @@
                     <c:if test="${selectMultiple}">
                         <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                     </c:if>
-                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.closewindow"/>"></span>
                 </div>
             </fieldset>
         </div>

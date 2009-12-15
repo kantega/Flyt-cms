@@ -23,7 +23,6 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
     <script type="text/javascript" language="Javascript">
 
         function buttonOkPressed() {

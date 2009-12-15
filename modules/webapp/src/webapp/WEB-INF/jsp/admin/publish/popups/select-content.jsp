@@ -20,7 +20,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
 <kantega:section id="title">
-    <kantega:label key="aksess.multimedia.title"/>
+    <kantega:label key="aksess.popup.selectcontent"/>
 </kantega:section>
 
 <kantega:section id="head">
@@ -58,7 +58,7 @@
                 </c:otherwise>
             </c:choose>
 
-            var w = window.opener;
+            var w = getParent();
             if (w) {
                 if (w.doInsertTag) {
                     w.insertValueIntoForm(url);

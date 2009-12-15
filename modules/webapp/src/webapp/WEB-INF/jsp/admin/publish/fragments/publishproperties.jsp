@@ -44,7 +44,8 @@
     }
 
     $(document).ready(function() {
-        $("#ChooseTopicButton > input.button").click(function(event){
+        debug("bindTopicButtons(): bind ChooseTopicButton");
+        $("#ChooseTopicButton input").click(function(event){
             debug("bindTopicButtons(): click ChooseTopicButton");
             selectTopic(null, true);
         });

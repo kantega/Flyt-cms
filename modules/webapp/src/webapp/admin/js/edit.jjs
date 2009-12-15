@@ -77,7 +77,7 @@ function getRefresh() {
 
 
 /**
- *  bindAddTopicBu
+ *  Button for removing topics from page
  */
 function bindTopicDeleteButtons() {
     $(".topic > .buttonGroup > a.delete").click(function(event){
@@ -104,8 +104,7 @@ function updateTopics(params) {
  */
 function selectTopic(formElement, multiple) {
     focusField = formElement;
-    var topicwin = window.open("../topicmaps/SelectTopics.action?selectMultiple=" + multiple + "&refresh=" + getRefresh(), "topicwin",  "toolbar=no,width=250,height=500,resizable=yes,scrollbars=yes");
-    topicwin.focus();
+    ModalWindow.open({title:'<kantega:label key="aksess.selecttopic.title"/>', iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
 }
 
 /**
@@ -146,6 +145,7 @@ function removeTopic(topicId, topicMapId) {
 
 /*
  *  Popup window for forms
+ *  TODO: Should old forms module be removed from aksess 7
  */
 function editForm(formElement) {
     var id = formElement.value;
@@ -162,9 +162,7 @@ function editForm(formElement) {
 function selectContentUrl(formElement) {
    focusField = formElement;
    doInsertTag = true;
-   ModalWindow.open({title:'Velg innholdselement', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
-   //var contentwin = window.open("popups/SelectContent.action?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-   //contentwin.focus();
+   ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
 }
 
 
@@ -189,8 +187,7 @@ function selectContent(formElement, maxItems) {
     } else {
         focusField = formElement;
         doInsertTag = false;
-        var contentwin = window.open("../popups/selectcontent.jsp?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-        contentwin.focus();
+        ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
     }
 }
 
@@ -201,8 +198,7 @@ function selectContent(formElement, maxItems) {
 function selectUser(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var userwin = window.open("../security/SelectUsers.action?select=true&refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
-    userwin.focus();
+    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "../security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 280, height:450});
 }
 
 /*

@@ -59,7 +59,7 @@
         }
 
         function getParent() {
-            return window.opener;
+            return window.parent;
         }
 
     </script>
