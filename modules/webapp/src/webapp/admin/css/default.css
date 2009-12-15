@@ -27,7 +27,13 @@ input[type=submit] {
 input.disabled {
     background-color: #eeeeed;
 }
-
+input.radio {
+    float: left;
+    margin-right: 5px;
+}
+label.radio {
+    float: left;
+}
 fieldset {
     border: 1px solid black;
     padding: 4px;
@@ -561,8 +567,10 @@ div.fieldset fieldset {
     border: 0;
     padding: 0;
 }
-
-div.fieldset h1 {
+div.fieldset fieldset .row {
+    margin-bottom: 0.5em;
+}
+div.fieldset h1, div.fieldset h2 {
     padding: 0 0 3px 0;
     margin: -5px -10px 10px -15px;
     text-align: center;

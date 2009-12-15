@@ -118,7 +118,7 @@
             <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
             <div class="fieldset">
                 <fieldset>
-                    <h1><kantega:label key="aksess.selecttemplate.parent"/></h1>
+                    <h2><kantega:label key="aksess.selecttemplate.parent"/></h2>
 
                     <table width="100%">
                         <%
@@ -171,7 +171,7 @@
 
             <div class="fieldset">
                 <fieldset>
-                    <h1><kantega:label key="aksess.selecttemplate.template"/></h1>
+                    <h2><kantega:label key="aksess.selecttemplate.template"/></h2>
                     <%
                         List allowedTemplates = (List) request.getAttribute("allowedTemplates");
                         boolean foundDefault = false;
@@ -221,11 +221,11 @@
                             }
                             name = name.replace('*', ' ');
                     %>
-                    <input id="template_<%=type%>;<%=id%>" type="radio" name="templateId" value="<%=type%>;<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
-                    <label for="template_<%=type%>;<%=id%>">
-                        <%=name%>
-                    </label>
-                    <br>
+                    <div class="row">
+                        <input id="template_<%=type%>;<%=id%>" type="radio" class="radio" name="templateId" value="<%=type%>;<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
+                        <label for="template_<%=type%>;<%=id%>" class="radio"><%=name%></label>
+                        <div class="clearing"></div>
+                    </div>
                     <div id="template<%=i%>" style="display:none;"><b><%=name%></b><br>
                         <%=desc%>
                     </div>
@@ -244,35 +244,38 @@
                 <c:when test="${fn:length(allowedAssociations) > 1}">
                     <div class="fieldset">
                         <fieldset>
-                            <h1><kantega:label key="aksess.selecttemplate.menu"/></h1>
+                            <h2><kantega:label key="aksess.selecttemplate.menu"/></h2>
                             <%
                                 if (defaultAssociationCategory == -1 && parent.getAssociation() != null) {
                                     defaultAssociationCategory = parent.getAssociation().getCategory().getId();
                                 }
                                 for (int i = 0; i < allowedAssociations.size(); i++) {
                                     AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
+                                    out.write("<div class=\"row\">");
                                     if (defaultAssociationCategory == tmp.getId()) {
-                                        out.write("<input type=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
+                                        out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
                                         foundDefault = true;
                                         defaultText ="<b>" + tmp.getName() + "</b><br>" + tmp.getDescription();
                                     } else {
-                                        out.write("<input type=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
+                                        out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
                                     }
                             %>
-                            <label for="category_<%=tmp.getId()%>"><%=tmp.getName()%></label><br>
-                            <div id="categoryinfo<%=tmp.getId()%>" style="display:none;">
-                                <strong><%=tmp.getName()%></strong><br>
-                                <%
-                                    if (tmp.getDescription() != null) {
-                                        out.write(tmp.getDescription());
-                                    }
-                                %>
-                            </div>
+                                <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label><br>
+                                <div id="categoryinfo<%=tmp.getId()%>" style="display:none;">
+                                    <strong><%=tmp.getName()%></strong><br>
+                                    <%
+                                        if (tmp.getDescription() != null) {
+                                            out.write(tmp.getDescription());
+                                        }
+                                    %>
+                                </div>
+                                <div class="clearing"></div>
+                            </div><!-- end row -->
                             <%
                                 }
                             %>
 
-                            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;">
+                            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
                                 <div id="categorydesc"><%=defaultText%></div><br>
                                 <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
                             </div>
