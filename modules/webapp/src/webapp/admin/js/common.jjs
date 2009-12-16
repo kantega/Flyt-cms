@@ -20,7 +20,9 @@
  ********************************************************************************/
 $(document).ready(function() {
     debug("common.$(document).ready()");
-    dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
+    if (window.dwr) {
+        dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
+    }
 });
 
 /**
