@@ -20,7 +20,6 @@
   --%>
 <%
     TopicAttribute attribute = (TopicAttribute)request.getAttribute("attribute");
-    String    fieldName = (String)request.getAttribute("fieldName");
 
     String value = attribute.getValue();
     String topicname = "";
@@ -38,10 +37,10 @@
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
-    <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <input type="text" class="disabled fullWidth" name="<%=fieldName%>text" value="<%=topicname%>" readonly onFocus="this.blur()">
+    <input type="hidden" name="${fieldName}" value="<%=value%>">
+    <input type="text" class="disabled fullWidth" name="${fieldName}text" value="<%=topicname%>" readonly onFocus="this.blur()">
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:selectTopic(document.myform.<%=fieldName%>, false)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
+    <a href="Javascript:selectTopic(document.myform.${fieldName}, false)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
 </div>

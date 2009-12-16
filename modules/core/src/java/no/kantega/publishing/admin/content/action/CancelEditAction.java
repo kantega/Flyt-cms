@@ -40,7 +40,6 @@ public class CancelEditAction implements Controller {
 
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content != null) {
-
             LockManager.releaseLock(content.getId());
             ContentIdentifier cid = new ContentIdentifier();
             if (content.getId() == -1) {
@@ -54,8 +53,8 @@ public class CancelEditAction implements Controller {
             }
 
             content = aksessService.getContent(cid);
-
             session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
+            session.removeAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         }
 
         return new ModelAndView(new RedirectView("Navigate.action"));

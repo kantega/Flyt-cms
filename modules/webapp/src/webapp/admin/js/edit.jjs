@@ -29,17 +29,24 @@ document.onkeypress = editKeyPress;
 /*
  *  Update status set that page has been edited
  */
-function setIsUpdated() {
+function setIsModified() {
     try {
         document.myform.isModified.value = "true";
     } catch (e) {
     }
 }
 
+function isModified() {
+    if (document.myform.isModified.value == "true") {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function editKeyPress(e) {
     if (focusField != null) {
-        setIsUpdated();
+        setIsModified();
     }
     return true;
 }
@@ -111,7 +118,7 @@ function selectTopic(formElement, multiple) {
  *  Callback to add topic to current page
  */
 function addTopic(topicMapId, topicId, topicName) {
-    setIsUpdated();
+    setIsModified();
 
     if (focusField == null) {
         // Update topic list
@@ -198,7 +205,7 @@ function selectContent(formElement, maxItems) {
 function selectUser(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "../security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 280, height:450});
+    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "../security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
 }
 
 /*
@@ -260,7 +267,7 @@ function selectRole(formElement) {
  */
 function addListOption(formElement, attributeKey, language) {
     focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "../publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:120});
+    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "../publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
 }
 
 
@@ -269,7 +276,8 @@ function addListOption(formElement, attributeKey, language) {
  */
 function insertOptionIntoList(value) {
     var option = document.createElement("option");
-    option.value = value; option.text = value;
+    option.value = value;
+    option.text = value;
 
     for(var i = 0; i < focusField.options.length; i++) {
         var o = focusField.options[i];
@@ -281,8 +289,13 @@ function insertOptionIntoList(value) {
 
             }
            break;
-        } else if(i == focusField.options.length -1) {
-            focusField.add(option);
+        } else if(i == focusField.options.length - 1) {
+            try {
+                focusField.add(option);
+            } catch (ex) {
+                focusField.add(option, null);
+            }
+
             break;
         }
 
@@ -294,25 +307,15 @@ function insertOptionIntoList(value) {
  * Remove list option from list
  */
 function removeOptionFromList(formElement, attributeKey, language) {
-    var xmlhttp = getXmlHttp();
-    xmlhttp.open("POST",  "../publish/RemoveListOption.action", true);
-    xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-    xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState==4) {
-            if(xmlhttp.responseText == "success") {
-                for (var i=0; i < formElement.options.length; i++) {
-                    if (formElement.options[i].selected) {
-                        formElement.options[i] = null;
-                        setIsUpdated();
-                    }
-                }
-            }
-            else {
-                alert("<kantega:label key="aksess.js.advarsel.fjernvalgfraliste"/>");
+    $.post("../publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
+        debug("editable list - option remove:" + formElement.value);
+        for (var i=0; i < formElement.options.length; i++) {
+            if (formElement.options[i].selected) {
+                formElement.options[i] = null;
+                setIsModified();
             }
         }
-    }
-    xmlhttp.send("value=" + formElement.value + "&attributeKey=" + attributeKey + "&language=" + language);
+    });
 }
 
 
@@ -320,7 +323,7 @@ function removeOptionFromList(formElement, attributeKey, language) {
  *   Insert tag into text
  */
 function insertTag(tag) {
-    setIsUpdated();
+    setIsModified();
 
     if (focusField != null) {
         var fname = "" + focusField.name;
@@ -343,7 +346,7 @@ function insertTag(tag) {
  * Create link using Rich Text editor - callback
  */
 function createLink(url) {
-    setIsUpdated();
+    setIsModified();
     if (focusField != null) {
         focusField.contentWindow.document.execCommand("CreateLink", false, url);
     }
@@ -354,7 +357,7 @@ function createLink(url) {
  * Insert id and value into form field
  */
 function insertIdAndValueIntoForm(id, text) {
-    setIsUpdated();
+    setIsModified();
 
     if (focusField != null) {
         var name = focusField.name;
@@ -397,14 +400,14 @@ function removeIdAndValueFromForm(field) {
     var list = document.myform.elements[field.name + 'list'];
 
     if (text) {
-        setIsUpdated();
+        setIsModified();
         field.value = "";
         text.value = "";
     } else if (list) {
         for (var i=0; i < list.options.length; i++) {
             if (list.options[i].selected) {
                 list.options[i] = null;
-                setIsUpdated();
+                setIsModified();
             }
         }
 
@@ -446,7 +449,7 @@ function moveId(field, dir) {
 
             list.options[i+dir].selected = true;
 
-            setIsUpdated();
+            setIsModified();
             field.value = getEntriesFromList(list);
 
             return;
@@ -474,7 +477,7 @@ function getEntriesFromList(list) {
  * Insert value into form
  */
 function insertValueIntoForm(val) {
-    setIsUpdated();
+    setIsModified();
     if (focusField != null) {
         var fname = "" + focusField.name;
         if (fname.indexOf("editor_") != -1) {
@@ -496,7 +499,7 @@ function insertValueIntoForm(val) {
  */
 function removeValueFromForm(field)
 {
-    setIsUpdated();
+    setIsModified();
     field.value = "";
 }
 
@@ -505,7 +508,7 @@ function removeValueFromForm(field)
  * Set flag indicating attachment should be deleted
  */
 function removeAttachment(element) {
-    setIsUpdated();
+    setIsModified();
     var name = element.name;
     var field = eval('document.myform.delete_' + name);
     field.value = "1";
@@ -516,7 +519,7 @@ function removeAttachment(element) {
  * Replaces text in HTML editor
  */
 function replaceString(search, replace) {
-    setIsUpdated();
+    setIsModified();
     if (focusField != null) {
         if (focusField.HTMLmode) {
             var tmp = "" + focusField.contentWindow.document.body.innerText;

@@ -42,8 +42,6 @@
     <div id="SelectRoleForm">
         <div class="fieldset">
             <fieldset>
-                <h1><kantega:label key="aksess.adduser.title"/></h1>
-
                 <form name="searchform" action="SelectUsers.action" method="post">
                     <input type="hidden" name="action" value="${action}">
                     <input type="hidden" name="select" value="${select}">
@@ -54,15 +52,15 @@
                     </c:if>
                 </form>
 
-                <div style="height: 250px; overflow-y:auto">
+                <div style="height: 340px; overflow-y:auto">
                     <form name="roles" action="${action}" method="post">
                         <input type="hidden" name="roletype" value="User">
-                        <table width="370">
+                        <table width="340">
                             <tr>
                                 <c:if test="${!select}">
                                     <td width="20">&nbsp;</td>
                                 </c:if>
-                                <td width="350">&nbsp;</td>
+                                <td width="320">&nbsp;</td>
                             </tr>
                             <%
                                 List users = (List)request.getAttribute("users");

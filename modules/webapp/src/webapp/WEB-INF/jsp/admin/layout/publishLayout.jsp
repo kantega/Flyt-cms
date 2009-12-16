@@ -81,7 +81,13 @@
                 saveContent(<%=ContentStatus.HEARING%>);
             });
             $("#EditContentButtons input.cancel").click(function(){
-                location.href = 'CancelEdit.action';
+                var confirmCancel = true;
+                if (isModified()) {
+                    confirm("Endre siden?");
+                }
+                if (confirmCancel) {
+                    window.location.href = 'CancelEdit.action';
+                }
             });
         }
 
@@ -137,17 +143,17 @@
                 <div id="EditContentButtons" class="buttonBar">
                     <c:choose>
                         <c:when test="${canPublish}">
-                            <span class="barButton"><input type="submit" class="publish" value="<kantega:label key="aksess.button.publish"/>"></span>
+                            <span class="barButton"><input type="button" class="publish" value="<kantega:label key="aksess.button.publish"/>"></span>
                         </c:when>
                         <c:otherwise>
-                            <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                            <span class="barButton"><input type="button" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
                         </c:otherwise>
                     </c:choose>
-                        <span class="barButton"><input type="submit" class="savedraft" value="<kantega:label key="aksess.button.save"/>"></span>
+                        <span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.save"/>"></span>
                         <c:if test="${hearingEnabled}">
-                            <span class="barButton"><input type="submit" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
+                            <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
                     </c:if>
-                    <span class="barButton"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    <span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
                 <div id="EditContentPane">
                     <kantega:getsection id="content"/>

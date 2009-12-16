@@ -46,14 +46,14 @@
 
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="Javascript:selectUser(document.myform.<%=fieldName%>)" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
-</div>
 <div class="inputs">
-    <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="hidden" name="${fieldName}" id="${fieldName}" value="<%=value%>">
+    <input type="text" name="${fieldName}text" id="${fieldName}text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
     <script type="text/javascript">
-        Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchUsersAsXML.action', 'minChars' :3 });
+        Autocomplete.setup({'inputField' :'${fieldName}', url:'../../ajax/SearchUsersAsXML.action', 'minChars' :3 });
     </script>
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:selectUser(document.myform.${fieldName})" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.${fieldName})" class="button remove"><span><kantega:label key="aksess.button.remove"/></span></a>
 </div>

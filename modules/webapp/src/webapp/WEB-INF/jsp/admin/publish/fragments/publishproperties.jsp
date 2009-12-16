@@ -125,7 +125,7 @@
     <div class="sidebarFieldset">
         <fieldset>
             <h1><kantega:label key="aksess.publishinfo.displaytemplate"/></h1>
-            <select name="displaytemplate" tabindex="60" onchange="setIsUpdated()">
+            <select name="displaytemplate" tabindex="60" onchange="setIsModified()">
                 <c:forEach var="template" items="${allowedTemplates}">
                     <c:set var="templateName" value="${template.name}"/>
                     <c:if test="template.contentTemplate.id == current.contentTemplateId">

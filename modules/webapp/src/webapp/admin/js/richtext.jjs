@@ -77,7 +77,7 @@ function rtCopyValue(editorId, hidden) {
     }
 
     if (hidden.value != newVal) {
-        setIsUpdated();
+        setIsModified();
         hidden.value = newVal;
     }
 

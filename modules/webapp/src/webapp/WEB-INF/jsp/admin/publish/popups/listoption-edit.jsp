@@ -35,23 +35,12 @@
             if (optionValue == "") {
                 alert("<kantega:label key="aksess.editablelist.missingvalue"/>");
             } else {
-                var xmlhttp = getXmlHttp();
-                xmlhttp.open("POST",  "../publish/AddListOption.action", true);
-                xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-                xmlhttp.onreadystatechange=function() {
-                    if (xmlhttp.readyState==4) {
-                        if(xmlhttp.responseText == "success") {
-                            window.opener.insertOptionIntoList(optionValue);
-                            setTimeout("closeWindow()", 1);
-                        }
-                        else {
-                            alert("<kantega:label key="aksess.editablelist.error"/>");
-                        }
-                    }
-                }
-                xmlhttp.send("value=" + optionValue + "&attributeKey=" + attributeKey + "&defaultSelected=" + defaultSelected + "&language=" + language);
+                $.post("../publish/AddListOption.action", {value:optionValue, attributeKey: attributeKey, defaultSelected:defaultSelected, language:language}, function(data) {
+                    debug("editable list - new option added:" + optionValue);
+                    getParent().insertOptionIntoList(optionValue);
+                    setTimeout("closeWindow()", 10);
+                });
             }
-
             return false;
         }
     </script>
@@ -73,8 +62,8 @@
                         </div>
                     </div>
                     <div class="buttonGroup">
-                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                        <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                     </div>
                 </fieldset>
             </div>

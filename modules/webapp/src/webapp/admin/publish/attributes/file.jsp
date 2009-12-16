@@ -19,18 +19,16 @@
   --%>
 <%
     Attribute attribute = (Attribute)request.getAttribute("attribute");
-    String    fieldName = (String)request.getAttribute("fieldName");
-
     String value = attribute.getValue();
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="heading">${attribute.title}<%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
-    <input type="file" class="fullWidth" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
-    <input type="hidden" name="delete_<%=fieldName%>" value="0">
+    <input type="file" class="fullWidth" name="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}">
+    <input type="hidden" name="delete_${fieldName}" value="0">
 </div>
 <% if (value != null && value.length() > 0) {%>
 <div class="buttonGroup">
-    <a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.visfil"/></span></a>
-    <a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
+    <a href="<%=attribute.getProperty(AttributeProperty.URL)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.visfil"/></span></a>
+    <a href="Javascript:removeAttachment(document.myform.${fieldName})" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
 </div>
 <%}%>

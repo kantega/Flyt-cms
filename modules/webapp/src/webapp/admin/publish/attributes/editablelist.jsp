@@ -21,9 +21,7 @@
   --%>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%
-    Content content = (Content)request.getAttribute("content");
     EditablelistAttribute attribute = (EditablelistAttribute) request.getAttribute("attribute");
-    String fieldName = (String) request.getAttribute("fieldName");
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
@@ -33,8 +31,8 @@
     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="Javascript:addListOption(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex}"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
+    <a href="Javascript:removeOptionFromList(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex + 1}"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
     }

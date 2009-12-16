@@ -42,5 +42,5 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="#" id="velgdato<%=fieldName%>" class="button"><span class="calendar"><kantega:label key="aksess.button.choose-date"/></span></a>
+    <a href="#" id="velgdato<%=fieldName%>" class="button"><span class="dateselect"><kantega:label key="aksess.button.choose-date"/></span></a>
 </div>
