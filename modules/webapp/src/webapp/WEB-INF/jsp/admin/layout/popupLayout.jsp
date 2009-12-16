@@ -55,11 +55,19 @@
         });
 
         function closeWindow() {
-            getParent().ModalWindow.close();
+            if (window.opener) {
+                window.close();
+            } else {
+                window.parent.ModalWindow.close();
+            }
         }
 
         function getParent() {
-            return window.parent;
+            if (window.opener) {
+                return window.opener();
+            } else {
+                return window.parent;
+            }
         }
 
     </script>
