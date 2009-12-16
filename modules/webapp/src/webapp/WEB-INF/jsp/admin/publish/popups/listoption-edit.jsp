@@ -28,9 +28,9 @@
         function buttonOkPressed() {
 
             var optionValue = document.myform.optionValue.value;
-            var attributeKey = '<%=param.getString("attributeKey")%>';
+            var attributeKey = '${param.attributeKey}';
             var defaultSelected = document.myform.defaultSelected.value;
-            var language = <%=param.getString("language")%>;
+            var language = ${param.language};
 
             if (optionValue == "") {
                 alert("<kantega:label key="aksess.editablelist.missingvalue"/>");
@@ -62,8 +62,6 @@
         <form name="myform" action="">
             <div class="fieldset">
                 <fieldset>
-                    <h1><kantega:label key="aksess.editablelist.title"/></h1>
-
                     <div class="formElement">
                         <div class="heading">
                             <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>

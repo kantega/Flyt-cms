@@ -33,11 +33,11 @@
     }
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
-<div class="buttonGroup">
-    <a href="Javascript:selectRole(document.myform.<%=fieldName%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
-</div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=roleId%>">
     <input type="text" name="<%=fieldName%>text" value="<%=roleName%>" onFocus="this.select()" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:selectRole(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

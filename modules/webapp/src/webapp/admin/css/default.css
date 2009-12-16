@@ -522,7 +522,7 @@ a.dateselect {
 
 /************** Boxes **************/
 div.roundCorners {
-    padding-bottom: 20px;
+    /*padding-bottom: 20px;*/
 }
 
 div.roundCorners div.top {
@@ -559,7 +559,7 @@ div.roundCorners div.body {
 
 div.roundCorners div.body div.right {
     margin-left: 5px;
-    padding: 5px 15px 15px 15px;
+    padding: 5px 15px 5px 15px;
     background: #ffffff url("../bitmaps/default/boxes/groupright.png") repeat-y right;
 }
 

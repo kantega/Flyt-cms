@@ -51,9 +51,22 @@
 
 <div id="Top">
     <kantega:hassection id="topMenu">
+        <script type="text/javascript">
+            // Hides top menu when opened in a popup
+            var isPopup = window.opener || window.parent != window;
+            if (isPopup) {
+                document.write('<div style="display:none;">');
+            }
+        </script>
         <div id="TopMenu">
             <kantega:getsection id="topMenu"/>
         </div>
+        <script type="text/javascript">
+            if (isPopup) {
+                document.write('</div>');
+            }
+        </script>
+
     </kantega:hassection>
 
     <kantega:hassection id="modesMenu">

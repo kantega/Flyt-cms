@@ -232,8 +232,7 @@ function selectMultimedia(formElement, filter) {
     }
 
     doInsertTag = false;
-    var mmwin = window.open("../multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=880,height=620,resizable=yes,scrollbars=yes");
-    mmwin.focus();
+    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "../multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
 }
 
 
@@ -243,8 +242,7 @@ function selectMultimedia(formElement, filter) {
 function selectMediaFolder(formElement) {
     focusField = eval(formElement);
     doInsertTag = false;
-    var mmwin = window.open("popups/SelectMediaFolder.action?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-    mmwin.focus();
+    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
 }
 
 
@@ -253,8 +251,7 @@ function selectMediaFolder(formElement) {
  */
 function selectRole(formElement) {
     focusField = formElement;
-    var rolewin = window.open("../security/SelectRoles.action?select=true&refresh=" + getRefresh(), "roleWindow", "toolbar=no,width=450,height=350,resizable=yes,scrollbars=no");
-    rolewin.focus();
+    ModalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "../security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
 }
 
 
@@ -262,9 +259,8 @@ function selectRole(formElement) {
  * Popup for adding a list option used for editablelists
  */
 function addListOption(formElement, attributeKey, language) {
-    var optionwin = window.open("../popups/addlistoption.jsp?attributeKey=" + escape(attributeKey) + "&language=" + language, "optionwin", "toolbar=no,width=280,height=120,resizable=no,scrollbars=no");
-    optionwin.focus();
     focusField = formElement;
+    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "../publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:120});
 }
 
 
@@ -344,7 +340,7 @@ function insertTag(tag) {
 
 
 /*
- * Create link using Rich Text editor
+ * Create link using Rich Text editor - callback
  */
 function createLink(url) {
     setIsUpdated();

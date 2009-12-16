@@ -25,12 +25,7 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.3.2.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigator.jjs"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         var currentItemIdentifier = -1;
 
@@ -56,14 +51,14 @@
             currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
 
             var title = elm.attr("title");
-            var w = window.opener;
-            if (w) {
-                if (w.doInsertTag) {
+            var p = getParent();
+            if (p) {
+                if (p.doInsertTag) {
                     // Insert as tag
-                    w.insertValueIntoForm("/multimedia.ap?id=" + currentItemIdentifier);
+                    p.insertValueIntoForm("/multimedia.ap?id=" + currentItemIdentifier);
                 } else {
                     // Insert as id and value
-                    w.insertIdAndValueIntoForm(currentItemIdentifier, title);
+                    p.insertIdAndValueIntoForm(currentItemIdentifier, title);
                 }
             }
             closeWindow();

@@ -48,8 +48,6 @@
 
             <div class="fieldset">
                 <fieldset>
-                    <h1><kantega:label key="aksess.addrole.title"/></h1>
-
                     <div style="height: 250px; overflow-y:auto">
                         <input type="hidden" name="roletype" value="Role">
                         <table>
