@@ -126,6 +126,7 @@
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
                 <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
+                <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
 
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
@@ -468,6 +469,7 @@
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
+    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction"/>
     <!-- Topic maps -->
     <bean class="no.kantega.publishing.admin.topicmaps.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>

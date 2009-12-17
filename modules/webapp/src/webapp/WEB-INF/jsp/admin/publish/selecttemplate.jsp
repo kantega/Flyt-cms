@@ -40,8 +40,7 @@
 
         function selectContent() {
             doInsertTag = false;
-            var contentwin = window.open("popups/SelectContent.action", "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-            contentwin.focus();
+            ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 380, height:450});
         }
 
         function insertIdAndValueIntoForm(id, title) {
@@ -83,12 +82,12 @@
                 return;
             }
 
-        <c:if test="${fn:length(allowedAssociations) > 1}">
+            <c:if test="${fn:length(allowedAssociations) > 1}">
             if (!isChecked(document.myform.associationCategory)) {
                 alert("<kantega:label key="aksess.selecttemplate.menu.notselected"/>");
                 return;
             }
-        </c:if>
+            </c:if>
             document.myform.submit();
         }
 
@@ -295,7 +294,6 @@
                 <span class="button"><input type="button" onclick="doSelectTemplate()" class="button ok" value="<kantega:label key="aksess.button.continue"/>"></span>
                 <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
-
         </form>
 
         </div>

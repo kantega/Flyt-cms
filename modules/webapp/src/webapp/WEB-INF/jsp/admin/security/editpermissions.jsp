@@ -32,11 +32,11 @@
 <kantega:section id="body">
     <script language="Javascript">
         function addRole() {
-            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=350,resizable=yes,scrollbars=no");
+            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
         function addUser() {
-            var rolewin = window.open("SelectUsers.action", "rolewin", "toolbar=no,width=450,height=400,resizable=yes,scrollbars=no");
+            var rolewin = window.open("SelectUsers.action", "rolewin", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
 
@@ -57,7 +57,7 @@
         <form action="" name="linkform">
             <div class="fieldset">
                 <fieldset>
-                    <h1><kantega:label key="aksess.editpermissions.title"/> - ${title}</h1>
+                    <h1>${title}</h1>
 
                     <div class="padded">
                         <table border="0" width="580" cellspacing="0" cellpadding="0">

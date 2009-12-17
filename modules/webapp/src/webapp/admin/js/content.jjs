@@ -16,7 +16,10 @@
 
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 
 var currentUrl = "";
@@ -54,10 +57,13 @@ function bindContentupdateEvents() {
         if(url) {
             currentUrl = url;
         }
+        ContentStatus.disableButtons();
         $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: currentUrl}, function(data){
             ContentStatus.breadcrumbs(data.path);
             ContentStatus.brokenLinks(data.links);
             ContentStatus.associations(data.associations);
+            ContentStatus.enableButtons(data.enabledButtons);
+            ContentStatus.enableButtons(data.enabledButtons);
         }, "json");
     });
 
@@ -309,6 +315,7 @@ var Publish =  {
 
     managePrivileges: function(thisId) {
         debug("content.Publish.managePrivileges(): thisId: " + thisId);
+        ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "../security/EditPermissions.action?id=" + thisId + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:520});
     }
 };
 
@@ -336,6 +343,17 @@ var ContentStatus = {
     associations: function (associations) {
         if (associations && associations.length > 1) {
             $("#Statusbar .crossPublished").show();
+        }
+    },
+    disableButtons: function() {
+        $("#ToolsMenu a").addClass("disabled");
+    },
+    enableButtons: function(buttons) {
+        if (buttons) {
+            for (var i=0; i < buttons.length; i++) {
+                var b = buttons[i];
+                $("#" + b).removeClass("disabled");
+            }
         }
     }
 };

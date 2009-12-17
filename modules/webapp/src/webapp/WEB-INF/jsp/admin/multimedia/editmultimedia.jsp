@@ -56,11 +56,12 @@
 
         $(document).ready(function() {
             $("#MultimediaName").focus();
-            if (window.opener) {
+            var p = window.parent;
+            if (p) {
                 $("#EditMultimediaButtons .insert").each(function() {
                     $(this).parent().show();
                 });
-                $("#MaxWidth").val(window.opener.focusFieldMaxWidth);
+                $("#MaxWidth").val(p.focusFieldMaxWidth);
             }
 
             // Disable save button until something is changed

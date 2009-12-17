@@ -28,6 +28,8 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -56,6 +58,9 @@ public class ContentPropertiesAction implements Controller {
         try {
             ContentIdentifier cid = new ContentIdentifier(url);
             Content content = cms.getContent(cid, false);
+            SecuritySession securitySession = SecuritySession.getInstance(request);
+
+            List<String> enabledButtons = new ArrayList<String>();
 
             if (content != null) {
 
@@ -89,9 +94,23 @@ public class ContentPropertiesAction implements Controller {
                 }
                 model.put("associations", associations);
 
-                
-            }
 
+                boolean canUpdate = securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT);
+                boolean canApprove = securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT);
+                if (canUpdate || canApprove) {
+                    enabledButtons.add("NewSubpageButton");
+                    enabledButtons.add("EditPageButton");
+                    enabledButtons.add("DisplayPeriodButton");
+                }
+                if (canApprove) {
+                    enabledButtons.add("DeletePageButton");
+                    enabledButtons.add("CutButton");
+                    enabledButtons.add("CopyButton");
+                    enabledButtons.add("PasteButton");
+                }
+                enabledButtons.add("PrivilegesButton");
+            }
+            model.put("enabledButtons", enabledButtons);
 
             return new ModelAndView(aksessJsonView, model);
 

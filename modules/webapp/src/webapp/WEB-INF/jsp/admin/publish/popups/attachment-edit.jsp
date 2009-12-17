@@ -43,13 +43,6 @@
         <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
             <div class="fieldset">
                 <fieldset>
-                    <h1>
-                        <c:choose>
-                            <c:when test="${attachmentId != -1}"><kantega:label key="aksess.attachment.add"/></c:when>
-                            <c:otherwise><kantega:label key="aksess.attachment.update"/></c:otherwise>
-                        </c:choose>
-                    </h1>
-
                     <div class="formElement">
                         <div class="inputs">
                             <input type="file" size="20" name="attachment" value="" style="width:300px;">

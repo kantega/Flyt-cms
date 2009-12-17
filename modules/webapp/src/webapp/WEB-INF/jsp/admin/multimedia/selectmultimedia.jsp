@@ -42,18 +42,19 @@
 </head>
 <script language="Javascript">
     function insertMMObject() {
-        if (window.opener && <%=mm.getId()%> != -1) {
-        if (window.opener.doInsertTag) {
-            // Insert IMG or other tag
-            var str = document.mediaform.tag.value;
-            window.opener.insertTag(str);
-        } else {
-            // Insert id and name
-            window.opener.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
-        }
+        var p = window.parent;
+        if (p && <%=mm.getId()%> != -1) {
+            if (p.doInsertTag) {
+                // Insert IMG or other tag
+                var str = document.mediaform.tag.value;
+                p.insertTag(str);
+            } else {
+                // Insert id and name
+                p.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
+            }
 
-    }
-        window.close();
+        }
+        p.ModalWindow.close();
     }
 </script>
 <body onLoad="insertMMObject()">

@@ -28,11 +28,41 @@ $(document).ready(function(){
 });
 
 /**
+ * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
+ */
+var MultimediaStatus = {
+
+    breadcrumbs: function (path) {
+        if (path) {
+            var crumbs = "<ul>";
+            for (var i=0; i<path.length; i++) {
+                crumbs += "<li><a href=\"?id="+path[i].id+"\">"+path[i].title+"</a></li>";
+            }
+            crumbs += "</ul>";
+            $("#Breadcrumbs").html(crumbs);
+        }
+    },
+    disableButtons: function() {
+        $("#ToolsMenu a").addClass("disabled");
+    },
+    enableButtons: function(buttons) {
+        if (buttons) {
+            for (var i=0; i < buttons.length; i++) {
+                var b = buttons[i];
+                $("#" + b).removeClass("disabled");
+            }
+        }
+    }
+
+};
+
+
+/**
  * Registers click event actions to each tool
  */
 function bindToolButtons() {
     bindMediaAjaxUpload();
-    $("#NewFolderButton").click(function() {
+    $("#NewFolderButton").not(".disabled").click(function() {
         createMediaFolder();
     });
 }
@@ -51,6 +81,16 @@ function bindMultimediaupdateEvents() {
             debug("bindMultimediaupdateEvents(): navigationUpdate suppressed");
         }
         updateMainPane(itemIdentifier, suppressNavigatorUpdate);
+    });
+
+    $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
+        debug("bindMultimediaupdateEvents(): #Statusbar has received contentupdate event. itemIdentifier: " + itemIdentifier);
+        MultimediaStatus.disableButtons();
+        $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
+            debug("update breadcrumbs");
+            MultimediaStatus.breadcrumbs(data.path);
+            MultimediaStatus.enableButtons(data.enabledButtons);
+        }, "json");
     });
 }
 

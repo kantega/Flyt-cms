@@ -55,13 +55,18 @@
     }
 
     function updateAttachment(id) {
-        var attwin = window.open("popups/AddAttachment.action?attachmentId=" + id, "attachmentWindow", "dependent,toolbar=no,width=310,height=130,resizable=no,scrollbars=no");
-        attwin.focus();
+        var title;
+        if (id == -1) {
+            title = '<kantega:label key="aksess.attachment.add"/>';
+        } else {
+            title = '<kantega:label key="aksess.attachment.update"/>';
+        }
+        ModalWindow.open({title:title, iframe:true, href: "popups/AddAttachment.action?attachmentId=" + id,width: 380, height:250});
     }
 
     function deleteAttachment(id) {
         if (confirm("<kantega:label key="aksess.attachments.confirmdelete"/>")) {
-            location = "DeleteAttachment.action?attachmentId=" + id;
+            window.location.href = "DeleteAttachment.action?attachmentId=" + id;
         }
     }
 

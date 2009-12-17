@@ -34,9 +34,8 @@
 </kantega:section>
 
 <kantega:section id="toolsMenu">
-    <!-- TODO: Menyen her må lastes via ajax eller noe for at riktige knapper skal vises  -->
-    <a href="#" class="button" id="UploadButton"><span class="upload"><kantega:label key="aksess.tools.upload"/></span></a>
-    <a href="#" class="button" id="NewFolderButton"><span class="newfolder"><kantega:label key="aksess.tools.newfolder"/></span></a>
+    <a href="#" class="button disabled" id="UploadButton"><span class="upload"><kantega:label key="aksess.tools.upload"/></span></a>
+    <a href="#" class="button disabled" id="NewFolderButton"><span class="newfolder"><kantega:label key="aksess.tools.newfolder"/></span></a>
 </kantega:section>
 
 <kantega:section id="body">
@@ -48,6 +47,9 @@
         </div>
 
         <div id="MainPane">
+            <div id="Statusbar">
+                <div id="Breadcrumbs"></div>
+            </div>
             <kantega:getsection id="content"/>
         </div>
     </div>

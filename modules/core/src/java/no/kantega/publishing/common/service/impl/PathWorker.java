@@ -154,7 +154,7 @@ public class PathWorker {
 
 
     public static List<PathEntry> getMultimediaPath(Multimedia mm) throws SystemException {
-        List pathentries = new ArrayList();
+        List<PathEntry> pathentries = new ArrayList<PathEntry>();
 
         Connection c = null;
 

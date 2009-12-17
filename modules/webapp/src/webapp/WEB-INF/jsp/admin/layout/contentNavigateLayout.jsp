@@ -31,18 +31,18 @@
 
 <kantega:section id="toolsMenu">
    <div class="buttonGroup">
-        <a href="#" class="button"><span class="newSubpage"><kantega:label key="aksess.tools.newSubpage"/></span></a>
-        <a href="#" class="button"><span class="edit"><kantega:label key="aksess.tools.edit"/></span></a>
-        <a href="#" class="button"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
+        <a href="#" class="button disabled" id="NewSubpageButton"><span class="newSubpage"><kantega:label key="aksess.tools.newSubpage"/></span></a>
+        <a href="#" class="button disabled" id="EditPageButton"><span class="edit"><kantega:label key="aksess.tools.edit"/></span></a>
+        <a href="#" class="button disabled" id="DeletePageButton"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
     </div>
     <div class="buttonGroup">
-        <a href="#" class="button"><span class="cut"><kantega:label key="aksess.tools.cut"/></span></a>
-        <a href="#" class="button"><span class="copy"><kantega:label key="aksess.tools.copy"/></span></a>
-        <a href="#" class="button"><span class="paste"><kantega:label key="aksess.tools.paste"/></span></a>
+        <a href="#" class="button disabled" id="CutButton"><span class="cut"><kantega:label key="aksess.tools.cut"/></span></a>
+        <a href="#" class="button disabled" id="CopyButton"><span class="copy"><kantega:label key="aksess.tools.copy"/></span></a>
+        <a href="#" class="button disabled" id="PasteButton"><span class="paste"><kantega:label key="aksess.tools.paste"/></span></a>
     </div>
     <div class="buttonGroup">
-        <a href="#" class="button"><span class="displayPeriod"><kantega:label key="aksess.tools.displayPeriod"/></span></a>
-        <a href="#" class="button"><span class="privileges"><kantega:label key="aksess.tools.privileges"/></span></a>
+        <a href="#" class="button disabled" id="DisplayPeriodButton"><span class="displayPeriod"><kantega:label key="aksess.tools.displayPeriod"/></span></a>
+        <a href="#" class="button disabled" id="PrivilegesButton"><span class="privileges"><kantega:label key="aksess.tools.privileges"/></span></a>
     </div>
 </kantega:section>
 
