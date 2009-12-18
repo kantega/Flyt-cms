@@ -49,8 +49,8 @@
 
                     <jsp:include page="insert-link/${linkType}.jsp"/>
                     <div class="buttonGroup">
-                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                        <span class="button"><input type="submit" class="cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                        <span class="button"><input type="button" class="cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>"></span>
                     </div>
                 </fieldset>
             </div>

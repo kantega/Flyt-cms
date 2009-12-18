@@ -534,6 +534,25 @@ public class ContentManagementService {
 
 
     /**
+     * Updates publish date and expire date on a content object and all child objects
+     * @param cid - ContentIdentifier to content object
+     * @param publishDate - new publish date
+     * @param expireDate - new expire date
+     * @param updateChildren - true = update children / false = dont update children
+     */
+    public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) throws NotAuthorizedException {
+        Content content = ContentAO.getContent(cid, true);
+        if (content != null) {
+            if (securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
+                ContentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
+                EventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
+            } else {
+                throw new NotAuthorizedException(SOURCE, "Cant update display period");
+            }
+        }
+    }
+
+    /**
      * Henter en liste over antall endringer gjort av brukere
      * @return Liste med innholdsobjekter
      * @throws SystemException
@@ -627,17 +646,6 @@ public class ContentManagementService {
      */
     public List getPathByContentId(ContentIdentifier cid) throws SystemException {
         return PathWorker.getPathByContentId(cid);
-    }
-
-
-    /**
-     * Utfører et SQL søk mot basen, brukes for internt søk i applikasjonen
-     * @param phrase - søkeord
-     * @return
-     * @throws SystemException
-     */
-    public List search(String phrase) throws SystemException {
-        return SearchAO.search(phrase);
     }
 
 

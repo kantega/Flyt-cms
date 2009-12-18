@@ -21,7 +21,7 @@
 
 
 <kantega:section id="head">
-    <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
+    <%@ include file="fragments/calendarsetup.jsp"%>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/publish.css">
     <script type="text/javascript" language="Javascript" src="../js/sidebar.jjs"></script>
     <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>

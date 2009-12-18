@@ -311,11 +311,12 @@ var Publish =  {
 
     displayPeriod: function(thisId) {
         debug("content.Publish.displayPeriod(): thisId: " + thisId);
+        ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?id=" + thisId,width: 350, height:180});
     },
 
     managePrivileges: function(thisId) {
         debug("content.Publish.managePrivileges(): thisId: " + thisId);
-        ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "../security/EditPermissions.action?id=" + thisId + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:520});
+        ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + thisId + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:520});
     }
 };
 

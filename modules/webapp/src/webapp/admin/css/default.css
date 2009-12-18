@@ -42,6 +42,11 @@ fieldset {
 td a {
     color:#1780b9;
 }
+
+table.noborder td, table.noborder th {
+    border:0;
+}
+
 /************** General classes **************/
 
 .clearing {
@@ -469,7 +474,7 @@ a.dateselect {
     display: inline-block;
     width: 14px;
     height: 16px;
-    background: url("../bitmaps/common/tools/calendar.png") no-repeat left 50%;
+    background: url("../bitmaps/common/icons/small/calendar.png") no-repeat left 50%;
 }
 
 
@@ -585,7 +590,7 @@ div.sidebarFieldset {
 
 div.sidebarFieldset fieldset {
     border: 0;
-    padding: 5px;
+    padding: 4px;
 }
 
 

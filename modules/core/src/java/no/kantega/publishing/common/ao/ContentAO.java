@@ -1299,7 +1299,6 @@ public class ContentAO {
                 }
             }
         }
-
     }
 
     public static void updateContentFromTemplates(TemplateConfiguration templateConfiguration) {
@@ -1327,6 +1326,44 @@ public class ContentAO {
         TODO: Should documenttype be changed?
 
          */
+    }
+
+    /**
+     * Updates publish date and expire date on a content object and all child objects
+     * @param cid - ContentIdentifier to content object
+     * @param publishDate - new publish date
+     * @param expireDate - new expire date
+     * @param updateChildren - true = update children / false = dont update children
+     */
+    public static void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
+        int contentId = cid.getContentId();
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("UPDATE content SET PublishDate = ?, ExpireDate = ? WHERE ContentId = ?");
+            p.setTimestamp(1, publishDate == null ? null : new java.sql.Timestamp(publishDate.getTime()));
+            p.setTimestamp(2, expireDate == null ? null : new java.sql.Timestamp(expireDate.getTime()));
+            p.setInt(3, contentId);
+            p.executeUpdate();
+
+            if (updateChildren) {
+                p = c.prepareStatement("UPDATE content SET PublishDate = ?, ExpireDate = ? WHERE ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ?)");
+                p.setTimestamp(1, publishDate == null ? null : new java.sql.Timestamp(publishDate.getTime()));
+                p.setTimestamp(2, expireDate == null ? null : new java.sql.Timestamp(expireDate.getTime()));
+                p.setString(3, "%/" + cid.getAssociationId() +"/%");
+                p.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL error",SOURCE, e);
+        } finally {
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
+            }
+        }
     }
 
     public interface ContentHandlerStopper {

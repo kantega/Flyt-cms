@@ -102,6 +102,8 @@
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
+                <prop key="/admin/publish/ViewDisplayPeriod.action">viewDisplayPeriodAction</prop>
+                <prop key="/admin/publish/UpdateDisplayPeriod.action">updateDisplayPeriodAction</prop>
 
                 <!-- Popups for publishing -->
                 <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
@@ -426,6 +428,10 @@
     <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.content.action.ViewDisplayPeriodAction" id="viewDisplayPeriodAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/view-displayperiod.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction"/>
 
     <!-- Navigate multimedia -->
     <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">

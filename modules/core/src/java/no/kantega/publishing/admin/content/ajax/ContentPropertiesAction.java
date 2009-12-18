@@ -42,7 +42,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * A controller which updates breadcrumb and available buttons depending on current page
+ */
 public class ContentPropertiesAction implements Controller {
 
     @Autowired private SiteCache aksessSiteCache;
@@ -100,7 +102,10 @@ public class ContentPropertiesAction implements Controller {
                 if (canUpdate || canApprove) {
                     enabledButtons.add("NewSubpageButton");
                     enabledButtons.add("EditPageButton");
-                    enabledButtons.add("DisplayPeriodButton");
+                    if (content.getAssociation().getParentAssociationId() != 0) {
+                        // Can set display period for all other pages than ROOT page (parentid = 0)
+                        enabledButtons.add("DisplayPeriodButton");
+                    }
                 }
                 if (canApprove) {
                     enabledButtons.add("DeletePageButton");

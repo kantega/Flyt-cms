@@ -88,7 +88,7 @@
             <div id="Navigator"></div>
         </div>
         <div class="buttonGroup">
-            <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
         </div>
     </div>
 </kantega:section>
