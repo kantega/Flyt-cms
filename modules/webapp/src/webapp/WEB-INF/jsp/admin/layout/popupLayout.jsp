@@ -35,6 +35,8 @@
         $(document).ready(function(){
             $("div.fieldset").roundCorners();
         });
+        $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
+        $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
     </script>
 
     <kantega:getsection id="head"/>

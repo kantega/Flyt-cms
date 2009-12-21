@@ -26,6 +26,7 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.client.util.RequestParameters;
@@ -36,10 +37,10 @@ import java.util.Map;
 /**
  * Dialogue which allows user to update display period (publish and expire date) for a page
  */
-public class ViewDisplayPeriodAction implements Controller {
+public class ViewDisplayPeriodAction extends AdminController {
     private String view;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         ContentManagementService cms = new ContentManagementService(request);
         RequestParameters param = new RequestParameters(request);

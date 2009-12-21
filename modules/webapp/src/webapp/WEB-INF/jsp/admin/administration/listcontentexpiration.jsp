@@ -21,7 +21,15 @@
     <kantega:label key="aksess.contentexpire.title"/>
 </kantega:section>
 
+
 <kantega:section id="content">
+    <script type="text/javascript">
+        $(function() {
+            $("#from_date").datepicker();
+            $("#end_date").datepicker();
+        });
+    </script>
+
     <form name="myform" action="ListContentExpiration.action" method="post">
         <div class="fieldset">
             <fieldset>
@@ -31,47 +39,40 @@
                     <div class="heading"><kantega:label key="aksess.contentexpire.period"/></div>
 
                     <div class="inputs">
-                        <div id="FromDate">
-                            <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
-                            <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${expireFromDate}"/>">
-                            <a href="#" id="chooseFromDate" class="dateselect"></a>
-                        </div>
-                        <script type="text/javascript">
-                            Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
-                        </script>
-                        <div id="EndDate">
-                            <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
-                            <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${expireToDate}"/>">
-                            <a href="#" id="chooseEndDate" class="dateselect"></a>
-                        </div>
-                        <script type="text/javascript">
-                            Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );
-                        </script>
+                        <table class="noborder">
+                            <tr>
+                                <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
+                                <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${expireFromDate}"/>"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
+                                <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${expireToDate}"/>"></td>
+                            </tr>
+                        </table>
                     </div>
-
                 </div>
 
                 <div class="buttonGroup">
                     <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                 </div>
 
-                <table>
-                    <tr>
-                        <th><kantega:label key="aksess.contentexpire.date"/></th>
-                        <th><kantega:label key="aksess.contentexpire.page"/></th>
-                    </tr>
-                    <aksess:getcollection findall="true" name="pages" skipattributes="true" showexpired="true" expirefromdate="${expireFromDate}" expiretodate="${expireToDate}" orderby="expiredate" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td><aksess:getattribute name="expiredate" collection="pages"/></td>
-                            <td><aksess:link collection="pages" target="_new"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
+                <aksess:ifcollectionnotempty findall="true" name="pages" skipattributes="true" showexpired="true" expirefromdate="${expireFromDate}" expiretodate="${expireToDate}" orderby="expiredate">
+                    <table style="margin-top:20px">
+                        <tr>
+                            <th><kantega:label key="aksess.contentexpire.date"/></th>
+                            <th><kantega:label key="aksess.contentexpire.page"/></th>
                         </tr>
-                    </aksess:getcollection>
-                </table>
-
+                        <aksess:getcollection name="pages" varStatus="status">
+                            <tr class="tableRow${status.index mod 2}">
+                                <td><aksess:getattribute name="expiredate" collection="pages"/></td>
+                                <td><aksess:link collection="pages" target="_new"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
+                            </tr>
+                        </aksess:getcollection>
+                    </table>
+                </aksess:ifcollectionnotempty>
                 <div class="helpText">
                     <kantega:label key="aksess.contentexpire.help"/>
                 </div>
-
             </fieldset>
         </div>
     </form>

@@ -26,7 +26,7 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.aliases.title"/></h1>
-            <table>
+            <table class="fullWidth">
                 <tr>
                     <th><a href="?sort=<%=ContentProperty.ALIAS%>"><span><kantega:label key="aksess.aliases.alias"/></span></a></th>
                     <th><a href="?sort=<%=ContentProperty.TITLE%>"><span><kantega:label key="aksess.aliases.page"/></span></a></th>

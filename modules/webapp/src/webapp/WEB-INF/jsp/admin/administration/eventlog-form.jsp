@@ -29,6 +29,12 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <script type="text/javascript">
+    	$(function() {
+	    	$("#from_date").datepicker();
+            $("#end_date").datepicker();
+	    });
+    </script>    
     <form name="eventlog" action="SearchEventLog.action" method="post" class="inline">
 
         <div class="fieldset">
@@ -41,16 +47,8 @@
                     <div class="inputs">
                             <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
                             <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${fromDate}"/>">
-                            <a href="#" id="chooseFromDate" class="dateselect"></a>
-                        <script type="text/javascript">
-                            Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
-                        </script>
                             <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
                             <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="">
-                            <a href="#" id="chooseEndDate" class="dateselect"></a>
-                        <script type="text/javascript">
-                            Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );
-                        </script>
                     </div>
                 </div>
                 <div class="formElement">

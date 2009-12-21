@@ -23,18 +23,16 @@
     int len = df.length();
 
     DateAttribute attribute = (DateAttribute)request.getAttribute("attribute");
-    String    fieldName = (String)request.getAttribute("fieldName");
 
     attribute.setFormat(df);
     String value = attribute.getValue();
 %>
+<script type="text/javascript">
+    $(function() {
+        $("#${fieldName}").datepicker();
+    });
+</script>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
-    <input type="text" id="<%=fieldName%>" size="<%=len%>" maxlength="<%=len%>" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)<br>
-    <script type="text/javascript">
-        Calendar.setup( { inputField  : "<%=fieldName%>", ifFormat : "%d.%m.%Y", button : "velgdato<%=fieldName%>", firstDay: 1} );
-    </script>
-</div>
-<div class="buttonGroup">
-    <a href="#" id="velgdato<%=fieldName%>" class="button"><span class="dateselect"><kantega:label key="aksess.button.choose"/></span></a>
+    <input type="text" id="${fieldName}" size="<%=len%>" maxlength="<%=len%>" name="${fieldName}" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)
 </div>

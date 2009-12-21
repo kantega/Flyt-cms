@@ -52,6 +52,12 @@
         return true;
     }
 
+    $(function() {
+	    $("#from_date").datepicker();
+        $("#end_date").datepicker();
+        $("#change_date").datepicker();
+	});
+
     $(document).ready(function() {
         debug("bindTopicButtons(): bind ChooseTopicButton");
         $("#ChooseTopicButton input").click(function(event){
@@ -74,28 +80,16 @@
                 <tr>
                     <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
                     <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
-                    <a href="#" id="chooseFromDate" class="dateselect"></a></td>
                     <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
                     <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()"></td>
                 </tr>
                 <tr>
                     <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
-                    <td>
-                        <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="setFocusField(this)" onchange="displayExpireAction()" onBlur="blurField()">
-                        <a href="#" id="chooseEndDate" class="dateselect"></a>
-                    </td>
-                    <td>
-                        <label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
-                    </td>
+                    <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="setFocusField(this)" onchange="displayExpireAction()" onBlur="blurField()"></td>
+                    <td><label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
                     <td><input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="503" onFocus="setFocusField(this)" onBlur="blurField()"></td>
                 </tr>
             </table>
-            <script type="text/javascript">
-                Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
-            </script>
-            <script type="text/javascript">
-                Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );
-            </script>
             <div id="EndDateAction" <c:if test="${currentContent.expireDate == null}">style="display:none;"</c:if> >
                 <label><kantega:label key="aksess.publishinfo.period.action"/></label>
                 <table class="noborder" id="EndDateActionChoice">
@@ -130,21 +124,11 @@
             <table class="noborder" id="ChangeDate">
                 <tr>
                     <td><!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>--></td>
-                    <td>
-                        <input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
-                        <a href="#" id="chooseChangeDate" class="dateselect"></a>
-                    </td>
-                    <td>
-                        <label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label>
-                    </td>
-                    <td>
-                        <input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()">
-                    </td>
+                    <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()"></td>
+                    <td><label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label></td>
+                    <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()"></td>
                 </tr>
             </table>
-            <script type="text/javascript">
-                Calendar.setup( { inputField  : "change_date", ifFormat : "%d.%m.%Y", button : "changeFromDate", firstDay: 1 } );
-            </script>
         </fieldset>
     </div>
 </c:if>
@@ -179,7 +163,6 @@
     <div class="sidebarFieldset">
         <fieldset>
             <h1><kantega:label key="aksess.publishinfo.topics"/></h1>
-
 
             <div id="TopicList">...</div>
             <div id="ChooseTopicButton">

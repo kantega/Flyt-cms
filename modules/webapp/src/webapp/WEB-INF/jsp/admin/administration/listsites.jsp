@@ -28,7 +28,7 @@
         <fieldset>
             <h1><kantega:label key="aksess.sites.title"/></h1>
 
-            <table>
+            <table class="fullWidth">
                 <tr>
                     <th><strong><kantega:label key="aksess.site.name"/></strong></th>
                     <th><strong><kantega:label key="aksess.site.alias"/></strong></th>

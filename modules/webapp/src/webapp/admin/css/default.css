@@ -127,7 +127,7 @@ table.noborder td, table.noborder th {
     width: 200px;
 }
 
-#MainPane table {
+table.fullWidth {
     width: 100%;
 }
 
@@ -466,15 +466,6 @@ table.noborder td, table.noborder th {
 }
 .button .remove{
     background-image: url("../bitmaps/common/icons/small/remove.png");
-}
-
-
-/************** Inline buttons **************/
-a.dateselect {
-    display: inline-block;
-    width: 14px;
-    height: 16px;
-    background: url("../bitmaps/common/icons/small/calendar.png") no-repeat left 50%;
 }
 
 

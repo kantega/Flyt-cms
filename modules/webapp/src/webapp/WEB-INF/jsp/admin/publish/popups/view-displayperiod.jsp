@@ -22,7 +22,6 @@
 <kantega:section id="title"><kantega:label key="aksess.publishinfo.period"/></kantega:section>
 
 <kantega:section id="head">
-    <jsp:include page="../../layout/fragments/calendarsetup.jsp"/>
     <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
     <script type="text/javascript">
         var hasSubmitted = false;
@@ -48,6 +47,11 @@
             }
             return false;
         }
+
+    	$(function() {
+	    	$("#from_date").datepicker();
+            $("#end_date").datepicker();
+	    });               
 
         function validatePublishProperties() {
             if (DateFunctions.isDateNotEmpty($("#from_date").val()) && DateFunctions.checkDate($("#from_date").val()) == -1) {
@@ -75,12 +79,11 @@
 <kantega:section id="body">
         <div class="fieldset">
             <fieldset>
-                <table class="noborder">
+                <table class="noborder" style="margin-top:20px; margin-bottom:20px">
                     <tr>
                         <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
                         <td>
                             <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${content.publishDate}"/>">
-                            <a href="#" id="chooseFromDate" class="dateselect"></a>
                         </td>
                         <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
                         <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${content.publishDate}"/>"></td>
@@ -89,7 +92,6 @@
                         <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
                         <td>
                             <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${content.expireDate}"/>">
-                            <a href="#" id="chooseEndDate" class="dateselect"></a>
                         </td>
                         <td>
                             <label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
@@ -100,14 +102,13 @@
                     </tr>
 
                 </table>
-                <script type="text/javascript">
-                    Calendar.setup( { inputField  : "from_date", ifFormat : "%d.%m.%Y", button : "chooseFromDate", firstDay: 1 } );
-                </script>
-                <script type="text/javascript">
-                    Calendar.setup( { inputField  : "end_date", ifFormat : "%d.%m.%Y", button : "chooseEndDate", firstDay: 1 } );
-                </script>
                 <div id="UpdateChildren">
-                    <input type="checkbox" name="updateChildren" value="true" id="update_Children"><label for="update_Children"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
+                    <div class="row">
+                        <input type="checkbox" name="updateChildren" value="true" id="update_Children" class="radio">
+                        <label for="update_Children" class="radio"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
+                        <div class="clearing"></div>
+                    </div>
+
                 </div>
                 <div class="buttonGroup">
                     <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>

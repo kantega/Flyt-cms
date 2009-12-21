@@ -311,7 +311,7 @@ var Publish =  {
 
     displayPeriod: function(thisId) {
         debug("content.Publish.displayPeriod(): thisId: " + thisId);
-        ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?id=" + thisId,width: 350, height:180});
+        ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?id=" + thisId,width: 350, height:220});
     },
 
     managePrivileges: function(thisId) {

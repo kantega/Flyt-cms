@@ -27,20 +27,18 @@
     int timeLen = tf.length();
 
     DatetimeAttribute attribute = (DatetimeAttribute)request.getAttribute("attribute");
-    String fieldName = (String)request.getAttribute("fieldName");
 
     attribute.setFormat(Aksess.getDefaultDatetimeFormat());
     String dateValue = (attribute.getDateValue() != null && attribute.getDateValue().trim().length() > 0)? attribute.getDateValue() : DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale());
     String timeValue = (attribute.getTimeValue() != null && attribute.getTimeValue().trim().length() > 0)? attribute.getTimeValue() : DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale());
 %>
+<script type="text/javascript">
+    $(function() {
+        $("#date_${fieldName}").datepicker();
+    });
+</script>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
-    <kantega:label key="aksess.attribute.datetime.date"/>&nbsp;<input type="text" id="date_<%=fieldName%>" size="<%=dateLen%>" maxlength="<%=dateLen%>" name="date_<%=fieldName%>" value="<%=dateValue%>" tabindex="<%=attribute.getTabIndex()%>" onfocus="clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')">
-    <kantega:label key="aksess.attribute.datetime.time"/>&nbsp;<input type="text" id="time_<%=fieldName%>" size="<%=timeLen%>" maxlength="<%=timeLen%>" name="time_<%=fieldName%>" value="<%=timeValue%>" tabindex="<%=attribute.getTabIndex()+1%>" onfocus="clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')"><br>
-    <script type="text/javascript">
-            Calendar.setup( { inputField  : "date_<%=fieldName%>", ifFormat : "%d.%m.%Y", button : "velgdato<%=fieldName%>", firstDay: 1 } );
-    </script>
-</div>
-<div class="buttonGroup">
-    <a href="#" id="velgdato<%=fieldName%>" class="button"><span class="dateselect"><kantega:label key="aksess.button.choose-date"/></span></a>
+    <kantega:label key="aksess.attribute.datetime.date"/>&nbsp;<input type="text" id="date_${fieldName}" size="<%=dateLen%>" maxlength="<%=dateLen%>" name="date_${fieldName}" value="<%=dateValue%>" tabindex="<%=attribute.getTabIndex()%>" onfocus="clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')">
+    <kantega:label key="aksess.attribute.datetime.time"/>&nbsp;<input type="text" id="time_${fieldName}" size="<%=timeLen%>" maxlength="<%=timeLen%>" name="time_${fieldName}" value="<%=timeValue%>" tabindex="<%=attribute.getTabIndex()+1%>" onfocus="clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')"><br>
 </div>

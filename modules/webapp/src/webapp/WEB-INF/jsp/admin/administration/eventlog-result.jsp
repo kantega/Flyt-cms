@@ -31,7 +31,7 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.eventlog.title"/></h1>
-            <table>
+            <table class="fullWidth">
                 <tr>
                     <th><strong><kantega:label key="aksess.eventlog.datetime"/></strong></th>
                     <th><strong><kantega:label key="aksess.eventlog.event"/></strong></th>

@@ -45,7 +45,7 @@
                     DateFormat tf = new SimpleDateFormat("HH:mm:ss");
                     ContentManagementService cms = new ContentManagementService(request);
             %>
-            <table>
+            <table class="fullWidth">
                 <tr>
                     <th><kantega:label key="aksess.locks.page"/></th>
                     <th><kantega:label key="aksess.locks.owner"/></th>

@@ -23,7 +23,6 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/administration.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/administration.jjs"></script>
-    <%@ include file="../../../../admin/publish/include/calendarsetup.jsp"%>
 </kantega:section>
 
 <kantega:section id="topMenu">
