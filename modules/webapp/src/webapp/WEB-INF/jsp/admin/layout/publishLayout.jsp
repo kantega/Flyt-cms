@@ -118,11 +118,7 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
-    <div class="buttonGroup">
-        <a href="#" class="button<c:if test="${previewActive}"> active</c:if>"><span class="preview"><kantega:label key="aksess.mode.preview"/></span></a>
-        <span class="buttonSeparator"></span>
-        <a href="#" class="button last<c:if test="${!previewActive}"> active</c:if>"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
-    </div>
+    <%@include file="fragments/publishModesMenu.jsp"%>
 </kantega:section>
 
 <kantega:section id="tabToolsMenu">

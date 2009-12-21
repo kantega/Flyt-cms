@@ -43,40 +43,25 @@ $(document).ready(function(){
 function setWindowSize() {
     $(window).bind('resize load', function(e) {
         debug("navigate.setWindowSize(): " + e.type + " event received");
-
+        //Force vertical scrollbar before calculating width.
+        $('#Content').css('height', '5000px');
         var windowHeight = $(window).height();
         var windowWidth = $(window).width();
         var topHeight = $("#Top").height();
-        var statusbarHeight = $("#Statusbar").height();
-        var filteroptionsHeight = $("#Filteroptions").height();
         var navigationWidth = $("#Navigation").width();
         var framesplitWidth = $("#Framesplit").width();
-        debug("navigate.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight + ", navigationWidth: " + navigationWidth + ", framesplitWidth: " + framesplitWidth);
 
-        $("#Navigator").css('height', (windowHeight-topHeight-filteroptionsHeight-5) + 'px');
-        $('#Content').css('height', (windowHeight-topHeight-statusbarHeight) + 'px');
-        $('#MainPane').css('height', (windowHeight-topHeight) + 'px').css('width', (windowWidth-navigationWidth-framesplitWidth) + 'px');
-        $('#MainPane iframe').css('height', (windowHeight-topHeight-statusbarHeight) + 'px');
+        debug("navigate.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
+
+        $('#Content').css('height', (windowHeight-topHeight) + 'px');
+
         if (typeof setLayoutSpecificSizes == 'function') {
-            setLayoutSpecificSizes();
+            debug("navigate.setWindowSize(): setLayoutSpecificSizes function found");
+            setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
         }
 
-        /*
-        //FireFox calculates the width before it removes the vertical scrollbar.
-        //To get the total with after the scrollbar is removed, we need to add the scrollbarwidth
-        //to the current MainPane width after it's removed. The scrollbar is removed by FireFox after appr. 150ms.
-        jQuery.each(jQuery.browser, function(i) {
-            if(i=="mozilla") {
-                setTimeout(function(){
-                    var scrollbarWidth = 17;
-                    $('#MainPane').css('width', ($("#MainPane").width() + scrollbarWidth) + 'px');
-                }, 200);
-            }
-        });
-        */
     });
 }
-
 
 /**
  * Performes necessary actions to make the navigator frame (left column) resizable.

@@ -16,8 +16,17 @@
 --%>
 
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<div class="buttonGroup search">
+    <form action="" method="get">
+        <input type="text" id="SearchQuery" class="query content" name="query content">
+        <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
+    </form>
+    <div id="SearchResults"></div>
+</div>
 <div class="buttonGroup">
-    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="navigate"><kantega:label key="aksess.mode.navigate"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="navigate">View</span></a>
+    <span class="buttonSeparator"></span>
+    <a href="#" class="button"><span class="edit">Edit</span></a>
     <span class="buttonSeparator"></span>
     <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
 </div>
@@ -28,10 +37,4 @@
     <span class="buttonSeparator"></span>
     <a href="#" class="button last"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
 </div>
-<div class="buttonGroup search">
-    <form action="" method="get">
-        <input type="text" id="SearchQuery" class="query content" name="query content">
-        <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
-    </form>
-    <div id="SearchResults"></div>
-</div>
+

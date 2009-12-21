@@ -16,10 +16,10 @@
 
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
+//<%@ page import="no.kantega.publishing.common.data.Content" %>
+//<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
-<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 
 var currentUrl = "";
@@ -71,6 +71,27 @@ function bindContentupdateEvents() {
 //    $([element listening to event]).bind("contentupdate", function(e, url) {
 //        [perform actions]
 //    });
+}
+
+
+function setLayoutSpecificSizes(elementProperties) {
+    var filteroptionsHeight = $("#Filteroptions").height();
+    var statusbarHeight = $("#Statusbar").height();
+    debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight);
+    $navigator = $("#Navigator");
+    $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
+    $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
+
+    var $mainPane = $('#MainPane');
+    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
+
+    var $subpages = $("#SubPages");
+    if ($subpages) {
+        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight;
+        $subpages.css('height',  subpagesHeight + 'px');
+    }
+
 }
 
 

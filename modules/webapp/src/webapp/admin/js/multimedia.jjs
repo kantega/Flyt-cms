@@ -2,21 +2,21 @@
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%--
-~ Copyright 2009 Kantega AS
-~
-~ Licensed under the Apache License, Version 2.0 (the "License");
-~ you may not use this file except in compliance with the License.
-~ You may obtain a copy of the License at
-~
-~     http://www.apache.org/licenses/LICENSE-2.0
-~
-~ Unless required by applicable law or agreed to in writing, software
-~ distributed under the License is distributed on an "AS IS" BASIS,
-~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-~ See the License for the specific language governing permissions and
-~ limitations under the License.
---%>
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 var currentItemIdentifier = 0;
 
@@ -158,9 +158,7 @@ function getItemIdentifierFromNavigatorHref(href) {
 
 function onNavigatorTitleClick(elm) {
     var href = elm.attr("href");
-    var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
-
-    currentItemIdentifier = itemIdentifier;
+    currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
     triggerMultimediaupdateEvent();
 }
 
@@ -169,14 +167,20 @@ function triggerMultimediaupdateEvent() {
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 
-function setLayoutSpecificSizes() {
-    var paddingTop = $("#MultimediaFolders").css("padding-top");
-    paddingTop = paddingTop.substring(0, paddingTop.indexOf("px"));
-    var paddingBottom = $("#MultimediaFolders").css("padding-bottom");
-    paddingBottom = paddingBottom.substring(0, paddingBottom.indexOf("px"));
-    var multimediaFoldersHeight = $("#MainPane").height()-paddingTop-paddingBottom;
+function setLayoutSpecificSizes(elementProperties) {
+    debug("multimedia.setLayoutSpecificSizes()");
+    $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
+    $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
 
-    $("#MultimediaFolders").css("height", multimediaFoldersHeight + "px");
+    var $mainPane = $('#MainPane');
+    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+
+    var $multimediaFolders = $("#MultimediaFolders");
+    if ($multimediaFolders) {
+        var multimediaFoldersHeight = $mainPane.height()-parseInt($multimediaFolders.css("paddingTop"))-parseInt($multimediaFolders.css("paddingBottom"));
+        $multimediaFolders.css('height',  multimediaFoldersHeight + 'px');
+    }
+
 }
 
 /**

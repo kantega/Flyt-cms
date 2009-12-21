@@ -57,25 +57,18 @@ function debug(msg) {
     }
 }
 
+
 /**
- * Saves the currently viewed content in the user's session.
- * 
- * @param url - Relative url to the current content.
+ * Sets the currently viewed content in the user's session.
+ *
+ * @param currentUrl
  */
-function notifyContentUpdate(url) {
-    ContentStateHandler.notifyContentUpdate(url, function(success){
-        if(!success) {
-            debug("common.notifyContentUpdate(): dwr ContentStateHandler.notifyContentUpdate() success");
-        } else {
-            debug("common.notifyContentUpdate(): dwr ContentStateHandler.notifyContentUpdate() failed");
-            //TODO: Handle
-        }
-    });
+function notifyContentUpdate(currentUrl) {
+    ContentStateHandler.notifyContentUpdate(currentUrl);
 }
 
-
 /**
- * 
+ * Responsible for drawing pop-ups and modals.
  */
 var ModalWindow = {
 
@@ -103,6 +96,12 @@ var ModalWindow = {
         }
     },
 
+
+    /**
+     * Opens a modal with the desired properties.
+     *
+     * @param config
+     */
     open: function(config){
         debug("common.ModalWindow.open(): config: " + config);
 
@@ -134,6 +133,10 @@ var ModalWindow = {
 
     },
 
+
+    /**
+     * Closes the current modal.
+     */
     close: function(){
         debug("common.ModalWindow.close()");
         $content.dialog('close');    

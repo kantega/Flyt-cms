@@ -1,6 +1,7 @@
 html, body {
     height: 100%;
     min-height: 100%;
+    overflow: hidden;
 }
 
 body {
@@ -79,7 +80,9 @@ table.noborder td, table.noborder th {
 }
 
 /************** Layout **************/
-#Top {}
+#Top {
+    min-width: 850px;
+}
 
 #TopMenu {
     height: 28px;
@@ -152,7 +155,9 @@ table.fullWidth {
     background: #A0A0A0;
     margin: 0;
 }
-
+#Content.organizeSubpages #MainPane {
+    background: #ffffff;
+}
 #Content.sidebar {
     float: left;
 }
@@ -201,7 +206,7 @@ table.fullWidth {
 }
 
 #ModesMenu .search input[type=text]{
-    width: 200px;
+    width: 100px;
     height: 26px;
     border: none;
     color: #dddddd;
@@ -623,7 +628,10 @@ div.sidebarFieldset fieldset {
 /************** Organize subpages **************/
 #SubPages {
     background: #ffffff;
-    padding: 10px 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow: auto;
+    min-width: 670px;
 }
 #SubPages ul {
     margin: 0 0 2em;

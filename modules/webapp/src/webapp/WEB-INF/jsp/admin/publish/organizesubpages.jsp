@@ -23,7 +23,7 @@
     <kantega:label key="aksess.navigate.title"/>
 </kantega:section>
 
-<kantega:section id="contentclass">navigateContent</kantega:section>
+<kantega:section id="contentclass">organizeSubpages</kantega:section>
 
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>

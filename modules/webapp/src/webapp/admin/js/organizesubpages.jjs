@@ -102,14 +102,4 @@ function getAssociationIdsAsParam() {
 }
 
 
-/**
- * Called from common on resize.
- */
-function setLayoutSpecificSizes() {
-    var mainPaneHeight = $("#MainPane").height();
-    var statusbarHeight = $("#Statusbar").height();
-    var subPages = $("#SubPages");
-    var subPagesPaddingTop = parseInt(subPages.css("paddingTop"));
-    var subPagesPaddingBottom = parseInt(subPages.css("paddingBottom"));
-    $("#SubPages").css("height", (mainPaneHeight-statusbarHeight-subPagesPaddingTop-subPagesPaddingBottom) + "px");
-}
+
