@@ -169,6 +169,7 @@ function triggerMultimediaupdateEvent() {
 
 function setLayoutSpecificSizes(elementProperties) {
     debug("multimedia.setLayoutSpecificSizes()");
+    $("html, body").css("overflow", "hidden");
     $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
 

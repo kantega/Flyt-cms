@@ -22,14 +22,14 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/publish.css">
-    <script type="text/javascript" language="Javascript" src="../js/sidebar.jjs"></script>
-    <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
-    <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
-    <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
-    <script type="text/javascript" language="Javascript" src="../js/richtext.jjs"></script>
-    <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
+    <script type="text/javascript" src="../js/publish.jjs"></script>
+    <script type="text/javascript" src="../js/browserdetect.js"></script>
+    <script type="text/javascript" src="../js/date.jsp"></script>
+    <script type="text/javascript" src="../js/edit.jjs"></script>
+    <script type="text/javascript" src="../js/richtext.jjs"></script>
+    <script type="text/javascript" src="../../aksess/js/common.js"></script>
 
-    <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
     <script type="text/javascript" language="Javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
 
     <script type="text/javascript">
@@ -92,14 +92,6 @@
         }
 
 
-        function setLayoutSpecificSizes( ) {
-            var maxHeight = $("#MainPane").height() - $("#EditContentTabs").height() - $("#EditContentButtons").height();
-            var width = $("#MainPane").width();
-
-            $('#MainPane iframe').css('height', (maxHeight-20) + 'px').css('width', (width-20) + 'px');
-
-        }
-
         function gotoMode(action) {
             action = action + ".action";
             var href = "" + window.location.href;
@@ -155,10 +147,11 @@
                     <kantega:getsection id="content"/>
                 </div>
             </div>
-            <div id="SideBarSplit"></div>
             <div id="SideBar">
                 <%@ include file="../publish/fragments/publishproperties.jsp" %>
             </div>
+            <div id="Framesplit"></div>
+            <div class="clearing"></div>
         </div>
     </form>
 </kantega:section>

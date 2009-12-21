@@ -1,7 +1,6 @@
 html, body {
     height: 100%;
     min-height: 100%;
-    overflow: hidden;
 }
 
 body {
@@ -110,16 +109,12 @@ table.noborder td, table.noborder th {
 
 #SideBar {
     background-color: #cccccc;
-    float: left;
+    float: right;
     width: 240px;
+    height: 100%;
 }
 
-#SideBarSplit {
-    float: left;
-    width: 10px;
-    height: 100%;
-    background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
-}
+
 
 /************** Generic content pane styles  **************/
 #MainPane {
@@ -139,8 +134,19 @@ table.fullWidth {
 }
 
 /************** Specific content panes styles ********/
+#Content.publish {
+    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
+}
 #Content.publish #MainPane {
     margin: 0;
+    height: 100%;
+}
+#Content.publish #Framesplit {
+    float: right;
+    width: 10px;
+    height: 100%;
+    border-right: 1px solid #8F8F8F;
+    background: url(../bitmaps/default/framework/framesplit_right.png) top center repeat-y;
 }
 
 #Content.multimedia #MainPane {
@@ -375,7 +381,6 @@ table.fullWidth {
 #Content .buttonBar {
     height: 41px;
     line-height: 41px;
-    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
     margin-bottom: 10px;
 }
 
@@ -586,10 +591,11 @@ div.sidebarFieldset {
 
 div.sidebarFieldset fieldset {
     border: 0;
-    padding: 4px;
+    padding: 10px;
 }
-
-
+div.sidebarFieldset fieldset h1 {
+    margin-top: 0;
+}
 /************** Popups **************/
 .dialogue .tabGroup .tab {
     background-color: #00cc00;
@@ -700,3 +706,8 @@ div.sidebarFieldset fieldset {
 }
 #SubPages li .contentStatus .status40 {}
 
+
+/************** jQuery UI adaptions **************/
+#ui-datepicker-div {
+    display: none;
+}

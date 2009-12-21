@@ -75,6 +75,7 @@ function bindContentupdateEvents() {
 
 
 function setLayoutSpecificSizes(elementProperties) {
+    $("html, body").css("overflow", "hidden");
     var filteroptionsHeight = $("#Filteroptions").height();
     var statusbarHeight = $("#Statusbar").height();
     debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight);

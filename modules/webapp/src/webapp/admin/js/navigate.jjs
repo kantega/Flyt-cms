@@ -31,37 +31,10 @@ var suppressNavigatorUpdate = false;
  */
 $(document).ready(function(){
     debug("navigate.$(document).ready()");
-    setWindowSize();
     bindNavigatorClickEvents();
     makeNavigatorResizable();
 });
 
-
-/**
- * Adjusts the height and width of the iframe onload and onresize.
- */
-function setWindowSize() {
-    $(window).bind('resize load', function(e) {
-        debug("navigate.setWindowSize(): " + e.type + " event received");
-        //Force vertical scrollbar before calculating width.
-        $('#Content').css('height', '5000px');
-        var windowHeight = $(window).height();
-        var windowWidth = $(window).width();
-        var topHeight = $("#Top").height();
-        var navigationWidth = $("#Navigation").width();
-        var framesplitWidth = $("#Framesplit").width();
-
-        debug("navigate.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
-
-        $('#Content').css('height', (windowHeight-topHeight) + 'px');
-
-        if (typeof setLayoutSpecificSizes == 'function') {
-            debug("navigate.setWindowSize(): setLayoutSpecificSizes function found");
-            setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
-        }
-
-    });
-}
 
 /**
  * Performes necessary actions to make the navigator frame (left column) resizable.

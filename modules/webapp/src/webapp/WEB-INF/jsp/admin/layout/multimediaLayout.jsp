@@ -20,7 +20,7 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
-    <script type="text/javascript" language="Javascript" src="${pageContext.request.contextPath}/admin/js/sidebar.jjs"></script>
+    <script type="text/javascript" language="Javascript" src="${pageContext.request.contextPath}/admin/js/sidebar.publish.jjs"></script>
     <script type="text/javascript" language="Javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){

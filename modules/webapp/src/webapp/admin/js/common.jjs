@@ -23,7 +23,37 @@ $(document).ready(function() {
     if (window.dwr) {
         dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
     }
+    setWindowSize();
 });
+
+
+
+/**
+ * Adjusts the height and width of the iframe onload and onresize.
+ */
+function setWindowSize() {
+    $(window).bind('resize load', function(e) {
+        debug("common.setWindowSize(): " + e.type + " event received");
+
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        var topHeight = $("#Top").height();
+        var navigationWidth = $("#Navigation").width();
+        var framesplitWidth = $("#Framesplit").width();
+
+        debug("common.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
+
+        $('#Content').css('height', (windowHeight-topHeight) + 'px');
+
+        if (typeof setLayoutSpecificSizes == 'function') {
+            debug("common.setWindowSize(): setLayoutSpecificSizes function found");
+            setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
+        }
+
+    });
+}
+
+
 
 /**
  * Returns the value of a query string parameter
