@@ -30,6 +30,7 @@
     <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
 
     <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript" language="Javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){

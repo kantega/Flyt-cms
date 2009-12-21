@@ -39,9 +39,6 @@
         var hasSubmitted = false;
 
         function initialize() {
-        <%
-            screen.generatePreJavascript();
-        %>
             try {
                 document.myform.elements[0].focus();
             } catch (e) {
@@ -50,9 +47,6 @@
         }
 
         function saveContent(status) {
-        <%
-            screen.generatePostJavascript();
-        %>
             if (validatePublishProperties()) {
                 if (!hasSubmitted) {
                     hasSubmitted = true;

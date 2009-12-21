@@ -53,65 +53,6 @@ public class InputScreenRenderer {
 
 
     /**
-     * Genererer Javascript som kalles før redigering starter (ved lasting av siden)
-     */
-    public void generatePreJavascript() throws IOException {
-        JspWriter out = pageContext.getOut();
-        List attrlist  = content.getAttributes(attributeType);
-
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() &&  !attr.isHidden(content)) {
-                if (attr instanceof HtmltextAttribute) {
-                    HtmltextAttribute htmlAttr = (HtmltextAttribute)attr;
-
-                    // Initialiser kode for editor
-                    String inputField = AttributeHelper.getInputFieldName(attr.getName());
-                    String editor = "editor_" + inputField;
-                    String hidden  = "document.myform." + inputField;
-
-                    String cssPath = "";
-                    String cssfile = htmlAttr.getCss();
-                    try {
-                        Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
-                        cssPath = "/css" + site.getAlias() + htmlAttr.getCss();
-                        InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
-                        if (is == null) {
-                            cssPath = site.getAlias() + "css/" + htmlAttr.getCss();
-                        }
-                    } catch (SystemException e) {
-                        cssPath = "/css/" + cssfile;
-                    }
-
-                    out.write("rtInitEditor('" + editor + "'," + hidden + ", '" + cssPath + "');\n");
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Genererer Javascript som kalles etter redigering er ferdig (før submit)
-     */
-    public void generatePostJavascript() throws IOException {
-        JspWriter out = pageContext.getOut();
-        List attrlist  = content.getAttributes(attributeType);
-
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() && !attr.isHidden(content)) {
-                if (attr instanceof HtmltextAttribute) {
-                    String inputField = AttributeHelper.getInputFieldName(attr.getName());
-                    String editor = "editor_" + inputField;
-                    String hidden  = "document.myform." + inputField;
-                    out.write("if (!rtCopyValue('" + editor + "'," + hidden + ")) return;");
-                }
-            }
-        }
-    }
-
-
-    /**
      * Lager inputskjermbilde ved å gå gjennom alle attributter
      */
     public void generateInputScreen() throws IOException, SystemException, ServletException {
