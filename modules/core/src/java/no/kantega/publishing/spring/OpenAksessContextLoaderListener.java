@@ -41,9 +41,9 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
  * Custom ContextLoaderListener for Aksess.
  * Locates the application directory and exposes it as a ${appDir} property in the Spring Application Context.
  */
-public class AksessContextLoaderListener extends ContextLoaderListener {
+public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
-    public static final String APPLICATION_DIRECTORY = AksessContextLoaderListener.class.getName() +"_APPLICATION_DIRECTORY";
+    public static final String APPLICATION_DIRECTORY = OpenAksessContextLoaderListener.class.getName() +"_APPLICATION_DIRECTORY";
     @Override
     protected ContextLoader createContextLoader() {
         return new ContextLoader() {

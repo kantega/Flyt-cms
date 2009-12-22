@@ -50,7 +50,7 @@ public abstract class ApplicationContextUtils {
     public static void addAppDirPropertySupport(ConfigurableWebApplicationContext wac) {
         PropertyPlaceholderConfigurer configurer  = new PropertyPlaceholderConfigurer();
         final Properties properties = new Properties();
-        File dataDir = (File) wac.getServletContext().getAttribute(AksessContextLoaderListener.APPLICATION_DIRECTORY);
+        File dataDir = (File) wac.getServletContext().getAttribute(OpenAksessContextLoaderListener.APPLICATION_DIRECTORY);
         properties.setProperty("appDir", dataDir.getAbsolutePath());
         configurer.setProperties(properties);
         configurer.setIgnoreUnresolvablePlaceholders(true);

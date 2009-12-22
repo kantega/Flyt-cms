@@ -74,7 +74,7 @@
     </filter-mapping>
 
     <listener>
-        <listener-class>no.kantega.publishing.spring.AksessContextLoaderListener</listener-class>
+        <listener-class>no.kantega.publishing.spring.OpenAksessContextLoaderListener</listener-class>
     </listener>
 
     <listener>
