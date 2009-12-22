@@ -1,6 +1,7 @@
 <%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
+
 <%@ page buffer="none" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -30,24 +31,16 @@
     <script type="text/javascript" src="../../aksess/js/common.js"></script>
 
     <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
-    <script type="text/javascript" language="Javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
+
+    <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 
     <script type="text/javascript">
         $(document).ready(function(){
-            bindPublishButtons();
+            bindToolbarButtons();
         });
 
-        function bindPublishButtons() {
-        <c:if test="${!previewActive}">
-            $("#ModesMenu .button .preview").click(function(){
-                gotoMode("ViewContentPreview");
-            });
-        </c:if>
-        <c:if test="${previewActive}">
-            $("#ModesMenu .button .edit").click(function(){
-                gotoMode("SaveContent");
-            });
-        </c:if>
+        function bindToolbarButtons() {
         <c:if test="${!contentActive}">
             $("#TabToolsMenu .tab .content").click(function(){
                 gotoMode("SaveContent");
@@ -68,40 +61,6 @@
                 gotoMode("SaveAttachments");
             });
         </c:if>
-            $("#EditContentButtons input.publish").click(function(){
-                saveContent(<%=ContentStatus.PUBLISHED%>);
-            });
-            $("#EditContentButtons input.save").click(function(){
-                saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
-            });
-            $("#EditContentButtons input.savedraft").click(function(){
-                saveContent(<%=ContentStatus.DRAFT%>);
-            });
-            $("#EditContentButtons input.hearing").click(function(){
-                saveContent(<%=ContentStatus.HEARING%>);
-            });
-            $("#EditContentButtons input.cancel").click(function(){
-                var confirmCancel = true;
-                if (isModified()) {
-                    confirm("Endre siden?");
-                }
-                if (confirmCancel) {
-                    window.location.href = 'CancelEdit.action';
-                }
-            });
-        }
-
-
-        function gotoMode(action) {
-            action = action + ".action";
-            var href = "" + window.location.href;
-            if (href.indexOf(action) != -1) {
-                // Tried to click current tab
-                return;
-            }
-
-            document.myform.elements['action'].value = action;
-            saveContent("");
         }
     </script>
 </kantega:section>

@@ -28,6 +28,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
@@ -66,8 +68,23 @@ public class NavigateController extends SimpleAdminController{
 
         session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
 
+        Content editedContent = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-        return new ModelAndView(getView());
+
+        String currentUrl = current.getUrl();
+        Map<String, Object> model = new HashMap<String, Object>();
+        if (editedContent != null) {
+            currentUrl = "ViewContentPreviewFrame.action?thisId=";
+            if (editedContent.getId() == -1) {
+                // New page
+                currentUrl += editedContent.getAssociation().getParentAssociationId();
+            } else {
+                currentUrl += editedContent.getAssociation().getId();
+            }
+        }
+        model.put("currentUrl", currentUrl);        
+
+        return new ModelAndView(getView(), model);
     }
 
 

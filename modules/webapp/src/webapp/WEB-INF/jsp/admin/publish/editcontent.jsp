@@ -60,6 +60,6 @@
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">
     <input type="hidden" name="currentId" value="${currentContent.id}">
-    <input type="hidden" name="isModified" value="${currentContent.modified}">
+    <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>

@@ -24,7 +24,7 @@
     <div id="SearchResults"></div>
 </div>
 <div class="buttonGroup">
-    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="navigate">View</span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="view">View</span></a>
     <span class="buttonSeparator"></span>
     <a href="#" class="button"><span class="edit">Edit</span></a>
     <span class="buttonSeparator"></span>

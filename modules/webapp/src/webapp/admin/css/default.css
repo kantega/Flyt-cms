@@ -261,7 +261,7 @@ table.fullWidth {
 #ModesMenu .button span {
     padding-left: 20px;
 }
-#ModesMenu .button .navigate {
+#ModesMenu .button .view {
     background: url("../bitmaps/common/icons/small/navigate.png") left center no-repeat;
 }
 #ModesMenu .button .organize {
@@ -275,9 +275,6 @@ table.fullWidth {
 }
 #ModesMenu .button .edit {
     background: url("../bitmaps/common/icons/small/edit.png") left center no-repeat;
-}
-#ModesMenu .button .preview {
-    background: url("../bitmaps/common/icons/small/preview.png") left center no-repeat;
 }
 
 /************** Tools menu **************/

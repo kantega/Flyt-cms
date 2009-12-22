@@ -19,6 +19,19 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.jjs"></script>
     <kantega:getsection id="head extras"/>
+    <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
+    <c:if test="${currentContent != null}">
+    <script type="text/javascript">
+        var hasSubmitted = false;
+        function saveContent(status) {
+            if (!hasSubmitted) {
+                hasSubmitted = true;
+                document.myform.status.value = status;
+                document.myform.submit();
+            }
+        }
+    </script>
+    </c:if>
 </kantega:section>
 
 <kantega:section id="topMenu">
@@ -71,10 +84,14 @@
 
     <%@include file="fragments/contextMenu-link.jsp"%>
 
+    <c:if test="${currentContent != null}">
+        <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">
+            <input type="hidden" name="status" value="">
+            <input type="hidden" name="action" value="">
+            <input type="hidden" name="currentId" value="${currentContent.id}">
+            <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
+        </form>
+    </c:if>
 </kantega:section>
-
-
-
-
 
 <%@include file="commonLayout.jsp"%>

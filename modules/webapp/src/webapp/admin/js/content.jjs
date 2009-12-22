@@ -260,9 +260,6 @@ function bindToolButtons() {
     $("#ToolsMenu .button .newSubpage").click(function(){
         Publish.newSubpage(getQueryParam("thisId", currentUrl));
     });
-    $("#ToolsMenu .button .edit").click(function(){
-        Publish.edit(getQueryParam("thisId", currentUrl));
-    });
     $("#ToolsMenu .button .delete").click(function(){
         Publish.deleteItem(getQueryParam("thisId", currentUrl));
     });

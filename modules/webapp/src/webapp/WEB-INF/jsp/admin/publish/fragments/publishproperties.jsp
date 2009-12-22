@@ -11,40 +11,40 @@
        }
     }
 
-    function validatePublishProperties() {
+    function validatePublishProperties() {        
         if (document.myform.alias && document.myform.alias.value == "/") {
             alert("<kantega:label key="aksess.error.aliasroot"/>");
             return false;
         }
 
         if (document.myform.from_date) {
-            if (isDateNotEmpty(document.myform.from_date.value) && checkDate(document.myform.from_date.value) == -1) {
+            if (DateFunctions.isDateNotEmpty(document.myform.from_date.value) && DateFunctions.checkDate(document.myform.from_date.value) == -1) {
                 document.myform.from_date.focus();
                 return false;
             }
-            if (isTimeNotEmpty(document.myform.from_time.value) && checkTime(document.myform.from_time.value) == -1) {
+            if (DateFunctions.isTimeNotEmpty(document.myform.from_time.value) && DateFunctions.checkTime(document.myform.from_time.value) == -1) {
                 document.myform.from_time.focus();
                 return false;
             }
         }
 
         if (document.myform.end_date) {
-            if (isDateNotEmpty(document.myform.end_date.value) && checkDate(document.myform.end_date.value) == -1) {
+            if (DateFunctions.isDateNotEmpty(document.myform.end_date.value) && DateFunctions.checkDate(document.myform.end_date.value) == -1) {
                 document.myform.end_date.focus();
                 return false;
             }
-            if (isTimeNotEmpty(document.myform.end_time.value) && checkTime(document.myform.end_time.value) == -1) {
+            if (DateFunctions.isTimeNotEmpty(document.myform.end_time.value) && DateFunctions.checkTime(document.myform.end_time.value) == -1) {
                 document.myform.end_time.focus();
                 return false;
             }
         }
 
         if (document.myform.change_date) {
-            if (isDateNotEmpty(document.myform.change_date.value) && checkDate(document.myform.change_date.value) == -1) {
+            if (DateFunctions.isDateNotEmpty(document.myform.change_date.value) && DateFunctions.checkDate(document.myform.change_date.value) == -1) {
                 document.myform.change_date.focus();
                 return false;
             }
-            if (isTimeNotEmpty(document.myform.change_time.value) && checkTime(document.myform.change_time.value) == -1) {
+            if (DateFunctions.isTimeNotEmpty(document.myform.change_time.value) && DateFunctions.checkTime(document.myform.change_time.value) == -1) {
                 document.myform.change_time.focus();
                 return false;
             }

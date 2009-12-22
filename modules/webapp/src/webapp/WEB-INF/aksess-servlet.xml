@@ -87,7 +87,7 @@
                 <prop key="/admin/publish/DeleteVersion.action">DeleteVersionAction</prop>
                 <prop key="/admin/publish/EditContent.action">EditContentAction</prop>
                 <prop key="/admin/EndAdminMode.action">EndAdminModeAction</prop>
-                <prop key="/admin/publish/ViewContentPreview.action">ViewContentPreviewAction</prop>
+                <prop key="/admin/publish/SaveContentPreview.action">SaveContentPreviewAction</prop>
                 <prop key="/admin/publish/ViewContentPreviewFrame.action">ViewContentPreviewFrameAction</prop>
                 <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
@@ -390,7 +390,7 @@
     </bean>
 
     <!-- Preview  -->
-    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="ViewContentPreviewAction">
+    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveContentPreviewAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ViewContentPreviewFrameAction">
