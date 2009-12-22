@@ -45,7 +45,6 @@
 <kantega:section id="toolsMenu">
    <div class="buttonGroup">
         <a href="#" class="button disabled" id="NewSubpageButton"><span class="newSubpage"><kantega:label key="aksess.tools.newSubpage"/></span></a>
-        <a href="#" class="button disabled" id="EditPageButton"><span class="edit"><kantega:label key="aksess.tools.edit"/></span></a>
         <a href="#" class="button disabled" id="DeletePageButton"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
     </div>
     <div class="buttonGroup">
