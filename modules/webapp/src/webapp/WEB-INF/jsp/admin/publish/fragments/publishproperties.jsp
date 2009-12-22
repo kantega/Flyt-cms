@@ -140,6 +140,19 @@
         </fieldset>
     </div>
 </c:if>
+<c:if test="${topicMapsEnabled}">
+    <div class="sidebarFieldset">
+        <fieldset>
+            <h1><kantega:label key="aksess.publishinfo.topics"/></h1>
+
+            <div id="TopicList">...</div>
+            <div id="ChooseTopicButton">
+                <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+            </div>
+
+        </fieldset>
+    </div>
+</c:if>
 <c:if test="${canChangeTemplate}">
     <div class="sidebarFieldset">
         <fieldset>
@@ -159,16 +172,4 @@
         </fieldset>
     </div>
 </c:if>
-<c:if test="${topicMapsEnabled}">
-    <div class="sidebarFieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.topics"/></h1>
 
-            <div id="TopicList">...</div>
-            <div id="ChooseTopicButton">
-                <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
-            </div>
-
-        </fieldset>
-    </div>
-</c:if>
