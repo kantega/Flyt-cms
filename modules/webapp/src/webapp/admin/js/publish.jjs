@@ -15,6 +15,15 @@
  */
 
 function setLayoutSpecificSizes(elementProperties) {
-
+    debug("publish.setLayoutSpecificSizes()");
     
+    var $sidebar = $("#SideBar");
+    var $mainPane = $('#MainPane');
+    $mainPane
+            .height( (elementProperties.window.height-elementProperties.top.height) + 'px')
+            .width( (elementProperties.window.width-elementProperties.framesplit.width-$sidebar.outerWidth(true)) + 'px');
+
+    $('#EditContentMain')
+            .height( (parseInt($mainPane.height())-parseInt($("#EditContentButtons").outerHeight(true))) + 'px')
+            .width($mainPane.outerWidth());
 }

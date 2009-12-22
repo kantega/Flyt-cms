@@ -1,20 +1,17 @@
+html, body {
+    overflow: hidden;
+}
+
 /************** Edit content **************/
 #EditContentMain {
-    float: left;
+    overflow: auto;
 }
 
 #EditContentPane {
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 600px;    
+    margin: 10px;
+    width: 600px;
 }
 
-#EditContentPropertiesPane {
-    width: 250px;
-    float: left;
-    height: 100%;
-    min-height: 100%;
-}
 
 #PropertiesPane label {
     display: inline;

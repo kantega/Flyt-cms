@@ -39,7 +39,7 @@ function setWindowSize() {
         var windowWidth = $(window).width();
         var topHeight = $("#Top").height();
         var navigationWidth = $("#Navigation").width();
-        var framesplitWidth = $("#Framesplit").width();
+        var framesplitWidth = $("#Framesplit").outerWidth(true);
 
         debug("common.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
 

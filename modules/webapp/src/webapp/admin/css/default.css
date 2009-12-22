@@ -110,8 +110,9 @@ table.noborder td, table.noborder th {
 #SideBar {
     background-color: #cccccc;
     float: right;
-    width: 240px;
+    width: 280px;
     height: 100%;
+    overflow: auto;
 }
 
 
@@ -134,9 +135,7 @@ table.fullWidth {
 }
 
 /************** Specific content panes styles ********/
-#Content.publish {
-    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
-}
+
 #Content.publish #MainPane {
     margin: 0;
     height: 100%;
@@ -361,7 +360,7 @@ table.fullWidth {
 #Content .buttonBar {
     height: 41px;
     line-height: 41px;
-    margin-bottom: 10px;
+    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
 }
 
 #Content .buttonBar .barButton {

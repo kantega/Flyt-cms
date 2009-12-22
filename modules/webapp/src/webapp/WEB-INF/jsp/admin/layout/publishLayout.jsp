@@ -128,6 +128,11 @@
 
         <div id="Content" class="publish">
             <div id="MainPane">
+                <div id="EditContentMain">
+                    <div id="EditContentPane">
+                        <kantega:getsection id="content"/>
+                    </div>
+                </div>
                 <div id="EditContentButtons" class="buttonBar">
                     <c:choose>
                         <c:when test="${canPublish}">
@@ -137,15 +142,13 @@
                             <span class="barButton"><input type="button" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
                         </c:otherwise>
                     </c:choose>
-                        <span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.save"/>"></span>
-                        <c:if test="${hearingEnabled}">
-                            <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
+                    <span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.save"/>"></span>
+                    <c:if test="${hearingEnabled}">
+                        <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
                     </c:if>
                     <span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
-                <div id="EditContentPane">
-                    <kantega:getsection id="content"/>
-                </div>
+
             </div>
             <div id="SideBar">
                 <%@ include file="../publish/fragments/publishproperties.jsp" %>
