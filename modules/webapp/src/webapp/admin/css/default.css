@@ -688,3 +688,8 @@ div.sidebarFieldset fieldset h1 {
 #ui-datepicker-div {
     display: none;
 }
+.ui-datepicker-trigger {
+    padding-top: 2px;
+    margin-left: 3px;
+    vertical-align: top;
+}
