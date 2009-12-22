@@ -61,6 +61,7 @@ function bindContentupdateEvents() {
         $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: currentUrl}, function(data){
             ContentStatus.breadcrumbs(data.path);
             ContentStatus.brokenLinks(data.links);
+            ContentStatus.details(data.content);
             ContentStatus.associations(data.associations);
             ContentStatus.enableButtons(data.enabledButtons);
             ContentStatus.enableButtons(data.enabledButtons);
@@ -127,6 +128,7 @@ function bindFilterEvents() {
 
 
 function navigatorResizeOnStart() {
+    debug("content.navigatorResizeOnStart(): Adding overlay");
     var height = $("#MainPane").height();
     var width = $("#MainPane").width();
     var contentoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "Contentoverlay");
@@ -134,15 +136,14 @@ function navigatorResizeOnStart() {
 }
 
 function navigatorResizeOnStop() {
-    debug("content.makeNavigatorResizable(): onStop");
+    debug("content.navigatorResizeOnStop(): Removing overlay");
     $.event.trigger("resize");
     $("#Contentoverlay").remove();
 }
 
 function navigatorResizeOnResize() {
-    var navigationWidth = $("#Navigation").width();
-    var framesplitWidth = $("#Framesplit").width();
-    $("#Contentoverlay, #ContentFrame iframe").css("width", ($(window).width()-navigationWidth-framesplitWidth-2) + 'px');
+    //TODO: Verify the performance of this in all browsers.
+    $.event.trigger("resize");
 }
 
 
@@ -347,6 +348,7 @@ var Publish =  {
  */
 var ContentStatus = {
 
+
     breadcrumbs: function (path) {
         if (path) {
             var crumbs = "<ul>";
@@ -361,6 +363,27 @@ var ContentStatus = {
     brokenLinks: function (links) {
         if (links && links.length > 0) {
             $("#Statusbar .brokenLink").show();
+        }
+    },
+    details: function(content) {
+        if (content) {
+            debug("content.ContentStatus.details(): binding details icon to click");
+            $("#Statusbar .details").unbind('click').bind('click', function(){
+                debug("content.ContentStatus.details(): click");
+                var details = "<ul>";
+                details += '<li><span class="label">Title:</span>&nbsp;'+content.title+'</li>';
+                if (content.alias) {
+                    details += '<li><span class="label">Alias:</span>&nbsp;'+content.alias+'</li>';
+                }
+                if (content.lastModified) {
+                    details += '<li><span class="label">Last modified:</span>&nbsp;'+content.lastModified+'</li>';
+                }
+                if (content.changeFromDate) {
+                    details += '<li><span class="label">Change date:</span>&nbsp;'+content.changeFromDate+'</li>';
+                }
+                details +="</ul>";
+                ContentStatus._statusContainer().html(details).toggle();
+            }).show();
         }
     },
     associations: function (associations) {
@@ -378,6 +401,17 @@ var ContentStatus = {
                 $("#" + b).removeClass("disabled");
             }
         }
+    },
+    _statusContainer: function() {
+        var $statusDetails = $("#Statusbar .statusDetails");
+        if ($statusDetails.size() > 0) {
+            return $statusDetails;
+        }
+        $statusDetails = $('<div>').addClass("statusDetails").click(function(){
+            $(this).remove();
+        }).hide();
+        $("#Statusbar").append($statusDetails);
+        return $statusDetails;
     }
 };
 

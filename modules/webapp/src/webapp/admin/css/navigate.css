@@ -38,10 +38,11 @@
 
 /************** Content frame (right column) **************/
 #MainPane #Statusbar {
-    height: 22px;
-    line-height: 22px;
-    background: #cccccc url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    height: 2em;
+    line-height: 2em;
+    background: #F7F7F7 url("../bitmaps/default/framework/contentstatus_background.png") bottom left repeat-x;
     padding: 0 10px;
+    position: relative;
 }
 #MainPane #Statusbar #Breadcrumbs ul {
     float: left;
@@ -74,6 +75,39 @@
 #MainPane #Statusbar .supportMenu a.details {
     background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
 }
+
+#MainPane #Statusbar .statusDetails {
+    width: 100%;
+    background: #fafad2;
+    position: absolute;
+    top: 2em;
+    right: 0;
+}
+#MainPane #Statusbar .statusDetails .label {
+    font-weight: bold;
+}
+
+/************** Navigation (left column) **************/
+#Filteroptions {
+    background: url("../bitmaps/default/framework/filteroptions_background.png") left bottom repeat-x;
+    height: 2em;
+}
+.filteroption {
+    display: inline;
+    line-height:22px;
+}
+.filteroption.filter{
+    background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
+    padding-left: 15px;
+    margin: 0 5px;
+}
+.filteroption input[type=checkbox] {
+    vertical-align: -15%;
+}
+.filteroption label {
+    cursor: pointer;
+}
+
 
 /************** Navigator **************/
 .navigator {

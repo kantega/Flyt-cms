@@ -31,16 +31,16 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.bind.ServletRequestDataBinder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.text.SimpleDateFormat;
 
 /**
  * A controller which updates breadcrumb and available buttons depending on current page
@@ -75,7 +75,7 @@ public class ContentPropertiesAction implements Controller {
                 //Add current element to the path.
                 PathEntry current = new PathEntry(content.getAssociation().getId(), content.getTitle());
                 path.add(current);
-    
+
                 //Change the title of the root element (site) to site alias to match the navigator title.
                 int siteId = content.getAssociation().getSiteId();
                 path.get(0).setTitle(aksessSiteCache.getSiteById(siteId).getName());
@@ -117,6 +117,8 @@ public class ContentPropertiesAction implements Controller {
             }
             model.put("enabledButtons", enabledButtons);
 
+            model.put("content", content);
+
             return new ModelAndView(aksessJsonView, model);
 
 
@@ -132,5 +134,12 @@ public class ContentPropertiesAction implements Controller {
         }
     }
 
+
+
+    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception{
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
+        binder.registerCustomEditor(Date.class, editor);
+    }
 
 }

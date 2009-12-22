@@ -346,26 +346,6 @@ table.fullWidth {
     background-image: url("../bitmaps/common/icons/small/copy.png");
 }
 
-/************** Navigation (left column) **************/
-#Filteroptions {
-    background: url("../bitmaps/default/framework/filteroptions_background.png") left center repeat-x;
-    height: 22px;
-}
-.filteroption {
-    display: inline;
-    line-height:22px;
-}
-.filteroption.filter{
-    background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
-    padding-left: 15px;
-    margin: 0 5px;
-}
-.filteroption input[type=checkbox] {
-    vertical-align: -15%;
-}
-.filteroption label {
-    cursor: pointer;
-}
 
 
 /************** Info / error boxes **************/
