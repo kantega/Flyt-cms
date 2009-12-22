@@ -358,6 +358,7 @@ table.fullWidth {
 
 /************** Buttons **************/
 #Content .buttonBar {
+    padding-top: 5px;
     height: 41px;
     line-height: 41px;
     background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
