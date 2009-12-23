@@ -374,12 +374,12 @@ var ContentStatus = {
             $("#Statusbar .details").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.details(): click");
                 var details = "<ul>";
-                details += '<li><span class="label">Title:</span>&nbsp;'+content.title+'</li>';
+                details += '<li><span class="label"><kantega:label key="aksess.publishinfo.title"/>:</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
-                    details += '<li><span class="label">Alias:</span>&nbsp;'+content.alias+'</li>';
+                    details += '<li><span class="label"><kantega:label key="aksess.publishinfo.alias"/>:</span>&nbsp;'+content.alias+'</li>';
                 }
                 if (content.lastModified) {
-                    details += '<li><span class="label">Last modified:</span>&nbsp;'+content.lastModified+'</li>';
+                    details += '<li><span class="label"><kantega:label key="aksess.publishinfo.lastmodified"/>:</span>&nbsp;'+content.lastModified+'</li>';
                 }
                 if (content.changeFromDate) {
                     details += '<li><span class="label">Change date:</span>&nbsp;'+content.changeFromDate+'</li>';

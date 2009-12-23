@@ -53,7 +53,7 @@
         <a href="#" class="button disabled" id="PasteButton"><span class="paste"><kantega:label key="aksess.tools.paste"/></span></a>
     </div>
     <div class="buttonGroup">
-        <a href="#" class="button disabled" id="DisplayPeriodButton"><span class="displayPeriod"><kantega:label key="aksess.tools.displayPeriod"/></span></a>
+        <a href="#" class="button disabled" id="DisplayPeriodButton"><span class="displayPeriod"><kantega:label key="aksess.tools.displayperiod"/></span></a>
         <a href="#" class="button disabled" id="PrivilegesButton"><span class="privileges"><kantega:label key="aksess.tools.privileges"/></span></a>
     </div>
 </kantega:section>
