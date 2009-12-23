@@ -77,6 +77,7 @@
     <div id="MainPane">
         <%@include file="fragments/statusbar.jsp"%>
         <iframe name="contentmain" id="Contentmain" src="${currentUrl}" height="100%" width="100%"></iframe>
+        <%@ include file="../publish/fragments/publishbuttons.jsp" %>
     </div>
 
 </kantega:section>

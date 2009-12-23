@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -36,8 +35,8 @@ import java.util.HashMap;
  * Date: 01.jul.2009
  * Time: 15:04:08
  */
-public class NavigateController extends SimpleAdminController{
-
+public class NavigateController extends AbstractContentAction {
+    private String view;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -81,11 +80,14 @@ public class NavigateController extends SimpleAdminController{
             } else {
                 currentUrl += editedContent.getAssociation().getId();
             }
+            setRequestVariables(request, editedContent, aksessService, model);
         }
         model.put("currentUrl", currentUrl);        
 
-        return new ModelAndView(getView(), model);
+        return new ModelAndView(view, model);
     }
 
-
+    public void setView(String view) {
+        this.view = view;
+    }
 }

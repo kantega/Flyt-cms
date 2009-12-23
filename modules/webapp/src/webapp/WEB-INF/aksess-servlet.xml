@@ -392,6 +392,7 @@
     <!-- Preview  -->
     <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveContentPreviewAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
+        <property name="updatePublishProperties" value="false"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ViewContentPreviewFrameAction">
         <property name="servletClass">

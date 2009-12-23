@@ -36,6 +36,7 @@
         <%@include file="fragments/statusbar.jsp"%>
 
         <div id="SubPages"></div>
+        <%@ include file="../publish/fragments/publishbuttons.jsp" %>
     </div>
 
 </kantega:section>

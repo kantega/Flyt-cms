@@ -79,6 +79,12 @@ function setLayoutSpecificSizes(elementProperties) {
     $("html, body").css("overflow", "hidden");
     var filteroptionsHeight = $("#Filteroptions").height();
     var statusbarHeight = $("#Statusbar").height();
+
+    var $editButtons = $('#EditContentButtons');
+    var editButtonsHeight = 0;
+    if ($editButtons) {
+        editButtonsHeight = $editButtons.height();
+    }
     debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight);
     $navigator = $("#Navigator");
     $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
@@ -86,11 +92,11 @@ function setLayoutSpecificSizes(elementProperties) {
 
     var $mainPane = $('#MainPane');
     $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
-    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
+    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-editButtonsHeight) + 'px');
 
     var $subpages = $("#SubPages");
     if ($subpages) {
-        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight;
+        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight-editButtonsHeight;
         $subpages.css('height',  subpagesHeight + 'px');
     }
 

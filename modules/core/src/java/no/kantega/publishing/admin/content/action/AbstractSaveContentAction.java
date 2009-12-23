@@ -26,32 +26,27 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.enums.Privilege;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-public abstract class AbstractSaveContentAction extends AdminController {
+public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
     abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
     abstract String getView();
     abstract Map<String, Object> getModel(Content content, HttpServletRequest request);
+    private boolean updatePublishProperties = true;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
@@ -85,8 +80,10 @@ public abstract class AbstractSaveContentAction extends AdminController {
 
             ValidationErrors errors = new ValidationErrors();
 
-            // Get publish information, must be done first
-            errors.addAll(savePublishProperties(content, param, aksessService));
+            if (updatePublishProperties) {
+                // Get publish information, must be done first
+                errors.addAll(savePublishProperties(content, param, aksessService));
+            }
 
             // Get tab specific parameters
             errors.addAll(saveRequestParameters(content, param, aksessService));
@@ -140,40 +137,6 @@ public abstract class AbstractSaveContentAction extends AdminController {
         }
     }
 
-    private void setRequestVariables(HttpServletRequest request, Content current, ContentManagementService aksessService, Map<String, Object> model) {
-        SecuritySession securitySession = SecuritySession.getInstance(request);
-
-        if (current.getAssociation().getParentAssociationId() == 0) {
-            model.put("isStartPage", Boolean.TRUE);
-        }
-
-        if (securitySession.isUserInRole(Aksess.getAdminRole())) {
-            model.put("isAdmin", Boolean.TRUE);
-        }
-
-        ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(current.getContentTemplateId());
-        if (contentTemplate.isHearingEnabled() && current.getStatus() != ContentStatus.HEARING) {
-            model.put("hearingEnabled", Boolean.TRUE);
-        }
-
-        int saveStatus = ContentStatus.WAITING_FOR_APPROVAL;
-        if (securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {
-            // User is authorized to publish page
-            saveStatus = ContentStatus.PUBLISHED;
-            model.put("canPublish", Boolean.TRUE);
-
-            if (current.getType() == ContentType.PAGE) {
-                model.put("canChangeTemplate", Boolean.TRUE);
-                model.put("allowedTemplates", aksessService.getAllowedDisplayTemplates(current));
-            }
-        }
-
-        //if (Aksess.isTopicMapsEnabled()) {
-            model.put("topicMapsEnabled", Boolean.TRUE);    
-        //}
-
-        model.put("saveStatus", saveStatus);
-    }
 
     private void saveHearing(ContentManagementService service, Content content, HttpServletRequest request) throws SystemException {
         Hearing hearing = (Hearing) request.getSession().getAttribute(SaveHearingAction.HEARING_KEY);
@@ -196,10 +159,7 @@ public abstract class AbstractSaveContentAction extends AdminController {
         ValidationErrors errors = new ValidationErrors();
         try {
             Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
-            if (startDate != null) {
-                // Can't set to null
-                content.setPublishDate(startDate);
-            }
+            content.setPublishDate(startDate);
         } catch(Exception e) {
             Map<String, Object> objects = new HashMap<String, Object>();
             objects.put("dateFormat", Aksess.getDefaultDateFormat());
@@ -213,6 +173,12 @@ public abstract class AbstractSaveContentAction extends AdminController {
             Map<String, Object> objects = new HashMap<String, Object>();
             objects.put("dateFormat", Aksess.getDefaultDateFormat());
             errors.add(null, "aksess.error.date", objects);
+        }
+
+        if (content.getPublishDate() != null && content.getExpireDate() != null) {
+            if (content.getExpireDate().getTime() < content.getPublishDate().getTime()) {
+                errors.add(null, "aksess.error.expirebeforepublish");                
+            }
         }
 
         try {
@@ -299,25 +265,10 @@ public abstract class AbstractSaveContentAction extends AdminController {
             }
         }
 
-        /*
-        String sortlist = param.getString("sortlist");
-        if (sortlist != null && sortlist.length() > 0) {
-            List associations = new ArrayList();
-            StringTokenizer tokens = new StringTokenizer(sortlist, ";");
-            int i = 0;
-            while (tokens.hasMoreTokens()) {
-                i++;
-                String tmp = tokens.nextToken();
-                int uniqueId = Integer.parseInt(tmp);
-                Association association = new Association();
-                association.setId(uniqueId);
-                association.setPriority(i);
-                associations.add(association);
-            }
-            aksessService.setAssociationsPriority(associations);
-        }
-        */
         return errors;
     }
 
+    public void setUpdatePublishProperties(boolean updatePublishProperties) {
+        this.updatePublishProperties = updatePublishProperties;
+    }
 }

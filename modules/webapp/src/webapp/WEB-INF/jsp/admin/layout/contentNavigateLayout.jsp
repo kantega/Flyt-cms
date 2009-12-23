@@ -74,7 +74,6 @@
             <div id="Framesplit"></div>
         </div>
         <kantega:getsection id="content"/>
-
         <div class="clearing"></div>
     </div>
 
