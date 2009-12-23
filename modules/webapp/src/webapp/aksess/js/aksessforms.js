@@ -24,7 +24,7 @@ function aksessFormValidate() {
             if ($("input[type=text]", this).val() == "") {
                 formFieldOk = false;
             }
-            if ($("input[type=textarea]", this).val() == "") {
+            if ($("textarea", this).val() == "") {
                 formFieldOk = false;
             }
             if ($("input:checkbox", this).length > 0) {
