@@ -63,7 +63,7 @@
         <%@ include file="../../../../admin/include/infobox.jsf" %>
         <c:if test="${fn:length(documentTypes) > 1}">
             <div class="contentAttribute">
-                <div class="heading"><kantega:label key="aksess.editmetadata.doctype"/></div>
+                <div class="heading"><kantega:label key="aksess.contentproperty.doctype"/></div>
                 <div class="inputs">
                     <select name="documenttype" class="fullWidth" tabindex="10">
                         <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
@@ -75,7 +75,7 @@
             </div>
 
             <div class="contentAttribute">
-                <div class="heading"><kantega:label key="aksess.editmetadata.doctypeforchildren"/></div>
+                <div class="heading"><kantega:label key="aksess.contentproperty.doctypeforchildren"/></div>
                 <div class="inputs">
                     <select name="documenttype" class="fullWidth" tabindex="10">
                         <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
@@ -88,16 +88,16 @@
         </c:if>
 
         <div class="contentAttribute">
-            <div class="heading"><kantega:label key="aksess.editmetadata.alttitle"/></div>
+            <div class="heading"><kantega:label key="aksess.contentproperty.alttitle"/></div>
             <div class="inputs">
                 <input type="text" name="alttitle" size="72" class="fullWidth" value="<c:out value="${currentContent.altTitle}"/>" maxlength="255" tabindex="20">
             </div>
         </div>
 
         <div class="contentAttribute">
-            <div class="heading"><kantega:label key="aksess.editmetadata.publisher"/></div>
+            <div class="heading"><kantega:label key="aksess.contentproperty.publisher"/></div>
             <div class="inputs">
-                <input type="text" name="publisher" size="64" style="width:600px;" value="<c:out value="${currentContent.publisher}"/>" maxlength="64" tabindex="30">
+                <input type="text" name="publisher" size="64" class="fullWidth" value="<c:out value="${currentContent.publisher}"/>" maxlength="64" tabindex="30">
             </div>
         </div>
         <!-- Owner -->
@@ -105,11 +105,10 @@
             <%
                 OrgunitAttribute orgunit = new OrgunitAttribute();
 
-                orgunit.setName(LocaleLabels.getLabel("aksess.editmetadata.owner", Aksess.getDefaultAdminLocale()));
+                orgunit.setName(LocaleLabels.getLabel("aksess.contentproperty.owner", Aksess.getDefaultAdminLocale()));
                 orgunit.setValue(current.getOwner());
                 request.setAttribute("attribute", orgunit);
                 request.setAttribute("fieldName", "owner");
-                //request.getRequestDispatcher("/admin/publish/attributes/" +orgunit.getRenderer() + ".jsp").include(request, response);
                 pageContext.include("/admin/publish/attributes/" +orgunit.getRenderer() + ".jsp");
             %>
         </div>
@@ -118,22 +117,21 @@
             <%
                 UserAttribute user = new UserAttribute();
 
-                user.setName(LocaleLabels.getLabel("aksess.editmetadata.ownerperson", Aksess.getDefaultAdminLocale()));
+                user.setName(LocaleLabels.getLabel("aksess.contentproperty.ownerperson", Aksess.getDefaultAdminLocale()));
                 user.setValue(current.getOwnerPerson());
                 request.setAttribute("attribute", user);
                 request.setAttribute("fieldName", "ownerperson");
                 pageContext.include("/admin/publish/attributes/" +user.getRenderer() + ".jsp");
-                //request.getRequestDispatcher("/admin/publish/attributes/" +user.getRenderer() + ".jsp").include(request, response);
             %>
         </div>
         <div class="contentAttribute">
-            <div class="heading"><kantega:label key="aksess.editmetadata.keywords"/></div>
+            <div class="heading"><kantega:label key="aksess.contentproperty.keywords"/></div>
             <div class="inputs">
-                <textarea name="keywords" cols="72" rows="5" style="width:600px;" wrap="soft" tabindex="50"><c:out value="${currentContent.keywords}"/></textarea>
+                <textarea name="keywords" cols="72" rows="5"  class="fullWidth" wrap="soft" tabindex="50"><c:out value="${currentContent.keywords}"/></textarea>
             </div>
         </div>
         <div class="contentAttribute">
-            <div class="heading"><kantega:label key="aksess.editmetadata.language"/></div>
+            <div class="heading"><kantega:label key="aksess.contentproperty.language"/></div>
             <div class="inputs">
                 <select name="language" class="fullWidth" tabindex="60">
                     <%
@@ -141,7 +139,7 @@
                         for (int i = 0; i < languages.length; i++) {
                             int id = languages[i];
                             String code = Language.getLanguageAsISOCode(id);
-                            String label = LocaleLabels.getLabel("aksess.editmetadata.language." + code, Aksess.getDefaultAdminLocale());
+                            String label = LocaleLabels.getLabel("aksess.contentproperty.language." + code, Aksess.getDefaultAdminLocale());
                             if (current.getLanguage() == id) {
                                 out.write("<option value=\"" + id + "\" selected>" + label + "</option>");
                             } else {
@@ -159,15 +157,15 @@
 
         %>
         <div class="contentAttribute">
-            <div class="heading"><kantega:label key="aksess.editmetadata.forum"/></div>
+            <div class="heading"><kantega:label key="aksess.contentproperty.forum"/></div>
             <div class="inputs">
                 <% if(!started) { %>
-                <select name="forumid" style="width:600px;">
-                    <option value="-1" <%= current.getForumId() < 1 ? "selected" : ""%>><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>
+                <select name="forumid" class="fullWidth">
+                    <option value="-1" <%= current.getForumId() < 1 ? "selected" : ""%>><kantega:label key="aksess.contentproperty.forum.dontuse"/></option>
                     <%=forumProvider.getForumsAsOptionList(current.getForumId())%>
                 </select>
                 <% } else  {%>
-                <kantega:label key="aksess.editmetadata.forum.threadcreated"/>
+                <kantega:label key="aksess.contentproperty.forum.threadcreated"/>
                 <% } %>
             </div>
         </div>

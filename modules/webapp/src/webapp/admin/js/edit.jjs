@@ -152,7 +152,7 @@ function editForm(formElement) {
 function selectContentUrl(formElement) {
    focusField = formElement;
    doInsertTag = true;
-   ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+   ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
 }
 
 
@@ -177,7 +177,7 @@ function selectContent(formElement, maxItems) {
     } else {
         focusField = formElement;
         doInsertTag = false;
-        ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+        ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
     }
 }
 
@@ -188,7 +188,7 @@ function selectContent(formElement, maxItems) {
 function selectUser(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "../security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
+    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
 }
 
 /*
@@ -222,7 +222,7 @@ function selectMultimedia(formElement, filter) {
     }
 
     doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "../multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
+    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
 }
 
 
@@ -232,7 +232,7 @@ function selectMultimedia(formElement, filter) {
 function selectMediaFolder(formElement) {
     focusField = eval(formElement);
     doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
+    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
 }
 
 
@@ -241,7 +241,7 @@ function selectMediaFolder(formElement) {
  */
 function selectRole(formElement) {
     focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "../security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
+    ModalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
 }
 
 
@@ -250,7 +250,7 @@ function selectRole(formElement) {
  */
 function addListOption(formElement, attributeKey, language) {
     focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "../publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
+    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
 }
 
 

@@ -18,6 +18,10 @@
   ~ limitations under the License.
   --%>
 
+<kantega:section id="head">
+    <script type="text/javascript" src="../js/edit.jjs"></script>
+    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
+</kantega:section>
 
 <kantega:section id="topMenu">
     <%@include file="fragments/topMenu.jsp"%>
@@ -30,7 +34,7 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <div id="MainPane" class="mypage">
+    <div id="Content" class="mypage" style="width:600px">
         <kantega:getsection id="content"/>
     </div>
 </kantega:section>

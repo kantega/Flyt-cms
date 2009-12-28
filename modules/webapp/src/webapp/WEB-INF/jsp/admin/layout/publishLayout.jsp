@@ -27,9 +27,6 @@
     <script type="text/javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" src="../js/date.jsp"></script>
     <script type="text/javascript" src="../js/edit.jjs"></script>
-    <script type="text/javascript" src="../js/richtext.jjs"></script>
-    <script type="text/javascript" src="../../aksess/js/common.js"></script>
-
     <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
     <script type="text/javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
 

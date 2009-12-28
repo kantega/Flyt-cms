@@ -38,6 +38,10 @@
     out.write(">");
     List all  = DocumentTypeCache.getDocumentTypes();
 
+    if (!attribute.isMandatory() && !attribute.getMultiple()) {
+        out.write("<option value=\"\"></option>");
+    }
+
     for (int i = 0; i < all.size(); i++) {
         DocumentType dt = (DocumentType)all.get(i);
         int id = dt.getId();

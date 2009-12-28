@@ -38,6 +38,7 @@ public class Association extends BaseObject {
     private int depth = 0;
     private boolean isCurrent = false;
     private boolean isDeleted = false;
+    private int numberOfViews = 0;
 
     public Association() {
     }
@@ -163,6 +164,14 @@ public class Association extends BaseObject {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public int getNumberOfViews() {
+        return numberOfViews;
+    }
+
+    public void setNumberOfViews(int numberOfViews) {
+        this.numberOfViews = numberOfViews;
     }
 
     public String toString() {

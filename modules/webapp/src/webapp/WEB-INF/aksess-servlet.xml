@@ -61,6 +61,7 @@
                 <!-- My page -->
                 <prop key="/admin/mypage/ViewMyPage.action">ViewMyPageAction</prop>
                 <prop key="/admin/mypage/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
+                <prop key="/admin/mypage/plugins/PropertySearch.action">propertySearchAction</prop>
 
                 <!-- Publish navigator -->
                 <prop key="/admin/publish/Navigate.action">contentNavigateAction</prop>
@@ -176,7 +177,6 @@
                 <prop key="/admin/administration/ListContentLocks.action">listContentLocksAction</prop>
                 <prop key="/admin/administration/RemoveContentLock.action">removeContentLockAction</prop>
                 <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
-
                 <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
                 <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
                 <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
@@ -296,6 +296,10 @@
         <property name="view" value="/WEB-INF/jsp/admin/mypage/mypage.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.mypage.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.PropertySearchAction" id="propertySearchAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-form.jsp"/>
+        <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-result.jsp"/>
+    </bean>
 
     <!-- Navigate content -->
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">

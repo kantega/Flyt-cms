@@ -30,6 +30,10 @@
                 location.href = "RestoreDeletedItem.action";
             }
         }
+
+        $(document).ready(function(){
+            $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
+        });
     </script>
 
     <c:if test="${fn:length(contentForApproval) > 1}">
@@ -113,5 +117,11 @@
         </div>
     </c:if>
 
+    <div class="fieldset">
+        <fieldset>
+            <h1><kantega:label key="aksess.propertysearch.title"/></h1>
+            <div id="PropertySearch"></div>
+        </fieldset>
+    </div>
 </kantega:section>
 <%@ include file="../layout/mypageLayout.jsp" %>

@@ -216,6 +216,8 @@ public final class AttributeTagHelper {
                 isTextAttribute = true;
             } else if (name.equals(ContentProperty.ID)) {
                 result = "" + content.getAssociation().getId();
+            } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
+                result = "" + content.getAssociation().getNumberOfViews();
             } else if (name.equals(ContentProperty.CONTENTID)) {
                 result = "" + content.getId();
             } else if (name.equals(ContentProperty.URL)) {

@@ -43,6 +43,10 @@ td a {
     color:#1780b9;
 }
 
+td.number, th.number{
+    text-align:right;
+}
+
 table.noborder td, table.noborder th {
     border:0;
 }
@@ -378,30 +382,11 @@ table.fullWidth {
 
 #Content .buttonBar .barButton {
     margin-right: 10px;
-}
-#Content .buttonBar .barButton > * {
-    cursor: pointer;
+    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") no-repeat;
 }
 #Content .buttonBar .barButton > .disabled {
     cursor: default;
 }
-#Content .buttonBar .barButton .publish {
-    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
-}
-
-#Content .buttonBar .barButton .cancel {
-    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
-}
-
-#Content .buttonBar .barButton .save {
-    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
-}
-
-#Content .buttonBar .barButton .savedraft {
-    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
-}
-
-
 #Content .buttonBar input {
     padding-left: 24px;
     line-height: 26px;
