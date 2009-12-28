@@ -134,7 +134,13 @@ public class ContentAO {
 
                 ContentIdentifier contentIdentifier = new ContentIdentifier();
                 contentIdentifier.setContentId(resultSet.getInt("ContentId"));
-                Content content = ContentAO.getContent(contentIdentifier, true);
+
+                Content content = null;
+                try {
+                    content = ContentAO.getContent(contentIdentifier, true);                    
+                } catch (Exception ex) {
+                    log.error(ex);
+                }
 
                 if(content != null) {
                     contentHandler.handleContent(content);

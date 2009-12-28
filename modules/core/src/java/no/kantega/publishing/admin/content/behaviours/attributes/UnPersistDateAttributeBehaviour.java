@@ -38,8 +38,10 @@ public class UnPersistDateAttributeBehaviour implements UnPersistAttributeBehavi
         DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
         try {
             DateAttribute dateAttribute = (DateAttribute)attribute;
-            dateAttribute.setValue(df.parse(value));
-        } catch (ParseException e) {
+            if (value != null && value.length() > 0) {
+                dateAttribute.setValue(df.parse(value));
+            }
+        } catch (Exception e) {
             attribute.setValue(value);
         }
     }
