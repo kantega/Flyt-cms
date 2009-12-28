@@ -67,17 +67,17 @@ public class NavigatorAction implements Controller {
             for (int i = 0; i < pathList.size(); i++) {
                 PathEntry entry = pathList.get(i);
                 if (i > 0) {
-                    pathBuilder.append(",");
+                    pathBuilder.append("/");
                 }
                 pathBuilder.append(entry.getId());
             }
             if (pathBuilder.length() > 0) {
-                path = pathBuilder.toString();
+                path = "/0/" + pathBuilder.toString() + "/";
             }
         }
 
         openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, selectedId);
-         int[] openIds = StringHelper.getInts(openFoldersList, ",");
+        int[] openIds = StringHelper.getInts(openFoldersList, ",");
         MultimediaMapEntry mediaArchiveRoot = mediaService.getPartialMultimediaMap(openIds, getFoldersOnly);
 
 

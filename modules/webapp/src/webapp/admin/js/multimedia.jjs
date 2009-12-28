@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-var currentItemIdentifier = 0;
+var currentItemIdentifier = -1;
 
 $(document).ready(function(){
     debug("multimedia.$(document).ready(): multimedia");

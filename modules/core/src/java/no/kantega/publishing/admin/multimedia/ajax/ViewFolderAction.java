@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 
@@ -40,8 +41,15 @@ public class ViewFolderAction implements Controller {
         MultimediaService mediaService = new MultimediaService(request);
 
         int folderId = params.getInt(AdminRequestParameters.ITEM_IDENTIFIER);
+
+
         if (folderId == -1) {
-            folderId = 0;
+            Multimedia currentMultimedia = (Multimedia)request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA);
+            if (currentMultimedia != null) {
+                folderId = currentMultimedia.getId();
+            } else {
+                folderId = 0;
+            }
         }
 
         Multimedia currentMultimedia = mediaService.getMultimedia(folderId);
