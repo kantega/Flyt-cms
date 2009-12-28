@@ -34,7 +34,7 @@
 </kantega:section>
 
 <kantega:section id="head extras">
-        <script type="text/javascript">
+    <script type="text/javascript">
 
         var addedParents = "${addedParents}";
 
@@ -82,12 +82,12 @@
                 return;
             }
 
-            <c:if test="${fn:length(allowedAssociations) > 1}">
+        <c:if test="${fn:length(allowedAssociations) > 1}">
             if (!isChecked(document.myform.associationCategory)) {
                 alert("<kantega:label key="aksess.selecttemplate.menu.notselected"/>");
                 return;
             }
-            </c:if>
+        </c:if>
             document.myform.submit();
         }
 
@@ -110,140 +110,139 @@
 <kantega:section id="content">
 
 
-    <div id="MainPane">
-        <div id="MainPaneContent">
+    <div id="MainPaneContent">
 
-        <form action="SelectTemplate.action" target="content" name="myform" method="get">
-            <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
-            <div class="fieldset">
-                <fieldset>
-                    <h2><kantega:label key="aksess.selecttemplate.parent"/></h2>
+    <form action="SelectTemplate.action" target="content" name="myform" method="get">
+    <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
+    <div class="fieldset">
+        <fieldset>
+            <h2><kantega:label key="aksess.selecttemplate.parent"/></h2>
 
-                    <table width="100%">
-                        <%
-                            List path ;
-                            ContentManagementService aksessService = new ContentManagementService(request);
-                            for (int i = 0; i < associations.size(); i++) {
-                                Association parentAssociation = (Association)associations.get(i);
-                                path = aksessService.getPathByAssociation(parentAssociation);
-                                out.write("<tr class=\"tableRow" + (i%2) + "\">");
-                                out.write("<td width=\"20\"><input type=\"checkbox\" name=\"parentIds\" value=\"" + parentAssociation.getId() +  "\" checked=\"true\"></td>");
-                                out.write("<td>");
-                                for (int j = 0; j < path.size(); j++) {
-                                    PathEntry entry = (PathEntry)path.get(j);
-                                    String title = entry.getTitle();
-                                    if (j > 0) {
-                                        out.write("&nbsp;&gt;&nbsp;");
-                                    }
-                                    if (j == 0) {
-                                        // On the first level we print the site name
-                                        Site site = SiteCache.getSiteById(parentAssociation.getSiteId());
-                                        out.write(site.getName());
-                                    } else {
-                                        out.write(title);
-                                    }
-                                }
-
-                                ContentIdentifier cid = new ContentIdentifier();
-                                cid.setAssociationId(parentAssociation.getId());
-                                Content c = aksessService.getContent(cid);
-                                if (c != null) {
-                                    if (path.size() > 0) {
-                                        out.write("&nbsp;&gt;&nbsp;<b>" + c.getTitle() + "</b>");
-                                    } else {
-                                        Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
-                                        out.write(site.getName());
-                                    }
-                                }
-                                out.write("</td></tr>");
+            <table width="100%">
+                <%
+                    List path ;
+                    ContentManagementService aksessService = new ContentManagementService(request);
+                    for (int i = 0; i < associations.size(); i++) {
+                        Association parentAssociation = (Association)associations.get(i);
+                        path = aksessService.getPathByAssociation(parentAssociation);
+                        out.write("<tr class=\"tableRow" + (i%2) + "\">");
+                        out.write("<td width=\"20\"><input type=\"checkbox\" name=\"parentIds\" value=\"" + parentAssociation.getId() +  "\" checked=\"true\"></td>");
+                        out.write("<td>");
+                        for (int j = 0; j < path.size(); j++) {
+                            PathEntry entry = (PathEntry)path.get(j);
+                            String title = entry.getTitle();
+                            if (j > 0) {
+                                out.write("&nbsp;&gt;&nbsp;");
                             }
-                        %>
-                    </table>
-                    <c:if test="${notAuthorized}">
-                        <div class="info">
-                            <kantega:label key="aksess.selecttemplate.notauthorized"/>
-                        </div>
-                    </c:if>
-                    <a href="Javascript:selectContent()" class="button add"><span><kantega:label key="aksess.button.leggtil"/></span></a>
-                </fieldset>
-            </div>
-
-            <div class="fieldset">
-                <fieldset>
-                    <h2><kantega:label key="aksess.selecttemplate.template"/></h2>
-                    <%
-                        List allowedTemplates = (List) request.getAttribute("allowedTemplates");
-                        boolean foundDefault = false;
-                        String defaultText = "";
-                        int defaultAssociationCategory = -1;
-                        int defaultAssociationCategoryForTemplate = -1;
-                        for (int i = 0; i < allowedTemplates.size(); i++) {
-                            int id = -1;
-                            String name = "";
-                            String type = "";
-                            String desc = "";
-                            String image = "";
-                            Object t = allowedTemplates.get(i);
-                            if (t instanceof DisplayTemplate) {
-                                DisplayTemplate dt = (DisplayTemplate)t;
-                                id = dt.getId();
-                                type = "dt";
-                                name = dt.getName();
-                                desc = dt.getDescription();
-                                image = dt.getImage();
-                                ContentTemplate ct = aksessService.getContentTemplate(dt.getContentTemplate().getId());
-                                if (ct != null) {
-                                    AssociationCategory a = ct.getDefaultAssociationCategory();
-                                    if (a != null) {
-                                        defaultAssociationCategoryForTemplate = a.getId();
-                                    }
-                                }
-                            } else if (t instanceof ContentTemplate) {
-                                ContentTemplate ct = (ContentTemplate)t;
-                                id = ct.getId();
-                                type = "ct";
-                                name = ct.getName();
-                                desc = "";
-                                AssociationCategory a = ct.getDefaultAssociationCategory();
-                                if (a != null) {
-                                    defaultAssociationCategoryForTemplate = a.getId();
-                                }
+                            if (j == 0) {
+                                // On the first level we print the site name
+                                Site site = SiteCache.getSiteById(parentAssociation.getSiteId());
+                                out.write(site.getName());
+                            } else {
+                                out.write(title);
                             }
-                            boolean isDefault = false;
-                            if (!foundDefault) {
-                                if (name.indexOf("*") != -1 || allowedTemplates.size() == 1) {
-                                    isDefault = true;
-                                    defaultText = "<b>" + name + "</b><br>" + desc;
-                                    foundDefault = true;
-                                    defaultAssociationCategory = defaultAssociationCategoryForTemplate;
-                                }
-                            }
-                            name = name.replace('*', ' ');
-                    %>
-                    <div class="row">
-                        <input id="template_<%=type%>;<%=id%>" type="radio" class="radio" name="templateId" value="<%=type%>;<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
-                        <label for="template_<%=type%>;<%=id%>" class="radio"><%=name%></label>
-                        <div class="clearing"></div>
-                    </div>
-                    <div id="template<%=i%>" style="display:none;"><b><%=name%></b><br>
-                        <%=desc%>
-                    </div>
-                    <%
                         }
-                    %>
 
-                    <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
-                        <div id="templatedesc"><%=defaultText%></div><br>
-                        <img name="templateimage" src="../bitmaps/blank.gif" alt="">
-                    </div>
-                </fieldset>
+                        ContentIdentifier cid = new ContentIdentifier();
+                        cid.setAssociationId(parentAssociation.getId());
+                        Content c = aksessService.getContent(cid);
+                        if (c != null) {
+                            if (path.size() > 0) {
+                                out.write("&nbsp;&gt;&nbsp;<b>" + c.getTitle() + "</b>");
+                            } else {
+                                Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
+                                out.write(site.getName());
+                            }
+                        }
+                        out.write("</td></tr>");
+                    }
+                %>
+            </table>
+            <c:if test="${notAuthorized}">
+                <div class="info">
+                    <kantega:label key="aksess.selecttemplate.notauthorized"/>
+                </div>
+            </c:if>
+            <a href="Javascript:selectContent()" class="button add"><span><kantega:label key="aksess.button.leggtil"/></span></a>
+        </fieldset>
+    </div>
+
+    <div class="fieldset">
+        <fieldset>
+            <h2><kantega:label key="aksess.selecttemplate.template"/></h2>
+            <%
+                List allowedTemplates = (List) request.getAttribute("allowedTemplates");
+                boolean foundDefault = false;
+                String defaultText = "";
+                int defaultAssociationCategory = -1;
+                int defaultAssociationCategoryForTemplate = -1;
+                for (int i = 0; i < allowedTemplates.size(); i++) {
+                    int id = -1;
+                    String name = "";
+                    String type = "";
+                    String desc = "";
+                    String image = "";
+                    Object t = allowedTemplates.get(i);
+                    if (t instanceof DisplayTemplate) {
+                        DisplayTemplate dt = (DisplayTemplate)t;
+                        id = dt.getId();
+                        type = "dt";
+                        name = dt.getName();
+                        desc = dt.getDescription();
+                        image = dt.getImage();
+                        ContentTemplate ct = aksessService.getContentTemplate(dt.getContentTemplate().getId());
+                        if (ct != null) {
+                            AssociationCategory a = ct.getDefaultAssociationCategory();
+                            if (a != null) {
+                                defaultAssociationCategoryForTemplate = a.getId();
+                            }
+                        }
+                    } else if (t instanceof ContentTemplate) {
+                        ContentTemplate ct = (ContentTemplate)t;
+                        id = ct.getId();
+                        type = "ct";
+                        name = ct.getName();
+                        desc = "";
+                        AssociationCategory a = ct.getDefaultAssociationCategory();
+                        if (a != null) {
+                            defaultAssociationCategoryForTemplate = a.getId();
+                        }
+                    }
+                    boolean isDefault = false;
+                    if (!foundDefault) {
+                        if (name.indexOf("*") != -1 || allowedTemplates.size() == 1) {
+                            isDefault = true;
+                            defaultText = "<b>" + name + "</b><br>" + desc;
+                            foundDefault = true;
+                            defaultAssociationCategory = defaultAssociationCategoryForTemplate;
+                        }
+                    }
+                    name = name.replace('*', ' ');
+            %>
+            <div class="row">
+                <input id="template_<%=type%>;<%=id%>" type="radio" class="radio" name="templateId" value="<%=type%>;<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
+                <label for="template_<%=type%>;<%=id%>" class="radio"><%=name%></label>
+                <div class="clearing"></div>
             </div>
+            <div id="template<%=i%>" style="display:none;"><b><%=name%></b><br>
+                <%=desc%>
+            </div>
+            <%
+                }
+            %>
 
-            <c:choose>
-                <c:when test="${fn:length(allowedAssociations) > 1}">
-                    <div class="fieldset">
-                        <fieldset>
-                            <h2><kantega:label key="aksess.selecttemplate.menu"/></h2>
+            <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+                <div id="templatedesc"><%=defaultText%></div><br>
+                <img name="templateimage" src="../bitmaps/blank.gif" alt="">
+            </div>
+        </fieldset>
+    </div>
+
+    <c:choose>
+        <c:when test="${fn:length(allowedAssociations) > 1}">
+            <div class="fieldset">
+                <fieldset>
+                    <h2><kantega:label key="aksess.selecttemplate.menu"/></h2>
                             <%
                                 if (defaultAssociationCategory == -1 && parent.getAssociation() != null) {
                                     defaultAssociationCategory = parent.getAssociation().getCategory().getId();
@@ -259,46 +258,45 @@
                                         out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
                                     }
                             %>
-                                <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label><br>
-                                <div id="categoryinfo<%=tmp.getId()%>" style="display:none;">
-                                    <strong><%=tmp.getName()%></strong><br>
-                                    <%
-                                        if (tmp.getDescription() != null) {
-                                            out.write(tmp.getDescription());
-                                        }
-                                    %>
-                                </div>
-                                <div class="clearing"></div>
-                            </div><!-- end row -->
-                            <%
-                                }
-                            %>
-
-                            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
-                                <div id="categorydesc"><%=defaultText%></div><br>
-                                <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
-                            </div>
-                        </fieldset>
+                    <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label><br>
+                    <div id="categoryinfo<%=tmp.getId()%>" style="display:none;">
+                        <strong><%=tmp.getName()%></strong><br>
+                        <%
+                            if (tmp.getDescription() != null) {
+                                out.write(tmp.getDescription());
+                            }
+                        %>
                     </div>
+                    <div class="clearing"></div>
+            </div><!-- end row -->
+            <%
+                }
+            %>
 
-                </c:when>
-                <c:otherwise>
-                    <%
-                        AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
-                        out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
-                    %>
-                </c:otherwise>
-            </c:choose>
-
-            <div class="buttonGroup">
-                <span class="button"><input type="button" onclick="doSelectTemplate()" class="button ok" value="<kantega:label key="aksess.button.continue"/>"></span>
-                <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+                <div id="categorydesc"><%=defaultText%></div><br>
+                <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
             </div>
-        </form>
+            </fieldset>
+            </div>
 
-        </div>
-        <div class="clearing"></div>
+        </c:when>
+        <c:otherwise>
+            <%
+                AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
+                out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
+            %>
+        </c:otherwise>
+    </c:choose>
+
+    <div class="buttonGroup">
+        <span class="button"><input type="button" onclick="doSelectTemplate()" class="button ok" value="<kantega:label key="aksess.button.continue"/>"></span>
+        <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
     </div>
+    </form>
+
+    </div>
+    <div class="clearing"></div>
 
 </kantega:section>
 <%@include file="../layout/contentNavigateLayout.jsp"%>

@@ -45,6 +45,7 @@ html, body {
     background-image: url("../bitmaps/common/icons/small/metadata.png");
 }
 
+
 #TopicList .topic {
     border: 1px solid #30d3fc;
     background-color: #c0e5f7;
@@ -74,4 +75,158 @@ html, body {
 
 #ChooseTopicButton {
     clear: left;
+}
+
+.buttonRow {
+    padding: 2px;
+    clear:both;
+    /*height: 20px;*/
+    width: 598px;
+}
+
+.buttonRow .button {
+    vertical-align: middle;
+    margin-left: 2px;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    background-color: #aaffff;
+}
+
+.buttonRow .seperator {
+    vertical-align: middle;
+    display: inline-block;
+    background: url("../bitmaps/editor/editor_seperator.gif") no-repeat;
+    width: 4px;
+    height: 18px;
+}
+
+.buttonRow .remove-formatting {
+    background: url("../bitmaps/editor/editor_removeformat.gif") no-repeat;
+    width: 23px;
+}
+
+.buttonRow .strong {
+    background: url("../bitmaps/editor/editor_bold.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .italic {
+    background: url("../bitmaps/editor/editor_italic.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .underline {
+    background: url("../bitmaps/editor/editor_underline.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .justify-left {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-center {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-right {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .unorderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .orderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .indent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .outdent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .redo {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .undo {
+    background: url("../bitmaps/editor/editor_undo.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .link {
+    background: url("../bitmaps/editor/editor_link.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .anchor {
+    background: url("../bitmaps/editor/editor_anchor.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .media {
+    background: url("../bitmaps/editor/editor_multimedia.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .inserttable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .edittable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertcol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertrow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removecol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removerow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertchar {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .subscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .superscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .replace {
+    background: url("../bitmaps/editor/editor_replace.gif") no-repeat;
+    width: 18px;
 }

@@ -92,7 +92,9 @@
                         <kantega:getsection id="content"/>
                     </div>
                 </div>
-                <%@ include file="../publish/fragments/publishbuttons.jsp" %>
+                <div id="EditContentButtons" class="buttonBar">
+                    <%@include file="fragments/editContentButtons.jsp"%>
+                </div>
             </div>
             <div id="SideBar">
                 <%@ include file="../publish/fragments/publishproperties.jsp" %>

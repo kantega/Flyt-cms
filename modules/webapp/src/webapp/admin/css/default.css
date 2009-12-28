@@ -381,8 +381,27 @@ table.fullWidth {
 
 #Content .buttonBar .barButton {
     margin-right: 10px;
-    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") no-repeat;
 }
+#Content .buttonBar .barButton > * {
+    cursor: pointer;
+}
+
+#Content .buttonBar .barButton .publish {
+    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+}
+
+#Content .buttonBar .barButton .cancel {
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+}
+
+#Content .buttonBar .barButton .save {
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+}
+
+#Content .buttonBar .barButton .savedraft {
+    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
+}
+
 
 #Content .buttonBar input {
     padding-left: 24px;

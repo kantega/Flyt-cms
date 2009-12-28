@@ -31,13 +31,9 @@
 
 <kantega:section id="content">
 
-    <div id="MainPane">
+    <%@include file="fragments/statusbar.jsp"%>
 
-        <%@include file="fragments/statusbar.jsp"%>
-
-        <div id="SubPages"></div>
-        <%@ include file="../publish/fragments/publishbuttons.jsp" %>
-    </div>
+    <div id="SubPages"></div>
 
 </kantega:section>
 

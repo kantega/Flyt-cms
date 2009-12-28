@@ -21,16 +21,16 @@
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
     <c:if test="${currentContent != null}">
-    <script type="text/javascript">
-        var hasSubmitted = false;
-        function saveContent(status) {
-            if (!hasSubmitted) {
-                hasSubmitted = true;
-                document.myform.status.value = status;
-                document.myform.submit();
+        <script type="text/javascript">
+            var hasSubmitted = false;
+            function saveContent(status) {
+                if (!hasSubmitted) {
+                    hasSubmitted = true;
+                    document.myform.status.value = status;
+                    document.myform.submit();
+                }
             }
-        }
-    </script>
+        </script>
     </c:if>
 </kantega:section>
 
@@ -43,7 +43,7 @@
 </kantega:section>
 
 <kantega:section id="toolsMenu">
-   <div class="buttonGroup">
+    <div class="buttonGroup">
         <a href="#" class="button disabled" id="NewSubpageButton"><span class="newSubpage"><kantega:label key="aksess.tools.newSubpage"/></span></a>
         <a href="#" class="button disabled" id="DeletePageButton"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
     </div>
@@ -64,16 +64,34 @@
     <div id="Content"<kantega:hassection id="contentclass"> class="<kantega:getsection id="contentclass"/>"</kantega:hassection>>
         <div id="Navigation">
             <div id="Filteroptions">
-                <a href="#" class="filteroption filter">Filtreringsvalg</a>
+                <a href="#" class="filteroption filter"><kantega:label key="aksess.filteroptions.options"/></a>
                 <div class="filteroption">
                     <input type="checkbox" id="FilteroptionHideExpired">
-                    <label for="FilteroptionHideExpired">Skjul utløpte</label>
+                    <label for="FilteroptionHideExpired"><kantega:label key="aksess.filteroptions.hideexpired"/></label>
                 </div>
             </div>
             <div id="Navigator"></div>
             <div id="Framesplit"></div>
         </div>
-        <kantega:getsection id="content"/>
+
+
+        <div id="MainPane">
+
+            <kantega:getsection id="content"/>
+
+            <c:if test="${currentContent != null}">
+                <div id="EditContentButtons" class="buttonBar">
+                    <%@include file="fragments/editContentButtons.jsp"%>
+                </div>
+                <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">
+                    <input type="hidden" name="status" value="">
+                    <input type="hidden" name="action" value="">
+                    <input type="hidden" name="currentId" value="${currentContent.id}">
+                    <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
+                </form>
+            </c:if>
+
+        </div>
         <div class="clearing"></div>
     </div>
 
@@ -82,14 +100,6 @@
 
     <%@include file="fragments/contextMenu-link.jsp"%>
 
-    <c:if test="${currentContent != null}">
-        <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">
-            <input type="hidden" name="status" value="">
-            <input type="hidden" name="action" value="">
-            <input type="hidden" name="currentId" value="${currentContent.id}">
-            <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
-        </form>
-    </c:if>
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>
