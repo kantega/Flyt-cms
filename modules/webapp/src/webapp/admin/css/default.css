@@ -491,7 +491,9 @@ table.fullWidth {
 .button .remove{
     background-image: url("../bitmaps/common/icons/small/remove.png");
 }
-
+.button .select{
+    background-image: url("../bitmaps/common/icons/small/select.png");
+}
 
 /************** Form elements and content attributes **************/
 

@@ -51,8 +51,8 @@ html, body {
     background-color: #c0e5f7;
     padding: 5px;
     float: left;
-    clear: left;
     margin-bottom: 5px;
+    margin-right: 5px;
 }
 
 #TopicList .topic .topicname {
@@ -68,9 +68,9 @@ html, body {
 
 #TopicList .topic a.delete {
     display: block;
-    width: 15px;
-    height: 15px;
-    background-color: #000000;
+    width: 16px;
+    height: 16px;
+    background: url("../bitmaps/common/icons/small/remove.png");
 }
 
 #ChooseTopicButton {

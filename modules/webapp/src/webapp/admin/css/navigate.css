@@ -52,7 +52,8 @@
 #MainPane #Statusbar #Breadcrumbs li {
     display: inline;
     background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
-    padding-left: 12px;
+    padding-left: 10px;
+    padding-right: 3px;
 }
 #MainPane #Statusbar #Breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
@@ -78,7 +79,7 @@
 
 #MainPane #Statusbar .statusDetails {
     width: 100%;
-    background: #fafad2;
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_details_background.png") bottom left repeat-x;
     position: absolute;
     top: 2em;
     right: 0;
