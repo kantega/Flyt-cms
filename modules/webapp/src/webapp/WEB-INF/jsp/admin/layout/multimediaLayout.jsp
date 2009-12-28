@@ -20,8 +20,9 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
-    <script type="text/javascript" language="Javascript" src="${pageContext.request.contextPath}/admin/js/sidebar.publish.jjs"></script>
-    <script type="text/javascript" language="Javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/sidebar.publish.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             bindToolButtons();
@@ -50,6 +51,9 @@
     <%@include file="fragments/topMenu.jsp"%>
 </kantega:section>
 
+<kantega:section id="modesMenu">
+    
+</kantega:section>
 
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
@@ -62,13 +66,16 @@
 
     <div id="Content" class="multimedia">
         <div id="MainPane">
+            <div id="MultimediaMain">
+                <div id="MultimediaPane">
+                    <kantega:getsection id="content"/>
+                </div>
+            </div>
             <div id="EditMultimediaButtons" class="buttonBar">
                 <kantega:getsection id="editbuttons"/>
             </div>
-            <div id="MultimediaPane">
-                <kantega:getsection id="content"/>
-            </div>
         </div>
+
         <div id="SideBar">
             <c:if test="${isPropertyPaneEditable}">
             <form name="editmediaform" id="EditMultimediaForm" action="EditMultimedia.action" method="post" enctype="multipart/form-data">
@@ -79,20 +86,20 @@
                 </c:if>
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <h1><kantega:label key="aksess.multimedia.medianame"/></h1>
+                        <legend><kantega:label key="aksess.multimedia.medianame"/></legend>
                         <input type="text" class="fullWidth" name="name" id="MultimediaName" value="<c:out value="${media.name}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <h1><kantega:label key="aksess.multimedia.author"/></h1>
+                        <legend><kantega:label key="aksess.multimedia.author"/></legend>
                         <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="<c:out value="${media.altname}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                     </fieldset>
                 </div>
                 <c:if test="${isPropertyPaneEditable && showDimension}">
                     <div class="sidebarFieldset">
                         <fieldset>
-                            <h1><kantega:label key="aksess.multimedia.size"/></h1>
+                            <legend><kantega:label key="aksess.multimedia.size"/></legend>
                             <label for="width"><kantega:label key="aksess.multimedia.width"/></label> <input type="text" size="5" id="width" name="width" value="<c:if test="${media.width > 0}">${media.width}</c:if>">
                             <label for="height"><kantega:label key="aksess.multimedia.height"/></label> <input type="text" size="5" id="height" name="height" value="<c:if test="${media.height > 0}">${media.height}</c:if>">
                             <c:if test="${showDimensionInfo}">
@@ -104,13 +111,13 @@
 
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <h1><kantega:label key="aksess.multimedia.usage"/></h1>
+                        <legend><kantega:label key="aksess.multimedia.usage"/></legend>
                         <textarea name="usage" id="MultimediaUsage" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.usage}"/></textarea>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <h1><kantega:label key="aksess.multimedia.description"/></h1>
+                        <legend><kantega:label key="aksess.multimedia.description"/></legend>
                         <textarea name="description" id="MultimediaDescription" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.description}"/></textarea>
                     </fieldset>
                 </div>
@@ -118,7 +125,7 @@
                 <c:if test="${not empty usages}">
                     <div class="sidebarFieldset">
                         <fieldset>
-                            <h1><kantega:label key="aksess.multimedia.pages.using"/></h1>
+                            <legend><kantega:label key="aksess.multimedia.pages.using"/></legend>
                             <ul id="MultimediaPagesUsing">
                                 <c:forEach items="${usages}" var="page">
                                     <li>
@@ -129,11 +136,13 @@
                         </fieldset>
                     </div>
                 </c:if>
-                <c:if test="${isEditable}">
+                <c:if test="${isPropertyPaneEditable}">
             </form>
             </c:if>
         </div>
 
+        <div id="Framesplit"></div>
+        <div class="clearing"></div>
 
     </div>
 

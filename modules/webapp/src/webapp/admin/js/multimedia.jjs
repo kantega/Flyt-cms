@@ -21,7 +21,7 @@
 var currentItemIdentifier = 0;
 
 $(document).ready(function(){
-    debug("$(document).ready(): multimedia");
+    debug("multimedia.$(document).ready(): multimedia");
     bindMultimediaupdateEvents();
     triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     bindToolButtons();
@@ -73,21 +73,21 @@ function bindToolButtons() {
 function bindMultimediaupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("multimediaupdate", function(e, itemIdentifier){
-        debug("bindMultimediaupdateEvents(): "+e.type +" event received");
+        debug("multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
         if (!suppressNavigatorUpdate) {
             updateNavigator(itemIdentifier, true);
         } else {
             suppressNavigatorUpdate = false;
-            debug("bindMultimediaupdateEvents(): navigationUpdate suppressed");
+            debug("multimedia.bindMultimediaupdateEvents(): navigationUpdate suppressed");
         }
         updateMainPane(itemIdentifier, suppressNavigatorUpdate);
     });
 
     $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
-        debug("bindMultimediaupdateEvents(): #Statusbar has received contentupdate event. itemIdentifier: " + itemIdentifier);
+        debug("multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
         MultimediaStatus.disableButtons();
         $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
-            debug("update breadcrumbs");
+            debug("multimedia.update breadcrumbs");
             MultimediaStatus.breadcrumbs(data.path);
             MultimediaStatus.enableButtons(data.enabledButtons);
         }, "json");
@@ -101,7 +101,7 @@ function bindMultimediaupdateEvents() {
  * @param suppressNavigatorUpdate true/false.
  */
 function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
-    debug("updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
+    debug("multimedia.updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
@@ -115,7 +115,7 @@ function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
  */
 function addMediaitemClickListeners() {
     $("#MultimediaFolders .folder").click(function(){
-        debug("addMediaitemClickListeners(): folder click recieved");
+        debug("multimedia.addMediaitemClickListeners(): folder click recieved");
         var idAttr = $(this).attr("id");
         currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
         triggerMultimediaupdateEvent();
@@ -129,7 +129,7 @@ function addMediaitemClickListeners() {
 
     /*
      $("#MultimediaFolders .media").click(function(){
-     debug("addMediaitemClickListeners(): media click recieved");
+     debug("multimedia.addMediaitemClickListeners(): media click recieved");
      var idAttr = $(this).attr("id");
      currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
      window.location.href = 'EditMultimedia.action?id=' + currentItemIdentifier;
@@ -163,7 +163,7 @@ function onNavigatorTitleClick(elm) {
 }
 
 function triggerMultimediaupdateEvent() {
-    debug("triggerMultimediaupdateEvent(): mediaupdate event triggered");
+    debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 
@@ -174,13 +174,25 @@ function setLayoutSpecificSizes(elementProperties) {
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
 
     var $mainPane = $('#MainPane');
-    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+
+    $mainPane.height( (elementProperties.window.height-elementProperties.top.height) + 'px');
+
+    if (elementProperties.navigation.width) {
+        $mainPane.width( (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+    } else {
+        $mainPane.width( (elementProperties.window.width-elementProperties.framesplit.width-$("#SideBar").outerWidth(true)) + 'px');
+    }
+
+
+
 
     var $multimediaFolders = $("#MultimediaFolders");
     if ($multimediaFolders) {
         var multimediaFoldersHeight = $mainPane.height()-parseInt($multimediaFolders.css("paddingTop"))-parseInt($multimediaFolders.css("paddingBottom"));
         $multimediaFolders.css('height',  multimediaFoldersHeight + 'px');
     }
+
+    $('#MultimediaMain').height( (parseInt($mainPane.height())-parseInt($("#EditMultimediaButtons").outerHeight(true))) + 'px').width($mainPane.outerWidth());
 
 }
 
@@ -264,7 +276,7 @@ function updateMediaName(obj) {
     }
 
     if (oldName != newName) {
-        debug("updateMediaName(): id: " + id + ", name: " + newName);
+        debug("multimedia.updateMediaName(): id: " + id + ", name: " + newName);
         $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
             // Update navigation menu
             updateNavigator(currentItemIdentifier, true);            
@@ -277,7 +289,7 @@ function updateMediaName(obj) {
 function createMediaFolder() {
     var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
     if (folderName != null && folderName != "") {
-        debug("createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
+        debug("multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
         $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
             triggerMultimediaupdateEvent();            
         });

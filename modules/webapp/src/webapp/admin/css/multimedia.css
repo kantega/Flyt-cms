@@ -1,8 +1,10 @@
 #MultimediaPane {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 10px;
 }
 
+#MultimediaMain {
+    overflow: auto;
+}
 
 #MultimediaFolders {
     background: #767676;
@@ -12,7 +14,7 @@
 
 #MultimediaFolders .folder, #MultimediaFolders .media {
     padding: 10px;
-    width: 230px;
+    width: 240px;
     float: left;
     margin-right: 10px;
     cursor: pointer;
@@ -29,15 +31,34 @@
     background: url("../bitmaps/common/mm/editname.png") no-repeat right top;
 }
 
+.navigateMultimedia .navigator .icon a {
+    width: 16px;
+}
 
 .folder .icon, .media .icon {
     float: left;
-    width: 100px;
+    width: 109px;
     height: 100px;
+    padding: 10px 0;
+
+}
+.media .icon img {
+    padding: 1px;
+    background: #ffffff;
+    -moz-box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
+}
+.media .icon .file {
+    background: url("../bitmaps/common/mm/file.png") no-repeat center top;
+    height: 100%;
+    width: 100%;
+}
+.media .icon .file.application-octet-stream {
+    
 }
 
 .folder .icon {
-    background: url("../bitmaps/common/mm/icon_folder.png") no-repeat top left;
+    background: url("../bitmaps/common/mm/folder.png") no-repeat top left;
 }
 
 .folder .mediaInfo, .media .mediaInfo {

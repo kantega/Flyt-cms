@@ -128,7 +128,7 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
         model.put(AdminRequestParameters.NAVIGATION_SITES, sites);
         model.put(AdminRequestParameters.NAVIGATION_SORT_ORDER, sort);
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);

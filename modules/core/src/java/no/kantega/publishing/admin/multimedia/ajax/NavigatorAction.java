@@ -53,7 +53,13 @@ public class NavigatorAction implements Controller {
         }
 
         String path = null;
-        Multimedia currentMultimedia = (Multimedia)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA);
+        Multimedia currentMultimedia;
+        if (selectedId == -1) {
+            currentMultimedia = (Multimedia)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA);
+        } else {
+            currentMultimedia = mediaService.getMultimedia(selectedId);
+        }
+
         if (currentMultimedia != null) {
             selectedId = currentMultimedia.getId();
             List<PathEntry> pathList = mediaService.getMultimediaPath(currentMultimedia);
@@ -70,17 +76,18 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, -1);
+        openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, selectedId);
          int[] openIds = StringHelper.getInts(openFoldersList, ",");
         MultimediaMapEntry mediaArchiveRoot = mediaService.getPartialMultimediaMap(openIds, getFoldersOnly);
 
-        Map model = new HashMap();
 
+        Map<String, Object> model = new HashMap<String, Object>();
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.ITEM_IDENTIFIER, selectedId);
         model.put(AdminRequestParameters.MULTIMEDIA_GET_FOLDERS_ONLY, getFoldersOnly);
         model.put(AdminRequestParameters.MULTIMEDIA_ARCHIVE_ROOT, mediaArchiveRoot);
 
+        session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA, currentMultimedia);
         return new ModelAndView(view, model);
     }
 

@@ -21,8 +21,6 @@
   --%>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
-<h1>${currentFolder.name}</h1>
-
 <c:forEach items="${mediaList}" var="media">
     <c:choose>
         <c:when test="${media.type eq 'FOLDER'}">
@@ -46,7 +44,7 @@
                             if (mimeType.indexOf("image") != -1) {
                                 out.write(MultimediaHelper.mm2HtmlTag(Aksess.getContextPath(), mm, null, 100, 100, null, true));
                             } else {
-                                out.write("<div class=\"media " + mimeType + "\"></div>");
+                                out.write("<div class=\"file " + mimeType + "\"></div>");
                             }
                         %>
                     </a>

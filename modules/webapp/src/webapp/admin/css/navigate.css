@@ -161,39 +161,48 @@
     background-position: center center;
     background-repeat: no-repeat;
 }
+
+.navigator .icon .expired {
+    background-image: url("../bitmaps/common/navigator/expired.png");
+}
+.navigator .icon .file {
+    background-image: url("../bitmaps/common/navigator/file.png");
+}
+.navigator .icon .file-draft {
+    background-image: url("../bitmaps/common/navigator/file.png");
+}
+.navigator .icon .folder {
+    background-image: url("../bitmaps/common/navigator/folder.png");
+}
+.navigator .icon .image {
+    background-image: url("../bitmaps/common/navigator/image.png");
+}
+.navigator .icon .link {
+    background-image: url("../bitmaps/common/navigator/link.png");
+}
+.navigator .icon .link-draft {
+    background-image: url("../bitmaps/common/navigator/link_draft.png");
+}
+.navigator .icon .page {
+    background-image: url("../bitmaps/common/navigator/page.png");
+}
+.navigator .icon .page-draft {
+    background-image: url("../bitmaps/common/navigator/page_draft.png");
+}
 .navigator .icon .root{
     width: 14px;
     height: 14px;
     top: 3px;
     background-image: url("../bitmaps/common/navigator/root.png");
 }
-.navigator .icon .waiting{
-    background-image: url("../bitmaps/common/navigator/waiting.png");
-}
-.navigator .icon .expired {
-    background-image: url("../bitmaps/common/navigator/expired.png");
-}
 .navigator .icon .shortcut {
     background-image: url("../bitmaps/common/navigator/shortcut.png");
 }
-.navigator .icon .link {
-    background-image: url("../bitmaps/common/navigator/link.png");
+.navigator .icon .waiting{
+    background-image: url("../bitmaps/common/navigator/waiting.png");
 }
-.navigator .icon .file {
-    background-image: url("../bitmaps/common/navigator/file.png");
-}
-.navigator .icon .page {
-    background-image: url("../bitmaps/common/navigator/page.png");
-}
-.navigator .icon .link-draft {
-    background-image: url("../bitmaps/common/navigator/link_draft.png");
-}
-.navigator .icon .file-draft {
-    background-image: url("../bitmaps/common/navigator/file.png");
-}
-.navigator .icon .page-draft {
-    background-image: url("../bitmaps/common/navigator/page_draft.png");
-}
+
+
 .navigator .title {
 }
 .navigator .title a {

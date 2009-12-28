@@ -136,20 +136,16 @@ table.fullWidth {
 
 /************** Specific content panes styles ********/
 
-#Content.publish #MainPane {
+#Content.publish #MainPane, #Content.multimedia #MainPane {
     margin: 0;
     height: 100%;
 }
-#Content.publish #Framesplit {
+#Content.publish #Framesplit, #Content.multimedia #Framesplit {
     float: right;
     width: 10px;
     height: 100%;
     border-right: 1px solid #8F8F8F;
     background: url(../bitmaps/default/framework/framesplit_right.png) top center repeat-y;
-}
-
-#Content.multimedia #MainPane {
-    margin: 0;
 }
 
 
@@ -294,6 +290,7 @@ table.fullWidth {
     line-height: 25px;
     background-position: 10px 50%;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 #TabToolsMenu .tabGroup {
@@ -385,7 +382,9 @@ table.fullWidth {
 #Content .buttonBar .barButton > * {
     cursor: pointer;
 }
-
+#Content .buttonBar .barButton > .disabled {
+    cursor: default;
+}
 #Content .buttonBar .barButton .publish {
     background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
 }
@@ -441,7 +440,6 @@ table.fullWidth {
     display: inline-block;
     padding-left: 30px;
     padding-right:5px;
-    line-height: 25px;
     background-position: 5px 50%;
     background-repeat: no-repeat;
     border: 0;
@@ -453,7 +451,7 @@ table.fullWidth {
     display: inline-block;
     padding-left: 30px;
     padding-right:5px;
-    line-height: 25px;
+    line-height: 18px;
     background-position: 5px 50%;
     background-repeat: no-repeat;
 }
@@ -461,8 +459,14 @@ table.fullWidth {
 .button .cancel {
     background-image: url("../bitmaps/common/icons/small/cancel.png");
 }
+.button .choose {
+    background-image: url("../bitmaps/common/icons/small/select.png");
+}
 .button .copy {
     background-image: url("../bitmaps/common/icons/small/copy.png");
+}
+.button .crop {
+    background-image: url("../bitmaps/common/icons/small/crop.png");
 }
 .button .cut {
     background-image: url("../bitmaps/common/icons/small/copy.png");
@@ -475,6 +479,12 @@ table.fullWidth {
 }
 .button .edit{
     background-image: url("../bitmaps/common/icons/small/edit.png");
+}
+.button .imagemap {
+    background-image: url("../bitmaps/common/icons/small/imagemap.png");
+}
+.button .newfolder {
+    background-image: url("../bitmaps/common/icons/small/newfolder.png");
 }
 .button .newSubpage {
     background-image: url("../bitmaps/common/icons/small/newsubpage.png");
@@ -493,6 +503,9 @@ table.fullWidth {
 }
 .button .select{
     background-image: url("../bitmaps/common/icons/small/select.png");
+}
+.button .upload {
+    background-image: url("../bitmaps/common/icons/small/upload.png");
 }
 
 /************** Form elements and content attributes **************/
@@ -528,12 +541,6 @@ table.fullWidth {
 
 .fullWidth {
     width: 100%;
-}
-
-#Content .contentAttribute .button {
-    background: transparent;
-    border: 0;
-    color: #000000;
 }
 
 #Content td .button, #Content td .button:hover {
@@ -609,8 +616,9 @@ div.sidebarFieldset fieldset {
     border: 0;
     padding: 10px;
 }
-div.sidebarFieldset fieldset h1 {
-    margin-top: 0;
+div.sidebarFieldset fieldset legend {
+    margin-top: 1em;
+    font-weight: bold;
 }
 /************** Popups **************/
 .dialogue .tabGroup .tab {

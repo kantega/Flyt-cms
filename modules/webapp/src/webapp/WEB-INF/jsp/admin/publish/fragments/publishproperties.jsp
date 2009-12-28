@@ -91,7 +91,7 @@
 <c:if test="${!isStartPage}">
     <div class="sidebarFieldset">
         <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.period"/></h1>
+            <legend><kantega:label key="aksess.publishinfo.period"/></legend>
             <table class="noborder" id="DisplayPeriod">
                 <tr>
                     <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
@@ -136,7 +136,7 @@
 <c:if test="${currentContent.id > 0 && canPublish}">
     <div class="sidebarFieldset">
         <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.change"/></h1>
+            <legend><kantega:label key="aksess.publishinfo.change"/></legend>
             <table class="noborder" id="ChangeDate">
                 <tr>
                     <td><!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>--></td>
@@ -151,7 +151,7 @@
 <c:if test="${!isStartPage}">
     <div class="sidebarFieldset">
         <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.alias"/></h1>
+            <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
             <input type="text" name="alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510">
         </fieldset>
     </div>
@@ -159,7 +159,7 @@
 <c:if test="${topicMapsEnabled}">
     <div class="sidebarFieldset">
         <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.topics"/></h1>
+            <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
 
             <div id="TopicList">...</div>
             <div id="ChooseTopicButton">
@@ -172,7 +172,7 @@
 <c:if test="${canChangeTemplate}">
     <div class="sidebarFieldset">
         <fieldset>
-            <h1><kantega:label key="aksess.publishinfo.displaytemplate"/></h1>
+            <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
             <select name="displaytemplate" tabindex="60" onchange="setIsModified()">
                 <c:forEach var="template" items="${allowedTemplates}">
                     <c:set var="templateName" value="${template.name}"/>

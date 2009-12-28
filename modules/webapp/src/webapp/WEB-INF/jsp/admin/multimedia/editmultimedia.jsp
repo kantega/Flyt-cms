@@ -57,12 +57,16 @@
         $(document).ready(function() {
             $("#MultimediaName").focus();
             var p = window.parent;
-            if (p) {
-                $("#EditMultimediaButtons .insert").each(function() {
-                    $(this).parent().show();
-                });
+
+            if (p != window) {
+               $("#EditMultimediaButtons .insert").click(function (){
+                    document.editmediaform.insert.value = true;
+                    saveForm();
+                }).parent().show();
+
                 $("#MaxWidth").val(p.focusFieldMaxWidth);
             }
+
 
             // Disable save button until something is changed
             $("#EditMultimediaButtons .save").addClass("disabled");
@@ -75,10 +79,7 @@
             });
             </c:if>
 
-            $("#EditMultimediaButtons .insert").click(function (){
-                document.editmediaform.insert.value = true;
-                saveForm();
-            });
+
 
             $("#EditMultimediaButtons .cancel").click(function (){
                 location.href = "Navigate.action";
