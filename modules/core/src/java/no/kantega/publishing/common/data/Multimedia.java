@@ -44,6 +44,10 @@ public class Multimedia extends BaseObject {
     private Date lastModified = new Date();
     private String modifiedBy = null;
 
+
+    private int noFiles = 0; // Number of files in folder
+    private int noSubFolders = 0; // Number of sub folders in folder
+
     public Multimedia() {
 
     }
@@ -192,5 +196,21 @@ public class Multimedia extends BaseObject {
 
     public String getOwnerPerson() {
         return null;
-    }    
+    }
+
+    public int getNoFiles() {
+        return noFiles;
+    }
+
+    public void setNoFiles(int noFiles) {
+        this.noFiles = noFiles;
+    }
+
+    public int getNoSubFolders() {
+        return noSubFolders;
+    }
+
+    public void setNoSubFolders(int noSubFolders) {
+        this.noSubFolders = noSubFolders;
+    }
 }

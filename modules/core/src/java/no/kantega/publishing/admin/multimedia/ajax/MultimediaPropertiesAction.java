@@ -31,6 +31,8 @@ import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.LocaleLabels;
 
@@ -51,8 +53,17 @@ public class MultimediaPropertiesAction implements Controller {
         RequestParameters param = new RequestParameters(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        int folderId = param.getInt("itemIdentifier");
         MultimediaService mediaService = new MultimediaService(request);
+
+        int folderId = param.getInt(AdminRequestParameters.ITEM_IDENTIFIER);
+        if (folderId == -1) {
+            Multimedia currentMultimedia = (Multimedia)request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_MULTIMEDIA);
+            if (currentMultimedia != null) {
+                folderId = currentMultimedia.getId();
+            } else {
+                folderId = 0;
+            }
+        }
 
         // Path
         List<PathEntry> path = new ArrayList<PathEntry>();

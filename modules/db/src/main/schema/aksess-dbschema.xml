@@ -295,6 +295,8 @@
         <column name="LastModifiedBy" required="false" type="VARCHAR" size="64"/>
         <column name="AltName" required="false" type="VARCHAR" size="255"/>
         <column name="UsageInfo" required="false" type="CLOB" size="2147483647"/>
+        <column name="NoFiles" required="false" type="INTEGER" size="10"/>
+        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>

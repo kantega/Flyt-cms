@@ -28,7 +28,14 @@
                 <div class="icon"></div>
                 <div class="mediaInfo">
                     <div class="name">${media.name}</div>
-                    <div class="details">0 objekter</div>
+                    <div class="details">
+                        <c:if test="${media.noSubFolders > 0}">
+                            ${media.noSubFolders} <kantega:label key="aksess.multimedia.nosubfolders"/><c:if test="${media.noFiles > 0}">,</c:if>
+                        </c:if>
+                        <c:if test="${media.noFiles > 0}">
+                            ${media.noFiles} <kantega:label key="aksess.multimedia.nofiles"/>
+                        </c:if>
+                    </div>
                 </div>
             </div>
         </c:when>
