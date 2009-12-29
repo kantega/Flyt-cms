@@ -26,6 +26,7 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
@@ -64,8 +65,8 @@ public class ContentPropertiesAction implements Controller {
 
             List<String> enabledButtons = new ArrayList<String>();
 
+            boolean showApproveButtons = false;
             if (content != null) {
-
                 //Breadcrumbs
                 List<PathEntry> path = cms.getPathByAssociation(content.getAssociation());
                 if (path == null) {
@@ -112,9 +113,14 @@ public class ContentPropertiesAction implements Controller {
                     enabledButtons.add("CutButton");
                     enabledButtons.add("CopyButton");
                     enabledButtons.add("PasteButton");
+                    if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
+                        showApproveButtons = true;
+                    }                                            
                 }
                 enabledButtons.add("PrivilegesButton");
             }
+
+            model.put("showApproveButtons", showApproveButtons);
             model.put("enabledButtons", enabledButtons);
 
             model.put("content", content);

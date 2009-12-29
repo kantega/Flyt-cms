@@ -358,6 +358,16 @@ table.fullWidth {
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
 }
 
+#EditContentButtons input.approve {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+}
+
+#EditContentButtons input.reject {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+}
+
 #EditContentButtons input.savedraft {
     background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
 }
@@ -442,6 +452,9 @@ table.fullWidth {
     background-repeat: no-repeat;
 }
 
+.button .add {
+    background-image: url("../bitmaps/common/icons/small/add.png");
+}
 .button .cancel {
     background-image: url("../bitmaps/common/icons/small/cancel.png");
 }
@@ -468,6 +481,12 @@ table.fullWidth {
 }
 .button .imagemap {
     background-image: url("../bitmaps/common/icons/small/imagemap.png");
+}
+.button .moveUp {
+    background-image: url("../bitmaps/common/icons/small/moveup.png");
+}
+.button .moveDown {
+    background-image: url("../bitmaps/common/icons/small/movedown.png");
 }
 .button .newfolder {
     background-image: url("../bitmaps/common/icons/small/newfolder.png");

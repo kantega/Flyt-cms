@@ -65,6 +65,7 @@ function bindContentupdateEvents() {
             ContentStatus.associations(data.associations);
             ContentStatus.enableButtons(data.enabledButtons);
             ContentStatus.enableButtons(data.enabledButtons);
+            ContentStatus.showApproveOrReject(data.showApproveButtons);
         }, "json");
     });
 
@@ -80,11 +81,12 @@ function setLayoutSpecificSizes(elementProperties) {
     var filteroptionsHeight = $("#Filteroptions").height();
     var statusbarHeight = $("#Statusbar").height();
 
-    var $editButtons = $('#EditContentButtons');
-    var editButtonsHeight = 0;
-    if ($editButtons) {
-        editButtonsHeight = $editButtons.height();
+    var $buttons = $('#EditContentButtons');
+    var buttonsHeight = 0;
+    if ($buttons && !$buttons.is(":hidden")) {
+        buttonsHeight = $buttons.height();
     }
+    debug("buttonsHeight:" + buttonsHeight);
     debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight);
     $navigator = $("#Navigator");
     $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
@@ -92,11 +94,11 @@ function setLayoutSpecificSizes(elementProperties) {
 
     var $mainPane = $('#MainPane');
     $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
-    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-editButtonsHeight) + 'px');
+    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
 
     var $subpages = $("#SubPages");
     if ($subpages) {
-        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight-editButtonsHeight;
+        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight-buttonsHeight;
         $subpages.css('height',  subpagesHeight + 'px');
     }
 
@@ -343,6 +345,15 @@ var Publish =  {
     managePrivileges: function(thisId) {
         debug("content.Publish.managePrivileges(): thisId: " + thisId);
         ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + thisId + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:520});
+    },
+
+    approve: function(thisId) {
+        $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {approve:true, id:thisId});
+        ContentStatus.showApproveOrReject(false);
+    },
+
+    reject: function(thisId) {
+        ModalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?id=" + thisId,width: 350, height:200});
     }
 };
 
@@ -404,6 +415,16 @@ var ContentStatus = {
                 $("#" + b).removeClass("disabled");
             }
         }
+    },
+    showApproveOrReject: function(showButtons) {
+        debug("ContentStatus.showApproveOrReject: " + showButtons);
+        var $approveButton = $("#EditContentButtons .approve");
+        if (showButtons && $approveButton != null) {
+            $("#EditContentButtons").show();
+        } else {
+            $("#EditContentButtons").hide();
+        }
+        $.event.trigger("resize");
     },
     _statusContainer: function() {
         var $statusDetails = $("#Statusbar .statusDetails");

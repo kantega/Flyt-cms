@@ -157,7 +157,7 @@ public class ContentAO {
             }
         }
 
-}
+    }
 
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
@@ -1024,39 +1024,44 @@ public class ContentAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            if (newStatus == ContentStatus.PUBLISHED) {
-                // Sett status = arkivert på aktiv versjon
-                PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-                tmp.setInt(1, ContentStatus.ARCHIVED);
-                tmp.setInt(2, cid.getContentId());
-                tmp.execute();
-                tmp.close();
 
-                tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ? where ContentId = ? and Version = ?");
-                tmp.setInt(1, ContentStatus.PUBLISHED);
-                tmp.setString(2, userId);
-                tmp.setInt(3, cid.getContentId());
-                tmp.setInt(4, cid.getVersion());
-                tmp.execute();
-                tmp.close();
-                tmp = null;
+            int version = SQLHelper.getInt(c, "select Version from contentversion where status = " + ContentStatus.WAITING_FOR_APPROVAL + " order by version desc", "Version");
 
-                // Set publish date if not set
-                tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ? and PublishDate is null");
-                tmp.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
-                tmp.setInt(2, cid.getContentId());
-                tmp.execute();
-                tmp.close();
-                tmp = null;
+            if (version != -1) {
+                if (newStatus == ContentStatus.PUBLISHED) {
+                    // Sett status = arkivert på aktiv versjon
+                    PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
+                    tmp.setInt(1, ContentStatus.ARCHIVED);
+                    tmp.setInt(2, cid.getContentId());
+                    tmp.execute();
+                    tmp.close();
 
-            } else {
-                PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
-                tmp.setInt(1, newStatus);
-                tmp.setInt(2, cid.getContentId());
-                tmp.setInt(3, cid.getVersion());
-                tmp.execute();
-                tmp.close();
-                tmp = null;
+                    tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ? where ContentId = ? and Version = ?");
+                    tmp.setInt(1, ContentStatus.PUBLISHED);
+                    tmp.setString(2, userId);
+                    tmp.setInt(3, cid.getContentId());
+                    tmp.setInt(4, version);
+                    tmp.execute();
+                    tmp.close();
+                    tmp = null;
+
+                    // Set publish date if not set
+                    tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ? and PublishDate is null");
+                    tmp.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
+                    tmp.setInt(2, cid.getContentId());
+                    tmp.execute();
+                    tmp.close();
+                    tmp = null;
+
+                } else {
+                    PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
+                    tmp.setInt(1, newStatus);
+                    tmp.setInt(2, cid.getContentId());
+                    tmp.setInt(3, cid.getVersion());
+                    tmp.execute();
+                    tmp.close();
+                    tmp = null;
+                }
             }
 
         } catch (SQLException e) {
@@ -1286,7 +1291,7 @@ public class ContentAO {
                 cid.setAssociationId(associationId);
                 cid.setContentId(contentId);
                 cid.setSiteId(siteId);
-                cids.add(cid);                
+                cids.add(cid);
             }
             return aliases;
         } catch (SQLException e) {

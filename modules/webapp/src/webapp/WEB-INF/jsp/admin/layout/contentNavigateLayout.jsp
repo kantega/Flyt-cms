@@ -20,19 +20,27 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.jjs"></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
-    <c:if test="${currentContent != null}">
-        <script type="text/javascript">
-            var hasSubmitted = false;
-            function saveContent(status) {
-                debug("contentNavigateLayout.saveContent(): status: " + status + ", hasSubmitted: " + hasSubmitted);
-                if (!hasSubmitted) {
-                    hasSubmitted = true;
-                    document.myform.status.value = status;
-                    document.myform.submit();
-                }
+    <script type="text/javascript">
+        var hasSubmitted = false;
+        function saveContent(status) {
+            debug("contentNavigateLayout.saveContent(): status: " + status + ", hasSubmitted: " + hasSubmitted);
+            if (!hasSubmitted) {
+                hasSubmitted = true;
+                document.myform.status.value = status;
+                document.myform.submit();
             }
-        </script>
-    </c:if>
+        }
+
+        $(document).ready(function(){
+            $("#EditContentButtons .approve").click(function() {
+                Publish.approve(getQueryParam("thisId", currentUrl));
+            });
+            $("#EditContentButtons .reject").click(function() {
+                Publish.reject(getQueryParam("thisId", currentUrl));
+            });
+        });
+    </script>
+
 </kantega:section>
 
 <kantega:section id="topMenu">
@@ -79,19 +87,25 @@
         <div id="MainPane">
 
             <kantega:getsection id="content"/>
-
-            <c:if test="${currentContent != null}">
-                <div id="EditContentButtons" class="buttonBar">
-                    <%@include file="fragments/editContentButtons.jsp"%>
-                </div>
-                <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">
-                    <input type="hidden" name="status" value="">
-                    <input type="hidden" name="action" value="">
-                    <input type="hidden" name="currentId" value="${currentContent.id}">
-                    <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
-                </form>
-            </c:if>
-
+            <c:choose>
+                <c:when test="${currentContent != null}">
+                    <div id="EditContentButtons" class="buttonBar">
+                        <%@include file="fragments/editContentButtons.jsp"%>
+                        <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">
+                            <input type="hidden" name="status" value="">
+                            <input type="hidden" name="action" value="">
+                            <input type="hidden" name="currentId" value="${currentContent.id}">
+                            <input type="hidden" name="isModified" id="IsModified" value="${currentContent.modified}">
+                        </form>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div id="EditContentButtons" class="buttonBar" style="display:none;">
+                        <span class="barButton"><input type="button" class="approve" value="<kantega:label key="aksess.button.approve"/>"></span>
+                        <span class="barButton"><input type="button" class="reject" value="<kantega:label key="aksess.button.reject"/>"></span>
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
         <div class="clearing"></div>
     </div>

@@ -78,6 +78,7 @@
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
+                <prop key="/admin/publish/popups/RejectNote.action">RejectNoteAction</prop>
                 <prop key="/admin/publish/CancelEdit.action">CancelEditAction</prop>
                 <prop key="/admin/publish/ConfirmCopyPaste.action">ConfirmCopyPasteContentAction</prop>
                 <prop key="/admin/publish/CopyPasteContent.action">CopyPasteContentAction</prop>
@@ -344,13 +345,9 @@
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/publish/selecttemplate.jsp"/>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ApproveOrRejectAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.ApproveOrRejectAction</value>
-        </property>
-        <property name="servletName">
-            <value>ApproveOrRejectAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.content.ajax.ApproveOrRejectAction" id="ApproveOrRejectAction"/>
+    <bean class="no.kantega.publishing.admin.content.ajax.RejectNoteAction" id="RejectNoteAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/reject-note.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
     <bean class="no.kantega.publishing.admin.content.action.CleanupHTMLAction" id="CleanupHTMLAction"/>

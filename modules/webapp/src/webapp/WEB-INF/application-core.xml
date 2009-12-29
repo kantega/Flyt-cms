@@ -42,7 +42,13 @@
         <property name="hostnamesDao" ref="aksessHostnamesDao"/>
     </bean>
 
-    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView"/>
+    <bean name="aksessJsonWriter"  class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
+        <property name="keepValueTypesMode"><value>ALL</value></property>
+    </bean>
+
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView">
+        <property name="jsonWriter"><ref bean="aksessJsonWriter"/></property>
+    </bean>
 
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
         <constructor-arg>
