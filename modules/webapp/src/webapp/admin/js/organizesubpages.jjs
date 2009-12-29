@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+//%>
 
 
 var currentUrl = "${currentNavigateContent.url}";
@@ -63,7 +66,7 @@ function updateSubPageList(url) {
             }
         });
 
-        $("#SubPages li.page").click(function(event){
+        $("#SubPages li.page").mousedown(function(event){
             var allSelected = $("#SubPages li.page.selected");
             if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
                 $(this).toggleClass('selected');

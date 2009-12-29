@@ -25,12 +25,12 @@
     <ul id="${menu.id}" class="associationCategory">
         <li class="menu">
             <span class="name">${menu.name}</span>
-            <span class="status">Status</span>
-            <span class="lastModified">Last modified</span>
-            <span class="publisher">Published by</span>
-            <span class="views">Page views</span>
+            <span class="status"><kantega:label key="aksess.organizesubpages.status"/></span>
+            <span class="lastModified"><kantega:label key="aksess.organizesubpages.lastmodified"/></span>
+            <span class="publisher"><kantega:label key="aksess.organizesubpages.publisher"/></span>
+            <span class="views"><kantega:label key="aksess.organizesubpages.views"/></span>
         </li>
-        <c:forEach var="page" items="${menu.subPages}">
+        <c:forEach var="page" items="${menu.subPages}"><%-- The page variable is an instance of Content --%>
             <li id="${page.association.id}" class="page">
                 <span class="name">${page.title}</span>
                 <c:choose>
@@ -45,7 +45,7 @@
                 <span class="lastModified"><fmt:formatDate value="${page.lastModified}" pattern="<%=Aksess.getDefaultDatetimeFormat()%>"/></span>
                 <aksess:getuser name="publisher" userid="${page.publisher}"/>
                 <span class="publisher">${publisher.name}</span>
-                <span class="views">0</span>
+                <span class="views">${page.association.numberOfViews}</span>
             </li>
         </c:forEach>
     </ul>

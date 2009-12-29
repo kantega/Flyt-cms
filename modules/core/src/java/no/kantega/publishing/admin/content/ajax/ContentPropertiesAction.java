@@ -89,10 +89,12 @@ public class ContentPropertiesAction implements Controller {
 
 
                 //Associations
-                List<Association> associations = new ArrayList<Association>();
+                List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
-                        associations.add(association);
+                        List<PathEntry> paths = cms.getPathByAssociation(association);
+                        paths.add(current);
+                        associations.add(paths);
                     }
                 }
                 model.put("associations", associations);

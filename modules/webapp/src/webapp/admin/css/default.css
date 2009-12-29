@@ -691,11 +691,12 @@ div.sidebarFieldset fieldset legend {
 }
 
 #SubPages li.page {
-    cursor: n-resize;
+    cursor: pointer;
 }
 #SubPages li.page.selected {
     background: url("../bitmaps/default/framework/organizesubpages_selected.png") repeat-x center left;
     color: #ffffff;
+    cursor: n-resize;
 }
 #SubPages li.ui-sortable-helper { /* Item while dragging */
     border-top: 1px solid #cccccc;
@@ -710,7 +711,13 @@ div.sidebarFieldset fieldset legend {
 
 #SubPages li .name {
     padding-left: 2em;
+    width: 26%;
 }
+#SubPages li .views {
+    text-align: right;
+    width: 10%;
+}
+
 #SubPages li .contentStatus .description {
     padding-left: 18px;
     width: auto;

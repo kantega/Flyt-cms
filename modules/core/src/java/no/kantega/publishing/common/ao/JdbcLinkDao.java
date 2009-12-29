@@ -183,7 +183,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      */
     @SuppressWarnings("unchecked")
     public List<LinkOccurrence> getLinksforContentId(int contentId) {
-        return getJdbcTemplate().query("select * from linkoccurrence where ContentId=?", new Object[]{contentId},new RowMapper(){
+        return getJdbcTemplate().query("SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND content.ContentId=?) ORDER BY link.lastchecked", new Object[]{contentId},new RowMapper(){
             public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return getOccurrenceFromResultSet(rs);
             }

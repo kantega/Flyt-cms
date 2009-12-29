@@ -20,7 +20,9 @@
 //<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-
+//<%
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+//%>
 
 var currentUrl = "";
 
@@ -57,6 +59,7 @@ function bindContentupdateEvents() {
         if(url) {
             currentUrl = url;
         }
+        ContentStatus.init();
         ContentStatus.disableButtons();
         $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: currentUrl}, function(data){
             ContentStatus.breadcrumbs(data.path);
@@ -362,10 +365,15 @@ var Publish =  {
  */
 var ContentStatus = {
 
+    init : function() {
+        $("#Statusbar .statusDetails").remove();
+        $("#Statusbar .crossPublish").hide();
+        $("#Statusbar .brokenLink").hide();
+    },
 
     breadcrumbs: function (path) {
         if (path) {
-            var crumbs = "<ul>";
+            var crumbs = '<ul class="breadcrumbs">';
             for (var i=0; i<path.length; i++) {
                 crumbs += "<li><a href=\"?thisId="+path[i].id+"\">"+path[i].title+"</a></li>";
             }
@@ -376,38 +384,84 @@ var ContentStatus = {
 
     brokenLinks: function (links) {
         if (links && links.length > 0) {
-            $("#Statusbar .brokenLink").show();
+            debug("content.ContentStatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
+            $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
+                debug("content.ContentStatus.brokenLinks(): click");
+                var details = '<table>' +
+                            '   <thead>' +
+                            '       <tr>' +
+                            '           <th class="field"><kantega:label key="aksess.linkcheck.field"/></th>' +
+                            '           <th class="url"><kantega:label key="aksess.linkcheck.url"/></th>' +
+                            '           <th class="status"><kantega:label key="aksess.linkcheck.status"/></th>' +
+                            '           <th class="lastChecked"><kantega:label key="aksess.linkcheck.lastchecked"/></th>' +
+                            '           <th class="timesChecked"><kantega:label key="aksess.linkcheck.timeschecked"/></th>' +
+                            '       </tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                for (var i = 0; i < links.length; i++) {
+                    details += '<tr>' +
+                             '  <td>'+links[i].attributeName+'</td>' +
+                             '  <td>'+links[i].url+'</td>' +
+                             '  <td>'+links[i].status+'</td>' +
+                             '  <td>'+links[i].lastChecked+'</td>' +
+                             '  <td>'+links[i].timesChecked+'</td>' +
+                             '</tr>';
+                }
+                details +='   </tbody>' +
+                        '</table>';
+                ContentStatus._statusContainer('brokenLinks').html(details).toggle();
+            }).show();
         }
     },
+
+
     details: function(content) {
         if (content) {
             debug("content.ContentStatus.details(): binding details icon to click");
             $("#Statusbar .details").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.details(): click");
                 var details = "<ul>";
-                details += '<li><span class="label">Title:</span>&nbsp;'+content.title+'</li>';
+                details += '<li><span class="label"><kantega:label key="aksess.contentproperty.title"/>:</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
-                    details += '<li><span class="label">Alias:</span>&nbsp;'+content.alias+'</li>';
+                    details += '<li><span class="label"><kantega:label key="aksess.publishinfo.alias"/>:</span>&nbsp;'+content.alias+'</li>';
                 }
                 if (content.lastModified) {
-                    details += '<li><span class="label">Last modified:</span>&nbsp;'+content.lastModified+'</li>';
+                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.lastmodified"/>:</span>&nbsp;'+content.lastModified+'</li>';
                 }
                 if (content.changeFromDate) {
                     details += '<li><span class="label">Change date:</span>&nbsp;'+content.changeFromDate+'</li>';
                 }
                 details +="</ul>";
-                ContentStatus._statusContainer().html(details).toggle();
+                ContentStatus._statusContainer('details').html(details).toggle();
             }).show();
         }
     },
+
+
     associations: function (associations) {
         if (associations && associations.length > 1) {
-            $("#Statusbar .crossPublished").show();
+            debug("content.ContentStatus.associations(): Number of associations: "+associations.length);
+            $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
+                debug("content.ContentStatus.details(): click");
+                var details = '';
+                for (var i = 0; i < associations.length; i++) {
+                    details += '<ul class="breadcrumbs">';
+                    for (var j = 0; j<associations[i].length; j++) {
+                        details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
+                    }
+                    details += "</ul>";
+                }
+                ContentStatus._statusContainer('crossPublish').html(details).toggle();
+            }).show();
         }
     },
+
+
     disableButtons: function() {
         $("#ToolsMenu a").addClass("disabled");
     },
+
+
     enableButtons: function(buttons) {
         if (buttons) {
             for (var i=0; i < buttons.length; i++) {
@@ -416,6 +470,8 @@ var ContentStatus = {
             }
         }
     },
+
+
     showApproveOrReject: function(showButtons) {
         debug("ContentStatus.showApproveOrReject: " + showButtons);
         var $approveButton = $("#EditContentButtons .approve");
@@ -426,7 +482,9 @@ var ContentStatus = {
         }
         $.event.trigger("resize");
     },
-    _statusContainer: function() {
+
+
+    _statusContainer: function(type) {
         var $statusDetails = $("#Statusbar .statusDetails");
         if ($statusDetails.size() > 0) {
             return $statusDetails;

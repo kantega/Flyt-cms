@@ -1,4 +1,9 @@
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+//%>
+
 /*
  * Copyright 2009 Kantega AS
  *
@@ -173,3 +178,5 @@ var ModalWindow = {
     }
 
 };
+
+

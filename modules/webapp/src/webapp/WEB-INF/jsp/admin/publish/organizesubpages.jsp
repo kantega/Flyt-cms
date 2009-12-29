@@ -33,6 +33,7 @@
 
     <%@include file="fragments/statusbar.jsp"%>
 
+    <%-- The content is loaded with ajax by the ListSubPagesAction --%>
     <div id="SubPages"></div>
 
 </kantega:section>

@@ -585,7 +585,6 @@ public class ContentManagementService {
      * Hent meny
      * @param siteId - Site det skal hentes for
      * @param idList - Liste med åpne element i menyen, henter alle med parent som ligger i lista
-     * @param language - Språk det skal hentes for
      * @param sort
      * @param showExpired
      * @return
@@ -636,7 +635,14 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<PathEntry> getPathByAssociation(Association association) throws SystemException {
-        return PathWorker.getPathByAssociation(association);
+        List<PathEntry> paths = PathWorker.getPathByAssociation(association);
+        if (paths != null && paths.size() > 0) {
+            Site site = SiteCache.getSiteById(paths.get(0).getId());
+            if (site != null) {
+                paths.get(0).setTitle(site.getName());
+            }
+        }
+        return paths;
     }
 
     /**

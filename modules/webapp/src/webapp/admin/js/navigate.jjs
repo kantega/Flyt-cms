@@ -17,6 +17,9 @@
  //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+//<%
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+//%>
 
 /********************************************************************************
  * Navigator
@@ -89,7 +92,7 @@ function bindNavigatorClickEvents() {
         openTree(itemIdentifier);
     });
     //Click on the title
-    $(".navigator span.title > a, #Breadcrumbs a").live('click', function(event){
+    $(".navigator span.title > a, #Breadcrumbs a, #Statusbar .statusDetails .breadcrumbs a").live('click', function(event){
         debug("navigate.bindNavigatorClickEvents(): click openContent");
         event.preventDefault();
         var href = $(this).attr("href");

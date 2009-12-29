@@ -44,18 +44,19 @@
     padding: 0 10px;
     position: relative;
 }
-#MainPane #Statusbar #Breadcrumbs ul {
+#MainPane #Statusbar ul.breadcrumbs {
     float: left;
+    clear: both;
     margin: 0;
     padding: 0;
 }
-#MainPane #Statusbar #Breadcrumbs li {
+#MainPane #Statusbar ul.breadcrumbs li {
     display: inline;
     background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
     padding-left: 10px;
     padding-right: 3px;
 }
-#MainPane #Statusbar #Breadcrumbs li:first-child {
+#MainPane #Statusbar ul.breadcrumbs li:first-child {
     /*TODO: Change bitmap*/
     background: url("../bitmaps/default/framework/contentstatus_site.png") left center no-repeat;
     padding-left: 18px;
@@ -83,11 +84,23 @@
     position: absolute;
     top: 2em;
     right: 0;
+    padding-top: 0.5em;
+    padding-bottom: 1em;
 }
 #MainPane #Statusbar .statusDetails .label {
     font-weight: bold;
 }
 
+#MainPane #Statusbar .statusDetails table {
+    width: 100%;
+}
+#MainPane #Statusbar .statusDetails table th, #MainPane #Statusbar .statusDetails table td {
+    padding: 0 1em;
+    width: 18%;
+}
+#MainPane #Statusbar .statusDetails .breadcrumbs {
+    margin-left: 10px;
+}
 /************** Navigation (left column) **************/
 #Filteroptions {
     background: url("../bitmaps/default/framework/filteroptions_background.png") left bottom repeat-x;

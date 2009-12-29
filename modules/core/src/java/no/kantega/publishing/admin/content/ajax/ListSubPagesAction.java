@@ -30,6 +30,7 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.admin.model.MenuList;
 
 import java.util.List;
@@ -39,11 +40,13 @@ import java.util.HashMap;
 /**
  *
  */
-public class ListSubPagesAction implements Controller {
-    private TemplateConfigurationCache templateConfigurationCache;
-    private String view;
+public class ListSubPagesAction extends SimpleAdminController {
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private TemplateConfigurationCache templateConfigurationCache;
+
+    @Override
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         ContentManagementService cms = new ContentManagementService(request);
 
         RequestParameters params = new RequestParameters(request);
@@ -93,7 +96,7 @@ public class ListSubPagesAction implements Controller {
             model.put("menus", menus.values());
         }
 
-        return new ModelAndView(view, model);
+        return new ModelAndView(getView(), model);
     }
 
     private MenuList getMenuList(ContentManagementService cms, Map<Integer, MenuList> menus, int menuId) {
@@ -111,9 +114,6 @@ public class ListSubPagesAction implements Controller {
         return menu;
     }
 
-    public void setView(String view) {
-        this.view = view;
-    }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
