@@ -29,6 +29,7 @@ public abstract class NavigationMapEntry extends BaseObject {
     protected int depth = 0;
     protected boolean isOpen = false;
     protected boolean isSelected = false;
+    protected boolean hasChildren = false;
 
     public NavigationMapEntry() {
     }
@@ -38,6 +39,7 @@ public abstract class NavigationMapEntry extends BaseObject {
             children = new ArrayList<NavigationMapEntry>();
         }
         children.add(child);
+        hasChildren = true;
     }
 
     public List<NavigationMapEntry> getChildren() {
@@ -80,5 +82,13 @@ public abstract class NavigationMapEntry extends BaseObject {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 }

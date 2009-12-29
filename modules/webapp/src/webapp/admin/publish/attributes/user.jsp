@@ -54,6 +54,6 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:selectUser(document.myform.${fieldName})" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.${fieldName})" class="button remove"><span><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="Javascript:selectUser(document.myform.${fieldName})" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:removeIdAndValueFromForm(document.myform.${fieldName})" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

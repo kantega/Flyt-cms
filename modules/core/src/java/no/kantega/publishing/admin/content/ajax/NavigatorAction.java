@@ -120,7 +120,7 @@ public class NavigatorAction implements Controller {
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
         for (Site site : siteService.getSites()) {
             if (!site.isDisabled()) {
-                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, -1, sort, showExpired);
+                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, showExpired);
                 if (sitemap != null) {
                     sitemap.setTitle(site.getName());
                     sites.add(sitemap);

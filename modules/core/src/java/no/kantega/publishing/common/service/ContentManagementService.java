@@ -591,8 +591,8 @@ public class ContentManagementService {
      * @return
      * @throws SystemException
      */
-    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, int language, String sort, boolean showExpired) throws SystemException {
-        return SiteMapWorker.getPartialSiteMap(siteId, idList, language, true, sort, showExpired);
+    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, String sort, boolean showExpired) throws SystemException {
+        return SiteMapWorker.getPartialSiteMap(siteId, idList, sort, showExpired);
     }
 
 
@@ -604,6 +604,7 @@ public class ContentManagementService {
      * @return
      * @throws SystemException
      */
+    @Deprecated
     public SiteMapEntry getMenu(Content content, String associationCategory, boolean useLocalMenus) throws SystemException {
         AssociationCategory category = null;
         if (associationCategory != null) {

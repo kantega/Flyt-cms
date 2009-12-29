@@ -148,6 +148,7 @@
 }
 .navigator .openState a.noChildren {
     background-image: none;
+    cursor: default;
 }
 
 .navigator .icon {
