@@ -35,8 +35,12 @@ public class PrintMultimediaNavigatorTag  extends PrintNavigatorTag {
         href.append("?");
         href.append(AdminRequestParameters.ITEM_IDENTIFIER).append("=").append(currentItem.getId());
 
-        String openState = currentItem.isOpen()? "open": "closed";
-        out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
+        if (currentItem.isHasChildren()) {
+            String openState = currentItem.isOpen()? "open": "closed";
+            out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
+        } else {
+            out.write("<span class=\"openState\"><span class=\"noChildren\"></span></span>");
+        }
 
         String type = "";
         if (currentItem.getType() == MultimediaType.FOLDER) {

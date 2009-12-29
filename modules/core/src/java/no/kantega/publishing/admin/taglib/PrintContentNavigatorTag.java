@@ -37,13 +37,13 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
         href.append(AdminRequestParameters.THIS_ID).append("=").append(currentItem.getId()).append("&amp;");
         href.append(AdminRequestParameters.CONTENT_ID).append("=").append(currentItem.getContentId());
 
-        String openState;
         if (currentItem.isHasChildren()) {
-            openState = currentItem.isOpen()? "open": "closed";
+            String openState = currentItem.isOpen()? "open": "closed";
+            out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
         } else {
-            openState = "noChildren";
+            out.write("<span class=\"openState\"><span class=\"noChildren\"></span></span>");
         }        
-        out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
+
 
         ContentType type = currentItem.getType();
         String title = NavigatorUtil.getNavigatorTitle(type, currentItem.getTitle());

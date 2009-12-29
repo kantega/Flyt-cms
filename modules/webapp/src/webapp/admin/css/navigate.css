@@ -131,7 +131,7 @@
     margin-right: 2px;
 }
 
-.navigator .openState a {
+.navigator .openState a, .navigator .openState span {
     display: inline-block;
     position: relative;
     top: 1px;
@@ -146,9 +146,8 @@
 .navigator .openState a.closed {
     background-image: url("../bitmaps/common/navigator/nav_closed.png");
 }
-.navigator .openState a.noChildren {
+.navigator .openState span.noChildren {
     background-image: none;
-    cursor: default;
 }
 
 .navigator .icon {
