@@ -30,10 +30,18 @@
                     <div class="name">${media.name}</div>
                     <div class="details">
                         <c:if test="${media.noSubFolders > 0}">
-                            ${media.noSubFolders} <kantega:label key="aksess.multimedia.nosubfolders"/><c:if test="${media.noFiles > 0}">,</c:if>
+                            ${media.noSubFolders}
+                            <c:choose>
+                                <c:when test="${media.noSubFolders == 1}"><kantega:label key="aksess.multimedia.subfolder"/><c:if test="${media.noFiles > 0}">,</c:if></c:when>
+                                <c:otherwise><kantega:label key="aksess.multimedia.subfolders"/><c:if test="${media.noFiles > 0}">,</c:if></c:otherwise>
+                            </c:choose>
                         </c:if>
                         <c:if test="${media.noFiles > 0}">
-                            ${media.noFiles} <kantega:label key="aksess.multimedia.nofiles"/>
+                            ${media.noFiles}
+                            <c:choose>
+                                <c:when test="${media.noFiles == 1}"><kantega:label key="aksess.multimedia.file"/></c:when>
+                                <c:otherwise><kantega:label key="aksess.multimedia.files"/></c:otherwise>
+                            </c:choose>
                         </c:if>
                     </div>
                 </div>
