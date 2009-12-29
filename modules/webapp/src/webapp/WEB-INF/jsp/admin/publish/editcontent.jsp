@@ -40,6 +40,7 @@
     }
 
     function saveContent(status) {
+        debug("editcontent.saveContent(): status: " + status);
         if (validatePublishProperties()) {
             if (!hasSubmitted) {
                 hasSubmitted = true;

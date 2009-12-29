@@ -26,35 +26,40 @@
             <c:when test="${currentContent != null}">
             // User is editing a page
             $("#ModesMenu .button .view").click(function(e){
-                debug("view content");
+                debug("publishModesAndButtonsJS.view");
                 e.preventDefault();
-
                 gotoMode("Navigate");
             });
             $("#ModesMenu .button .edit").click(function(e){
-                debug("edit content");
+                debug("publishModesAndButtonsJS.edit");
                 e.preventDefault();
                 gotoMode("SaveContent");
             });
             $("#ModesMenu .button .organize").click(function(e){
+                debug("publishModesAndButtonsJS.organize");
                 e.preventDefault();
                 gotoMode("Organize");
             });
 
             // These buttons are only displayed when user is editing a page
             $("#EditContentButtons input.publish").click(function(){
+                debug("publishModesAndButtonsJS.publish");
                 saveContent(<%=ContentStatus.PUBLISHED%>);
             });
             $("#EditContentButtons input.save").click(function(){
+                debug("publishModesAndButtonsJS.save");
                 saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
             });
             $("#EditContentButtons input.savedraft").click(function(){
+                debug("publishModesAndButtonsJS.savedraft");
                 saveContent(<%=ContentStatus.DRAFT%>);
             });
             $("#EditContentButtons input.hearing").click(function(){
+                debug("publishModesAndButtonsJS.hearing");
                 saveContent(<%=ContentStatus.HEARING%>);
             });
             $("#EditContentButtons input.cancel").click(function(){
+                debug("publishModesAndButtonsJS.cancel");
                 if (confirmCancel) {
                     window.location.href = 'CancelEdit.action';
                 }
@@ -62,6 +67,7 @@
 
             // Prevent user from clicking top menu
             $("#TopMenu a").click(function (e) {
+                debug("publishModesAndButtonsJS: topmenu click");
                 if (!confirmCancel()) {
                     e.preventDefault();
                 }
@@ -95,10 +101,12 @@
     }
 
     function gotoMode(action) {
+        debug("publishModesAndButtonsJS.gotoMode(): action: "+action);
         action = action + ".action";
         var href = "" + window.location.href;
         if (href.indexOf(action) != -1) {
             // Tried to click current tab
+            debug("publishModesAndButtonsJS.gotoMode(): Tried to click current tab");
             return;
         }
 

@@ -24,6 +24,7 @@
         <script type="text/javascript">
             var hasSubmitted = false;
             function saveContent(status) {
+                debug("contentNavigateLayout.saveContent(): status: " + status + ", hasSubmitted: " + hasSubmitted);
                 if (!hasSubmitted) {
                     hasSubmitted = true;
                     document.myform.status.value = status;
