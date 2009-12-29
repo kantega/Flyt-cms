@@ -36,7 +36,7 @@ var MultimediaStatus = {
         if (path) {
             var crumbs = "<ul>";
             for (var i=0; i<path.length; i++) {
-                crumbs += "<li><a href=\"?id="+path[i].id+"\">"+path[i].title+"</a></li>";
+                crumbs += "<li><a href=\"?itemIdentifier="+path[i].id+"\">"+path[i].title+"</a></li>";
             }
             crumbs += "</ul>";
             $("#Breadcrumbs").html(crumbs);
