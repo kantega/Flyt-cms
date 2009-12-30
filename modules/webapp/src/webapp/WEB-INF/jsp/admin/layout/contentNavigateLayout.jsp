@@ -86,7 +86,19 @@
 
         <div id="MainPane">
 
+            <div id="Statusbar">
+                <div id="Breadcrumbs"></div>
+                <div class="supportMenu">
+                    <a href="#" class="brokenLink"><kantega:label key="aksess.statusbar.brokenlink"/></a>
+                    <a href="#" class="crossPublish"><kantega:label key="aksess.statusbar.crosspublished"/></a>
+                    <a href="#" class="details"><kantega:label key="aksess.statusbar.details"/></a>
+                </div>
+            </div>
+
+            <div id="SearchResults"></div>
+
             <kantega:getsection id="content"/>
+
             <c:choose>
                 <c:when test="${currentContent != null}">
                     <div id="EditContentButtons" class="buttonBar">

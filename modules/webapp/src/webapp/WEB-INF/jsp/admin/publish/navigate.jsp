@@ -73,7 +73,7 @@
 
 <kantega:section id="content">
 
-    <%@include file="fragments/statusbar.jsp"%>
+    
     <iframe name="contentmain" id="Contentmain" src="${currentUrl}" height="100%" width="100%"></iframe>
 
 </kantega:section>

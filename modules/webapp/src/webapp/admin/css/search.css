@@ -1,3 +1,11 @@
+body {
+    /*background: #FEFEFE url(../bitmaps/default/framework/search_background.png) repeat-x scroll left top;*/
+    background: #ffffff;
+}
+#SearchResult {
+    
+    padding: 1em;
+}
 div.hit {
     margin-top: 1em;
 }

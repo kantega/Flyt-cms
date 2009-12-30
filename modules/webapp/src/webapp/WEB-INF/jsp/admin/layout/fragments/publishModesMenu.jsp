@@ -21,7 +21,6 @@
         <input type="text" id="SearchQuery" class="query content" name="query content">
         <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
     </form>
-    <div id="SearchResults"></div>
 </div>
 <div class="buttonGroup">
     <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>
