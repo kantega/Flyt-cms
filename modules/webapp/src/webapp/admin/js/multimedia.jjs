@@ -34,7 +34,7 @@ var MultimediaStatus = {
 
     breadcrumbs: function (path) {
         if (path) {
-            var crumbs = "<ul>";
+            var crumbs = '<ul class="breadcrumbs">';
             for (var i=0; i<path.length; i++) {
                 crumbs += "<li><a href=\"?itemIdentifier="+path[i].id+"\">"+path[i].title+"</a></li>";
             }
@@ -114,26 +114,63 @@ function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
  * Adds click listeners to the different media types and decides actions on these clicks.
  */
 function addMediaitemClickListeners() {
-    $("#MultimediaFolders .folder").click(function(){
-        debug("multimedia.addMediaitemClickListeners(): folder click recieved");
-        var idAttr = $(this).attr("id");
-        currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-        triggerMultimediaupdateEvent();
+
+    $("#MultimediaFolders div[id^=Media]").click(function(event){
+        $media = $(this);
+
+        if ($(event.target).hasClass("name")) {
+            event.stopPropagation();
+            editMediaName(this);
+        }
+
+        else if ($media.hasClass("folder")) {
+            debug("multimedia.addMediaitemClickListeners(): folder click recieved");
+            if (isNameEditInProgress(this)) {
+                debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+                updateMediaName(this);
+            } else {
+                var idAttr = $media.attr("id");
+                currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
+                triggerMultimediaupdateEvent();
+            }
+        }
+
+        else if ($media.hasClass("media")) {
+                debug("multimedia.addMediaitemClickListeners(): media click recieved");
+                if (isNameEditInProgress(this)) {
+                    debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+                    updateMediaName(this);
+                } else {
+                    window.location.href = $media.find(".icon a").attr("href");
+                }
+            }
     });
 
-    $(".mediaInfo .name").click(function (event) {
-        event.stopPropagation();
-        editMediaName(this);
-    });
 
+//    $("#MultimediaFolders .folder").click(function(){
+//        debug("multimedia.addMediaitemClickListeners(): folder click recieved");
+//        if (isNameEditInProgress(this)) {
+//            debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+//            updateMediaName(this);
+//        } else {
+//            var idAttr = $(this).attr("id");
+//            currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
+//            triggerMultimediaupdateEvent();
+//        }
+//    });
+//
+//    $("#MultimediaFolders .media").click(function(){
+//        debug("multimedia.addMediaitemClickListeners(): media click recieved");
+//        if (isNameEditInProgress(this)) {
+//            debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+//            updateMediaName(this);
+//        } else {
+//            window.location.href = $(this).find(".icon a").attr("href");
+//        }
+//    });
+//
 
-    /*
-     $("#MultimediaFolders .media").click(function(){
-     debug("multimedia.addMediaitemClickListeners(): media click recieved");
-     var idAttr = $(this).attr("id");
-     currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-     window.location.href = 'EditMultimedia.action?id=' + currentItemIdentifier;
-     });*/
+//
 }
 
 /**
@@ -152,6 +189,10 @@ function getViewFolderAction() {
     return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
 }
 
+function getEditAction() {
+    return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
+}
+
 function getItemIdentifierFromNavigatorHref(href) {
     return getQueryParam("itemIdentifier", href);
 }
@@ -159,7 +200,11 @@ function getItemIdentifierFromNavigatorHref(href) {
 function onNavigatorTitleClick(elm) {
     var href = elm.attr("href");
     currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
-    triggerMultimediaupdateEvent();
+    if(elm.hasClass("folder")) {
+        triggerMultimediaupdateEvent();
+    } else {
+        window.location.href = getEditAction()+"?id="+currentItemIdentifier;
+    }
 }
 
 function triggerMultimediaupdateEvent() {
@@ -182,9 +227,6 @@ function setLayoutSpecificSizes(elementProperties) {
     } else {
         $mainPane.width( (elementProperties.window.width-elementProperties.framesplit.width-$("#SideBar").outerWidth(true)) + 'px');
     }
-
-
-
 
     var $multimediaFolders = $("#MultimediaFolders");
     if ($multimediaFolders) {
@@ -247,29 +289,40 @@ function displayResults(xml) {
     }
 }
 
+/**
+ * Enables inline editing of the media item's name.
+ *
+ * @param obj - Must be the object's containing element, i.e. a div with id=Media[..]
+ */
 function editMediaName(obj) {
     if ($("input", obj).length == 0) {
-        var value = $(obj).html();
+        var $name = $(obj).find(".name");
+        var value = $name.html();
         var html = '<input type="hidden" class="oldName" value="' + value + '">';
         html += '<input type="text" class="newName" maxlength="255" value="' + value + '">';
-        $(obj).html(html);
-        $("input.newName", obj).keypress(function(e) {
-            if (e.which == 13) {
-                updateMediaName(this);
-            }
-        });
-
-        $("input", obj).blur(function(e) {
-            updateMediaName(this);
-        });
+        $name.html(html);
+        $("input.newName", obj)
+                .keypress(function(e) {
+                    if (e.which == 13 || e.which == 0) {//Enter or tab
+                        updateMediaName(obj);
+                    }
+                }).click(function(e){
+                    e.stopPropagation();
+                }).focus();
     }
 }
 
+function isNameEditInProgress(obj) {
+    return $("input.newName", obj).length > 0;
+}
+
 function updateMediaName(obj) {
-    var idAttr = $(obj).parent().parent().parent().attr('id');
+    var $obj = $(obj);
+    var idAttr = $obj.attr('id');
     var id = idAttr.substring("Media".length, idAttr.length);
-    var newName = $(obj).val();
-    var oldName = $(".oldName", $(obj).parent()).val();
+    var newName = $obj.find("input.newName").val();
+    var oldName = $obj.find("input.oldName").val();
+    debug("multimedia.updateMediaName(): id: "+id+", newName: "+newName+", oldName:"+oldName);
 
     if (newName.length < 1) {
         return;
@@ -282,7 +335,7 @@ function updateMediaName(obj) {
             updateNavigator(currentItemIdentifier, true);            
         });
     }
-    $(obj).parent().html(newName);
+    $obj.find(".name").html(newName);
 }
 
 
