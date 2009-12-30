@@ -21,16 +21,7 @@
  * See navigate.jjs
  */
 function setLayoutSpecificSizes(elementProperties){
-    $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
-    $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
-
-    var $mainPane = $('#MainPane');
-    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
-//    var mainPaneContentHeight = $("#MainPaneContent").height();
-//    var windowHeight = $(window).height();
-//    var navHeight = Math.max(windowHeight, mainPaneContentHeight) + parseInt($("#MainPaneContent").css("marginTop"),10) +  + parseInt($("#MainPaneContent").css("marginBottom"),10);
-//    debug("administrationLayout.setLayoutSpecificSizes(): Setting heights. MainPaneContent.height=" + mainPaneContentHeight + ", window.height=" + windowHeight + ". Setting Navigatior.height=" + navHeight);
-//    $("#Navigator").css("height", navHeight + "px");
+    $("#Content").css("height", "auto").css("min-height", elementProperties.window.height-elementProperties.top.height);
 }
 
 /**

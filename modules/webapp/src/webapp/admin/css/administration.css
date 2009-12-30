@@ -1,3 +1,10 @@
+#Content {
+    background: url("../bitmaps/default/framework/staticsidebar_background.png") top left repeat-y;
+}
+#Navigation {
+    background: transparent;
+}
 #Navigator {
     margin-left: 10px;
+    overflow: visible;
 }

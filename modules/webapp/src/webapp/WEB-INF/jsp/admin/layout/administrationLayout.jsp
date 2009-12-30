@@ -21,7 +21,6 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/administration.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/administration.jjs"></script>
 </kantega:section>
 
@@ -82,11 +81,8 @@
                             <li><span class="title"><a href="<%=root%>ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></span></li>
                         </ul>
                     </li>
-                    
+
                 </ul>
-            </div>
-            <div id="Framesplit">
-                <div id="FramesplitDrag"></div>
             </div>
         </div>
 
@@ -96,6 +92,7 @@
             </div>
             <div class="clearing"></div>
         </div>
+        <div class="clearing"></div>
     </div>
 
 </kantega:section>
