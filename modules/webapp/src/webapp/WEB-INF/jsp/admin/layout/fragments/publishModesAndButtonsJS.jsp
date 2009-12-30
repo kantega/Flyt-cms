@@ -40,7 +40,16 @@
                 e.preventDefault();
                 gotoMode("Organize");
             });
-
+            $("#ModesMenu .button .linkcheck").click(function(e){
+                debug("publishModesAndButtonsJS.linkcheck");
+                e.preventDefault();
+                gotoMode("LinkCheck");
+            });
+            $("#ModesMenu .button .statistics").click(function(e){
+                debug("publishModesAndButtonsJS.statistics");
+                e.preventDefault();
+                gotoMode("Statistics");
+            });
             // These buttons are only displayed when user is editing a page
             $("#EditContentButtons input.publish").click(function(){
                 debug("publishModesAndButtonsJS.publish");

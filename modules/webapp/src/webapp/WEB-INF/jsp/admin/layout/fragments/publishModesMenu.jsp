@@ -23,15 +23,15 @@
     </form>
 </div>
 <div class="buttonGroup">
-    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button <c:if test="${navigateActive}"> active</c:if>"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="#" class="button"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
+    <a href="#" class="button <c:if test="${editActive}"> active</c:if>"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last <c:if test="${organizeActive}"> active</c:if>"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
 </div>
 <div class="buttonGroup">
-    <a href="#" class="button"><span class="linkcheck"><kantega:label key="aksess.mode.linkcheck"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/LinkCheck.action" class="button <c:if test="${linkCheckActive}"> active</c:if>"><span class="linkcheck"><kantega:label key="aksess.mode.linkcheck"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="#" class="button last"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Statistics.action" class="button last <c:if test="${statisticsActive}"> active</c:if>"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
 </div>
 

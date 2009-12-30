@@ -75,6 +75,14 @@
                 <prop key="/admin/publish/ListSubPages.action">ListSubPagesAction</prop>
                 <prop key="/admin/publish/ReorderSubPages.action">ReorderSubPagesAction</prop>
 
+                <!-- Link checker -->
+                <prop key="/admin/publish/LinkCheck.action">LinkCheckAction</prop>
+                <prop key="/admin/publish/ListBrokenLinks.action">ListBrokenLinksAction</prop>
+
+                <!-- Statistics -->
+                <prop key="/admin/publish/Statistics.action">StatisticsAction</prop>
+                <prop key="/admin/publish/PageStatistics.action">PageStatisticsAction</prop>
+
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
@@ -325,7 +333,20 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/listsubpages.jsp"/>
     </bean>
     <bean id="ReorderSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ReorderSubpagesAction"/>
-
+    <!-- Link check -->
+    <bean id="LinkCheckAction" class="no.kantega.publishing.admin.content.action.LinkCheckAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/linkcheck.jsp"/>
+    </bean>
+    <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listbrokenlinks.jsp"/>
+    </bean>
+    <!-- Statistics -->
+    <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/statistics.jsp"/>
+    </bean>
+    <bean id="PageStatisticsAction" class="no.kantega.publishing.admin.content.ajax.PageStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/pagestatistics.jsp"/>
+    </bean>
     <!-- Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>

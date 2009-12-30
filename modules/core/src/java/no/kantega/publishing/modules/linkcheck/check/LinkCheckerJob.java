@@ -16,10 +16,7 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
-import no.kantega.publishing.common.ao.LinkAO;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.AttachmentAO;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.ao.*;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
@@ -36,6 +33,7 @@ import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.UnknownHostException;
 import java.net.ConnectException;
@@ -56,6 +54,8 @@ public class LinkCheckerJob implements InitializingBean {
     private String proxyUser;
     private String proxyPassword;
 
+    @Autowired
+    private LinkDao linkDao;
 
     public void execute() {
 
@@ -75,7 +75,7 @@ public class LinkCheckerJob implements InitializingBean {
         Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
         SearchTerm term = new NotCheckedSinceTerm(week);
 
-        int noLinks = LinkAO.getNumberOfLinks();
+        int noLinks = linkDao.getNumberOfLinks();
         int maxLinksPerDay = 1000;
         if (noLinks > 7*maxLinksPerDay) {
             maxLinksPerDay = (noLinks/7) + 100;
@@ -88,7 +88,7 @@ public class LinkCheckerJob implements InitializingBean {
         final Counter linkCounter = new Counter();
 
         long start = System.currentTimeMillis();
-        LinkAO.doForEachLink(term, new LinkHandler() {
+        linkDao.doForEachLink(term, new LinkHandler() {
 
             public void handleLink(int id, String link, LinkOccurrence occurrence) {
                 if(link.startsWith("http")) {

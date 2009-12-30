@@ -99,10 +99,10 @@ function setLayoutSpecificSizes(elementProperties) {
     $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
     $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
 
-    var $subpages = $("#SubPages");
-    if ($subpages) {
-        var subpagesHeight = $mainPane.height()-parseInt($subpages.css("paddingTop"))-parseInt($subpages.css("paddingBottom"))-statusbarHeight-buttonsHeight;
-        $subpages.css('height',  subpagesHeight + 'px');
+    var $mainPaneContent = $("#MainPaneContent");
+    if ($mainPaneContent) {
+        var subpagesHeight = $mainPane.height()-parseInt($mainPaneContent.css("paddingTop"))-parseInt($mainPaneContent.css("paddingBottom"))-statusbarHeight-buttonsHeight;
+        $mainPaneContent.css('height',  subpagesHeight + 'px');
     }
 
 }

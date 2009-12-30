@@ -68,10 +68,15 @@ table.noborder td, table.noborder th {
     background-color: #FFFFE1;
     margin-bottom: 10px;
     margin-top: 10px;
+    max-width: 600px;
 }
 
 .info {
     background-color: #FFFFE1;
+}
+
+#MainPane > .info {
+    margin: 10px;
 }
 
 .error {
@@ -247,11 +252,21 @@ table.fullWidth {
     background: url("../bitmaps/default/framework/modus_btn_center.png") center center repeat-x;
 }
 
+#ModesMenu .buttonGroup .button.active {
+    background: url("../bitmaps/default/framework/modus_btn_center_active.png") center center repeat-x;
+}
+
 #ModesMenu .buttonGroup .button:first-child {
     background: url("../bitmaps/default/framework/modus_btn_left.png") left center no-repeat
 }
+#ModesMenu .buttonGroup .button.active:first-child {
+    background: url("../bitmaps/default/framework/modus_btn_left_active.png") left center no-repeat
+}
 #ModesMenu .buttonGroup .button:last-child {
     background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat
+}
+#ModesMenu .buttonGroup .button.active:last-child {
+    background: url("../bitmaps/default/framework/modus_btn_right_active.png") right center no-repeat
 }
 #ModesMenu .buttonGroup .buttonSeparator {
     padding-left: 1px;
@@ -557,6 +572,7 @@ table.fullWidth {
 /************** Boxes **************/
 div.roundCorners {
     /*padding-bottom: 20px;*/
+    max-width: 600px;
 }
 
 div.roundCorners div.top {
@@ -661,14 +677,15 @@ div.sidebarFieldset fieldset legend {
     border:0;
 }
 
-/************** Organize subpages **************/
-#SubPages {
-    background: #ffffff;
+#MainPaneContent {
+    overflow: auto;    
     padding-top: 10px;
     padding-bottom: 10px;
-    overflow: auto;
+    background: #ffffff;
     min-width: 670px;
 }
+
+/************** Organize subpages **************/
 #SubPages ul {
     margin: 0 0 2em;
 }

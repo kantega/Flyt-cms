@@ -60,6 +60,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         Map<String, Object> model = getModel(content, request);
+        
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Submit from user
 

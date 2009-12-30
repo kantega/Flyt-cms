@@ -19,6 +19,7 @@ package no.kantega.publishing.common.ao;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.commons.sqlsearch.SearchTerm;
 
 import java.util.List;
@@ -49,11 +50,11 @@ public interface LinkDao {
     /**
      * Calls the supplied LinkOccurrenceHandler for each link in the site.
      *
-     * @param siteId - Fetches all the links within this site.
+     * @param cid - Fetches all the links for this page and below this page
      * @param sort -
      * @param handler - Callback
      */
-    public void doForEachLinkOccurrence(int siteId, String sort, LinkOccurrenceHandler handler);
+    public void doForEachLinkOccurrence(ContentIdentifier parent, String sort, LinkOccurrenceHandler handler);
 
     /**
      * Gets all broken links for a given content

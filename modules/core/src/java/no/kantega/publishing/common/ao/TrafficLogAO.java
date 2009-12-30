@@ -348,7 +348,7 @@ public class TrafficLogAO {
             return referer;
         }
         public String getRefererShort() {
-            int i = 30;
+            int i = 60;
             return referer == null ? null : referer.length() > i ? referer.substring(0, i) +".." : referer;
         }
 

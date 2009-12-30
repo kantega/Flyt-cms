@@ -18,22 +18,20 @@
 ~ limitations under the License.
 --%>
 
-<c:set var="organizeActive" value="true"/>
+<c:set var="linkCheckActive" value="true"/>
 <kantega:section id="title">
-    <kantega:label key="aksess.navigate.title"/>
+    <kantega:label key="aksess.linkcheck.title" pageTitle="${currentNavigateContent.title}"/>
 </kantega:section>
 
-<kantega:section id="contentclass">organizeSubpages</kantega:section>
+<kantega:section id="contentclass">linkCheck</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/linkcheck.jjs"></script>
 </kantega:section>
 
 <kantega:section id="content">
     <div id="MainPaneContent">
-        <%-- The content is loaded with ajax by the ListSubPagesAction --%>
-        <div id="SubPages"></div>
-    </div>
+    <%-- The content is loaded with ajax by the ListBrokenLinks.action --%>
 </kantega:section>
 
 <%@include file="../layout/contentNavigateLayout.jsp"%>

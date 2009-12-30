@@ -111,6 +111,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
         <example>
             <![CDATA[
                     Fetch label "form.email" from propery file site_en.properties / site_no.properties:

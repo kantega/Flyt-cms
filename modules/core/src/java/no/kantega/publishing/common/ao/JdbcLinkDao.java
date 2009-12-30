@@ -21,6 +21,7 @@ import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.commons.sqlsearch.SearchTerm;
@@ -139,9 +140,9 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
     /**
-     * @see no.kantega.publishing.common.ao.LinkDao#doForEachLinkOccurrence(int, String, no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler)
+     * @see no.kantega.publishing.common.ao.LinkDao#doForEachLinkOccurrence(ContentIdentifier, String, no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler)
      */
-    public void doForEachLinkOccurrence(int siteId, String sort, final LinkOccurrenceHandler handler) {
+    public void doForEachLinkOccurrence(ContentIdentifier parent, String sort, final LinkOccurrenceHandler handler) {
         String orderBy;
         if("url".equals(sort)) {
             orderBy = "link.url";
@@ -156,8 +157,8 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         }
 
         String siteClause = "";
-        if (siteId > 0) {
-            siteClause = " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE SiteId=" + siteId + ")";
+        if (parent != null) {
+            siteClause = " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE '%/" + parent.getAssociationId() + "/%' OR UniqueId = " + parent.getAssociationId() + ")";
         }
         final String query = "SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid and content.ContentId=contentversion.ContentID and contentversion.IsActive=1 and content.ContentId in (select ContentId from associations where IsDeleted = 0) AND linkoccurrence.linkid=link.id) " + siteClause + " ORDER BY " + orderBy;
 

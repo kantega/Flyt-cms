@@ -18,21 +18,20 @@
 ~ limitations under the License.
 --%>
 
-<c:set var="organizeActive" value="true"/>
+<c:set var="statisticsActive" value="true"/>
 <kantega:section id="title">
-    <kantega:label key="aksess.navigate.title"/>
+    <kantega:label key="aksess.statistics.title"/>
 </kantega:section>
 
-<kantega:section id="contentclass">organizeSubpages</kantega:section>
+<kantega:section id="contentclass">statistics</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/statistics.jjs"></script>
 </kantega:section>
 
 <kantega:section id="content">
     <div id="MainPaneContent">
-        <%-- The content is loaded with ajax by the ListSubPagesAction --%>
-        <div id="SubPages"></div>
+    <%-- The content is loaded with ajax by the PageStatistics.action --%>
     </div>
 </kantega:section>
 

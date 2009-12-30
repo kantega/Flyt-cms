@@ -17,12 +17,17 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.publishing.common.ao.LinkAO;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LinkCrawlerJob {
 
     private LinkCheckerJob checker;
+
+    @Autowired
+    private LinkDao linkDao;
 
     public void execute() {
         if(!Aksess.isLinkCheckerEnabled()) {
@@ -30,7 +35,7 @@ public class LinkCrawlerJob {
         }
         LinkEmitter emitter = new LinkEmitter();
 
-        LinkAO.saveAllLinks(emitter);
+        linkDao.saveAllLinks(emitter);
 
         checker.execute();
 
