@@ -69,7 +69,6 @@ public class NavigatorAction implements Controller {
 
         RequestParameters params = new RequestParameters(request);
 
-        String sort = params.getString(AdminRequestParameters.NAVIGATION_SORT_ORDER);
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
         //Extracting currently selected content from it's url
@@ -107,15 +106,7 @@ public class NavigatorAction implements Controller {
 
         openFoldersList = NavigatorUtil.getOpenFolders(expand, openFoldersList, path, currentId);
 
-
-        //Setting menu sort order.
-        if (sort == null) {
-            sort = (String)request.getSession().getAttribute(AdminSessionAttributes.NAVIGATION_SORT_ORDER);
-            if (sort == null) {
-                sort = ContentProperty.PRIORITY;
-            }
-        }
-        session.setAttribute(AdminSessionAttributes.NAVIGATION_SORT_ORDER, sort);
+        String sort = getSort(request);
 
         int[] openIds = StringHelper.getInts(openFoldersList, ",");
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
@@ -138,7 +129,34 @@ public class NavigatorAction implements Controller {
         return new ModelAndView(view, model);
     }
 
+
     
+    /**
+     * Determining the menu sort order
+     *
+     * @param request - The current HttpServletRequest
+     * @return - String representing the sort order, e.g. ContentProperty.PRÌORITY.
+     */
+    private String getSort(HttpServletRequest request) {
+        String sort = request.getParameter(AdminRequestParameters.NAVIGATION_SORT_ORDER);
+
+        UserPreference sortPreference = userPreferencesManager.getPreference(UserPreference.FILTER_SORT, request);
+        if (sortPreference != null && sortPreference.getValue() != null && sortPreference.getValue().length() > 0) {
+            sort = sortPreference.getValue();
+        }
+
+        if (sort == null) {
+            sort = (String)request.getSession().getAttribute(AdminSessionAttributes.NAVIGATION_SORT_ORDER);
+            if (sort == null) {
+                sort = ContentProperty.PRIORITY;
+            }
+        }
+        request.getSession().setAttribute(AdminSessionAttributes.NAVIGATION_SORT_ORDER, sort);
+
+        return sort;
+    }
+
+
     /**
      * Determines whether to show or hide expired content.
      *
