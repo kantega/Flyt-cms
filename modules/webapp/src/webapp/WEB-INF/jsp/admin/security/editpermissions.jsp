@@ -160,7 +160,7 @@
                     </div>
                     <div class="buttonGroup">
                         <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                        <span class="button"><input type="button" onclick="window.close()" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                        <span class="button"><input type="button" onclick="window.close()" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                     </div>
                 </fieldset>
             </div>
