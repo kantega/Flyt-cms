@@ -73,10 +73,33 @@
     <div id="Content"<kantega:hassection id="contentclass"> class="<kantega:getsection id="contentclass"/>"</kantega:hassection>>
         <div id="Navigation">
             <div id="Filteroptions">
-                <a href="#" class="filteroption filter"><kantega:label key="aksess.filteroptions.options"/></a>
-                <div class="filteroption">
+                <a href="#" class="filtersToggle"><kantega:label key="aksess.filteroptions.options"/></a>
+                <div class="hideexpired">
                     <input type="checkbox" id="FilteroptionHideExpired">
                     <label for="FilteroptionHideExpired"><kantega:label key="aksess.filteroptions.hideexpired"/></label>
+                </div>
+                <div class="filters">
+                    <fieldset id="FilteroptionSort">
+                        <legend><kantega:label key="aksess.navigator.sort"/></legend>
+                        <div class="row">
+                            <input type="radio" class="radio" name="sort" value="priority" id="FilteroptionSortPriority"><label class="radio" for="FilteroptionSortPriority"><kantega:label key="aksess.navigator.sort.priority"/></label>
+                            <div class="clearing"></div>
+                        </div>
+                        <div class="row">
+                            <input type="radio" class="radio" name="sort" value="lastmodified" id="FilteroptionSortLastmodified"><label class="radio" for="FilteroptionSortLastmodified"><kantega:label key="aksess.navigator.sort.lastmodified"/></label>
+                            <div class="clearing"></div>
+                        </div>
+                        <div class="row">
+                            <input type="radio" class="radio" name="sort" value="title" id="FilteroptionSortTitle"><label class="radio" for="FilteroptionSortTitle"><kantega:label key="aksess.navigator.sort.title"/></label>
+                            <div class="clearing"></div>
+                        </div>
+                    </fieldset>
+                    <fieldset id="FilteroptionSites">
+                        <legend><kantega:label key="aksess.navigator.sites"/>&nbsp;(<a href="#" id="FilteroptionSitesAll"><kantega:label key="aksess.navigator.sites.all"/></a>)</legend>
+                        <div class="options">
+                        <%-- The sites (options) are loaded by content.Contentstatus.updateFilters() --%>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
             <div id="Navigator"></div>

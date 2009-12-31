@@ -29,6 +29,7 @@ $(document).ready(function() {
         dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
     }
     setWindowSize();
+    ajaxSetup();
 });
 
 
@@ -57,6 +58,18 @@ function setWindowSize() {
 
     });
 }
+
+function ajaxSetup() {
+    var $ajaxloading = $('<div id="AjaxLoadingIllustration">Loading...</div>');
+    $("body").append($ajaxloading);
+    $ajaxloading.ajaxStart(function(){
+       $(this).show();
+     });
+
+    $ajaxloading.ajaxStop(function(){
+        $(this).hide();
+    });
+}                       
 
 
 
@@ -179,4 +192,26 @@ var ModalWindow = {
 
 };
 
+
+/**
+ * Handles user settings (perferences). These can either be per session or permanent (persistent).
+ */
+var UserPreferences = {
+
+    keys : {
+        filter : {
+            hideExpired: 'filterHideExpired',
+            sort: 'filterSort',
+            sites: 'filterSites'
+        }
+    },
+
+    setPreference: function(key, value, permanent){
+        UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
+    },
+
+    getPreference: function(key, callback) {
+        UserPreferencesHandler.getPreference(key, callback);
+    }
+};
 

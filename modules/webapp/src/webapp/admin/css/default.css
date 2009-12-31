@@ -27,13 +27,14 @@ input[type=submit] {
 input.disabled {
     background-color: #eeeeed;
 }
-input.radio {
+input.radio, input.checkbox {
     float: left;
-    margin-right: 5px;
+    margin: 0 5px;
 }
-label.radio {
+label.radio, input.checkbox {
     float: left;
 }
+
 fieldset {
     border: 1px solid black;
     padding: 4px;
@@ -124,7 +125,16 @@ table.noborder td, table.noborder th {
     overflow: auto;
 }
 
-
+#AjaxLoadingIllustration {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ffffff url("../bitmaps/common/icons/ajax-loader.gif") left center no-repeat;
+    height: 28px;
+    line-height: 28px;
+    padding-left: 20px;
+    display: none;
+}
 
 /************** Generic content pane styles  **************/
 #MainPane {

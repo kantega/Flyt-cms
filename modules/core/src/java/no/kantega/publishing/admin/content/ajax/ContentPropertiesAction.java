@@ -20,6 +20,7 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -31,6 +32,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.admin.preferences.UserPreference;
+import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.servlet.ModelAndView;
@@ -51,6 +54,7 @@ public class ContentPropertiesAction implements Controller {
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private View aksessJsonView;
+    @Autowired private UserPreferencesManager userPreferencesManager;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -126,6 +130,9 @@ public class ContentPropertiesAction implements Controller {
             model.put("enabledButtons", enabledButtons);
 
             model.put("content", content);
+            model.put("sites",  aksessSiteCache.getSites());
+            model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
+
 
             return new ModelAndView(aksessJsonView, model);
 

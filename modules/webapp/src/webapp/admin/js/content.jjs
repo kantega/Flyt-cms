@@ -69,6 +69,7 @@ function bindContentupdateEvents() {
             ContentStatus.enableButtons(data.enabledButtons);
             ContentStatus.enableButtons(data.enabledButtons);
             ContentStatus.showApproveOrReject(data.showApproveButtons);
+            ContentStatus.updateFilters(data.sites, data.userPreferences);
         }, "json");
     });
 
@@ -122,18 +123,47 @@ function setOpenElementFromSession() {
  * Binds click/select events to the content filters, such as 'Hide expired'.
  */
 function bindFilterEvents() {
-    var filterOptions = $("#Filteroptions");
-    filterOptions.find("#FilteroptionHideExpired").live('click', function(){
+    var $filterOptions = $("#Filteroptions");
+    $filterOptions.find("#FilteroptionHideExpired").live('change', function(){
         var value = $(this).is(":checked");
         debug("content.bindFilterEvents(): Hide expired clicked: " + value);
-        UserPreferences.setPreference({key:'hideExpired', value:value, permanent:false}, new function(){
-            
-        });
+        UserPreferences.setPreference(UserPreferences.keys.filter.hideExpired, value, false);
         $.event.trigger("contentupdate");
     });
 
-    filterOptions.find(".filter").live('click', function(){
+    $filterOptions.find(".filtersToggle").live('click', function(){
+        $filterOptions.find(".filters").toggle();
         debug("content.bindFilterEvents(): Filter clicked");
+    });
+
+    $filterOptions.find(".filters input[type=sort]").change(function(){
+        if ($(this).is(":checked")) {
+            UserPreferences.setPreference(UserPreferences.keys.filter.sites, $(this).attr("value"), false);
+        }
+    });
+
+    var $sites = $filterOptions.find(".filters input[name=sites]");
+    $sites.live('change',function(){
+        var hiddenSites = "";
+        $filterOptions.find(".filters input[name=sites]").each(function(){
+            var $site = $(this);
+            if (!$site.is(":checked")) {
+                hiddenSites += $site.val();
+
+            }
+        });
+
+        UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false);
+        updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
+    });
+
+    $("#FilteroptionSitesAll").live('click',function(e){
+        e.preventDefault();
+        $("#Filteroptions .filters input[name=sites]").each(function(){
+            $(this).attr("checked", "checked");
+        });
+        UserPreferences.setPreference(UserPreferences.keys.filter.sites, '', false);
+        updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
     });
 }
 
@@ -481,6 +511,59 @@ var ContentStatus = {
             $("#EditContentButtons").hide();
         }
         $.event.trigger("resize");
+    },
+
+    /**
+     * Populates all content filters and sets the user's prefered values.
+     * @param sites - List of all available sites.
+     */
+    updateFilters: function(sites, userPreferences){
+
+        var hiddenSites = [];
+        var hideExpired = false;
+        if (userPreferences && userPreferences.length >0) {
+            for (var i = 0; i < userPreferences.length; i++) {
+                if (userPreferences[i].key == UserPreferences.keys.filter.sites) {
+                    hiddenSites = userPreferences[i].value.split(",");
+                }
+                else if (userPreferences[i].key == UserPreferences.keys.filter.hideExpired) {
+                    hideExpired = (userPreferences[i].value == 'true');
+                }
+            }
+        }
+
+        //Set the site filter
+        if (sites && sites.length > 0) {
+            debug("content.ContentStatus.updateSiteFilter(): Number of sites: " + sites.length);
+            var $sitesFilterOptionsContainser = $("#FilteroptionSites .options");
+            var siteOptions = '';
+            //Print all sites
+            for(i = 0; i < sites.length; i++) {
+                siteOptions +=
+                     '<div class="row">' +
+                     '  <input type="checkbox" class="checkbox" name="sites" value="'+sites[i].id+'" id="FilteroptionSites'+sites[i].id+'"';
+                var isHidden = false;
+                //Check if the user has chosen to hide the site.
+                for (var j=0; j<hiddenSites.length; j++) {
+                    if (hiddenSites[j] == sites[i].id) {
+                        isHidden = true;
+                    }
+                }
+                if (!isHidden) {
+                    siteOptions += ' checked="checked"';
+                }
+                siteOptions +=
+                     '><label class="checkbox" for="FilteroptionSites'+sites[i].id+'">'+sites[i].name+'</label>' +
+                     '  <div class="clearing"></div>' +
+                     '</div>';
+            }
+            $sitesFilterOptionsContainser.html(siteOptions);
+        }
+
+        //Has the user chosen to hide expired elements?
+        if (hideExpired) {
+            $("#FilteroptionHideExpired").attr("checked", "checked");
+        }
     },
 
 

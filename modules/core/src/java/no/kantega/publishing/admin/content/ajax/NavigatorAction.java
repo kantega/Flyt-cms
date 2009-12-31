@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.ajax;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,14 +31,13 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.preferences.UserPreferencesManager;
+import no.kantega.publishing.admin.preferences.UserPreference;
 import no.kantega.publishing.admin.util.NavigatorUtil;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.StringHelper;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
@@ -46,6 +46,8 @@ import java.util.HashMap;
  */
 public class NavigatorAction implements Controller {
 
+    @Autowired
+    private UserPreferencesManager userPreferencesManager;
     public String view;
 
     /**
@@ -69,7 +71,6 @@ public class NavigatorAction implements Controller {
 
         String sort = params.getString(AdminRequestParameters.NAVIGATION_SORT_ORDER);
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
-        boolean showExpired = params.getBoolean(AdminRequestParameters.SHOW_EXPIRED, true);
 
         //Extracting currently selected content from it's url
         Content currentContent = null;
@@ -119,8 +120,8 @@ public class NavigatorAction implements Controller {
         int[] openIds = StringHelper.getInts(openFoldersList, ",");
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
         for (Site site : siteService.getSites()) {
-            if (!site.isDisabled()) {
-                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, showExpired);
+            if (!site.isDisabled() && !isHiddenByUser(site.getId(), request)) {
+                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, isShowExpired(request));
                 if (sitemap != null) {
                     sitemap.setTitle(site.getName());
                     sites.add(sitemap);
@@ -136,6 +137,54 @@ public class NavigatorAction implements Controller {
 
         return new ModelAndView(view, model);
     }
+
+    
+    /**
+     * Determines whether to show or hide expired content.
+     *
+     * @param request - The current HttpServletRequest
+     * @return true if the user wants to show expired, otherwise false.
+     */
+    private boolean isShowExpired(HttpServletRequest request) {
+        boolean showExpired = new RequestParameters(request).getBoolean(AdminRequestParameters.SHOW_EXPIRED, true);
+        UserPreference hideExpiredPreference = userPreferencesManager.getPreference(UserPreference.FILTER_HIDE_EXPIRED, request);
+
+        if (hideExpiredPreference == null || hideExpiredPreference.getValue() == null || hideExpiredPreference.getValue().length() == 0) {
+            return showExpired;
+        }
+        if (Boolean.valueOf(hideExpiredPreference.getValue())) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+
+     *
+     * @param id - The id of the site to check.
+     * @param request - The current HttpServletRequest
+     * @return true if the user wants to hide the site, otherwise false.
+     */
+    private boolean isHiddenByUser(int id, HttpServletRequest request) {
+        UserPreference sitesPreference = userPreferencesManager.getPreference(UserPreference.FILTER_SITES, request);
+        if (sitesPreference == null || sitesPreference.getValue() == null || sitesPreference.getValue().length() == 0) {
+            return false;
+        }
+        String[] sites = sitesPreference.getValue().split(",");
+        for (String site : sites) {
+            try {
+                int siteId = Integer.parseInt(site);
+                if (siteId == id) {
+                    return true;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+        return false;
+    }
+    
 
     public void setView(String view) {
         this.view = view;

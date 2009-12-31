@@ -29,7 +29,7 @@ import java.util.ArrayList;
 /**
  * Used by DWR to maintain the user's preferences.
  */
-@RemoteProxy(name="UserPreferences")
+@RemoteProxy(name="UserPreferencesHandler")
 public class UserPreferencesHandler extends AbstractDwrController {
 
     @Autowired

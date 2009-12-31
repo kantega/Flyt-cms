@@ -146,31 +146,6 @@ function addMediaitemClickListeners() {
             }
     });
 
-
-//    $("#MultimediaFolders .folder").click(function(){
-//        debug("multimedia.addMediaitemClickListeners(): folder click recieved");
-//        if (isNameEditInProgress(this)) {
-//            debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
-//            updateMediaName(this);
-//        } else {
-//            var idAttr = $(this).attr("id");
-//            currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-//            triggerMultimediaupdateEvent();
-//        }
-//    });
-//
-//    $("#MultimediaFolders .media").click(function(){
-//        debug("multimedia.addMediaitemClickListeners(): media click recieved");
-//        if (isNameEditInProgress(this)) {
-//            debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
-//            updateMediaName(this);
-//        } else {
-//            window.location.href = $(this).find(".icon a").attr("href");
-//        }
-//    });
-//
-
-//
 }
 
 /**
@@ -200,10 +175,10 @@ function getItemIdentifierFromNavigatorHref(href) {
 function onNavigatorTitleClick(elm) {
     var href = elm.attr("href");
     currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
-    if(elm.hasClass("folder")) {
-        triggerMultimediaupdateEvent();
-    } else {
+    if(elm.hasClass("image")) {
         window.location.href = getEditAction()+"?id="+currentItemIdentifier;
+    } else {
+        triggerMultimediaupdateEvent();
     }
 }
 

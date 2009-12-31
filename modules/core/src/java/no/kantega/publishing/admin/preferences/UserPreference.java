@@ -22,6 +22,10 @@ import org.directwebremoting.annotations.RemoteProperty;
 @DataTransferObject
 public class UserPreference {
 
+    public static final String FILTER_HIDE_EXPIRED = "filterHideExpired";
+    public static final String FILTER_SORT = "filterSort";
+    public static final String FILTER_SITES = "filterSites";
+
     @RemoteProperty private String key;
     @RemoteProperty private String value;
     @RemoteProperty private boolean permanent;

@@ -40,7 +40,8 @@
 #MainPane #Statusbar {
     height: 2em;
     line-height: 2em;
-    background: #F7F7F7 url("../bitmaps/default/framework/contentstatus_background.png") bottom left repeat-x;
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    border-bottom: 1px solid #cccccc;
     padding: 0 10px;
     position: relative;
 }
@@ -80,8 +81,10 @@
 
 #MainPane #Statusbar .statusDetails {
     width: 100%;
-    background: #ffffff url("../bitmaps/default/framework/contentstatus_details_background.png") bottom left repeat-x;
+    background: #ffffff;
+    border-bottom: 1px solid #cccccc;
     position: absolute;
+    z-index: 100;
     top: 2em;
     right: 0;
     padding-top: 0.5em;
@@ -103,25 +106,45 @@
 }
 /************** Navigation (left column) **************/
 #Filteroptions {
-    background: url("../bitmaps/default/framework/filteroptions_background.png") left bottom repeat-x;
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") left top repeat-x;
+    border-bottom: 1px solid #cccccc;
     height: 2em;
 }
-.filteroption {
+#Filteroptions .hideexpired {
     display: inline;
     line-height:22px;
 }
-.filteroption.filter{
+#Filteroptions .hideexpired input[type=checkbox] {
+    vertical-align: -15%;
+}
+#Filteroptions .hideexpired label {
+    cursor: pointer;
+}
+#Filteroptions .filtersToggle {
     background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
     padding-left: 15px;
     margin: 0 5px;
 }
-.filteroption input[type=checkbox] {
-    vertical-align: -15%;
+#Filteroptions .filters {
+    display: none;
+    padding: 10px;
+    background: #ffffff;
+    position: relative;
+    z-index: 100;
+    border-bottom: 1px solid #cccccc;
 }
-.filteroption label {
-    cursor: pointer;
+#Filteroptions fieldset {
+    border: 0;
+    padding: 0;
+    padding-top: 4px;
 }
-
+#Filteroptions legend {
+    font-weight: bold;
+}
+#Filteroptions legend a {
+    color:#1780B9;
+    font-weight: normal;
+}
 
 /************** Navigator **************/
 .navigator {

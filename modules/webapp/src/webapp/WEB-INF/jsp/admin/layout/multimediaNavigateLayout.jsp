@@ -48,7 +48,7 @@
 
         <div id="MainPane">
             <div id="Statusbar">
-                <div id="Breadcrumbs"></div>
+                <div id="Breadcrumbs"></div> <%-- Loaded by MultimediaPropertiesAction --%>
             </div>
             <kantega:getsection id="content"/>
         </div>
