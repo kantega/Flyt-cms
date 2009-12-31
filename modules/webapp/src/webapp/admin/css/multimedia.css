@@ -27,8 +27,8 @@
     background-color: #5e5e5e;
 }
 
-#MultimediaFolders .folder:hover .mediaInfo .name, #MultimediaFolders .media:hover .mediaInfo .name{
-    background: url("../bitmaps/common/mm/editname.png") no-repeat right top;
+#MultimediaFolders .mediaInfo .name:hover {
+    background: url("../bitmaps/common/icons/editname.png") no-repeat right top;
 }
 
 .navigateMultimedia .navigator .icon a {
