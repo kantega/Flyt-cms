@@ -19,16 +19,15 @@ package no.kantega.publishing.jobs.cleanup;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.LinkAO;
-import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

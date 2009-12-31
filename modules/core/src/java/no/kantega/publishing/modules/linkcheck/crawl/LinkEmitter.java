@@ -20,7 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.ao.LinkAO;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;

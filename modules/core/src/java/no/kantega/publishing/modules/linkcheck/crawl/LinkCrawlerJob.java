@@ -16,9 +16,8 @@
 
 package no.kantega.publishing.modules.linkcheck.crawl;
 
-import no.kantega.publishing.common.ao.LinkAO;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import org.springframework.beans.factory.annotation.Autowired;
 
