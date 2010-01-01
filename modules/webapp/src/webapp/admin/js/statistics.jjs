@@ -20,10 +20,23 @@
 
 
 var currentUrl = "${currentNavigateContent.url}";
+var currentView = "Page";
 
 $(document).ready(function(){
     debug("statistics.$(document).ready()");
-    updatePageStatistics(currentUrl);
+    updateStatistics(currentUrl, currentView);
+
+    $("#PageStatistics").live('click', function(event) {
+        event.preventDefault();
+        currentView = "Page";
+        updateStatistics(currentUrl, currentView);
+    });
+    $("#TotalStatistics").live('click', function(event) {
+        event.preventDefault();
+        currentView = "Total";
+        updateStatistics(currentUrl, currentView);
+    });
+
 });
 
 /**
@@ -37,7 +50,7 @@ function updateMainPane(id, suppressNavigatorUpdate) {
     debug("statistics.updateMainPane(): id: " + id);
     currentUrl = getContentUrlFromAssociationId(id);
     debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
-    updatePageStatistics(currentUrl);
+    updateStatistics(currentUrl, currentView);
     notifyContentUpdate(currentUrl);
 }
 
@@ -46,14 +59,15 @@ function updateMainPane(id, suppressNavigatorUpdate) {
  * Loads the list of subpages for the given url.
  * @param url
  */
-function updatePageStatistics(url) {
+function updateStatistics(url, view) {
 
     debug("statistics.updatePageStatistics(): Triggering contentupdate event");
     $.event.trigger("contentupdate", url);
 
-    debug("statistics.updatePageStatistics(): Calling PageStatistics.action");
-    $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/PageStatistics.action", {itemIdentifier: url}, function(success){
+    debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
+    $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
         debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
         $("#MainPaneContent div.fieldset").roundCorners();
     });
 }
+

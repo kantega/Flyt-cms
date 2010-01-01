@@ -582,7 +582,7 @@ table.fullWidth {
 /************** Boxes **************/
 div.roundCorners {
     /*padding-bottom: 20px;*/
-    max-width: 600px;
+    max-width: 650px;
 }
 
 div.roundCorners div.top {
@@ -779,4 +779,17 @@ div.sidebarFieldset fieldset legend {
     padding-top: 2px;
     margin-left: 3px;
     vertical-align: top;
+}
+
+/************** Statistics **************/
+th.no {
+    width: 30px;
+}
+
+th.views {
+    width: 100px;
+}
+
+th.percent {
+    width: 50px;
 }

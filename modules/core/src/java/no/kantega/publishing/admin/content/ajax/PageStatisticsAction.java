@@ -22,11 +22,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
-import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.ao.TrafficLogDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.TrafficStatisticsService;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.commons.client.util.RequestParameters;
@@ -35,20 +32,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class PageStatisticsAction  extends SimpleAdminController {
+public class PageStatisticsAction extends SimpleAdminController {
+    @Autowired
+    TrafficLogDao trafficLogDao;
+
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         RequestParameters params = new RequestParameters(request);
-
-        TrafficStatisticsService trafficService = new TrafficStatisticsService();
 
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
@@ -74,17 +71,17 @@ public class PageStatisticsAction  extends SimpleAdminController {
                 if (Aksess.getInternalIpSegment() != null) {
                     // Distinguish between internal and external hits
                     query.setTrafficOrigin(TrafficOrigin.INTERNAL);
-                    intHits = trafficService.getNumberOfVisitsInPeriod(query);
+                    intHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
 
                     query.setTrafficOrigin(TrafficOrigin.EXTERNAL);
-                    extHits = trafficService.getNumberOfVisitsInPeriod(query);
+                    extHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
                     sumHits = intHits + extHits;
 
                     query.setTrafficOrigin(TrafficOrigin.INTERNAL);
-                    intSessions = trafficService.getNumberOfSessionsInPeriod(query);
+                    intSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
 
                     query.setTrafficOrigin(TrafficOrigin.EXTERNAL);
-                    extSessions = trafficService.getNumberOfSessionsInPeriod(query);
+                    extSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
                     sumSessions = intSessions + extSessions;
 
                     model.put("intHits", sumHits);
@@ -99,8 +96,8 @@ public class PageStatisticsAction  extends SimpleAdminController {
                     model.put("showInternalAndExternal", Boolean.TRUE);
                 } else {
                     query.setTrafficOrigin(TrafficOrigin.ALL_USERS);
-                    sumHits = trafficService.getNumberOfVisitsInPeriod(query);
-                    sumSessions = trafficService.getNumberOfVisitsInPeriod(query);
+                    sumHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
+                    sumSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
                     model.put("sumHits", sumHits);
                     model.put("sumSessions", sumSessions);
                 }
@@ -108,9 +105,9 @@ public class PageStatisticsAction  extends SimpleAdminController {
 
                 query.setTrafficOrigin(TrafficOrigin.ALL_USERS);
 
-                List topReferers = trafficService.getReferersInPeriod(query);
-                List topReferingHosts = trafficService.getReferingHostsInPeriod(query);
-                List topReferingQueries = trafficService.getReferingQueriesInPeriod(query);
+                List topReferers = trafficLogDao.getReferersInPeriod(query);
+                List topReferingHosts = trafficLogDao.getReferingHostsInPeriod(query);
+                List topReferingQueries = trafficLogDao.getReferingQueriesInPeriod(query);
 
                 model.put("topReferers", topReferers);
                 model.put("topReferingHosts", topReferingHosts);

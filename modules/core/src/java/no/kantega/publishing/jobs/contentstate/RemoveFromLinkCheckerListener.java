@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.event.ContentListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 

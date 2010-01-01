@@ -17,6 +17,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<a href="#" id="TotalStatistics"><kantega:label key="aksess.totalstatistics.title"/></a>
 
 <div class="fieldset">
     <fieldset>
@@ -108,4 +109,4 @@
         </table>
     </fieldset>
 </div>
-</c:if>
+defau</c:if>

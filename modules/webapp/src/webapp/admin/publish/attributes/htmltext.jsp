@@ -100,8 +100,8 @@
                     + "textarea[cols|rows|disabled|name|readonly],tt,var,big",
 
             // TODO: hvordan få satt bredde og høyde?
-            width : "400",
-            //height : "200",
+            width : "600",
+            height : "400",
 
             // Theme options
             // underline

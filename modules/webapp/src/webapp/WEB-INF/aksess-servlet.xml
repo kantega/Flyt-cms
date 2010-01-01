@@ -82,6 +82,7 @@
                 <!-- Statistics -->
                 <prop key="/admin/publish/Statistics.action">StatisticsAction</prop>
                 <prop key="/admin/publish/PageStatistics.action">PageStatisticsAction</prop>
+                <prop key="/admin/publish/TotalStatistics.action">TotalStatisticsAction</prop>
 
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
@@ -347,6 +348,10 @@
     <bean id="PageStatisticsAction" class="no.kantega.publishing.admin.content.ajax.PageStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/pagestatistics.jsp"/>
     </bean>
+    <bean id="TotalStatisticsAction" class="no.kantega.publishing.admin.content.ajax.TotalStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/totalstatistics.jsp"/>
+    </bean>
+
     <!-- Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>

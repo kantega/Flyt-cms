@@ -27,6 +27,7 @@ import java.util.Date;
  */
 public class TrafficLogQuery {
     private ContentIdentifier cid = null;
+    private boolean includeSubPages = false;
     private int siteId = -1;
     private Date start = null;
     private Date end = null;
@@ -70,5 +71,13 @@ public class TrafficLogQuery {
 
     public void setTrafficOrigin(int trafficOrigin) {
         this.trafficOrigin = trafficOrigin;
+    }
+
+    public boolean isIncludeSubPages() {
+        return includeSubPages;
+    }
+
+    public void setIncludeSubPages(boolean includeSubPages) {
+        this.includeSubPages = includeSubPages;
     }
 }

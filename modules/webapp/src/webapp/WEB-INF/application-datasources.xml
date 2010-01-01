@@ -37,5 +37,8 @@
         <property name="dataSource" ref="aksessDataSource"/>
         <property name="sqlDialect" ref="sqlDialect"/>
     </bean>
+    <bean id="aksessTrafficLogDao" class="no.kantega.publishing.common.ao.JdbcTrafficLogDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 
 </beans>

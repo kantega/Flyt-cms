@@ -19,25 +19,22 @@ package no.kantega.publishing.common.ao;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.ContentViewStatistics;
-import no.kantega.publishing.common.data.PeriodViewStatistics;
-import no.kantega.publishing.common.data.TrafficLogQuery;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-public class TrafficLogAO {
-    private static final String SOURCE = "aksess.TrafficLogAO";
+public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
-    public static int getNumberOfHitsOrSessionsInPeriod(TrafficLogQuery query, boolean sessions) throws SystemException {
+    public int getNumberOfHitsOrSessionsInPeriod(TrafficLogQuery query, boolean sessions) throws SystemException {
         int visits = 0;
 
         Calendar calendar = new GregorianCalendar();
@@ -55,17 +52,17 @@ public class TrafficLogAO {
 
         Connection c = null;
         try {
-            c = dbConnectionFactory.getConnection();
+            c = getConnection();
             String originClause = createOriginClause(query.getTrafficOrigin());
+            String contentIdClause = createContentIdClause(query);
 
             String sessionsClause = "count(ContentId)";
             if (sessions) {
                 sessionsClause = "count(distinct SessionId)";
             }
-            PreparedStatement st = c.prepareStatement("select " + sessionsClause + "  as Hits from trafficlog where ContentId = ? and Time >= ? and Time <= ?" + originClause);
-            st.setInt(1, query.getCid().getContentId());
-            st.setTimestamp(2, new java.sql.Timestamp(start.getTime()));
-            st.setTimestamp(3, new java.sql.Timestamp(end.getTime()));
+            PreparedStatement st = c.prepareStatement("select " + sessionsClause + "  as Hits from trafficlog where Time >= ? and Time <= ?" + originClause + contentIdClause);
+            st.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+            st.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 visits = rs.getInt("Hits");
@@ -73,7 +70,7 @@ public class TrafficLogAO {
             rs.close();
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil", SOURCE, e);
+            throw new SystemException("SQL Feil", this.getClass().getName(), e);
         } finally {
             try {
                 if (c != null) {
@@ -87,7 +84,21 @@ public class TrafficLogAO {
         return visits;
     }
 
-    private static String createOriginClause(int trafficOrigin) {
+    private String createContentIdClause(TrafficLogQuery query) {
+        String clause = "";
+        if (query.getCid() != null) {
+            int contentId = query.getCid().getContentId();
+            int siteId = query.getCid().getSiteId();
+            if (query.isIncludeSubPages()) {
+                clause = " and trafficlog.SiteId = " + siteId + " and trafficlog.ContentId in (select ContentId from associations where path like '%/" + contentId + "/%')";
+            } else {
+                clause = " and trafficlog.SiteId = " + siteId + " and trafficlog.ContentId = " + contentId + " ";
+            }
+        }
+        return clause;
+    }
+
+    private String createOriginClause(int trafficOrigin) {
         String originClause = "";
 
         if (trafficOrigin == TrafficOrigin.INTERNAL && Aksess.getInternalIpSegment() != null) {
@@ -125,59 +136,9 @@ public class TrafficLogAO {
         return originClause;
     }
 
-    public static int getTotalNumberOfHitsOrSessionsInPeriod(TrafficLogQuery query, boolean sessions) throws SystemException {
-        int visits = 0;
 
-        Calendar calendar = new GregorianCalendar();
-
-        Date end = query.getEnd();
-        if (end == null) {
-            end = calendar.getTime();
-        }
-
-        Date start = query.getEnd();
-        if (start == null) {
-            calendar.add(Calendar.MONTH, -1);
-            start = calendar.getTime();
-        }
-
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
-            String originClause = createOriginClause(query.getTrafficOrigin());
-
-            String sessionsClause = "count(ContentId)";
-            if (sessions) {
-                sessionsClause = "count(distinct SessionId)";
-            }
-            PreparedStatement st = c.prepareStatement("select " + sessionsClause + "  as Hits from trafficlog where Time >= ? and Time <= ? and SiteId = ?" + originClause);
-            st.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
-            st.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
-            st.setInt(3, query.getSiteId());
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                visits = rs.getInt("Hits");
-            }
-            rs.close();
-            st.close();
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
-
-        return visits;
-    }
-
-
-    public static List getMostVisitedContentStatistics(TrafficLogQuery trafficQuery, int limit) throws SystemException {
-        List stats = new ArrayList();
+    public List<ContentViewStatistics> getMostVisitedContentStatistics(TrafficLogQuery trafficQuery, int limit) throws SystemException {
+        List<ContentViewStatistics> stats = new ArrayList<ContentViewStatistics>();
         Connection c = null;
 
         Calendar calendar = new GregorianCalendar();
@@ -186,13 +147,13 @@ public class TrafficLogAO {
         Date start = calendar.getTime();
 
         try {
-            c = dbConnectionFactory.getConnection();
-            String query = "select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND trafficlog.SiteId = ? AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?";
+            c = getConnection();
+            String query = "select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?";
             query += createOriginClause(trafficQuery.getTrafficOrigin());
+            query += createContentIdClause(trafficQuery);
             PreparedStatement p = c.prepareStatement(query + "  group by associations.associationid, contentversion.title order by count desc");
-            p.setInt(1, trafficQuery.getSiteId());
-            p.setTimestamp(2, new java.sql.Timestamp(start.getTime()));
-            p.setTimestamp(3, new java.sql.Timestamp(end.getTime()));
+            p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+            p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
             p.setMaxRows(limit);
             ResultSet rs = p.executeQuery();
             int i = 0;
@@ -203,20 +164,20 @@ public class TrafficLogAO {
             }
             return stats;
         } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
+            throw new SystemException("SQL error", this.getClass().getName(), e);
         } finally {
             if(c != null) {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    Log.error(SOURCE, e, null, null);
+                    Log.error(this.getClass().getName(), e, null, null);
                 }
             }
         }
     }
 
-    public static List getPeriodViewStatistics(TrafficLogQuery trafficQuery, int period) throws SystemException {
-        List stats = new ArrayList();
+    public List<PeriodViewStatistics> getPeriodViewStatistics(TrafficLogQuery trafficQuery, int period) throws SystemException {
+        List<PeriodViewStatistics> stats = new ArrayList<PeriodViewStatistics>();
         Connection c = null;
 
         Calendar calendar = new GregorianCalendar();
@@ -227,9 +188,10 @@ public class TrafficLogAO {
         int siteId = trafficQuery.getSiteId();
 
         String originClause = createOriginClause(trafficQuery.getTrafficOrigin());
+        String contentIdClause = createContentIdClause(trafficQuery);
 
         try {
-            c = dbConnectionFactory.getConnection();
+            c = getConnection();
             String query = "";
             String driver = dbConnectionFactory.getDriverName();
             if ((driver.indexOf("oracle") != -1) || (driver.indexOf("postgresql") != -1)) {
@@ -238,28 +200,27 @@ public class TrafficLogAO {
                     case Calendar.HOUR:
                         dp = "HH24";
                 }
-                query = "select TO_CHAR(time,'" + dp + "') as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + " group by TO_CHAR(time,'" + dp + "') order by period";
+                query = "select TO_CHAR(time,'" + dp + "') as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + contentIdClause + " group by TO_CHAR(time,'" + dp + "') order by period";
             } else if (driver.indexOf("mysql") != -1) {
                 String dp = "day";
                 switch (period) {
                     case Calendar.HOUR:
                         dp = "hour";
                 }
-                query = "select " + dp + "(time) as period, count(*) as count from trafficlog  where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + " group by " + dp + "(time) order by period";
+                query = "select " + dp + "(time) as period, count(*) as count from trafficlog  where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + contentIdClause +  " group by " + dp + "(time) order by period";
             } else {
                 String dp = "day";
                 switch (period) {
                     case Calendar.HOUR:
                         dp = "hour";
                 }
-                query = "select datepart(" + dp + ", time) as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + " group by datepart(" + dp + ", time) order by period";
+                query = "select datepart(" + dp + ", time) as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause  + contentIdClause +  " group by datepart(" + dp + ", time) order by period";
             }
 
             PreparedStatement p = c.prepareStatement(query);
             p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
             p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
             ResultSet rs = p.executeQuery();
-            int i = 0;
             while(rs.next()) {
                 PeriodViewStatistics stat = new PeriodViewStatistics();
                 stat.setPeriod(rs.getString(1));
@@ -268,41 +229,36 @@ public class TrafficLogAO {
             }
             return stats;
         } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
+            throw new SystemException("SQL error", this.getClass().getName(), e);
         } finally {
             if(c != null) {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    Log.error(SOURCE, e, null, null);
+                    Log.error(this.getClass().getName(), e, null, null);
                 }
             }
         }
     }
 
-    public static List getReferersInPeriod(TrafficLogQuery query) {
+    public List<RefererOccurrence> getReferersInPeriod(TrafficLogQuery query) {
         return internalGetReferer("referer, count(referer) as refcount", "referer", query.getCid(), query.getStart(), query.getEnd(), query.getTrafficOrigin());
     }
 
-    private static List internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
-        final List arguments = new ArrayList();
-        arguments.add(new Integer(cid.getContentId()));
-
+    @SuppressWarnings("unchecked")
+    private List<RefererOccurrence> internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
         final StringBuffer query = new StringBuffer();
         query.append("select ").append(select).append(" from trafficlog where Contentid=? and ").append(groupby).append(" is not null ");
         if(start != null) {
             query.append(" and Time >=? ");
-            arguments.add(start);
         }
         if(end != null) {
             query.append(" and Time <= ? ");
-            arguments.add(end);
         }
         query.append(createOriginClause(origin));
         query.append(" group by ").append(groupby).append(" order by refcount desc ");
-        JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        return template.query(new PreparedStatementCreator() {
+        return getJdbcTemplate().query(new PreparedStatementCreator() {
 
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement preparedStatement = connection.prepareStatement(query.toString());
@@ -325,35 +281,11 @@ public class TrafficLogAO {
         });
     }
 
-    public static List getReferingHostsInPeriod(TrafficLogQuery query) {
+    public List<RefererOccurrence> getReferingHostsInPeriod(TrafficLogQuery query) {
         return internalGetReferer("RefererHost, count(RefererHost) as refcount", "RefererHost", query.getCid(), query.getStart(), query.getEnd(), query.getTrafficOrigin());
     }
 
-    public static List getReferingQueriesInPeriod(TrafficLogQuery query) {
+    public List<RefererOccurrence> getReferingQueriesInPeriod(TrafficLogQuery query) {
         return internalGetReferer("RefererQuery, count(RefererQuery) as refcount", "RefererQuery", query.getCid(), query.getStart(), query.getEnd(), TrafficOrigin.ALL_USERS);
-    }
-
-    public static class RefererOccurrence {
-        private String referer;
-        private int occurrences;
-
-
-        public RefererOccurrence(String referer, int occurrences) {
-            this.referer = referer;
-            this.occurrences = occurrences;
-        }
-
-
-        public String getReferer() {
-            return referer;
-        }
-        public String getRefererShort() {
-            int i = 60;
-            return referer == null ? null : referer.length() > i ? referer.substring(0, i) +".." : referer;
-        }
-
-        public int getOccurrences() {
-            return occurrences;
-        }
     }
 }

@@ -34,6 +34,7 @@
                         <th><a href="timeschecked"><kantega:label key="aksess.linkcheck.timeschecked"/></a></th>
                     </tr>
                     </thead>
+                    <tbody>
                     <c:forEach var="link" items="${brokenLinks}" varStatus="status">
                         <tr class="tableRow<c:out value="${status.index mod 2}"/>" valign="top">
                             <td>
@@ -87,6 +88,7 @@
                             </td>
                         </tr>
                     </c:forEach>
+                    </tbody>
                 </table>
                 <div class="info">
                     <kantega:label key="aksess.linkcheck.help"/>
