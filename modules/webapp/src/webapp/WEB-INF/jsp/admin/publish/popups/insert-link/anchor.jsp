@@ -16,24 +16,50 @@
             url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
         }
 
-        window.opener.createLink(url);
+        var editor = getParent().tinymce.EditorManager.activeEditor;
+        var element = editor.selection.getNode();
+        element = editor.dom.getParent(element, "A");
+        editor.execCommand("mceBeginUndoLevel");
+        if (element == null) {
+            editor.getDoc().execCommand("unlink", false, null);
+            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
+
+            var elements = getParent().tinymce.grep(
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
+
+            for (i = 0; i < elements.length; i++) {
+                setAttributes(elements[i], url);
+            }
+        } else {
+            setAttributes(element, url);
+        }
+        editor.execCommand("mceEndUndoLevel");
+        getParent().ModalWindow.close();
     }
 
     /*
      *  Searches textfield for anchors and adds them to select list
      */
     function addAnchors() {
-        if (window.opener) {
-            var fld = window.opener.focusField;
-            var imgs = fld.contentWindow.document.getElementsByTagName("img");
-            for (var j = 0; imgs && j < imgs.length; j++) {
-                var img = imgs[j];
-                if (img.src.indexOf("placeholder/anchor.gif") != -1) {
-                    var n = img.name;
-                    document.myform.url_anchor.options[document.myform.url_anchor.options.length] = new Option(n, '#' + n);
-                }
-            }
+        var editor = getParent().tinymce.EditorManager.activeEditor;
+        var elements = getParent().tinymce.grep(
+                editor.dom.select("img"),
+                function(n) {
+                    return editor.dom.getAttrib(n, 'src').indexOf('placeholder/anchor.gif') != -1;
+                });
+
+        for (var i = 0; i < elements.length; i++) {
+            var name = elements[i].name;
+            document.linkform.url.options[document.linkform.url.options.length] = new Option(name, '#' + name);
         }
+    }
+
+    function setAttributes(element, url) {
+        var tinydom = getParent().tinymce.EditorManager.activeEditor.dom;
+        tinydom.setAttrib(element, 'href', url);
     }
 
     $(document).ready(function() {

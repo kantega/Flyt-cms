@@ -62,7 +62,6 @@
 <div class="inputs">
     <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="30"><%=value%></TEXTAREA><BR>
 
-
     <script type="text/javascript">
         tinyMCE.init({
             // General options
@@ -70,11 +69,11 @@
             mode : "exact",
             elements : "<%=fieldName%>",
             theme : "advanced",
-            // TODO: hvilket skin skal vi bruke?
-            //skin : "o2k7",
-            //skin_variant : "silver",
-            // TODO: gjennomgang av plugins
-            plugins : "testplugin,safari,table,inlinepopups,searchreplace,contextmenu,paste,fullscreen,noneditable,visualchars",
+
+            skin : "o2k7",
+            skin_variant : "silver",
+
+            plugins : "aksess_insertlink,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
 
             // TODO: gjennomgang av gyldige elementer og attributter
             valid_elements : "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|"
@@ -99,15 +98,15 @@
                     + "q[cite],samp,select[disabled|multiple|name|size],small,"
                     + "textarea[cols|rows|disabled|name|readonly],tt,var,big",
 
-            // TODO: hvordan få satt bredde og høyde?
-            width : "600",
-            height : "400",
+            // skulle det ikke være slik?
+            width : "${attribute.width}",   // 600 
+            height : "${attribute.height}", // 400
 
             // Theme options
             // underline
             theme_advanced_buttons1 : "styleselect,formatselect,|,bold,italic,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,outdent,indent",
             theme_advanced_buttons2 : "undo,redo,|,cut,copy,paste,pastetext,removeformat,cleanup,|,search,replace,|,link,unlink,anchor,|,image,testplugin",
-            theme_advanced_buttons3 : "tablecontrols,|,sub,sup,charmap,|,fullscreen,code",
+            theme_advanced_buttons3 : "tablecontrols,|,sub,sup,charmap,|,fullscreen,|,code",
             theme_advanced_toolbar_location : "top",
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "bottom",

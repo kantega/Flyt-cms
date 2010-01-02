@@ -22,24 +22,40 @@
             url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
         }
 
-        if (frm.newwindow.checked) {
-            // Cant use CreateLink with target
-            var range = getRange(window.opener.focusField);
-            if (range) {
-                var node = getNodeFromRange(range);
-                var selectedText = getHTMLFromRange(range);
-                try {
-                    // if user has selected a link, remove old link
-                    if (node.tagName == "A") {
-                        selectedText = node.innerHTML;
-                    }
-                    pasteHTML(window.opener.focusField, '<a href="' + url + '" onclick="window.open(this.href); return false">' + selectedText  + '</a>');
-                } catch (e) {
+        var editor = getParent().tinymce.EditorManager.activeEditor;
+        var element = editor.selection.getNode();
+        element = editor.dom.getParent(element, "A");
+        editor.execCommand("mceBeginUndoLevel");
+        if (element == null) {
+            editor.getDoc().execCommand("unlink", false, null);
+            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
 
-                }
+            var elements = getParent().tinymce.grep(
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
+            
+            for (i = 0; i < elements.length; i++) {
+                setAttributes(elements[i], url, anchor);
             }
         } else {
-            window.opener.createLink(url);
+            setAttributes(element, url, anchor);
+        }
+        editor.execCommand("mceEndUndoLevel");
+        getParent().ModalWindow.close();
+    }
+
+    function setAttributes(element, url, anchor) {
+        var tinydom = getParent().tinymce.EditorManager.activeEditor.dom;
+        var form = document.linkform;
+        var href = url;
+        if (anchor != "") {
+            href = url + "#" + anchor;
+        }
+        tinydom.setAttrib(element, 'href', href);
+        if (form.newwindow.checked) {
+            tinydom.setAttrib(element, 'onclick', 'window.open(this.href); return false');
         }
     }
 </script>
@@ -48,7 +64,7 @@
     <div class="heading"><label for="url"><kantega:label key="aksess.insertlink.external.url"/></label></div>
     <div class="inputs">
         <input type="text" id="url" class="fullWidth" name="url" value="${url}" maxlength="1024"><br>
-        <input type="checkbox" id="newwindow" name="newwindow" <c:if test="openInNewWindow">checked</c:if>><label for="newwindow"><kantega:label key="aksess.insertlink.opennewwindow"/></label>
+        <input type="checkbox" id="newwindow" name="newwindow" <c:if test="${isOpenInNewWindow}">checked</c:if>><label for="newwindow"><kantega:label key="aksess.insertlink.opennewwindow"/></label>
     </div>
 </div>
 

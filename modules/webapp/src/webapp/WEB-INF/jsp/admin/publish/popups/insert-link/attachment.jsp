@@ -16,7 +16,7 @@
             return;
         }
 
-        var anchor = document.myform.anchor.value;
+        var anchor = frm.anchor.value;
         if (anchor != "") {
             if (anchor.charAt(0) == '#') {
                 anchor = anchor.substring(0, anchor.length);
@@ -25,7 +25,35 @@
             url = url + "&anchor=" + escape(anchor);
             url = url + "#" + anchor;
         }
-        window.opener.createLink(url);
+
+
+        var editor = getParent().tinymce.EditorManager.activeEditor;
+        var element = editor.selection.getNode();
+        element = editor.dom.getParent(element, "A");
+        editor.execCommand("mceBeginUndoLevel");
+        if (element == null) {
+            editor.getDoc().execCommand("unlink", false, null);
+            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
+
+            var elements = getParent().tinymce.grep(
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
+
+            for (i = 0; i < elements.length; i++) {
+                setAttributes(elements[i], url);
+            }
+        } else {
+            setAttributes(element, url);
+        }
+        editor.execCommand("mceEndUndoLevel");
+        getParent().ModalWindow.close();
+    }
+
+    function setAttributes(element, url) {
+        var tinydom = getParent().tinymce.EditorManager.activeEditor.dom;
+        tinydom.setAttrib(element, 'href', url);
     }
 </script>
 
