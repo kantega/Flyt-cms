@@ -133,16 +133,10 @@ function doDelete() {
                     for (int j = 0; j < path.size(); j++) {
                         PathEntry entry = (PathEntry)path.get(j);
                         String title = entry.getTitle();
-                        if (j == 0) {
-                            // First level, print name of site, not pagetitle
-                            Site site = SiteCache.getSiteById(association.getSiteId());
-                            out.write(site.getName());
-                        } else {
-                            if (j > 0) {
-                                out.write("&nbsp;&gt;&nbsp;");
-                            }
-                            out.write(title);
+                        if (j > 0) {
+                            out.write("&nbsp;&gt;&nbsp;");
                         }
+                        out.write(title);
                     }
                     if (association.getAssociationtype() == AssociationType.SHORTCUT) {
                         %>

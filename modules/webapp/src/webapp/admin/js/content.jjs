@@ -351,6 +351,7 @@ var Publish =  {
 
     deleteItem: function(thisId) {
         debug("content.Publish.deleteItem(): thisId: " + thisId);
+        ModalWindow.open({title:'<kantega:label key="aksess.delete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?id=" + thisId,width: 450, height:250});
     },
 
     cut: function(thisId) {

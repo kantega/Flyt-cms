@@ -1,7 +1,8 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
-<%@ page buffer="none" %>
+<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
+<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -17,26 +18,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title">
 
-<kantega:section id="head">
-    <script type="text/javascript" src="../js/edit.jjs"></script>
-    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
-</kantega:section>
-
-<kantega:section id="topMenu">
-    <%@include file="fragments/topMenu.jsp"%>
-</kantega:section>
-
-<kantega:section id="modesMenu">
-</kantega:section>
-
-<kantega:section id="toolsMenu">
 </kantega:section>
 
 <kantega:section id="body">
-    <div id="Content" class="mypage">
-        <kantega:getsection id="content"/>
+    <div class="fieldset">
+        <fieldset>
+            <kantega:label key="${error}"/>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </fieldset>
     </div>
 </kantega:section>
-
-<%@include file="commonLayout.jsp"%>
+<%@ include file="../../layout/popupLayout.jsp" %>

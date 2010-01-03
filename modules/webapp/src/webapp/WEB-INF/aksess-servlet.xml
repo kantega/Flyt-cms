@@ -352,20 +352,17 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/totalstatistics.jsp"/>
     </bean>
 
-    <!-- Delete -->
+    <!-- Copy, Paste, Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.CopyPasteContentAction" id="CopyPasteContentAction"/>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteAssociationAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteAssociationAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteAssociationAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteAssociationAction" id="DeleteAssociationAction">
+        <property name="confirmDeleteSubPagesView" value="/WEB-INF/jsp/admin/publish/delete/confirmdeletesubpages.jsp"/>
+        <property name="selectAssociationView" value="/WEB-INF/jsp/admin/publish/delete/selectassociation.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/publish/delete/deleteerror.jsp"/>
+        <property name="confirmDeleteView" value="/WEB-INF/jsp/admin/publish/delete/deleteconfirm.jsp"/>
     </bean>
-
     <!-- Edit content -->
     <bean class="no.kantega.publishing.admin.content.action.AddContentAction" id="AddContentAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>

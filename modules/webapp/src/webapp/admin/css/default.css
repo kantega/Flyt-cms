@@ -149,10 +149,6 @@ table.fullWidth {
     width: 100%;
 }
 
-#Content.mypage table .date{
-    width: 80px;
-}
-
 /************** Specific content panes styles ********/
 
 #Content.publish #MainPane, #Content.multimedia #MainPane {
@@ -195,6 +191,29 @@ table.fullWidth {
 #Content.selecttemplate #MainPaneContent {
     width: 600px;
     margin: 10px;
+}
+
+
+#Content.mypage table .date{
+    width: 100px;
+}
+
+#Content.mypage table .modifiedby{
+    width: 120px;
+}
+
+#Content.mypage table .action{
+    width: 160px;
+}
+
+#LeftPane {
+    width: 500px;
+    float: left;
+}
+
+#RightPane {
+    width: 400px;
+    float:left;
 }
 
 /************** Top menu **************/

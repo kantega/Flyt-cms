@@ -915,7 +915,7 @@ public class ContentManagementService {
      * @return - Liste med DeletedItem
      * @throws SystemException
      */
-    public List getDeletedItems() throws SystemException {
+    public List<DeletedItem> getDeletedItems() throws SystemException {
         return DeletedItemsAO.getDeletedItems(securitySession.getUser().getId());
     }
 

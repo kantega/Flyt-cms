@@ -25,9 +25,9 @@
 
 <kantega:section id="content">
     <script type="text/javascript">
-        function restore() {
+        function restore(itemId) {
             if (confirm("<kantega:label key="aksess.mypage.restore.confirm"/>")) {
-                location.href = "RestoreDeletedItem.action";
+                location.href = "RestoreDeletedItem.action?id=" + itemId;
             }
         }
 
@@ -35,6 +35,8 @@
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
         });
     </script>
+
+    <div id="LeftPane">
 
     <c:if test="${fn:length(contentForApproval) > 1}">
         <div class="fieldset">
@@ -44,17 +46,16 @@
                     <thead>
                         <tr>
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
+                            <th class="modifiedby"><kantega:label key="aksess.mypage.modifiedby"/></th>
                             <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
-                            <th><kantega:label key="aksess.mypage.modifiedby"/></th>
-
                         </tr>
                     </thead>
                     <tbody>
                     <c:forEach var="item" items="${contentForApproval}" varStatus="status">
                         <tr class="tableRow${status.index mod 2}">
                             <td class="title"><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
-                            <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
                             <td><aksess:getattribute name="modifiedby" obj="${item}"/></td>
+                            <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -77,14 +78,12 @@
                             <tr>
                                 <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                                 <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
-                                <th>&nbsp;</th>
                             </tr>
                         </thead>
                         <c:forEach var="item" items="${worklist}" varStatus="status">
                             <tr class="tableRow${status.index mod 2}">
                                 <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
                                 <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
-                                <td>&nbsp;</td>
                             </tr>
                         </c:forEach>
                     </table>
@@ -93,7 +92,7 @@
         </c:if>
     </c:forEach>
 
-    <c:if test="${fn:length(myDeletedItems) > 1}">
+    <c:if test="${fn:length(myDeletedItems) > 0}">
         <div class="fieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.mypage.deleted"/></h1>
@@ -102,7 +101,7 @@
                         <tr>
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                             <th class="date"><kantega:label key="aksess.mypage.deleted"/></th>
-                            <th>&nbsp;</th>
+                            <th class="action">&nbsp;</th>
                         </tr>
                     </thead>
                     <c:forEach var="item" items="${myDeletedItems}" varStatus="status">
@@ -116,12 +115,14 @@
             </fieldset>
         </div>
     </c:if>
-
+    </div>
+    <div id="RightPane">
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.propertysearch.title"/></h1>
             <div id="PropertySearch"></div>
         </fieldset>
+    </div>
     </div>
 </kantega:section>
 <%@ include file="../layout/mypageLayout.jsp" %>

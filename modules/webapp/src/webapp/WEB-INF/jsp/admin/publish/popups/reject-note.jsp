@@ -19,7 +19,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    <kantega:label key="aksess.editablelist.title"/>
+    
 </kantega:section>
 
 <kantega:section id="head">
