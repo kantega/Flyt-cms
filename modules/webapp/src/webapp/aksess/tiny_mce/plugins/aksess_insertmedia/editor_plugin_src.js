@@ -1,6 +1,6 @@
 (function() {
-    // Load plugin specific language pack
-    tinymce.PluginManager.requireLangPack('aksess_insertmedia');
+    // Load plugin specific language pack - not needed
+//    tinymce.PluginManager.requireLangPack('aksess_insertmedia');
 
 	tinymce.create('tinymce.plugins.InsertMedia', {
 		init : function(ed, url) {
@@ -12,7 +12,7 @@
 
 			// Register button
 			ed.addButton('image', {
-                title : 'aksess_insertmedia.desc',
+                title : 'media.desc',
                 cmd : 'insertMediaCmd'
             });
 		},

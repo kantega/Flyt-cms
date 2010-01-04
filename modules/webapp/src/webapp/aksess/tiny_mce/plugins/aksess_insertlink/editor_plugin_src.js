@@ -1,6 +1,6 @@
 (function() {
-    // Load plugin specific language pack
-    tinymce.PluginManager.requireLangPack('aksess_insertlink');
+    // Load plugin specific language pack - not needed
+//    tinymce.PluginManager.requireLangPack('aksess_insertlink');
 
 	tinymce.create('tinymce.plugins.InsertLink', {
 		init : function(ed, url) {
@@ -12,7 +12,7 @@
 
 			// Register button
 			ed.addButton('link', {
-                title : 'aksess_insertlink.desc',
+                title : 'advlink.link_desc',
                 cmd : 'insertLinkCmd'
             });
 
