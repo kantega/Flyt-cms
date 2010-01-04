@@ -87,7 +87,11 @@
                 }
                 html += '</TBODY></TABLE>';
 
-                getParent().insertTag(html);
+                var editor = getParent().tinymce.EditorManager.activeEditor;
+                editor.execCommand("mceBeginUndoLevel");
+                editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
+                editor.execCommand("mceEndUndoLevel");
+
             }
             return true;
         }
