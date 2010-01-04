@@ -34,8 +34,15 @@ public class DataDirectoryContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         final ServletContext servletContext = sce.getServletContext();
         File dataDirectory = getDataDirectory(servletContext);
-        dataDirectory.mkdirs();        
+        makeFolders(dataDirectory);
         servletContext.setAttribute(DATA_DIRECTORY_ATTR, dataDirectory);
+    }
+
+    private void makeFolders(File dataDirectory) {
+        dataDirectory.mkdirs();
+        new File(dataDirectory, "uploads").mkdirs();
+        new File(dataDirectory, "logs").mkdirs();
+        new File(dataDirectory, "index").mkdirs();
     }
 
     public void contextDestroyed(ServletContextEvent sce) {
