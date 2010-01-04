@@ -1,0 +1,43 @@
+(function() {
+    // Load plugin specific language pack
+    tinymce.PluginManager.requireLangPack('aksess_insertmedia');
+
+	tinymce.create('tinymce.plugins.InsertMedia', {
+		init : function(ed, url) {
+            this.editor = ed;
+            this.url = url;
+
+			// Register command
+            ed.addCommand('insertMediaCmd', this._openPopup, this);
+
+			// Register button
+			ed.addButton('image', {
+                title : 'aksess_insertmedia.desc',
+                cmd : 'insertMediaCmd'
+            });
+		},
+
+		getInfo : function() {
+			return {
+				longname : 'Insert Media',
+				author : 'Kantega AS',
+				authorurl : 'http://www.kantega.no',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		},
+
+        _openPopup : function() {
+            doInsertTag = true;
+            ModalWindow.open({
+                title:"Sett inn multimedia",
+                iframe:true,
+                href: "../multimedia/EditMultimedia.action",
+                width: 600,
+                height:400});
+        }
+
+	});
+
+	// Register plugin
+	tinymce.PluginManager.add('aksess_insertmedia', tinymce.plugins.InsertMedia);
+})();

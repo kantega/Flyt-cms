@@ -47,7 +47,10 @@
             if (p.doInsertTag) {
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;
-                p.insertTag(str);
+                var editor = p.tinymce.EditorManager.activeEditor;
+                editor.execCommand("mceBeginUndoLevel");
+                editor.execCommand("mceInsertRawHTML", false, str, {skip_undo : 1});
+                editor.execCommand("mceEndUndoLevel");
             } else {
                 // Insert id and name
                 p.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');

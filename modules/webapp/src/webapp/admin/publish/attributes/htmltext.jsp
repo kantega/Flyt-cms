@@ -73,7 +73,7 @@
             skin : "o2k7",
             skin_variant : "silver",
 
-            plugins : "aksess_insertlink,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
+            plugins : "aksess_insertlink,aksess_insertmedia,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
 
             // TODO: gjennomgang av gyldige elementer og attributter
             valid_elements : "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|"
