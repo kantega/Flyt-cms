@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.spring;
 
-import org.simplericity.datadirlocator.DataDirectoryLocatorStrategy;
-import org.simplericity.datadirlocator.DefaultDataDirectoryLocator;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
@@ -26,10 +24,20 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.BeansException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
+import java.util.List;
+import java.util.ArrayList;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.DefaultConfigurationLoader;
@@ -44,10 +52,142 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
 public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     public static final String APPLICATION_DIRECTORY = OpenAksessContextLoaderListener.class.getName() +"_APPLICATION_DIRECTORY";
+    public static final String LISTENER_ATTR = OpenAksessContextLoader.class.getName() +".this";
+    private ServletContext servletContext;
+    private Properties properties;
+    private File dataDirectory;
+
+    private ConfigurationLoader configurationLoader;
+    private Logger log = Logger.getLogger(getClass());
+    private ServletContextEvent event;
+    private boolean setupOk;
+
+    @Override
+    public void contextInitialized(final ServletContextEvent event) {
+
+        this.event = event;
+
+        this.servletContext = event.getServletContext();
+
+        log.info("Starting OpenAksess " + getOpenAksessVersion());
+
+        dataDirectory = getDataDirectory(event.getServletContext());
+
+        log.info("Using data directory " + dataDirectory.getAbsolutePath());
+
+        configurationLoader = createConfigurationLoader(servletContext, dataDirectory);
+
+        log.info("Loading configuration");
+
+        properties = configurationLoader.loadConfiguration();
+
+        servletContext.setAttribute(LISTENER_ATTR, this);
+
+        initContext();
+
+    }
+
+    public synchronized void initContext() {
+        // Re-read properties
+        properties = configurationLoader.loadConfiguration();
+        if(isRequiredPropertiesPresentAndValid(properties)) {
+            super.contextInitialized(event);;
+            setupOk  = true;
+        } else {
+            log.info("Database is not yet configured, application context startup is postponed");
+        }
+
+    }
+
+    private boolean isRequiredPropertiesPresentAndValid(Properties properties) {
+        return isDatabaseConfigured(properties) && properties.containsKey("location.contextpath");
+    }
+
+    private File getDataDirectory(ServletContext context) {
+        File dataDirectory = (File) context.getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
+
+        if(dataDirectory == null) {
+            throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
+                    +" was not set");
+        }
+        return dataDirectory;
+    }
+
+    private boolean isDatabaseConfigured(Properties properties) {
+        log.debug("Determining if database is configured");
+        List<String> missingProperties = new ArrayList<String>();
+
+        String driverClass = properties.getProperty("database.driver");
+
+        if(StringUtils.isEmpty(driverClass)) {
+            missingProperties.add("database.driver");
+        }
+        String url = properties.getProperty("database.url");
+        if(StringUtils.isEmpty(url)) {
+            missingProperties.add("database.url");
+        }
+        String username = properties.getProperty("database.username");
+        if(StringUtils.isEmpty(username)) {
+            missingProperties.add("database.username");
+        }
+        String password = properties.getProperty("database.password");
+        if(StringUtils.isEmpty(password)) {
+            missingProperties.add("database.password");
+        }
+
+        if(missingProperties.size() > 0) {
+            log.info("The following database configuration properties are missing " + missingProperties);
+            return false;
+        }
+
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(driverClass);
+        dataSource.setUrl(url);
+        dataSource.setUsername(username);
+        dataSource.setPassword(password);
+
+        final Connection connection;
+        try {
+            long before = System.currentTimeMillis();
+            connection = dataSource.getConnection();
+            log.info("Got connection to database " + url +" in " + (System.currentTimeMillis()-before) +" ms.");
+            connection.close();
+        } catch (SQLException e) {
+            log.error("Error connecting to database url '" + url +"' using driver " + driverClass +" as user '" + username +"'" , e);
+            return false;
+        }
+
+        return true;
+    }
+
+
     @Override
     protected ContextLoader createContextLoader() {
         return new OpenAksessContextLoader();
 
+    }
+
+    public String getOpenAksessVersion() {
+        URL versionResource = getClass().getClassLoader().getResource("no/kantega/publishing/common/aksessVersion.properties");
+        if(versionResource == null) {
+            return "<unknown>";
+        }
+
+        Properties versionProps = new Properties();
+
+        try {
+            versionProps.load(versionResource.openStream());
+        } catch (IOException e) {
+            return "<unknown>";
+        }
+        String theVersion = versionProps.getProperty("version");
+
+        return theVersion == null ? "<unknown>" : theVersion;
+
+    }
+
+    public boolean isSetupNeeded() {
+        return !setupOk;
     }
 
     class OpenAksessContextLoader extends ContextLoader {
@@ -55,12 +195,11 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         @Override
         protected void customizeContext(ServletContext servletContext, ConfigurableWebApplicationContext wac) {
 
-            File dataDir = getDataDirectory(servletContext);
 
-            Configuration.setApplicationDirectory(dataDir);
+            Configuration.setApplicationDirectory(dataDirectory);
 
             // Make dataDir available as Servlet Context attribute
-            servletContext.setAttribute(APPLICATION_DIRECTORY, dataDir);
+            servletContext.setAttribute(APPLICATION_DIRECTORY, dataDirectory);
 
             // Set up @Autowired support
             ApplicationContextUtils.addAutowiredSupport(wac);
@@ -68,9 +207,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             // Add ${appDir} property for the Spring Context
             ApplicationContextUtils.addAppDirPropertySupport(wac);
 
-            ConfigurationLoader loader = createConfigurationLoader(servletContext);
-
-            final Properties properties = loader.loadConfiguration();
             final Configuration configuration = new Configuration(properties);
 
             Configuration.setDefaultConfiguration(configuration);
@@ -83,25 +219,16 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             dbConnectionFactory.loadConfiguration();
 
             // Add the Configuration and the ConfigurationLoader as Spring beans
-            addConfigurationAndLoaderAsSingletonsInContext(wac, configuration, loader);
+            addConfigurationAndLoaderAsSingletonsInContext(wac, configuration, configurationLoader);
 
             // Replace ${} properties in Spring with config properties
             addConfigurationPropertyReplacer(wac, properties);
 
         }
 
-        private File getDataDirectory(ServletContext servletContext) {
-            DefaultDataDirectoryLocator locator = new DefaultDataDirectoryLocator();
-
-            locator.setContextParamName("kantega.appDir");
-            locator.setSystemProperty("kantega.appDir");
-
-            locator.addStrategy(new LegacyKantegaDirLocatorStrategy());
-            locator.setServletContext(servletContext);
-            File dataDir = locator.locateDataDirectory();
-            return dataDir;
-        }
     }
+
+
 
     private void addConfigurationPropertyReplacer(ConfigurableWebApplicationContext wac, final Properties properties) {
         wac.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
@@ -123,10 +250,9 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         });
     }
 
-    private ConfigurationLoader createConfigurationLoader(ServletContext context) {
+    private ConfigurationLoader createConfigurationLoader(ServletContext context, File dataDirectory) {
         DefaultConfigurationLoader loader = new DefaultConfigurationLoader(new ServletContextResourceLoader(context));
 
-        File dataDir = (File) context.getAttribute(APPLICATION_DIRECTORY);
 
         // First, load Aksess defaults
         loader.addResource("/WEB-INF/config/aksess-defaults.conf");
@@ -137,92 +263,12 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         loader.addResource("/WEB-INF/config/aksess-project.conf");
 
         // Override with environment specific setting
-        loader.addResource("file:" + dataDir.getAbsolutePath() +"/conf/aksess.conf");
+        loader.addResource("file:" + dataDirectory.getAbsolutePath() +"/conf/aksess.conf");
 
         return loader;
     }
 
-
-    private class LegacyKantegaDirLocatorStrategy implements DataDirectoryLocatorStrategy {
-
-        private static final String CONFIGFILE = "kantega.properties";
-        private static final String DEFAULT_WIN_DIR = "C:\\Kantega";
-        private static final String DEFAULT_UNIX_DIR = "/usr/local/kantega";
-
-
-        public File locateDataDirectory() {
-
-            File kantegaDir = new File(getKantegaDir());
-
-            if(!kantegaDir.exists()) {
-                throw new RuntimeException("Could not find kantega.dir " + kantegaDir);
-            }
-
-            String app = getApplication();
-            
-
-            if(app == null || app.length() == 0) {
-                return kantegaDir;
-            } else {
-
-                File appDir = new File(kantegaDir, app);
-
-                if(!appDir.exists()) {
-                    throw new RuntimeException("Could not find Aksess application directory " + appDir);
-                }
-
-                return appDir;
-            }
-
-
-
-        }
-
-        private String getKantegaDir() {
-            String ps = File.separator;
-
-            String kantegaDir = null;
-            try {
-                Properties p = new Properties();
-                p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIGFILE));
-                kantegaDir = p.getProperty("kantega.dir");
-            } catch (Exception e) {
-                // Gjør ingenting, bruker default
-            }
-
-            if (kantegaDir == null || kantegaDir.length() == 0) {
-                kantegaDir = System.getProperty("kantega.dir");
-                if(kantegaDir == null) {
-                    if (ps.equals("/")) {
-                        kantegaDir = DEFAULT_UNIX_DIR;
-                    } else {
-                        kantegaDir = DEFAULT_WIN_DIR;
-                    }
-                }
-
-            }
-            if(!kantegaDir.endsWith(ps)) {
-                kantegaDir += ps;
-            }
-
-            return kantegaDir;
-        }
-
-
-        public String getApplication() {
-            String application = null;
-            try {
-                Properties p = new Properties();
-                p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIGFILE));
-                application = p.getProperty("application.name");
-                if (application == null) {
-                    application = p.getProperty("application");
-                }
-            } catch (Exception e) {
-                // Do nothing, file could not be found or read
-            }
-
-            return application;
-        }
+    public Properties getProperties() {
+        return properties;
     }
 }

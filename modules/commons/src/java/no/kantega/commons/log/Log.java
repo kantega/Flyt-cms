@@ -23,16 +23,16 @@ import org.apache.log4j.xml.DOMConfigurator;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 
+import java.io.File;
+
 public class Log {
 
-    static {
-        String configFile = null;
+    public synchronized static void init(final File configFile) {
+
         try {
-            configFile = Configuration.getConfigDirectory() + "log4j.xml";
-            DOMConfigurator.configure(configFile);
-            Logger.getLogger(Log.class).info("aksess.log init()");
-        } catch (ConfigurationException e) {
-            System.out.println("ERROR: Could not get configuration");
+
+            DOMConfigurator.configure(configFile.getAbsolutePath());
+            Logger.getLogger(Log.class).info("OpenAksess logging initialized from " +configFile.getAbsolutePath());
         } catch (Error e) {
             BasicConfigurator.resetConfiguration();
             BasicConfigurator.configure();
@@ -59,5 +59,6 @@ public class Log {
     public static void info(String category, String description, Object context, Object identity) {
         Logger.getLogger(category).info(LogData.create(description, context, identity));
     }
+
 }
 

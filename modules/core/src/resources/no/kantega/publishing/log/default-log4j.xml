@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+
+  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+      <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="[%-5p][%x]%d{dd MM yyyy HH:mm} %-4r %c - %m%n"/>
+      </layout>
+  </appender>
+
+  <appender name="FileAppender" class="org.apache.log4j.DailyRollingFileAppender">
+      <param name="File" value="@logDirectory@/aksess.log"/>
+      <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+      <layout class="org.apache.log4j.PatternLayout">
+          <param name="ConversionPattern" value="[%-5p]%x %d{dd MM yyyy HH:mm} %-4r %c - %m%n"/>
+      </layout>
+  </appender>
+
+  <category name="org">
+      <priority value ="info" />
+  </category>
+
+  <category name="net">
+      <priority value ="info" />
+  </category>
+
+  <category name="com">
+      <priority value ="info" />
+  </category>
+
+    <category name="httpclient">
+        <priority value ="info" />
+    </category>
+
+
+  <root>
+      <priority value ="debug" />
+      <appender-ref ref="ConsoleAppender"/>
+      <appender-ref ref="FileAppender"/>
+  </root>
+
+</log4j:configuration>

@@ -62,7 +62,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader {
                         log.info("Loading properties from: " +resource.getDescription());
                         properties.load(resource.getInputStream());
                     } else {
-                        log.info("Property file does not exist: " +resource.getDescription());
+                        log.info("Ignoring property resource: " +resource.getDescription() +" because it does not exist");
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);

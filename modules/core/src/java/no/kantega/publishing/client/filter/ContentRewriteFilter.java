@@ -29,6 +29,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.web.context.WebApplicationContext;
+
 /**
  * User: Anders Skar, Kantega AS
  * Date: Oct 20, 2008
@@ -36,10 +39,11 @@ import java.util.Map;
  */
 public class ContentRewriteFilter implements Filter {
     private static String SOURCE = "aksess.ContentRewriteFilter";
+    private ServletContext servletContext;
 
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        // Do nothing
+        this.servletContext = filterConfig.getServletContext();
     }
 
     /**
@@ -66,12 +70,17 @@ public class ContentRewriteFilter implements Filter {
 
     private String rewrite(HttpServletRequest request, String content) {
         String out = content;
-        final Map<String, ContentRewriter> map = RootContext.getInstance().getBeansOfType(ContentRewriter.class);
+        final WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(servletContext);
+        if(wac != null) {
 
-        for(ContentRewriter rewriter : map.values()) {
-            out = rewriter.rewriteContent(request, out);
+            final Map<String, ContentRewriter> map = wac.getBeansOfType(ContentRewriter.class);
+
+            for(ContentRewriter rewriter : map.values()) {
+                out = rewriter.rewriteContent(request, out);
+            }
+
+
         }
-
         return out;
     }
 
