@@ -36,7 +36,6 @@
         <module>modules/api</module>
         <module>modules/commons</module>
         <module>modules/core</module>
-        <module>modules/install</module>
         <module>modules/search</module>
         <module>modules/test</module>
         <module>modules/useradmin</module>
