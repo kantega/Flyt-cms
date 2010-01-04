@@ -48,9 +48,7 @@
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;
                 var editor = p.tinymce.EditorManager.activeEditor;
-                editor.execCommand("mceBeginUndoLevel");
-                editor.execCommand("mceInsertRawHTML", false, str, {skip_undo : 1});
-                editor.execCommand("mceEndUndoLevel");
+                insertHtml(editor, str);
             } else {
                 // Insert id and name
                 p.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
@@ -58,6 +56,12 @@
 
         }
         p.ModalWindow.close();
+    }
+
+    function insertHtml(editor, html) {
+        editor.execCommand("mceBeginUndoLevel");
+        editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
+        editor.execCommand("mceEndUndoLevel");
     }
 </script>
 <body onLoad="insertMMObject()">

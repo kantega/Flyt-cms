@@ -12,50 +12,54 @@
             return;
         }
 
+        if (url.charAt(0) == '/') {
+            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
+        }
+
         var anchor = frm.anchor.value;
         if (anchor != "") {
             if (anchor.charAt(0) == '#') {
                 anchor = anchor.substring(0, anchor.length);
             }
+            url = url + "#" + anchor;
         }
-        if (url.charAt(0) == '/') {
-            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
+
+        var attribs = {'href': url};
+        if (frm.newwindow.checked) {
+            attribs['onclick'] = 'window.open(this.href); return false';
         }
 
         var editor = getParent().tinymce.EditorManager.activeEditor;
-        var element = editor.selection.getNode();
-        element = editor.dom.getParent(element, "A");
         editor.execCommand("mceBeginUndoLevel");
-        if (element == null) {
-            editor.getDoc().execCommand("unlink", false, null);
-            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
-
-            var elements = getParent().tinymce.grep(
-                    editor.dom.select("a"),
-                    function(n) {
-                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
-                    });
-            
-            for (i = 0; i < elements.length; i++) {
-                setAttributes(elements[i], url, anchor);
-            }
-        } else {
-            setAttributes(element, url, anchor);
+        var elements = getSelectedElements(editor);
+        for (var i = 0, n = elements.length; i < n; i++) {
+            setAttributes(editor, elements[i], attribs);
         }
         editor.execCommand("mceEndUndoLevel");
         getParent().ModalWindow.close();
     }
 
-    function setAttributes(element, url, anchor) {
-        var tinydom = getParent().tinymce.EditorManager.activeEditor.dom;
-        var form = document.linkform;
-        var href = url;
-        if (anchor != "") {
-            href = url + "#" + anchor;
+    function getSelectedElements(editor) {
+        var elements = [];
+        var element = editor.selection.getNode();
+        element = editor.dom.getParent(element, "A");
+        if (element == null) {
+            editor.getDoc().execCommand("unlink", false, null);
+            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
+            elements = getParent().tinymce.grep(
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
+        } else {
+            elements.push(element);
         }
-        tinydom.setAttrib(element, 'href', href);
-        if (form.newwindow.checked) {
-            tinydom.setAttrib(element, 'onclick', 'window.open(this.href); return false');
+        return elements;
+    }
+
+    function setAttributes(editor, element, attributes) {
+        for (var key in attributes) {
+            editor.dom.setAttrib(element, key, attributes[key]);
         }
     }
 </script>

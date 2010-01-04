@@ -88,12 +88,15 @@
                 html += '</TBODY></TABLE>';
 
                 var editor = getParent().tinymce.EditorManager.activeEditor;
-                editor.execCommand("mceBeginUndoLevel");
-                editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
-                editor.execCommand("mceEndUndoLevel");
-
+                insertHtml(editor, html);
             }
             return true;
+        }
+
+        function insertHtml(editor, html) {
+            editor.execCommand("mceBeginUndoLevel");
+            editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
+            editor.execCommand("mceEndUndoLevel");
         }
 
         function initTable() {

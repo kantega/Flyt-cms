@@ -15,17 +15,51 @@
             return;
         }
 
+        if (url.charAt(0) == '/') {
+            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
+        }
+
         var anchor = frm.anchor.value;
         if (anchor != "") {
             if (anchor.charAt(0) == '#') {
                 anchor = anchor.substring(0, anchor.length);
             }
-        }
-        if (url.charAt(0) == '/') {
-            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
+            url = url + "#" + anchor;
         }
 
-        window.opener.createLink(url);
+        var attribs = {'href': url}; // TODO: "smartlink"??
+        var editor = getParent().tinymce.EditorManager.activeEditor;
+        editor.execCommand("mceBeginUndoLevel");
+        var elements = getSelectedElements(editor);
+        for (var i = 0, n = elements.length; i < n; i++) {
+            setAttributes(editor, elements[i], attribs);
+        }
+        editor.execCommand("mceEndUndoLevel");
+        getParent().ModalWindow.close();
+    }
+
+    function getSelectedElements(editor) {
+        var elements = [];
+        var element = editor.selection.getNode();
+        element = editor.dom.getParent(element, "A");
+        if (element == null) {
+            editor.getDoc().execCommand("unlink", false, null);
+            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
+            elements = getParent().tinymce.grep(
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
+        } else {
+            elements.push(element);
+        }
+        return elements;
+    }
+
+    function setAttributes(editor, element, attributes) {
+        for (var key in attributes) {
+            editor.dom.setAttrib(element, key, attributes[key]);
+        }
     }
 
     function insertIdAndValueIntoForm(id, text) {
