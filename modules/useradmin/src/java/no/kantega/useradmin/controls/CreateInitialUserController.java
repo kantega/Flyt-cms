@@ -18,7 +18,9 @@ package no.kantega.useradmin.controls;
 
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.view.RedirectView;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,10 +28,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.io.*;
+import java.security.SecureRandom;
 
 import no.kantega.useradmin.model.RoleManagementConfiguration;
 import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.security.api.role.RoleManager;
 import no.kantega.security.api.role.RoleUpdateManager;
 import no.kantega.security.api.role.DefaultRole;
 import no.kantega.security.api.common.SystemException;
@@ -38,9 +41,7 @@ import no.kantega.security.api.profile.ProfileUpdateManager;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.client.util.RequestParameters;
 
 /**
@@ -58,6 +59,10 @@ public class CreateInitialUserController extends AbstractController {
     private String defaultDomain;
     private List profileConfiguration;
     private List roleConfiguration;
+    private File tokenFile;
+
+    private SecureRandom random = new SecureRandom();
+    private Logger log = Logger.getLogger(getClass());
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
@@ -75,9 +80,6 @@ public class CreateInitialUserController extends AbstractController {
             return new ModelAndView(CANT_CREATE_VIEW, model);
         }
 
-        if (!isAuthorized(request)) {
-            return new ModelAndView(NOT_AUTH_VIEW, model);
-        }
 
         boolean createUserAccount = false;
         ProfileManagementConfiguration pmc = getProfileConfiguration(defaultDomain);
@@ -96,30 +98,100 @@ public class CreateInitialUserController extends AbstractController {
             String password2 = param.getString("password2");
 
             model.put("username", username);
-            model.put("password", password);
-            model.put("password2", password2);
+
+
+            boolean error = false;
+
+            if (!isLocalhost(request)) {
+                model.put("needsToken", Boolean.TRUE);
+                String token = request.getParameter("token");
+                if(!getInitialUserToken().equals(token)) {
+                    model.put("errorToken", Boolean.TRUE);
+
+                    error  = true;
+                } else {
+                    model.put("token", token);
+                }
+
+            }
 
             if (username == null || username.length() < 3) {
                 model.put("errorUsername", Boolean.TRUE);
-                return new ModelAndView(FORM_VIEW, model);
+                error = true;
 
             }
+
+
 
             if (createUserAccount) {
                 if (password == null || password.length() < 6 || !password.equalsIgnoreCase(password2)) {
                     model.put("errorPassword", Boolean.TRUE);
-                    return new ModelAndView(FORM_VIEW, model);
+                    error=true;
                 }
             }
+            if(error) {
+                return new ModelAndView(FORM_VIEW, model);
+            }  else {
 
-            // Create admin role (and user if neccessary)
-            createAdminRoleAndUser(username, password);
+                if (!isLocalhost(request)) {
+                    deleteInitialUserToken();
+                }
+                // Create admin role (and user if neccessary)
+                createAdminRoleAndUser(username, password);
 
-            // Show confirmation
-            return new ModelAndView(CONFIRM_VIEW, model);
+                // Show confirmation
+                return new ModelAndView(CONFIRM_VIEW, model);
+            }
         } else {
-
+            if (!isLocalhost(request)) {
+                createInitialUserToken();
+                model.put("needsToken", Boolean.TRUE);
+            }
             return new ModelAndView(FORM_VIEW, model);
+        }
+    }
+
+    private synchronized void deleteInitialUserToken() {
+        tokenFile.delete();
+        if(tokenFile.getParentFile().list().length == 0) {
+            tokenFile.getParentFile().delete();
+        }
+    }
+
+    private synchronized String getInitialUserToken() {
+        if(!tokenFile.exists()) {
+            throw new IllegalStateException("Expected tokenFile to exist at this point: " + tokenFile);
+        } else {
+            try {
+                return IOUtils.toString(new FileInputStream(tokenFile));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+    private synchronized void createInitialUserToken() {
+        if(!this.tokenFile.exists()) {
+            byte[] bytes = new byte[16];
+            random.nextBytes(bytes);
+
+            FileOutputStream out = null;
+            try {
+                tokenFile.getParentFile().mkdirs();
+                out = new FileOutputStream(tokenFile);
+                IOUtils.write(Base64.encodeBase64(bytes), out);
+            } catch (IOException e) {
+                throw new RuntimeException("Error writing token to file", e);
+            } finally {
+                try {
+                    if(out != null) {
+                        out.close();
+                    }
+                } catch (IOException e) {
+                    log.error("Error closing file output stream", e);
+                }
+            }
         }
     }
 
@@ -200,7 +272,7 @@ public class CreateInitialUserController extends AbstractController {
         return (RoleManagementConfiguration)roleConfiguration.get(0);
     }
 
-    private boolean isAuthorized(HttpServletRequest request) {
+    private boolean isLocalhost(HttpServletRequest request) {
         if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
             return true;
         }
@@ -219,4 +291,10 @@ public class CreateInitialUserController extends AbstractController {
     public void setDefaultDomain(String defaultDomain) {
         this.defaultDomain = defaultDomain;
     }
+
+    public void setTokenFile(File tokenFile) {
+        this.tokenFile = tokenFile;
+    }
+
+
 }

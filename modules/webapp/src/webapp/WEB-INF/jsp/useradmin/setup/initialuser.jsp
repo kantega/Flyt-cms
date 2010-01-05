@@ -58,7 +58,7 @@
 
                         <p>
                             <label for="password">Password:</label><br>
-                            <input type="password" name="password" id="password" size="20" maxlength="20"">
+                            <input type="password" name="password" id="password" size="20" maxlength="20">
                         </p>
                         <p>
                             <label for="password2">Repeat password:</label><br>
@@ -91,6 +91,15 @@
                     </c:otherwise>
                 </c:choose>
 
+                <c:if test="${needsToken}">
+                    <p>
+                        <label for="token">Security token: </label> <br/>(from security/initialusertoken.txt)
+                        <input type="text" name="token" id="token" size="40" value="<c:out value="${token}"/>">
+                        <c:if test="${errorToken}">
+                            <p>Please enter a token matching the token on the server</p>
+                        </c:if>
+                    </p>
+                </c:if>
                 <p>
                     <input type="submit" value="Continue">
                 </p>
