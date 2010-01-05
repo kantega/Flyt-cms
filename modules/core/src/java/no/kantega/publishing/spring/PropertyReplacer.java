@@ -24,23 +24,36 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import java.util.Properties;
+import java.io.File;
 
 /**
  *
  */
-public class PropertyReplacer implements BeanFactoryPostProcessor{
+public class PropertyReplacer implements BeanFactoryPostProcessor, ServletContextAware {
+    private ServletContext servletContext;
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
 
         try {
             PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-            cfg.setProperties(Aksess.getConfiguration().getProperties());
+            Properties properties = new Properties(Aksess.getConfiguration().getProperties());
+
+            File dataDir = (File) servletContext.getAttribute(OpenAksessContextLoaderListener.APPLICATION_DIRECTORY);
+            properties.setProperty("appDir", dataDir.getAbsolutePath());
+
+            cfg.setProperties(properties);
             cfg.postProcessBeanFactory(configurableListableBeanFactory);
+
         } catch (ConfigurationException e) {
             System.out.println("Error getting configuration");
         }
     }
 
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
 }
