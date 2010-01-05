@@ -73,7 +73,7 @@
 
     <script type="text/javascript">
 
-        var pluginstr = '<%=plugins%>';
+        var plugins = '<%=plugins%>';
         var buttonRows = [];
         <% for (String row : buttonRows) { %>
             buttonRows.push('<%=row%>');
@@ -89,8 +89,7 @@
             skin : "o2k7",
             skin_variant : "silver",
 
-//            plugins : "aksess_insertlink,aksess_insertmedia,aksess_inserttable,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
-            plugins : pluginstr,
+            plugins : plugins,
 
             // TODO: gjennomgang av gyldige elementer og attributter
             valid_elements : "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|"
@@ -119,9 +118,6 @@
             height : "${attribute.height}",
 
             // Theme options
-//            theme_advanced_buttons1 : "styleselect,formatselect,|,bold,italic,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,outdent,indent",
-//            theme_advanced_buttons2 : "undo,redo,|,cut,copy,paste,pastetext,removeformat,cleanup,|,search,replace,|,link,unlink,anchor,|,image,testplugin",
-//            theme_advanced_buttons3 : "aTable,|,row_props,cell_props,|,row_before,row_after,delete_row,|,col_before,col_after,delete_col,|,split_cells,merge_cells,|,sub,sup,charmap,|,fullscreen,|,code",
             theme_advanced_toolbar_location : "top",
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "bottom",
