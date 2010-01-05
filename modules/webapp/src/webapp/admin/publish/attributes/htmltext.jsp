@@ -42,6 +42,15 @@
 
     Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
 
+    String plugins = conf.getString(confPrefix + "plugins");
+    String buttons = conf.getString(confPrefix + "buttons");
+    String[] buttonRows;
+    if (buttons != null) {
+        buttonRows = buttons.split("<>");
+    } else {
+        buttonRows = new String[0];
+    }
+
     boolean hasHtmlEditorRole = false;
     String[] htmlEditorRole = Aksess.getHtmlEditorRoles();
     if (htmlEditorRole != null) {
@@ -63,7 +72,14 @@
     <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="30"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
-        tinyMCE.init({
+
+        var pluginstr = '<%=plugins%>';
+        var buttonRows = [];
+        <% for (String row : buttonRows) { %>
+            buttonRows.push('<%=row%>');
+        <% } %>
+
+        var options = {
             // General options
             language : 'en', // en / nb
             mode : "exact",
@@ -73,7 +89,8 @@
             skin : "o2k7",
             skin_variant : "silver",
 
-            plugins : "aksess_insertlink,aksess_insertmedia,aksess_inserttable,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
+//            plugins : "aksess_insertlink,aksess_insertmedia,aksess_inserttable,safari,table,searchreplace,contextmenu,paste,fullscreen,noneditable",
+            plugins : pluginstr,
 
             // TODO: gjennomgang av gyldige elementer og attributter
             valid_elements : "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|"
@@ -98,15 +115,13 @@
                     + "q[cite],samp,select[disabled|multiple|name|size],small,"
                     + "textarea[cols|rows|disabled|name|readonly],tt,var,big",
 
-            // skulle det ikke være slik?
-            width : "${attribute.width}",   // 600 
-            height : "${attribute.height}", // 400
+            width : "${attribute.width}",
+            height : "${attribute.height}",
 
             // Theme options
-            // underline
-            theme_advanced_buttons1 : "styleselect,formatselect,|,bold,italic,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,outdent,indent",
-            theme_advanced_buttons2 : "undo,redo,|,cut,copy,paste,pastetext,removeformat,cleanup,|,search,replace,|,link,unlink,anchor,|,image,testplugin",
-            theme_advanced_buttons3 : "aTable,|,row_props,cell_props,|,row_before,row_after,delete_row,|,col_before,col_after,delete_col,|,split_cells,merge_cells,|,sub,sup,charmap,|,fullscreen,|,code",
+//            theme_advanced_buttons1 : "styleselect,formatselect,|,bold,italic,|,justifyleft,justifycenter,justifyright,|,bullist,numlist,|,outdent,indent",
+//            theme_advanced_buttons2 : "undo,redo,|,cut,copy,paste,pastetext,removeformat,cleanup,|,search,replace,|,link,unlink,anchor,|,image,testplugin",
+//            theme_advanced_buttons3 : "aTable,|,row_props,cell_props,|,row_before,row_after,delete_row,|,col_before,col_after,delete_col,|,split_cells,merge_cells,|,sub,sup,charmap,|,fullscreen,|,code",
             theme_advanced_toolbar_location : "top",
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "bottom",
@@ -115,6 +130,12 @@
             // Example content CSS (should be your site CSS)
             //content_css : "${cssPath}",
             content_css : '../css/editor.css',
-        });
+        };
+
+        for (var i = 0, n = buttonRows.length; i < n; i++) {
+            options['theme_advanced_buttons' + (i+1)] = buttonRows[i];
+        }
+
+        tinyMCE.init(options);
     </script>
 </div>
