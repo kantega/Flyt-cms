@@ -45,4 +45,8 @@
     if (crawlerSiteMapEnabled.booleanValue()) {
         out.println("Sitemap: " + URLHelper.getRootURL(request) + "sitemap.xml");
     }
+
+    out.println("Disallow: /admin/");
+    out.println("Disallow: /login/");
+    out.println("Disallow: /Login.action");
 %>
