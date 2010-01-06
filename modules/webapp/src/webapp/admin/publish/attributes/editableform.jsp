@@ -96,6 +96,7 @@
                                     <option value=""><kantega:label key="aksess.formeditor.validator.text"/></option>
                                     <option value="email"><kantega:label key="aksess.formeditor.validator.email"/></option>
                                     <option value="number"><kantega:label key="aksess.formeditor.validator.number"/></option>
+                                    <option value="norwegianssn"><kantega:label key="aksess.formeditor.validator.norwegianssn"/></option>
                                 </select>
                             </td>
                         </tr>

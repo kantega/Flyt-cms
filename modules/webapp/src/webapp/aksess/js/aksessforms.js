@@ -53,6 +53,7 @@ function aksessFormValidate() {
                 formFieldOk = false;
             }
         }
+        // Check
 
         if (!formFieldOk) {
             formOk = false;

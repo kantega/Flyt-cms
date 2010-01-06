@@ -6,9 +6,10 @@ import org.springframework.web.util.HtmlUtils;
  *
  */
 public class FormValue {
+
     private String name;
     private String[] values;
-
+  
     public String getName() {
         return name;
     }
@@ -20,7 +21,7 @@ public class FormValue {
     public String getValuesAsEscapedString() {
         return HtmlUtils.htmlEscape(getValuesAsString());
     }
-    
+
     public String getValuesAsString() {
         StringBuffer sb = new StringBuffer();
         if (values != null) {
@@ -35,7 +36,7 @@ public class FormValue {
     }
 
     public void setValue(String value) {
-        values = new String[] {value};
+        values = new String[]{value};
     }
 
     public String[] getValues() {

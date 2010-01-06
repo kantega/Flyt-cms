@@ -1,7 +1,6 @@
 package no.kantega.publishing.modules.forms.util;
 
 import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.model.AksessContentForm;
 import no.kantega.publishing.modules.forms.filter.FormFillFilter;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.log.Log;

@@ -2,6 +2,18 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+
+    <bean id="aksessFormElementValidatorFactory" class="no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory">
+        <property name="formElementValidators">
+            <list>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementTextValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>
+            </list>
+        </property>
+    </bean>
+
     <bean id="aksessDatabaseFormSubmissionDao" class="no.kantega.publishing.modules.forms.dao.DatabaseFormSubmissionDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

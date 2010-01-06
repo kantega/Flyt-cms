@@ -16,7 +16,7 @@ import java.io.IOException;
  */
 public class FormTag extends BodyTagSupport {
     private String action = null;
-    private boolean clientvalidation = true;
+    private boolean clientvalidation = false;
 
     @Override
     public int doAfterBody() throws JspException {

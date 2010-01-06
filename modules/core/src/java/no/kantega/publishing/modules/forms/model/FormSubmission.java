@@ -1,11 +1,13 @@
 package no.kantega.publishing.modules.forms.model;
 
 import java.util.*;
+import no.kantega.publishing.modules.forms.validate.FormError;
 
 /**
  *
  */
 public class FormSubmission {
+
     private int formSubmissionId;
     private Form form;
     private String submittedBy;
@@ -14,6 +16,7 @@ public class FormSubmission {
     private String email;
     private Date submissionDate;
     private List<FormValue> values;
+    private List<FormError> errors;
 
     public int getFormSubmissionId() {
         return formSubmissionId;
@@ -78,6 +81,17 @@ public class FormSubmission {
     public void setValues(List<FormValue> values) {
         this.values = values;
     }
+
+    public List<FormError> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<FormError> errors) {
+        this.errors = errors;
+    }
+
+
+    
 
     public void addValue(FormValue value) {
         if (values == null) {
