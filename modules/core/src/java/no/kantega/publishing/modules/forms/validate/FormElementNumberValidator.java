@@ -19,8 +19,7 @@ public class FormElementNumberValidator  implements FormElementValidator {
     public List<FormError> validate(FormValue formValue,List<FormError> formErrors) {
         String value = formValue.getValues()[0];
         if (value!=null && 0 < value.length()) {
-            // negates for testing
-            if (value.matches(numberRegex)) {
+            if (!value.matches(numberRegex)) {
                 formErrors.add(new FormError(id,"Invalid number"));
             }
         }

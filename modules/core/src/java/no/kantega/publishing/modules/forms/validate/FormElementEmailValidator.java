@@ -19,8 +19,7 @@ public class FormElementEmailValidator  implements FormElementValidator {
     public List<FormError> validate(FormValue formValue,List<FormError> formErrors) {
         String value = formValue.getValues()[0];
         if (value!=null && 0 < value.length()) {
-            // negates for testing
-            if (value.matches(emailRegex)) {
+            if (!value.matches(emailRegex)) {
                 formErrors.add(new FormError(id,"Invalid email"));
             }
         }

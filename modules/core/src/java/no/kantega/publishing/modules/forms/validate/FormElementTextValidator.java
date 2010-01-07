@@ -19,7 +19,7 @@ public class FormElementTextValidator  implements FormElementValidator {
     public List<FormError> validate(FormValue formValue,List<FormError> formErrors) {
         String value = formValue.getValues()[0];
         if (value!=null && 0 < value.length()) {
-            if (value.matches(textRegex)) {
+            if (!value.matches(textRegex)) {
                 formErrors.add(new FormError(id,"Invalid text"));
             }
         }
