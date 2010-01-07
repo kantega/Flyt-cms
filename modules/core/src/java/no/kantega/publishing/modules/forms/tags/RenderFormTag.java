@@ -4,6 +4,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.attributes.EditableformAttribute;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.modules.forms.model.Form;
 import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.tagext.TagSupport;
@@ -22,19 +23,13 @@ public class RenderFormTag extends TagSupport {
     public int doStartTag() throws JspException {
         JspWriter out = pageContext.getOut();
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        Content content = (Content)request.getAttribute("aksess_this");
-        if (content != null) {
-            List attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute attr = (Attribute)attributes.get(i);
-                if (attr instanceof EditableformAttribute) {
-                    try {
-                        out.print(attr.getValue());
-                    } catch (IOException e) {
-                        Log.error(getClass().getName(), e, null, null);
-                        throw new JspTagException(getClass().getName() + ":" + e.getMessage());
-                    }
-                }
+        Form form = (Form)request.getAttribute("form");
+        if (form != null) {
+            try {
+                out.print(form.getFormDefinition());
+            } catch (IOException e) {
+                Log.error(getClass().getName(), e, null, null);
+                throw new JspTagException(getClass().getName() + ":" + e.getMessage());
             }
         }
 
