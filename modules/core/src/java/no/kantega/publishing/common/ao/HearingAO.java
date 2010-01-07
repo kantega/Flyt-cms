@@ -105,7 +105,7 @@ public class HearingAO {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("insert into hearingcomment (HearingId, UserRef, CommentDate, CommentContent) VALUES (?, ?, ?, ?)", new String[] {"HearingCommentId"});
+                    PreparedStatement p = connection.prepareStatement("insert into hearingcomment (HearingId, UserRef, CommentDate, CommentContent) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, comment.getHearingId());
                     p.setString(2, comment.getUserRef());
                     p.setTimestamp(3, new Timestamp(comment.getDate().getTime()));
@@ -155,7 +155,7 @@ public class HearingAO {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("insert into hearing (ContentVersionId, Deadline) VALUES (?, ?)", new String[] {"HearingId"});
+                    PreparedStatement p = connection.prepareStatement("insert into hearing (ContentVersionId, Deadline) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, hearing.getContentVersionId());
                     p.setTimestamp(2, new Timestamp(hearing.getDeadLine().getTime()));
                     return p;
@@ -187,7 +187,7 @@ public class HearingAO {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("insert into hearinginvitee (HearingId, InviteeType, InviteeRef) VALUES (?, ?, ?)", new String[] {"HearingInviteeId"});
+                    PreparedStatement p = connection.prepareStatement("insert into hearinginvitee (HearingId, InviteeType, InviteeRef) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, invitee.getHearingId());
                     p.setInt(2, invitee.getType());
                     p.setString(3, invitee.getReference());

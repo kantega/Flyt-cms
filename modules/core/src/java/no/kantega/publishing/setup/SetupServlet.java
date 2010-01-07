@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.UnavailableException;
 import java.io.*;
 import java.util.*;
@@ -41,8 +40,7 @@ import no.kantega.publishing.spring.DataDirectoryContextListener;
 public class SetupServlet extends HttpServlet {
     private Logger log = Logger.getLogger(getClass());
 
-    private Map<String, String> driverClasses = new HashMap<String, String>();
-    private ServletContext servletContext;
+    private Map<String, JdbcDriver> drivers = new HashMap<String, JdbcDriver>();
     private OpenAksessContextLoaderListener contextLoader;
     private File dataDirectory;
     private static final String CONFIG_FILE_ATTR = SetupServlet.class.getName() +".CONFIG_SOURCE";
@@ -51,11 +49,23 @@ public class SetupServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        driverClasses.put("mysql", "com.mysql.jdbc.Driver");
-        driverClasses.put("mssql", "net.sourceforge.jtds.jdbc.Driver");
-        servletContext = config.getServletContext();
-        contextLoader = (OpenAksessContextLoaderListener) servletContext.getAttribute(OpenAksessContextLoaderListener.LISTENER_ATTR);
-        dataDirectory  = (File)servletContext.getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
+
+        contextLoader = (OpenAksessContextLoaderListener) getServletContext().getAttribute(OpenAksessContextLoaderListener.LISTENER_ATTR);
+        dataDirectory  = (File)getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
+
+        addDriver("mysql", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/databasename?useUnicode=true&characterEncoding=iso-8859-1");
+        drivers.put("mssql", new JdbcDriver("mssql", "Microsoft SQL Server", "net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:sqlserver://localhost:1433/databasename;tds=8.0;logintimeout=15"));
+        drivers.put("derby", new JdbcDriver("derby", "Apache Derby", "org.apache.derby.jdbc.EmbeddedDriver", "jdbc:derby:" +dataDirectory.getAbsolutePath() + "/derby/openaksess.db"));
+    }
+
+    private void addDriver(String id, String name, String driverClass, String defaultUrl) {
+        try {
+            getClass().getClassLoader().loadClass(driverClass);
+            drivers.put(id, new JdbcDriver(id, name, driverClass, defaultUrl));
+        } catch (ClassNotFoundException e) {
+            log.info("Driver class excluded because it is not on the classpath: " + driverClass);
+        }
+
     }
 
     @Override
@@ -69,8 +79,11 @@ public class SetupServlet extends HttpServlet {
                 req.setAttribute("driverName",  "mysql");
             } else if(driver.contains("jtds")) {
                 req.setAttribute("driverName", "mssql");
+            } else if(driver.contains("derby")) {
+                req.setAttribute("driverName", "derby");
             }
         }
+        req.setAttribute("drivers", drivers);
         req.setAttribute("url", props.getProperty("database.url"));
         req.setAttribute("username", props.getProperty("database.username"));
 
@@ -98,7 +111,7 @@ public class SetupServlet extends HttpServlet {
 
         if(StringUtils.isEmpty(driverName)) {
             errors.add("Please choose a database driver");
-        } else if(!driverClasses.containsKey(driverName)) {
+        } else if(!drivers.containsKey(driverName)) {
             errors.add("Unknown driver selected");
         }
         if(StringUtils.isEmpty(url)) {
@@ -114,7 +127,7 @@ public class SetupServlet extends HttpServlet {
         // If all fields are present, we can create a test connection
         if(errors.size() == 0) {
             DriverManagerDataSource dataSource = new DriverManagerDataSource();
-            dataSource.setDriverClassName(driverClasses.get(driverName));
+            dataSource.setDriverClassName(drivers.get(driverName).getDriverClass());
             dataSource.setUrl(url);
             dataSource.setUsername(username);
             dataSource.setPassword(password);
@@ -125,23 +138,43 @@ public class SetupServlet extends HttpServlet {
                 connection.close();
             } catch (SQLException e) {
                 log.error("Error connecting to database", e);
-                errors.add("Could not connect to database: " + e.getMessage());
+
+                // If this is a derby database, we might need to create it first
+                if("derby".equals(driverName) && !url.toLowerCase().contains("create=true")) {
+                    String createUrl = url +";create=true";
+                    dataSource.setUrl(createUrl);
+                    try {
+                        dataSource.getConnection();
+                    } catch (SQLException e1) {
+                        // Expected
+                    }
+                    dataSource.setUrl(url);
+                    final Connection retryConnection;
+                    try {
+                        retryConnection = dataSource.getConnection();
+                        retryConnection.close();
+                    } catch (SQLException e1) {
+                        errors.add("Could not connect to database: " + e.getMessage());
+                    }
+                }
+                else {
+                    errors.add("Could not connect to database: " + e.getMessage());
+                }
             }
-
         }
-
         // Redispatch to form if we have errors
         if(errors.size() > 0) {
             req.setAttribute("errors", errors);
             req.setAttribute("driverName", driverName);
             req.setAttribute("url", url);
             req.setAttribute("username", username);
-
+            req.setAttribute("drivers", drivers);
+                    
 
             req.getRequestDispatcher("/WEB-INF/setup/setup.jsp").forward(req, resp);
         } else {
             // Otherwise, reconfigure aksess.conf, start application context and redirect to front page
-            final String driver = driverClasses.get(driverName);
+            final String driver = drivers.get(driverName).getDriverClass();
             reconfigure(driver, url, username, password, req.getContextPath());
             contextLoader.initContext();
             resp.sendRedirect(req.getContextPath());

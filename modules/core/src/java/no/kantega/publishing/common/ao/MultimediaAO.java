@@ -365,9 +365,9 @@ public class MultimediaAO {
             if (mm.getId() == -1) {
                 // Ny
                 if (data == null) {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?)", new String[] {"Id"});
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 } else {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"Id"});
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 }
             } else {
                 // Oppdater

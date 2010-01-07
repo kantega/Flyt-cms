@@ -36,15 +36,11 @@
 </p>
 
 <script type="text/javascript">
-    function setDefaultUrl(db) {
+    function setDefaultUrl(defaultUrl) {
         var url = document.getElementById("jdbcurl");
-        if(db == "mysql") {
-          url.value = "jdbc:mysql://localhost/databasename?useUnicode=true&characterEncoding=iso-8859-1";
-        } else if(db == "mssql") {
-            url.value = "jdbc:jtds:sqlserver://localhost:1433/databasename;tds=8.0;logintimeout=15"
-        } else {
-            url.value = "";
-        }
+
+        url.value = defaultUrl;
+
     }
 </script>
 <form action="<%=request.getContextPath()%>/Setup.initialAction" method="POST">
@@ -63,8 +59,9 @@
                 Database driver:
             </td>
             <td>
-                <input name="driver" value="mysql" id="mysql" type="radio" onchange="setDefaultUrl(this.value)" <c:if test="${driverName == 'mysql'}">checked="checked"</c:if>> <label for="mysql">MySQL</label> <br/>
-                <input name="driver" value="mssql" id="mssql" type="radio" onchange="setDefaultUrl(this.value)" <c:if test="${driverName == 'mssql'}">checked="checked"</c:if>> <label for="mssql">Microsoft SQL Server</label>
+                <c:forEach var="driver" items="${drivers}">
+                    <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onchange="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label> <br/>
+                </c:forEach>
             </td>
         </tr>
         <tr>
@@ -72,7 +69,7 @@
                 Database url:
             </td>
             <td>
-                <input name="url" size="80" id="jdbcurl" value="<c:out value="${url}"/>">
+                <input name="url" size="100" id="jdbcurl" value="<c:out value="${url}"/>">
             </td>
         </tr>
 

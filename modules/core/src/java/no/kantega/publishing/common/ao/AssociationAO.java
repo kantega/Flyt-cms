@@ -26,10 +26,7 @@ import no.kantega.publishing.security.ao.PermissionsAO;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import java.sql.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -116,7 +113,7 @@ public class AssociationAO  {
             }
         }
 
-        PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"UniqueId"});
+        PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         st.setInt(1, a.getAssociationId());
         st.setInt(2, a.getContentId());
         st.setInt(3, a.getParentAssociationId());

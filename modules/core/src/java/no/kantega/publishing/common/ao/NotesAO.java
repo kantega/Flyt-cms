@@ -64,7 +64,7 @@ public class NotesAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("INSERT INTO notes (Author, NoteText, CreatedDate, ContentId) VALUES (?, ?, ?, ?)", new String[] {"NoteId"});
+            PreparedStatement p = c.prepareStatement("INSERT INTO notes (Author, NoteText, CreatedDate, ContentId) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             p.setString(1, note.getAuthor());
             p.setString(2, note.getText());

@@ -719,7 +719,7 @@ public class ContentAO {
             }
 
             if (isNew) {
-                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ContentId"});
+                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 // Update
                 st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ? where ContentId = ?");
@@ -827,7 +827,7 @@ public class ContentAO {
             }
 
             // Insert new version
-            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"ContentVersionId"});
+            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, content.getId());
             st.setInt(2, content.getVersion());
             st.setInt(3, newStatus);

@@ -96,7 +96,7 @@ public class SiteAO {
             PreparedStatement st = null;
             if (site.getId() == -1) {
                 // Ny
-                st = c.prepareStatement("insert into sites (Name, Alias) values(?,?)", new String[] {"SiteId"});
+                st = c.prepareStatement("insert into sites (Name, Alias) values(?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 // Oppdater
                 st = c.prepareStatement("update sites set Name = ?, Alias = ? where SiteId = ?");

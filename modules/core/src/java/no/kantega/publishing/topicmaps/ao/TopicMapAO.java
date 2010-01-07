@@ -113,7 +113,7 @@ public class TopicMapAO {
             PreparedStatement st = null;
             if (topicMap.getId() == -1) {
                 // Ny
-                st = c.prepareStatement("insert into tmmaps (Name, IsEditable, WSOperation, WSSoapAction, WSEndPoint) values(?,?,?,?,?)", new String[] {"Id"});
+                st = c.prepareStatement("insert into tmmaps (Name, IsEditable, WSOperation, WSSoapAction, WSEndPoint) values(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 // Oppdater
                 st = c.prepareStatement("update tmmaps set Name = ?, IsEditable = ?, WSOperation = ?, WSSoapAction = ?, WSEndPoint = ? where Id = ?");
