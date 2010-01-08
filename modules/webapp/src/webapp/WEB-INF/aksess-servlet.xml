@@ -60,6 +60,7 @@
 
                 <!-- My page -->
                 <prop key="/admin/mypage/ViewMyPage.action">ViewMyPageAction</prop>
+                <prop key="/admin/mypage/MyPageSettings.action">MyPageSettingsAction</prop>
                 <prop key="/admin/mypage/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
                 <prop key="/admin/mypage/plugins/PropertySearch.action">propertySearchAction</prop>
 
@@ -304,6 +305,9 @@
     <!-- My page-->
     <bean class="no.kantega.publishing.admin.mypage.action.ViewMyPageAction" id="ViewMyPageAction">
         <property name="view" value="/WEB-INF/jsp/admin/mypage/mypage.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.action.MyPageSettingsAction" id="MyPageSettingsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/settings.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.mypage.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
     <bean class="no.kantega.publishing.admin.mypage.plugins.PropertySearchAction" id="propertySearchAction">

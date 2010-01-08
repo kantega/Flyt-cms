@@ -21,6 +21,13 @@
 <kantega:section id="head">
     <script type="text/javascript" src="../js/edit.jjs"></script>
     <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#SettingsButton").click(function(){
+                ModalWindow.open({href: 'MyPageSettings.action', iframe: true, title: '<kantega:label key="aksess.tools.settings"/>'});
+            });
+        });
+    </script>
 </kantega:section>
 
 <kantega:section id="topMenu">
@@ -28,6 +35,10 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
+    <div class="buttonGroup">
+        <a href="#" class="button disabled" id="SettingsButton"><span class="settings"><kantega:label key="aksess.tools.settings"/></span></a>
+        <a href="#" class="button disabled" id="ResetMyPageButton"><span class="reset"><kantega:label key="aksess.tools.reset"/></span></a>
+    </div>
 </kantega:section>
 
 <kantega:section id="toolsMenu">
