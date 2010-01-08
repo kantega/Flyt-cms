@@ -30,7 +30,7 @@ $(document).ready(function() {
     }
     setWindowSize();
     ajaxSetup();
-    WidgetManager.init({context: '#Content .mypage'});
+    WidgetManager.init({context: '#Content'});
 });
 
 
@@ -249,37 +249,73 @@ var StateHandler = {
 
 var WidgetManager = {
 
+    defaults : {
+        context: 'body',
+        widgetContainerClass: 'widgetcolumn',
+        widgetClass: 'widget',
+        widgetHeaderClass: 'widget-header',
+        widgetContentClass: 'widget-content',
+        minimizeClass: 'ui-icon ui-icon-minus',
+        maximizeClass: 'ui-icon ui-icon-plus',
+        closeClass: 'ui-icon ui-icon-close'
+    },
 
     init : function(config){
         $.extend(WidgetManager.defaults, config);
 
-        var $columns = $(".widgetcolumn");
+        var $columns = $('.'+WidgetManager.defaults.widgetContainerClass, WidgetManager.defaults.context);
         $columns.sortable({
-            connectWith: '.widgetcolumn'
+            connectWith: WidgetManager.defaults.context + ' .'+WidgetManager.defaults.widgetContainerClass
         });
 
-        var $widgets = $(".widget");
+        var $widgets = $('.'+WidgetManager.defaults.widgetClass, WidgetManager.defaults.context);
         $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
-                .find(".widget-header")
+                .find('.'+WidgetManager.defaults.widgetHeaderClass)
                 .addClass("ui-widget-header")
-                .append('<span class="ui-icon ui-icon-close"></span>')
-                .append('<span class="minMax ui-icon ui-icon-minus"></span>')
-                .end()
-                .find(".widget-content");
+                .append('<span class="widget-controls"><span class="'+WidgetManager.defaults.closeClass+'"></span><span class="'+WidgetManager.defaults.minimizeClass+'"></span></span>');
 
-        $widgets.find(".widget-header .minMax").live('click', function() {
-            var $this = $(this);
-            $this.toggleClass("ui-icon-plus");
-            $this.toggleClass("ui-icon-minus");
-            $this.parents(".widget:first").find(".widget-content").toggle();
-        });
 
-        $widgets.find(".widget-header .ui-icon-close").live('click', function(){
-            $(this).parents(".widget:first").remove();
+        $widgets.find(".widget-header .widget-controls").live('click', function(e) {
+            var $target = $(e.target);
+            var $widget = $(this).parents(".widget:first");
+
+            if ($target.hasClass(WidgetManager.defaults.minimizeClass)) {
+                WidgetManager.minimize($widget);
+            }
+            else if ($target.hasClass(WidgetManager.defaults.maximizeClass)) {
+                WidgetManager.maximize($widget);
+            }
+            else if($target.hasClass(WidgetManager.defaults.closeClass)) {
+                WidgetManager.remove($widget);
+            }
+            
         });
 
         $columns.disableSelection();
+    },
 
+    minimize: function(widget) {
+        var $widget = WidgetManager._getElementAsJquery(widget);
+        $widget.find('.'+WidgetManager.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(WidgetManager.defaults.minimizeClass).addClass(WidgetManager.defaults.maximizeClass);
+        $widget.find('.'+WidgetManager.defaults.widgetContentClass).hide();
+    },
+
+    maximize: function(widget) {
+        var $widget = WidgetManager._getElementAsJquery(widget);
+        $widget.find('.'+WidgetManager.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(WidgetManager.defaults.maximizeClass).addClass(WidgetManager.defaults.minimizeClass);
+        $widget.find('.'+WidgetManager.defaults.widgetContentClass).show();
+    },
+
+    remove: function(widget) {
+        WidgetManager._getElementAsJquery(widget).remove();
+    },
+
+    _getElementAsJquery: function(elem) {
+        if (elem instanceof jQuery) {
+            return elem;
+        } else {
+            return $(elem);
+        }
     }
 };
 
