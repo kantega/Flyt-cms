@@ -298,7 +298,7 @@
                 <%
                     if (securitySession.isUserInRole(Aksess.getDeveloperRole())) {
                 %>
-                        <br><input type="checkbox" name="locked" value="true" <% if (current.isLocked()) out.write("checked=\"checked\"");%> id="locked" onclick="lockAlias()"> <label for="locked"><kantega:label key="aksess.editpublishinfo.alias.locked"/></label>
+                        <br><input type="checkbox" name="locked" value="true" <% if (current.isLocked()) out.write("checked=\"checked\"");%> id="locked" onclick="lockAlias()"> <label for="locked" class="radio"><kantega:label key="aksess.editpublishinfo.alias.locked"/></label>
                 <%
                     }
                 %>

@@ -13,6 +13,11 @@ label {
     display: block;
 }
 
+label.radio {
+    font-weight: normal;
+    display: inline;
+}
+
 .textInput {
     width: 300px;
 }
