@@ -36,93 +36,99 @@
         });
     </script>
 
-    <div id="LeftPane">
+    <div class="widgetcolumn">
 
-    <c:if test="${fn:length(contentForApproval) > 1}">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.mypage.approval"/></h1>
-                <table class="fullWidth">
-                    <thead>
+        <c:if test="${fn:length(contentForApproval) > 1}">
+            <div class="widget">
+                <div class="widget-header"><h2><kantega:label key="aksess.mypage.approval"/></h2></div>
+                <div class="widget-content">
+                    <table class="fullWidth">
+                        <thead>
                         <tr>
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                             <th class="modifiedby"><kantega:label key="aksess.mypage.modifiedby"/></th>
                             <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach var="item" items="${contentForApproval}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td class="title"><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
-                            <td><aksess:getattribute name="modifiedby" obj="${item}"/></td>
-                            <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </fieldset>
-        </div>
-    </c:if>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="item" items="${contentForApproval}" varStatus="status">
+                            <tr class="tableRow${status.index mod 2}">
+                                <td class="title"><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
+                                <td><aksess:getattribute name="modifiedby" obj="${item}"/></td>
+                                <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </c:if>
 
-    <c:forEach var="worklist" items="${myWorkList}">
-        <c:if test="${fn:length(worklist) > 1}">
-            <%
-                WorkList worklist = (WorkList)pageContext.getAttribute("worklist");
-                request.setAttribute("workListTitle", "aksess.mypage." + worklist.getDescription());
-            %>
-            <div class="fieldset">
-                <fieldset>
-                    <h1><kantega:label key="${workListTitle}"/></h1>
-                    <table class="fullWidth">
-                        <thead>
+        <c:forEach var="worklist" items="${myWorkList}">
+            <c:if test="${fn:length(worklist) > 1}">
+                <%
+                    WorkList worklist = (WorkList)pageContext.getAttribute("worklist");
+                    request.setAttribute("workListTitle", "aksess.mypage." + worklist.getDescription());
+                %>
+                <div class="widget">
+                    <div class="widget-header"><h2><kantega:label key="${workListTitle}"/></h2></div>
+                    <div class="widget-content">
+                        <table class="fullWidth">
+                            <thead>
                             <tr>
                                 <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                                 <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
                             </tr>
-                        </thead>
-                        <c:forEach var="item" items="${worklist}" varStatus="status">
-                            <tr class="tableRow${status.index mod 2}">
-                                <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
-                                <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
-                            </tr>
-                        </c:forEach>
-                    </table>
-                </fieldset>
-            </div>
-        </c:if>
-    </c:forEach>
+                            </thead>
+                            <c:forEach var="item" items="${worklist}" varStatus="status">
+                                <tr class="tableRow${status.index mod 2}">
+                                    <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
+                                    <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
+                                </tr>
+                            </c:forEach>
+                        </table>
+                    </div>
+                </div>
+            </c:if>
+        </c:forEach>
 
-    <c:if test="${fn:length(myDeletedItems) > 0}">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.mypage.deleted"/></h1>
-                <table class="fullWidth">
-                    <thead>
+        <c:if test="${fn:length(myDeletedItems) > 0}">
+            <div class="widget">
+                <div class="widget-header"><h2><kantega:label key="aksess.mypage.deleted"/></h2></div>
+                <div class="widget-content">
+                    <table class="fullWidth">
+                        <thead>
                         <tr>
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                             <th class="date"><kantega:label key="aksess.mypage.deleted"/></th>
                             <th class="action">&nbsp;</th>
                         </tr>
-                    </thead>
-                    <c:forEach var="item" items="${myDeletedItems}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td><c:out value="${item.title}"/></td>
-                            <td><admin:formatdate date="${item.deletedDate}"/></td>
-                            <td><a href="#" onclick="restore('${item.id}')" class="button restore"><span><kantega:label key="aksess.mypage.restore"/></span></a></td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </fieldset>
+                        </thead>
+                        <c:forEach var="item" items="${myDeletedItems}" varStatus="status">
+                            <tr class="tableRow${status.index mod 2}">
+                                <td><c:out value="${item.title}"/></td>
+                                <td><admin:formatdate date="${item.deletedDate}"/></td>
+                                <td><a href="#" onclick="restore('${item.id}')" class="button restore"><span><kantega:label key="aksess.mypage.restore"/></span></a></td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </div>
+            </div>
+        </c:if>
+    </div>
+
+    <div class="widgetcolumn">
+        <div class="widget">
+            <div class="widget-header"><h2><kantega:label key="aksess.propertysearch.title"/></h2></div>
+            <div class="widget-content">
+                <div id="PropertySearch"></div>
+            </div>
         </div>
-    </c:if>
     </div>
-    <div id="RightPane">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.propertysearch.title"/></h1>
-            <div id="PropertySearch"></div>
-        </fieldset>
+
+    <div class="widgetcolumn">
+        
     </div>
-    </div>
+    
 </kantega:section>
 <%@ include file="../layout/mypageLayout.jsp" %>

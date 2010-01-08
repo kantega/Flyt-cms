@@ -62,7 +62,7 @@ function updateMainPane(id, suppressNavigatorUpdate) {
 function updateStatistics(url, view) {
 
     debug("statistics.updatePageStatistics(): Triggering contentupdate event");
-    $.event.trigger("contentupdate", url);
+    triggerContentUpdateEvent(url);
 
     debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){

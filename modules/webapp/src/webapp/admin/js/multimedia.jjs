@@ -18,13 +18,14 @@
  * limitations under the License.
  */
 
-var currentItemIdentifier = -1;
+var currentItemIdentifier = 0;
 
 $(document).ready(function(){
     debug("multimedia.$(document).ready(): multimedia");
     bindMultimediaupdateEvents();
     triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     bindToolButtons();
+    StateHandler.init("multimediaupdate");
 });
 
 /**
@@ -184,6 +185,7 @@ function onNavigatorTitleClick(elm) {
 
 function triggerMultimediaupdateEvent() {
     debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
+    StateHandler.setState(currentItemIdentifier);
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 

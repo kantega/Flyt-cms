@@ -42,7 +42,7 @@
                 debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
                 notifyContentUpdate(currentContent);
                 currentUrl = currentContent;
-                $.event.trigger("contentupdate",[currentContent]);
+                triggerContentUpdateEvent(currentUrl);
             });
         }
 

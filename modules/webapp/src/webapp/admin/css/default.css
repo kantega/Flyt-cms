@@ -194,6 +194,10 @@ table.fullWidth {
 }
 
 
+#Content.mypage {
+    min-width: 900px;
+}
+
 #Content.mypage table .date{
     width: 100px;
 }
@@ -206,15 +210,51 @@ table.fullWidth {
     width: 160px;
 }
 
-#LeftPane {
-    width: 500px;
+#Content.mypage .widgetcolumn {
     float: left;
+    width: 31%;
+    padding: 1%;
+    min-height: 50%;
 }
 
-#RightPane {
-    width: 400px;
-    float:left;
+#Content.mypage .widget {
+    border: 1px solid #999;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.4);
+    margin-bottom: 15px;
 }
+#Content.mypage .widget-header {
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-radius-top-right: 5px;
+    -webkit-border-radius-top-left: 5px;
+    border: none;
+    color: #000;
+    height: 25px;
+    padding: 0 10px;
+    line-height: 25px;
+    background: #E3E3E3 url(../bitmaps/default/framework/widget_top_background.png) repeat-x scroll left center;
+}
+#Content.mypage .widget-header h2 {
+    margin: 0;
+    float: left;
+}
+#Content.mypage .widget-header .ui-icon {
+    float: right;
+    margin-top: 4px;
+    cursor: pointer;
+    background-image: url(images/ui-icons_222222_256x240.png);
+}
+#Content.mypage .widget-content {
+    padding: 10px; 
+}
+.ui-sortable-placeholder { border: 1px dotted black !important; border-radius: 0 !important; background: #fafafa !important; visibility: visible !important; }
+.ui-sortable-placeholder * { visibility: hidden; }
+
 
 /************** Top menu **************/
 #TopMenu .logo {

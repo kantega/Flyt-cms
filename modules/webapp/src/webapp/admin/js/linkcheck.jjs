@@ -55,7 +55,7 @@ function updateMainPane(id, suppressNavigatorUpdate) {
 function updateLinkList(url, sort) {
 
     debug("linkcheck.updateLinkList(): Triggering contentupdate event");
-    $.event.trigger("contentupdate", url);
+    triggerContentUpdateEvent(url);
 
     debug("linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){

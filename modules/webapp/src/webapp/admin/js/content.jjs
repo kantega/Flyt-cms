@@ -29,8 +29,8 @@ var currentUrl = "";
 $(document).ready(function(){
     debug("content.$(document).ready()");
     bindContentupdateEvents();
-    setOpenElementFromSession();
     bindFilterEvents();
+    StateHandler.init("contentupdate");
 });
 
 
@@ -90,8 +90,7 @@ function setLayoutSpecificSizes(elementProperties) {
     if ($buttons && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
-    debug("buttonsHeight:" + buttonsHeight);
-    debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight);
+    debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
     $navigator = $("#Navigator");
     $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
@@ -110,14 +109,6 @@ function setLayoutSpecificSizes(elementProperties) {
 
 
 
-/**
- * Retrieves the last recently viewed content element from the session and sets this as current element
- */
-function setOpenElementFromSession() {
-    ContentStateHandler.getCurrentContent(function(associationId){
-        updateNavigator(getContentUrlFromAssociationId(associationId), true);
-    });
-}
 
 /**
  * Binds click/select events to the content filters, such as 'Hide expired'.
@@ -170,6 +161,15 @@ function bindFilterEvents() {
     });
 }
 
+/**
+ * Fires an content update event for the given url
+ * @url - Current url.
+ */
+function triggerContentUpdateEvent(url) {
+    debug("content.triggerContentUpdateEvent(): contentupdateevent triggered");
+    StateHandler.setState(url);
+    $.event.trigger("contentupdate", url);
+}
 
 function navigatorResizeOnStart() {
     debug("content.navigatorResizeOnStart(): Adding overlay");
