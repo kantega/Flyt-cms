@@ -92,8 +92,10 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             if (fileName != null) {
                 fileName = fileName.toLowerCase();
                 if (fileName.indexOf(".") != -1) {
-                    fileName = fileName.substring(fileName.lastIndexOf("."), fileName.length());
-                    searchHit.setFileExtension(fileName);
+                    String fileExtension = fileName.substring(fileName.lastIndexOf("."), fileName.length());
+                    fileName = fileName.substring(0,fileName.lastIndexOf("."));
+                    searchHit.setFileExtension(fileExtension);
+                    searchHit.setFileName(fileName);
                 }
             }
             if (searchHit.getTitle() == null || searchHit.getTitle().length() == 0) {

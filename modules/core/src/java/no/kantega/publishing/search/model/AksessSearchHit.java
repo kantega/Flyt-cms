@@ -35,6 +35,7 @@ public class AksessSearchHit implements SearchHit {
     private Date lastModified = null;
     private List<PathEntry> pathElements = null;
     private String fileExtension = null;
+    private String fileName = null;
     private boolean doOpenInNewWindow = false;
 
 
@@ -88,6 +89,14 @@ public class AksessSearchHit implements SearchHit {
 
     public String getFileExtension() {
         return fileExtension;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public void setFileExtension(String fileExtension) {
