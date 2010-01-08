@@ -46,6 +46,7 @@ public class SearchServiceQuery {
     public static final String PARAM_LAST_MODIFIED_TO = Fields.LAST_MODIFIED + "_til";
     public static final String PARAM_SITE_ID = Fields.SITE_ID;
     public static final String PARAM_LANGUAGE = Fields.LANGUAGE;
+    public static final String PARAM_THIS_ID = "thisId";
     
     public static final String METAPARAM_PAGE = "page";
     public static final String METAPARAM_HITS_PER_PAGE = "hpp";
@@ -72,6 +73,7 @@ public class SearchServiceQuery {
         paramNames.add(PARAM_LAST_MODIFIED_TO);
         paramNames.add(PARAM_SITE_ID);
         paramNames.add(PARAM_LANGUAGE);
+        paramNames.add(PARAM_THIS_ID);
     }
 
 
