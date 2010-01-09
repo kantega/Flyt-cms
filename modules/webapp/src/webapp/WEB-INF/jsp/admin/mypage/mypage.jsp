@@ -33,6 +33,9 @@
 
         $(document).ready(function(){
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
+            $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
+                googleAnalyticsCallback();
+            });
         });
     </script>
 
@@ -127,8 +130,15 @@
     </div>
 
     <div class="widgetcolumn">
-        
+        <div class="widget">
+            <div class="widget-header">
+                <h2><a href="https://www.google.com/analytics/reporting/dashboard"><kantega:label key="aksess.googleanalytics.title"/></a></h2>
+            </div>
+            <div class="widget-content">
+                <div id="GoogleAnalytics"></div>
+            </div>
+        </div>
     </div>
-    
+
 </kantega:section>
 <%@ include file="../layout/mypageLayout.jsp" %>

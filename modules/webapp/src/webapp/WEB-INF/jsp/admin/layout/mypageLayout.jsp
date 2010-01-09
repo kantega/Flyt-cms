@@ -28,6 +28,10 @@
             });
         });
     </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["areachart"]});
+    </script>
 </kantega:section>
 
 <kantega:section id="topMenu">
