@@ -185,7 +185,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         calendar.add(Calendar.MONTH, -1);
         Date start = calendar.getTime();
 
-        int siteId = trafficQuery.getSiteId();
+        int siteId = trafficQuery.getCid().getSiteId();
 
         String originClause = createOriginClause(trafficQuery.getTrafficOrigin());
         String contentIdClause = createContentIdClause(trafficQuery);
