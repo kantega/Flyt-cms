@@ -68,6 +68,7 @@ function updateStatistics(url, view) {
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
         debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
         $("#MainPaneContent div.fieldset").roundCorners();
+        statisticsPageLoaded();
     });
 }
 

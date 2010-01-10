@@ -27,6 +27,10 @@
 
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/statistics.jjs"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["areachart"]});
+    </script>
 </kantega:section>
 
 <kantega:section id="content">

@@ -1,6 +1,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -17,6 +18,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<script type="text/javascript">
+    function statisticsPageLoaded() {
+        drawDateViewStatistics();
+        drawHourViewStatistics();
+    }
+</script>
+
 <a href="#" id="PageStatistics"><kantega:label key="aksess.pagestatistics.title"/></a>
 <div class="fieldset">
     <fieldset>
@@ -67,6 +75,25 @@
                 </tr>
             </c:forEach>
         </table>
+
+        <script type="text/javascript">
+            function drawDateViewStatistics() {
+                var chart;
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Day');
+                data.addColumn('number', 'Pageviews');
+                data.addRows(${fn:length(dateViewStatistics)});
+                <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
+                    data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
+                    data.setValue(${status.index}, 1, ${stat.noPageViews});
+                </c:forEach>
+
+                chart = new google.visualization.AreaChart(document.getElementById('dateViewStats_div'));
+                chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Day of month'});
+            }
+        </script>
+        <div id="dateViewStats_div"></div>
+
         <table class="fullWidth" style="padding-top:20px">
             <thead>
                 <tr>
@@ -78,13 +105,32 @@
             </thead>
             <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
                 <tr class="tableRow${status.index mod 2}">
-                    <td>${status.index + 1}</td>
-                    <td><a href="${stat.url}" target="_new">${stat.title}</a></td>
+                    <td class="no">&nbsp;</td>
+                    <td>${stat.period}</td>
                     <td class="number">${stat.noPageViews}</td>
                     <td class="number"><fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/>%</td>
                 </tr>
             </c:forEach>
         </table>
+
+        <script type="text/javascript">
+            function drawHourViewStatistics() {
+                var chart;
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Hour');
+                data.addColumn('number', 'Pageviews');
+                data.addRows(${fn:length(hourViewStatistics)});
+                <c:forEach var="stat" items="${hourViewStatistics}" varStatus="status">
+                    data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
+                    data.setValue(${status.index}, 1, ${stat.noPageViews});
+                </c:forEach>
+
+                chart = new google.visualization.AreaChart(document.getElementById('hourViewStats_div'));
+                chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Hour of day'});
+            }
+        </script>
+        <div id="hourViewStats_div"></div>
+
         <table class="fullWidth" style="padding-top:20px">
             <thead>
                 <tr>
@@ -96,8 +142,8 @@
             </thead>
             <c:forEach var="stat" items="${hourViewStatistics}" varStatus="status">
                 <tr class="tableRow${status.index mod 2}">
-                    <td>${status.index + 1}</td>
-                    <td><a href="${stat.url}" target="_new">${stat.title}</a></td>
+                    <td class="no">&nbsp;</td>
+                    <td>${stat.period}</td>
                     <td class="number">${stat.noPageViews}</td>
                     <td class="number"><fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/>%</td>
                 </tr>

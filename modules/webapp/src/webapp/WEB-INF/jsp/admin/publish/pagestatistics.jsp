@@ -17,6 +17,11 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<script type="text/javascript">
+    function statisticsPageLoaded() {
+    }
+</script>
+
 <a href="#" id="TotalStatistics"><kantega:label key="aksess.totalstatistics.title"/></a>
 
 <div class="fieldset">
@@ -109,4 +114,4 @@
         </table>
     </fieldset>
 </div>
-defau</c:if>
+</c:if>
