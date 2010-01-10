@@ -2,6 +2,7 @@
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -43,7 +44,7 @@
         </c:forEach>
 
         chart = new google.visualization.AreaChart(document.getElementById('permonthstats_div'));
-        chart.draw(data, {width: 450, height: 280, legend: 'bottom', title: 'Last 12 months'});
+        chart.draw(data, {width: 500, height: 280, legend: 'bottom', title: 'Last 12 months'});
     }
 </script>
 
@@ -59,10 +60,10 @@
         <ul>
             <li><c:out value="${usage.visits}"/> Visits</li>
             <li><c:out value="${usage.pageviews}"/> Pageviews</li>
-            <li><c:out value="${usage.pageviews / usage.visits}"/> Pages/Visit</li>
+            <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> Pages/Visit</li>
         </ul>
 
-        <h2>Top 10 pages</h2>
+        <h2>Top 10 pages last 3 months</h2>
         <table class="fullWidth">
             <tr>
                 <th><strong>Path</strong></th>
