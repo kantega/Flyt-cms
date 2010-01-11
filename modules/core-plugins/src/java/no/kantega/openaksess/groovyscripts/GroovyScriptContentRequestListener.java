@@ -77,6 +77,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     allowedParameters.put(Content.class, context.getRequest().getAttribute("aksess_this"));
                     allowedParameters.put(HttpServletRequest.class, context.getRequest());
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
+                    allowedParameters.put(ServletContext.class, servletContext);
 
 
                     synchronized (scripts) {
