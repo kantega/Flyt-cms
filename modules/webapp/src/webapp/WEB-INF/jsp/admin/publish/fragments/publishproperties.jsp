@@ -19,15 +19,15 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <script type="text/javascript">
     function displayExpireAction() {
-       var d = $("#end_date").val();
-       if (DateFunctions.isDateNotEmpty(d)) {
-           $("#EndDateAction").show("slow");
-       } else {
-           $("#EndDateAction").hide("slow");
-       }
+        var d = $("#end_date").val();
+        if (DateFunctions.isDateNotEmpty(d)) {
+            $("#EndDateAction").show("slow");
+        } else {
+            $("#EndDateAction").hide("slow");
+        }
     }
 
-    function validatePublishProperties() {        
+    function validatePublishProperties() {
         if (document.myform.alias && document.myform.alias.value == "/") {
             alert("<kantega:label key="aksess.error.aliasroot"/>");
             return false;
@@ -69,10 +69,10 @@
     }
 
     $(function() {
-	    $("#from_date").datepicker();
+        $("#from_date").datepicker();
         $("#end_date").datepicker();
         $("#change_date").datepicker();
-	});
+    });
 
     $(document).ready(function() {
         debug("bindTopicButtons(): bind ChooseTopicButton");
@@ -80,7 +80,17 @@
             debug("bindTopicButtons(): click ChooseTopicButton");
             selectTopic(null, true);
         });
-
+        $("#LockedAlias").click(function(event){
+            var locked = document.getElementById("LockedAlias");
+            if (locked.checked) {
+                $("#Alias").readOnly = true;
+                document.myform.alias.readOnly = true;
+                $("#LockedAliasHelp").show();
+            } else {
+                $("#Alias").readOnly = false;
+                $("#LockedAliasHelp").hide();
+            }
+        });
         // Load topics
         var params = new Object();
         updateTopics(params);
@@ -152,7 +162,11 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
-            <input type="text" name="alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510">
+            <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked}">readonly</c:if>>
+            <c:if test="${isDeveloper}">
+                <br><input type="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="LockedAlias"> <label for="LockedAlias" class="radio"><kantega:label key="aksess.editpublishinfo.alias.locked"/></label>
+            </c:if>
+            <div id="LockedAliasHelp" class="helpText" <c:if test="${!currentContent.locked}">style="display:none"</c:if>><kantega:label key="aksess.editpublishinfo.alias.locked.help"/></div>
         </fieldset>
     </div>
 </c:if>
@@ -160,7 +174,6 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
-
             <div id="TopicList">...</div>
             <div id="ChooseTopicButton">
                 <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>

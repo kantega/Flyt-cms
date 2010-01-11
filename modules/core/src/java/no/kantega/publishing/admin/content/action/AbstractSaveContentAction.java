@@ -230,6 +230,10 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             }
         }
 
+        if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
+            content.setLocked(param.getBoolean("locked"));
+        }        
+
         int templateId = param.getInt("displaytemplate");
         if (templateId != -1) {
             if (templateId != content.getDisplayTemplateId()) {

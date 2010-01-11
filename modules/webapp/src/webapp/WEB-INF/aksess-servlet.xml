@@ -368,7 +368,7 @@
     <bean class="no.kantega.publishing.admin.content.action.DeleteAssociationAction" id="DeleteAssociationAction">
         <property name="confirmDeleteSubPagesView" value="/WEB-INF/jsp/admin/publish/delete/confirmdeletesubpages.jsp"/>
         <property name="selectAssociationView" value="/WEB-INF/jsp/admin/publish/delete/selectassociation.jsp"/>
-        <property name="errorView" value="/WEB-INF/jsp/admin/publish/delete/deleteerror.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
         <property name="confirmDeleteView" value="/WEB-INF/jsp/admin/publish/delete/deleteconfirm.jsp"/>
     </bean>
     <!-- Edit content -->
@@ -483,13 +483,10 @@
     <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteMultimediaAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteMultimediaAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction" id="DeleteMultimediaAction">
+        <property name="beforeDeleteView" value="/WEB-INF/jsp/admin/"/>
+        <property name="confirmDeleteView" value="/WEB-INF/jsp/admin/"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.action.ImageCropAction" id="ImageCropAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagecrop.jsp"/>

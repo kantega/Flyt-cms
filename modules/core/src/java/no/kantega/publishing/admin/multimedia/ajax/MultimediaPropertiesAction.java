@@ -92,6 +92,7 @@ public class MultimediaPropertiesAction implements Controller {
                 if (canChange) {
                     enabledButtons.add("UploadButton");
                     enabledButtons.add("NewFolderButton");
+                    enabledButtons.add("DeleteFolderButton");
                 }
             }
         } else {

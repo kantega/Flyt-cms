@@ -66,6 +66,10 @@ public abstract class AbstractContentAction  extends AdminController {
             model.put("topicMapsEnabled", Boolean.TRUE);
         }
 
+        if (securitySession.isUserInRole(Aksess.getDeveloperRole())) {
+            model.put("isDeveloper", Boolean.TRUE);
+        }
+
         model.put("saveStatus", saveStatus);
     }
 }

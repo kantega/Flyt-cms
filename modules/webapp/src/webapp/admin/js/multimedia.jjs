@@ -29,6 +29,31 @@ $(document).ready(function(){
 });
 
 /**
+ * Actions associated with each tool.
+ */
+var Multimedia =  {
+    deleteItem: function(id) {
+        debug("multimedia.Multimedia.deleteItem(): thisId: " + thisId);
+        ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
+    },
+
+    cut: function(thisId) {
+        debug("multimedia.Multimedia.cut(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste");
+    },
+
+    copy: function(thisId) {
+        debug("multimedia.Multimedia.copy(): thisId: " + thisId);
+        $(".contextMenu").enableContextMenuItems("#paste");
+    },
+
+    paste: function(thisId) {
+        debug("content.Publish.paste(): thisId: " + thisId);
+        $(".contextMenu").disableContextMenuItems("#paste");
+    }
+};
+
+/**
  * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
  */
 var MultimediaStatus = {
@@ -65,6 +90,9 @@ function bindToolButtons() {
     bindMediaAjaxUpload();
     $("#NewFolderButton").not(".disabled").click(function() {
         createMediaFolder();
+    });
+    $("#DeleteFolderButton").not(".disabled").click(function() {
+        Multimedia.deleteItem(currentItemIdentifier);
     });
 }
 /**

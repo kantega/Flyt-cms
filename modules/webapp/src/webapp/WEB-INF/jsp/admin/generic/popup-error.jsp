@@ -18,17 +18,18 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<kantega:section id="title"><kantega:label key="${error}"/></kantega:section>
+<kantega:section id="title">
 
+</kantega:section>
 
 <kantega:section id="body">
-    <div id="ErrorMessage">
-        <div class="error">
+    <div class="fieldset">
+        <fieldset>
             <kantega:label key="${error}"/>
-        </div>
-        <div class="buttonGroup">
-            <a href="Javascript:window.close()" class="button ok"><kantega:label key="aksess.button.ok"/></a>
-        </div>
-   </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </fieldset>
+    </div>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

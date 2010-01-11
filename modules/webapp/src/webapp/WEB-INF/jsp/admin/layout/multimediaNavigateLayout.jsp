@@ -36,6 +36,7 @@
 <kantega:section id="toolsMenu">
     <a href="#" class="button disabled" id="UploadButton"><span class="upload"><kantega:label key="aksess.tools.upload"/></span></a>
     <a href="#" class="button disabled" id="NewFolderButton"><span class="newfolder"><kantega:label key="aksess.tools.newfolder"/></span></a>
+    <a href="#" class="button disabled" id="DeleteFolderButton"><span class="delete"><kantega:label key="aksess.tools.deletefolder"/></span></a>
 </kantega:section>
 
 <kantega:section id="body">

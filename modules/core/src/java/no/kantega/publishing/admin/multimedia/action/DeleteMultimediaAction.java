@@ -19,53 +19,64 @@ package no.kantega.publishing.admin.multimedia.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-public class DeleteMultimediaAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteMultimediaAction";
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
+public class DeleteMultimediaAction implements Controller {
+    private String errorView;
+    private String beforeDeleteView;
+    private String confirmDeleteView;
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
         RequestParameters param = new RequestParameters(request, "utf-8");
+        MultimediaService mediaService = new MultimediaService(request);
 
         int id = param.getInt("id");
-        try {
-            MultimediaService mediaService = new MultimediaService(request);
 
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        if (!request.getMethod().equalsIgnoreCase("POST")) {
+            // Ask if user wants to delete
+            Multimedia mm = mediaService.getMultimedia(id);
+            model.put("multimedia", mm);
+            return new ModelAndView(beforeDeleteView, model);
+        } else {
             int parentId = 0;
-            if (id != -1) {
-                Multimedia mm = mediaService.getMultimedia(id);
-                if (mm != null) {
-                    parentId = mm.getParentId();
-                    // Sjekk om det finnes underelementer
+            Multimedia mm = mediaService.getMultimedia(id);
+            if (mm != null) {
+                parentId = mm.getParentId();
+                model.put("parentId", parentId);
+                try {
                     mediaService.deleteMultimedia(id);
+
+                } catch (ObjectInUseException e) {
+                    model.put("error", "feil.no.kantega.publishing.common.exception.ObjectInUseException");
+                    return new ModelAndView(errorView, model);
                 }
+
             }
-            response.sendRedirect("multimedia.jsp?activetab=viewfolder&id=" + parentId + "&statusmessage=mmdeleted&updatetree=true&dummy" + new Date().getTime());
-        } catch (ObjectInUseException e) {
-            response.sendRedirect("multimedia.jsp?activetab=viewfolder&id=" + id + "&statusmessage=mmfolderinuse&dummy" + new Date().getTime());
-        } catch (Exception e) {
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+            return new ModelAndView(confirmDeleteView, model);
         }
+    }
+
+    public void setErrorView(String errorView) {
+        this.errorView = errorView;
+    }
+
+    public void setBeforeDeleteView(String beforeDeleteView) {
+        this.beforeDeleteView = beforeDeleteView;
+    }
+
+    public void setConfirmDeleteView(String confirmDeleteView) {
+        this.confirmDeleteView = confirmDeleteView;
     }
 }
 
