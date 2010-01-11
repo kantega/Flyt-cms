@@ -92,9 +92,12 @@ public class ContentRequestDispatcher {
                     listener.beforeDisplayTemplateDispatch(new DefaultDispatchContext(request, response, template));
                 }
             }
-            // Forward request
-            request.getRequestDispatcher(template).forward(request, response);
+            // Only forward to view template if contentrequestlistener hasn't commited the response yet
+            if(!response.isCommitted()) {
+                // Forward request
+                request.getRequestDispatcher(template).forward(request, response);
 
+            }
             if(shouldFilterOutput(adminMode, originalUri)) {
                 // Write output
                 if (wrappedResponse.isWrapped()) {
