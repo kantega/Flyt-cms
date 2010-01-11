@@ -70,7 +70,7 @@
                     <table>
                         <tr>
                             <td><label for="form_FieldName"><kantega:label key="aksess.formeditor.fieldname"/></label></td>
-                            <td><input type="text" id="form_FieldName" name="form_fieldName" size="30" maxlength="40"></td>
+                            <td><input type="text" id="form_FieldName" name="form_fieldName" size="30" maxlength="80"></td>
                         </tr>
                         <tr valign="top">
                             <td><label for="form_HelpText"><kantega:label key="aksess.formeditor.helptext"/></label></td>
