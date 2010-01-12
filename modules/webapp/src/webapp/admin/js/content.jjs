@@ -166,9 +166,9 @@ function bindFilterEvents() {
  * @url - Current url.
  */
 function triggerContentUpdateEvent(url) {
-    debug("content.triggerContentUpdateEvent(): contentupdateevent triggered");
+    debug("content.triggerContentUpdateEvent(): contentupdateevent triggered.");
+    //Event triggering is delegated to the state handler.
     StateHandler.setState(url);
-    $.event.trigger("contentupdate", url);
 }
 
 function navigatorResizeOnStart() {
@@ -509,12 +509,14 @@ var ContentStatus = {
     showApproveOrReject: function(showButtons) {
         debug("ContentStatus.showApproveOrReject: " + showButtons);
         var $approveButton = $("#EditContentButtons .approve");
-        if (showButtons && $approveButton != null) {
-            $("#EditContentButtons").show();
-        } else {
-            $("#EditContentButtons").hide();
+        if ($approveButton.size() > 0) {
+            if (showButtons) {
+                $("#EditContentButtons").show();
+            } else {
+                $("#EditContentButtons").hide();
+            }
+            $.event.trigger("resize");
         }
-        $.event.trigger("resize");
     },
 
     /**

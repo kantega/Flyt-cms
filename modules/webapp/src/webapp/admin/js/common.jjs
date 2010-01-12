@@ -222,26 +222,33 @@ var UserPreferences = {
  */
 var StateHandler = {
 
+    prevUrl : '',
+
     init: function(updateEventType) {
-//        $(window).bind( 'hashchange', function(e) {
-//            debug("common.StateHandler.init(): hashchange event received");
-//            $("#AjaxLoadingIllustration").show();
-//            //Get the url from the state
-//            var url = $.bbq.getState('url');
-//
-//            if (url) {
-//                debug("common.StateHandler.init(): state url:" + url);
-//                $.event.trigger(updateEventType, url);
-//            }
-//        });
-
-//        $(window).trigger('hashchange');
-
+        this._handleHashChange(updateEventType);
+        debug("common.StateHandler.init(). Triggering hashchange.");
+        $(window).trigger('hashchange');
     },
 
     setState: function(url) {
-//        debug("common.StateHandler.setState(): url: " + url);
-//        $.bbq.pushState({ url : url });
+        console.info("common.StateHandler.setState(): url: " + url);
+        $.bbq.pushState({ url : url });
+    },
+
+    _handleHashChange : function(updateEventType) {
+        debug("common.StateHandler._handleHashChange(): Binding hashchange event");
+        $(window).bind( 'hashchange', function(e) {
+            $("#AjaxLoadingIllustration").show();
+            //Get the url from the state
+            var url = $.bbq.getState('url');
+            debug("common.StateHandler._handleHashChange(): hashchange event received. Url: " + url);
+
+            if (url && url != this.prevUrl) {
+                debug("common.StateHandler._handleHashChange(): Current new url ("+url+") different from current url ("+this.prevUrl+"). Triggering '"+updateEventType+ "' event.");
+                $.event.trigger(updateEventType, url);
+                this.prevUrl = url;
+            }
+        });
     }
 
 };
@@ -261,53 +268,53 @@ var WidgetManager = {
     },
 
     init : function(config){
-        $.extend(WidgetManager.defaults, config);
+        $.extend(this.defaults, config);
 
-        var $columns = $('.'+WidgetManager.defaults.widgetContainerClass, WidgetManager.defaults.context);
+        var $columns = $('.'+this.defaults.widgetContainerClass, this.defaults.context);
         $columns.sortable({
-            connectWith: WidgetManager.defaults.context + ' .'+WidgetManager.defaults.widgetContainerClass
+            connectWith: this.defaults.context + ' .'+this.defaults.widgetContainerClass
         });
 
-        var $widgets = $('.'+WidgetManager.defaults.widgetClass, WidgetManager.defaults.context);
+        var $widgets = $('.'+this.defaults.widgetClass, this.defaults.context);
         $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
-                .find('.'+WidgetManager.defaults.widgetHeaderClass)
+                .find('.'+this.defaults.widgetHeaderClass)
                 .addClass("ui-widget-header")
-                .append('<span class="widget-controls"><span class="'+WidgetManager.defaults.closeClass+'"></span><span class="'+WidgetManager.defaults.minimizeClass+'"></span></span>');
+                .append('<span class="widget-controls"><span class="'+this.defaults.closeClass+'"></span><span class="'+this.defaults.minimizeClass+'"></span></span>');
 
 
         $widgets.find(".widget-header .widget-controls").live('click', function(e) {
             var $target = $(e.target);
             var $widget = $(this).parents(".widget:first");
 
-            if ($target.hasClass(WidgetManager.defaults.minimizeClass)) {
-                WidgetManager.minimize($widget);
+            if ($target.hasClass(this.defaults.minimizeClass)) {
+                this.minimize($widget);
             }
-            else if ($target.hasClass(WidgetManager.defaults.maximizeClass)) {
-                WidgetManager.maximize($widget);
+            else if ($target.hasClass(this.defaults.maximizeClass)) {
+                this.maximize($widget);
             }
-            else if($target.hasClass(WidgetManager.defaults.closeClass)) {
-                WidgetManager.remove($widget);
+            else if($target.hasClass(this.defaults.closeClass)) {
+                this.remove($widget);
             }
-            
+
         });
 
         $columns.disableSelection();
     },
 
     minimize: function(widget) {
-        var $widget = WidgetManager._getElementAsJquery(widget);
-        $widget.find('.'+WidgetManager.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(WidgetManager.defaults.minimizeClass).addClass(WidgetManager.defaults.maximizeClass);
-        $widget.find('.'+WidgetManager.defaults.widgetContentClass).hide();
+        var $widget = this._getElementAsJquery(widget);
+        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.minimizeClass).addClass(this.defaults.maximizeClass);
+        $widget.find('.'+this.defaults.widgetContentClass).hide();
     },
 
     maximize: function(widget) {
-        var $widget = WidgetManager._getElementAsJquery(widget);
-        $widget.find('.'+WidgetManager.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(WidgetManager.defaults.maximizeClass).addClass(WidgetManager.defaults.minimizeClass);
-        $widget.find('.'+WidgetManager.defaults.widgetContentClass).show();
+        var $widget = this._getElementAsJquery(widget);
+        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.maximizeClass).addClass(this.defaults.minimizeClass);
+        $widget.find('.'+this.defaults.widgetContentClass).show();
     },
 
     remove: function(widget) {
-        WidgetManager._getElementAsJquery(widget).remove();
+        this._getElementAsJquery(widget).remove();
     },
 
     _getElementAsJquery: function(elem) {
