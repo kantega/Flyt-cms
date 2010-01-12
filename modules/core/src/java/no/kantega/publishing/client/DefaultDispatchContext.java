@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.client;
 
-import no.kantega.publishing.api.content.ContentRequestListener;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

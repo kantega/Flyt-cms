@@ -16,8 +16,7 @@
 
 package no.kantega.openaksess.groovyscripts;
 
-import no.kantega.publishing.api.content.ContentRequestListenerAdapter;
-import no.kantega.publishing.api.content.ContentRequestListener;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
 import no.kantega.publishing.common.data.Content;
 import org.apache.log4j.Logger;
 import org.springframework.web.context.ServletContextAware;

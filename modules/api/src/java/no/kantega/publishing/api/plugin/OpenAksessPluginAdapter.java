@@ -6,7 +6,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import java.util.List;
 import java.util.Collections;
 
-import no.kantega.publishing.api.content.ContentRequestListener;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 
 /**
  */

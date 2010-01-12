@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.api.content;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package no.kantega.publishing.api.requestlisteners;
 
 /**
  */
-public interface ContentRequestListener {
-    void beforeDisplayTemplateDispatch(DispatchContext context);
-    void beforeIncludeTemplateDispatch(DispatchContext context);
+public class ContentRequestListenerAdapter implements ContentRequestListener {
 
-    interface DispatchContext {
-        HttpServletRequest getRequest();
+    public void beforeIncludeTemplateDispatch(DispatchContext context) {
 
-        HttpServletResponse getResponse();
+    }
 
-        String getTemplateUrl();
+    public void beforeDisplayTemplateDispatch(DispatchContext context) {
+
     }
 }
-
-
