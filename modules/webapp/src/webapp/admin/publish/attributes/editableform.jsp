@@ -106,6 +106,12 @@
                                 <input type="text" id="form_Rows" size="2" maxlength="2" name="form_Rows"> <kantega:label key="aksess.formeditor.rows"/>
                             </td>
                         </tr>
+                        <tr class="form_params_textarea" style="display:none;">
+                            <td><label for="form_Cols"><kantega:label key="aksess.formeditor.fieldcols"/></label></td>
+                            <td>
+                                <input type="text" id="form_Cols" size="2" maxlength="2" name="form_Cols"> <kantega:label key="aksess.formeditor.cols"/>
+                            </td>
+                        </tr>
                         <tr class="form_params_list" style="display:none;" valign="top">
                             <td><label><kantega:label key="aksess.formeditor.choices"/></label></td>
                             <td>

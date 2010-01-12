@@ -364,11 +364,17 @@ formElementTypes[formElementTypes.length] = formElementText;
 // Textarea
 var formElementTextArea = new FormElementType("<kantega:label key="aksess.formeditor.type.textarea"/>", "textarea");
 formElementTextArea.onEdit = function(element) {
-    var size = $("div.inputs textarea", element).attr("rows");
-    if (size != 0) {
-        $("#form_Rows").val(size);
+    var rows_size = $("div.inputs textarea", element).attr("rows");
+    if (rows_size != 0) {
+        $("#form_Rows").val(rows_size);
     } else {
         $("#form_Rows").val("3");
+    }
+    var cols_size = $("div.inputs textarea", element).attr("cols");
+    if (cols_size != 0) {
+        $("#form_Cols").val(cols_size);
+    } else {
+        $("#form_Cols").val("40");
     }
 }
 
@@ -382,7 +388,16 @@ formElementTextArea.onSave = function(fieldName) {
         rows = 3;
     }
 
-    return '<textarea rows="' + rows + '" cols="40" name="' + fieldName + '" disabled></textarea>';
+    var cols = $("#form_Cols").val();
+    if (cols != "") {
+        cols = parseInt(cols, 10);
+    }
+
+    if (isNaN(cols) || cols == 0) {
+        cols = 40;
+    }
+
+    return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '" disabled></textarea>';
 }
 formElementTextArea.onActive = function (isSelected) {
     if (isSelected) {
