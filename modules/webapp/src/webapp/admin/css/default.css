@@ -244,6 +244,9 @@ table.fullWidth {
     margin: 0;
     float: left;
 }
+#Content.mypage .widget-header a{
+    color: #000;
+}
 #Content.mypage .widget-header .ui-icon {
     float: right;
     margin-top: 4px;
