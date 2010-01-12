@@ -51,12 +51,18 @@ public class ContentSearchController implements AksessController, InitializingBe
     private Map<String, Object> performSearches(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
 
+        RequestParameters param = new RequestParameters(request);
+
         Content content = (Content)request.getAttribute("aksess_this");
 
         SearchServiceQuery query = new SearchServiceQuery(request);
         if (content != null) {
             query.putSearchParam("thisId", "" + content.getAssociation().getId());
-            query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + content.getAssociation().getSiteId());
+            int siteId = param.getInt(SearchServiceQuery.PARAM_SITE_ID);
+            if (siteId == -1) {
+                siteId = content.getAssociation().getSiteId();
+            }
+            query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
         }
 
         // Add hit counts
