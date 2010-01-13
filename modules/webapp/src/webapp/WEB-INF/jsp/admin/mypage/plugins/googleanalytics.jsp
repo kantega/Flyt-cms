@@ -20,7 +20,7 @@
   --%>
 
 <script type="text/javascript">
-    function googleAnalyticsCallback() {
+    function widgetLoaded() {
         drawPerMonthStatsChart();
     }
 

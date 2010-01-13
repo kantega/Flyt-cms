@@ -34,7 +34,7 @@
         $(document).ready(function(){
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
             $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
-                googleAnalyticsCallback();
+                widgetLoaded();
             });
         });
     </script>
