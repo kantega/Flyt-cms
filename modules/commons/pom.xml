@@ -29,26 +29,13 @@
 
     <dependencies>
 
-        <!-- Do we really need this?
-        Is there anything here that won't be pulled in transitively
-         through spring-webmvc?
-        -->
-        <!--
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>${springframework.version}</version>
-        </dependency>-->
-        
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>${springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -67,48 +54,37 @@
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>${httpclient.version}</version>
         </dependency>
 
         <dependency>
             <groupId>nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
             <version>0.9.5</version>
-
         </dependency>
 
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
-
         </dependency>
 
         <dependency>
             <groupId>regexp</groupId>
             <artifactId>regexp</artifactId>
-            <version>1.2</version>
-
         </dependency>
 
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>${xercesImpl.version}</version>
-
         </dependency>
 
         <dependency>
             <groupId>xml-apis</groupId>
             <artifactId>xml-apis</artifactId>
-            <version>${xml-apis.version}</version>
-
         </dependency>
 
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>2.7.0</version>
         </dependency>
 
         <dependency>

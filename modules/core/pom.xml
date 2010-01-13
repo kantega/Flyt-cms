@@ -97,13 +97,11 @@
         <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
-            <version>${xercesImpl.version}</version>
         </dependency>
 
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>${xalan.version}</version>
         </dependency>
 
         <dependency>
