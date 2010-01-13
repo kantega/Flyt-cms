@@ -494,12 +494,13 @@ formElementRadio.onActive = function (isSelected) {
 }
 formElementTypes[formElementTypes.length] = formElementRadio;
 
+// Select
 var formElementSelect = new FormElementType("<kantega:label key="aksess.formeditor.type.select"/>", "select");
 formElementSelect.onEdit = function(element) {
     $("#form_Values").html("");
     $("div.inputs input", element).each(function() {
         var fieldName = $("#form_FieldName").val();
-        formAddInputValue("radio", fieldName, this.value, this.checked);
+        formAddInputValue("select", fieldName, this.value, this.checked);
     });
 }
 
@@ -524,17 +525,40 @@ formElementSelect.onActive = function (isSelected) {
         $("#form_AddElement").click(function(event) {
             event.preventDefault();
             fieldName = $("#form_FieldName").val();
-            formAddInputValue("radio", fieldName, "", false);
+            formAddInputValue("select", fieldName, "", false);
         });
         if ($("#form_Values input").length == 0) {
             fieldName = $("#form_FieldName").val();
-            formAddInputValue("radio", fieldName, "", false);
+            formAddInputValue("select", fieldName, "", false);
         }
         $(".form_params_list").show();
     } else {
         $(".form_params_list").hide();
     }
 }
-
-
 formElementTypes[formElementTypes.length] = formElementSelect;
+
+// Hidden
+var formElementHidden = new FormElementType("<kantega:label key="aksess.formeditor.type.hidden"/>", "hidden");
+formElementHidden.onEdit = function(element) {
+   $("#form_Values").html("");
+    $("div.inputs input", element).each(function() {
+        var fieldName = $("#form_FieldName").val();
+        formAddInputValue("hidden", fieldName, this.value, this.checked);
+    });
+
+}
+formElementHidden.onSave = function (fieldName) {
+    return '<input type="hidden" name="' + fieldName + '" value="' + fieldName + '" disabled>';
+}
+formElementHidden.onActive = function (isSelected) {
+    if (isSelected) {
+        $(".form_params_text").show();
+    } else {
+        $(".form_params_text").hide();
+    }
+}
+
+formElementTypes[formElementTypes.length] = formElementHidden;
+
+

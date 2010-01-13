@@ -1,7 +1,6 @@
 package no.kantega.publishing.modules.forms.filter;
 
 import java.util.ArrayList;
-import java.util.List;
 import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
@@ -19,11 +18,12 @@ import no.kantega.publishing.spring.RootContext;
 /**
  *
  */
-
 public class FormSubmissionFillFilter extends XMLFilterImpl {
+
     private Map<String, String[]> params;
     private FormSubmission formSubmission;
     private boolean mandatory = false;
+    private int DEFAULT_SIZE = 128;
     private FormElementValidatorFactory formElementValidatorFactory;
 
     public FormSubmissionFillFilter(Map<String, String[]> params, Form form) {
@@ -37,60 +37,60 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if (name.equalsIgnoreCase("div")) {
-            if (attributes!=null && attributes.getValue("class")!=null && attributes.getValue("class").contains("formElement") ) {
+            if (attributes != null && attributes.getValue("class") != null && attributes.getValue("class").contains("formElement")) {
                 mandatory = attributes.getValue("class").contains("mandatory");
             }
 
         }
 
-        if (name.equalsIgnoreCase("input") ||
-            name.equalsIgnoreCase("radio") ||
-            name.equalsIgnoreCase("checkbox") ||
-            name.equalsIgnoreCase("textarea") ||
-            name.equalsIgnoreCase("select")) {
+        if (name.equalsIgnoreCase("input")
+                || name.equalsIgnoreCase("radio")
+                || name.equalsIgnoreCase("checkbox")
+                || name.equalsIgnoreCase("textarea")
+                || name.equalsIgnoreCase("select")) {
 
             String inputName = attributes.getValue("name");
             String inputType = attributes.getValue("type");
 
 
             String[] values = params.get(inputName);
+            boolean isEmpty = true;
             if (values != null && values.length > 0) {
                 FormValue formValue = new FormValue();
                 formValue.setName(inputName);
                 formValue.setValues(values);
+                String v = formValue.getValuesAsString();
+                if (v != null && v.length() > 0) {
+                    isEmpty = false;
+                }
 
-                if (inputType!=null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
+                String inputClass = attributes.getValue("class");
 
-                    String inputClass = attributes.getValue("class");
-
-                    // Class only contains one value and we validate based on this
+                if (!isEmpty && inputType != null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
                     if (inputClass != null || !"".equals(inputClass)) {
-                        String inputValue = values[0];
-                        if (inputValue != null && inputValue.length() > 0) {
+                        int inputSize = attributes.getValue("size") != null ? Integer.parseInt(attributes.getValue("size")) : DEFAULT_SIZE;
+                        int inputMaxlength = attributes.getValue("maxlength") != null ? Integer.parseInt(attributes.getValue("maxlength")) : DEFAULT_SIZE;
 
-                            int inputSize = attributes.getValue("size") != null ? Integer.parseInt(attributes.getValue("size")) : 128;
-                            int inputMaxlength = attributes.getValue("maxlength") != null ? Integer.parseInt(attributes.getValue("maxlength")) : 128;
-
-                            if (inputValue.length() < java.lang.Math.min(inputSize, inputMaxlength)) {
-                                formSubmission.getErrors().add(new FormError(inputClass, "Size"));
-                            } else {
-                                FormElementValidator fev = formElementValidatorFactory.getFormElementValidatorById(inputClass);
-                                if (fev != null) {
-                                    formSubmission.setErrors(fev.validate(formValue, formSubmission.getErrors()));
-                                }
+                        if (v.length() > java.lang.Math.min(inputSize, inputMaxlength)) {
+                            formSubmission.getErrors().add(new FormError(inputName, "aksess.formerror.size"));
+                        } else {
+                            FormElementValidator fev = formElementValidatorFactory.getFormElementValidatorById(inputClass);
+                            if (fev != null) {
+                                formSubmission.setErrors(fev.validate(formValue, formSubmission.getErrors()));
                             }
-
-                        } else if (mandatory) {
-                            formSubmission.getErrors().add(new FormError(inputClass, "Mandatory"));
                         }
                     }
-
                 }
 
                 formSubmission.addValue(formValue);
-                mandatory = false;
-
             }
+
+            if (isEmpty && mandatory) {
+                formSubmission.getErrors().add(new FormError(inputName, "aksess.formerror.mandatory"));
+            }
+
+            mandatory = false;
+
         }
 
 
@@ -102,5 +102,4 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     public FormSubmission getFormSubmission() {
         return formSubmission;
     }
-
 }

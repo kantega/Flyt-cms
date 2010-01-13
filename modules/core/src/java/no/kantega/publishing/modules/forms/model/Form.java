@@ -1,7 +1,5 @@
 package no.kantega.publishing.modules.forms.model;
 
-import no.kantega.publishing.common.data.Content;
-
 /**
  *
  */

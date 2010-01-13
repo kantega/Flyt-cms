@@ -22,12 +22,13 @@ public class FormFillFilter extends XMLFilterImpl {
         this.params = params;
     }
 
+    @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         String inputName = attributes.getValue("name");
         String inputType = attributes.getValue("type");
 
         if (name.equalsIgnoreCase("input")) {
-            if ("text".equals(inputType)) {
+            if ("text".equals(inputType) || "hidden".equals(inputType)) {
                 String[] values = params.get(inputName);
                 String value = null;
                 if (values != null && values.length > 0) {
@@ -45,7 +46,7 @@ public class FormFillFilter extends XMLFilterImpl {
                     }                    
                     attributes = newAttributes;
 
-                }            
+                }
             } else if ("radio".equals(inputType) || "checkbox".equals(inputType)) {
                 String inputValue = attributes.getValue("value");
                 String[] values = params.get(inputName);
@@ -105,6 +106,7 @@ public class FormFillFilter extends XMLFilterImpl {
         }
     }
 
+    @Override
     public void endElement(String string, String localname, String name) throws SAXException {
         if ("select".equals(name) && "option".equals(name) && "optgroup".equals(name)) {
             currentSelectList = null;

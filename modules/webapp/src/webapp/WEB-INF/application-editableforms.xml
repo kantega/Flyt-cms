@@ -23,7 +23,10 @@
     <bean id="aksessDatabaseFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.DatabaseFormDeliveryService">
         <property name="formSubmissionDao" ref="aksessDatabaseFormSubmissionDao"/>
     </bean>
+
     <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder"/>
+    <bean id="aksessFilledFormBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFilledFormBuilder"/>
+
     <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
         <property name="description" value="Saves form in database and sends to email"/>
         <property name="formDeliveryServices">
@@ -32,6 +35,8 @@
                 <ref bean="aksessEmailFormDeliveryService"/>
             </list>
         </property>
+
+        <property name="filledFormBuilder" ref="aksessFilledFormBuilder"/>
         <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
     </bean>
 </beans>
