@@ -215,7 +215,7 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
             if (url != null) {
-                out.print("</a>\n");
+                out.print("</a>");
             }
 
         } catch (Exception e) {
