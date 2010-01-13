@@ -118,6 +118,14 @@
                 </div>
             </div>
         </c:if>
+        <div class="widget">
+            <div class="widget-header">
+                <h2><kantega:label key="aksess.userinformation.title"/></h2>
+            </div>
+            <div class="widget-content">
+                <jsp:include page="plugins/userinfo.jsp"/>
+            </div>
+        </div>
     </div>
 
     <div class="widgetcolumn">
