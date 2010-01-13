@@ -4,6 +4,7 @@
 <%@ page import="no.kantega.publishing.admin.AdminSessionAttributes" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
@@ -92,7 +93,7 @@
                             if (filename.length() > 40) {
                                 filename = filename.substring(0, 37) + "...";
                             }
-                            out.write("<option value=\"/attachment.ap?id=" + a.getId() + "\">" + filename + "</option>");
+                            out.write("<option value=\"" + Aksess.getContextPath() + "/attachment.ap?id=" + a.getId() + "\">" + filename + "</option>");
                         }
                     }
                 }
