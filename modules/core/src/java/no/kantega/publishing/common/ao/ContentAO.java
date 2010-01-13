@@ -1306,6 +1306,82 @@ public class ContentAO {
         }
     }
 
+    public static int getContentCount() throws SystemException {
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
+            p.setInt(1, ContentVisibilityStatus.ACTIVE);
+            p.setInt(2, ContentType.PAGE.getTypeAsInt());
+            ResultSet rs = p.executeQuery();
+            if(!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+        } finally {
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    // Could not close connection, probably closed already
+                }
+            }
+        }
+    }
+
+    public static int getLinkCount() throws SystemException {
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
+            p.setInt(1, ContentVisibilityStatus.ACTIVE);
+            p.setInt(2, ContentType.LINK.getTypeAsInt());
+            ResultSet rs = p.executeQuery();
+            if(!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+        } finally {
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    // Could not close connection, probably closed already
+                }
+            }
+        }
+    }
+
+    public static int getContentProducerCount() throws SystemException {
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(DISTINCT LastModifiedBy) AS count FROM contentversion");
+            ResultSet rs = p.executeQuery();
+            if(!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+        } finally {
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    // Could not close connection, probably closed already
+                }
+            }
+        }
+    }
+
     public static void updateContentFromTemplates(TemplateConfiguration templateConfiguration) {
         for (DisplayTemplate dt : templateConfiguration.getDisplayTemplates()) {
             int contentTemplateId = dt.getContentTemplate().getId();

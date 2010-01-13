@@ -226,6 +226,36 @@ public class MultimediaAO {
         }
     }
 
+    /**
+     * Henter antall objekter i multimediaarkiv.
+     *
+     * @return antall objekter i multimediaarkiv.
+     * @throws SystemException
+     */
+    public static int getMultimediaCount() throws SystemException {
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?");
+            p.setInt(1, MultimediaType.MEDIA.getTypeAsInt());
+            ResultSet rs = p.executeQuery();
+            if (!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                // Could not close connection, probably closed already
+            }
+        }
+    }
 
     /**
      * Searches the multimedia-archive for the given criteria

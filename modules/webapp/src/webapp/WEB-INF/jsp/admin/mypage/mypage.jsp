@@ -36,6 +36,7 @@
             $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
                 widgetLoaded();
             });
+            $("#ContentStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/ContentStatistics.action");
         });
     </script>
 
@@ -124,6 +125,14 @@
             </div>
             <div class="widget-content">
                 <jsp:include page="plugins/userinfo.jsp"/>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="widget-header">
+                <h2><kantega:label key="aksess.contentstatistics.title"/></h2>
+            </div>
+            <div class="widget-content">
+                <div id="ContentStatistics"></div>
             </div>
         </div>
     </div>
