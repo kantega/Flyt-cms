@@ -25,6 +25,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Set custom error text for errors</description>
+            <name>errortext</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
         <example>
             <![CDATA[
                     <form:form>

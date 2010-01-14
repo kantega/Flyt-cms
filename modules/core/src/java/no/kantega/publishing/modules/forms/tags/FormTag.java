@@ -22,6 +22,7 @@ import no.kantega.publishing.modules.forms.validate.FormError;
 public class FormTag extends BodyTagSupport {
 
     private String action = null;
+    private String errortext = null;
     private boolean clientvalidation = false;
 
     @Override
@@ -40,17 +41,16 @@ public class FormTag extends BodyTagSupport {
             hasErrors = (request.getAttribute("hasErrors") != null) ? (Boolean) (request.getAttribute("hasErrors")) : false;
 
             String root = request.getContextPath() + "/";
-            if (hasErrors) {
-                String formErrorText = (String)request.getAttribute("formErrorText");
-                if (formErrorText == null || formErrorText.length() == 0) {
-                    formErrorText = LocaleLabels.getLabel("aksess.formerror.header", locale);
-                }
 
-                FormSubmission formSubmission = request.getAttribute("formSubmission") != null ? (FormSubmission) request.getAttribute("formSubmission") : null;
+            FormSubmission formSubmission = (FormSubmission)request.getAttribute("formSubmission");
+            if (hasErrors && formSubmission != null) {
+                if (errortext == null || errortext.length() == 0) {
+                    errortext = LocaleLabels.getLabel("aksess.formerror.header", locale);
+                }
                 List<FormError> errors = formSubmission.getErrors();
                 if (errors != null && errors.size() > 0) {
                     html.append("<div id=\"form_Error\" class=\"formErrors\">");
-                    html.append(formErrorText);
+                    html.append(errortext);
                     html.append("<ul>");
                     // Display error messages
                     for (FormError error : errors) {
@@ -78,11 +78,16 @@ public class FormTag extends BodyTagSupport {
             throw new JspTagException(getClass().getName() + ":" + e.getMessage());
         }
         action = null;
+        errortext = null;
         return SKIP_BODY;
     }
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public void setErrortext(String errortext) {
+        this.errortext = errortext;
     }
 
     @Deprecated
