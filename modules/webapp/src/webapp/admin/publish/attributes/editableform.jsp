@@ -90,9 +90,9 @@
                             </td>
                         </tr>
                         <tr class="form_params_text" style="display:none;">
-                            <td><label for="form_InputSize"><kantega:label key="aksess.formeditor.fieldinputsize"/></label></td>
+                            <td><label for="form_MaxLength"><kantega:label key="aksess.formeditor.fieldmaxlength"/></label></td>
                             <td>
-                                <input type="text" id="form_InputSize" size="2" maxlength="2" name="form_InputSize"> <kantega:label key="aksess.formeditor.characters"/>
+                                <input type="text" id="form_MaxLength" size="2" maxlength="2" name="form_MaxLength"> <kantega:label key="aksess.formeditor.characters"/>
                             </td>
                         </tr>
                         <tr class="form_params_text" style="display:none;">
