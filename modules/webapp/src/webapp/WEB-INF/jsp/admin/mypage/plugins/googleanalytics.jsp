@@ -1,8 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -24,27 +24,41 @@
         drawPerMonthStatsChart();
     }
 
+    var monthNames = [
+        '<kantega:label key="aksess.googleanalytics.january"/>',
+        '<kantega:label key="aksess.googleanalytics.february"/>',
+        '<kantega:label key="aksess.googleanalytics.march"/>',
+        '<kantega:label key="aksess.googleanalytics.april"/>',
+        '<kantega:label key="aksess.googleanalytics.may"/>',
+        '<kantega:label key="aksess.googleanalytics.june"/>',
+        '<kantega:label key="aksess.googleanalytics.july"/>',
+        '<kantega:label key="aksess.googleanalytics.august"/>',
+        '<kantega:label key="aksess.googleanalytics.september"/>',
+        '<kantega:label key="aksess.googleanalytics.october"/>',
+        '<kantega:label key="aksess.googleanalytics.november"/>',
+        '<kantega:label key="aksess.googleanalytics.december"/>'
+    ];
+
     function getMonthName(month) {
-        var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-        var monthIdx = Number(month.substr(0, 2));
+        var monthIdx = Number(month);
         return monthNames[monthIdx-1];
     }
 
     function drawPerMonthStatsChart() {
         var chart;
         var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Month');
-        data.addColumn('number', 'Visits');
-        data.addColumn('number', 'Pageviews');
-        data.addRows(12);
+        data.addColumn('string', '<kantega:label key="aksess.googleanalytics.month"/>');
+        data.addColumn('number', '<kantega:label key="aksess.googleanalytics.visits"/>');
+        data.addColumn('number', '<kantega:label key="aksess.googleanalytics.pageviews"/>');
+        data.addRows(${fn:length(usage.perMonthStats)});
         <c:forEach items="${usage.perMonthStats}" var="entry" varStatus="status">
-            data.setValue(<c:out value="${status.index}"/>, 0, getMonthName('<c:out value="${entry.month}${entry.year}"/>'));
+            data.setValue(<c:out value="${status.index}"/>, 0, getMonthName('<c:out value="${entry.month}"/>'));
             data.setValue(<c:out value="${status.index}"/>, 1, <c:out value="${entry.visits}"/>);
             data.setValue(<c:out value="${status.index}"/>, 2, <c:out value="${entry.pageviews}"/>);
         </c:forEach>
 
         chart = new google.visualization.AreaChart(document.getElementById('permonthstats_div'));
-        chart.draw(data, {width: 500, height: 280, legend: 'bottom', title: 'Last 12 months'});
+        chart.draw(data, {width: 500, height: 280, legend: 'bottom', title: '<kantega:label key="aksess.googleanalytics.permonthstats"/>'});
     }
 </script>
 
@@ -56,19 +70,19 @@
     <c:otherwise>
         <div id="permonthstats_div"></div>
 
-        <h2>Last month</h2>
+        <h2><kantega:label key="aksess.googleanalytics.lastmonth"/></h2>
         <ul>
-            <li><c:out value="${usage.visits}"/> Visits</li>
-            <li><c:out value="${usage.pageviews}"/> Pageviews</li>
-            <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> Pages/Visit</li>
+            <li><c:out value="${usage.visits}"/> <kantega:label key="aksess.googleanalytics.visits"/></li>
+            <li><c:out value="${usage.pageviews}"/> <kantega:label key="aksess.googleanalytics.pageviews"/></li>
+            <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> <kantega:label key="aksess.googleanalytics.pages"/>/<kantega:label key="aksess.googleanalytics.visits"/></li>
         </ul>
 
-        <h2>Top 10 pages last 3 months</h2>
+        <h2><kantega:label key="aksess.googleanalytics.toppages"/></h2>
         <table class="fullWidth">
             <tr>
-                <th><strong>Path</strong></th>
-                <th><strong>Title</strong></th>
-                <th class="number"><strong>Pageviews</strong></th>
+                <th><strong><kantega:label key="aksess.googleanalytics.path"/></strong></th>
+                <th><strong><kantega:label key="aksess.googleanalytics.pagetitle"/></strong></th>
+                <th class="number"><strong><kantega:label key="aksess.googleanalytics.pageviews"/></strong></th>
             </tr>
 
             <c:forEach items="${pageviews}" var="entry">
@@ -80,11 +94,11 @@
             </c:forEach>
         </table>
 
-        <h2>Top 5 browsers</h2>
+        <h2><kantega:label key="aksess.googleanalytics.topbrowsers"/></h2>
         <table class="fullWidth">
             <tr>
-                <th><strong>Browser</strong></th>
-                <th class="number"><strong>Visits</strong></th>
+                <th><strong><kantega:label key="aksess.googleanalytics.browser"/></strong></th>
+                <th class="number"><strong><kantega:label key="aksess.googleanalytics.visits"/></strong></th>
             </tr>
 
             <c:forEach items="${usage.browsers}" var="browser">

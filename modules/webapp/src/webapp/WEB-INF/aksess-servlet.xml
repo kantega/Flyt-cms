@@ -317,7 +317,7 @@
         <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-result.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.mypage.plugins.GoogleAnalyticsAction" id="googleAnalyticsAction">
-        <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics.jsp"/>
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.mypage.plugins.ContentStatisticsAction" id="contentStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/contentstatistics.jsp"/>

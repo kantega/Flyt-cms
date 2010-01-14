@@ -22,27 +22,28 @@ import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.common.Aksess;
+import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.*;
-import java.text.SimpleDateFormat;
+import java.net.URL;
 import java.text.DateFormat;
-
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.configuration.Configuration;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *
  */
 public class GoogleAnalyticsAction implements Controller {
 
-    private String resultsView;
+    private String view;
 
 
     public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
@@ -54,27 +55,31 @@ public class GoogleAnalyticsAction implements Controller {
         String tableId = config.getString("google.analytics.tableid");
 
         if ("".equals(username) || "".equals(password) || "".equals(tableId)) {
-            model.put("errorMsg", "Insufficient account information."); // Utilstrekkelig kontoinformasjon
+            model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.noinfo", Aksess.getDefaultAdminLocale()));
         } else {
             try {
                 GAFacade facade = new GAFacade(username, password, tableId);
                 model.put("pageviews", facade.getPageviews());
                 model.put("usage", facade.getUsage());
             } catch (AuthenticationException e) {
-                model.put("errorMsg", "Authentication failed : " + e.getMessage());
+                model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
+                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
             } catch (MalformedURLException e) {
-                model.put("errorMsg", "Malformed URL. Error message: " + e.getMessage());
+                model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
+                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Malformed URL.", e);
             } catch (IOException e) {
-                model.put("errorMsg", "Network error trying to retrieve feed: " + e.getMessage());
+                model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
+                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Network error trying to retrieve feed.", e);
             } catch (ServiceException e) {
-                model.put("errorMsg", "Analytics API responded with an error message: " + e.getMessage());
+                model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
+                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Analytics API responded with an error message.", e);
             }
         }
-        return new ModelAndView(resultsView, model);
+        return new ModelAndView(view, model);
     }
 
-    public void setResultsView(String resultsView) {
-        this.resultsView = resultsView;
+    public void setView(String view) {
+        this.view = view;
     }
 
 
@@ -91,8 +96,8 @@ public class GoogleAnalyticsAction implements Controller {
             this.tableId = tableId;
             dataFeedUrl = new URL("https://www.google.com/analytics/feeds/data");
 
-            String companyId = "K_AS";
-            String appName = "mp";
+            String companyId = "Kantega AS";
+            String appName = "mypage";
             String appVersion = "v1.0";
             String applicationName = companyId + "-" + appName + "-" + appVersion;
 
