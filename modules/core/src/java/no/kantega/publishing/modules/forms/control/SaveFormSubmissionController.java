@@ -49,7 +49,7 @@ public class SaveFormSubmissionController implements AksessController {
                     // errrors
                     model.put("hasErrors", Boolean.TRUE);
                     model.put("formSubmission", formSubmission);
-                    form = filledFormBuilder.buildFilledForm(values, form);
+                    form = filledFormBuilder.buildFilledForm(formSubmission);
                 } else {
 
                     SecuritySession session = SecuritySession.getInstance(request);

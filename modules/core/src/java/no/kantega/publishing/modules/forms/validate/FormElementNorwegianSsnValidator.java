@@ -15,7 +15,7 @@ public class FormElementNorwegianSsnValidator implements FormElementValidator {
         return id;
     }
 
-    public List<FormError> validate(FormValue formValue, List<FormError> formErrors) {
+    public List<FormError> validate(FormValue formValue, int currentFieldIndex, List<FormError> formErrors) {
         String value = formValue.getValuesAsString();
         if (value != null && 0 < value.length()) {
             boolean valid = value.matches(ssnRegex);
@@ -50,10 +50,8 @@ public class FormElementNorwegianSsnValidator implements FormElementValidator {
             }
             if (value.equals("55555555555")) valid = true;
             if (!valid) {
-                formErrors.add(new FormError(formValue.getName(), "aksess.formerrror.validator"));
+                formErrors.add(new FormError(formValue.getName(), currentFieldIndex, "aksess.formerror.ssn"));
             }
-        } else {
-            formErrors.add(new FormError(formValue.getName(), "aksess.formerrror.validator"));
         }
 
         return formErrors;

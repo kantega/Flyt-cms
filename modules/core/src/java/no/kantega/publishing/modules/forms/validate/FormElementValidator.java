@@ -10,5 +10,5 @@ public interface FormElementValidator {
 
     public String getId();
 
-    public List<FormError> validate(FormValue formValue, List<FormError> formErrors);
+    public List<FormError> validate(FormValue formValue, int currentFieldIndex,  List<FormError> formErrors);
 }

@@ -178,6 +178,9 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
     if ($("#form_NoBreak:checked").length == 1) {
         elementClz += " nobreak";
     }
+    if (type == "hidden") {
+        elementClz += " hidden";
+    }
 
     if (childNo < 0) {
         $("#form_FormElements").append('<div class="' + elementClz + '">' + html + '</div>');
@@ -541,21 +544,22 @@ formElementTypes[formElementTypes.length] = formElementSelect;
 // Hidden
 var formElementHidden = new FormElementType("<kantega:label key="aksess.formeditor.type.hidden"/>", "hidden");
 formElementHidden.onEdit = function(element) {
-   $("#form_Values").html("");
-    $("div.inputs input", element).each(function() {
-        var fieldName = $("#form_FieldName").val();
-        formAddInputValue("hidden", fieldName, this.value, this.checked);
-    });
-
+    var val = $("div.inputs input", element).attr("value");
+    $("#form_HiddenValue").val(val);
 }
 formElementHidden.onSave = function (fieldName) {
-    return '<input type="hidden" name="' + fieldName + '" value="' + fieldName + '" disabled>';
+    var val = $("#form_HiddenValue").val();
+    return '<input type="hidden" name="' + fieldName + '" value="' + val + '" disabled>';
 }
 formElementHidden.onActive = function (isSelected) {
     if (isSelected) {
-        $(".form_params_text").show();
+        $(".form_params_hidden").show();
+        $("#form_FieldMandatory").attr("disabled", true);;
+        $("#form_NoBreak").attr("disabled", true);;
     } else {
-        $(".form_params_text").hide();
+        $(".form_params_hidden").hide();
+        $("#form_FieldMandatory").removeAttr("disabled");
+        $("#form_NoBreak").removeAttr("disabled");
     }
 }
 

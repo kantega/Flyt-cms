@@ -40,30 +40,23 @@ public class FormTag extends BodyTagSupport {
             hasErrors = (request.getAttribute("hasErrors") != null) ? (Boolean) (request.getAttribute("hasErrors")) : false;
 
             String root = request.getContextPath() + "/";
-            if (clientvalidation) {
-                html.append("<script type=\"text/javascript\" src=\"");
-                html.append(root);
-                html.append("aksess/js/aksessforms.js\"></script>\n");
-            }
             if (hasErrors) {
+                String formErrorText = (String)request.getAttribute("formErrorText");
+                if (formErrorText == null || formErrorText.length() == 0) {
+                    formErrorText = LocaleLabels.getLabel("aksess.formerror.header", locale);
+                }
 
                 FormSubmission formSubmission = request.getAttribute("formSubmission") != null ? (FormSubmission) request.getAttribute("formSubmission") : null;
                 List<FormError> errors = formSubmission.getErrors();
                 if (errors != null && errors.size() > 0) {
-                    html.append("<div id=\"form_Error\">");
-                    html.append(content.getAttributeValue("error_text"));
+                    html.append("<div id=\"form_Error\" class=\"formErrors\">");
+                    html.append(formErrorText);
                     html.append("<ul>");
-
+                    // Display error messages
                     for (FormError error : errors) {
-                        html.append("<li>" + error.getId() + " " + LocaleLabels.getLabel(error.getMessage(), locale) + "</li>");
-                        html.append("<script type=\"text/javascript\">");
-                        html.append("$(\"input[name='" + error.getId() + "']\").addClass(\"inputError\")");
-                        html.append("</script>");
-
+                        html.append("<li>" + error.getField() + " " + LocaleLabels.getLabel(error.getMessage(), locale) + "</li>");
                     }
-                    html.append("</ul>");
-                    html.append("</div>");
-
+                    html.append("</ul></div>");
                 }
             }
 
@@ -74,21 +67,12 @@ public class FormTag extends BodyTagSupport {
                 action = "";
             }
             html.append(action);
-            html.append("\"");
-            if (clientvalidation) {
-                html.append(" onsubmit=\"return aksessFormValidate()\"");
-            }
-            html.append(">");
+            html.append("\">");
             out.print(html.toString());
             if (body != null) {
                 out.print(body);
             }
             out.print("</form>\n");
-
-            html.append("<script type=\"text/javascript\">");
-            html.append("$(\"input[type='hidden']\").parent(\"div.inputs\").parent(\"div.formElement\").hide()");
-            html.append("</script>");
-
         } catch (IOException e) {
             Log.error(getClass().getName(), e, null, null);
             throw new JspTagException(getClass().getName() + ":" + e.getMessage());
@@ -99,15 +83,10 @@ public class FormTag extends BodyTagSupport {
 
     public void setAction(String action) {
         this.action = action;
-
-
-
-
     }
 
+    @Deprecated
     public void setClientvalidation(boolean clientvalidation) {
         this.clientvalidation = clientvalidation;
-
-
     }
 }

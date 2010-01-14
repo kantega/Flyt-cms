@@ -119,6 +119,12 @@
                                 <a href="form_AddElement" id="form_AddElement" class="button"><kantega:label key="aksess.formeditor.addchoice"/></a>
                             </td>
                         </tr>
+                        <tr class="form_params_hidden" style="display:none;">
+                            <td><label for="form_HiddenValue"><kantega:label key="aksess.formeditor.hiddenvalue"/></label></td>
+                            <td>
+                                <input type="text" id="form_HiddenValue" size="30" maxlength="128" name="form_HiddenValue">
+                            </td>
+                        </tr>
                         <tr>
                             <td colspan="2">
                                 <input type="checkbox" name="form_FieldMandatory" id="form_FieldMandatory"><label for="form_FieldMandatory"><kantega:label key="aksess.formeditor.mandatory"/></label><br>

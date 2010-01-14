@@ -15,11 +15,11 @@ public class FormElementNumberValidator  implements FormElementValidator {
         return id;
     }
 
-    public List<FormError> validate(FormValue formValue,List<FormError> formErrors) {
+    public List<FormError> validate(FormValue formValue, int currentFieldIndex, List<FormError> formErrors) {
         String value = formValue.getValues()[0];
         if (value!=null && 0 < value.length()) {
             if (!value.matches(numberRegex)) {
-                formErrors.add(new FormError(formValue.getName(),"aksess.formerrror.validator"));
+                formErrors.add(new FormError(formValue.getName(), currentFieldIndex, "aksess.formerror.number"));
             }
         }
         return formErrors;

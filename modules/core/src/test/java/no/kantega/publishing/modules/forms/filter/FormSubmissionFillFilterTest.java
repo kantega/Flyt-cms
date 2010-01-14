@@ -41,14 +41,14 @@ public class FormSubmissionFillFilterTest extends TestCase {
             }
 
             public String getFormDefinition() {
-                return "<input name=\"field1\" type=\"text\"><br><input name=\"field2\" type=\"text\"><select name=\"field3\"></select>";
+                return "<div class=\"formElement\"><input name=\"field1\" type=\"text\"><br><input name=\"field2\" type=\"text\"><select name=\"field3\"></select></div>";
             }
 
             public String getEmail() {
                 return "donald@duck.com";
             }
         };
-/*
+
         FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);
 
         pipeline.addFilter(filter);
@@ -68,6 +68,6 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
         value = values.get(2);
         assertEquals("3", value.getValues()[0]);
-*/
+
     }
 }

@@ -7,6 +7,9 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import org.springframework.web.util.HtmlUtils;
 
 import java.util.Map;
+import java.util.List;
+
+import no.kantega.publishing.modules.forms.validate.FormError;
 
 /**
  *  Prefills HTML form with values from hashmap
@@ -15,17 +18,40 @@ import java.util.Map;
  */
 public class FormFillFilter extends XMLFilterImpl {
     private Map<String, String[]> params;
-
+    private List<FormError> errors;
     private String currentSelectList = null;
+    private int currentFieldIndex;
 
-    public FormFillFilter(Map<String, String[]> params) {
+    public FormFillFilter(Map<String, String[]> params, List<FormError> errors) {
         this.params = params;
+        this.errors = errors;
+        this.currentFieldIndex = 0;
     }
 
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         String inputName = attributes.getValue("name");
         String inputType = attributes.getValue("type");
+
+        if (name.equalsIgnoreCase("div")) {
+            if (attributes != null && attributes.getValue("class") != null && attributes.getValue("class").contains("formElement")) {
+                currentFieldIndex++;
+                boolean hasError = false;
+                for (FormError error : errors) {
+                    if (error.getIndex() == currentFieldIndex) {
+                        hasError = true;
+                        break;
+                    }
+                }
+                if (hasError) {
+                    AttributesImpl newAttributes = new AttributesImpl(attributes);
+                    int inx = newAttributes.getIndex("", "class");
+                    String clz = newAttributes.getValue("class");
+                    newAttributes.setAttribute(inx, "", "class", "class", "CDATA", clz + " error");
+                    attributes = newAttributes;
+                }
+            }
+        }
 
         if (name.equalsIgnoreCase("input")) {
             if ("text".equals(inputType) || "hidden".equals(inputType)) {
@@ -36,7 +62,6 @@ public class FormFillFilter extends XMLFilterImpl {
                 }
                 if (value != null) {
                     value = HtmlUtils.htmlEscape(value);
-
                     AttributesImpl newAttributes = new AttributesImpl(attributes);
                     int inx = newAttributes.getIndex("", "value");
                     if (inx == -1) {
@@ -45,8 +70,8 @@ public class FormFillFilter extends XMLFilterImpl {
                         newAttributes.setAttribute(inx, "", "value", "value", "CDATA", value);
                     }                    
                     attributes = newAttributes;
-
                 }
+                               
             } else if ("radio".equals(inputType) || "checkbox".equals(inputType)) {
                 String inputValue = attributes.getValue("value");
                 String[] values = params.get(inputName);

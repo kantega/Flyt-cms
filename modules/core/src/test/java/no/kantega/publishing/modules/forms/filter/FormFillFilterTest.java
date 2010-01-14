@@ -2,6 +2,7 @@ package no.kantega.publishing.modules.forms.filter;
 
 import no.kantega.publishing.admin.content.htmlfilter.SharedPipeline;
 import no.kantega.publishing.modules.forms.filter.FormFillFilter;
+import no.kantega.publishing.modules.forms.validate.FormError;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.exception.SystemException;
 
@@ -9,6 +10,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
@@ -23,7 +26,7 @@ public class FormFillFilterTest extends TestCase {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put("name", new String[] {"Lorum ipsum"});
 
-        FormFillFilter filter = new FormFillFilter(params);
+        FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
 
         pipeline.addFilter(filter);
 
@@ -41,7 +44,7 @@ public class FormFillFilterTest extends TestCase {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put("name", new String[] {"Lorum ipsum"});
 
-        FormFillFilter filter = new FormFillFilter(params);
+        FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
 
         pipeline.addFilter(filter);
 
@@ -60,7 +63,7 @@ public class FormFillFilterTest extends TestCase {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put("choice", new String[] {"one"});
 
-        FormFillFilter filter = new FormFillFilter(params);
+        FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
 
         pipeline.addFilter(filter);
 
@@ -78,7 +81,7 @@ public class FormFillFilterTest extends TestCase {
         Map<String, String[]> params = new HashMap<String, String[]>();
         params.put("choice", new String[] {"one"});
 
-        FormFillFilter filter = new FormFillFilter(params);
+        FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
 
         pipeline.addFilter(filter);
 

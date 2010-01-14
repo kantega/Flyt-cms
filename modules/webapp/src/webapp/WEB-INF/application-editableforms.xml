@@ -2,13 +2,11 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-
     <bean id="aksessFormElementValidatorFactory" class="no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory">
         <property name="formElementValidators">
             <list>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
-                <bean class="no.kantega.publishing.modules.forms.validate.FormElementTextValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>
             </list>
         </property>
@@ -23,8 +21,10 @@
     <bean id="aksessDatabaseFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.DatabaseFormDeliveryService">
         <property name="formSubmissionDao" ref="aksessDatabaseFormSubmissionDao"/>
     </bean>
-
-    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder"/>
+    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder">
+        <property name="formElementValidatorFactory" ref="aksessFormElementValidatorFactory"/>
+    </bean>
+    
     <bean id="aksessFilledFormBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFilledFormBuilder"/>
 
     <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
