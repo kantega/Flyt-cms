@@ -90,6 +90,12 @@
                             </td>
                         </tr>
                         <tr class="form_params_text" style="display:none;">
+                            <td><label for="form_InputSize"><kantega:label key="aksess.formeditor.fieldinputsize"/></label></td>
+                            <td>
+                                <input type="text" id="form_InputSize" size="2" maxlength="2" name="form_InputSize"> <kantega:label key="aksess.formeditor.characters"/>
+                            </td>
+                        </tr>
+                        <tr class="form_params_text" style="display:none;">
                             <td><label for="form_Validator"><kantega:label key="aksess.formeditor.validator"/></label></td>
                             <td>
                                 <select id="form_Validator">

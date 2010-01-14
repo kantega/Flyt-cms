@@ -334,21 +334,35 @@ formElementText.onEdit = function(element) {
         $("#form_Length").val("");
     }
 
+    var maxsize = $("div.inputs input", element).attr("maxlength");
+    if (!isNaN(maxsize) && maxsize > 0) {
+        $("#form_InputSize").val(maxsize);
+    } else {
+        $("#form_InputSize").val("");
+    }
+
     var clz = $("div.inputs input", element).attr("class");
     $("#form_Validator").val(clz);
 
 }
 formElementText.onSave = function (fieldName) {
-    var len = $("#form_Length").val();
-    if (len != "") {
-        len = parseInt(len, 10);
+    var size = $("#form_Length").val();
+    if (size != "") {
+        size = parseInt(size, 10);
     }
-    var validator = $("#form_Validator").val();
 
     var html = '<input type="text" name="' + fieldName + '" disabled';
-    if (!isNaN(len) && len > 0) {
-        html += ' size="' + len + '"';
+    if (!isNaN(size) && size > 0) {
+        html += ' size="' + size + '"';
     }
+
+    var maxsize = $("#form_InputSize").val();
+
+    if (!isNaN(maxsize) && maxsize > 0) {
+        html += ' maxlength="' + maxsize + '"';
+    }
+
+    var validator = $("#form_Validator").val();
     if (validator != '') {
         html += ' class="' + validator + '"';
     }
