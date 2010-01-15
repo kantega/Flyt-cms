@@ -28,7 +28,7 @@
 }
 
 #form_FormElements .formElement {
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     border-bottom: 1px dotted black;
     cursor: move;
     margin-right: 10px;
