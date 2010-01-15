@@ -95,6 +95,7 @@ public class Content extends BaseObject {
     boolean isCheckedOut = false;
     boolean isLocked = false;
 
+    boolean isSearchable = true;
 
     public Content() {
         lastModified = new Date();
@@ -649,6 +650,14 @@ public class Content extends BaseObject {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public boolean isSearchable() {
+        return isSearchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        this.isSearchable = searchable;
     }
 
     public Date getChangeFromDate() {

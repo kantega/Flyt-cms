@@ -230,6 +230,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
     private Document getContentDocument(Content content) throws SQLException {
 
+        if (!content.isSearchable()) {
+            return null;
+        }
+
         Document d = null;
 
         try {

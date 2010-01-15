@@ -162,6 +162,10 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
 
     private Document getAttachmentDocument(Attachment a) throws SQLException, SystemException {
         Content content = ContentAO.getContent(new ContentIdentifier(a.getContentId()), false);
+        if (!content.isSearchable()) {
+            return null;
+        }
+
         TextExtractor te = textExtractorSelector.select(a.getFilename());
         Document d = new Document();
 

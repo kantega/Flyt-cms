@@ -93,7 +93,8 @@ public class ContentAOHelper {
             content.setApprovedBy("");
         }
 
-        content.setLocked(rs.getInt("IsLocked") == 1);        
+        content.setLocked(rs.getInt("IsLocked") == 1);
+        content.setSearchable(rs.getInt("IsSearchable") == 1);
         content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));
 
         // Info som avhenger av i hvilken kontekst dette er publisert
