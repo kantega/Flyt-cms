@@ -336,9 +336,9 @@ formElementText.onEdit = function(element) {
 
     var maxsize = $("div.inputs input", element).attr("maxlength");
     if (!isNaN(maxsize) && maxsize > 0) {
-        $("#form_InputSize").val(maxsize);
+        $("#form_MaxLength").val(maxsize);
     } else {
-        $("#form_InputSize").val("");
+        $("#form_MaxLength").val("");
     }
 
     var clz = $("div.inputs input", element).attr("class");
@@ -356,7 +356,7 @@ formElementText.onSave = function (fieldName) {
         html += ' size="' + size + '"';
     }
 
-    var maxsize = $("#form_InputSize").val();
+    var maxsize = $("#form_MaxLength").val();
 
     if (!isNaN(maxsize) && maxsize > 0) {
         html += ' maxlength="' + maxsize + '"';
