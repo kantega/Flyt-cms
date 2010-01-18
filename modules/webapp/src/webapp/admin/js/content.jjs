@@ -356,11 +356,13 @@ var Publish =  {
 
     cut: function(thisId) {
         debug("content.Publish.cut(): thisId: " + thisId);
+        ContentClipboardHandler.cut(thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
     },
 
     copy: function(thisId) {
         debug("content.Publish.copy(): thisId: " + thisId);
+        ContentClipboardHandler.copy(thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
     },
 

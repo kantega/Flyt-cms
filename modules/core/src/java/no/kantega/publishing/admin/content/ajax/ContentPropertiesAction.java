@@ -30,10 +30,13 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.admin.preferences.UserPreference;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
+import no.kantega.publishing.admin.AdminRequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.servlet.ModelAndView;
@@ -118,11 +121,18 @@ public class ContentPropertiesAction implements Controller {
                     enabledButtons.add("DeletePageButton");
                     enabledButtons.add("CutButton");
                     enabledButtons.add("CopyButton");
-                    enabledButtons.add("PasteButton");
                     if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
                         showApproveButtons = true;
                     }                                            
                 }
+
+                ContentLock lock = LockManager.peekAtLock(content.getId());
+                if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
+                    String lockedBy = lock.getOwner();
+                    // TODO: Do something with this
+                    model.put(AdminRequestParameters.PERMISSONS_LOCKED_BY, lockedBy);
+                }
+
                 enabledButtons.add("PrivilegesButton");
             }
 

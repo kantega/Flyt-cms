@@ -33,10 +33,9 @@
     <dwr:url-mapping/>
     <dwr:controller id="dwrController" debug="true"/>
 
-
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
     <bean id="userPreferencesHandler" class="no.kantega.publishing.admin.dwr.UserPreferencesHandler"/>
-
 
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
         <property name="order" value="1"/>

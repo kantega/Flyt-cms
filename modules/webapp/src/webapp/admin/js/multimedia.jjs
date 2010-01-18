@@ -136,6 +136,10 @@ function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
     }
     $("#MultimediaFolders").load(getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
         addMediaitemClickListeners();
+        $("#MultimediaFolders img.thumbnail").lazyload({
+            placeholder : "../bitmaps/blank.gif",
+            container: $("#MultimediaFolders")
+        });
     });
 }
 

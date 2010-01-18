@@ -57,7 +57,7 @@
                             mimeType = mimeType.replace('/', '-');
                             mimeType = mimeType.replace('.', '-');
                             if (mimeType.indexOf("image") != -1) {
-                                out.write(MultimediaHelper.mm2HtmlTag(Aksess.getContextPath(), mm, null, 100, 100, null, true));
+                                out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
                             } else {
                                 out.write("<div class=\"file " + mimeType + "\"></div>");
                             }

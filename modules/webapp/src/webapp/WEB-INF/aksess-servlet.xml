@@ -331,6 +331,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
     <!-- Search content -->
     <bean id="adminContentSearchController" class="no.kantega.publishing.search.control.AdminContentSearchController">
@@ -637,7 +638,6 @@
         <property name="templateValidator" ref="aksessTemplateValidator"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
-
 
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>

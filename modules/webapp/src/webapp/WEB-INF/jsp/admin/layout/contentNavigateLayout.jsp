@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.jjs"></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
     <script type="text/javascript">

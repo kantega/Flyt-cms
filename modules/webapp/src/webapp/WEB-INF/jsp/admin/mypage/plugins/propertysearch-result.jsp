@@ -21,12 +21,15 @@
   --%>
     <c:set var="nohits" value="0"/>
     <aksess:ifcollectionnotempty contentquery="${cq}" name="changes" skipattributes="true" orderby="${sort}" descending="${descending}">
-    <table class="fullWidth">
+    <table class="fullWidth sortable">
+        <thead>
         <tr>
             <th><strong><kantega:label key="aksess.contentproperty.title"/></strong></th>
             <th><strong><kantega:label key="aksess.contentproperty.lastmodified"/></strong></th>
             <th class="number"><strong><kantega:label key="aksess.contentproperty.numberofviews"/></strong></th>
         </tr>
+        </thead>
+        <tbody>
         <aksess:getcollection  name="changes" varStatus="status">
             <tr class="tableRow${status.index mod 2}">
                 <td><a href="<aksess:geturl/>/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" collection="changes"/>" target="_top"><aksess:getattribute name="title" collection="changes"/></a></td>
@@ -35,6 +38,7 @@
             </tr>
             <c:set var="nohits" value="${status.index}"/>
         </aksess:getcollection>
+        </tbody>
     </table>
     </aksess:ifcollectionnotempty>
     <c:choose>

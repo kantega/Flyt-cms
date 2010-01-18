@@ -231,7 +231,7 @@ var StateHandler = {
     },
 
     setState: function(url) {
-        console.info("common.StateHandler.setState(): url: " + url);
+        debug("common.StateHandler.setState(): url: " + url);
         $.bbq.pushState({ url : url });
     },
 

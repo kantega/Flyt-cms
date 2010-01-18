@@ -31,14 +31,17 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.eventlog.title"/></h1>
-            <table class="fullWidth">
+            <table class="fullWidth dataTable">
+                <thead>
                 <tr>
-                    <th><strong><kantega:label key="aksess.eventlog.datetime"/></strong></th>
-                    <th><strong><kantega:label key="aksess.eventlog.event"/></strong></th>
-                    <th><strong><kantega:label key="aksess.eventlog.object"/></strong></th>
-                    <th><strong><kantega:label key="aksess.eventlog.userid"/></strong></th>
-                    <th><strong><kantega:label key="aksess.eventlog.remoteaddr"/></strong></th>
+                    <th><kantega:label key="aksess.eventlog.datetime"/></th>
+                    <th><kantega:label key="aksess.eventlog.event"/></th>
+                    <th><kantega:label key="aksess.eventlog.object"/></th>
+                    <th><kantega:label key="aksess.eventlog.userid"/></th>
+                    <th><kantega:label key="aksess.eventlog.remoteaddr"/></th>
                 </tr>
+                </thead>
+                <tbody>
                 <%
                     List events = (List)request.getAttribute("events");
                     DateFormat df = new SimpleDateFormat(Aksess.getDefaultDateFormat());
@@ -84,6 +87,7 @@
                 <%
                     }
                 %>
+                </tbody>
             </table>
             <%
                 if (events.size() == 0) {
