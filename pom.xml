@@ -31,6 +31,17 @@
         <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
     </scm>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>opensource.kantega.no</id>
+            <name>Kantega Open Source Repository</name>
+            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <modules>
         <module>modules/db</module>
         <module>modules/api</module>
