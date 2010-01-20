@@ -23,7 +23,7 @@
 
     function bindPublishButtons() {
         <c:choose>
-            <c:when test="${currentContent != null}">
+            <c:when test="${currentContent != null && currentContent.modified}">
             // User is editing a page
             $("#ModesMenu .button .view").click(function(e){
                 debug("publishModesAndButtonsJS.view");
@@ -91,7 +91,7 @@
         </c:choose>
     }
 
-    <c:if test="${currentContent != null}">
+    <c:if test="${currentContent != null && currentContent.modified}">
     function confirmCancel() {
         var confirmCancel = true;
         if (isModified()) {

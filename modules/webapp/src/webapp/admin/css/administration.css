@@ -1,10 +1,10 @@
-#Content {
-    background: url("../bitmaps/default/framework/staticsidebar_background.png") top left repeat-y;
+#PropertiesTable .property {
+    width: 400px;
+    max-width: 400px;
+    overflow:hidden;
 }
-#Navigation {
-    background: transparent;
-}
-#Navigator {
-    margin-left: 10px;
-    overflow: visible;
+#PropertiesTable .parameter {
+    width: 200px;
+    max-width: 200px;
+    overflow:hidden;
 }

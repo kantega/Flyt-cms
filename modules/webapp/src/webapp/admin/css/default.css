@@ -163,7 +163,6 @@ table.fullWidth {
     background: url(../bitmaps/default/framework/framesplit_right.png) top center repeat-y;
 }
 
-
 #Content.navigateContent #MainPane, #Content.navigateMultimedia #MainPane {
     position: relative;
     width: auto;
@@ -754,7 +753,6 @@ div.sidebarFieldset fieldset legend {
     overflow: auto;    
     padding-top: 10px;
     padding-bottom: 10px;
-    background: #ffffff;
     min-width: 670px;
 }
 
@@ -863,17 +861,23 @@ div.dataTables_info {
     float: left;
 }
 
-div.dataTables_paginate {
-    float: right;
+div.dataTables_paginatn {
+    text-align: right;
     padding-right: 10px;
 }
 
-div.dataTables_length {
-    padding-left: 10px;
-    float: left;
+/************ Tabs ***************/
+#MainPaneContent .tabGroup {
+    display: inline;
 }
 
-div.dataTables_filter {
-    float: right;
-    padding-right: 10px;
+#MainPaneContent .active {
+    margin-right: 3px;
+    background-color: #eeeeee;
+}
+
+#MainPaneContent .tab {
+    line-height: 26px;
+    display: inline-block;
+    height: 26px;
 }

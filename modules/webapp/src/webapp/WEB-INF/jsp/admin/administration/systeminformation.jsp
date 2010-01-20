@@ -111,11 +111,11 @@
         <fieldset>
             <h1><kantega:label key="aksess.systeminfo.config"/></h1>
 
-            <table>
+            <table id="PropertiesTable">
                 <thead>
                 <tr>
-                    <th><kantega:label key="aksess.systeminfo.config.property"/></th>
-                    <th><kantega:label key="aksess.systeminfo.config.value"/></th>
+                    <th class="parameter"><kantega:label key="aksess.systeminfo.config.property"/></th>
+                    <th class="property"><kantega:label key="aksess.systeminfo.config.value"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -124,10 +124,15 @@
                     Iterator properties = configProperties.entrySet().iterator();
                     while (properties.hasNext()) {
                         Map.Entry entry = (Map.Entry) properties.next();
+                        String key = entry.getKey().toString();
+                        String value = entry.getValue().toString();
+                        if (key.contains("password")) {
+                            value = "******";
+                        }
                 %>
                 <tr>
-                    <td><%=entry.getKey()%></td>
-                    <td><%=entry.getValue()%></td>
+                    <td class="parameter"><%=key%></td>
+                    <td class="property"><%=value%></td>
                 </tr>
                 <%
                     }

@@ -21,6 +21,7 @@
 
 var focusField = null;
 var focusFieldDefaultMaxWidth = 600;
+var editIsModified = false;
 
 var doInsertTag  = false;
 
@@ -30,10 +31,15 @@ document.onkeypress = editKeyPress;
  *  Update status set that page has been edited
  */
 function setIsModified() {
+    editIsModified = true;
     try {
         document.myform.isModified.value = "true";
     } catch (e) {
     }
+}
+
+function isModified() {
+    return editIsModified || tinyMCE.activeEditor.isDirty();
 }
 
 

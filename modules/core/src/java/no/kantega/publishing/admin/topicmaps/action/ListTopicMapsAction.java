@@ -30,7 +30,7 @@ import no.kantega.publishing.admin.viewcontroller.AdminController;
 /**
  *
  */
-public class ListTopicMapsAction  extends AdminController {
+public class ListTopicMapsAction extends AdminController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

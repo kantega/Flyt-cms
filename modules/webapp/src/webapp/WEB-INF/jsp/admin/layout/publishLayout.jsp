@@ -33,8 +33,12 @@
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 
     <script type="text/javascript">
+        var hasSubmitted = false;
+
         $(document).ready(function(){
             bindToolbarButtons();
+            // Set focus to first input field
+            $("#EditContentForm input[type='text']:first").focus();
         });
 
         function bindToolbarButtons() {
@@ -59,6 +63,20 @@
             });
         </c:if>
         }
+
+        function saveContent(status) {
+            debug("publishLayout.saveContent(): status: " + status);
+
+            if (validatePublishProperties()) {
+                if (!hasSubmitted) {
+                    hasSubmitted = true;
+                    $("#ContentIsModified").val(isModified());
+                    $("#ContentStatus").val(status);
+                    document.myform.submit();
+                }
+            }
+        }
+
     </script>
 </kantega:section>
 
@@ -80,7 +98,7 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <form name="myform" action="" method="post" enctype="multipart/form-data">
+    <form name="myform" id="EditContentForm" action="" method="post" enctype="multipart/form-data">
 
         <div id="Content" class="publish">
             <div id="MainPane">
@@ -99,7 +117,12 @@
             <div id="Framesplit"></div>
             <div class="clearing"></div>
         </div>
+        <input type="hidden" id="ContentStatus" name="status" value="">
+        <input type="hidden" name="action" value="">
+        <input type="hidden" name="currentId" value="${currentContent.id}">
+        <input type="hidden" id="ContentIsModified" name="isModified" value="${currentContent.modified}">
     </form>
+
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>

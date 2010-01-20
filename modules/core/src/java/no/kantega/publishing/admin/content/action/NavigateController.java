@@ -22,6 +22,7 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.log.Log;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,7 +73,8 @@ public class NavigateController extends AbstractContentAction {
 
         String currentUrl = current.getUrl();
         Map<String, Object> model = new HashMap<String, Object>();
-        if (editedContent != null) {
+        if (editedContent != null && editedContent.isModified()) {
+            // User is editing a page and has modified it, show preview 
             currentUrl = "ViewContentPreviewFrame.action?thisId=";
             if (editedContent.getId() == -1) {
                 // New page
@@ -80,7 +82,9 @@ public class NavigateController extends AbstractContentAction {
             } else {
                 currentUrl += editedContent.getAssociation().getId();
             }
+
             setRequestVariables(request, editedContent, aksessService, model);
+            Log.debug(this.getClass().getName(), "User is editing page:" + editedContent.getTitle(), null, null);
         }
         model.put("currentUrl", currentUrl);        
 

@@ -32,11 +32,11 @@
     </script>
     <div class="fieldset">
         <fieldset>
-            <kantega:label key="aksess.confirmdelete.finished"/>
+            <kantega:label key="${message}"/>
             <div class="buttonGroup">
                 <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
             </div>
         </fieldset>
     </div>
 </kantega:section>
-<%@ include file="../../layout/popupLayout.jsp" %>
+<%@ include file="../layout/popupLayout.jsp" %>

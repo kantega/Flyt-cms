@@ -35,32 +35,7 @@
     <%
         InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.META_DATA);
         Content current = (Content)session.getAttribute("currentContent");
-    %>
-    <script language="Javascript" type="text/javascript">
-        var hasSubmitted = false;
-
-        function initialize() {
-            try {
-                document.myform.elements[0].focus();
-            } catch (e) {
-                // Invisble field, can't get focus
-            }
-        }
-
-        function saveContent(status) {
-            if (validatePublishProperties()) {
-                if (!hasSubmitted) {
-                    hasSubmitted = true;
-                    document.myform.status.value = status;
-                    document.myform.submit();
-                }
-            }
-        }
-
-        $(document).ready(function() {
-            initialize();
-        });
-    </script>
+    %>    
         <%@ include file="../../../../admin/include/infobox.jsf" %>
         <c:if test="${fn:length(documentTypes) > 1}">
             <div class="contentAttribute">
@@ -177,10 +152,5 @@
         <%
             screen.generateInputScreen();
         %>
-
-        <input type="hidden" name="status" value="">
-        <input type="hidden" name="action" value="">
-        <input type="hidden" name="currentId" value="${currentContent.id}">
-        <input type="hidden" name="isModified" value="${currentContent.modified}">
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>

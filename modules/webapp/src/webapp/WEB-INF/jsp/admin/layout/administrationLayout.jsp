@@ -84,6 +84,7 @@
 
                 </ul>
             </div>
+            <div id="Framesplit"></div>
         </div>
 
         <div id="MainPane">

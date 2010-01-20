@@ -35,18 +35,6 @@
 
 <kantega:section id="content">
     <script language="Javascript" type="text/javascript">
-        var hasSubmitted = false;
-
-        function saveContent(status) {
-            if (validatePublishProperties()) {
-                if (!hasSubmitted) {
-                    hasSubmitted = true;
-                    document.myform.status.value = status;
-                    document.myform.submit();
-                }
-            }
-        }
-
         function selectVersion(version) {
             document.activeversion.version.value = version;
             document.activeversion.submit();
@@ -125,11 +113,5 @@
                 <br><kantega:label key="aksess.versions.hjelp2"/> ${maxVersions} <kantega:label key="aksess.versions.hjelp3"/>
             </c:if>
         </div>
-
-
-        <input type="hidden" name="status" value="">
-        <input type="hidden" name="action" value="">
-        <input type="hidden" name="currentId" value="${currentContent.id}">
-        <input type="hidden" name="isModified" value="${currentContent.modified}">
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>

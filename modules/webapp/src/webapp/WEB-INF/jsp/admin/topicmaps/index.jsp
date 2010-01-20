@@ -1,9 +1,15 @@
-<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.data.WorkList" %>
+<%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
+<%@ page import="java.text.DecimalFormat" %>
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.Enumeration" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -19,19 +25,16 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<c:set var="editActive" value="true"/>
-<c:set var="contentActive" value="true"/>
 <kantega:section id="title">
-    <kantega:label key="aksess.edit.title"/>
+    <kantega:label key="aksess.topicmaps.title"/>
+</kantega:section>
+
+<kantega:section id="head extras">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/topicmaps.jjs"></script>
 </kantega:section>
 
 <kantega:section id="content">
-<%
-    InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.CONTENT_DATA);
-%>
-    <%@ include file="../../../../admin/include/infobox.jsf" %>
-    <%
-        screen.generateInputScreen();
-    %>
+    <%-- The content is loaded with ajax by the ListTopicTypesAction --%>
+    <div id="TopicTypes"></div>
 </kantega:section>
-<%@ include file="../layout/publishLayout.jsp" %>
+<%@ include file="../layout/topicMapsLayout.jsp" %>

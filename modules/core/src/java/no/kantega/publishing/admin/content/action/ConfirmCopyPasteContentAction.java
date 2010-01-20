@@ -28,6 +28,9 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.model.Clipboard;
+import no.kantega.publishing.admin.model.ClipboardStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -45,6 +48,8 @@ import java.util.ArrayList;
  */
 public class ConfirmCopyPasteContentAction implements Controller {
     private TemplateConfigurationCache templateConfigurationCache;
+    private String errorView;
+    private String view;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -52,18 +57,29 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
 
         int newParentId = param.getInt("newParentId");
-        boolean isCopy  = param.getBoolean("isCopy");
+
         boolean pasteShortCut  = param.getBoolean("pasteShortCut");
+
+
+        boolean forbidMoveCrossSite = false;
+
+        Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
+        if (clipboard == null || clipboard.getItems().size() == 0) {
+            model.put("error", "aksess.copypaste.emptyclipboard");
+            return new ModelAndView(errorView, model);
+        }
+
+        boolean isCopy = clipboard.getStatus() == ClipboardStatus.COPIED;
 
         ContentManagementService cms = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        int uniqueId = param.getInt("clipboard");
+        Content selectedContent = (Content)clipboard.getItems().get(0);
 
-        Content selectedContent = getContent(request, uniqueId);
+        int uniqueId = selectedContent.getAssociation().getId();
         String selectedContentTitle = selectedContent.getTitle();
         if (selectedContentTitle.length() > 30) selectedContentTitle = selectedContentTitle.substring(0, 27) + "...";
 
@@ -71,19 +87,26 @@ public class ConfirmCopyPasteContentAction implements Controller {
         String parentTitle = newParent.getTitle();
         if (parentTitle.length() > 30) parentTitle = parentTitle.substring(0, 27) + "...";
 
-        ContentTemplate template = cms.getContentTemplate(newParent.getContentTemplateId());
-        List allowedAssociations = getAssociationCategories(template);
 
         boolean isAuthorized = false;
+        // User must be authorized with APPROVE_CONTENT at new location
         if (securitySession.isAuthorized(newParent, Privilege.APPROVE_CONTENT)) {
+            // Must be copy or user must be authorized with APPROVE_CONTENT for content
             if (isCopy || securitySession.isAuthorized(selectedContent, Privilege.APPROVE_CONTENT)) {
                 isAuthorized = true;
             }
         }
+        if (!isAuthorized) {
+            model.put("error", "aksess.copypaste.notauthorized");
+            return new ModelAndView(errorView, model);
+        }
 
-        boolean forbidMoveCrossSite = false;
+        ContentTemplate template = cms.getContentTemplate(newParent.getContentTemplateId());
+        List allowedAssociations = getAssociationCategories(template);
+
+
         if (!isCopy && selectedContent.getAssociation().getSiteId() != newParent.getAssociation().getSiteId()) {
-            // Vi gjør en sjekk på om malen finnes i det nye nettstedet for å være grei med brukeren :)
+            // Check if template is allowed for pasted page in new site
             DisplayTemplate displayTemplate = cms.getDisplayTemplate(selectedContent.getDisplayTemplateId());
             if (displayTemplate.getSites().size() > 0) {
                 forbidMoveCrossSite = true;
@@ -96,11 +119,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         }
 
         String error = null;
-
-        if (!isAuthorized) {
-            // User is not authorized
-            error = "aksess.copypaste.notauthorized";
-        } else if (forbidMoveCrossSite) {
+        if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
         } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + uniqueId + "/") != -1)) {
@@ -113,35 +132,32 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         if (error != null) {
             model.put("error", error);
-
-            return new ModelAndView("/admin/popups/error.jsp", model);
+            return new ModelAndView(errorView, model);
         } else {
-            
-            model.put("isCopy", Boolean.valueOf(isCopy));
-            model.put("pasteShortCut", Boolean.valueOf(pasteShortCut));
-            model.put("uniqueId", new Integer(uniqueId));
-            model.put("newParentId", new Integer(newParentId));
+
+            model.put("isCopy", isCopy);
+            model.put("pasteShortCut", pasteShortCut);
+            model.put("uniqueId", uniqueId);
+            model.put("newParentId", newParentId);
             model.put("selectedContent", selectedContent);
             model.put("selectedContentTitle", selectedContentTitle);
             model.put("parentTitle", parentTitle);
             model.put("allowedAssociations", allowedAssociations);
-            model.put("allowDuplicate", Boolean.valueOf(config.getBoolean("content.duplicate.enabled", true)));
-            model.put("allowCrossPublish", Boolean.valueOf(true));
+            model.put("allowDuplicate", config.getBoolean("content.duplicate.enabled", true));
+            model.put("allowCrossPublish", true);
 
             // Run plugins
             ContentListenerUtil.getContentNotifier().beforeConfirmCopyPasteContent(selectedContent, model);
 
-            return new ModelAndView("/admin/publish/copypaste.jsp", model);
+            return new ModelAndView(view, model);
         }
     }
 
     private Content getContent(HttpServletRequest request, int uniqueId) throws NotAuthorizedException {
         ContentManagementService cms = new ContentManagementService(request);
-
         ContentIdentifier cid = new ContentIdentifier();
         cid.setAssociationId(uniqueId);
-        Content selectedContent = cms.getContent(cid);
-        return selectedContent;
+        return cms.getContent(cid);
     }
 
     private List getAssociationCategories(ContentTemplate template) {
@@ -168,5 +184,13 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
-    }    
+    }
+
+    public void setErrorView(String errorView) {
+        this.errorView = errorView;
+    }
+
+    public void setView(String view) {
+        this.view = view;
+    }
 }
