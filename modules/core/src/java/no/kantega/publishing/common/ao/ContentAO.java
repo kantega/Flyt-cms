@@ -528,7 +528,7 @@ public class ContentAO {
         return contentList;
     }
 
-    public static List getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
+    public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
         return getContentList(contentQuery, maxElements, sort, getAttributes, false);
     }
 

@@ -122,6 +122,8 @@ public class Aksess {
     private static String htmlVersion;
 
     private static Configuration c;
+    
+    private static String multimediaDefaultCopyright;
 
     public static void loadConfiguration() {
 
@@ -246,6 +248,8 @@ public class Aksess {
             // Format på alt og title attributter
             multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
             multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
+
+            multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
 
             // Load version from file in classpath
             {
@@ -543,5 +547,9 @@ public class Aksess {
                 loadConfiguration();
             }
         });
+    }
+
+    public static String getMultimediaDefaultCopyright() {
+        return multimediaDefaultCopyright;
     }
 }

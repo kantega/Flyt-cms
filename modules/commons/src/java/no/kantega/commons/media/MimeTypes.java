@@ -25,10 +25,8 @@ public class MimeTypes {
         // Audio
         mimetypes.add(new MimeType("mid", "audio/x-midi", "MIDI fil"));
         mimetypes.add(new MimeType("wav", "audio/x-wav", "WAV fil"));
-        mimetypes.add(new MimeType("ram", "audio/x-pn-realaudio", "RealAudio fil"));
-        mimetypes.add(new MimeType("rpm", "audio/x-pn-realaudio-plugin", "RealAudio fil"));
-        mimetypes.add(new MimeType("rm", "audio/x-pn-realaudio", "RealAudio fil"));
         mimetypes.add(new MimeType("mp3", "audio/x-mpeg", "MPEG audio"));
+        mimetypes.add(new MimeType("m4a", "audio/x-mpeg", "MPEG audio 4"));
 
         // Div
         mimetypes.add(new MimeType("zip", "application/zip", "ZIP komprimert fil"));

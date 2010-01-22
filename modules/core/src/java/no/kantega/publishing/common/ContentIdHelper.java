@@ -16,16 +16,15 @@
 
 package no.kantega.publishing.common;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.ContentIdentifierCache;
+import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
 
@@ -34,6 +33,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 public class ContentIdHelper {
     private static final String SOURCE = "aksess.ContentIdHelper";
@@ -47,7 +47,7 @@ public class ContentIdHelper {
      * @throws ContentNotFoundException
      */
 
-    public static ContentIdentifier  findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
+    public static ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
         if (context == null && expr == null) {
             return null;
         }
@@ -102,6 +102,36 @@ public class ContentIdHelper {
             ContentIdentifier cid = new ContentIdentifier();
             cid.setAssociationId(pathElements[level]);
             return cid;
+        } else if (expr.equalsIgnoreCase("next") || expr.equalsIgnoreCase("previous")){
+
+            boolean next = expr.equalsIgnoreCase("next");
+            ContentIdentifier parent = new ContentIdentifier();
+            Association association = context.getAssociation();
+            parent.setAssociationId(association.getParentAssociationId());
+            ContentQuery query = new ContentQuery();
+            query.setAssociatedId(parent);
+            query.setAssociationCategory(association.getCategory());
+            List<Content> children = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), false);
+            for (int i = 0; i < children.size(); i++) {
+                Content c = children.get(i);
+                if (c.getAssociation().getId() == context.getAssociation().getId()) {
+                    if (next){
+                        if (i < children.size() -1){
+                            return children.get(i + 1).getContentIdentifier();
+                        } else {
+                            return null;
+                        }
+                    } else {
+                        if (i > 0) {
+                            return children.get(i -1).getContentIdentifier();
+                        } else {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return null;
+            
         } else {
             return findContentIdentifier(context.getAssociation().getSiteId(), expr);
         }

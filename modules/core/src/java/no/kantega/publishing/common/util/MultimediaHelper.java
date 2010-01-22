@@ -68,9 +68,14 @@ public class MultimediaHelper {
             // Bilde
             tag.append("<img ");
 
+            String author = mm.getAuthor();
+            if (author == null || author.length() == 0) {
+                author = Aksess.getMultimediaDefaultCopyright();
+            }
+
             String copyright = "";
-            if (mm.getAuthor() != null && mm.getAuthor().length() > 0) {
-                copyright = " - Copyright: " + mm.getAuthor();
+            if (author != null && author.length() > 0) {
+                copyright = " - &copy;: " + author;
             }
 
             String title = Aksess.getMultimediaTitleFormat();
@@ -180,7 +185,7 @@ public class MultimediaHelper {
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
-        } else if (mimeType.equals("video/x-flv")) {
+        } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
             int width  = Aksess.getDefaultMediaWidth();
             if (maxW != -1) {
                 width = maxW;
@@ -213,29 +218,6 @@ public class MultimediaHelper {
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
-        } else if (mimeType.indexOf("quicktime") != -1) {
-            int width  = mm.getWidth();
-            int height = mm.getHeight();
-            tag.append("<OBJECT classid=\"clsid:clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B\" codebase=\"http://www.apple.com/qtactivex/qtplugin.cab\" width=\"" + width + "\" height=\"" + height + "\">");
-            tag.append("<PARAM name=\"src\" value=\"" + url + "\">");
-            tag.append("<PARAM name=\"autoPlay\" value=\"true\">");
-            tag.append("<PARAM name=\"controller\" value=\"false\">");
-            tag.append("<EMBED src=\"" + url + "\" autoPlay=\"true\" controller=\"false\" pluginspage=\"http://www.apple.com/quicktime/download/\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
-        } else if(mimeType.indexOf("x-ms-wmv") != -1 || mimeType.indexOf("x-msvideo") != -1) {
-            int width  = mm.getWidth();
-            int height = mm.getHeight();
-            tag.append("<OBJECT ID=\"MediaPlayer\"");
-            tag.append(" classid=\"CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95\"");
-            tag.append(" codebase=\"http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112\"");
-            tag.append(" type=\"application/x-oleobject\" width=\""+width+"\" height=\""+height+"\">");
-            tag.append("<PARAM name=\"filename\" value=\"" +url+ "\">");
-            tag.append("<EMBED type=\"application/x-mplayer2\"");
-            tag.append(" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/AllDownloads.aspx\"");
-            tag.append(" width=\""+width+"\"");
-            tag.append(" height=\""+height+"\"");
-            tag.append(" src=\""+url +"\">");
-            tag.append("</EMBED>");
-            tag.append("</OBJECT>");
         } else {
             tag.append("<A href=" + url + ">" + mm.getName());
             if (mimeType.indexOf("octet-stream") == -1) {

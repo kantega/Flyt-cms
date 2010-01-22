@@ -2339,4 +2339,49 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>        
     </tag>
+    <tag>
+        <description>Set specified content as current page temporarily</description>
+        <name>use</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.UseContentTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Fetch parent page as set this temporarily as current page
+
+                        <aksess:use contentid="../">
+                            <h1>
+                                <aksess:getattribute name="heading"/>
+                            </h1>
+                            <div>
+                                <aksess:getattribute name="text"/>
+                            </div>
+                        </aksess:use>
+
+                        Current page is now back to normal
+
+                        <aksess:getattribute name="heading"/>
+
+            ]]>
+        </example>
+    </tag>
+
 </taglib>

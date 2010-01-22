@@ -71,7 +71,7 @@ public final class AttributeTagHelper {
                     content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
                 }
 
-            } else if (contentId.indexOf("..") == 0 || contentId.equalsIgnoreCase("group") || contentId.startsWith("/+")) {
+            } else if (contentId.indexOf("..") == 0 || contentId.equalsIgnoreCase("group") || contentId.equalsIgnoreCase("next") || contentId.equalsIgnoreCase("previous") || contentId.startsWith("/+")) {
                 ContentManagementService cs = new ContentManagementService(request);
                 try {
                     if (collection == null) {
@@ -92,11 +92,17 @@ public final class AttributeTagHelper {
                         }
 
                         if (content != null) {
-                            // Hent parent side eller lignende
+                            // Get parent page, next, previous page etc
                             ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
-                            content = cs.getContent(cid, false);
-                            if (collection == null) {
-                                request.setAttribute("aksess_content" + contentId, content);
+                            if (cid != null) {
+                                // Next or previous page found
+                                content = cs.getContent(cid, false);
+                                if (collection == null) {
+                                    request.setAttribute("aksess_content" + contentId, content);
+                                }
+                            } else {
+                                // Page was not found
+                                content = null;
                             }
                         }
                     }
