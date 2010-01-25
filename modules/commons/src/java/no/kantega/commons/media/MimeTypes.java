@@ -51,6 +51,11 @@ public class MimeTypes {
         mimetypes.add(new MimeType("mpe", "video/mpeg", "MPEG video"));
         mimetypes.add(new MimeType("mpeg", "video/mpeg", "MPEG video"));
         mimetypes.add(new MimeType("mp4", "video/mpeg", "MPEG video"));
+        mimetypes.add(new MimeType("m4a", "video/mpeg", "MPEG video"));
+        mimetypes.add(new MimeType("mp4v", "video/mpeg", "MPEG video"));
+        mimetypes.add(new MimeType("3gp", "video/mpeg", "MPEG video"));
+        mimetypes.add(new MimeType("3g2", "video/mpeg", "MPEG video"));
+        
         mimetypes.add(new MimeType("mov", "video/quicktime", "Quicktime"));
         mimetypes.add(new MimeType("qt", "video/quicktime", "Quicktime"));
         mimetypes.add(new MimeType("flv", "video/x-flv", "Flash video"));
