@@ -158,7 +158,7 @@ public class Aksess {
 
             imageConversionEnabled = c.getBoolean("multimedia.convertimages", false);
 
-            flashPluginVersion = c.getString("multimedia.swf.defaultversion", "9.0.0.54");
+            flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
             flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
             flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
             flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
