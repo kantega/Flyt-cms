@@ -288,7 +288,7 @@ table.fullWidth {
 }
 
 #ModesMenu .search input[type=text]{
-    width: 100px;
+    width: 200px;
     height: 26px;
     border: none;
     color: #dddddd;
@@ -734,6 +734,7 @@ div.sidebarFieldset fieldset legend {
 
 /************** Search results **************/
 #ModesMenu .buttonGroup.search {
+    float: right;
     position: relative;
 }
 #SearchResults {
