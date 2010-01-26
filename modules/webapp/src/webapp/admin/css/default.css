@@ -270,17 +270,11 @@ table.fullWidth {
     margin-right: 15px;
 }
 
-#TopMenu a.menuitem {
-    color: #cccccc;
-    font-size: 12px;
-}
-#TopMenu a.menuitem:hover {
-    color: #ffffff;
-}
-#TopMenu a.menuitem.selected {
-    color: #ffffff;
-    font-weight: bold;
-}
+#TopMenu a.menuitem { color: #cccccc; font-size: 12px; }
+#TopMenu a.menuitem:hover { color: #ffffff; }
+#TopMenu a.menuitem.selected { color: #ffffff; font-weight: bold; }
+#TopMenu a.menuitem.logout { background: url("../bitmaps/default/framework/top_nav_icon_logout.png") left center no-repeat; padding-left: 20px; float: right;}
+#TopMenu a.menuitem.help { background: url("../bitmaps/default/framework/top_nav_icon_help.png") left center no-repeat; padding-left: 20px; float: right;}
 
 /************** Modes menu **************/
 #ModesMenu {

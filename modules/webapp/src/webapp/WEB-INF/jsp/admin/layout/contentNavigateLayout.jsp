@@ -96,7 +96,7 @@
                         </div>
                     </fieldset>
                     <fieldset id="FilteroptionSites">
-                        <legend><kantega:label key="aksess.navigator.sites"/>&nbsp;(<a href="#" id=".hideexpiredFilteroptionSites_all"><kantega:label key="aksess.navigator.sites.all"/></a>)</legend>
+                        <legend><kantega:label key="aksess.navigator.sites"/>&nbsp;(<a href="#" id="hideexpiredFilteroptionSites_all"><kantega:label key="aksess.navigator.sites.all"/></a>)</legend>
                         <div class="options">
                         <%-- The sites (options) are loaded by content.Contentstatus.updateFilters() --%>
                         </div>

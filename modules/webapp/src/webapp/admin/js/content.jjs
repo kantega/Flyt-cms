@@ -145,7 +145,7 @@ function bindFilterEvents() {
         updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
 
-    $("#.hideexpiredFilteroptionSites_all").live('click',function(e){
+    $("#hideexpiredFilteroptionSites_all").live('click',function(e){
         e.preventDefault();
         $("#Filteroptions .filters input[name=sites]").each(function(){
             $(this).attr("checked", "checked");
