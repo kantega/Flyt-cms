@@ -41,7 +41,6 @@ public class ContentStatisticsAction implements Controller {
      * @return
      * @throws Exception
      */
-    @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("contentCount", ContentAO.getContentCount());
@@ -56,3 +55,4 @@ public class ContentStatisticsAction implements Controller {
     }
 
 }
+

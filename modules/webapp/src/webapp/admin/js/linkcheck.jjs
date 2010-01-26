@@ -44,7 +44,6 @@ function updateMainPane(id, suppressNavigatorUpdate) {
     currentUrl = getContentUrlFromAssociationId(id);
     debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
     updateLinkList(currentUrl, "title");
-    notifyContentUpdate(currentUrl);
 }
 
 

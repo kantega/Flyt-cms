@@ -39,7 +39,6 @@ function updateMainPane(id, suppressNavigatorUpdate) {
     currentUrl = getContentUrlFromAssociationId(id);
     debug("organizesubpages.updateMainPane(): currentUrl: " + currentUrl);
     updateSubPageList(currentUrl);
-    notifyContentUpdate(currentUrl);
 }
 
 

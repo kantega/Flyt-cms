@@ -19,35 +19,33 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.PathEntry;
-import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.service.lock.ContentLock;
+import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.admin.preferences.UserPreference;
-import no.kantega.publishing.admin.preferences.UserPreferencesManager;
-import no.kantega.publishing.admin.AdminRequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.bind.ServletRequestDataBinder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * A controller which updates breadcrumb and available buttons depending on current page

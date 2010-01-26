@@ -85,7 +85,7 @@
             </c:when>
             <c:otherwise>
                 $("#ModesMenu .button .edit").click(function(){
-                    Publish.edit(getQueryParam("thisId", currentUrl));
+                    Publish.edit(getQueryParam("thisId", StateHandler.getState()));
                 });
             </c:otherwise>
         </c:choose>

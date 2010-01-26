@@ -25,7 +25,7 @@ $(document).ready(function(){
     bindMultimediaupdateEvents();
     triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     bindToolButtons();
-    StateHandler.init("multimediaupdate");
+    stateHandler.init("multimediaupdate");
 });
 
 /**
@@ -217,7 +217,7 @@ function onNavigatorTitleClick(elm) {
 
 function triggerMultimediaupdateEvent() {
     debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
-    StateHandler.setState(currentItemIdentifier);
+    stateHandler.setState(currentItemIdentifier);
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 

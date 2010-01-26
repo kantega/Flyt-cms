@@ -51,7 +51,6 @@ function updateMainPane(id, suppressNavigatorUpdate) {
     currentUrl = getContentUrlFromAssociationId(id);
     debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
     updateStatistics(currentUrl, currentView);
-    notifyContentUpdate(currentUrl);
 }
 
 

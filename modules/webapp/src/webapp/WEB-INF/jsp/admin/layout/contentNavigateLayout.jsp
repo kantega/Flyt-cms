@@ -34,10 +34,10 @@
 
         $(document).ready(function(){
             $("#EditContentButtons .approve").click(function() {
-                Publish.approve(getQueryParam("thisId", currentUrl));
+                Publish.approve(getQueryParam("thisId", StateHandler.getState()));
             });
             $("#EditContentButtons .reject").click(function() {
-                Publish.reject(getQueryParam("thisId", currentUrl));
+                Publish.reject(getQueryParam("thisId", StateHandler.getState()));
             });
         });
     </script>

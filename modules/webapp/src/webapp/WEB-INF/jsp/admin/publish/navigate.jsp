@@ -38,10 +38,8 @@
          */
         function setContentupdateTrigger() {
             $("#Contentmain").load(function() {
-                var currentContent = getCurrentLocation().href;
-                debug("setContentupdateTrigger(): contentmain load event. currentContent: " + currentContent);
-                notifyContentUpdate(currentContent);
-                currentUrl = currentContent;
+                var currentUrl = getCurrentLocation().href;
+                debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
                 triggerContentUpdateEvent(currentUrl);
             });
         }

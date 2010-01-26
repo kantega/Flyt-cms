@@ -24,13 +24,12 @@
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
 
-var currentUrl = "";
 
 $(document).ready(function(){
     debug("content.$(document).ready()");
     bindContentupdateEvents();
     bindFilterEvents();
-    StateHandler.init("contentupdate");
+    stateHandler.init("contentupdate");
 });
 
 
@@ -43,11 +42,9 @@ function bindContentupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("contentupdate", function(e, url){
         debug("content.bindContentupdateEvents(): #Navigator has received contentupdate event. Url: " + url);
-        if(url) {
-            currentUrl = url;
-        }
+
         if (!suppressNavigatorUpdate) {
-            updateNavigator(currentUrl, true);
+            updateNavigator(url, true);
         } else {
             suppressNavigatorUpdate = false;
             debug("content.bindContentupdateEvents(): navigationUpdate suppressed");
@@ -56,12 +53,9 @@ function bindContentupdateEvents() {
 
     $("#Statusbar").bind("contentupdate", function(e, url){
         debug("content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
-        if(url) {
-            currentUrl = url;
-        }
         ContentStatus.init();
         ContentStatus.disableButtons();
-        $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: currentUrl}, function(data){
+        $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: url}, function(data){
             ContentStatus.breadcrumbs(data.path);
             ContentStatus.brokenLinks(data.links);
             ContentStatus.details(data.content);
@@ -119,7 +113,7 @@ function bindFilterEvents() {
         var value = $(this).is(":checked");
         debug("content.bindFilterEvents(): Hide expired clicked: " + value);
         UserPreferences.setPreference(UserPreferences.keys.filter.hideExpired, value, false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
+        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
 
     $filterOptions.find(".filtersToggle").live('click', function(){
@@ -132,7 +126,7 @@ function bindFilterEvents() {
         debug("content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
         if ($this.is(":checked")) {
             UserPreferences.setPreference(UserPreferences.keys.filter.sort, $this.val(), false);
-            updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
+            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
         }
     });
 
@@ -148,7 +142,7 @@ function bindFilterEvents() {
         });
 
         UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
+        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
 
     $("#.hideexpiredFilteroptionSites_all").live('click',function(e){
@@ -157,7 +151,7 @@ function bindFilterEvents() {
             $(this).attr("checked", "checked");
         });
         UserPreferences.setPreference(UserPreferences.keys.filter.sites, '', false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(currentUrl), true);
+        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
 }
 
@@ -166,9 +160,10 @@ function bindFilterEvents() {
  * @url - Current url.
  */
 function triggerContentUpdateEvent(url) {
-    debug("content.triggerContentUpdateEvent(): contentupdateevent triggered.");
+    debug("content.triggerContentUpdateEvent(): url: " + url);
+    notifyContentUpdate(url);
     //Event triggering is delegated to the state handler.
-    StateHandler.setState(url);
+    stateHandler.setState(url);
 }
 
 function navigatorResizeOnStart() {
@@ -303,25 +298,25 @@ $(document).ready(function(){
 function bindToolButtons() {
     // TODO: This will only work when page id is in URL, must replace with current id from ContentPropertiesAction(?)
     $("#ToolsMenu .button .newSubpage").click(function(){
-        Publish.newSubpage(getQueryParam("thisId", currentUrl));
+        Publish.newSubpage(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .delete").click(function(){
-        Publish.deleteItem(getQueryParam("thisId", currentUrl));
+        Publish.deleteItem(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .cut").click(function(){
-        Publish.cut(getQueryParam("thisId", currentUrl));
+        Publish.cut(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .copy").click(function(){
-        Publish.copy(getQueryParam("thisId", currentUrl));
+        Publish.copy(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .paste").click(function(){
-        Publish.paste(getQueryParam("thisId", currentUrl));
+        Publish.paste(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .displayPeriod").click(function(){
-        Publish.displayPeriod(getQueryParam("thisId", currentUrl));
+        Publish.displayPeriod(getQueryParam("thisId", stateHandler.getState()));
     });
     $("#ToolsMenu .button .privileges").click(function(){
-        Publish.managePrivileges(getQueryParam("thisId", currentUrl));
+        Publish.managePrivileges(getQueryParam("thisId", stateHandler.getState()));
     });
 }
 

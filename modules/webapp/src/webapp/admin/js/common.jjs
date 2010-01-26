@@ -23,6 +23,9 @@
 /********************************************************************************
  * Common functions
  ********************************************************************************/
+
+var stateHandler = new StateHandler();
+
 $(document).ready(function() {
     debug("common.$(document).ready()");
     if (window.dwr) {
@@ -110,10 +113,10 @@ function debug(msg) {
 /**
  * Sets the currently viewed content in the user's session.
  *
- * @param currentUrl
+ * @param url
  */
-function notifyContentUpdate(currentUrl) {
-    ContentStateHandler.notifyContentUpdate(currentUrl);
+function notifyContentUpdate(url) {
+    ContentStateHandler.notifyContentUpdate(url);
 }
 
 /**
@@ -220,36 +223,39 @@ var UserPreferences = {
 /**
  * See http://benalman.com/projects/jquery-bbq-plugin/ for further details about the bbq-plugin.
  */
-var StateHandler = {
+function StateHandler (){
 
-    prevUrl : '',
+    var currentState = '';
 
-    init: function(updateEventType) {
-        this._handleHashChange(updateEventType);
-        debug("common.StateHandler.init(). Triggering hashchange.");
-        $(window).trigger('hashchange');
-    },
+    this.init = function(updateEventType) {
+        debug("common.StateHandler.init()");
+        bindHashChange(updateEventType);
+        $(window).trigger("hashchange");
+    };
 
-    setState: function(url) {
-        debug("common.StateHandler.setState(): url: " + url);
-        $.bbq.pushState({ url : url });
-    },
+    this.setState = function(state) {
+        console.info("common.StateHandler.setState(): state: " + state);
+        $.bbq.pushState({ state : state });
+    };
 
-    _handleHashChange : function(updateEventType) {
-        debug("common.StateHandler._handleHashChange(): Binding hashchange event");
+    this.getState = function() {
+        return currentState;
+    };
+
+    var bindHashChange = function(updateEventType) {
+        debug("common.StateHandler._bindHashChange(): Binding hashchange event");
         $(window).bind( 'hashchange', function(e) {
-            $("#AjaxLoadingIllustration").show();
             //Get the url from the state
-            var url = $.bbq.getState('url');
-            debug("common.StateHandler._handleHashChange(): hashchange event received. Url: " + url);
+            var state = $.bbq.getState('state');
+            debug("common.StateHandler._bindHashChange(): hashchange event received. Url: " + state);
 
-            if (url && url != this.prevUrl) {
-                debug("common.StateHandler._handleHashChange(): Current new url ("+url+") different from current url ("+this.prevUrl+"). Triggering '"+updateEventType+ "' event.");
-                $.event.trigger(updateEventType, url);
-                this.prevUrl = url;
+            if (state && state != this.currentState) {
+                console.info("common.StateHandler._bindHashChange(): New state ("+state+") different from current state ("+this.currentState+"). Triggering '"+updateEventType+ "' event.");
+                $.event.trigger(updateEventType, state);
+                currentState = state;
             }
         });
-    }
+    };
 
 };
 
