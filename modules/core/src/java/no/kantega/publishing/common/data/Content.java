@@ -96,6 +96,7 @@ public class Content extends BaseObject {
     boolean isLocked = false;
 
     boolean isSearchable = true;
+    boolean isMinorChange = false;
 
     public Content() {
         lastModified = new Date();
@@ -658,6 +659,14 @@ public class Content extends BaseObject {
 
     public void setSearchable(boolean searchable) {
         this.isSearchable = searchable;
+    }
+
+    public boolean isMinorChange() {
+        return isMinorChange;
+    }
+
+    public void setMinorChange(boolean minorChange) {
+        isMinorChange = minorChange;
     }
 
     public Date getChangeFromDate() {

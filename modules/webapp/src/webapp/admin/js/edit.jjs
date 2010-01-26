@@ -39,7 +39,7 @@ function setIsModified() {
 }
 
 function isModified() {
-    return editIsModified || tinyMCE.activeEditor.isDirty();
+    return editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
 }
 
 

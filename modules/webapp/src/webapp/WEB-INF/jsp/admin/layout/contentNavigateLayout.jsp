@@ -124,7 +124,7 @@
             <kantega:getsection id="content"/>
 
             <c:choose>
-                <c:when test="${currentContent != null && currentContent.modified}">
+                <c:when test="${hasUnsavedChanges}">
                     <div id="EditContentButtons" class="buttonBar">
                         <%@include file="fragments/editContentButtons.jsp"%>
                         <form name="myform" style="display:none" action="SaveContentPreview.action" method="post">

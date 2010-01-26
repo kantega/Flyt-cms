@@ -23,8 +23,8 @@
 
     function bindPublishButtons() {
         <c:choose>
-            <c:when test="${currentContent != null && currentContent.modified}">
-            // User is editing a page
+            <c:when test="${hasUnsavedChanges}">
+            // User is editing a page and it is changed
             $("#ModesMenu .button .view").click(function(e){
                 debug("publishModesAndButtonsJS.view");
                 e.preventDefault();
@@ -50,29 +50,6 @@
                 e.preventDefault();
                 gotoMode("Statistics");
             });
-            // These buttons are only displayed when user is editing a page
-            $("#EditContentButtons input.publish").click(function(){
-                debug("publishModesAndButtonsJS.publish");
-                saveContent(<%=ContentStatus.PUBLISHED%>);
-            });
-            $("#EditContentButtons input.save").click(function(){
-                debug("publishModesAndButtonsJS.save");
-                saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
-            });
-            $("#EditContentButtons input.savedraft").click(function(){
-                debug("publishModesAndButtonsJS.savedraft");
-                saveContent(<%=ContentStatus.DRAFT%>);
-            });
-            $("#EditContentButtons input.hearing").click(function(){
-                debug("publishModesAndButtonsJS.hearing");
-                saveContent(<%=ContentStatus.HEARING%>);
-            });
-            $("#EditContentButtons input.cancel").click(function(){
-                debug("publishModesAndButtonsJS.cancel");
-                if (confirmCancel) {
-                    window.location.href = 'CancelEdit.action';
-                }
-            });
 
             // Prevent user from clicking top menu
             $("#TopMenu a").click(function (e) {
@@ -83,30 +60,52 @@
             });
 
             </c:when>
-            <c:otherwise>
+            <c:when test="${!hasUnsavedChanges && !isEditing}">
+                // No unsaved changes and user is not editing
                 $("#ModesMenu .button .edit").click(function(){
                     Publish.edit(getQueryParam("thisId", StateHandler.getState()));
                 });
-            </c:otherwise>
+            </c:when>
         </c:choose>
+
+        <c:if test="${hasUnsavedChanges || isEditing}">
+        // These buttons are only displayed when user is editing a page or previewing with a changed page
+        $("#EditContentButtons input.publish").click(function(){
+            debug("publishModesAndButtonsJS.publish");
+            saveContent(<%=ContentStatus.PUBLISHED%>);
+        });
+        $("#EditContentButtons input.save").click(function(){
+            debug("publishModesAndButtonsJS.save");
+            saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
+        });
+        $("#EditContentButtons input.savedraft").click(function(){
+            debug("publishModesAndButtonsJS.savedraft");
+            saveContent(<%=ContentStatus.DRAFT%>);
+        });
+        $("#EditContentButtons input.hearing").click(function(){
+            debug("publishModesAndButtonsJS.hearing");
+            saveContent(<%=ContentStatus.HEARING%>);
+        });
+        $("#EditContentButtons input.cancel").click(function(){
+            debug("publishModesAndButtonsJS.cancel");
+            if (confirmCancel) {
+                window.location.href = 'CancelEdit.action';
+            }
+        });
+        </c:if>
     }
 
-    <c:if test="${currentContent != null && currentContent.modified}">
     function confirmCancel() {
         var confirmCancel = true;
-        if (isModified()) {
+        if (isPageModified()) {
             confirmCancel = confirm("Cancel changes?");
         }
         return confirmCancel;
     }
     
-    function isModified() {
+    function isPageModified() {
         var isModified = $("#IsModified").val();
-        if ("true" == isModified) {
-            return true;
-        } else {
-            return false;
-        }
+        return "true" == isModified;
     }
 
     function gotoMode(action) {
@@ -122,6 +121,5 @@
         document.myform.elements['action'].value = action;
         saveContent("");
     }
-    </c:if>    
 </script>
 

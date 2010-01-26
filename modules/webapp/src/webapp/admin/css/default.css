@@ -493,7 +493,7 @@ table.fullWidth {
 #Content .button {
     display: inline-block;
     cursor: pointer;
-    border: 1px solid #cccccc;
+    border: 1px solid #bbbbbb;
     background: url("../bitmaps/common/button.png") repeat-x;
     padding-right: 5px;
     padding-left: 5px;
@@ -509,7 +509,8 @@ table.fullWidth {
     display: inline-block;
     padding-left: 5px;
     padding-right:5px;
-    line-height: 25px;
+    line-height: 20px;
+    height: 20px;
     border: 0;
 }
 
@@ -528,7 +529,7 @@ table.fullWidth {
     display: inline-block;
     padding-left: 30px;
     padding-right:5px;
-    line-height: 18px;
+    line-height: 20px;
     background-position: 5px 50%;
     background-repeat: no-repeat;
 }
@@ -587,6 +588,10 @@ table.fullWidth {
 .button .remove{
     background-image: url("../bitmaps/common/icons/small/remove.png");
 }
+.button .search {
+    background-image: url("../bitmaps/common/icons/small/search.png");
+}
+
 .button .select{
     background-image: url("../bitmaps/common/icons/small/select.png");
 }

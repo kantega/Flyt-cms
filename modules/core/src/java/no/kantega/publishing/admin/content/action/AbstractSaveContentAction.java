@@ -124,6 +124,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 if (action == null || action.length() == 0) {
                     // Go back to current tab
+                    model.put("isEditing", Boolean.TRUE);
                     setRequestVariables(request, content, aksessService, model);
                     return new ModelAndView(getView(), model);
                 } else {
@@ -133,6 +134,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             }
         } else {
             // No submit
+            model.put("isEditing", Boolean.TRUE);
             setRequestVariables(request, content, aksessService, model);            
             return new ModelAndView(getView(), model);
         }
@@ -235,6 +237,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         }
 
         content.setSearchable(param.getBoolean("searchable"));
+        content.setMinorChange(param.getBoolean("minorchange"));
 
         int templateId = param.getInt("displaytemplate");
         if (templateId != -1) {

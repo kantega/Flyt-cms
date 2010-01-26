@@ -203,10 +203,12 @@
 </c:if>
 <div class="sidebarFieldset">
     <fieldset>
-        <legend><kantega:label key="aksess.publishinfo.searchable"/></legend>
-        <input type="checkbox" name="searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"<c:if test="${currentContent.locked}"> disabled="true"</c:if>>
-        <c:if test="${isAdmin}">
-            <div class=helpText style="display:none"><kantega:label key="aksess.publishinfo.searchable.hjelp"/></div>
-        </c:if>
+        <legend><kantega:label key="aksess.publishinfo.otherproperties"/></legend>
+        <div class="row">
+            <input type="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
+        </div>
+        <div class="row">
+            <input type="checkbox" name="minorchange" id="MinorChange" value="true"<c:if test="${currentContent.minorChange}"> checked="checked"</c:if> tabindex="521"><label class="checkbox"><kantega:label key="aksess.publishinfo.minorchange"/></label>
+        </div>        
     </fieldset>
 </div>
