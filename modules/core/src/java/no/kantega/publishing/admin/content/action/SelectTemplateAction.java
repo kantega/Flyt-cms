@@ -66,8 +66,8 @@ public class SelectTemplateAction implements Controller {
         int contentTemplateId = -1;
 
         // Links and files dont have displaytemplate, only contenttemplate
-        String type = templateId.substring(0, templateId.indexOf(";"));
-        templateId = templateId.substring(templateId.indexOf(";") + 1, templateId.length());
+        String type = templateId.substring(0, templateId.indexOf("_"));
+        templateId = templateId.substring(templateId.indexOf("_") + 1, templateId.length());
         if (type.equalsIgnoreCase("ct")) {
             contentTemplateId = Integer.parseInt(templateId);
         } else {

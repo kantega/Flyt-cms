@@ -25,4 +25,4 @@
 <a href="${pageContext.request.contextPath}/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
 
 <a href="${pageContext.request.contextPath}/Logout.action" class="menuitem logout"><kantega:label key="aksess.menu.logout"/></a>
-<a href="" class="menuitem help"><kantega:label key="aksess.menu.help"/></a>
+<a href="#" class="menuitem help"><kantega:label key="aksess.menu.help"/></a>

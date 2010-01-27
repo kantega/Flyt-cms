@@ -29,12 +29,20 @@
     <kantega:label key="aksess.topicmaps.title"/>
 </kantega:section>
 
+<kantega:section id="contentclass">topicmaps</kantega:section>
+
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/topicmaps.jjs"></script>
+</kantega:section>
+
+<kantega:section id="modesMenu">
+</kantega:section>
+
+<kantega:section id="toolsMenu">
 </kantega:section>
 
 <kantega:section id="content">
     <%-- The content is loaded with ajax by the ListTopicTypesAction --%>
     <div id="TopicTypes"></div>
 </kantega:section>
-<%@ include file="../layout/topicMapsLayout.jsp" %>
+<%@ include file="../layout/fullwidthLayout.jsp" %>

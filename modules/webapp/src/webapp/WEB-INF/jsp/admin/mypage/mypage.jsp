@@ -23,6 +23,37 @@
     <kantega:label key="aksess.mypage.title"/>
 </kantega:section>
 
+<kantega:section id="contentclass">mypage</kantega:section>
+
+<kantega:section id="head extras">
+    <script type="text/javascript" src="../js/edit.jjs"></script>
+    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("#SettingsButton").click(function(){
+                ModalWindow.open({href: 'MyPageSettings.action', iframe: true, title: '<kantega:label key="aksess.tools.settings"/>'});
+            });
+        });
+    </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load("visualization", "1", {packages:["areachart"]});
+    </script>
+</kantega:section>
+
+<kantega:section id="modesMenu">
+    <div class="buttonGroup">
+        <a href="#" class="button disabled" id="SettingsButton"><span class="settings"><kantega:label key="aksess.tools.settings"/></span></a>
+        <span class="buttonSeparator"></span>
+        <a href="#" class="button disabled" id="ResetMyPageButton"><span class="reset"><kantega:label key="aksess.tools.reset"/></span></a>
+    </div>
+</kantega:section>
+
+<kantega:section id="toolsMenu">
+</kantega:section>
+
+
+
 <kantega:section id="content">
     <script type="text/javascript">
         function restore(itemId) {
@@ -158,4 +189,6 @@
     </div>
 
 </kantega:section>
-<%@ include file="../layout/mypageLayout.jsp" %>
+
+
+<%@ include file="../layout/fullwidthLayout.jsp" %>

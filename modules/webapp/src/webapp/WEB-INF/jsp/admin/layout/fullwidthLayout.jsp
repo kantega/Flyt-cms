@@ -18,27 +18,20 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="topMenu">
-    <%@include file="fragments/topMenu.jsp"%>
-</kantega:section>
-
-<kantega:section id="modesMenu">
-</kantega:section>
-
-<kantega:section id="toolsMenu">
-</kantega:section>
-
 <kantega:section id="head">
     <kantega:getsection id="head extras"/>
 </kantega:section>
 
+
+<kantega:section id="topMenu">
+    <%@include file="fragments/topMenu.jsp"%>
+</kantega:section>
+
+
 <kantega:section id="body">
-        <div id="MainPane">
-            <div id="MainPaneContent">
-            <kantega:getsection id="content"/>
-            </div>
-            <div class="clearing"></div>
-        </div>
+    <div id="Content" class="<kantega:getsection id="contentclass"/>">
+        <kantega:getsection id="content"/>
+    </div>
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>

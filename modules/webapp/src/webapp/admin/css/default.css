@@ -327,22 +327,13 @@ table.fullWidth {
 
 #ModesMenu .button span {
     padding-left: 20px;
+    line-height: 37px;
+    display: block;
+    height: 37px;
+    background-position: left center;
+    background-repeat: no-repeat;
 }
-#ModesMenu .button .view {
-    background: url("../bitmaps/common/icons/small/navigate.png") left center no-repeat;
-}
-#ModesMenu .button .organize {
-    background: url("../bitmaps/common/icons/small/organize.png") left center no-repeat;
-}
-#ModesMenu .button .linkcheck {
-    background: url("../bitmaps/common/icons/small/linkcheck.png") left center no-repeat;
-}
-#ModesMenu .button .statistics {
-    background: url("../bitmaps/common/icons/small/statistics.png") left center no-repeat;
-}
-#ModesMenu .button .edit {
-    background: url("../bitmaps/common/icons/small/edit.png") left center no-repeat;
-}
+
 
 /************** Tools menu **************/
 #ToolsMenu .buttonGroup {
@@ -362,6 +353,10 @@ table.fullWidth {
     background-position: 10px 50%;
     background-repeat: no-repeat;
     cursor: pointer;
+}
+#ToolsMenu .button.disabled span {
+    color: #999;
+    cursor: default;
 }
 
 #TabToolsMenu .tabGroup {
@@ -511,6 +506,7 @@ table.fullWidth {
     background-repeat: no-repeat;
 }
 
+
 .button .add {
     background-image: url("../bitmaps/common/icons/small/add.png");
 }
@@ -541,6 +537,9 @@ table.fullWidth {
 .button .imagemap {
     background-image: url("../bitmaps/common/icons/small/imagemap.png");
 }
+.button .linkcheck {
+    background: url("../bitmaps/common/icons/small/linkcheck.png");
+}
 .button .moveUp {
     background-image: url("../bitmaps/common/icons/small/moveup.png");
 }
@@ -556,6 +555,9 @@ table.fullWidth {
 .button .ok{
     background-image: url("../bitmaps/common/icons/small/ok.png");
 }
+.button .organize {
+    background: url("../bitmaps/common/icons/small/organize.png");
+}
 .button .paste {
     background-image: url("../bitmaps/common/icons/small/paste.png");
 }
@@ -565,15 +567,26 @@ table.fullWidth {
 .button .remove{
     background-image: url("../bitmaps/common/icons/small/remove.png");
 }
+.button .reset{
+    background-image: url("../bitmaps/common/icons/small/reset.png");
+}
 .button .search {
     background-image: url("../bitmaps/common/icons/small/search.png");
 }
-
 .button .select{
     background-image: url("../bitmaps/common/icons/small/select.png");
 }
+.button .settings {
+    background-image: url("../bitmaps/common/icons/small/settings.png");
+}
+.button .statistics {
+    background: url("../bitmaps/common/icons/small/statistics.png");
+}
 .button .upload {
     background-image: url("../bitmaps/common/icons/small/upload.png");
+}
+.button .view {
+    background: url("../bitmaps/common/icons/small/navigate.png");
 }
 
 /************** Form elements and content attributes **************/
