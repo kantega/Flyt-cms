@@ -728,6 +728,53 @@ div.sidebarFieldset fieldset legend {
     background-color: #ffffff;
 }
 
+/************** Information slider **************/
+.infoslider {
+    display: none;
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #cccccc;
+    position: absolute;
+    z-index: 100;
+    left: 0;
+    padding-top: 0.5em;
+    padding-bottom: 1em;
+}
+.infoslider .close {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+.infoslider .label {
+    font-weight: bold;
+}
+
+.infoslider table {
+    width: 100%;
+}
+.infoslider table th, .infoslider table td {
+    padding: 0 1em;
+    width: 18%;
+}
+.infoslider .breadcrumbs {
+    margin-left: 10px;
+}
+
+.infoslider fieldset {
+    border: 0;
+    padding: 0;
+    padding-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.infoslider  legend {
+    font-weight: bold;
+}
+.infoslider  legend a {
+    color:#1780B9;
+    font-weight: normal;
+}
+
 
 /************** Search results **************/
 #ModesMenu .buttonGroup.search {

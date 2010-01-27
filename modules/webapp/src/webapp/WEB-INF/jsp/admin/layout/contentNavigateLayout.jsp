@@ -67,7 +67,7 @@
                     <input type="checkbox" id="FilteroptionHideExpired">
                     <label for="FilteroptionHideExpired"><kantega:label key="aksess.filteroptions.hideexpired"/></label>
                 </div>
-                <div class="filters">
+                <div class="filters" style="display: none;">
                     <fieldset id="FilteroptionSort">
                         <legend><kantega:label key="aksess.navigator.sort"/></legend>
                         <div class="row">
@@ -91,6 +91,7 @@
                     </fieldset>
                 </div>
             </div>
+            <div class="infoslider"></div>
             <div id="Navigator"></div>
             <div id="Framesplit"></div>
         </div>
@@ -107,7 +108,7 @@
                 </div>
             </div>
 
-            <div id="SearchResults"></div>
+            <div class="infoslider"></div>
 
             <kantega:getsection id="content"/>
 

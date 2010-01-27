@@ -6,6 +6,10 @@
     padding-right: 10px;/*Framesplit.width*/
     background: #ffffff;
 }
+#Navigation .infoslider {
+    width: 190px;
+}
+
 #Navigator {
     overflow: auto;
     padding-top: 5px;
@@ -79,36 +83,13 @@
     background: url("../bitmaps/default/framework/contentstatus_details.png") left center no-repeat;
 }
 
-#MainPane #Statusbar .statusDetails {
-    width: 100%;
-    background: #ffffff;
-    border-bottom: 1px solid #cccccc;
-    position: absolute;
-    z-index: 100;
-    top: 2em;
-    right: 0;
-    padding-top: 0.5em;
-    padding-bottom: 1em;
-}
-#MainPane #Statusbar .statusDetails .label {
-    font-weight: bold;
-}
 
-#MainPane #Statusbar .statusDetails table {
-    width: 100%;
-}
-#MainPane #Statusbar .statusDetails table th, #MainPane #Statusbar .statusDetails table td {
-    padding: 0 1em;
-    width: 18%;
-}
-#MainPane #Statusbar .statusDetails .breadcrumbs {
-    margin-left: 10px;
-}
 /************** Navigation (left column) **************/
 #Filteroptions {
     background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") left top repeat-x;
     border-bottom: 1px solid #cccccc;
     height: 2em;
+    position: relative;
 }
 #Filteroptions .hideexpired {
     display: inline;
@@ -125,27 +106,6 @@
     padding-left: 15px;
     margin: 0 5px;
 }
-#Filteroptions .filters {
-    display: none;
-    padding: 10px;
-    background: #ffffff;
-    position: relative;
-    z-index: 100;
-    border-bottom: 1px solid #cccccc;
-}
-#Filteroptions fieldset {
-    border: 0;
-    padding: 0;
-    padding-top: 4px;
-}
-#Filteroptions legend {
-    font-weight: bold;
-}
-#Filteroptions legend a {
-    color:#1780B9;
-    font-weight: normal;
-}
-
 /************** Navigator **************/
 .navigator {
     margin: 0 0 0 0.25em;

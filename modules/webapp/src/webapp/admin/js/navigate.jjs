@@ -258,43 +258,35 @@ var Search = {
     search : function(query){
         debug("navigate.Search.search(): query: " + query);
         var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
-        //getSearchAction();
-        var searchResult = $("#SearchResults");
-        searchResult.html('<iframe name="search" title="Search results" src="' + searchUrl + '">');
-        //TODO: Implement properly. Fetch search results with ajax.
-        /*
-        var searchResults = $("<div/>").attr("id", "SearchResults").html("<p>You searched: " + query + "</p>").slideDown("slow");
-        $("#ContentFrame").append(searchResults);
-        var closeLink = $("<a>").addClass("close").attr("href", "#").html("Close");
-        closeLink.click(function(){
-            $(this).parent().slideUp("slow");
-        });
-        searchResults.append(closeLink);
-        */
-        debug("show searchresults");
-        searchResult.slideDown("slow").resizable({
-            handles: 's',
-            start: function(){
-                if (typeof navigatorResizeOnStart == 'function') {
-                    debug("content.navigatorResizeOnStart(): Adding overlay");
-                    var height = searchResult.height();
-                    var width = searchResult.width();
-                    var searchoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "Searchoverlay");
-                    $("#SearchResults iframe").before(searchoverlay);
-                    navigatorResizeOnStart();
-                }
-            },
-            stop: function() {
-                if (typeof navigatorResizeOnStop == 'function') {
-                    $("#Searchoverlay").remove();
-                    navigatorResizeOnStop();
-                }
-            },
-            resize: function() {
-                if (typeof navigatorResizeOnResize == 'function') {
-                    navigatorResizeOnResize();
-                }
-            }
+        var searchResult = $("#MainPane .infoslider")
+                .html('<iframe name="search" title="Search results" src="' + searchUrl + '">')
+                .slideDown(300).resizable({
+                    handles: 's',
+                    start: function(){
+                        if (typeof navigatorResizeOnStart == 'function') {
+                            debug("content.navigatorResizeOnStart(): Adding overlay");
+                            var height = searchResult.height();
+                            var width = searchResult.width();
+                            var searchoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "Searchoverlay");
+                            $("#SearchResults iframe").before(searchoverlay);
+                            navigatorResizeOnStart();
+                        }
+                    },
+                    stop: function() {
+                        if (typeof navigatorResizeOnStop == 'function') {
+                            $("#Searchoverlay").remove();
+                            navigatorResizeOnStop();
+                        }
+                    },
+                    resize: function() {
+                        if (typeof navigatorResizeOnResize == 'function') {
+                            navigatorResizeOnResize();
+                        }
+                    }
+                });
+
+        $('<div class="close"><kantega:label key=""/></div>').appendTo(searchResult).click(function(){
+            searchResult.slideUp(300).html("");
         });
     },
 

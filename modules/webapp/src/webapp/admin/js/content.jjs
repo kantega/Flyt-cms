@@ -117,8 +117,8 @@ function bindFilterEvents() {
     });
 
     $filterOptions.find(".filtersToggle").live('click', function(){
-        $filterOptions.find(".filters").toggle();
         debug("content.bindFilterEvents(): Filter clicked");
+        InfoSlider.toggle("#Navigation", $filterOptions.find(".filters").html(), this);
     });
 
     $filterOptions.find(".filters input[name=sort]").live('change', function(){
@@ -443,7 +443,7 @@ var ContentStatus = {
                 }
                 details +='   </tbody>' +
                         '</table>';
-                ContentStatus._statusContainer('brokenLinks').html(details).toggle();
+                InfoSlider.toggle("#MainPane",details, this);
             }).show();
         }
     },
@@ -470,7 +470,7 @@ var ContentStatus = {
                 }
 
                 details +="</ul>";
-                ContentStatus._statusContainer('details').html(details).toggle();
+                InfoSlider.toggle("#MainPane",details, this);
             }).show();
         }
     },
@@ -489,7 +489,7 @@ var ContentStatus = {
                     }
                     details += "</ul>";
                 }
-                ContentStatus._statusContainer('crossPublish').html(details).toggle();
+                InfoSlider.toggle("#MainPane",details, this);
             }).show();
         }
     },
@@ -588,22 +588,55 @@ var ContentStatus = {
             $("#FilteroptionHideExpired").attr("checked", "checked");
         }
 
-    },
-
-
-    _statusContainer: function(type) {
-        var $statusDetails = $("#Statusbar .statusDetails");
-        if ($statusDetails.size() > 0) {
-            return $statusDetails;
-        }
-        $statusDetails = $('<div>').addClass("statusDetails").click(function(){
-            $(this).remove();
-        }).hide();
-        $("#Statusbar").append($statusDetails);
-        return $statusDetails;
     }
+
 };
 
+
+/**
+ * Handles opening and closing of the support information container,
+ * typically located below the status bar and the content filters.
+ *
+ * This slider has the css-class "infoslider".
+ */
+var InfoSlider = {
+
+    currentOpener : '',
+
+    /**
+     * Opens the infoslider if it's hidden.
+     * If the infoslider is open and the toogle is called by the same element as the one opening it, the slider is closed.
+     * If the infoslider is open and the toogle is called by a different element than the one opening it, the content is replaced
+     * and the slider is kept open.
+     *
+     * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
+     * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
+     * @param content - The content to display in the info slider.
+     * @param opener - Reference to the element that triggered the opening of the infoslider.
+     */
+    toggle : function(location, content, opener) {
+        var $infoslider = $(location).find(".infoslider");
+        if ($infoslider.is(":hidden")) {
+            $infoslider.html(content).slideDown(300);
+        } else {
+            if (opener != this.currentOpener) {
+                $infoslider.html(content);
+            } else {
+                this.hide(location);
+            }
+        }
+        this.currentOpener = opener;
+    },
+
+    /**
+     * Hides the infoslider in the given location.
+     *
+     * @param location
+     */
+    hide : function(location) {
+        $(location).find(".infoslider").html("").slideUp(300);
+    }
+};
 
 /**
  * Returns the location object for the contentmain iframe.
