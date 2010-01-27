@@ -83,7 +83,7 @@
 
     <c:forEach items="${result.searchHits}" var="searchHit">
         <div class="hit">
-            <a href="${searchHit.url}"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
+            <a href="${searchHit.url}" target="contentmain"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
             <c:choose>
                 <c:when test="${searchHit.contextText != ''}">
                     <c:out value="${searchHit.contextText}" escapeXml="false"/>

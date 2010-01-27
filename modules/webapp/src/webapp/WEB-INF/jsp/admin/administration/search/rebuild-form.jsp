@@ -27,12 +27,20 @@
         <fieldset>
             <h1><kantega:label key="aksess.search.title"/></h1>
 
-            <input type="checkbox" checked="true" name="rebuild" id="rebuild"><label for="rebuild"><kantega:label key="aksess.search.rebuild.rebuild"/></label><br>
-            <input type="checkbox" checked="true" name="optimize" id="optimize"><label for="optimize"><kantega:label key="aksess.search.rebuild.optimize"/></label><br>
-            <input type="checkbox" checked="true" name="spelling" id="spelling"><label for="spelling"><kantega:label key="aksess.search.rebuild.spelling"/></label><br>
-
+            <div class="row">
+                <input type="checkbox" class="checkbox" checked="true" name="rebuild" id="rebuild"><label for="rebuild" class="checkbox"><kantega:label key="aksess.search.rebuild.rebuild"/></label>
+                <div class="clearing"></div>
+            </div>
+            <div class="row">
+                <input type="checkbox" class="checkbox"  checked="true" name="optimize" id="optimize"><label for="optimize" class="checkbox" ><kantega:label key="aksess.search.rebuild.optimize"/></label>
+                <div class="clearing"></div>
+            </div>
+            <div class="row">
+                <input type="checkbox" class="checkbox"  checked="true" name="spelling" id="spelling"><label for="spelling" class="checkbox"><kantega:label key="aksess.search.rebuild.spelling"/></label>
+                <div class="clearing"></div>
+            </div>
             <div class="buttonGroup">
-                <a href="#" onclick="document.searchindex.submit()" class="button ok"><span><kantega:label key="aksess.button.start"/></span></a>
+                <a href="#" onclick="document.searchindex.submit()" class="button"><span class="ok"><kantega:label key="aksess.button.start"/></span></a>
             </div>
         </fieldset>
     </div>

@@ -6,22 +6,21 @@ body {
     
     padding: 1em;
 }
-div.hit {
+.hit {
     margin-top: 1em;
 }
-
-div.hitCount {
+.hit a {
     font-weight: bold;
 }
 
-div.hit a {
+.hitCount {
     font-weight: bold;
 }
 
-div.paging {
+.paging {
     margin-top: 1.5em;
 }
 
-div.pagenumbers {
+.pagenumbers {
     display: inline-block;
 }

@@ -31,7 +31,7 @@ input.radio, input.checkbox {
     float: left;
     margin: 0 5px;
 }
-label.radio, input.checkbox {
+label.radio, label.checkbox {
     float: left;
 }
 

@@ -30,6 +30,7 @@ import no.kantega.publishing.search.service.SearchService;
 import no.kantega.publishing.search.service.SearchServiceQuery;
 import no.kantega.publishing.search.service.SearchServiceResultImpl;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.DateHitCountQuery;
 import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
@@ -41,20 +42,23 @@ import java.util.HashMap;
 /**
  *
  */
-public class AdminContentSearchController implements Controller, InitializingBean {
+public class AdminContentSearchController extends AdminController implements InitializingBean {
 
     private String view;
     private SearchService searchService;
     private String queryStringEncoding = "iso-8859-1"; // Must be iso-8859-1 in Tomcat, utf-8 in Jetty
 
     private QueryStringGenerator queryStringGenerator;
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    @Override
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
         Map<String, Object> model = performSearches(request);
         model.put("totalTime", System.currentTimeMillis() - start);
         return new ModelAndView(view, model);
     }
 
+    
     private Map<String, Object> performSearches(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
 

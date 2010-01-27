@@ -91,7 +91,7 @@ function setLayoutSpecificSizes(elementProperties) {
 
     var $mainPane = $('#MainPane');
     $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
-    $mainPane.find('iframe').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
+    $mainPane.find('iframe[name=contentmain]').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
 
     var $mainPaneContent = $("#MainPaneContent");
     if ($mainPaneContent) {
@@ -171,7 +171,7 @@ function navigatorResizeOnStart() {
     var height = $("#MainPane").height();
     var width = $("#MainPane").width();
     var contentoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "Contentoverlay");
-    $("#MainPane iframe").before(contentoverlay);
+    $("#MainPane iframe[name=contentmain]").before(contentoverlay);
 }
 
 function navigatorResizeOnStop() {
