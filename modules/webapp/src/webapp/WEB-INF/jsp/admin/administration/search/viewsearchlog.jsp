@@ -84,7 +84,7 @@
                 </c:forEach>
             </table>
 
-            <div class="helpText"><kantega:label key="aksess.search.log.help"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.search.log.help"/></div>
 
         </fieldset>
     </div>

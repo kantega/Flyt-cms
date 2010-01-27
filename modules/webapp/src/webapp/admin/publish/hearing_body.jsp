@@ -60,11 +60,11 @@
 
 <c:if test="${errors.length > 0}">
     <div id="errorMessageArea" style="display:block;">
-        <table border="0" cellspacing="0" cellpadding="0" class="error">
+        <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td>
 
-                        <div id="errorMessage">
+                        <div id="errorMessage" class="ui-state-error">
                             <b>Vennligst fyll ut følgende felt riktig:</b>
                             <ul>
                                 <c:forEach items="${errors.errors}" var="error">

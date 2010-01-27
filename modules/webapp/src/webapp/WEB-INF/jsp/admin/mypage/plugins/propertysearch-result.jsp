@@ -43,9 +43,9 @@
     </aksess:ifcollectionnotempty>
     <c:choose>
         <c:when test="${nohits == 0}">
-            <div class="info"><kantega:label key="aksess.search.nohits"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.search.nohits"/></div>
         </c:when>
         <c:when test="${nohits > maxRecords}">
-            <div class="info"><kantega:label key="aksess.propertysearch.maxrecords"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.propertysearch.maxrecords"/></div>
         </c:when>
     </c:choose>

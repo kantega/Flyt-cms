@@ -103,7 +103,7 @@
                             <label for="width"><kantega:label key="aksess.multimedia.width"/></label> <input type="text" size="5" id="width" name="width" value="<c:if test="${media.width > 0}">${media.width}</c:if>">
                             <label for="height"><kantega:label key="aksess.multimedia.height"/></label> <input type="text" size="5" id="height" name="height" value="<c:if test="${media.height > 0}">${media.height}</c:if>">
                             <c:if test="${showDimensionInfo}">
-                                <div class="info"><kantega:label key="aksess.multimedia.sizeinfo"/></div>
+                                <div class="ui-state-highlight"><kantega:label key="aksess.multimedia.sizeinfo"/></div>
                             </c:if>
                         </fieldset>
                     </div>

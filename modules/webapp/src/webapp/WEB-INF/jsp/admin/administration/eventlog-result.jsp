@@ -92,7 +92,7 @@
             <%
                 if (events.size() == 0) {
             %>
-            <div class="helpText"><kantega:label key="aksess.eventlog.nohits"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.eventlog.nohits"/></div>
             <%
                 }
             %>

@@ -145,7 +145,7 @@
                     <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.systeminfo.reloadconfig"/>"></span>
                 </div>
                 <c:if test="${param.reload}">
-                    <div class="info">
+                    <div class="ui-state-highlight">
                         <kantega:label key="aksess.systeminfo.reloadconfig.done"/>
                     </div>
                 </c:if>

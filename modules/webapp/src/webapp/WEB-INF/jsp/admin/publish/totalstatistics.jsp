@@ -149,6 +149,6 @@
                 </tr>
             </c:forEach>
         </table>
-        <div class="helpText"><kantega:label key="aksess.statistics.hjelp"/></div>
+        <div class="ui-state-highlight"><kantega:label key="aksess.statistics.hjelp"/></div>
     </fieldset>
 </div>

@@ -48,7 +48,7 @@
                     <strong><kantega:label key="aksess.adduser.search"/>:</strong> <input type="text" name="name" value="${name}" size="10" maxlength="30">
                     <span class="button"><input type="button" onclick="document.searchform.submit()" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
                     <c:if test="${notFound}">
-                        <div class="info"><kantega:label key="aksess.adduser.search.notfound"/></div>
+                        <div class="ui-state-highlight"><kantega:label key="aksess.adduser.search.notfound"/></div>
                     </c:if>
                 </form>
 

@@ -70,7 +70,7 @@
                         </aksess:getcollection>
                     </table>
                 </aksess:ifcollectionnotempty>
-                <div class="helpText">
+                <div class="ui-state-highlight">
                     <kantega:label key="aksess.contentexpire.help"/>
                 </div>
             </fieldset>

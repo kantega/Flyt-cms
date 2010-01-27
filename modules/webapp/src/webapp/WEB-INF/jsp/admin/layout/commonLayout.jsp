@@ -33,6 +33,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4a2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.7.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.colorbox-min.js"></script>
@@ -51,10 +52,10 @@
                 "sPaginationType": "full_numbers",
                 "iDisplayLength":25
             });
+            $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
+            $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
         });
 
-        $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
-        $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
     </script>
 </head>
 <body>

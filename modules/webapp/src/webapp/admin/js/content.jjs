@@ -463,8 +463,12 @@ var ContentStatus = {
                     details += '<li><span class="label"><kantega:label key="aksess.contentproperty.lastmodified"/>:</span>&nbsp;'+content.lastModified+'</li>';
                 }
                 if (content.changeFromDate) {
-                    details += '<li><span class="label">Change date:</span>&nbsp;'+content.changeFromDate+'</li>';
+                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.changefrom"/>:</span>&nbsp;'+content.changeFromDate+'</li>';
                 }
+                if (content.expireDate) {
+                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.expiredate"/>:</span>&nbsp;'+content.changeFromDate+'</li>';
+                }
+
                 details +="</ul>";
                 ContentStatus._statusContainer('details').html(details).toggle();
             }).show();

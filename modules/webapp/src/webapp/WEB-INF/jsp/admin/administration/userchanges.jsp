@@ -76,7 +76,7 @@
             %>
             </table>
 
-            <div class="helpText"><kantega:label key="aksess.userchanges.help"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.userchanges.help"/></div>
         </fieldset>
     </div>
     </form>

@@ -48,7 +48,7 @@ public class FormatDateTag extends TagSupport {
                 String defaultDate = dateFormat;
                 defaultDate = defaultDate.replaceAll("d", LocaleLabels.getLabel("aksess.dateformat.character.day", Aksess.getDefaultAdminLocale()));
                 defaultDate = defaultDate.replaceAll("M", LocaleLabels.getLabel("aksess.dateformat.character.month", Aksess.getDefaultAdminLocale()));
-                defaultDate = defaultDate.replaceAll("Y", LocaleLabels.getLabel("aksess.dateformat.character.year", Aksess.getDefaultAdminLocale()));                
+                defaultDate = defaultDate.replaceAll("y", LocaleLabels.getLabel("aksess.dateformat.character.year", Aksess.getDefaultAdminLocale()));                
                 out.write(defaultDate);
             } else {
                 DateFormat df = new SimpleDateFormat(dateFormat);

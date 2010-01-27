@@ -62,20 +62,6 @@ table.noborder td, table.noborder th {
     float: right;
 }
 
-.info, .error {
-    border: 1px solid #000000;
-    padding: 4px;
-    color: #000000;
-    background-color: #FFFFE1;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    max-width: 600px;
-}
-
-.info {
-    background-color: #FFFFE1;
-}
-
 #MainPane > .info {
     margin: 10px;
 }
@@ -453,15 +439,6 @@ table.fullWidth {
     background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
 }
 
-
-/************** Info / error boxes **************/
-.helpText {
-    background-color:#ffffe1;
-    border:1px solid #000000;
-    color:#000000;
-    margin: 4px 0;
-    padding:4px;
-}
 
 /************** Buttons **************/
 #Content .buttonBar {

@@ -108,7 +108,7 @@
                             %>
                             <tr>
                                 <td colspan="2"><br>
-                                    <div class="helpText"><kantega:label key="aksess.confirmdelete.xpinfo"/></div>
+                                    <div class="ui-state-highlight"><kantega:label key="aksess.confirmdelete.xpinfo"/></div>
                                 </td>
                             </tr>
                             </tbody>

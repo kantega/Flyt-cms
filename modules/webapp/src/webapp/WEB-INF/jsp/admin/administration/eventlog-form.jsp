@@ -87,7 +87,7 @@
                 </div>
             </fieldset>
 
-            <div class="helpText">
+            <div class="ui-state-highlight">
                 <kantega:label key="aksess.eventlog.help"/> <%=Aksess.getEventLogMaxAge()%> <kantega:label key="aksess.eventlog.help2"/>
             </div>
 

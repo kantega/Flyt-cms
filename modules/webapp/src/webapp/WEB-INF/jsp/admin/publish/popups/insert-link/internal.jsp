@@ -123,7 +123,7 @@
         <br>
 
         <input type="checkbox" name="smartlink" onclick="updateVisibleFields()" <c:if test="${smartlink}">checked="checked"</c:if>><kantega:label key="aksess.insertlink.smart"/>
-        <div class="info">
+        <div class="ui-state-highlight">
             <kantega:label key="aksess.insertlink.smart.hint"/>
         </div>
     </div>

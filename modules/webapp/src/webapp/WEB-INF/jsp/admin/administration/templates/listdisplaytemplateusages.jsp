@@ -25,7 +25,7 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.displaytemplates.usages.title"/></h1>
-            <div class="helpText"><kantega:label key="aksess.displaytemplates.usages.help"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.displaytemplates.usages.help"/></div>
             <table border="0" cellspacing="0" cellpadding="0" width="600">
                 <tr>
                     <th><kantega:label key="aksess.displaytemplates.usages.title"/></th>

@@ -22,7 +22,7 @@
     <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
 
     <c:if test="${noemail != null}">
-        <div class="info">
+        <div class="ui-state-highlight">
             E-postadresse er ikke lagret for denne brukeren.
         </div>
     </c:if>

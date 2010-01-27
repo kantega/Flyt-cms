@@ -18,24 +18,28 @@
   --%>
 
 <table class="fullWidth">
+    <thead>
     <tr>
-        <th><strong><kantega:label key="aksess.contentstatistics.property"/></strong></th>
-        <th><strong><kantega:label key="aksess.contentstatistics.value"/></strong></th>
+        <th></th>
+        <th><kantega:label key="aksess.contentstatistics.count"/></th>
     </tr>
+    </thead>
+    <tbody>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofpages"/></td>
-        <td><c:out value="${contentCount}"/></td>
+        <td class="number"><c:out value="${contentCount}"/></td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberoflinks"/></td>
-        <td><c:out value="${linkCount}"/></td>
+        <td class="number"><c:out value="${linkCount}"/></td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofmedia"/></td>
-        <td><c:out value="${multimediaCount}"/></td>
+        <td class="number"><c:out value="${multimediaCount}"/></td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofcontentproducers"/></td>
-        <td><c:out value="${contentProducerCount}"/></td>
+        <td class="number"><c:out value="${contentProducerCount}"/></td>
     </tr>
+    </tbody>
 </table>

@@ -29,7 +29,7 @@
         }
 %>
 <div id="errorMessageArea" style="display:<%=display%>;">
-    <div class="error">
+    <div class="ui-state-error">
             <strong><kantega:label key="aksess.editcontent.error"/></strong>
             <ul>
                 <%
@@ -54,7 +54,7 @@
         if (infomessage != null && infomessage.length() > 0) {
             String key = "aksess.infomessage." + infomessage;
 %>
-            <div class="info">
+            <div class="ui-state-highlight">
                 <kantega:label key="<%=key%>"/>
             </div>
 <%

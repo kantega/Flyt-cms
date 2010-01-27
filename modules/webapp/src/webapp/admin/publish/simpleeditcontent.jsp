@@ -88,7 +88,7 @@ function initialize() {
                 <%
                     if (!securitySession.isAuthorized(currentContent, Privilege.APPROVE_CONTENT)) {
                 %>
-                    <div class="info" style="width: 590px;">
+                    <div class="ui-state-highlight" style="width: 590px;">
                         <kantega:label key="aksess.simpleedit.approvereminder"/>
                     </div>
                 <%

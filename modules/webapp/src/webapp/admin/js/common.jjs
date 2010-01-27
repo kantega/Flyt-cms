@@ -234,7 +234,7 @@ function StateHandler (){
     };
 
     this.setState = function(state) {
-        console.info("common.StateHandler.setState(): state: " + state);
+        debug("common.StateHandler.setState(): state: " + state);
         $.bbq.pushState({ state : state });
     };
 
@@ -250,7 +250,7 @@ function StateHandler (){
             debug("common.StateHandler._bindHashChange(): hashchange event received. Url: " + state);
 
             if (state && state != this.currentState) {
-                console.info("common.StateHandler._bindHashChange(): New state ("+state+") different from current state ("+this.currentState+"). Triggering '"+updateEventType+ "' event.");
+                debug("common.StateHandler._bindHashChange(): New state ("+state+") different from current state ("+this.currentState+"). Triggering '"+updateEventType+ "' event.");
                 $.event.trigger(updateEventType, state);
                 currentState = state;
             }

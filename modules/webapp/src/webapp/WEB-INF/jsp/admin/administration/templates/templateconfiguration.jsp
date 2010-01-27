@@ -49,7 +49,7 @@
                 </tr>
             </table>
 
-            <div class="info"><kantega:label key="aksess.templateconfig.info"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.templateconfig.info"/></div>
 
             <form action="ReloadTemplateConfiguration.action" method="post">
                 <div class="buttonGroup">

@@ -39,7 +39,7 @@
                 </aksess:getcollection>
             </table>
 
-            <div class="helpText"><kantega:label key="aksess.aliases.help"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.aliases.help"/></div>
         </fieldset>
     </div>
 </kantega:section>

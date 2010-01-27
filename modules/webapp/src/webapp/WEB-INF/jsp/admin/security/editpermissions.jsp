@@ -140,20 +140,20 @@
                         </table>
                         <c:if test="${canModifyPermissions}">
                             <c:if test="${objSecurityId == objectId}">
-                                <div class="info">
+                                <div class="ui-state-highlight">
                                             <kantega:label key="aksess.editpermissions.editpermissionsfor"/> <strong>${title}</strong><br>
                                             <kantega:label key="aksess.editpermissions.willbeupdated"/>
                                 </div>
                             </c:if>
                             <c:if test="${objSecurityId != objectId && inheritedTitle != ''}">
-                                <div class="info">
+                                <div class="ui-state-highlight">
                                             <strong>${title}</strong> <kantega:label key="aksess.editpermissions.inheritfrom"/> <a href="EditPermissins.action?id=${objectId}&type=${permissionsObject.objectType}">${inheritedTitle}</a>.<br><br>
                                             <kantega:label key="aksess.editpermissions.inheritfrom2"/>
                                 </div>
                             </c:if>
                         </c:if>
                         <c:if test="${!canModifyPermissions}">
-                            <div class="info">
+                            <div class="ui-state-highlight">
                                 <kantega:label key="aksess.editpermissions.readonly"/>
                             </div>
                         </c:if>

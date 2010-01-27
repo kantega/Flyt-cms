@@ -159,7 +159,7 @@
                 %>
             </table>
             <c:if test="${notAuthorized}">
-                <div class="info">
+                <div class="ui-state-highlight">
                     <kantega:label key="aksess.selecttemplate.notauthorized"/>
                 </div>
             </c:if>
@@ -231,7 +231,7 @@
                 }
             %>
 
-            <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+            <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="ui-state-highlight">
                 <div id="templatedesc"><%=defaultText%></div><br>
                 <img name="templateimage" src="../bitmaps/blank.gif" alt="">
             </div>
@@ -273,7 +273,7 @@
                 }
             %>
 
-            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+            <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="ui-state-highlight">
                 <div id="categorydesc"><%=defaultText%></div><br>
                 <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
             </div>

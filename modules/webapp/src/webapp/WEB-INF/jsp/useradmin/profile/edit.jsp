@@ -99,7 +99,7 @@
                 </div>
 
                 <c:if test="${!canEdit}">
-                    <div class="info">
+                    <div class="ui-state-highlight">
                         <kantega:label key="useradmin.profile.noteditable"/>
                     </div>
                 </c:if>

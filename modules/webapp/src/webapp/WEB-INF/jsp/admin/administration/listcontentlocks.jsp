@@ -77,13 +77,13 @@
                 <%}%>
             </table>
 
-            <div class="helpText"><kantega:label key="aksess.locks.hjelp"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.locks.hjelp"/></div>
 
 
             <%
                 } else {
             %>
-            <div class="helpText"><kantega:label key="aksess.locks.notfound"/></div>
+            <div class="ui-state-highlight"><kantega:label key="aksess.locks.notfound"/></div>
             <%
                 }
             %>

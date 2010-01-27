@@ -227,7 +227,7 @@
         });
     </script>
 
-    <div id="ImageMapInfo" class="info">
+    <div id="ImageMapInfo" class="ui-state-highlight">
         <kantega:label key="aksess.multimedia.imagemap.info"/>
     </div>
 

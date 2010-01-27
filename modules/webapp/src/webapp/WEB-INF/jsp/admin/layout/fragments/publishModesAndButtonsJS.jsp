@@ -63,7 +63,7 @@
             <c:when test="${!hasUnsavedChanges && !isEditing}">
                 // No unsaved changes and user is not editing
                 $("#ModesMenu .button .edit").click(function(){
-                    Publish.edit(getQueryParam("thisId", StateHandler.getState()));
+                    Publish.edit(getQueryParam("thisId", stateHandler.getState()));
                 });
             </c:when>
         </c:choose>

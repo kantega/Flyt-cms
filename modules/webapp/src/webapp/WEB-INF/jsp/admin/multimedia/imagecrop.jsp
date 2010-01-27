@@ -93,7 +93,7 @@
         });
     </script>
 
-    <div id="CropInfo" class="info" style="display:none;">
+    <div id="CropInfo" class="ui-state-highlight" style="display:none;">
         <kantega:label key="aksess.multimedia.crop.info"/>
     </div>
     <div id="MediaObject">

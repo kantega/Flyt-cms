@@ -65,7 +65,7 @@
                 <td class="number">${sumSessions}</td>
             </tr>
         </table>
-        <div class="helpText"><kantega:label key="aksess.statistics.hjelp"/></div>
+        <div class="ui-state-highlight"><kantega:label key="aksess.statistics.hjelp"/></div>
     </fieldset>
 </div>
 <c:if test="${not empty topReferers}">

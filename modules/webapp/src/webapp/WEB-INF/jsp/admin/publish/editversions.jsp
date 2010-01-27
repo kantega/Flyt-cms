@@ -107,7 +107,7 @@
             </tbody>
         </table>
 
-        <div class="helpText">
+        <div class="ui-state-highlight">
             <kantega:label key="aksess.versions.hjelp"/>
             <c:if test="${showMaxVersions}">
                 <br><kantega:label key="aksess.versions.hjelp2"/> ${maxVersions} <kantega:label key="aksess.versions.hjelp3"/>

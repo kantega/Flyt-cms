@@ -90,13 +90,13 @@
                     </c:forEach>
                     </tbody>
                 </table>
-                <div class="info">
+                <div class="ui-state-highlight">
                     <kantega:label key="aksess.linkcheck.help"/>
                 </div>
 
             </c:when>
             <c:otherwise>
-                <div class="info">
+                <div class="ui-state-highlight">
                     <kantega:label key="aksess.linkcheck.nobrokenlinks"/>
                 </div>
             </c:otherwise>

@@ -80,15 +80,15 @@
             debug("bindTopicButtons(): click ChooseTopicButton");
             selectTopic(null, true);
         });
-        $("#LockedAlias").click(function(event){
-            var locked = document.getElementById("LockedAlias");
+        $("#Locked").click(function(event){
+            var locked = document.getElementById("Locked");
             if (locked.checked) {
                 $("#Alias").readOnly = true;
                 document.myform.alias.readOnly = true;
-                $("#LockedAliasHelp").show();
+                $("#LockedHelp").show();
             } else {
                 $("#Alias").readOnly = false;
-                $("#LockedAliasHelp").hide();
+                $("#LockedHelp").hide();
             }
         });
         // Load topics
@@ -155,6 +155,9 @@
                     <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()"></td>
                 </tr>
             </table>
+            <div class="ui-state-highlight">
+                <kantega:label key="aksess.publishinfo.change.help"/>
+            </div>
         </fieldset>
     </div>
 </c:if>
@@ -163,10 +166,7 @@
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
             <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked}">readonly</c:if>>
-            <c:if test="${isDeveloper}">
-                <br><input type="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="LockedAlias"> <label for="LockedAlias" class="radio"><kantega:label key="aksess.editpublishinfo.alias.locked"/></label>
-            </c:if>
-            <div id="LockedAliasHelp" class="helpText" <c:if test="${!currentContent.locked}">style="display:none"</c:if>><kantega:label key="aksess.editpublishinfo.alias.locked.help"/></div>
+            <div id="LockedHelp" class="ui-state-highlight" <c:if test="${!currentContent.locked}">style="display:none"</c:if>><kantega:label key="aksess.publishinfo.locked.help"/></div>
         </fieldset>
     </div>
 </c:if>
@@ -195,7 +195,7 @@
                     <option value="${template.id}" <c:if test="${template.id == currentContent.displayTemplateId}"> selected</c:if>>${templateName}</option>
                 </c:forEach>
                 <c:if test="${isAdmin}">
-                    <div class=helpText><kantega:label key="aksess.editpublishinfo.displaytemplate.hjelp"/></div>
+                    <div class="ui-state-highlight"><kantega:label key="aksess.editpublishinfo.displaytemplate.hjelp"/></div>
                 </c:if>
             </select>
         </fieldset>
@@ -209,6 +209,12 @@
         </div>
         <div class="row">
             <input type="checkbox" name="minorchange" id="MinorChange" value="true"<c:if test="${currentContent.minorChange}"> checked="checked"</c:if> tabindex="521"><label class="checkbox"><kantega:label key="aksess.publishinfo.minorchange"/></label>
-        </div>        
+        </div>
+        <c:if test="${isDeveloper}">
+            <div class="row">
+            <input type="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="Locked"> <label for="Locked" class="checkbox"><kantega:label key="aksess.publishinfo.locked"/></label>
+            </div>
+        </c:if>
+
     </fieldset>
 </div>
