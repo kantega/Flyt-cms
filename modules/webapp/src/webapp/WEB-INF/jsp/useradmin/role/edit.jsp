@@ -62,9 +62,9 @@
 
             <div class="buttonGroup">
                 <c:if test="${canEdit}">
-                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.save"/>"></span>
                 </c:if>
-                <span class="button"><input type="submit" class="cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <span class="button"><input type="button" class="cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </fieldset>
         </div>            

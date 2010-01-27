@@ -105,7 +105,7 @@
                 </c:if>
 
                 <div class="buttonGroup">
-                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>></span>
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.save"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>></span>
                     <span class="button"><input type="button" class="cancel" onclick="location='search?domain=<c:out value="${profile.identity.domain}"/>'" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
             </fieldset>

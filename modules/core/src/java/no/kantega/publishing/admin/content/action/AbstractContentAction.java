@@ -71,7 +71,7 @@ public abstract class AbstractContentAction  extends AdminController {
         }
 
         if (current.isModified()) {
-            model.put("hasUnsavedChanges", current);
+            model.put("hasUnsavedChanges", Boolean.TRUE);
         }
 
         model.put("saveStatus", saveStatus);

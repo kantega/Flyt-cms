@@ -93,19 +93,19 @@
         <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
         <div class="fieldset">
         <fieldset>
-            <p>
-                <label><kantega:label key="useradmin.password.password1"/></label>
-                <input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64">
-            </p>
+            <div class="formElement">
+                <div class="heading"><label><kantega:label key="useradmin.password.password1"/></label></div>
+                <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+            </div>
 
-            <p>
-                <label><kantega:label key="useradmin.password.password2"/></label>
-                <input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64">
-            </p>
+            <div class="formElement">
+                <div class="heading"><label><kantega:label key="useradmin.password.password2"/></label></div>
+                <div class="inputs"><input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+            </div>
 
             <div class="buttonGroup">
                 <span class="button"><input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>"></span>
-                <span class="button"><input type="submit" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <span class="button"><input type="button" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </fieldset>
         </div>

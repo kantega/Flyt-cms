@@ -33,11 +33,9 @@
         $.post("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action", {parent:parent, lastmodified:lastmodified, doctype:doctype, ownerperson:ownerperson, owner:owner, sort:sort}, function(html) {
             $("#PropertySearchResults").html(html);
             $("#PropertySearchResults .sortable").dataTable({
-                "bJQueryUI": true,
                 "bFilter": false,
                 "bSort":false,
                 "bLengthChange":false,
-                "sPaginationType": "full_numbers",
                 "iDisplayLength":25
             });
         }, "html");

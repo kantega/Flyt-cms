@@ -23,7 +23,7 @@
 
     function bindPublishButtons() {
         <c:choose>
-            <c:when test="${hasUnsavedChanges}">
+            <c:when test="${hasUnsavedChanges || isEditing}">
             // User is editing a page and it is changed
             $("#ModesMenu .button .view").click(function(e){
                 debug("publishModesAndButtonsJS.view");

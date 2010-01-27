@@ -29,7 +29,7 @@
         <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.7.2.css">
-
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4a2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.7.2.min.js"></script>
@@ -48,8 +48,7 @@
         $(document).ready(function(){
             $("div.fieldset").roundCorners();
             $("#MainPane table.dataTable").dataTable({
-                "bJQueryUI": true,
-                "sPaginationType": "full_numbers",
+                "sPaginationType": "two_button",
                 "iDisplayLength":25
             });
             $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);

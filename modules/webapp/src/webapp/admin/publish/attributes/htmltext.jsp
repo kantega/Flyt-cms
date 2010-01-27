@@ -124,12 +124,14 @@
             theme_advanced_resizing : false,
 
             // Example content CSS (should be your site CSS)
-            //content_css : "${cssPath}",
-            content_css : '../css/editor.css',
+            content_css : "${cssPath}",
         };
 
         for (var i = 0, n = buttonRows.length; i < n; i++) {
             options['theme_advanced_buttons' + (i+1)] = buttonRows[i];
+        }
+        for (var i = buttonRows.length; i < 3; i++) {
+            options['theme_advanced_buttons' + (i+1)] = "";
         }
 
         tinyMCE.init(options);

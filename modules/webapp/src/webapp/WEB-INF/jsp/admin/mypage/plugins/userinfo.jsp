@@ -17,73 +17,74 @@
   ~ limitations under the License.
   --%>
 
-<aksess:getuser name="currentUser"/>
-
-<table class="fullWidth">
-    <tr>
-        <td><kantega:label key="aksess.userinformation.name"/></td>
-        <td><c:out value="${currentUser.name}"/></td>
-    </tr>
-    <tr>
-        <td><kantega:label key="aksess.userinformation.email"/></td>
-        <td><c:out value="${currentUser.email}"/></td>
-    </tr>
-    <tr>
-        <td><kantega:label key="aksess.userinformation.department"/></td>
-        <td><c:out value="${currentUser.department}"/></td>
-    </tr>
-    <tr>
-        <td><kantega:label key="aksess.userinformation.roles"/></td>
-        <td>
-            <c:choose>
-                <c:when test="${not empty currentUser.roles}">
+<div class="floatLeft">
+    <table>
+        <tr>
+            <td><kantega:label key="aksess.userinformation.name"/></td>
+            <td><c:out value="${currentUser.name}"/></td>
+        </tr>
+        <tr>
+            <td><kantega:label key="aksess.userinformation.email"/></td>
+            <td><c:out value="${currentUser.email}"/></td>
+        </tr>
+        <tr>
+            <td><kantega:label key="aksess.userinformation.department"/></td>
+            <td><c:out value="${currentUser.department}"/></td>
+        </tr>
+        <tr>
+            <td><kantega:label key="aksess.userinformation.roles"/></td>
+            <td>
+                <c:choose>
+                    <c:when test="${not empty currentUser.roles}">
+                        <ul>
+                            <c:forEach items="${currentUser.roles}" var="role">
+                                <li><c:out value="${role.key}"/></li>
+                            </c:forEach>
+                        </ul>
+                    </c:when>
+                    <c:otherwise>
+                        None
+                    </c:otherwise>
+                </c:choose>
+            </td>
+        </tr>
+        <c:if test="${not empty currentUser.topics}">
+            <tr>
+                <td><kantega:label key="aksess.userinformation.topics"/></td>
+                <td>
                     <ul>
-                        <c:forEach items="${currentUser.roles}" var="role">
-                            <li><c:out value="${role.key}"/></li>
+                        <c:forEach items="${currentUser.topics}" var="topic">
+                            <li><c:out value="${topic.baseName}"/></li>
                         </c:forEach>
                     </ul>
-                </c:when>
-                <c:otherwise>
-                    None
-                </c:otherwise>
-            </c:choose>
-        </td>
-    </tr>
-    <c:if test="${not empty currentUser.topics}">
-        <tr>
-            <td><kantega:label key="aksess.userinformation.topics"/></td>
-            <td>
-                <ul>
-                    <c:forEach items="${currentUser.topics}" var="topic">
-                        <li><c:out value="${topic.baseName}"/></li>
-                    </c:forEach>
-                </ul>
 
-            </td>
-        </tr>
-    </c:if>
-    <c:if test="${not empty currentUser.orgUnits}">
-        <tr>
-            <td><kantega:label key="aksess.userinformation.orgunits"/></td>
-            <td>
-                <ul>
-                    <c:forEach items="${currentUser.orgUnits}" var="orgUnit">
-                        <li><c:out value="${orgUnit.name}"/></li>
-                    </c:forEach>
-                </ul>
-            </td>
-        </tr>
-    </c:if>
-    <c:if test="${not empty currentUser.attributes}">
-        <tr>
-            <td><kantega:label key="aksess.userinformation.attributes"/></td>
-            <td>
-                <ul>
-                    <c:forEach items="${currentUser.attributes}" var="attribute">
-                        <li><c:out value="${attribute.key}"/></li>
-                    </c:forEach>
-                </ul>
-            </td>
-        </tr>
-    </c:if>
-</table>
+                </td>
+            </tr>
+        </c:if>
+        <c:if test="${not empty currentUser.orgUnits}">
+            <tr>
+                <td><kantega:label key="aksess.userinformation.orgunits"/></td>
+                <td>
+                    <ul>
+                        <c:forEach items="${currentUser.orgUnits}" var="orgUnit">
+                            <li><c:out value="${orgUnit.name}"/></li>
+                        </c:forEach>
+                    </ul>
+                </td>
+            </tr>
+        </c:if>
+        <c:if test="${not empty currentUser.attributes}">
+            <tr>
+                <td><kantega:label key="aksess.userinformation.attributes"/></td>
+                <td>
+                    <ul>
+                        <c:forEach items="${currentUser.attributes}" var="attribute">
+                            <li><c:out value="${attribute.key}"/></li>
+                        </c:forEach>
+                    </ul>
+                </td>
+            </tr>
+        </c:if>
+    </table>
+</div>
+<div class="floatRight"><img src="${currentUserImageUrl}" alt="Bilde" align="right"></div>

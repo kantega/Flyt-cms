@@ -32,7 +32,7 @@
 
         <div class="buttonGroup">
             <span class="button"><input type="submit" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
-            <span class="button"><input type="submit" class="cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            <span class="button"><input type="button" class="cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>"></span>
         </div>
     </form>
 </kantega:section>

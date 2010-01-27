@@ -74,6 +74,15 @@ table.noborder td, table.noborder th {
     display: none;
 }
 
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+
 /************** Layout **************/
 #Top {
     min-width: 850px;
@@ -616,7 +625,6 @@ table.fullWidth {
 }
 
 .inline .formElement div.heading {
-    line-height: 24px;
     width: 100px;
 }
 
@@ -846,15 +854,47 @@ th.percent {
 }
 
 /************ Data tables ***************/
+
 div.dataTables_info {
+    color: #000000;
     padding-left: 10px;
     float: left;
 }
 
-div.dataTables_paginatn {
-    text-align: right;
+div.dataTables_paginate {
+    float: right;
     padding-right: 10px;
 }
+
+.paginate_disabled_previous,
+.paginate_enabled_previous,
+.paginate_disabled_next,
+.paginate_enabled_next
+{
+    float: left;
+    height: 20px;
+    width: 20px;
+    background-repeat: no-repeat;
+}
+
+.paginate_disabled_previous {
+    background-image: url("../bitmaps/common/icons/small/moveup.png");
+}
+
+
+.paginate_enabled_previous {
+    background-image: url("../bitmaps/common/icons/small/moveup.png");
+}
+
+.paginate_disabled_next {
+    background-image: url("../bitmaps/common/icons/small/movedown.png");
+
+}
+
+.paginate_enabled_next {
+    background-image: url("../bitmaps/common/icons/small/movedown.png");
+}
+
 
 /************ Tabs ***************/
 #MainPaneContent .tabGroup {

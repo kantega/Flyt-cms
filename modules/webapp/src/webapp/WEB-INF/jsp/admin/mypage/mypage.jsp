@@ -68,6 +68,7 @@
                 widgetLoaded();
             });
             $("#ContentStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/ContentStatistics.action");
+            $("#UserInfo").load("${pageContext.request.contextPath}/admin/mypage/plugins/UserInfo.action");
         });
     </script>
 
@@ -155,7 +156,7 @@
                 <h2><kantega:label key="aksess.userinformation.title"/></h2>
             </div>
             <div class="widget-content">
-                <jsp:include page="plugins/userinfo.jsp"/>
+                <div id="UserInfo"></div>
             </div>
         </div>
         <div class="widget">
