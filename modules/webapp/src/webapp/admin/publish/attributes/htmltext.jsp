@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.configuration.Configuration,
                  no.kantega.commons.util.LocaleLabels,
                  no.kantega.publishing.admin.content.util.HTMLEditorHelper,
@@ -122,6 +123,10 @@
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "bottom",
             theme_advanced_resizing : false,
+
+            // Plugin options
+            spellchecker_languages : "+English (US)=en_us,Norwegian (Bokmål)=no_nb,Norwegian (Nynorsk)=no_nn",
+            spellchecker_rpc_url : "<aksess:geturl url="/admin/publish/Spellcheck.action"/>",
 
             // Example content CSS (should be your site CSS)
             content_css : "${cssPath}",
