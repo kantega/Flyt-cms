@@ -1,15 +1,15 @@
 body {
-    /*background: #FEFEFE url(../bitmaps/default/framework/search_background.png) repeat-x scroll left top;*/
-    background: #ffffff;
+    background: #ffffff url("../bitmaps/common/icons/large/search.png") 10px 10px no-repeat;
 }
 #SearchResult {
-    
     padding: 1em;
+    padding-left: 40px;
 }
 .hit {
     margin-top: 1em;
 }
 .hit a {
+    color: #3398CC;
     font-weight: bold;
 }
 

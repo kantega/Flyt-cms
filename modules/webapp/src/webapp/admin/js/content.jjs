@@ -116,12 +116,16 @@ function bindFilterEvents() {
         updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
 
+    var filterInfoSlider = new InfoSlider();
+    var $filters = $filterOptions.find(".filters");
+
     $filterOptions.find(".filtersToggle").live('click', function(){
         debug("content.bindFilterEvents(): Filter clicked");
-        InfoSlider.toggle("#Navigation", $filterOptions.find(".filters").html(), this);
+        $filters.show();
+        filterInfoSlider.toggle("#Navigation", $filters);
     });
 
-    $filterOptions.find(".filters input[name=sort]").live('change', function(){
+    $("#FilteroptionSort input[name=sort]").live('change', function(){
         var $this = $(this);
         debug("content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
         if ($this.is(":checked")) {
@@ -130,10 +134,10 @@ function bindFilterEvents() {
         }
     });
 
-    var $sites = $filterOptions.find(".filters input[name=sites]");
+    var $sites = $("#FilteroptionSites input[name=sites]");
     $sites.live('change',function(){
         var hiddenSites = "";
-        $filterOptions.find(".filters input[name=sites]").each(function(){
+        $filters.find("#FilteroptionSites input[name=sites]").each(function(){
             var $site = $(this);
             if (!$site.is(":checked")) {
                 hiddenSites += $site.val();
@@ -419,6 +423,7 @@ var ContentStatus = {
     brokenLinks: function (links) {
         if (links && links.length > 0) {
             debug("content.ContentStatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
+            var brokenLinksInfoSlider = new InfoSlider();
             $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.brokenLinks(): click");
                 var details = '<table>' +
@@ -443,7 +448,7 @@ var ContentStatus = {
                 }
                 details +='   </tbody>' +
                         '</table>';
-                InfoSlider.toggle("#MainPane",details, this);
+                brokenLinksInfoSlider.toggle("#MainPane",details, {additionalCssClasses: 'brokenlinks'});
             }).show();
         }
     },
@@ -452,9 +457,10 @@ var ContentStatus = {
     details: function(content) {
         if (content) {
             debug("content.ContentStatus.details(): binding details icon to click");
+            var detailsInfoSlider = new InfoSlider();
             $("#Statusbar .details").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.details(): click");
-                var details = "<ul>";
+                var details = "<h3>Details</h3><ul>";
                 details += '<li><span class="label"><kantega:label key="aksess.contentproperty.title"/>:</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
                     details += '<li><span class="label"><kantega:label key="aksess.publishinfo.alias"/>:</span>&nbsp;'+content.alias+'</li>';
@@ -470,7 +476,7 @@ var ContentStatus = {
                 }
 
                 details +="</ul>";
-                InfoSlider.toggle("#MainPane",details, this);
+                detailsInfoSlider.toggle("#MainPane",details, {additionalCssClasses: 'details'});
             }).show();
         }
     },
@@ -479,6 +485,7 @@ var ContentStatus = {
     associations: function (associations) {
         if (associations && associations.length > 1) {
             debug("content.ContentStatus.associations(): Number of associations: "+associations.length);
+            var associationsInfoSlider = new InfoSlider();
             $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.details(): click");
                 var details = '';
@@ -489,7 +496,7 @@ var ContentStatus = {
                     }
                     details += "</ul>";
                 }
-                InfoSlider.toggle("#MainPane",details, this);
+                associationsInfoSlider.toggle("#MainPane",details, {additionalCssClasses: 'associations'});
             }).show();
         }
     },
@@ -599,43 +606,132 @@ var ContentStatus = {
  *
  * This slider has the css-class "infoslider".
  */
-var InfoSlider = {
+function InfoSlider() {
 
-    currentOpener : '',
+    var sliderOptions = {
+        speed: 300,
+        resizable: false,
+        additionalCssClasses: ''
+    };
+
+    var id = new Date().valueOf();
 
     /**
      * Opens the infoslider if it's hidden.
-     * If the infoslider is open and the toogle is called by the same element as the one opening it, the slider is closed.
-     * If the infoslider is open and the toogle is called by a different element than the one opening it, the content is replaced
+     * If the infoslider is open and toogle() is called by the same element as the one opening it, the slider is closed.
+     * If the infoslider is open and toogle() is called by a different element than the one opening it, the content is replaced
      * and the slider is kept open.
      *
      * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
      * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
      * @param content - The content to display in the info slider.
-     * @param opener - Reference to the element that triggered the opening of the infoslider.
+     * @param options - Additional options for the infoslider. See property sliderOptions for available options.
      */
-    toggle : function(location, content, opener) {
+    this.toggle = function(location, content, options) {
+        debug("content.InfoSlider.toggle(): location: " + location + ", content: " + content + ", id: " + id);
+        $.extend(sliderOptions, options);
         var $infoslider = $(location).find(".infoslider");
+
+        //The slider is physically closed. Set own content and open it.
         if ($infoslider.is(":hidden")) {
-            $infoslider.html(content).slideDown(300);
-        } else {
-            if (opener != this.currentOpener) {
-                $infoslider.html(content);
-            } else {
-                this.hide(location);
+            setContent($infoslider, content);
+            if (sliderOptions.resizable) {
+                makeResizable($infoslider);
+            }
+            $infoslider.slideDown(sliderOptions.speed);
+        }
+
+        // The slider is physically open, check who opened it.
+        else {
+            //Opened by self. Closing the slider
+            if (isOpenedBySelf($infoslider)) {
+                hide(location);
+            }
+            //Somone else has already opened it. Keep it open and replace the content.
+            else {
+                if (sliderOptions.resizable) {
+                    makeResizable($infoslider);
+                }
+                setContent($infoslider, content);
+                
             }
         }
-        this.currentOpener = opener;
-    },
+
+        //Apply closer
+        $('<div class="close"><span><kantega:label key="aksess.infoslider.close"/></span></div>').appendTo($infoslider).click(function(){
+            hide(location);
+        });
+    };
 
     /**
      * Hides the infoslider in the given location.
      *
      * @param location
      */
-    hide : function(location) {
-        $(location).find(".infoslider").html("").slideUp(300);
-    }
+    this.hide = function(location) {
+        $(location).find(".infoslider").html("").slideUp(sliderOptions.speed);
+    };
+    //Expose hide() to local functions
+    var hide = this.hide;
+
+
+    var setContent = function(infoslider, content) {
+        $(infoslider)
+                .attr("id", id)
+                .removeClass()
+                .addClass("infoslider")
+                .addClass(sliderOptions.additionalCssClasses)
+                .css("height", "auto")
+                .html("")
+                .append(content)
+                .wrapInner('<div class="slidercontent"/>');
+    };
+
+    /**
+     * Makes the given infoslider resizable.
+     *
+     * @param infoslider
+     */
+    var makeResizable = function(infoslider) {
+        var $infoslider = $(infoslider);
+        $infoslider.resizable({
+            handles: 's',
+            start: function(){
+                if (typeof navigatorResizeOnStart == 'function') {
+                    var $iframe = $(this).find("iframe");
+                    //Apply an overlay to the infoslider if it contains an iframe. Iframes mess up the resizing...
+                    if ($iframe.size() > 0) {
+                        debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
+                        var height = $infoslider.height();
+                        var width = $infoslider.width();
+                        var overlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "InforSlider_overlay");
+                        $iframe.before(overlay);
+                    }
+                    navigatorResizeOnStart();
+                }
+            },
+            stop: function() {
+                if (typeof navigatorResizeOnStop == 'function') {
+                    $("#InforSlider_overlay").remove();
+                    navigatorResizeOnStop();
+                }
+            },
+            resize: function() {
+                if (typeof navigatorResizeOnResize == 'function') {
+                    navigatorResizeOnResize();
+                }
+            }
+        });
+    };
+
+
+    /**
+     * Returns true if the infoslider is opened by the current opener.
+     * @param infoslider
+     */
+    var isOpenedBySelf = function(infoslider){
+        return $(infoslider).attr("id") == id;    
+    };
 };
 
 /**

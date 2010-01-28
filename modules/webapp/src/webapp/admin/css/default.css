@@ -123,8 +123,9 @@ table.noborder td, table.noborder th {
 #AjaxLoadingIllustration {
     position: absolute;
     top: 0;
-    right: 0;
-    background: #ffffff url("../bitmaps/common/icons/ajax-loader.gif") left center no-repeat;
+    right: 180px;
+    background: url("../bitmaps/common/icons/small/loader_framework.gif") left center no-repeat;
+    color: #ffffff;
     height: 28px;
     line-height: 28px;
     padding-left: 20px;
@@ -133,6 +134,7 @@ table.noborder td, table.noborder th {
 
 /************** Generic content pane styles  **************/
 #MainPane {
+    position: relative;
     float: left;
 }
 
@@ -732,18 +734,31 @@ div.sidebarFieldset fieldset legend {
 .infoslider {
     display: none;
     width: 100%;
-    background: #ffffff;
-    border-bottom: 1px solid #cccccc;
-    position: absolute;
+    background: #ffffff url("../bitmaps/default/framework/infoslider_bottom.png") bottom left repeat-x;
+    position: relative;
     z-index: 100;
     left: 0;
-    padding-top: 0.5em;
-    padding-bottom: 1em;
+    padding-bottom: 20px;
+}
+.infoslider .ui-resizable-s {
+    height: 11px;
+    bottom: 0;
+    background: url("../bitmaps/default/framework/infoslider_drag.png") center center no-repeat;
 }
 .infoslider .close {
     position: absolute;
-    bottom: 0;
+    height: 14px;
+    bottom: 5px;
     right: 0;
+    cursor: pointer;
+    padding: 0 5px;
+    background: url("../bitmaps/default/framework/infoslider_close.png") left bottom no-repeat;
+}
+.infoslider .close span {
+    font-size: 10px;
+    line-height: 15px;
+    padding-right: 10px;
+    background: url("../bitmaps/default/framework/infoslider_close_icon.png") right center no-repeat;
 }
 .infoslider .label {
     font-weight: bold;
@@ -773,6 +788,16 @@ div.sidebarFieldset fieldset legend {
 .infoslider  legend a {
     color:#1780B9;
     font-weight: normal;
+}
+
+.infoslider .slidercontent {
+    padding-top: 0.5em;
+}
+
+/* Info slider types */
+.infoslider.details .slidercontent {
+    padding-left: 40px;
+    background: url("../bitmaps/common/icons/large/details.png") 10px 10px no-repeat;
 }
 
 
@@ -863,16 +888,16 @@ div.sidebarFieldset fieldset legend {
 #SubPages li .contentStatus .status25 {}
 #SubPages li .contentStatus .status30 {}
 #SubPages li .contentStatus .status30_0 {
-    background: url("../bitmaps/default/framework/organizesubpages_published_posponed.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/contentstatus_published_posponed.png") left center no-repeat;
 }
 #SubPages li .contentStatus .status30_10 {
-    background: url("../bitmaps/default/framework/organizesubpages_published.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/contentstatus_published.png") left center no-repeat;
 }
 #SubPages li .contentStatus .status30_15 {
-    background: url("../bitmaps/default/framework/organizesubpages_expired.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/contentstatus_expired.png") left center no-repeat;
 }
 #SubPages li .contentStatus .status30_20 {
-    background: url("../bitmaps/default/framework/organizesubpages_expired.png") left center no-repeat;
+    background: url("../bitmaps/common/icons/small/contentstatus_expired.png") left center no-repeat;
 }
 #SubPages li .contentStatus .status40 {}
 
