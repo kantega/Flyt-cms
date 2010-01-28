@@ -62,7 +62,9 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         try {
 //            File f = new File(getClass().getResource("en.zip").toURI());
 //            File f = new File(Configuration.getApplicationDirectory() + File.separator + "dictionaries" + File.separator + "en_us.zip");
-            File f = new File(dictionaryDir + File.separator + "en_us.zip");
+//            File f = new File(dictionaryDir + File.separator + "en_us.zip");
+            File f = new File(dictionaryDir + File.separator + "no_nb.zip");
+            Log.debug(getClass().getSimpleName(), "Using dictionary: " + f.getAbsolutePath(), "getSpellChecker", null);
             ZipFile zipFile = new ZipFile(f);
             SpellDictionary dictionary = new OpenOfficeSpellDictionary(zipFile);
             c = new SpellChecker(dictionary);

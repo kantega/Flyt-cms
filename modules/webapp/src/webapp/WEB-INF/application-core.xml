@@ -79,7 +79,7 @@
     <bean id="userPreferencesManager" class="no.kantega.publishing.admin.preferences.DefaultUserPreferencesManager"/>
 
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckerServiceImpl" id="spellcheckerService">
-        <property name="dictionaryDir" value="${appDir}/dictionaries"/>
+        <property name="dictionaryDir" value="${appDir}/dict"/>
     </bean>
     
 </beans>
