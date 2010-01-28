@@ -40,8 +40,6 @@ import java.util.List;
 public class SpellcheckAction implements Controller {
 
     @Autowired
-    private View aksessJsonView;
-    @Autowired
     private SpellcheckerService spellcheckerService;
 
 
@@ -58,7 +56,6 @@ public class SpellcheckAction implements Controller {
      * @return
      * @throws Exception
      */
-    @Override
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         setResponseValues(response);
 
