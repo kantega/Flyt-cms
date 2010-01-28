@@ -25,12 +25,19 @@
     }
 </script>
 
-<a href="#" id="PageStatistics"><kantega:label key="aksess.pagestatistics.title"/></a>
+<!---->
 <div class="fieldset">
     <fieldset>
-        <h1><kantega:label key="aksess.statistics.summary.title"/></h1>
-
+        <div id="tabs" class="ui-tabs ui-widget ui-corner-all">
+            <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
+                <li class="ui-state-default ui-corner-top"><a href="#" id="PageStatistics"><kantega:label key="aksess.pagestatistics.title"/></a></li>
+                <li class="ui-tabs-selected ui-state-active ui-corner-top"><a href="#" id="TotalStatistics"><kantega:label key="aksess.totalstatistics.title"/></a></li>
+            </ul>
+        </div>        
+        <h2><kantega:label key="aksess.statistics.summary.title"/></h2>
         <table class="fullWidth">
+            <tbody>
+
             <tr class="tableRow0">
                 <td><kantega:label key="aksess.statistics.summary.hitsnow"/></td>
                 <td class="number">${sumHitsNow}</td>
@@ -51,20 +58,18 @@
                 <td><kantega:label key="aksess.statistics.summary.avghitspersession"/></td>
                 <td class="number"><fmt:formatNumber value="${avgHitsPerSession}" minFractionDigits="2" maxFractionDigits="2"/>%</td>
             </tr>
+            </tbody>
         </table>
-    </fieldset>
-</div>
-<div class="fieldset">
-    <fieldset>
+
         <h1><kantega:label key="aksess.statistics.pageviews.title"/></h1>
         <table class="fullWidth">
             <thead>
-                <tr>
-                    <th class="no">&nbsp;</th>
-                    <th><kantega:label key="aksess.statistics.pageviews.page"/></th>
-                    <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
-                    <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
-                </tr>
+            <tr>
+                <th class="no">&nbsp;</th>
+                <th><kantega:label key="aksess.statistics.pageviews.page"/></th>
+                <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
+                <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
+            </tr>
             </thead>
             <c:forEach var="stat" items="${contentViewStats}" varStatus="status">
                 <tr class="tableRow${status.index mod 2}">
@@ -80,13 +85,13 @@
             function drawDateViewStatistics() {
                 var chart;
                 var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Day');
-                data.addColumn('number', 'Pageviews');
+                data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.day"/>');
+                data.addColumn('number', '<kantega:label key="aksess.statistics.pageviews.noviews"/>');
                 data.addRows(${fn:length(dateViewStatistics)});
-                <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
-                    data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
-                    data.setValue(${status.index}, 1, ${stat.noPageViews});
-                </c:forEach>
+            <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
+                data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
+                data.setValue(${status.index}, 1, ${stat.noPageViews});
+            </c:forEach>
 
                 chart = new google.visualization.AreaChart(document.getElementById('dateViewStats_div'));
                 chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Day of month'});
@@ -96,12 +101,12 @@
 
         <table class="fullWidth" style="padding-top:20px">
             <thead>
-                <tr>
-                    <th class="no">&nbsp;</th>
-                    <th><kantega:label key="aksess.statistics.pageviews.day"/></th>
-                    <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
-                    <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
-                </tr>
+            <tr>
+                <th class="no">&nbsp;</th>
+                <th><kantega:label key="aksess.statistics.pageviews.day"/></th>
+                <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
+                <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
+            </tr>
             </thead>
             <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
                 <tr class="tableRow${status.index mod 2}">
@@ -117,13 +122,13 @@
             function drawHourViewStatistics() {
                 var chart;
                 var data = new google.visualization.DataTable();
-                data.addColumn('string', 'Hour');
-                data.addColumn('number', 'Pageviews');
+                data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.hour"/>');
+                data.addColumn('number', '<kantega:label key="aksess.statistics.pageviews.noviews"/>');
                 data.addRows(${fn:length(hourViewStatistics)});
-                <c:forEach var="stat" items="${hourViewStatistics}" varStatus="status">
-                    data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
-                    data.setValue(${status.index}, 1, ${stat.noPageViews});
-                </c:forEach>
+            <c:forEach var="stat" items="${hourViewStatistics}" varStatus="status">
+                data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');
+                data.setValue(${status.index}, 1, ${stat.noPageViews});
+            </c:forEach>
 
                 chart = new google.visualization.AreaChart(document.getElementById('hourViewStats_div'));
                 chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Hour of day'});
@@ -133,12 +138,12 @@
 
         <table class="fullWidth" style="padding-top:20px">
             <thead>
-                <tr>
-                    <th class="no">&nbsp;</th>
-                    <th><kantega:label key="aksess.statistics.pageviews.hour"/></th>
-                    <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
-                    <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
-                </tr>
+            <tr>
+                <th class="no">&nbsp;</th>
+                <th><kantega:label key="aksess.statistics.pageviews.hour"/></th>
+                <th class="views number"><b><kantega:label key="aksess.statistics.pageviews.noviews"/></b></th>
+                <th class="percent number"><b><kantega:label key="aksess.statistics.pageviews.percent"/></b></th>
+            </tr>
             </thead>
             <c:forEach var="stat" items="${hourViewStatistics}" varStatus="status">
                 <tr class="tableRow${status.index mod 2}">
@@ -150,5 +155,6 @@
             </c:forEach>
         </table>
         <div class="ui-state-highlight"><kantega:label key="aksess.statistics.hjelp"/></div>
+        
     </fieldset>
 </div>

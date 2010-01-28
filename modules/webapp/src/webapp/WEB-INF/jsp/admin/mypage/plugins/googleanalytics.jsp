@@ -58,7 +58,7 @@
         </c:forEach>
 
         chart = new google.visualization.AreaChart(document.getElementById('permonthstats_div'));
-        chart.draw(data, {width: 500, height: 280, legend: 'bottom', title: '<kantega:label key="aksess.googleanalytics.permonthstats"/>'});
+        chart.draw(data, {width: 350, height: 200, legend: 'bottom', title: '<kantega:label key="aksess.googleanalytics.permonthstats"/>'});
     }
 </script>
 

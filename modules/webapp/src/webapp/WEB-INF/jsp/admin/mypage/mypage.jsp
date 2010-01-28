@@ -63,6 +63,7 @@
         }
 
         $(document).ready(function(){
+            $("#WorkList").tabs();
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
             $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
                 widgetLoaded();
@@ -96,37 +97,50 @@
                         </c:forEach>
                         </tbody>
                     </table>
+                    <div class="ui-state-highlight">
+                         <kantega:label key="aksess.mypage.approval.help"/>
+                    </div>
                 </div>
             </div>
         </c:if>
-
-        <c:forEach var="worklist" items="${myWorkList}">
-            <c:if test="${fn:length(worklist) > 1}">
-                <%
-                    WorkList worklist = (WorkList)pageContext.getAttribute("worklist");
-                    request.setAttribute("workListTitle", "aksess.mypage." + worklist.getDescription());
-                %>
-                <div class="widget">
-                    <div class="widget-header"><h2><kantega:label key="${workListTitle}"/></h2></div>
-                    <div class="widget-content">
-                        <table class="fullWidth">
-                            <thead>
-                            <tr>
-                                <th class="title"><kantega:label key="aksess.mypage.page"/></th>
-                                <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
-                            </tr>
-                            </thead>
-                            <c:forEach var="item" items="${worklist}" varStatus="status">
-                                <tr class="tableRow${status.index mod 2}">
-                                    <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
-                                    <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
-                                </tr>
-                            </c:forEach>
-                        </table>
-                    </div>
+        <div class="widget">
+            <div class="widget-header"><h2><kantega:label key="aksess.mypage.mycontent"/></h2></div>
+            <div class="widget-content">
+                <div id="WorkList">
+                    <ul>
+                        <c:forEach var="worklist" items="${myWorkList}" varStatus="status">
+                            <%
+                                WorkList w = (WorkList)pageContext.getAttribute("worklist");
+                                request.setAttribute("workListDescription", w.getDescription());
+                            %>
+                            <c:if test="${not empty worklist}">
+                                <li><a href="#WorkList-${status.index+1}"><kantega:label key="aksess.mypage.${workListDescription}"/></a></li>
+                            </c:if>
+                        </c:forEach>
+                    </ul>
+                    <c:forEach var="worklist" items="${myWorkList}" varStatus="status">
+                        <c:if test="${not empty worklist}">
+                            <div id="WorkList-${status.index+1}">
+                                <table class="fullWidth">
+                                    <thead>
+                                    <tr>
+                                        <th class="title"><kantega:label key="aksess.mypage.page"/></th>
+                                        <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
+                                    </tr>
+                                    </thead>
+                                    <c:forEach var="item" items="${worklist}" varStatus="pageNo">
+                                        <tr class="tableRow${pageNo.index mod 2}">
+                                            <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
+                                            <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
+                                        </tr>
+                                    </c:forEach>
+                                </table>
+                            </div>
+                        </c:if>
+                    </c:forEach>
                 </div>
-            </c:if>
-        </c:forEach>
+            </div>
+        </div>
 
         <c:if test="${fn:length(myDeletedItems) > 0}">
             <div class="widget">
@@ -136,7 +150,7 @@
                         <thead>
                         <tr>
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
-                            <th class="date"><kantega:label key="aksess.mypage.deleted"/></th>
+                            <th class="date"><kantega:label key="aksess.mypage.deleteddate"/></th>
                             <th class="action">&nbsp;</th>
                         </tr>
                         </thead>

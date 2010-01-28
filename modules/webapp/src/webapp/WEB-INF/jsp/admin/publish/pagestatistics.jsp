@@ -22,10 +22,14 @@
     }
 </script>
 
-<a href="#" id="TotalStatistics"><kantega:label key="aksess.totalstatistics.title"/></a>
-
 <div class="fieldset">
     <fieldset>
+        <div id="tabs" class="ui-tabs ui-widget ui-corner-all">
+            <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
+                <li class="ui-tabs-selected ui-state-active ui-corner-top"><a href="#" id="PageStatistics"><kantega:label key="aksess.statistics.page"/></a></li>
+                <li class="ui-state-default ui-corner-top"><a href="#" id="TotalStatistics"><kantega:label key="aksess.statistics.total"/></a></li>
+            </ul>
+        </div>
         <h1><kantega:label key="aksess.statistics.hits.title"/></h1>
         <table border="0" width="100%">
             <c:if test="${showInternalAndExternal}">
@@ -44,10 +48,7 @@
                 <td class="number">${sumHits}</td>
             </tr>
         </table>
-    </fieldset>
-</div>
-<div class="fieldset">
-    <fieldset>
+
         <h1><kantega:label key="aksess.statistics.sessions.title"/></h1>
         <table border="0" width="100%">
             <c:if test="${showInternalAndExternal}">
@@ -66,52 +67,45 @@
             </tr>
         </table>
         <div class="ui-state-highlight"><kantega:label key="aksess.statistics.hjelp"/></div>
+
+        <c:if test="${not empty topReferers}">
+            <div class="fieldset">
+                <fieldset>
+                    <h1><kantega:label key="aksess.statistics.topreferers"/></h1>
+                    <table border="0" width="100%">
+                        <c:forEach items="${topReferers}" var="ref">
+                            <tr>
+                                <td>
+                                    <a target="refererwindow" href="<c:out value="${ref.referer}"/>"><c:out value="${ref.refererShort}"/></a>
+                                </td>
+                                <td class="number">${ref.occurrences}</td>
+                            </tr>
+                        </c:forEach>
+                    </table>
+                </fieldset>
+            </div>
+        </c:if>
+        <c:if test="${not empty topReferingHosts}">
+            <h1><kantega:label key="aksess.statistics.topreferinghosts"/></h1>
+            <table border="0" width="100%">
+                <c:forEach items="${topReferingHosts}" var="ref">
+                    <tr>
+                        <td><c:out value="${ref.referer}"/></td>
+                        <td class="number">${ref.occurrences}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
+        <c:if test="${not empty topReferingQueries}">
+            <h1><kantega:label key="aksess.statistics.topreferingqueries"/></h1>
+            <table border="0" width="100%">
+                <c:forEach items="${topReferingQueries}" var="ref">
+                    <tr>
+                        <td><c:out value="${ref.referer}"/></td>
+                        <td class="number">${ref.occurrences}</td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
     </fieldset>
 </div>
-<c:if test="${not empty topReferers}">
-<div class="fieldset">
-    <fieldset>
-        <h1><kantega:label key="aksess.statistics.topreferers"/></h1>
-        <table border="0" width="100%">
-            <c:forEach items="${topReferers}" var="ref">
-                <tr>
-                    <td>
-                        <a target="refererwindow" href="<c:out value="${ref.referer}"/>"><c:out value="${ref.refererShort}"/></a>
-                    </td>
-                    <td class="number">${ref.occurrences}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </fieldset>
-</div>
-</c:if>
-<c:if test="${not empty topReferingHosts}">
-<div class="fieldset">
-    <fieldset>
-        <h1><kantega:label key="aksess.statistics.topreferinghosts"/></h1>
-        <table border="0" width="100%">
-            <c:forEach items="${topReferingHosts}" var="ref">
-                <tr>
-                    <td><c:out value="${ref.referer}"/></td>
-                    <td class="number">${ref.occurrences}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </fieldset>
-</div>
-</c:if>
-<c:if test="${not empty topReferingQueries}">
-<div class="fieldset">
-    <fieldset>
-        <h1><kantega:label key="aksess.statistics.topreferingqueries"/></h1>
-        <table border="0" width="100%">
-            <c:forEach items="${topReferingQueries}" var="ref">
-                <tr>
-                    <td><c:out value="${ref.referer}"/></td>
-                    <td class="number">${ref.occurrences}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </fieldset>
-</div>
-</c:if>

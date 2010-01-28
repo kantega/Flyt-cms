@@ -3,3 +3,16 @@
     margin-top: 4px;
     margin-bottom: 4px;
 }
+
+ul.ui-tabs-nav li {
+    list-style-type:none;
+}
+
+.ui-tabs ul.ui-widget-header {
+    background: none;
+    border: 0;
+}
+
+.ui-widget-content {
+    border:0;
+}

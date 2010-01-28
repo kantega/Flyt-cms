@@ -89,10 +89,13 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         if (query.getCid() != null) {
             int contentId = query.getCid().getContentId();
             int siteId = query.getCid().getSiteId();
+            if (siteId != -1) {
+                clause = " and trafficlog.SiteId = " + siteId;
+            }
             if (query.isIncludeSubPages()) {
-                clause = " and trafficlog.SiteId = " + siteId + " and trafficlog.ContentId in (select ContentId from associations where path like '%/" + contentId + "/%')";
+                clause += " and trafficlog.ContentId in (select ContentId from associations where path like '%/" + contentId + "/%')";
             } else {
-                clause = " and trafficlog.SiteId = " + siteId + " and trafficlog.ContentId = " + contentId + " ";
+                clause += " and trafficlog.ContentId = " + contentId + " ";
             }
         }
         return clause;

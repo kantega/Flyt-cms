@@ -32,8 +32,8 @@
                 title:"Sett inn multimedia",
                 iframe:true,
                 href: "../multimedia/EditMultimedia.action",
-                width: 600,
-                height:400});
+                width: 840,
+                height:600});
         }
 
 	});
