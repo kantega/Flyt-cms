@@ -246,7 +246,7 @@
                         }
                     %>
 
-                    <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+                    <div id="templateinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="ui-state-highlight">
                         <div id="templatedesc"><%=defaultText%></div><br>
                         <img name="templateimage" src="../bitmaps/blank.gif" alt="">
                     </div>

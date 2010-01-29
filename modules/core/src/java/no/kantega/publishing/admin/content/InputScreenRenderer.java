@@ -83,11 +83,11 @@ public class InputScreenRenderer {
                     out.print("\n");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {
-                        out.print("<div class=\"helpText\">" + helptext + "</div>\n");
+                        out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
                     }
                     if (attr.inheritsFromAncestors()) {
                         String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
-                        out.print("<div class=\"helpText\">" + inheritText + "</div>\n");
+                        out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
                     }
                     out.print("</div>\n");
                 } catch (Exception e) {

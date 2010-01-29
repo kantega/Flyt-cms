@@ -12,7 +12,9 @@ ul.ui-tabs-nav li {
     background: none;
     border: 0;
 }
-
+.ui-widget {
+    font-size: 1em;
+}
 .ui-widget-content {
     border:0;
 }

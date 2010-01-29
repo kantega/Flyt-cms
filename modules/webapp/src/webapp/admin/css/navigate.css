@@ -6,9 +6,6 @@
     padding-right: 10px;/*Framesplit.width*/
     background: #ffffff;
 }
-#Navigation .infoslider {
-    width: 190px;
-}
 
 #Navigator {
     overflow: auto;

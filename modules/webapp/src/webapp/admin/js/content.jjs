@@ -122,7 +122,7 @@ function bindFilterEvents() {
     $filterOptions.find(".filtersToggle").live('click', function(){
         debug("content.bindFilterEvents(): Filter clicked");
         $filters.show();
-        filterInfoSlider.toggle("#Navigation", $filters);
+        filterInfoSlider.toggle("#Navigation", $filters, {additionalCssClasses: 'filters'});
     });
 
     $("#FilteroptionSort input[name=sort]").live('change', function(){
