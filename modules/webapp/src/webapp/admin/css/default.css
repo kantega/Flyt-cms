@@ -795,16 +795,32 @@ div.sidebarFieldset fieldset legend {
 }
 
 .infoslider .slidercontent {
+    padding-left: 40px;
     padding-top: 0.5em;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
 }
 
 /* Info slider types */
 .infoslider.details .slidercontent {
-    padding-left: 40px;
-    background: url("../bitmaps/common/icons/large/details.png") 10px 10px no-repeat;
+    background-image: url("../bitmaps/common/icons/large/details.png");
 }
-
-
+.infoslider.associations .slidercontent {
+    background-image: url("../bitmaps/common/icons/large/details.png");
+}
+.infoslider.associations ul.breadcrumbs {
+    margin-bottom: 0.5em;
+}
+.infoslider.associations ul.breadcrumbs li:first-child {
+    background: url(../bitmaps/common/icons/small/site_small.png) left center no-repeat;
+    padding-left: 12px;
+}
+.infoslider.brokenlinks .slidercontent {
+    background-image: url("../bitmaps/common/icons/large/details.png");
+}
+.infoslider.search .slidercontent {
+    padding-left: 0;
+}
 /************** Search results **************/
 #ModesMenu .buttonGroup.search {
     float: right;

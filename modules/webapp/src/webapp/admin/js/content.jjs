@@ -488,13 +488,13 @@ var ContentStatus = {
             var associationsInfoSlider = new InfoSlider();
             $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                 debug("content.ContentStatus.details(): click");
-                var details = '';
+                var details = '<h3>Associations</h3>';
                 for (var i = 0; i < associations.length; i++) {
                     details += '<ul class="breadcrumbs">';
                     for (var j = 0; j<associations[i].length; j++) {
                         details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
                     }
-                    details += "</ul>";
+                    details += '</ul><div class="clearing"></div>';
                 }
                 associationsInfoSlider.toggle("#MainPane",details, {additionalCssClasses: 'associations'});
             }).show();
@@ -649,11 +649,12 @@ function InfoSlider() {
             }
             //Somone else has already opened it. Keep it open and replace the content.
             else {
+                setContent($infoslider, content);
+
                 if (sliderOptions.resizable) {
                     makeResizable($infoslider);
                 }
-                setContent($infoslider, content);
-                
+
             }
         }
 
@@ -693,7 +694,10 @@ function InfoSlider() {
      * @param infoslider
      */
     var makeResizable = function(infoslider) {
+
         var $infoslider = $(infoslider);
+        debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
+
         $infoslider.resizable({
             handles: 's',
             start: function(){
@@ -717,6 +721,10 @@ function InfoSlider() {
                 }
             },
             resize: function() {
+                var $iframe = $(this).find("iframe");
+                if ($iframe.size() > 0) {
+                    $iframe.height($infoslider.height());
+                }
                 if (typeof navigatorResizeOnResize == 'function') {
                     navigatorResizeOnResize();
                 }

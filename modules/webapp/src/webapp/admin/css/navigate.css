@@ -49,37 +49,21 @@
     padding: 0 10px;
     position: relative;
 }
-#MainPane #Statusbar ul.breadcrumbs {
-    float: left;
-    clear: both;
-    margin: 0;
-    padding: 0;
-}
-#MainPane #Statusbar ul.breadcrumbs li {
-    display: inline;
-    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
-    padding-left: 10px;
-    padding-right: 3px;
-}
-#MainPane #Statusbar ul.breadcrumbs li:first-child {
-    /*TODO: Change bitmap*/
-    background: url("../bitmaps/common/icons/small/site.png") left center no-repeat;
-    padding-left: 18px;
-}
-#MainPane #Statusbar .supportMenu a {
+
+#MainPane .supportMenu a {
     display: none;
     float: left;
     height: 22px;
     padding-left: 20px;
     margin-left: 20px;
 }
-#MainPane #Statusbar .supportMenu a.brokenLink {
+#MainPane .supportMenu a.brokenLink {
     background: url("../bitmaps/common/icons/small/brokenlink.png") left center no-repeat;
 }
-#MainPane #Statusbar .supportMenu a.crossPublish {
+#MainPane .supportMenu a.crossPublish {
     background: url("../bitmaps/common/icons/small/crosspublish.png") left center no-repeat;
 }
-#MainPane #Statusbar .supportMenu a.details {
+#MainPane .supportMenu a.details {
     background: url("../bitmaps/common/icons/small/details.png") left center no-repeat;
 }
 
@@ -106,6 +90,26 @@
     padding-left: 15px;
     margin: 0 5px;
 }
+
+/************** Breadcrumbs **************/
+ul.breadcrumbs {
+    float: left;
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+ul.breadcrumbs li {
+    display: inline;
+    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
+    padding-left: 10px;
+    padding-right: 3px;
+}
+ul.breadcrumbs li:first-child {
+    /*TODO: Change bitmap*/
+    background: url("../bitmaps/common/icons/small/site.png") left center no-repeat;
+    padding-left: 18px;
+}
+
 /************** Navigator **************/
 .navigator {
     margin: 0 0 0 0.25em;

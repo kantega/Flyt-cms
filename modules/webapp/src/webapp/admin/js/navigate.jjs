@@ -259,7 +259,7 @@ var Search = {
         debug("navigate.Search.search(): query: " + query);
         var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
         var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
-        new InfoSlider().toggle("#MainPane", content, null, {resizable: true, additionalCssClasses: 'search'});
+        new InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
     },
 
     inputValid : function(query){
