@@ -25,7 +25,9 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            bindToolButtons();
+            // TODO: Include of multimedia.jjs causes problems, dependency should be removed,
+            // but that will break somethings
+            //bindToolButtons();
         });
 
         /**
@@ -42,6 +44,12 @@
                     location.href = "ImageMap.action?id=${media.id}";
                 });
             </c:if>
+            <c:if test="${canEdit}">
+                $("#ToolsMenu .button .delete").click(function(){
+                    ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
+                });
+            </c:if>
+
         }
     </script>
 
@@ -52,13 +60,16 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
-    
+    <div class="buttonGroup">
+        <a href="Navigate.action" class="button"><span class="back"><kantega:label key="aksess.mode.back"/></span></a>
+    </div>
 </kantega:section>
 
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="imagemap"><kantega:label key="aksess.tools.imagemap"/></span></a>
+        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
     </div>
 </kantega:section>
 
@@ -92,10 +103,20 @@
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <legend><kantega:label key="aksess.multimedia.author"/></legend>
+                        <legend><kantega:label key="aksess.multimedia.altname"/></legend>
                         <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="<c:out value="${media.altname}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                        <div class="ui-state-highlight">
+                            <kantega:label key="aksess.multimedia.altinfo"/>
+                        </div>
                     </fieldset>
                 </div>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <legend><kantega:label key="aksess.multimedia.author"/></legend>
+                        <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="<c:out value="${media.author}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                    </fieldset>
+                </div>
+
                 <c:if test="${isPropertyPaneEditable && showDimension}">
                     <div class="sidebarFieldset">
                         <fieldset>

@@ -50,7 +50,14 @@
             $("div.fieldset").roundCorners();
             $("#MainPane table.dataTable").dataTable({
                 "sPaginationType": "two_button",
-                "iDisplayLength":25
+                "iDisplayLength":25,
+                "bLengthChange":false,
+                "bPaginate": false,
+                "bInfo": false,
+                "oLanguage": {
+                    "sLengthMenu": "<kantega:label key="aksess.datatable.length"/>",
+                    "sSearch": "<kantega:label key="aksess.datatable.search"/>"
+                }
             });
             $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
             $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});

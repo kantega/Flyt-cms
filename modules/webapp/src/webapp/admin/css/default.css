@@ -521,6 +521,9 @@ table.fullWidth {
 .button .add {
     background-image: url("../bitmaps/common/icons/small/add.png");
 }
+.button .back {
+    background-image: url("../bitmaps/common/icons/small/back.png");
+}
 .button .cancel {
     background-image: url("../bitmaps/common/icons/small/cancel.png");
 }
@@ -556,6 +559,9 @@ table.fullWidth {
 }
 .button .moveDown {
     background-image: url("../bitmaps/common/icons/small/movedown.png");
+}
+.button .newfile {
+    background-image: url("../bitmaps/common/icons/small/newfile.png");
 }
 .button .newfolder {
     background-image: url("../bitmaps/common/icons/small/newfolder.png");
@@ -593,9 +599,7 @@ table.fullWidth {
 .button .statistics {
     background: url("../bitmaps/common/icons/small/statistics.png");
 }
-.button .upload {
-    background-image: url("../bitmaps/common/icons/small/upload.png");
-}
+
 .button .view {
     background: url("../bitmaps/common/icons/small/navigate.png");
 }

@@ -27,8 +27,8 @@
         <fieldset>
             <h1><kantega:label key="aksess.search.log.title"/></h1>
 
-            <form name="myform" action="" method="get">
-                <strong><kantega:label key="aksess.statistics.velgsite"/>:</strong>
+            <form name="myform" action="" method="get" style="margin-bottom: 20px">
+                <strong><kantega:label key="aksess.search.log.site.site"/>:</strong>
                 <select name="siteId" onchange="document.myform.submit()">
                     <c:forEach items="${sites}" var="site">
                         <option value="${site.id}" <c:if test="${site.id == selectedSiteId}"> selected</c:if>>${site.name}</option>
@@ -36,10 +36,13 @@
                 </select>
             </form>
 
-            <table>
+            <table class="fullWidth">
+                <thead>
                 <tr>
-                    <th colspan="2"><kantega:label key="aksess.statistics.summary.title"/></th>
+                    <th colspan="2"><kantega:label key="aksess.search.log.summary.title"/></th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr class="tableRow0">
                     <td><kantega:label key="aksess.search.log.summary.now"/></td>
                     <td class="number">${last30min}</td>
@@ -48,15 +51,19 @@
                     <td><kantega:label key="aksess.search.log.summary.lastmonth"/></td>
                     <td class="number">${sumAllTime}</td>
                 </tr>
+                </tbody>
             </table>
 
-            <table>
+            <table class="fullWidth">
+                <thead>
                 <tr>
                     <th>&nbsp;</th>
                     <th><kantega:label key="aksess.search.log.query.mostpopular"/></th>
-                    <th><kantega:label key="aksess.search.log.query.hits"/></th>
-                    <th><kantega:label key="aksess.search.log.query.searches"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.hits"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.searches"/></th>
                 </tr>
+                </thead>
+                <tbody>
                 <c:forEach items="${most}" var="q" varStatus="status">
                     <tr  class="tableRow<c:out value="${status.index mod 2}"/>">
                         <td><c:out value="${status.index + 1}"/></td>
@@ -65,15 +72,19 @@
                         <td class="number"><c:out value="${q.numberOfSearches}"/></td>
                     </tr>
                 </c:forEach>
+                </tbody>
             </table>
 
-            <table>
+            <table class="fullWidth">
+                <thead>
                 <tr>
                     <th>&nbsp;</th>
                     <th><kantega:label key="aksess.search.log.query.leasthits"/></th>
-                    <th><kantega:label key="aksess.search.log.query.hits"/></th>
-                    <th><kantega:label key="aksess.search.log.query.searches"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.hits"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.searches"/></th>
                 </tr>
+                </thead>
+                <tbody>
                 <c:forEach items="${least}" var="q" varStatus="status">
                     <tr class="tableRow<c:out value="${status.index mod 2}"/>">
                         <td><c:out value="${status.index + 1}"/></td>
@@ -82,6 +93,7 @@
                         <td class="number"><c:out value="${q.numberOfSearches}"/></td>
                     </tr>
                 </c:forEach>
+                </tbody>
             </table>
 
             <div class="ui-state-highlight"><kantega:label key="aksess.search.log.help"/></div>

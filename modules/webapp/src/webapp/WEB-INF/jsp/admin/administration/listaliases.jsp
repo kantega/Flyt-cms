@@ -26,17 +26,21 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.aliases.title"/></h1>
-            <table class="fullWidth">
+            <table class="fullWidth dataTable">
+                <thead>
                 <tr>
-                    <th><a href="?sort=<%=ContentProperty.ALIAS%>"><span><kantega:label key="aksess.aliases.alias"/></span></a></th>
-                    <th><a href="?sort=<%=ContentProperty.TITLE%>"><span><kantega:label key="aksess.aliases.page"/></span></a></th>
+                    <th><kantega:label key="aksess.aliases.alias"/></th>
+                    <th><kantega:label key="aksess.aliases.page"/></th>
                 </tr>
+                </thead>
+                <tbody>
                 <aksess:getcollection name="aliases" contentquery="${query}" skipattributes="true" varStatus="status">
                     <tr class="tableRow${status.index mod 2}">
                         <td><aksess:getattribute name="alias" collection="aliases"/></td>
                         <td><aksess:link collection="aliases" target="_new"><aksess:getattribute name="title" collection="aliases"/></aksess:link></td>
                     </tr>
                 </aksess:getcollection>
+                </tbody>
             </table>
 
             <div class="ui-state-highlight"><kantega:label key="aksess.aliases.help"/></div>

@@ -72,7 +72,7 @@
             $("#EditMultimediaButtons .save").addClass("disabled");
             $("#EditMultimediaButtons .save").attr("disabled", "disabled");
 
-            <c:if test="${isEditable}">
+            <c:if test="${isPropertyPaneEditable}">
             $("#EditMultimediaButtons .save").click(function () {
                 document.editmediaform.insert.value = false;
                 saveForm();

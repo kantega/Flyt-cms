@@ -33,22 +33,22 @@ $(document).ready(function(){
  */
 var Multimedia =  {
     deleteItem: function(id) {
-        debug("multimedia.Multimedia.deleteItem(): thisId: " + thisId);
+        debug("multimedia.Multimedia.deleteItem(): id: " + id);
         ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
     },
 
-    cut: function(thisId) {
-        debug("multimedia.Multimedia.cut(): thisId: " + thisId);
+    cut: function(id) {
+        debug("multimedia.Multimedia.cut(): id: " + id);
         $(".contextMenu").enableContextMenuItems("#paste");
     },
 
-    copy: function(thisId) {
-        debug("multimedia.Multimedia.copy(): thisId: " + thisId);
+    copy: function(id) {
+        debug("multimedia.Multimedia.copy(): id: " + id);
         $(".contextMenu").enableContextMenuItems("#paste");
     },
 
-    paste: function(thisId) {
-        debug("content.Publish.paste(): thisId: " + thisId);
+    paste: function(id) {
+        debug("content.Publish.paste(): id: " + id);
         $(".contextMenu").disableContextMenuItems("#paste");
     }
 };
@@ -88,11 +88,15 @@ var MultimediaStatus = {
  */
 function bindToolButtons() {
     bindMediaAjaxUpload();
-    $("#NewFolderButton").not(".disabled").click(function() {
-        createMediaFolder();
+    $("#NewFolderButton").click(function() {
+        if ($(this).not(".disabled")) {
+            createMediaFolder();
+        }
     });
-    $("#DeleteFolderButton").not(".disabled").click(function() {
-        Multimedia.deleteItem(currentItemIdentifier);
+    $("#DeleteFolderButton").click(function() {
+        if ($(this).not(".disabled")) {
+            Multimedia.deleteItem(currentItemIdentifier);
+        }
     });
 }
 /**

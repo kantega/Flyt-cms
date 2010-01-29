@@ -35,11 +35,6 @@ public class ListAliasesAction extends AdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
-        String sort = request.getParameter("sort");
-        if (!ContentProperty.TITLE.equals(sort)) {
-            sort = ContentProperty.ALIAS;
-        }
-
         ContentQuery query = new ContentQuery();
         String driver = dbConnectionFactory.getDriverName().toLowerCase();
         if (driver.indexOf("oracle") != -1) {
@@ -49,7 +44,6 @@ public class ListAliasesAction extends AdminController {
         }
 
         model.put("query", query);
-        model.put("sort", sort);
 
         return new ModelAndView(view, model);
     }

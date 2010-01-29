@@ -31,11 +31,16 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
-
+<div class="buttonGroup search">
+    <form action="" method="get">
+        <input type="text" id="SearchQuery" class="query multimedia" name="query multimedia">
+        <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
+    </form>
+</div>
 </kantega:section>
 
 <kantega:section id="toolsMenu">
-    <a href="#" class="button disabled" id="UploadButton"><span class="upload"><kantega:label key="aksess.tools.upload"/></span></a>
+    <a href="#" class="button disabled" id="UploadButton"><span class="newfile"><kantega:label key="aksess.tools.upload"/></span></a>
     <a href="#" class="button disabled" id="NewFolderButton"><span class="newfolder"><kantega:label key="aksess.tools.newfolder"/></span></a>
     <a href="#" class="button disabled" id="DeleteFolderButton"><span class="delete"><kantega:label key="aksess.tools.deletefolder"/></span></a>
 </kantega:section>

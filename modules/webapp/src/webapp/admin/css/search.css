@@ -24,3 +24,7 @@ body {
 .pagenumbers {
     display: inline-block;
 }
+
+.highlight {
+    background-color: #fcec5a;
+}
