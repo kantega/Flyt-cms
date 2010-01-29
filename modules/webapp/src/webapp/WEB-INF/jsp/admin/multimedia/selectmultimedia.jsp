@@ -31,7 +31,8 @@
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 
-    int maxWidth = param.getInt("maxWidth");
+    //TODO: 
+    int maxWidth = 570;//param.getInt("maxWidth");
 
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">

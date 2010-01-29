@@ -82,7 +82,7 @@
 
         var options = {
             // General options
-            language : 'nb', // en / nb
+            language : 'en', // en / nb
             mode : "exact",
             elements : "<%=fieldName%>",
             theme : "advanced",
@@ -129,7 +129,7 @@
             spellchecker_rpc_url : "<aksess:geturl url="/admin/publish/Spellcheck.action"/>",
 
             // Example content CSS (should be your site CSS)
-            content_css : "${cssPath}"
+            content_css : "${cssPath}",
         };
 
         for (var i = 0, n = buttonRows.length; i < n; i++) {
