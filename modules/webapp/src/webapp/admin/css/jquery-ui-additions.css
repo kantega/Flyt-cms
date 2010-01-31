@@ -11,6 +11,7 @@ ul.ui-tabs-nav li {
 .ui-tabs ul.ui-widget-header {
     background: none;
     border: 0;
+    border-bottom: 1px solid #cccccc;
 }
 .ui-widget {
     font-size: 1em;

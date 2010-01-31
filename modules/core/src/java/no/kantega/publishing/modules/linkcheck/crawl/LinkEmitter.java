@@ -87,4 +87,8 @@ public class LinkEmitter {
     private boolean isValidLink(String link) {
         return link.startsWith("http://") || link.startsWith(Aksess.VAR_WEB);
     }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
+    }
 }

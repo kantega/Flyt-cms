@@ -215,7 +215,7 @@ public class Aksess {
             if (formsEnabled) {
                 Log.debug(SOURCE, "Tillegsmodul: Skjema", null, null);
             }
-            linkCheckerEnabled = c.getBoolean("linkchecker.enabled", false);
+            linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
 
 
             // Plassering søkeindeks

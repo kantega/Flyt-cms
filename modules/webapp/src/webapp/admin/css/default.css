@@ -697,11 +697,15 @@ div.fieldset fieldset .row {
 }
 div.fieldset h1, div.fieldset h2 {
     padding: 0 0 3px 0;
-    margin: -5px -10px 10px -15px;
     text-align: center;
     font-weight: bold;
     border-bottom: 1px solid #dbdbdb;
 }
+
+div.fieldset>h1, div.fieldset>h2 {
+    margin: -5px -10px 10px -15px;
+}
+
 
 div.sidebarFieldset {
     background: #f7f7f7 url("../bitmaps/default/framework/rightbox_background.jpg") repeat-x;

@@ -28,19 +28,23 @@ public class LinkCrawlerJob {
     @Autowired
     private LinkDao linkDao;
 
+    @Autowired
+    private LinkEmitter emitter;
+
     public void execute() {
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }
-        LinkEmitter emitter = new LinkEmitter();
-
         linkDao.saveAllLinks(emitter);
-
         checker.execute();
 
     }
 
     public void setChecker(LinkCheckerJob checker) {
         this.checker = checker;
+    }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
     }
 }

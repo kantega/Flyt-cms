@@ -299,6 +299,10 @@ public class LinkCheckerJob implements InitializingBean {
         this.proxyPassword = proxyPassword;
     }
 
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
+    }
+
     public void afterPropertiesSet() throws Exception {
         setWebroot(Aksess.getApplicationUrl());
         setProxyHost(Aksess.getConfiguration().getString("linkchecker.proxy.host"));

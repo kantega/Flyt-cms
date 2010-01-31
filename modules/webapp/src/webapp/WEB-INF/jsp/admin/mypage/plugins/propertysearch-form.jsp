@@ -36,7 +36,10 @@
                 "bFilter": false,
                 "bSort":false,
                 "bLengthChange":false,
-                "iDisplayLength":25
+                "iDisplayLength":25,
+                "oLanguage": {
+                    "sInfo": "<kantega:label key="aksess.datatable.footer"/>"
+                }
             });
         }, "html");
     });
