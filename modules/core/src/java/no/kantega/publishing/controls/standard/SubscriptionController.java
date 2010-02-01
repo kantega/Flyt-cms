@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.controls.standard;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
@@ -43,6 +44,13 @@ public class SubscriptionController implements AksessController {
 
         String epost = param.getString("epost");
         String interval = param.getString("interval");
+        int documentType = -1;
+        try{
+            documentType = Integer.parseInt(param.getString("documenttype"));
+        } catch(NumberFormatException e) {
+           // default to -1
+        }
+
         Map model = new HashMap();
 
         if (epost != null && epost.indexOf('@') != -1 && epost.indexOf(".") != -1) {
@@ -56,10 +64,10 @@ public class SubscriptionController implements AksessController {
                     int channelId = Integer.parseInt(paramName, 10);
                     String op = param.getString(paramName);
                     if ("av".equalsIgnoreCase(op)) {
-                        MailSubscriptionService.removeMailSubscription(epost, channelId, -1);
+                        MailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
                         model.put("meldtAv", Boolean.TRUE);
                     } else if ("pa".equalsIgnoreCase(op)) {
-                        MailSubscriptionService.addMailSubscription(epost, channelId, -1, interval, Language.NORWEGIAN_BO);
+                        MailSubscriptionService.addMailSubscription(epost, channelId, documentType, interval, Language.NORWEGIAN_BO);
                         model.put("meldtPa", Boolean.TRUE);
                     }
                 } catch (NumberFormatException e) {
