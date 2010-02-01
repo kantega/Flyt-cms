@@ -121,6 +121,8 @@ public class Aksess {
 
     private static String htmlVersion;
 
+    private static boolean csrfCheckEnabled = true;
+
     private static Configuration c;
     
     private static String multimediaDefaultCopyright;
@@ -145,7 +147,7 @@ public class Aksess {
 
             dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
 
-            // Format og kvalitet på bilder
+            // Format and quality in images
             outputImageFormat = c.getString("default.thumbnailformat", outputImageFormat);
             outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
             pngPixelLimit = c.getLong("default.thumbnail.pngpixellimit", pngPixelLimit);
@@ -179,7 +181,7 @@ public class Aksess {
             // Rewrite URLs to userfriendly URLS
             urlRewritingEnabled = c.getBoolean("links.rewrite.enabled", true);
 
-            // Åpne eksterne lenker i nytt vindu
+            // Open external links in new window
             openLinksInNewWindow = c.getBoolean("openlinksinnewwindow", false);
 
             // Insert smartlinks as default ?
@@ -220,7 +222,7 @@ public class Aksess {
             linkCheckerEnabled = c.getBoolean("linkchecker.enabled", false);
 
 
-            // Plassering søkeindeks
+            // Location of search-index
             luceneIndexDir = c.getString("lucene.index.dir", Configuration.getApplicationDirectory() +"/index");
 
 
@@ -237,7 +239,7 @@ public class Aksess {
             // ContentLock
             lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
 
-            // Setter aksess språk. Bruker no_NO hvis locale ikke er definert
+            // Setting aksess language. Use no_NO if locale isn't defined
             language = c.getString("admin.locale.language", "no");
             country = c.getString("admin.locale.country", "NO");
 
@@ -245,11 +247,13 @@ public class Aksess {
 
             databaseCacheTimeout = c.getInt("database.cache.timeout", -1);
 
-            // Format på alt og title attributter
+            // Format of alt and title-attributes
             multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
             multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
 
             multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
+
+            csrfCheckEnabled = c.getBoolean("csrfcheck.enabled",true);
 
             // Load version from file in classpath
             {
@@ -277,9 +281,9 @@ public class Aksess {
             }
 
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
+            Log.debug(SOURCE, "********* Couldn't read aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
-            System.out.println("********* Klarte ikke å lese aksess.conf **********" + e);
+            System.out.println("********* Couldn't read aksess.conf **********" + e);
         }
 
         Log.debug(SOURCE, "location.contextpath=" + contextPath, null, null);
@@ -539,6 +543,9 @@ public class Aksess {
         return flashUseJavascript;
     }
 
+    public static boolean isCsrfCheckEnabled() {
+        return csrfCheckEnabled;
+    }
 
     public static void setConfiguration(Configuration configuration) {
         Aksess.c = configuration;

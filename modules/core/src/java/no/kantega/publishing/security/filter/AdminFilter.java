@@ -71,8 +71,12 @@ public class AdminFilter implements Filter {
             // Check for cross site request forgery
             if(isForgedPost(request)) {
                 log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
-                return;
+                if (Aksess.isCsrfCheckEnabled()) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
+                    return;
+                } else {
+                    log.info("... but CSRF-checking is disabled for this site");
+                }
             }
 
             response.setDateHeader("Expires", 0);
