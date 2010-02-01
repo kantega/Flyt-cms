@@ -100,19 +100,11 @@ public class MailSubscriptionAgent {
                 for (int j = 0; j < content.size(); j++) {
                     // Check if user subscribes to content
                     Content c = (Content)content.get(j);
-                    List associations = c.getAssociations();
-                    for (int k = 0; k < associations.size(); k++) {
-                        Association a = (Association)associations.get(k);
-                        if (site == null || site.getId() == a.getSiteId()) {
-                            // Correct site
-                            if ((subscription.getChannel() > 0 && subscription.getChannel() == a.getParentAssociationId()) ||
-                                (subscription.getDocumenttype() > 0 && subscription.getDocumenttype() == c.getDocumentTypeId()) ) {
-                                // Correct documenttype or parent
-                                subscriberContent.add(c);
-                                break;
-                            }
-                        }
+
+                    if(isSubscriptionMatch(subscription, c, site)) {
+                        subscriberContent.add(c);
                     }
+
                 }
             }
         }
@@ -134,6 +126,20 @@ public class MailSubscriptionAgent {
             }
 
         }
+    }
+
+    private boolean isSubscriptionMatch(MailSubscription subscription, Content c, Site site) {
+        List<Association> associations = c.getAssociations();
+        for (Association a : associations) {
+            if (site == null || site.getId() == a.getSiteId()) {
+                // Correct site
+                if ((subscription.getChannel() > 0 && subscription.getChannel() == a.getParentAssociationId()) ||
+                        (subscription.getDocumenttype() > 0 && subscription.getDocumenttype() == c.getDocumentTypeId()) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 
