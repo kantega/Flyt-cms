@@ -24,12 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
+import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,14 +108,9 @@ public class SpellcheckAction implements Controller {
      * @throws JSONException
      */
     private JSONObject getJSONObject(HttpServletRequest request) throws IOException, JSONException {
-        StringBuilder builder = new StringBuilder();
-        BufferedReader reader = request.getReader();
-        while (reader.ready()) {
-            builder.append(reader.readLine() + "\n");
-        }
-        Log.debug(this.getClass().getName(), "String:" + builder.toString() + "(len:" + builder.toString().length() + ")", null, null);
-        System.out.println(builder.toString());
-        return new JSONObject(builder.toString());
+        String json = IOUtils.toString(request.getInputStream(), "utf-8");
+        Log.debug(this.getClass().getName(), "String:" + json, null, null);
+        return new JSONObject(json);
     }
 
     private JSONArray performAction(JSONObject jsonObject) throws JSONException {
