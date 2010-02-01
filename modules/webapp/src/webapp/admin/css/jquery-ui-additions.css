@@ -13,9 +13,14 @@ ul.ui-tabs-nav li {
     border: 0;
     border-bottom: 1px solid #cccccc;
 }
+.ui-tabs .ui-tabs-nav li a {
+    padding:0.25em 1em;
+}
+
 .ui-widget {
     font-size: 1em;
 }
 .ui-widget-content {
     border:0;
 }
+

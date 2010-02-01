@@ -170,7 +170,7 @@
                 <h2><kantega:label key="aksess.userinformation.title"/></h2>
             </div>
             <div class="widget-content">
-                <div id="UserInfo"></div>
+                <div id="UserInfo"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
         <div class="widget">
@@ -178,7 +178,7 @@
                 <h2><kantega:label key="aksess.contentstatistics.title"/></h2>
             </div>
             <div class="widget-content">
-                <div id="ContentStatistics"></div>
+                <div id="ContentStatistics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
         <div class="widget">
             <div class="widget-header"><h2><kantega:label key="aksess.propertysearch.title"/></h2></div>
             <div class="widget-content">
-                <div id="PropertySearch"></div>
+                <div id="PropertySearch"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
     </div>
@@ -198,7 +198,7 @@
                 <h2><a href="https://www.google.com/analytics/reporting/dashboard"><kantega:label key="aksess.googleanalytics.title"/></a></h2>
             </div>
             <div class="widget-content">
-                <div id="GoogleAnalytics"></div>
+                <div id="GoogleAnalytics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
     </div>

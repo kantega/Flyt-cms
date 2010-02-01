@@ -54,6 +54,13 @@ table.noborder td, table.noborder th {
 
 /************** General classes **************/
 
+.ajaxloading {
+    background: url("../bitmaps/common/icons/small/loader_inline.gif") left center no-repeat;
+    line-height: 28px;
+    padding-left: 20px;
+    color: #3ED7FD;
+}
+
 .clearing {
     clear: both;
 }
@@ -128,7 +135,6 @@ table.noborder td, table.noborder th {
     color: #ffffff;
     height: 28px;
     line-height: 28px;
-    padding-left: 20px;
     display: none;
 }
 

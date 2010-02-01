@@ -1,4 +1,5 @@
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
@@ -64,14 +65,14 @@ function setWindowSize() {
 }
 
 function ajaxSetup() {
-    var $ajaxloading = $('<div id="AjaxLoadingIllustration">Loading...</div>');
+    var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div>');
     $("body").append($ajaxloading);
     $ajaxloading.ajaxStart(function(){
        $(this).show();
      });
 
     $ajaxloading.ajaxStop(function(){
-        $(this).hide();
+       $(this).hide();
     });
 }
 
