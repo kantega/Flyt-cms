@@ -111,6 +111,7 @@ public class SpellcheckAction implements Controller {
         while (reader.ready()) {
             builder.append(reader.readLine() + "\n");
         }
+        Log.debug(this.getClass().getName(), "String:" + builder.toString() + "(len:" + builder.toString().length() + ")", null, null);
         System.out.println(builder.toString());
         return new JSONObject(builder.toString());
     }
