@@ -135,26 +135,14 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             missingProperties.add("database.password");
         }
 
-        if(missingProperties.size() > 0) {
+        // All properties are missing
+        if(missingProperties.size() == 4) {
             log.info("The following database configuration properties are missing " + missingProperties);
             return false;
         }
-
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverClass);
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-
-        final Connection connection;
-        try {
-            long before = System.currentTimeMillis();
-            connection = dataSource.getConnection();
-            log.info("Got connection to database " + url +" in " + (System.currentTimeMillis()-before) +" ms.");
-            connection.close();
-        } catch (SQLException e) {
-            log.error("Error connecting to database url '" + url +"' using driver " + driverClass +" as user '" + username +"'" , e);
-            return false;
+        // Some properties are missing
+        if(missingProperties.size() > 0) {
+            throw new IllegalStateException("OpenAksess could not be started. The following database configuration properties are missing: " + missingProperties);
         }
 
         return true;
