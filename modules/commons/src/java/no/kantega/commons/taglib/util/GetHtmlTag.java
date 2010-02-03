@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * User: Espen Høe / Kantega AS
+ * User: Espen Hï¿½e / Kantega AS
  * Date: 03.sep.2007
  * Time: 13:20:17
  */
@@ -38,16 +38,18 @@ public class GetHtmlTag extends TagSupport {
 
     public int doStartTag() throws JspException {
         HttpClient client = new HttpClient();
-
-        GetMethod m = new GetMethod(url);
-        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-        m.setRequestHeader("User-Agent", request.getHeader("User-Agent"));        
-
         try {
+            GetMethod m = new GetMethod(url);
+            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+            m.setRequestHeader("User-Agent", request.getHeader("User-Agent"));
+
             client.executeMethod(m);
             String html = m.getResponseBodyAsString();
             pageContext.getOut().write(html);
         } catch (IOException e) {
+            Log.error(SOURCE, e, null, null);
+        } catch (IllegalArgumentException e) {
+            // failure to parse url, shouldn't take down the page
             Log.error(SOURCE, e, null, null);
         }
 
