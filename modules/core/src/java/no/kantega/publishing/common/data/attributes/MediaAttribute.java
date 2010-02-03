@@ -59,6 +59,7 @@ public class MediaAttribute extends Attribute {
                    || AttributeProperty.WIDTH.equalsIgnoreCase(property)
                    || AttributeProperty.HEIGHT.equalsIgnoreCase(property)
                    || AttributeProperty.NAME.equalsIgnoreCase(property)
+                   || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
                    || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
                    || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
                    || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
@@ -87,6 +88,8 @@ public class MediaAttribute extends Attribute {
                     return "" + mm.getAuthor();
                 } else if (AttributeProperty.NAME.equalsIgnoreCase(property)) {
                     return "" + mm.getName();
+                } else if (AttributeProperty.ALTNAME.equalsIgnoreCase(property)) {
+                    return "" + mm.getAltname();
                 } else if (AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)) {
                     return "" + mm.getDescription();
                 } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {

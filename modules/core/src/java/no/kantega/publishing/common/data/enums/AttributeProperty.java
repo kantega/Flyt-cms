@@ -28,4 +28,5 @@ public class AttributeProperty {
     public static final String AUTHOR = "author";
     public static final String SIZE = "size";
     public static final String DESCRIPTION = "description";
+    public static final String ALTNAME = "altname";
 }
