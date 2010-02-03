@@ -57,13 +57,7 @@ public class SiteMapEntry extends NavigationMapEntry {
 
 
     public String getUrl() {
-        String url = null;
-        if(getAlias() != null){
-            url = Aksess.getContextPath() + getAlias();
-        }else{
-            url = Aksess.getContextPath() + "/content.ap?thisId=" + currentId;    
-        }
-        return url;
+        return Aksess.getContextPath() + "/content.ap?thisId=" + currentId;
     }
 
     public String getAlias() {

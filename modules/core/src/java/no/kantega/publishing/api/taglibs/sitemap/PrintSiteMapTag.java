@@ -19,6 +19,7 @@ package no.kantega.publishing.api.taglibs.sitemap;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.data.SiteMapEntry;
+import no.kantega.publishing.common.Aksess;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -101,7 +102,12 @@ public class PrintSiteMapTag extends TagSupport {
                 out.write("    xsi:schemaLocation=\"http://www.sitemaps.org/schemas/sitemap/0.9\n");
                 out.write("    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">\n\n");
             } else if (level > 0) {
-                String absUrl = URLHelper.getServerURL((HttpServletRequest)pageContext.getRequest()) + sitemap.getUrl();
+                String absUrl;
+                if(sitemap.getAlias() != null){
+                    absUrl = URLHelper.getServerURL((HttpServletRequest)pageContext.getRequest()) + Aksess.getContextPath() + sitemap.getAlias();
+                }else{
+                    absUrl = URLHelper.getServerURL((HttpServletRequest)pageContext.getRequest()) + sitemap.getUrl();
+                }
                 Date lastModified = sitemap.getLastModified();
                 String changefreq = "weekly";
                 String priority = (1-level/10d) + "";
