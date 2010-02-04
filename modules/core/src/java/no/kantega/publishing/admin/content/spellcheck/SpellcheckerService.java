@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.spellcheck;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -28,16 +29,26 @@ public interface SpellcheckerService {
      * Checks a list of words for misspelled words. Returns a list containing the words believed to be misspelled.
      *
      * @param words a list of words to check.
+     * @param lang
      * @return a list of misspelled words.
      */
-    public List<String> spellcheck(List<String> words);
+    public List<String> spellcheck(List<String> words, String lang);
 
     /**
      * Suggests a set of alternatives for a misspelled word.
      *
      * @param word a misspelled word.
+     * @param lang
      * @return a list of suggestions.
      */
-    public List<String> suggest(String word);
+    public List<String> suggest(String word, String lang); // ta inn språk eller spellchecker
+
+
+    /**
+     * Returns a list of SpellcheckerInfo-objects, one for each Spellchecker known to this SpellcheckerService.
+     *
+     * @return a list of SpellcheckerInfo-objects
+     */
+    public Map<String, SpellcheckerInfo> getSpellCheckers();
 
 }

@@ -2,16 +2,22 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.configuration.Configuration,
-                 no.kantega.commons.util.LocaleLabels,
-                 no.kantega.publishing.admin.content.util.HTMLEditorHelper,
-                 no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.cache.SiteCache"%>
+                 no.kantega.publishing.admin.content.spellcheck.SpellcheckerHelper,
+                 no.kantega.publishing.admin.content.spellcheck.SpellcheckerInfo,
+                 no.kantega.publishing.admin.content.spellcheck.SpellcheckerService,
+                 no.kantega.publishing.admin.content.util.HTMLEditorHelper"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
+<%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>
 <%@ page import="no.kantega.publishing.common.data.Site"%>
 <%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService"%>
-<%@ page import="no.kantega.publishing.security.SecuritySession"%>
-<%@ page import="java.io.*"%>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ page import="org.springframework.web.context.WebApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="java.io.InputStream" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.List" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -92,7 +98,7 @@
 
             plugins : plugins,
 
-            // TODO: gjennomgang av gyldige elementer og attributter
+            // TODO: decide desired elements and attributes
             valid_elements : "@[id|class|style|title|dir<ltr?rtl|lang|xml::lang|onclick|ondblclick|"
                     + "onmousedown|onmouseup|onmouseover|onmousemove|onmouseout|onkeypress|"
                     + "onkeydown|onkeyup],a[rel|rev|charset|hreflang|tabindex|accesskey|type|"
@@ -125,11 +131,18 @@
             theme_advanced_resizing : false,
 
             // Plugin options
-            spellchecker_languages : "+English (US)=en_us,Norwegian (Bokmål)=no_nb,Norwegian (Nynorsk)=no_nn",
+            <%
+                ServletContext sc = pageContext.getServletContext();
+                WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(sc);
+                SpellcheckerService service = (SpellcheckerService)wac.getBean("spellcheckerService", SpellcheckerService.class);
+                List<SpellcheckerInfo> infoList = new ArrayList<SpellcheckerInfo>(service.getSpellCheckers().values());
+                String langs = SpellcheckerHelper.getTinyMCESpellcheckerLanguages(infoList, "en_us");
+            %>
+            spellchecker_languages : "<%=langs%>",
             spellchecker_rpc_url : "<aksess:geturl url="/admin/publish/Spellcheck.action"/>",
 
             // Example content CSS (should be your site CSS)
-            content_css : "${cssPath}",
+            content_css : "${cssPath}"
         };
 
         for (var i = 0, n = buttonRows.length; i < n; i++) {

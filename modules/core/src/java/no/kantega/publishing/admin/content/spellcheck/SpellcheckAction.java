@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.spellcheck;
 
 import no.kantega.commons.log.Log;
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,16 +25,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
-import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -43,10 +42,12 @@ public class SpellcheckAction implements Controller {
 
     @Autowired
     private SpellcheckerService spellcheckerService;
+    @Autowired
+    private View aksessJsonView;
 
 
     /**
-     * Format på mottatt JSON-data (registrerte verdier i parantes):
+     * Format of received JSON-data (example values in parenthesis):
      * id -> String (c0)
      * method -> String (checkWords)
      * params -> JSONArray (ArrayList)
@@ -59,32 +60,24 @@ public class SpellcheckAction implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<String, Object>();
         setResponseValues(response);
-
         JSONObject jsonObject = getJSONObject(request);
-
-        // Generate result
-        JSONArray result = performAction(jsonObject);
-
-        // Generate and print return data
-        JSONObject retVal = new JSONObject("{'id':null,'error':null}");
-        retVal.put("result", result);
-        PrintWriter pw = response.getWriter();
-        pw.println(retVal.toString());
-        response.getWriter().flush();
-        return null;
+        model.put("id", null);
+        model.put("error", null);
+        model.put("result", performAction(jsonObject));
+        return new ModelAndView(aksessJsonView, model);
     }
 
     private void setResponseValues(HttpServletResponse response) {
         response.setContentType("text/plain; charset=utf-8");
-//        response.setCharacterEncoding("utf-8");
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", System.currentTimeMillis());
     }
 
     /**
-     * Parse json data from the request. The json data comes in one of two formats:
+     * Parse JSON data from the request. The JSON data comes in one of two formats:
      * 1:
      * {
      * "id":"c0",
@@ -109,13 +102,12 @@ public class SpellcheckAction implements Controller {
      */
     private JSONObject getJSONObject(HttpServletRequest request) throws IOException, JSONException {
         String json = IOUtils.toString(request.getInputStream(), "utf-8");
-        Log.debug(this.getClass().getName(), "String:" + json, null, null);
+        Log.debug(getClass().getSimpleName(), "String:" + json, null, null);
         return new JSONObject(json);
     }
 
-    private JSONArray performAction(JSONObject jsonObject) throws JSONException {
-        JSONArray retVal;
-        String id = jsonObject.getString("id");
+    private List<String> performAction(JSONObject jsonObject) throws JSONException {
+        List<String> retVal;
         String method = jsonObject.getString("method");
         JSONArray params = jsonObject.getJSONArray("params");
         if ("checkWords".equals(method)) {
@@ -124,24 +116,22 @@ public class SpellcheckAction implements Controller {
             retVal = getSuggestions(params);
         } else {
             // illegal method name
-            retVal = new JSONArray();
+            retVal = new ArrayList<String>();
+            Log.debug(getClass().getSimpleName(), "Received '" + method + "' as value for method.", null, null);
         }
         return retVal;
     }
 
-    private JSONArray checkWords(JSONArray params) throws JSONException {
+    private List<String> checkWords(JSONArray params) throws JSONException {
         String lang = params.getString(0);
         JSONArray wordsArray = params.getJSONArray(1);
-        List<String> words = toList(wordsArray);
-        List<String> misspelledWords = spellcheckerService.spellcheck(words);
-        return toJSONArray(misspelledWords);
+        return spellcheckerService.spellcheck(toList(wordsArray), lang);
     }
 
-    private JSONArray getSuggestions(JSONArray params) throws JSONException {
+    private List<String> getSuggestions(JSONArray params) throws JSONException {
         String lang = params.getString(0);
         String word = params.getString(1);
-        List<String> suggestions = spellcheckerService.suggest(word);
-        return toJSONArray(suggestions);
+        return spellcheckerService.suggest(word, lang);
     }
 
     private List<String> toList(JSONArray array) {
@@ -152,14 +142,6 @@ public class SpellcheckAction implements Controller {
             } catch (JSONException e) {
                 Log.error(getClass().getClass().getName(), e, "toList", null);
             }
-        }
-        return retVal;
-    }
-
-    private JSONArray toJSONArray(List<String> list) {
-        JSONArray retVal = new JSONArray();
-        for (String element : list) {
-            retVal.put(element);
         }
         return retVal;
     }
