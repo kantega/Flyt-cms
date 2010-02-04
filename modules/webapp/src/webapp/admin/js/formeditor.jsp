@@ -335,7 +335,7 @@ formElementText.onEdit = function(element) {
     }
 
     var maxsize = $("div.inputs input", element).attr("maxlength");
-    if (!isNaN(maxsize) && maxsize > 0) {
+    if (!isNaN(maxsize) && maxsize > 0 && maxsize < 128000) {
         $("#form_MaxLength").val(maxsize);
     } else {
         $("#form_MaxLength").val("");
