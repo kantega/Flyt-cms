@@ -72,6 +72,7 @@ public class MSWordFilter extends XMLFilterImpl {
 
             // Remove all style
             attributes = HtmlFilterHelper.removeAttribute("style", attributes);            
+            attributes = HtmlFilterHelper.removeAttribute("lang", attributes);
 
             super.startElement(string,  localName, name, attributes);
         }

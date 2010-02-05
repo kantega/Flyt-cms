@@ -46,4 +46,12 @@ public class UrlAttribute extends Attribute {
     public boolean isSearchable() {
         return true;
     }
+
+    @Override
+    public void setValue(String value) {
+        if (value != null && value.startsWith("www.")) {
+            value = "http://" + value;
+        }
+        super.setValue(value);
+    }
 }
