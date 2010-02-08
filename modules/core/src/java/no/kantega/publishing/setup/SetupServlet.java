@@ -55,7 +55,7 @@ public class SetupServlet extends HttpServlet {
 
         addDriver("mysql", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/databasename?useUnicode=true&characterEncoding=iso-8859-1");
         drivers.put("mssql", new JdbcDriver("mssql", "Microsoft SQL Server", "net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:sqlserver://localhost:1433/databasename;tds=8.0;logintimeout=15"));
-        drivers.put("derby", new JdbcDriver("derby", "Apache Derby", "org.apache.derby.jdbc.EmbeddedDriver", "jdbc:derby:" +dataDirectory.getAbsolutePath() + "/derby/openaksess.db"));
+        drivers.put("derby", new JdbcDriver("derby", "Apache Derby", "org.apache.derby.jdbc.EmbeddedDriver", "jdbc:derby:" +dataDirectory.getAbsolutePath().replaceAll("\\\\", "/") + "/derby/openaksess.db"));
     }
 
     private void addDriver(String id, String name, String driverClass, String defaultUrl) {
