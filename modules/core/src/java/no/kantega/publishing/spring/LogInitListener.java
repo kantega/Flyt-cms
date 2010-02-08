@@ -54,7 +54,10 @@ public class LogInitListener implements ServletContextListener {
 
         try {
             String content = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("no/kantega/publishing/log/default-log4j.xml"), "iso-8859-1");
-            content = content.replaceAll("@logDirectory@", logDirectory.getAbsolutePath());
+            String logDirectoryPath = logDirectory.getAbsolutePath();
+            // Escape backslash for Windows
+            logDirectoryPath = logDirectoryPath.replaceAll("\\\\", "/");            
+            content = content.replaceAll("@logDirectory@", logDirectoryPath);
             final FileOutputStream out = new FileOutputStream(configFile);
             IOUtils.write(content, out, "iso-8859-1");
             out.close();
