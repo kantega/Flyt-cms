@@ -135,6 +135,11 @@ public class MailSender {
 
             Session session = Session.getDefaultInstance(props);
 
+            boolean debug = config.getBoolean("mail.debug", false);
+            if (debug) {
+                session.setDebug(true);
+            }
+
             // Opprett message, sett attributter
             MimeMessage message = new MimeMessage(session);
             InternetAddress fromAddress = new InternetAddress(from);
