@@ -36,18 +36,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import no.kantega.publishing.api.services.DefaultContentCreator;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 public class CreateRootAction  extends AbstractController {
+
     private static String SOURCE = "aksess.CreateRootAction";
 
     private SiteCache siteCache;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private DefaultContentCreator defaultContentCreator;
 
+    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         int siteId = param.getInt("siteId");
@@ -101,11 +105,9 @@ public class CreateRootAction  extends AbstractController {
             DisplayTemplate displayTemplate = null;
 
             for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
-
                 if(newIndex.equals(template.getView()) || oldIndex.equals(template.getView())) {
                     displayTemplate = template;
                     break;
-
                 }
             }
             if (displayTemplate == null) {
@@ -116,10 +118,15 @@ public class CreateRootAction  extends AbstractController {
             content.setContentTemplateId(displayTemplate.getContentTemplate().getId());
             if (displayTemplate.getMetaDataTemplate() != null) {
                 content.setMetaDataTemplateId(displayTemplate.getMetaDataTemplate().getId());
-            }            
+            }
 
             aksessService.checkInContent(content, ContentStatus.PUBLISHED);
 
+            // Fill the database with additional default content if such a bean exists
+            if (defaultContentCreator != null) {
+                // TODO
+                defaultContentCreator.createDefaultContent();
+            }
         } finally {
             if (c != null) {
                 c.close();
@@ -132,6 +139,9 @@ public class CreateRootAction  extends AbstractController {
     public void setSiteCache(SiteCache siteCache) {
         this.siteCache = siteCache;
     }
+
+    @Autowired
+    public void setDefaultContentCreator(DefaultContentCreator defaultContentCreator) {
+        this.defaultContentCreator = defaultContentCreator;
+    }
 }
-
-

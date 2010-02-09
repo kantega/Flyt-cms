@@ -53,15 +53,15 @@ public class SetupServlet extends HttpServlet {
         contextLoader = (OpenAksessContextLoaderListener) getServletContext().getAttribute(OpenAksessContextLoaderListener.LISTENER_ATTR);
         dataDirectory  = (File)getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
 
-        addDriver("mysql", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/databasename?useUnicode=true&characterEncoding=iso-8859-1");
-        drivers.put("mssql", new JdbcDriver("mssql", "Microsoft SQL Server", "net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:sqlserver://localhost:1433/databasename;tds=8.0;logintimeout=15"));
-        drivers.put("derby", new JdbcDriver("derby", "Apache Derby", "org.apache.derby.jdbc.EmbeddedDriver", "jdbc:derby:" +dataDirectory.getAbsolutePath().replaceAll("\\\\", "/") + "/derby/openaksess.db"));
+        addDriver("mysql", "MySQL", "com.mysql.jdbc.Driver", "jdbc:mysql://localhost/databasename?useUnicode=true&characterEncoding=iso-8859-1", null);
+        drivers.put("mssql", new JdbcDriver("mssql", "Microsoft SQL Server", "net.sourceforge.jtds.jdbc.Driver", "jdbc:jtds:sqlserver://localhost:1433/databasename;tds=8.0;logintimeout=15", null));
+        drivers.put("derby", new JdbcDriver("derby", "Apache Derby", "org.apache.derby.jdbc.EmbeddedDriver", "jdbc:derby:" +dataDirectory.getAbsolutePath().replaceAll("\\\\", "/") + "/derby/openaksess.db", "Derby is the easiest option, as it requires no manual installation."));
     }
 
-    private void addDriver(String id, String name, String driverClass, String defaultUrl) {
+    private void addDriver(String id, String name, String driverClass, String defaultUrl, String helpText) {
         try {
             getClass().getClassLoader().loadClass(driverClass);
-            drivers.put(id, new JdbcDriver(id, name, driverClass, defaultUrl));
+            drivers.put(id, new JdbcDriver(id, name, driverClass, defaultUrl, helpText));
         } catch (ClassNotFoundException e) {
             log.info("Driver class excluded because it is not on the classpath: " + driverClass);
         }
@@ -71,10 +71,13 @@ public class SetupServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         assertSetupNotOk();
-        // Populate any existing database properties as default values in the form
+
+        req.setAttribute("drivers", drivers);
+        
         Properties props = contextLoader.getProperties();
         final String driver = props.getProperty("database.driver");
         if(!StringUtils.isEmpty(driver)) {
+            // Populate any existing database properties as default values in the form
             if(driver.contains("mysql")) {
                 req.setAttribute("driverName",  "mysql");
             } else if(driver.contains("jtds")) {
@@ -82,10 +85,13 @@ public class SetupServlet extends HttpServlet {
             } else if(driver.contains("derby")) {
                 req.setAttribute("driverName", "derby");
             }
+            req.setAttribute("url", props.getProperty("database.url"));
+            req.setAttribute("username", props.getProperty("database.username"));
+        } else {
+            // Use derby as default if no database properties exist
+            req.setAttribute("driverName", "derby");
+            req.setAttribute("url", drivers.get("derby").getDefaultUrl());
         }
-        req.setAttribute("drivers", drivers);
-        req.setAttribute("url", props.getProperty("database.url"));
-        req.setAttribute("username", props.getProperty("database.username"));
 
         // Show the form
         req.getRequestDispatcher("/WEB-INF/setup/setup.jsp").forward(req, resp);
@@ -137,10 +143,10 @@ public class SetupServlet extends HttpServlet {
                 connection = dataSource.getConnection();
                 connection.close();
             } catch (SQLException e) {
-                log.error("Error connecting to database", e);
-
                 // If this is a derby database, we might need to create it first
                 if("derby".equals(driverName) && !url.toLowerCase().contains("create=true")) {
+                    log.error("Error connecting to database");
+
                     String createUrl = url +";create=true";
                     dataSource.setUrl(createUrl);
                     try {
@@ -156,8 +162,8 @@ public class SetupServlet extends HttpServlet {
                     } catch (SQLException e1) {
                         errors.add("Could not connect to database: " + e.getMessage());
                     }
-                }
-                else {
+                } else {
+                    log.error("Error connecting to database", e);
                     errors.add("Could not connect to database: " + e.getMessage());
                 }
             }
@@ -173,11 +179,11 @@ public class SetupServlet extends HttpServlet {
 
             req.getRequestDispatcher("/WEB-INF/setup/setup.jsp").forward(req, resp);
         } else {
-            // Otherwise, reconfigure aksess.conf, start application context and redirect to front page
+            // Otherwise, reconfigure aksess.conf, start application context and redirect to admin page
             final String driver = drivers.get(driverName).getDriverClass();
             reconfigure(driver, url, username, password, req.getContextPath());
             contextLoader.initContext();
-            resp.sendRedirect(req.getContextPath());
+            resp.sendRedirect(req.getContextPath() + "/admin");
         }
 
 

@@ -25,7 +25,11 @@
 	<title>Initial user create</title>
     <link rel="stylesheet" type="text/css" href="<aksess:geturl/>/login/login.css">
 <body>
-<form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/" method="post">
+<form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/?activetab=systemadmin" method="POST">
+    <input type="hidden" name="j_domain" value="dbuser">
+    <input type="hidden" name="j_username" value="${username}">
+    <input type="hidden" name="j_password" value="${password}">
+    
     <table border="0" cellspacing="0" cellpadding="0" width="400" align="center">
         <tr>
             <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
@@ -46,7 +50,7 @@
                 </p>
 
                 <p>
-                    <input type="submit" value="Continue to login page">
+                    <input type="submit" value="Continue to admin page">
                 </p>
 
             </td>

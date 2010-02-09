@@ -16,19 +16,20 @@
 
 package no.kantega.publishing.setup;
 
-/**
- */
 public class JdbcDriver {
+
     private String id;
     private String name;
     private String driverClass;
     private String defaultUrl;
+    private String helpText;
 
-    public JdbcDriver(String id, String name, String driverClass, String defaultUrl) {
+    public JdbcDriver(String id, String name, String driverClass, String defaultUrl, String helpText) {
         this.id = id;
         this.name = name;
         this.driverClass = driverClass;
         this.defaultUrl = defaultUrl;
+        this.helpText = helpText;
     }
 
     public String getId() {
@@ -45,5 +46,13 @@ public class JdbcDriver {
 
     public String getName() {
         return name;
+    }
+
+    public String getHelpText() {
+        return helpText;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
     }
 }

@@ -98,6 +98,7 @@ public class CreateInitialUserController extends AbstractController {
             String password2 = param.getString("password2");
 
             model.put("username", username);
+            model.put("password", password); // Needed by CONFIRM_VIEW for automatic login
 
 
             boolean error = false;
