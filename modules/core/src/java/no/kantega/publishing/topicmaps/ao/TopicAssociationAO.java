@@ -254,7 +254,7 @@ public class TopicAssociationAO {
     }
 
 
-    private static void updateTopicUsages(List<Topic> topics) throws SystemException {
+    public static void updateTopicUsages(List<Topic> topics) throws SystemException {
         if (topics == null || topics.size() == 0) {
             return;
         }

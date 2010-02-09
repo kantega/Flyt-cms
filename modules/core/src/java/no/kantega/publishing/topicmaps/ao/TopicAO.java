@@ -476,6 +476,10 @@ public class TopicAO {
                 Log.error(SOURCE, e, null, null);
             }
         }
+
+        // Update with usage count
+        TopicAssociationAO.updateTopicUsages(topics);
+
         return topics;
     }
 
