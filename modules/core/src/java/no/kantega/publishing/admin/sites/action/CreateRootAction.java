@@ -140,7 +140,6 @@ public class CreateRootAction  extends AbstractController {
         this.siteCache = siteCache;
     }
 
-    @Autowired
     public void setDefaultContentCreator(DefaultContentCreator defaultContentCreator) {
         this.defaultContentCreator = defaultContentCreator;
     }
