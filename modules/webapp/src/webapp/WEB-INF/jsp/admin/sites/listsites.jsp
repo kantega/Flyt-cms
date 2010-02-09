@@ -34,30 +34,39 @@
 </script>
 
 <body class="bodyWithMargin">
-<table border="0" cellspacing="0" cellpadding="0" width="600">
-    <tr class="tableHeading">
-        <td><strong><kantega:label key="aksess.site.name"/></strong></td>
-        <td><strong><kantega:label key="aksess.site.alias"/></strong></td>
-        <td>&nbsp;</td>
-    </tr>
-    <c:forEach var="site" items="${sites}" varStatus="status">
-        <tr class="tableRow${status.index mod 2}">
-            <td>${site.name}</td>
-            <td>${site.alias}</td>
-            <td>
-                <table border="0" cellspacing="0" cellpadding="0">
-                    <tr>
-                        <td><a href="Javascript:editSite(${site.id})"><img src="../bitmaps/common/buttons/mini_rediger.gif" border="0"></a></td>
-                        <td><a href="Javascript:editSite(${site.id})" class="button"><kantega:label key="aksess.site.editdomains"/></a></td>
-                        <td><img src="../bitmaps/common/textseparator.gif" alt=""></td>
-                        <td><a href="Javascript:createSiteRoot(${site.id})"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
-                        <td><a href="Javascript:createSiteRoot(${site.id})" class="button"><kantega:label key="aksess.site.createhomepage"/></a></td>
-                    </tr>
-                </table>
-            </td>
+    <table border="0" cellspacing="0" cellpadding="0" width="600">
+        <tr class="tableHeading">
+            <td><strong><kantega:label key="aksess.site.name"/></strong></td>
+            <td><strong><kantega:label key="aksess.site.alias"/></strong></td>
+            <td>&nbsp;</td>
         </tr>
-    </c:forEach>
-</table>
+        <c:forEach var="site" items="${sites}" varStatus="status">
+            <tr class="tableRow${status.index mod 2}">
+                <td>${site.name}</td>
+                <td>${site.alias}</td>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td><a href="Javascript:editSite(${site.id})"><img src="../bitmaps/common/buttons/mini_rediger.gif" border="0"></a></td>
+                            <td><a href="Javascript:editSite(${site.id})" class="button"><kantega:label key="aksess.site.editdomains"/></a></td>
+                            <c:forEach var="siteId" items="${existingSiteIds}">
+                                <c:if test="${siteId == site.id}">
+                                    <c:set var="siteHasBeenCreated" value="true" />
+                                </c:if>
+                            </c:forEach>
+                            <c:if test="${!siteHasBeenCreated}">
+                                <%-- Do not show the createhomepage link if the site already has been created --%>
+                                <td><img src="../bitmaps/common/textseparator.gif" alt=""></td>
+                                <td><a href="Javascript:createSiteRoot(${site.id})"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
+                                <td><a href="Javascript:createSiteRoot(${site.id})" class="button"><kantega:label key="aksess.site.createhomepage"/></a></td>
+                            </c:if>
+                            <c:set var="siteHasBeenCreated" value="false" />
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </c:forEach>
+    </table>
 </body>
 </html>
 <%@ include file="../../../../admin/include/jsp_footer.jsf" %>
