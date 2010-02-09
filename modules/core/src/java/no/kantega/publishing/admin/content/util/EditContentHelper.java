@@ -161,10 +161,9 @@ public class EditContentHelper {
         content.setLanguage(parent.getLanguage());
 
         //Setter dokumenttype hvis ikke dokumenttype er satt spesifikt for dette objektet og defaultDocumentTypeIdForChildren er satt på parent.
-        if (content.getDocumentTypeId() == -1 && parent.getDocumentTypeIdForChildren() != -1) {
+        if (content.getDocumentTypeId() <= 0 && parent.getDocumentTypeIdForChildren() > 0) {
             content.setDocumentTypeId(parent.getDocumentTypeIdForChildren());
         }
-
 
         if (inheritGroup) {
             // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
