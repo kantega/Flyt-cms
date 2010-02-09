@@ -74,7 +74,7 @@ public class TopicAO {
                 topic.setIsSelectable(rs.getInt("IsSelectable") == 1);
 
                 // Hent basenames
-                List baseNames = new ArrayList();
+                List<TopicBaseName> baseNames = new ArrayList<TopicBaseName>();
                 st = c.prepareStatement("SELECT * FROM tmbasename WHERE TopicId = ? AND TopicMapId = ?");
                 st.setString(1, topicId);
                 st.setInt(2, topicMapId);

@@ -87,7 +87,7 @@ public class EditTopicMapAction extends AbstractController {
                     Topic associationType = new Topic("emne-emne", topicMap.getId());
                     associationType.setIsAssociation(true);
 
-                    List basenames = new ArrayList();
+                    List<TopicBaseName> basenames = new ArrayList<TopicBaseName>();
                     TopicBaseName basename = new TopicBaseName();
                     basename.setBaseName("er relatert til");
                     basename.setScope("emne");

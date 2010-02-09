@@ -565,7 +565,7 @@ public class Content extends BaseObject {
         attachments.add(attachment);
     }
 
-    public List getTopics() {
+    public List<Topic> getTopics() {
         return topics;
     }
 
