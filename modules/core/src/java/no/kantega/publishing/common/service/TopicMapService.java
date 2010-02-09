@@ -84,31 +84,31 @@ public class TopicMapService {
     }
 
 
-    public List getAllTopics() throws SystemException {
+    public List<Topic> getAllTopics() throws SystemException {
         return TopicAO.getAllTopics();
     }
 
-    public List getTopicsByTopicMapId(int topicMapId) throws SystemException {
+    public List<Topic> getTopicsByTopicMapId(int topicMapId) throws SystemException {
         return TopicAO.getTopicsByTopicMapId(topicMapId);
     }
 
-    public List getTopicTypes(int topicMapId) throws SystemException {
+    public List<Topic> getTopicTypes(int topicMapId) throws SystemException {
         return TopicAO.getTopicTypes(topicMapId);
     }
 
-    public List getTopicsByInstance(Topic instance) throws SystemException {
+    public List<Topic> getTopicsByInstance(Topic instance) throws SystemException {
         return TopicAO.getTopicsByInstance(instance);
     }
 
-    public List getTopicsByNameAndTopicMapId(String topicName, int topicMapId) throws SystemException {
+    public List<Topic> getTopicsByNameAndTopicMapId(String topicName, int topicMapId) throws SystemException {
         return TopicAO.getTopicsByNameAndTopicMapId(topicName, topicMapId);
     }
 
-    public List getTopicsByNameAndInstance(String topicName, Topic instance) throws SystemException {
+    public List<Topic> getTopicsByNameAndInstance(String topicName, Topic instance) throws SystemException {
         return TopicAO.getTopicsByNameAndInstance(topicName, instance);
     }
 
-    public List getTopicAssociations(Topic atopic) throws SystemException {
+    public List<TopicAssociation> getTopicAssociations(Topic atopic) throws SystemException {
         return TopicAssociationAO.getTopicAssociations(atopic);
     }
 

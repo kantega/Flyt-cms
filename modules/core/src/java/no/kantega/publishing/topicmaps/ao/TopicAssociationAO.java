@@ -128,7 +128,7 @@ public class TopicAssociationAO {
         }
     }
 
-    public static List getTopicAssociations(Topic topic) throws SystemException {
+    public static List<TopicAssociation> getTopicAssociations(Topic topic) throws SystemException {
         List<TopicAssociation> associations = new ArrayList<TopicAssociation>();
 
         if (topic == null) {
