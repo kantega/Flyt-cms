@@ -216,7 +216,7 @@ public class ContentManagementService {
                 // is performed, set the publish date to the exact time when the content is published.
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
                 Date currentTime = new Date();
-                if ((content.getPublishDate() != null) && content.getPublishDate().before(currentTime)) {
+                if (content.getPublishDate().before(currentTime)) {
                     content.setPublishDate(currentTime);
                 }
             }
