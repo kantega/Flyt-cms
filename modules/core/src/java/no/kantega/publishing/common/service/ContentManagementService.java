@@ -198,7 +198,7 @@ public class ContentManagementService {
 
         content.setModifiedBy(securitySession.getUser().getId());
 
-        // Sjekk om brukeren har rett til � publisere, hvis ikke sett ventestatus
+        // Check if user is authorized to publish, if not set status to WAITING
         if (newStatus == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
             newStatus = ContentStatus.WAITING;
             content.setApprovedBy("");
@@ -206,17 +206,13 @@ public class ContentManagementService {
             content.setApprovedBy(securitySession.getUser().getId());
         }
 
-        if (content.getPublishDate() != null && content.getPublishDate().getTime() > new Date().getTime()) {
-            content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
-        } else if (content.getExpireDate() != null && content.getExpireDate().getTime() < new Date().getTime()) {
-            if (content.getExpireAction () == ExpireAction.ARCHIVE) {
-                content.setVisibilityStatus(ContentVisibilityStatus.ARCHIVED);
-            } else {
-                content.setVisibilityStatus(ContentVisibilityStatus.EXPIRED);
+        if (newStatus == ContentStatus.PUBLISHED) {
+            if (content.getPublishDate() == null) {
+                // If page is published, publish date must be set
+                content.setPublishDate(new Date());
             }
-        } else {
-            if ((content.getStatus() == ContentStatus.DRAFT) && (newStatus == ContentStatus.PUBLISHED)) {
-                // If the content is a draft and the publish date has been set to be some time earlier than the publishing
+            if ((content.getId() > 0) && (!ContentAO.hasBeenPublished(content.getId()))) {
+                // If the content has not been published before (e.g only saved as draft) and publish date has been set to be some time earlier than the publishing
                 // is performed, set the publish date to the exact time when the content is published.
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
                 Date currentTime = new Date();
@@ -224,7 +220,19 @@ public class ContentManagementService {
                     content.setPublishDate(currentTime);
                 }
             }
+        }
 
+        if (content.getPublishDate() != null && content.getPublishDate().getTime() > new Date().getTime()) {
+            // Content is waiting to become active
+            content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
+        } else if (content.getExpireDate() != null && content.getExpireDate().getTime() < new Date().getTime()) {
+            // Content is expired
+            if (content.getExpireAction () == ExpireAction.ARCHIVE) {
+                content.setVisibilityStatus(ContentVisibilityStatus.ARCHIVED);
+            } else {
+                content.setVisibilityStatus(ContentVisibilityStatus.EXPIRED);
+            }
+        } else {
             content.setVisibilityStatus(ContentVisibilityStatus.ACTIVE);
         }
 
@@ -291,7 +299,7 @@ public class ContentManagementService {
             if (displayTemplate.isNewGroup()) {
                 // Arver egenskaper fra sider over.  GroupId brukes til � lage ting som skal v�re spesielt for en struktur, f.eks meny
                 sourceContent.setGroupId(destParent.getGroupId());
-            }            
+            }
         }
 
         // Kj�r plugins
@@ -339,14 +347,29 @@ public class ContentManagementService {
             ContentAO.setNumberOfNotes(cid.getContentId(), count);
         }
 
+        Date newPublishDate = null;
+
         String event = Event.APPROVED;
         if (newStatus == ContentStatus.REJECTED) {
             event = Event.REJECTED;
+        } else if (newStatus == ContentStatus.PUBLISHED) {
+            Date currentTime = new Date();
+
+            if (c.getPublishDate() == null) {
+                newPublishDate = currentTime;
+            } else if (!ContentAO.hasBeenPublished(cid.getContentId())) {
+                // If the content has not been published before and publish date has been set to be some time earlier than the publishing
+                // is performed, set the publish date to the exact time when the content is published.
+                // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
+                if (c.getPublishDate().before(currentTime)) {
+                    newPublishDate = currentTime;
+                }                                
+            }
         }
 
         EventLog.log(securitySession, request, event, c.getTitle(), c);
 
-        return ContentAO.setContentStatus(cid, newStatus, securitySession.getUser().getId());
+        return ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
     }
 
 
@@ -382,7 +405,7 @@ public class ContentManagementService {
                 if (!canDelete.booleanValue()) {
                     throw new ObjectInUseException(SOURCE, "I bruk");
                 }
-                
+
                 cid = ContentAO.deleteContent(id);
                 if (title != null) {
                     EventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
@@ -461,7 +484,7 @@ public class ContentManagementService {
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, true, false);
     }
-    
+
 
     /**
      * Henter en liste med innholdsobjekter fra basen uten attributter
@@ -697,7 +720,7 @@ public class ContentManagementService {
         return TemplateHelper.getAllowedDisplayTemplatesForChange(content, isAdmin);
     }
 
-   
+
     /**
      * Henter en spalte basert p� id
      * @param id - Id til spalten som skal hentes
@@ -880,7 +903,7 @@ public class ContentManagementService {
      *
      * @return - Liste med alias (String)
      * @throws SystemException
-     */   
+     */
     public List findDuplicateAliases(Association parent) throws SystemException {
         return AssociationAO.findDuplicateAliases(parent);
     }

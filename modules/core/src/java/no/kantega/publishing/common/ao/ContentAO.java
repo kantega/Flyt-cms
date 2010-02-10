@@ -736,10 +736,6 @@ public class ContentAO {
             st.setString(p++, content.getOwnerPerson());
             st.setString(p++, content.getLocation());
             st.setString(p++, content.getAlias());
-            if (content.getPublishDate() == null && newStatus == ContentStatus.PUBLISHED) {
-                // If page is published, publish date must be set
-                content.setPublishDate(new Date());
-            }
             st.setTimestamp(p++, content.getPublishDate() == null ? null : new java.sql.Timestamp(content.getPublishDate().getTime()));
             st.setTimestamp(p++, content.getExpireDate() == null ? null : new java.sql.Timestamp(content.getExpireDate().getTime()));
             st.setTimestamp(p++, content.getRevisionDate() == null ? null : new java.sql.Timestamp(content.getRevisionDate().getTime()));
@@ -1025,7 +1021,7 @@ public class ContentAO {
         }
     }
 
-    public static Content setContentStatus(ContentIdentifier cid, int newStatus, String userId) throws SystemException {
+    public static Content setContentStatus(ContentIdentifier cid, int newStatus, Date newPublishDate, String userId) throws SystemException {
         Connection c = null;
 
         try {
@@ -1047,13 +1043,15 @@ public class ContentAO {
                 tmp.close();
                 tmp = null;
 
-                // Set publish date if not set
-                tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ? and PublishDate is null");
-                tmp.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
-                tmp.setInt(2, cid.getContentId());
-                tmp.execute();
-                tmp.close();
-                tmp = null;
+                if (newPublishDate != null) {
+                    // Set publish date if not set
+                    tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ?");
+                    tmp.setTimestamp(1, new java.sql.Timestamp(newPublishDate.getTime()));
+                    tmp.setInt(2, cid.getContentId());
+                    tmp.execute();
+                    tmp.close();
+                    tmp = null;
+                }
 
             } else {
                 PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
@@ -1322,6 +1320,17 @@ public class ContentAO {
         TODO: Should documenttype be changed?
 
          */
+    }
+
+    /**
+     * Check if page is published or has been published
+     * @param contentId - ContentId
+     * @return
+     */
+    public static boolean hasBeenPublished(int contentId) {
+        JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
+        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", new Object[] {contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED});
+        return cnt > 0;
     }
 
     public interface ContentHandlerStopper {
