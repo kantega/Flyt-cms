@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.apache.log4j.Logger;
+import org.apache.log4j.Level;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +33,11 @@ import javax.servlet.http.HttpServletRequest;
  * Setup code is run before the root webapplication context is started. 
  */
 public class NoSpringContextCapableMultipartFilter extends MultipartFilter {
+    public NoSpringContextCapableMultipartFilter() {
+        super();
+        Logger.getLogger(getClass()).setLevel(Level.INFO);
+    }
+
     @Override
     protected MultipartResolver lookupMultipartResolver(HttpServletRequest request) {
         final WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
