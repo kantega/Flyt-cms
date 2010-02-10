@@ -31,14 +31,12 @@ import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.exception.RootExistsException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.util.database.SQLHelper;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import no.kantega.publishing.api.services.DefaultContentCreator;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -124,8 +122,7 @@ public class CreateRootAction  extends AbstractController {
 
             // Fill the database with additional default content if such a bean exists
             if (defaultContentCreator != null) {
-                // TODO
-                defaultContentCreator.createDefaultContent();
+                defaultContentCreator.createDefaultContent(aksessService, content);
             }
         } finally {
             if (c != null) {
@@ -140,6 +137,7 @@ public class CreateRootAction  extends AbstractController {
         this.siteCache = siteCache;
     }
 
+    @Autowired(required = false)
     public void setDefaultContentCreator(DefaultContentCreator defaultContentCreator) {
         this.defaultContentCreator = defaultContentCreator;
     }
