@@ -75,7 +75,7 @@ public class MultimediaHelper {
 
             String copyright = "";
             if (author != null && author.length() > 0) {
-                copyright = " - &copy;: " + author;
+                copyright = " - &copy; " + author;
             }
 
             String title = Aksess.getMultimediaTitleFormat();
