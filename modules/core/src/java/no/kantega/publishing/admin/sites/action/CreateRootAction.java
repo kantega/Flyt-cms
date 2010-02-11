@@ -118,11 +118,11 @@ public class CreateRootAction  extends AbstractController {
                 content.setMetaDataTemplateId(displayTemplate.getMetaDataTemplate().getId());
             }
 
-            aksessService.checkInContent(content, ContentStatus.PUBLISHED);
+            Content contentRoot = aksessService.checkInContent(content, ContentStatus.PUBLISHED);
 
             // Fill the database with additional default content if such a bean exists
             if (defaultContentCreator != null) {
-                defaultContentCreator.createDefaultContent(aksessService, content);
+                defaultContentCreator.createDefaultContent(aksessService, contentRoot);
             }
         } finally {
             if (c != null) {

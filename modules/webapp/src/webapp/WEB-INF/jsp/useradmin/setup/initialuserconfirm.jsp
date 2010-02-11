@@ -42,7 +42,7 @@
 
                 <h1>User account setup complete</h1>
                 <p>
-                    The account ${username} has been given administration privileges.
+                    The account <b>${username}</b> has been given administration privileges.
                 </p>
 
                 <p>

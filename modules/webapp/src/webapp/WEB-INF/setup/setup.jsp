@@ -16,94 +16,116 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
-<head><title>OpenAksess setup</title>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 
+<html>
+<head>
+    <title>OpenAksess setup</title>
     <style type="text/css">
-<%
-    IOUtils.copy(pageContext.getServletContext().getResourceAsStream("/admin/css/default.css"), out);
-%>
+        <%
+        IOUtils.copy(pageContext.getServletContext().getResourceAsStream("/admin/css/default.css"), out);
+        %>
         label {
             display:inline;
         }
-</style>
+
+        <%
+        IOUtils.copy(pageContext.getServletContext().getResourceAsStream("/login/login.css"), out);
+        %>
+        input {
+            width: auto;
+        }
+    </style>
 </head>
+
 <body>
-<h1>OpenAksess initial database setup</h1>
+    <form action="<%=request.getContextPath()%>/Setup.initialAction" method="POST">
+        <table border="0" cellspacing="0" cellpadding="0" width="800" align="center">
+            <tr>
+                <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
+                <td width="796" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
+                <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
+                <td width="2" rowspan="3" class="shadow" valign="top"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
+             </tr>
+             <tr>
+                <td class="box">
+                    <h1>OpenAksess initial database setup</h1>
 
-<p>
+                    <c:if test="${not empty errors}">
+                        <ul>
+                            <c:forEach var="error" items="${errors}">
+                                <li>
+                                    <c:out value="${error}"/>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                    </c:if>
 
-</p>
+                    <script type="text/javascript">
+                        function setDefaultUrl(defaultUrl) {
+                            var url = document.getElementById("jdbcurl");
+                            url.value = defaultUrl;
+                        }
+                    </script>
+                    <table>
+                        <tr>
+                            <td style="vertical-align:top;">
+                                Database driver:
+                            </td>
+                            <td>
+                                <c:forEach var="driver" items="${drivers}">
+                                    <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onclick="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label>
+                                    <c:if test="${driver.value.helpText != null}">
+                                        (${driver.value.helpText})
+                                    </c:if><br />
+                                </c:forEach>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Database url:
+                            </td>
+                            <td>
+                                <input name="url" size="100" id="jdbcurl" value="<c:out value="${url}"/>">
+                            </td>
+                        </tr>
 
-<script type="text/javascript">
-    function setDefaultUrl(defaultUrl) {
-        var url = document.getElementById("jdbcurl");
+                        <tr>
+                            <td>
+                                Username:
+                            </td>
+                            <td>
+                                <input name="username" value="<c:out value="${username}"/>">
+                            </td>
+                        </tr>
 
-        url.value = defaultUrl;
+                        <tr>
+                            <td>
+                                Password:
+                            </td>
+                            <td>
+                                <input name="password" type="password">
+                            </td>
+                        </tr>
 
-    }
-</script>
-<form action="<%=request.getContextPath()%>/Setup.initialAction" method="POST">
-    <c:if test="${not empty errors}">
-        <ul>
-            <c:forEach var="error" items="${errors}">
-                <li>
-                    <c:out value="${error}"/>
-                </li>
-            </c:forEach>
-        </ul>
-    </c:if>
-    <table>
-        <tr>
-            <td style="vertical-align:top;">
-                Database driver:
-            </td>
-            <td>
-                <c:forEach var="driver" items="${drivers}">
-                    <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onclick="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label>
-                    <c:if test="${driver.value.helpText != null}">
-                        (${driver.value.helpText})
-                    </c:if><br />
-                </c:forEach>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Database url:
-            </td>
-            <td>
-                <input name="url" size="100" id="jdbcurl" value="<c:out value="${url}"/>">
-            </td>
-        </tr>
+                        <tr>
+                            <td>
 
-        <tr>
-            <td>
-                Username:
-            </td>
-            <td>
-                <input name="username" value="<c:out value="${username}"/>">
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-                Password:
-            </td>
-            <td>
-                <input name="password" type="password">
-            </td>
-        </tr>
-
-        <tr>
-            <td>
-
-            </td>
-            <td>
-                <input type="submit" value="Save">
-            </td>
-        </tr>
-    </table>
-
-</form>
+                            </td>
+                            <td>
+                                <input type="submit" value="Save" onclick="this.disabled=true; this.value='Creating database...'; this.form.submit()">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+             </tr>
+            <tr>
+                <td class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
+             </tr>
+             <tr>
+                <td colspan="4" class="shadow"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" height="2"></td>
+            </tr>
+        </table>
+    </form>
 </body>
 </html>
