@@ -28,6 +28,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 public class MiniViewTag  extends TagSupport {
     private static final String SOURCE = "aksess.MiniViewTag";
@@ -76,9 +77,12 @@ public class MiniViewTag  extends TagSupport {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            try {
+                pageContext.getResponse().getOutputStream().println("Kan ikke vises pga en teknisk feil");
+            } catch (IOException e1) {
+                //Ignore
+            }
         }
 
         return SKIP_BODY;
