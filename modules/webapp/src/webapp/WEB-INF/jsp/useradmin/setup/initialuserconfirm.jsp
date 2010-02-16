@@ -25,7 +25,7 @@
 	<title>Initial user create</title>
     <link rel="stylesheet" type="text/css" href="<aksess:geturl/>/login/login.css">
 <body>
-<form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/?activetab=systemadmin" method="POST">
+<form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/" method="POST">
     <input type="hidden" name="j_domain" value="dbuser">
     <input type="hidden" name="j_username" value="${username}">
     <input type="hidden" name="j_password" value="${password}">

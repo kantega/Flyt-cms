@@ -296,6 +296,4 @@ public class CreateInitialUserController extends AbstractController {
     public void setTokenFile(File tokenFile) {
         this.tokenFile = tokenFile;
     }
-
-
 }

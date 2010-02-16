@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.sites.action;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +38,7 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
  * Time: 11:03:49 AM
  */
 public class ListSitesAction extends AbstractController {
+
     private SiteCache siteCache;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -44,6 +46,13 @@ public class ListSitesAction extends AbstractController {
 
         model.put("sites", siteCache.getSites());
 
+        List<Integer> existingSiteIds = getExistingSiteIds();
+        model.put("existingSiteIds", existingSiteIds);
+
+        return new ModelAndView("/WEB-INF/jsp/admin/sites/listsites.jsp", model);
+    }
+
+    public List<Integer> getExistingSiteIds() throws SQLException {
         List<Integer> existingSiteIds = new ArrayList<Integer>();
         Connection c = null;
         try {
@@ -58,9 +67,7 @@ public class ListSitesAction extends AbstractController {
                 c.close();
             }
         }
-        model.put("existingSiteIds", existingSiteIds);
-
-        return new ModelAndView("/WEB-INF/jsp/admin/sites/listsites.jsp", model);
+        return existingSiteIds;
     }
 
     public void setSiteCache(SiteCache siteCache) {

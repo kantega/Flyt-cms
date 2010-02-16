@@ -23,7 +23,6 @@ import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
@@ -37,14 +36,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import no.kantega.publishing.admin.sites.action.CreateRootAction;
+import no.kantega.publishing.admin.sites.action.ListSitesAction;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.context.ApplicationContext;
-import org.springframework.beans.factory.InitializingBean;
 
 public class LoginAction implements Controller {
+
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
 
@@ -52,11 +55,12 @@ public class LoginAction implements Controller {
 
     private boolean rolesExists = false;
 
+    private CreateRootAction createRootAction;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("j_username");
         String domain   = request.getParameter("j_domain");
         String password = request.getParameter("j_password");
-        String newPassword = request.getParameter("j_newpassword");
         String redirect = request.getParameter("redirect");
 
         if (redirect == null || redirect.length() == 0) {
@@ -124,6 +128,14 @@ public class LoginAction implements Controller {
 
                     // Finish login by getting instance
                     SecuritySession.getInstance(request);
+
+                    // Create root page if this has not been done already
+                    List<Integer> existingSiteIds = new ListSitesAction().getExistingSiteIds();
+                    if (existingSiteIds.isEmpty()) {
+                        int siteId = 1; // This assumes that a site with databaseId = 1 exists in WEB-INF/aksess-templateconfig.xml
+                        createRootAction.createRootPage(siteId, request);
+                    }
+                    
                     return new ModelAndView(new RedirectView(redirect));
                 } else {
                     // Register failed login
@@ -173,5 +185,10 @@ public class LoginAction implements Controller {
         }
 
         return false;
+    }
+
+    @Autowired
+    public void setCreateRootAction(CreateRootAction createRootAction) {
+        this.createRootAction = createRootAction;
     }
 }

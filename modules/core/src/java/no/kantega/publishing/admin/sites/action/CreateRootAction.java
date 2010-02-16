@@ -16,8 +16,11 @@
 
 package no.kantega.publishing.admin.sites.action;
 
+import java.sql.SQLException;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.InvalidParameterException;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentType;
@@ -51,9 +54,12 @@ public class CreateRootAction  extends AbstractController {
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
-
         int siteId = param.getInt("siteId");
+        createRootPage(siteId, request);
+        return new ModelAndView(new RedirectView("ListSites.action"));
+    }
 
+    public void createRootPage(int siteId, HttpServletRequest request) throws SQLException, RootExistsException, MissingTemplateException, SystemException, NotAuthorizedException {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         Site site = siteCache.getSiteById(siteId);
@@ -129,8 +135,6 @@ public class CreateRootAction  extends AbstractController {
                 c.close();
             }
         }
-
-        return new ModelAndView(new RedirectView("ListSites.action"));
     }
 
     public void setSiteCache(SiteCache siteCache) {
