@@ -66,7 +66,7 @@ public class MiniViewTag  extends TagSupport {
                     try {
                         pageContext.include(template);
                     } catch (Exception e) {
-                        pageContext.getResponse().getOutputStream().println(content.getTitle() + " kan ikke vises pga en teknisk feil");
+                        Log.error(SOURCE, "Unable to display miniview for: " + content.getTitle(), null, null);
                         Log.error(SOURCE, e, null, null);
                     }
 
@@ -78,11 +78,7 @@ public class MiniViewTag  extends TagSupport {
             }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            try {
-                pageContext.getResponse().getOutputStream().println("Kan ikke vises pga en teknisk feil");
-            } catch (IOException e1) {
-                //Ignore
-            }
+            throw new JspException("Error in miniview");
         }
 
         return SKIP_BODY;
