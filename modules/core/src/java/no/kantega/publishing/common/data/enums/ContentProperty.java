@@ -41,6 +41,7 @@ public class ContentProperty {
     public static final String LAST_MODIFIED = "lastmodified";
     public static final String MODIFIED_BY = "modifiedby";
     public static final String DISPLAY_TEMPLATE = "displaytemplate";
+    public static final String DISPLAY_TEMPLATE_ID = "displaytemplateid";
     public static final String VERSION = "version";
     public static final String OWNERPERSON = "ownerperson";
     public static final String CHANGE_DESCRIPTION = "changedescription";

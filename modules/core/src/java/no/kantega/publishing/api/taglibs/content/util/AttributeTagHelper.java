@@ -243,6 +243,8 @@ public final class AttributeTagHelper {
                 isTextAttribute = true;
             } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE)) {
                 result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
+            } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE_ID)) {
+                result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getPublicId();
             } else if(name.equals(ContentProperty.VERSION)) {
                 result = Integer.toString(content.getVersion());
             } else if (name.equals(ContentProperty.IMAGE)) {
