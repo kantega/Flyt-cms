@@ -16,10 +16,12 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
+import java.util.Enumeration;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 
@@ -49,6 +51,29 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     public Object createInstance() throws Exception {
         ServiceLocator serviceLocator = new SpringServiceLocator(applicationContext, servicesClass);
         SpringPluginLoader<OpenAksessPlugin> spring = new SpringPluginLoader<OpenAksessPlugin>() {
+
+            @Override
+            public List<OpenAksessPlugin> loadPlugins(Class<OpenAksessPlugin> pluginClass, ClassLoader classLoader, ServiceLocator serviceLocator) {
+                checkWrongSpringXmlLocation(classLoader);
+                return super.loadPlugins(pluginClass, classLoader, serviceLocator);
+            }
+
+            private void checkWrongSpringXmlLocation(ClassLoader classLoader) {
+                String contextLocation = "META-INF/services/" +pluginClass.getName() +"/spring.xml";
+                String contextLocationWithSlashInsteadOfDot = "META-INF/services/" +pluginClass.getName().replace('.','/') +"/spring.xml";
+
+                try {
+                    final Enumeration<URL> resources = classLoader.getResources(contextLocationWithSlashInsteadOfDot);
+
+                    if(resources.hasMoreElements()) {
+                        throw new IllegalArgumentException("We found a spring.xml file located at " + resources.nextElement() +". " +
+                                "OpenAksess expects to find the spring.xml files in 'META-INF/services/" + contextLocation +"'" +
+                                ", NOT '" + contextLocationWithSlashInsteadOfDot +"'. Please put spring.xml at the currect location.");
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
 
             @Override
             protected ConfigurableApplicationContext
