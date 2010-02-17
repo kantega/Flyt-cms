@@ -75,7 +75,8 @@ public final class AttributeTagHelper {
                 ContentManagementService cs = new ContentManagementService(request);
                 try {
                     if (collection == null) {
-                        content = (Content)request.getAttribute("aksess_content" + contentId);
+                        String key = getCacheKeyPrefix(request);
+                        content = (Content)request.getAttribute(key + contentId);
                     }
 
                     if (content == null) {
@@ -98,7 +99,7 @@ public final class AttributeTagHelper {
                                 // Next or previous page found
                                 content = cs.getContent(cid, false);
                                 if (collection == null) {
-                                    request.setAttribute("aksess_content" + contentId, content);
+                                    request.setAttribute(getCacheKeyPrefix(request) + contentId, content);
                                 }
                             } else {
                                 // Page was not found
@@ -371,5 +372,14 @@ public final class AttributeTagHelper {
         }
 
         return url;
+    }
+
+    private static String getCacheKeyPrefix(HttpServletRequest request) {
+        Content tmp = (Content)request.getAttribute("aksess_this");
+        String key = "aksess_content";
+        if (tmp != null) {
+            key = key + tmp.getId();
+        }
+        return key;
     }
 }
