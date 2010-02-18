@@ -53,6 +53,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     protected String contentTemplate = null;
     protected String contentType = null;
     protected String documentType = null;
+    protected String excludedDocumentTypes = null;
     protected String displayTemplate = null;
     protected String keyword = null;
     protected String relevance = null;
@@ -106,6 +107,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         contentType = null;
         descending = false;
         documentType = null;
+        excludedDocumentTypes = null;
         displayTemplate = null;
         keyword = null;
         associatedId = null;
@@ -249,6 +251,10 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 query.setDocumentType(documentType);
             }
 
+            if (excludedDocumentTypes != null) {
+                query.setExcludedDocumentTypes(excludedDocumentTypes);
+            }
+
             if (displayTemplate != null) {
                 query.setDisplayTemplate(displayTemplate);
             }
@@ -385,6 +391,10 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
     public void setDocumenttype(String documentType) {
         this.documentType = documentType;
+    }
+
+    public void setExcludeddocumenttypes(String excludedDocumentTypes) {
+        this.excludedDocumentTypes = excludedDocumentTypes;
     }
 
     public void setDisplaytemplate(String displayTemplate) {

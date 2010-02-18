@@ -915,6 +915,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
             <required>false</required>
@@ -1221,6 +1227,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
             <required>false</required>
@@ -1467,6 +1479,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
         <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>

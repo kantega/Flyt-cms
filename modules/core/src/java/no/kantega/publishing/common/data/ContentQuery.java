@@ -56,6 +56,7 @@ public class ContentQuery {
     private int[] contentTemplate = null;
     private ContentType contentType = null;
     private int[] documentType = null;
+    private int[] excludedDocumentTypes = null;
     private int[] displayTemplate = null;
     private int language = -1;
     private int siteId = -1;
@@ -212,6 +213,19 @@ public class ContentQuery {
             }
             query.append(") ");
         }
+
+        if (excludedDocumentTypes != null && excludedDocumentTypes.length > 0) {
+            query.append(" and content.DocumentTypeId not in (");
+            for (int i = 0; i < excludedDocumentTypes.length; i++) {
+                if (i > 0) {
+                    query.append(",");
+                }
+                query.append("?");
+                parameters.add(new Integer(excludedDocumentTypes[i]));
+            }
+            query.append(") ");
+        }
+
 
         if (contentTemplate != null && contentTemplate.length > 0) {
             query.append(" and content.ContentTemplateId in (");
@@ -587,9 +601,17 @@ public class ContentQuery {
         this.documentType[0] = documentType;
     }
 
+    public void setExcludedDocumentTypes(String documentType) throws SystemException {
+        this.excludedDocumentTypes = getDocumentTypesFromString(documentType);
+    }
+
     public void setDocumentType(String documentType) throws SystemException {
+        this.documentType = getDocumentTypesFromString(documentType);
+    }
+
+    private int[] getDocumentTypesFromString(String documentType) {
         String doctypes[] = documentType.split("\\|");
-        this.documentType = new int[doctypes.length];
+        int docTypeIds[] = new int[doctypes.length];
         for (int i = 0; i < doctypes.length; i++) {
             String doctype = doctypes[i].trim();
             int id = -1;
@@ -601,8 +623,9 @@ public class ContentQuery {
                     id = dt.getId();
                 }
             }
-            this.documentType[i] = id;
+            docTypeIds[i] = id;
         }
+        return docTypeIds;
     }
 
     public void setDisplayTemplate(int displayTemplate) {
