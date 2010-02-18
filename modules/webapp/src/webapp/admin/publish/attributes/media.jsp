@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="no.kantega.publishing.common.Aksess,
                  no.kantega.publishing.common.data.attributes.Attribute,
                  no.kantega.publishing.common.data.Multimedia,
@@ -54,8 +55,10 @@
             <tr>
                 <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
                 <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
+                <c:if test="${!miniAksess}">
+                    <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
+                    <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
+                </c:if>
                 <td><img src="../bitmaps/common/textseparator.gif"></td>
                 <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
@@ -68,10 +71,20 @@
 </tr>
 <tr>
     <td>
-        <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
-        <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" onFocus="this.select()" style="width: 600px;">
-        <script type="text/javascript">
-            Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
-        </script>
+        <c:choose>
+            <c:when test="${miniAksess}">
+                <!-- For users without access to mediaarchive - simple file upload -->
+                <input type="file" class="inp" style="width:600px;" name="<%=fieldName%>_upload" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
+                <input type="hidden" name="<%=fieldName%>" value="0">
+            </c:when>
+            <c:otherwise>
+                <!-- For users with access to mediaarchive -->
+                <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
+                <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" onFocus="this.select()" style="width: 600px;">
+                <script type="text/javascript">
+                    Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
+                </script>
+            </c:otherwise>
+        </c:choose>
     </td>
 </tr>

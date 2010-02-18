@@ -69,6 +69,8 @@ public class SimpleEditContentAction implements Controller {
         request.setAttribute("currentContent", content);
         session.setAttribute("currentContent", content);
 
+        request.setAttribute("miniAksess", Boolean.TRUE);
+
         return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
     }
 }

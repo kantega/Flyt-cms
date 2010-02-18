@@ -22,16 +22,28 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.security.api.common.SystemException;
+import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.Element;
+
+import java.util.Map;
+import java.util.List;
 
 /**
  *
  */
 public class MediaAttribute extends Attribute {
-    int maxWidth = -1;
-    int maxHeight = -1;
-    String cssClass = null;
+    private MultipartFile importFile = null;
 
-    Multimedia mm = null; // Cacher bildet
+    protected int maxWidth = -1;
+    protected int maxHeight = -1;
+    protected String cssClass = null;
+    protected String defaultMediaFolder = null;
+
+    private Multimedia mm = null; // Cacher bildet
+
 
     protected String filter = null;
 
@@ -45,6 +57,13 @@ public class MediaAttribute extends Attribute {
 
     public void setCssclass(String cssClass) {
         this.cssClass = cssClass;
+    }
+
+    public void setConfig(Element config, Map model) throws InvalidTemplateException {
+        super.setConfig(config, model);
+        if (config != null) {
+            this.defaultMediaFolder = config.getAttribute("mediafolder");
+        }
     }
 
     public String getProperty(String property) {
@@ -102,11 +121,32 @@ public class MediaAttribute extends Attribute {
         return returnValue;
     }
 
+    public MultipartFile getImportFile() {
+        return importFile;
+    }
+
+    public void setImportFile(MultipartFile importFile) {
+        this.importFile = importFile;
+    }
+
+
     public String getFilter() {
         return filter;
     }
 
+    public PersistAttributeBehaviour getSaveBehaviour() {
+        return new PersistMediaAttributeBehaviour();
+    }
+
+    public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
+        return new UpdateMediaAttributeFromRequestBehaviour();
+    }
+
     public String getRenderer() {
         return "media";
+    }
+
+    public String getDefaultMediaFolder() {
+        return defaultMediaFolder;
     }
 }
