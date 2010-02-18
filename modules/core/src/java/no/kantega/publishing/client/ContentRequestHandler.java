@@ -105,6 +105,9 @@ public class ContentRequestHandler extends AbstractController {
                             return null;
                         }
                     }
+                    if (isAdminMode) {
+                        response.setDateHeader("Expires", 0);                        
+                    }
                     contentRequestDispatcher.dispatchContentRequest(content, getServletContext(), request, response);
                     long end = new Date().getTime();
                     Log.info(this.getClass().getName(), "Tidsforbruk:" + (end- start) + " ms (" + content.getTitle() + ", id: " + content.getId() + ", template:" + content.getDisplayTemplateId() + ")", null, null);
