@@ -30,32 +30,31 @@
 
 <kantega:section id="body">
 
-
-    <div id="SelectLinkType">
-        <div class="tabGroup">
-            <a href="?linkType=external" class="tab ${externalSelected}"><span><kantega:label key="aksess.insertlink.external"/></span></a>
-            <a href="?linkType=internal" class="tab ${internalSelected}"><span><kantega:label key="aksess.insertlink.internal"/></span></a>
-            <a href="?linkType=anchor" class="tab ${anchorSelected}"><span><kantega:label key="aksess.insertlink.anchor"/></span></a>
-            <a href="?linkType=attachment" class="tab ${attachmentSelected}"><span><kantega:label key="aksess.insertlink.attachment"/></span></a>
-            <a href="?linkType=email" class="tab ${emailSelected}"><span><kantega:label key="aksess.insertlink.email"/></span></a>
-            <a href="?linkType=multimedia" class="tab ${multimediaSelected}"><span><kantega:label key="aksess.insertlink.multimedia"/></span></a>
-        </div>
-    </div>
-
-    <div id="InsertLinkForm">
-        <form action="" name="linkform">
-            <div class="fieldset">
-                <fieldset>
-                    <h1><kantega:label key="aksess.insertlink.title"/></h1>
+    <div class="fieldset">
+        <fieldset>
+            <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+                <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                    <li class="<c:if test="${linkType == 'external'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=external"><kantega:label key="aksess.insertlink.external"/></a></li>
+                    <li class="<c:if test="${linkType == 'internal'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=internal""><kantega:label key="aksess.insertlink.internal"/></a></li>
+                    <li class="<c:if test="${linkType == 'anchor'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=anchor""><kantega:label key="aksess.insertlink.anchor"/></a></li>
+                    <li class="<c:if test="${linkType == 'attachment'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=attachment""><kantega:label key="aksess.insertlink.attachment"/></a></li>
+                    <li class="<c:if test="${linkType == 'email'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=email"><kantega:label key="aksess.insertlink.email"/></a></li>
+                    <li class="<c:if test="${linkType == 'multimedia'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=multimedia""><kantega:label key="aksess.insertlink.multimedia"/></a></li>
+                </ul>
+                <div id="InsertLinkForm" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+                <form action="" name="linkform">
 
                     <jsp:include page="insert-link/${linkType}.jsp"/>
                     <div class="buttonGroup">
                         <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                         <span class="button"><input type="button" class="cancel" onclick="window.close()" value="<kantega:label key="aksess.button.cancel"/>"></span>
                     </div>
-                </fieldset>
+                </form>
+                </div>
+        
             </div>
-        </form>
+        </fieldset>
     </div>
+
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

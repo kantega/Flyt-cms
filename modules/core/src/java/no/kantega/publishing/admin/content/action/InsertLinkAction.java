@@ -80,7 +80,7 @@ public class InsertLinkAction extends AdminController {
             model.put("isOpenInNewWindow", Boolean.TRUE);
         }
 
-        model.put(linkType + "Selected", "selected");
+        model.put(linkType + "Selected", Boolean.TRUE);
 
         if (Aksess.isSmartLinksDefaultChecked()) {
             model.put("smartLink", Boolean.TRUE);
