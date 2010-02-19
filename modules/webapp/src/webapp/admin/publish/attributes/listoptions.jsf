@@ -62,7 +62,7 @@
                         optVal = optText;
                     }
                     out.write("<tr>");
-                    out.write("<td><input type=\"checkbox\"");
+                    out.write("<td><input id=\"" + (fieldName + i) + "\" type=\"checkbox\"");
                     out.write(" name=\"" + fieldName + "\"");
                     out.write(" value=\"" + optVal + "\"");
                     if (isSelected(option, value)) {
@@ -71,7 +71,7 @@
                     out.write(">");
                     out.write("</td>");
                     out.write("<td>");
-                    out.write("<a href=\"Javascript:toggleCheckbox(document.myform." + fieldName + ",'" + optVal + "')\" class=\"inpSelectItem\">" + optText + "</a>");
+                    out.write("<label for=\"" + (fieldName + i) + "\">" + optText + "</label>");
                     out.write("</td>");
                     out.write("</tr>");
                 }

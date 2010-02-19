@@ -53,12 +53,12 @@
             var title = elm.attr("title");
             var p = getParent();
             if (p) {
-                if (p.doInsertTag) {
+                if (p.openaksess.editcontext.doInsertTag) {
                     // Insert as tag
-                    p.insertValueIntoForm("/multimedia.ap?id=" + currentItemIdentifier);
+                    p.openaksess.editcontext.insertValueIntoForm("/multimedia.ap?id=" + currentItemIdentifier);
                 } else {
                     // Insert as id and value
-                    p.insertIdAndValueIntoForm(currentItemIdentifier, title);
+                    p.openaksess.editcontext.insertIdAndValueIntoForm(currentItemIdentifier, title);
                 }
             }
             closeWindow();

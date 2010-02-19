@@ -65,8 +65,8 @@
     if (manager != null) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="Javascript:openaksess.editcontext.selectOrgunit(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:openaksess.editcontext.removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
     }

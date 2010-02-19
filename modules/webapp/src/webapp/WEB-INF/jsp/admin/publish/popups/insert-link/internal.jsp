@@ -3,7 +3,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
     // Used by popup when sending data back to this form
-    var doInsertTag = false;
+    
+    openaksess.editcontext.doInsertTag = false;
+
+    openaksess.editcontext.insertIdAndValueIntoForm = function (id, text) {
+        var frm = document.linkform;
+        if (frm.smartlink.checked) {
+            frm.url_contentId.value = id;
+            frm.url_contentIdtext.value = text;
+        } else {
+            frm.url_associationId.value = id;
+            frm.url_associationIdtext.value = text;
+        }
+    };
+
 
     function buttonOkPressed() {
         var frm = document.linkform;
@@ -62,17 +75,6 @@
         }
     }
 
-    function insertIdAndValueIntoForm(id, text) {
-        var frm = document.linkform;
-        if (frm.smartlink.checked) {
-            frm.url_contentId.value = id;
-            frm.url_contentIdtext.value = text;
-        } else {
-            frm.url_associationId.value = id;
-            frm.url_associationIdtext.value = text;
-        }
-    }
-
     function selectPage() {
         var frm = document.linkform;
 
@@ -102,32 +104,29 @@
 
 <div class="formElement">
     <div class="heading"><label><kantega:label key="aksess.insertlink.internal.url"/></label></div>
-    <div class="buttonGroup">
-        <a href="#" onclick="selectPage()" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-    </div>
     <div class="inputs">
-
         <div id="AssociationId" <c:if test="${smartlink}">style="display:none"</c:if>>
             <input type="hidden" name="url_associationId" id="url_associationId" value=""><input type="text" name="url_associationIdtext" id="url_associationIdtext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.internal.hint"/>" class="fullWidth" maxlength="128">
             <script type="text/javascript">
                 Autocomplete.setup({'inputField' :'url_associationId', url:'../../../ajax/SearchContentAsXML.action', 'minChars' :3 });
             </script>
         </div>
-
         <div id="ContentId" <c:if test="${!smartlink}">style="display:none"</c:if>>
             <input type="hidden" name="url_contentId" id="url_contentId" value=""><input type="text" name="url_contentIdtext" id="url_contentIdtext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.internal.hint"/>" class="fullWidth" maxlength="128">
             <script type="text/javascript">
                 Autocomplete.setup({'inputField' :'url_contentId', url:'../../../ajax/SearchContentAsXML.action?useContentId=true', 'minChars' :3 });
             </script>
         </div>
-        <br>
-
-        <input type="checkbox" name="smartlink" onclick="updateVisibleFields()" <c:if test="${smartlink}">checked="checked"</c:if>><kantega:label key="aksess.insertlink.smart"/>
-        <div class="ui-state-highlight">
-            <kantega:label key="aksess.insertlink.smart.hint"/>
+        <div>
+            <input type="checkbox" name="smartlink" onclick="updateVisibleFields()" <c:if test="${smartlink}">checked="checked"</c:if>><kantega:label key="aksess.insertlink.smart"/>
+            <div class="ui-state-highlight"><kantega:label key="aksess.insertlink.smart.hint"/></div>
         </div>
     </div>
+    <div class="buttonGroup">
+        <a href="#" onclick="selectPage()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    </div>
 </div>
+
 
 <div class="formElement">
     <div class="heading"><label for="anchor"><kantega:label key="aksess.insertlink.anchor.title"/></label></dvi>

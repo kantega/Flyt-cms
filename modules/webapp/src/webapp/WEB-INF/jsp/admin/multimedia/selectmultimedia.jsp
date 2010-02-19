@@ -43,20 +43,31 @@
 </head>
 <script language="Javascript">
     function insertMMObject() {
-        var p = window.parent;
+        var p;
+        if (window.opener) {
+            p = window.opener;
+        } else {
+            p = window.parent;
+        }
+
         if (p && <%=mm.getId()%> != -1) {
-            if (p.doInsertTag) {
+            if (p.openaksess.editcontext.doInsertTag) {
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;
                 var editor = p.tinymce.EditorManager.activeEditor;
                 insertHtml(editor, str);
             } else {
                 // Insert id and name
-                p.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
+                p.openaksess.editcontext.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
             }
 
         }
-        p.ModalWindow.close();
+        if (window.opener) {
+            window.close();
+        } else {
+            p.ModalWindow.close();
+        }
+
     }
 
     function insertHtml(editor, html) {

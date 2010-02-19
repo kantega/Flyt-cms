@@ -476,6 +476,7 @@ table.fullWidth {
 }
 
 #Content .buttonGroup {
+    clear: left;
     padding-top: 10px;
 }
 

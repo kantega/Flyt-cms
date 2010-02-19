@@ -20,7 +20,7 @@
 <script type="text/javascript">
     function displayExpireAction() {
         var d = $("#end_date").val();
-        if (DateFunctions.isDateNotEmpty(d)) {
+        if (openaksess.dateutils.isDateNotEmpty(d)) {
             $("#EndDateAction").show("slow");
         } else {
             $("#EndDateAction").hide("slow");
@@ -34,33 +34,33 @@
         }
 
         if (document.myform.from_date) {
-            if (DateFunctions.isDateNotEmpty(document.myform.from_date.value) && DateFunctions.checkDate(document.myform.from_date.value) == -1) {
+            if (openaksess.dateutils.isDateNotEmpty(document.myform.from_date.value) && openaksess.dateutils.checkDate(document.myform.from_date.value) == -1) {
                 document.myform.from_date.focus();
                 return false;
             }
-            if (DateFunctions.isTimeNotEmpty(document.myform.from_time.value) && DateFunctions.checkTime(document.myform.from_time.value) == -1) {
+            if (openaksess.dateutils.isTimeNotEmpty(document.myform.from_time.value) && openaksess.dateutils.checkTime(document.myform.from_time.value) == -1) {
                 document.myform.from_time.focus();
                 return false;
             }
         }
 
         if (document.myform.end_date) {
-            if (DateFunctions.isDateNotEmpty(document.myform.end_date.value) && DateFunctions.checkDate(document.myform.end_date.value) == -1) {
+            if (openaksess.dateutils.isDateNotEmpty(document.myform.end_date.value) && openaksess.dateutils.checkDate(document.myform.end_date.value) == -1) {
                 document.myform.end_date.focus();
                 return false;
             }
-            if (DateFunctions.isTimeNotEmpty(document.myform.end_time.value) && DateFunctions.checkTime(document.myform.end_time.value) == -1) {
+            if (openaksess.dateutils.isTimeNotEmpty(document.myform.end_time.value) && openaksess.dateutils.checkTime(document.myform.end_time.value) == -1) {
                 document.myform.end_time.focus();
                 return false;
             }
         }
 
         if (document.myform.change_date) {
-            if (DateFunctions.isDateNotEmpty(document.myform.change_date.value) && DateFunctions.checkDate(document.myform.change_date.value) == -1) {
+            if (openaksess.dateutils.isDateNotEmpty(document.myform.change_date.value) && openaksess.dateutils.checkDate(document.myform.change_date.value) == -1) {
                 document.myform.change_date.focus();
                 return false;
             }
-            if (DateFunctions.isTimeNotEmpty(document.myform.change_time.value) && DateFunctions.checkTime(document.myform.change_time.value) == -1) {
+            if (openaksess.dateutils.isTimeNotEmpty(document.myform.change_time.value) && openaksess.dateutils.checkTime(document.myform.change_time.value) == -1) {
                 document.myform.change_time.focus();
                 return false;
             }
@@ -78,7 +78,7 @@
         debug("bindTopicButtons(): bind ChooseTopicButton");
         $("#ChooseTopicButton input").click(function(event){
             debug("bindTopicButtons(): click ChooseTopicButton");
-            selectTopic(null, true);
+            openaksess.editcontext.selectTopic(null, true);
         });
         $("#Locked").click(function(event){
             var locked = document.getElementById("Locked");
@@ -93,7 +93,7 @@
         });
         // Load topics
         var params = new Object();
-        updateTopics(params);
+        openaksess.editcontext.updateTopics(params);
     });
 
 </script>
@@ -186,7 +186,7 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
-            <select name="displaytemplate" tabindex="60" onchange="setIsModified()">
+            <select name="displaytemplate" tabindex="60" onchange="openaksess.editcontext.setIsModified()">
                 <c:forEach var="template" items="${allowedTemplates}">
                     <c:set var="templateName" value="${template.name}"/>
                     <c:if test="template.contentTemplate.id == current.contentTemplateId">

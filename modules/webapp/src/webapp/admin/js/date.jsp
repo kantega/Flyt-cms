@@ -19,7 +19,7 @@
 <%
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 %>
-var DateFunctions = {
+var openaksess.dateutils = {
 
     isDateNotEmpty: function (d) {
         if (d != "" && !isNaN(parseInt(d))) {

@@ -68,9 +68,9 @@ public void printUnit(OrgUnit unit, JspWriter out, OrganizationManager manager, 
             var w = window.parent.opener;
             if (w) {
                 if (w.doInsertTag) {
-                    w.insertValueIntoForm(unit);
+                    w.openaksess.editcontext.insertValueIntoForm(unit);
                 } else {
-                    w.insertIdAndValueIntoForm(unit, title);
+                    w.openaksess.editcontext.insertIdAndValueIntoForm(unit, title);
                 }
                 window.parent.close();
             }

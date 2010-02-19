@@ -25,6 +25,10 @@
  * Common functions
  ********************************************************************************/
 
+var openaksess =  {
+    // All Javascript objects should use this namespace
+};
+
 var stateHandler = new StateHandler();
 
 $(document).ready(function() {

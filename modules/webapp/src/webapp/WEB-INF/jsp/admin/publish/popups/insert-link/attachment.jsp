@@ -67,9 +67,6 @@
     <div class="heading">
         <label><kantega:label key="aksess.insertlink.attachment.title"/></label>
     </div>
-    <div class="buttonGroup">
-        <a href="AddAttachment.action?insertLink=true" class="button add"><span><kantega:label key="aksess.button.nyfil"/></span></a>
-    </div>
     <div class="inputs">
         <select name="url" class="fullWidth">
             <%
@@ -101,6 +98,10 @@
             %>
         </select>
     </div>
+    <div class="buttonGroup">
+        <a href="AddAttachment.action?insertLink=true" class="button"><span class="add"><kantega:label key="aksess.button.nyfil"/></span></a>
+    </div>
+
 </div>
 
 <div class="formElement">

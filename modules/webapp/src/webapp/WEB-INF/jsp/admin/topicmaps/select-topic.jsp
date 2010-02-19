@@ -30,7 +30,7 @@
                         var topicMapIdAndId = this.value.split(":");
                         var topicMapId = topicMapIdAndId[0];
                         var topicId = topicMapIdAndId[1];
-                        getParent().addTopic(topicMapId, topicId, '');
+                        getParent().openaksess.editcontext.addTopic(topicMapId, topicId, '');
 
                     }
                     );
@@ -39,7 +39,7 @@
 
         // When only one item can be selected
         function addTopic(topicMapId, topicId, topicName) {
-            getParent().addTopic(topicMapId, topicId, topicName);
+            getParent().openaksess.editcontext.addTopic(topicMapId, topicId, topicName);
             closeWindow();
         }
 

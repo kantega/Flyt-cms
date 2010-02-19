@@ -26,7 +26,7 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/engine.js"></script>
     <script type="text/javascript">
         var currentItemIdentifier = -1;
 
@@ -60,10 +60,10 @@
 
             var w = getParent();
             if (w) {
-                if (w.doInsertTag) {
-                    w.insertValueIntoForm(url);
+                if (w.openaksess.editcontext.doInsertTag) {
+                    w.openaksess.editcontext.insertValueIntoForm(url);
                 } else {
-                    w.insertIdAndValueIntoForm(id, title);
+                    w.openaksess.editcontext.insertIdAndValueIntoForm(id, title);
                 }
             }
 

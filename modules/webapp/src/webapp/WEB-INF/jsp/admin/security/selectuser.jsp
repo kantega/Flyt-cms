@@ -28,7 +28,7 @@
 <kantega:section id="body">
     <script type="text/javascript">
         function selectUser(user, name) {
-            getParent().insertIdAndValueIntoForm(user, name);            
+            getParent().openaksess.editcontext.insertIdAndValueIntoForm(user, name);
             closeWindow();
         }
 

@@ -167,6 +167,7 @@
 
 
         // Callback fra navigator.jsp som setter inn riktig url
+        // TODO: Fix this
         function insertIdAndValueIntoForm(id, text) {
             $("#url" + currentRow).val('/content.ap?thisId=' + id);
             $("#altTitle" + currentRow).val(text);

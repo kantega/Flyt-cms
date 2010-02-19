@@ -48,8 +48,8 @@
     }
 
     function selectMultimedia() {
-        doInsertTag = false;
-        var mmwin = window.open("../multimedia/", "mmWindow", "toolbar=no,width=780,height=450,resizable=yes,scrollbars=yes");
+        openaksess.editcontext.doInsertTag = false;
+        var mmwin = window.open("${pageContext.request.contextPath}/admin/multimedia/Navigate.action", "mmWindow", "toolbar=no,width=800,height=500,resizable=yes,scrollbars=yes");
         mmwin.focus();
     }
 
@@ -58,11 +58,10 @@
      * @param id
      * @param text
      */
-    function insertIdAndValueIntoForm(id, text)
-    {
-        var frm = document.myform;
+    openaksess.editcontext.insertIdAndValueIntoForm = function insertIdAndValueIntoForm(id, text) {
+        var frm = document.linkform;
         frm.url.value = id;
-        frm.url_multimediatext.value = text;
+        frm.urltext.value = text;
     }
 
 </script>
@@ -71,11 +70,11 @@
     <div class="heading">
         <label><kantega:label key="aksess.insertlink.multimedia.file"/></label>
     </div>
-    <div class="buttonGroup">
-        <a href="Javascript:selectMultimedia()" class="button choose"><span><kantega:label key="aksess.button.choose"/></span></a>
-    </div>
     <div class="inputs">
         <input type="hidden" name="url" id="url" value=""><input type="text" class="fullWidth" name="urltext" id="urltext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.multimedia.hint"/>" maxlength="128">
+    </div>
+    <div class="buttonGroup">
+        <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     </div>
     <script type="text/javascript">
         Autocomplete.setup({'inputField' :'url', url:'../../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });

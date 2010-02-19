@@ -58,7 +58,7 @@
             $("#MultimediaName").focus();
             var p = window.parent;
 
-            if (p != window) {
+            if (p != window || window.opener) {
                $("#EditMultimediaButtons .insert").click(function (){
                     document.editmediaform.insert.value = true;
                     saveForm();

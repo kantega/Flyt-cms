@@ -34,21 +34,21 @@
 </kantega:section>
 
 <kantega:section id="head extras">
+    <script src="${pageContext.request.contextPath}/admin/js/edit.jjs" type="text/javascript"></script>
     <script type="text/javascript">
-
-        var addedParents = "${addedParents}";
-
-        function selectContent() {
-            doInsertTag = false;
-            ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 380, height:450});
-        }
-
-        function insertIdAndValueIntoForm(id, title) {
+        openaksess.editcontext.insertIdAndValueIntoForm = function(id, title) {
             if (addedParents != "") {
                 addedParents +=",";
             }
             addedParents += id;
-            window.location.href = "AddContent.action?addedParents=" + addedParents;
+            window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?thisId=${parent.association.id}&addedParents=" + addedParents;
+        };
+
+        var addedParents = "${addedParents}";
+
+        function selectContent() {
+            openaksess.editcontext.doInsertTag = false;
+            ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 380, height:450});
         }
 
         function showTemplateInfo(i, defaultCategory) {

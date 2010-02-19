@@ -27,7 +27,7 @@
 		},
 
         _openPopup : function() {
-            doInsertTag = true;
+            openaksess.editcontext.doInsertTag = true;
             ModalWindow.open({
                 title:"Sett inn multimedia",
                 iframe:true,

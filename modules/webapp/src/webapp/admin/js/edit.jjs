@@ -19,677 +19,424 @@
 //<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 //<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
 
-var focusField = null;
-var focusFieldDefaultMaxWidth = 600;
-var editIsModified = false;
+openaksess.editcontext = function()  {
+    this.focusField = null;
+    this.focusFieldDefaultMaxWidth = 600;
+    this.editIsModified = false;
+    this.doInsertTag  = false;
 
-var doInsertTag  = false;
+    /*
+     * Get elements from select list as string
+     */
+    function getEntriesFromList(list) {
+        var entries = "";
 
-document.onkeypress = editKeyPress;
-
-/*
- *  Update status set that page has been edited
- */
-function setIsModified() {
-    editIsModified = true;
-    try {
-        document.myform.isModified.value = "true";
-    } catch (e) {
-    }
-}
-
-function isModified() {
-    return editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
-}
-
-
-function editKeyPress(e) {
-    if (focusField != null) {
-        setIsModified();
-    }
-    return true;
-}
-
-
-/*
- *  Sets field as focused element
- */
-function setFocusField(field) {
-   focusField = field;
-}
-
-
-function blurField() {
-   focusField = null;
-}
-
-/*
- *  Used in URLs to force refresh
- */
-function getRefresh() {
-   var dt = new Date();
-   return "" + dt.getTime();
-}
-
-
-/**
- *  Button for removing topics from page
- */
-function bindTopicDeleteButtons() {
-    $(".topic > .buttonGroup > a.delete").click(function(event){
-        event.preventDefault();
-        var topicMapId = getQueryParam("topicMapId", $(this).attr("href"));
-        var topicId = getQueryParam("topicId", $(this).attr("href"));
-        debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
-        removeTopic(topicId, topicMapId);
-    });
-}
-
-/**
- *  Update topics
- */
-function updateTopics(params) {
-    $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
-        bindTopicDeleteButtons();
-        debug("updateTopics(): received topics");
-    });
-}
-
-/**
- *  Let user select a topic
- */
-function selectTopic(formElement, multiple) {
-    focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.selecttopic.title"/>', iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
-}
-
-/**
- *  Callback to add topic to current page
- */
-function addTopic(topicMapId, topicId, topicName) {
-    setIsModified();
-
-    if (focusField == null) {
-        // Update topic list
-        var params = new Object();
-        params.topicId = topicId;
-        params.topicMapId = topicMapId;
-        params.add = true;
-        updateTopics(params);
-    } else {
-        // Topic should be inserted into a input field
-        var name = focusField.name;
-        var textField = document.myform.elements[name + 'text'];
-        if (textField) {
-            focusField.value = "" + topicMapId + ":" + topicId;
-            textField.value = topicName;
+        for (var i=0; i < list.options.length; i++) {
+            if (i > 0) {
+                entries += ",";
+            }
+            entries += list.options[i].value;
         }
-    }
-}
-
-/**
- *  Remove topic from edited page
- */
-function removeTopic(topicId, topicMapId) {
-    var params = new Object();
-    params.topicId = topicId;
-    params.topicMapId = topicMapId;
-    params.remove = true;
-    updateTopics(params);
-}
-
-
-/*
- *  Popup window for forms
- *  TODO: Should old forms module be removed from aksess 7
- */
-function editForm(formElement) {
-    var id = formElement.value;
-    if (id) {
-        var formwin = window.open("../forms/index.jsp?showform=" + id, "formWindow", "toolbar=no,width=800,height=450,resizable=yes,scrollbars=yes");
-    }
-    formwin.focus();
-}
-
-
-/*
- *  Popup window for selecting a page url
- */
-function selectContentUrl(formElement) {
-   focusField = formElement;
-   doInsertTag = true;
-   ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
-}
-
-
-/*
- *  Popup vindu for selecting a page id
- */
-function selectContent(formElement, maxItems) {
-
-    var items = 0;
-
-    if (arguments.length < 2) {
-        maxItems = 1;
-    } else {
-        var list = eval("document.myform." + formElement.name + "list");
-        if(list) {
-            items = list.length;
-        }
+        return entries;
     }
 
-    if (items >= maxItems) {
-        alert("<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> " + maxItems + " <kantega:label key="aksess.js.advarsel.elementer"/>");
-    } else {
-        focusField = formElement;
-        doInsertTag = false;
-        ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
-    }
-}
-
-
-/*
- *  Popup window for selecting a user
- */
-function selectUser(formElement) {
-    focusField = formElement;
-    doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
-}
-
-/*
- *  Popup window for selecting a organizational unit
- */
-function selectOrgunit(formElement) {
-    focusField = formElement;
-    doInsertTag = false;
-    var orgwin = window.open("../popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
-    orgwin.focus();
-}
-
-/*
-*  Popup window for selecting a category
-*/
-function selectCategory(formElement) {
-    focusField = formElement;
-    doInsertTag = false;
-    var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
-    catwin.focus();
-}
-
-/*
- *  Popup window for selecting media object
- */
-function selectMultimedia(formElement, filter) {
-    focusField = formElement;
-    var id = -1;
-    if (focusField.value != "") {
-        id = focusField.value;
+    /*
+     *  Used in URLs to force refresh
+     */
+    function getRefresh() {
+        var dt = new Date();
+        return "" + dt.getTime();
     }
 
-    doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
-}
 
-
-/*
- * Popup window for selecting media folder
- */
-function selectMediaFolder(formElement) {
-    focusField = eval(formElement);
-    doInsertTag = false;
-    ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
-}
-
-
-/*
- * Popup window for selecting a role
- */
-function selectRole(formElement) {
-    focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
-}
-
-
-/*
- * Popup for adding a list option used for editablelists
- */
-function addListOption(formElement, attributeKey, language) {
-    focusField = formElement;
-    ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
-}
-
-
-/*
- * Adds option to select list
- */
-function insertOptionIntoList(value) {
-    var option = document.createElement("option");
-    option.value = value;
-    option.text = value;
-
-    for(var i = 0; i < focusField.options.length; i++) {
-        var o = focusField.options[i];
-        if(value < o.value) {
+    /*
+     *  Update status set that page has been edited
+     */
+    return {
+        setIsModified : function() {
+            this.editIsModified = true;
             try {
-                focusField.add(option, focusField.options[i]);
-            } catch(ex) { // IE
-                focusField.add(option, i);
-
+                document.myform.isModified.value = "true";
+            } catch (e) {
             }
-           break;
-        } else if(i == focusField.options.length - 1) {
-            try {
-                focusField.add(option);
-            } catch (ex) {
-                focusField.add(option, null);
+        },
+
+        isModified : function () {
+            return this.editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
+        },
+
+
+        editKeyPress : function (e) {
+            if (this.focusField != null) {
+                this.setIsModified();
             }
+            return true;
+        },
 
-            break;
-        }
-
-    }
-    option.selected = true;
-}
-
-/*
- * Remove list option from list
- */
-function removeOptionFromList(formElement, attributeKey, language) {
-    $.post("../publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
-        debug("editable list - option remove:" + formElement.value);
-        for (var i=0; i < formElement.options.length; i++) {
-            if (formElement.options[i].selected) {
-                formElement.options[i] = null;
-                setIsModified();
-            }
-        }
-    });
-}
+        /*
+         *  Sets field as focused element
+         */
+        setFocusField : function (field) {
+            this.focusField = field;
+        },
 
 
-/*
- *   Insert tag into text
- */
-function insertTag(tag) {
-    setIsModified();
+        blurField : function () {
+            this.focusField = null;
+        },
 
-    if (focusField != null) {
-        var fname = "" + focusField.name;
-        if (fname.indexOf("editor_") != -1) {
-            // Rich texteditor
-            pasteHTML(focusField, tag);
-        } else {
-            // Normal form field
-            if (focusField.storedRange) {
-                focusField.storedRange.text = tag;
+
+        /**
+         * Update topics
+         */
+        updateTopics : function (params) {
+            $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
+                $(".topic > .buttonGroup > a.delete").click(function(event){
+                    event.preventDefault();
+                    var topicMapId = getQueryParam("topicMapId", $(this).attr("href"));
+                    var topicId = getQueryParam("topicId", $(this).attr("href"));
+                    debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
+                    removeTopic(topicId, topicMapId);
+                });
+                debug("updateTopics(): received topics");
+            });
+        },
+
+        /**
+         *  Remove topic from edited page
+         */
+        removeTopic : function  (topicId, topicMapId) {
+            var params = new Object();
+            params.topicId = topicId;
+            params.topicMapId = topicMapId;
+            params.remove = true;
+            this.updateTopics(params);
+        },
+
+
+
+        /**
+         *  Let user select a topic
+         */
+        selectTopic : function (formElement, multiple) {
+            this.focusField = formElement;
+            ModalWindow.open({title:'<kantega:label key="aksess.selecttopic.title"/>', iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
+        },
+
+        /**
+         *  Callback to add topic to current page
+         */
+        addTopic : function (topicMapId, topicId, topicName) {
+            this.setIsModified();
+
+            if (this.focusField == null) {
+                // Update topic list
+                var params = new Object();
+                params.topicId = topicId;
+                params.topicMapId = topicMapId;
+                params.add = true;
+                this.updateTopics(params);
             } else {
-                focusField.value += tag;
+                // Topic should be inserted into a input field
+                var name = this.focusField.name;
+                var textField = this.focusField.form.elements[name + 'text'];
+                if (textField) {
+                    this.focusField.value = "" + topicMapId + ":" + topicId;
+                    textField.value = topicName;
+                }
             }
-        }
-    }
-}
+        },
+
+        /*
+         *  Popup window for selecting a page url
+         */
+        selectContentUrl : function (formElement) {
+            this.focusField = formElement;
+            this.doInsertTag = true;
+            ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+        },
 
 
-/*
- * Create link using Rich Text editor - callback
- */
-function createLink(url) {
-    setIsModified();
-    if (focusField != null) {
-        focusField.contentWindow.document.execCommand("CreateLink", false, url);
-    }
-}
+        /*
+         *  Popup vindu for selecting a page id
+         */
+        selectContent : function (formElement, maxItems) {
+            var items = 0;
+
+            if (arguments.length < 2) {
+                maxItems = 1;
+            } else {
+                var list = formElement.form[formElement.name + 'list'];
+                if(list) {
+                    items = list.length;
+                }
+            }
+
+            if (items >= maxItems) {
+                alert("<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> " + maxItems + " <kantega:label key="aksess.js.advarsel.elementer"/>");
+            } else {
+                this.focusField = formElement;
+                this.doInsertTag = false;
+                ModalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+            }
+        },
 
 
-/*
- * Insert id and value into form field
- */
-function insertIdAndValueIntoForm(id, text) {
-    setIsModified();
+        /*
+         *  Popup window for selecting a user
+         */
+        selectUser : function (formElement) {
+            this.focusField = formElement;
+            this.doInsertTag = false;
+            ModalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
+        },
 
-    if (focusField != null) {
-        var name = focusField.name;
-        var type = focusField.type;
+        /*
+         *  Popup window for selecting a organizational unit
+         */
+        selectOrgunit : function (formElement) {
+            this.focusField = formElement;
+            this.doInsertTag = false;
+            var orgwin = window.open("../popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
+            orgwin.focus();
+        },
+
+        /*
+         *  Popup window for selecting a category
+         */
+        selectCategory : function (formElement) {
+            this.focusField = formElement;
+            this.doInsertTag = false;
+            var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
+            catwin.focus();
+        },
+
+        /*
+         *  Popup window for selecting media object
+         */
+        selectMultimedia : function (formElement, filter) {
+            this.focusField = formElement;
+            var id = -1;
+            if (this.focusField.value != "") {
+                id = this.focusField.value;
+            }
+
+            this.doInsertTag = false;
+            ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
+        },
 
 
-        var textField = document.myform.elements[name + 'text'];
-        var listField = document.myform.elements[name + 'list'];
-        if (listField) {
-            // Field is a list
-            var found = false;
-            // Check if not added before
-            for(var i = 0; i < listField.options.length; i++) {
-                var val = listField.options[i].value ;
-                if(val == id) {
-                    found = true;
+        /*
+         * Popup window for selecting media folder
+         */
+        selectMediaFolder : function (formElement) {
+            this.focusField = eval(formElement);
+            this.doInsertTag = false;
+            ModalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
+        },
+
+
+        /*
+         * Popup window for selecting a role
+         */
+        selectRole : function (formElement) {
+            this.focusField = formElement;
+            ModalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
+        },
+
+
+        /*
+         * Popup for adding a list option used for editablelists
+         */
+        addListOption : function (formElement, attributeKey, language) {
+            this.focusField = formElement;
+            ModalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
+        },
+
+
+        /*
+         * Adds option to select list
+         */
+        insertOptionIntoList : function (value) {
+            var option = document.createElement("option");
+            option.value = value;
+            option.text = value;
+
+            for(var i = 0; i < this.focusField.options.length; i++) {
+                var o = this.focusField.options[i];
+                if(value < o.value) {
+                    try {
+                        this.focusField.add(option, focusField.options[i]);
+                    } catch(ex) { // IE
+                        this.focusField.add(option, i);
+                    }
+                    break;
+                } else if(i == this.focusField.options.length - 1) {
+                    try {
+                        this.focusField.add(option);
+                    } catch (ex) {
+                        this.focusField.add(option, null);
+                    }
+
                     break;
                 }
+
             }
-            if(!found) {
-                listField.options[listField.options.length] = new Option(text, id, 0, 0);
-                focusField.value = getEntriesFromList(listField);
-            }
-        } else if (textField) {
-            // Is textfield
-            focusField.value = "" + id;
-            textField.value = text;
-        } else {
-            focusField.value = "" + id;
-        }
-    }
-}
+            option.selected = true;
+        },
 
-
-/*
- * Remove id and value from form
- */
-function removeIdAndValueFromForm(field) {
-    var text = document.myform.elements[field.name + 'text'];
-    var list = document.myform.elements[field.name + 'list'];
-
-    if (text) {
-        setIsModified();
-        field.value = "";
-        text.value = "";
-    } else if (list) {
-        for (var i=0; i < list.options.length; i++) {
-            if (list.options[i].selected) {
-                list.options[i] = null;
-                setIsModified();
-            }
-        }
-
-        // Oppdaterer hidden felt med riktig verdi
-        field.value = getEntriesFromList(list);
-    } else {
-        field.value = "";
-    }
-}
-
-
-
-/*
- *  Move element in select list up or down
- */
-function moveId(field, dir) {
-    var list = document.myform.elements[field.name + 'list'];
-
-    for (var i=0; i < list.options.length; i++) {
-        if (list.options[i].selected) {
-            if (dir < 0) {
-                if (i == 0) {
-                    return;
+        /*
+         * Remove list option from list
+         */
+        removeOptionFromList : function removeOptionFromList(formElement, attributeKey, language) {
+            $.post("../publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
+                debug("editable list - option remove:" + formElement.value);
+                for (var i=0; i < formElement.options.length; i++) {
+                    if (formElement.options[i].selected) {
+                        formElement.options[i] = null;
+                        this.setIsModified();
+                    }
                 }
-            } else if (dir > 0){
-                if (i == list.options.length - 1) {
-                    return;
+            });
+        },
+
+
+        /*
+         * Insert id and value into form field
+         */
+        insertIdAndValueIntoForm : function insertIdAndValueIntoForm(id, text) {
+            this.setIsModified();
+
+            if (this.focusField != null) {
+                var name = this.focusField.name;
+                var type = this.focusField.type;
+
+                var textField = this.focusField.form.elements[name + 'text'];
+                var listField = this.focusField.form.elements[name + 'list'];
+                if (listField) {
+                    // Field is a list
+                    var found = false;
+                    // Check if not added before
+                    for(var i = 0; i < listField.options.length; i++) {
+                        var val = listField.options[i].value ;
+                        if(val == id) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        listField.options[listField.options.length] = new Option(text, id, 0, 0);
+                        this.focusField.value = getEntriesFromList(listField);
+                    }
+                } else if (textField) {
+                    // Is textfield
+                    this.focusField.value = "" + id;
+                    textField.value = text;
+                } else {
+                    this.focusField.value = "" + id;
                 }
             }
-
-            var tmpText  = list.options[i+dir].text;
-            var tmpValue = list.options[i+dir].value;
-
-            list.options[i+dir].text  = list.options[i].text;
-            list.options[i+dir].value = list.options[i].value;
-
-            list.options[i].text  = tmpText;
-            list.options[i].value = tmpValue;
-
-            list.options[i+dir].selected = true;
-
-            setIsModified();
-            field.value = getEntriesFromList(list);
-
-            return;
-        }
-    }
-}
-
-/*
- * Get elements from select list as string
- */
-function getEntriesFromList(list) {
-    var entries = "";
-
-    for (var i=0; i < list.options.length; i++) {
-        if (i > 0) {
-            entries += ",";
-        }
-        entries += list.options[i].value;
-   }
-   return entries;
-}
+        },
 
 
-/*
- * Insert value into form
- */
-function insertValueIntoForm(val) {
-    setIsModified();
-    if (focusField != null) {
-        var fname = "" + focusField.name;
-        if (fname.indexOf("editor_") != -1) {
-            var range = getRange(focusField);
-            if (!hasSelection(focusField)) {
-                pasteHTML(focusField, val);
+        /*
+         * Remove id and value from form
+         */
+        removeIdAndValueFromForm : function removeIdAndValueFromForm(field) {
+            var frm = field.form;
+            var text = frm.elements[field.name + 'text'];
+            var list = frm.elements[field.name + 'list'];
+
+            if (text) {
+                this.setIsModified();
+                field.value = "";
+                text.value = "";
+            } else if (list) {
+                for (var i=0; i < list.options.length; i++) {
+                    if (list.options[i].selected) {
+                        list.options[i] = null;
+                        this.setIsModified();
+                    }
+                }
+
+                // Oppdaterer hidden felt med riktig verdi
+                field.value = getEntriesFromList(list);
             } else {
-                focusField.contentWindow.document.execCommand("CreateLink", false, url);
+                field.value = "";
             }
-        } else {
-            // Normal form field
-            focusField.value = "" + val;
-        }
-    }
-}
-
-/*
- * Remove value from form
- */
-function removeValueFromForm(field)
-{
-    setIsModified();
-    field.value = "";
-}
+        },
 
 
-/*
- * Set flag indicating attachment should be deleted
- */
-function removeAttachment(element) {
-    setIsModified();
-    var name = element.name;
-    var field = eval('document.myform.delete_' + name);
-    field.value = "1";
-}
+        /*
+         *  Move element in select list up or down
+         */
+        moveId : function (field, dir) {
+            var list = field.form.elements[field.name + 'list'];
 
+            for (var i=0; i < list.options.length; i++) {
+                if (list.options[i].selected) {
+                    if (dir < 0) {
+                        if (i == 0) {
+                            return;
+                        }
+                    } else if (dir > 0){
+                        if (i == list.options.length - 1) {
+                            return;
+                        }
+                    }
 
-/*
- * Replaces text in HTML editor
- */
-function replaceString(search, replace) {
-    setIsModified();
-    if (focusField != null) {
-        if (focusField.HTMLmode) {
-            var tmp = "" + focusField.contentWindow.document.body.innerText;
-            tmp = tmp.split(search).join(replace);
-            focusField.contentWindow.document.body.innerText = tmp;
-        } else {
-            var tmp = focusField.contentWindow.document.body.innerHTML;
+                    var tmpText  = list.options[i+dir].text;
+                    var tmpValue = list.options[i+dir].value;
 
-            tmp = tmp.split(search).join(replace);
-            focusField.contentWindow.document.body.innerHTML = tmp;
-        }
-    }
-}
+                    list.options[i+dir].text  = list.options[i].text;
+                    list.options[i+dir].value = list.options[i].value;
 
+                    list.options[i].text  = tmpText;
+                    list.options[i].value = tmpValue;
 
-/*
- * Get range from text selection in editor
- */
-function getRange(editor) {
-    var range = null;
-    if (browser.isIE) {
-        range = editor.contentWindow.document.selection.createRange();
-    } else {
-        var sel = editor.contentWindow.getSelection();
-        if (sel.rangeCount > 0) {
-            range = sel.getRangeAt(0);
-        }
-    }
+                    list.options[i+dir].selected = true;
 
-    return range;
-}
+                    this.setIsModified();
+                    field.value = getEntriesFromList(list);
 
-
-/*
- * Check if editor has selection
- */
-function hasSelection(editor) {
-    if (browser.isIE) {
-        var range = editor.contentWindow.document.selection.createRange();
-        if (editor.document.selection.type != "None") {
-            return true;
-        }
-    } else {
-        var sel = editor.contentWindow.getSelection();
-        if (sel.rangeCount > 0) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/*
- * Gets HTML in range
- */
-function getHTMLFromRange(range) {
-    if (browser.isIE) {
-        return range.htmlText;
-    } else {
-        return new XMLSerializer().serializeToString(range.cloneContents());
-    }
-}
-
-/*
- * Paste HTML in HTML text field
- */
-function pasteHTML(field, tag) {
-    if (browser.isIE) {
-        var range = field.contentWindow.document.selection.createRange();
-        var node = getNodeFromRange(range);
-        try {
-            // If user has selected image/link, must delete old image/link before inserting new
-            if (node.tagName == "IMG" || node.tagName == "A" || node.tagName == "OBJECT") {
-                var parent = node.parentNode;
-                parent.removeChild(node);
-                range = field.contentWindow.document.selection.createRange();
+                    return;
+                }
             }
+        },
 
-            range.pasteHTML(tag);
-        } catch (e) {
-
-        }
-    } else {
-        var selection = field.contentWindow.window.getSelection();
-        field.contentWindow.focus();
-
-        var range;
-        if (selection) {
-            range = selection.getRangeAt(0);
-        } else {
-            range = field.contentWindow.document.createRange();
-        }
-
-        var fragment = field.contentWindow.document.createDocumentFragment();
-        var div = field.contentWindow.document.createElement("div");
-        div.innerHTML = tag;
-
-        while (div.firstChild) {
-            fragment.appendChild(div.firstChild);
-        }
-
-        selection.removeAllRanges();
-        range.deleteContents();
-
-        var node = range.startContainer;
-        var pos = range.startOffset;
-
-        if (node.nodeType == 3) {
-            // Text node
-            if (fragment.nodeType == 3) {
-                // Text node
-                node.insertData(pos, fragment.data);
-                range.setEnd(node, pos + fragment.length);
-                range.setStart(node, pos + fragment.length);
-            } else {
-                node = node.splitText(pos);
-                node.parentNode.insertBefore(fragment, node);
-                range.setEnd(node, pos + fragment.length);
-                range.setStart(node, pos + fragment.length);
+        /*
+         * Insert value into form
+         */
+        insertValueIntoForm : function (val) {
+            this.setIsModified();
+            if (this.focusField != null) {
+                this.focusField.value = "" + val;
             }
-        } else if (node.nodeType == 1) {
-            // Element node
-            node = node.childNodes[pos];
-            node.parentNode.insertBefore(fragment, node);
-            range.setEnd(node, pos + fragment.length);
-            range.setStart(node, pos + fragment.length);
-        }
-        selection.addRange(range);
-    }
-}
+        },
 
+        /*
+         * Set flag indicating attachment should be deleted
+         */
+        removeAttachment : function (element) {
+            this.setIsModified();
+            var name = element.name;
+            var field = element.form['delete_' + name];
+            field.value = "1";
+        },
 
-/*
- *
- */
-function getNodeFromRange(range) {
-    var node;
-    if (browser.isIE) {
-        if (range.item) {
-            node = range.item(0);
-        } else {
-            node = range.parentElement();
-        }
-    } else {
-        node = range.commonAncestorContainer;
-        if (node.tagName == "TR") {
-            return node;
-        }
+        clearDefaultValue : function(field, defaultValue) {
+            if (field.value == defaultValue) {
+                field.value = '';
+            }
+        },
 
-        if (!range.collapsed && range.startContainer == range.endContainer) {
-            if (range.startOffset - range.endOffset < 1 && range.startContainer.hasChildNodes()) {
-                // When image etc is selected
-                node = range.startContainer.childNodes[range.startOffset];
+        setDefaultValue : function(field, defaultValue) {
+            if (field.value == '') {
+                field.value = defaultValue;
             }
         }
 
-        if (node.nodeType == 3) {
-            // Text node, return parent
-            node = node.parentNode;
-        }
-    }
+    };
+}();
 
-    return node;
-}
-
-function clearDefaultValue(field, defaultValue) {
-    if (field.value == defaultValue) {
-        field.value = '';
-    }
-}
-function setDefaultValue(field, defaultValue) {
-    if (field.value == '') {
-        field.value = defaultValue;
-    }
-}
-
-function toggleCheckbox(cb, value) {
-    for (var i=0; i < cb.length; i++) {
-        if (cb[i].value == value) {
-            cb[i].checked = !cb[i].checked;
-            break;
-        }
-    }
-}
+document.onkeypress = openaksess.editcontext.editKeyPress;

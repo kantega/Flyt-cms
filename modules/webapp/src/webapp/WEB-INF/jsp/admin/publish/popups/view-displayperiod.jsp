@@ -54,20 +54,20 @@
 	    });               
 
         function validatePublishProperties() {
-            if (DateFunctions.isDateNotEmpty($("#from_date").val()) && DateFunctions.checkDate($("#from_date").val()) == -1) {
+            if (openaksess.dateutils.isDateNotEmpty($("#from_date").val()) && openaksess.dateutils.checkDate($("#from_date").val()) == -1) {
                 $("#from_date").focus();
                 return false;
             }
-            if (DateFunctions.isTimeNotEmpty($("#from_time").val()) && DateFunctions.checkTime($("#from_time").val()) == -1) {
+            if (openaksess.dateutils.isTimeNotEmpty($("#from_time").val()) && openaksess.dateutils.checkTime($("#from_time").val()) == -1) {
                 $("#from_time").focus();
                 return false;
             }
 
-            if (DateFunctions.isDateNotEmpty($("#end_date").val()) && DateFunctions.checkDate($("#end_date").val()) == -1) {
+            if (openaksess.dateutils.isDateNotEmpty($("#end_date").val()) && openaksess.dateutils.checkDate($("#end_date").val()) == -1) {
                 $("#end_date").focus();
                 return false;
             }
-            if (DateFunctions.isTimeNotEmpty($("#end_time").val()) && DateFunctions.checkTime($("#end_time").val()) == -1) {
+            if (openaksess.dateutils.isTimeNotEmpty($("#end_time").val()) && openaksess.dateutils.checkTime($("#end_time").val()) == -1) {
                 $("#end_time").focus();
                 return false;
             }

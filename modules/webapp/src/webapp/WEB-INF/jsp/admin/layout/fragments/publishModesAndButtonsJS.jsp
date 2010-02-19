@@ -104,8 +104,7 @@
     }
     
     function isPageModified() {
-        var isModified = $("#IsModified").val();
-        return "true" == isModified;
+        return "true" == $("#IsModified").val();
     }
 
     function gotoMode(action) {

@@ -15,15 +15,11 @@
  */
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
-
-
-var currentUrl = "${currentNavigateContent.url}";
-
 $(document).ready(function(){
     debug("organizesubpages.$(document).ready()");
-    updateSubPageList(currentUrl);
+    openaksess.organizesubpages.updateSubPageList();
 
 });
 
@@ -34,74 +30,78 @@ $(document).ready(function(){
  * @param id - Current item id.
  * @param suppressNavigatorUpdate
  */
-function updateMainPane(id, suppressNavigatorUpdate) {
+function updateMainPane (id, suppressNavigatorUpdate) {
     debug("organizesubpages.updateMainPane(): id: " + id);
-    currentUrl = getContentUrlFromAssociationId(id);
-    debug("organizesubpages.updateMainPane(): currentUrl: " + currentUrl);
-    updateSubPageList(currentUrl);
+    openaksess.organizesubpages.currentUrl = getContentUrlFromAssociationId(id);
+    debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
+    openaksess.organizesubpages.updateSubPageList();
 }
 
 
-/**
- * Loads the list of subpages for the given url.
- * @param url
- */
-function updateSubPageList(url) {
+openaksess.organizesubpages = function()  {
 
-    debug("organizesubpages.updateSubPageList(): Triggering contentupdate event");
-    triggerContentUpdateEvent(url);
+    this.currentUrl = "${currentNavigateContent.url}";
 
-    debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action");
-    $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
-        debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
-        $("#SubPages ul").sortable({
-            connectWith: '.associationCategory',
-            items: 'li:not(.menu)',
-            axis: 'y',
-            stop: function(e, ui){
-                $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
-                    updateNavigator(url, true);
-                });
+    /**
+     * Compiles the association categories and the order of their associations as a requestparameter.
+     * Used as input to the ReorderSupPages.action
+     */
+    function getAssociationIdsAsParam () {
+        var params = new Object();
+        var categories = $("#SubPages ul.associationCategory");
+        for (var i = 0; i < categories.length; i ++) {
+            var currentCategory = $(categories[i]);
+            var associations = currentCategory.find("li.page");
+            var ids = "'";
+            for (var j = 0; j < associations.length; j++) {
+                ids += $(associations[j]).attr("id");
+                if (j < (associations.length-1) ) {
+                    ids += ",";
+                }
             }
-        });
+            ids += "'";
 
-        $("#SubPages li.page").mousedown(function(event){
-            var allSelected = $("#SubPages li.page.selected");
-            if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
-                $(this).toggleClass('selected');
-            } else {
-                $(allSelected).each(function(){
-                    $(this).removeClass("selected");
-                });
-                $(this).addClass("selected");
-            }
-        });
-    });
-}
-
-/**
- * Compiles the association categories and the order of their associations as a requestparameter.
- * Used as input to the ReorderSupPages.action
- */
-function getAssociationIdsAsParam() {
-    var params = new Object();
-    var categories = $("#SubPages ul.associationCategory");
-    for (var i = 0; i < categories.length; i ++) {
-        var currentCategory = $(categories[i]);
-        var associations = currentCategory.find("li.page");
-        var ids = "'";
-        for (var j = 0; j < associations.length; j++) {
-            ids += $(associations[j]).attr("id");
-            if (j < (associations.length-1) ) {
-                ids += ",";
-            }
+            eval("params.associationCategory" + currentCategory.attr("id") + "=" + ids);
         }
-        ids += "'";
-
-        eval("params.associationCategory" + currentCategory.attr("id") + "=" + ids);
+        return params;
     }
-    return params;
-}
 
+    return {
+        /**
+         * Loads the list of subpages for the given url.
+         * @param url
+         */
+        updateSubPageList: function() {
 
+            debug("organizesubpages.updateSubPageList(): Triggering contentupdate event");
+            triggerContentUpdateEvent(this.currentUrl);
 
+            debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action");
+            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
+                debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
+                $("#SubPages ul").sortable({
+                    connectWith: '.associationCategory',
+                    items: 'li:not(.menu)',
+                    axis: 'y',
+                    stop: function(e, ui){
+                        $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
+                            updateNavigator(url, true);
+                        });
+                    }
+                });
+
+                $("#SubPages li.page").mousedown(function(event){
+                    var allSelected = $("#SubPages li.page.selected");
+                    if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
+                        $(this).toggleClass('selected');
+                    } else {
+                        $(allSelected).each(function(){
+                            $(this).removeClass("selected");
+                        });
+                        $(this).addClass("selected");
+                    }
+                });
+            });
+        }
+    }
+}();

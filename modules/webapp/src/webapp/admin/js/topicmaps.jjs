@@ -22,31 +22,34 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
 $(document).ready(function(){
     debug("topicmaps.$(document).ready()");
-    listTopicTypes(-1, null);
+    openaksess.topicmaps.listTopicTypes(-1, null);
 
 });
 
 
-/**
- * Loads the list of topic types
- * @param topicMapId, topicId
- */
-function listTopicTypes(topicMapId, topicId) {
-    debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
-    var params = new Object();
-    if (topicMapId != -1) {        
-        params.topicMapId = topicMapId;
-        params.topicId = topicId;
+openaksess.topicmaps = function() {
+    return {
+        /**
+         * Loads the list of topic types
+         * @param topicMapId, topicId
+         */
+        listTopicTypes: function (topicMapId, topicId) {
+            debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
+            var params = new Object();
+            if (topicMapId != -1) {
+                params.topicMapId = topicMapId;
+                params.topicId = topicId;
+            }
+            $("#TopicTypes").load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
+                debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
+                $("#TopicTypes .tab a").click(function (event) {
+                    event.preventDefault();
+                    var href = $(this).attr("href");
+                    var topicId = getQueryParam("topicId", href);
+                    var topicMapId = getQueryParam("topicMapId", href);
+                    this.listTopicTypes(topicMapId, topicId);
+                });
+            });
+        }
     }
-    $("#TopicTypes").load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
-        debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
-        $("#TopicTypes .tab a").click(function (event) {
-            event.preventDefault();
-            var href = $(this).attr("href");
-            var topicId = getQueryParam("topicId", href);
-            var topicMapId = getQueryParam("topicMapId", href);
-            listTopicTypes(topicMapId, topicId);
-        });
-    });
-}
-
+}();

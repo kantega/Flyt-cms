@@ -58,8 +58,8 @@
                 title:"Sett inn lenke",
                 iframe:true,
                 href: "popups/InsertLink.action?url=" + encodeURI(href) + "&anchor=" + encodeURI(anchor) + "&isOpenInNewWindow=" + encodeURI(newWindow),
-                width: 380,
-                height:250});
+                width: 450,
+                height:300});
         }
 
 	});
