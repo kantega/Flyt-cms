@@ -72,6 +72,7 @@ public class FormTag extends BodyTagSupport {
             if (body != null) {
                 out.print(body);
             }
+            out.print("<input type=\"hidden\" name=\"isAksessFormSubmit\" value=\"true\">");
             out.print("</form>\n");
         } catch (IOException e) {
             Log.error(getClass().getName(), e, null, null);

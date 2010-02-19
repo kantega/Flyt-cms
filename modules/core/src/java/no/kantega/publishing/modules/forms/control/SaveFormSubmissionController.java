@@ -38,7 +38,7 @@ public class SaveFormSubmissionController implements AksessController {
             form = new AksessContentForm(content);
         }
 
-        if (request.getMethod().equalsIgnoreCase("POST")) {
+        if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("isAksessFormSubmit") != null) {
             Map<String, String[]> values = request.getParameterMap();
             if (form != null) {
                 FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form);
