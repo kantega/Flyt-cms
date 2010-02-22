@@ -37,7 +37,7 @@
 <script type="text/javascript" language="Javascript" src="../js/jquery-ui-1.7.2.min.js"></script>
 <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
 <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
-<script type="text/javascript" language="Javascript" src="../js/formeditor.jsp"></script>
+<script type="text/javascript" language="Javascript" src="../js/formeditor.jjs"></script>
 <script type="text/javascript" language="Javascript" src="../../aksess/js/common.js"></script>
 <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 

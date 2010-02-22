@@ -46,6 +46,12 @@ function formEditElement(element) {
     if (helpText == undefined || helpText == null) helpText = "";
     $("#form_HelpText").val(helpText);
 
+    if ($(element).hasClass("readonly")) {
+        $("#form_FieldReadonly").attr("checked", true);
+    } else {
+        $("#form_FieldReadonly").attr("checked", false);
+    }
+
     if ($(element).hasClass("mandatory")) {
         $("#form_FieldMandatory").attr("checked", true);
     } else {
@@ -225,6 +231,9 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
     }
 
     elementClz = "formElement";
+    if ($("#form_FieldReadonly:checked").length == 1) {
+        elementClz += " readonly";
+    }
     if ($("#form_FieldMandatory:checked").length == 1) {
         elementClz += " mandatory";
     }
@@ -312,10 +321,10 @@ function formSave() {
     $("#form_FormElements .formElement").removeAttr("style");
     $("#form_FormElements .formText").removeAttr("style");
 
-    // Remove disabled attribute
-    $("#form_FormElements input").removeAttr("disabled");
-    $("#form_FormElements textarea").removeAttr("disabled");
-    $("#form_FormElements select").removeAttr("disabled");
+    // Remove disabled attribute except for elements that should be disabled
+    $("#form_FormElements input:not(#form_FormElements .readonly input)").removeAttr("disabled");
+    $("#form_FormElements textarea:not(#form_FormElements .readonly textarea)").removeAttr("disabled");
+    $("#form_FormElements select:not(#form_FormElements .readonly select)").removeAttr("disabled");
 
     // Remove attributes set by JQuery
     $("#form_FormElements div").removeAttr("unselectable");
@@ -668,10 +677,12 @@ formElementHidden.onSave = function (fieldName) {
 formElementHidden.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_hidden").show();
+        $("#form_FieldReadonly").attr("disabled", true);;
         $("#form_FieldMandatory").attr("disabled", true);;
         $("#form_NoBreak").attr("disabled", true);;
     } else {
         $(".form_params_hidden").hide();
+        $("#form_FieldReadonly").removeAttr("disabled");
         $("#form_FieldMandatory").removeAttr("disabled");
         $("#form_NoBreak").removeAttr("disabled");
     }

@@ -134,6 +134,7 @@
                         </tr>
                         <tr>
                             <td colspan="2">
+                                <input type="checkbox" name="form_FieldReadonly" id="form_FieldReadonly" checked="checked"><label for="form_FieldReadonly"><kantega:label key="aksess.formeditor.readonly"/></label><br>
                                 <input type="checkbox" name="form_FieldMandatory" id="form_FieldMandatory"><label for="form_FieldMandatory"><kantega:label key="aksess.formeditor.mandatory"/></label><br>
                                 <input type="checkbox" name="form_NoBreak" id="form_NoBreak"><label for="form_NoBreak"><kantega:label key="aksess.formeditor.nobreak"/></label>
                             </td>
