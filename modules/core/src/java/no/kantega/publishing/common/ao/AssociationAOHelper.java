@@ -39,47 +39,27 @@ public class AssociationAOHelper {
 
             List sites = SiteCache.getSites();
 
-            if (dbConnectionFactory.isMySQL()) {
-                // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
-                String query = "SELECT min(uniqueid) FROM associations WHERE siteid = ? AND contentid IN" +
-                        "   (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + ") AND (IsDeleted IS NULL OR IsDeleted = 0) " +
-                        "AND contentid NOT IN " +
-                        "   (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
-                PreparedStatement st = c.prepareStatement(query);
+            // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
+            String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + ") AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
+                            " (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
+            PreparedStatement st = c.prepareStatement(query);
 
-                String updateQuery = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid = ? AND (IsDeleted IS NULL OR IsDeleted = 0)";
-                PreparedStatement updateSt = c.prepareStatement(updateQuery);
+            String updateQuery = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid = ? AND (IsDeleted IS NULL OR IsDeleted = 0)";
+            PreparedStatement updateSt = c.prepareStatement(updateQuery);
 
-                for (int i = 0; i < sites.size(); i++) {
-                    Site site =  (Site)sites.get(i);
-                    st.setInt(1, site.getId());
-                    st.setInt(2, site.getId());
-                    st.setInt(3, site.getId());
-                    ResultSet rs = st.executeQuery();
-                    while(rs.next()) {
-                        int id = rs.getInt(1);
-                        updateSt.setInt(1, id);
-                        updateSt.executeUpdate();
-                    }
-                    rs.close();
-                    rs = null;
+            for (int i = 0; i < sites.size(); i++) {
+                Site site =  (Site)sites.get(i);
+                st.setInt(1, site.getId());
+                st.setInt(2, site.getId());
+                st.setInt(3, site.getId());
+                ResultSet rs = st.executeQuery();
+                while(rs.next()) {
+                    int id = rs.getInt(1);
+                    updateSt.setInt(1, id);
+                    updateSt.executeUpdate();
                 }
-            } else {
-                String query = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid IN (" +
-                                   "SELECT min(uniqueid) FROM associations WHERE siteid = ? AND contentid IN" +
-                                   "   (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + ") AND (IsDeleted IS NULL OR IsDeleted = 0) " +
-                                   "AND contentid NOT IN " +
-                                   "   (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid" +
-                                   ") AND (IsDeleted IS NULL OR IsDeleted = 0)";
-                PreparedStatement st = c.prepareStatement(query);
-
-                for (int i = 0; i < sites.size(); i++) {
-                    Site site =  (Site)sites.get(i);
-                    st.setInt(1, site.getId());
-                    st.setInt(2, site.getId());
-                    st.setInt(3, site.getId());
-                    st.executeUpdate();
-                }
+                rs.close();
+                rs = null;
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
