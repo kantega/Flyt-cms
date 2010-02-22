@@ -105,15 +105,15 @@
             <table class="noborder" id="DisplayPeriod">
                 <tr>
                     <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
-                    <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()">
+                    <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()">
                     <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
-                    <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()"></td>
+                    <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="501" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
                 <tr>
                     <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
-                    <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="setFocusField(this)" onchange="displayExpireAction()" onBlur="blurField()"></td>
+                    <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="openaksess.editcontext.setFocusField(this)" onchange="displayExpireAction()" onBlur="openaksess.editcontext.blurField()"></td>
                     <td><label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
-                    <td><input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="503" onFocus="setFocusField(this)" onBlur="blurField()"></td>
+                    <td><input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="503" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
             </table>
             <div id="EndDateAction" <c:if test="${currentContent.expireDate == null}">style="display:none;"</c:if> >
@@ -150,9 +150,9 @@
             <table class="noborder" id="ChangeDate">
                 <tr>
                     <td><!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>--></td>
-                    <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="setFocusField(this)" onBlur="blurField()"></td>
+                    <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                     <td><label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label></td>
-                    <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="setFocusField(this)" onBlur="blurField()"></td>
+                    <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
             </table>
             <div class="ui-state-highlight">

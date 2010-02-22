@@ -40,7 +40,7 @@
     <%
         if (maxLength <= 255) {
     %>
-    <input type="text" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
+    <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
     <%
         if (maxLength <  72) {
             out.write(" size=" + maxLength);

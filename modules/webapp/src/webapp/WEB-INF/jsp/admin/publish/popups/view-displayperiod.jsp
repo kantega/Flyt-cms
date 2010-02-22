@@ -22,7 +22,7 @@
 <kantega:section id="title"><kantega:label key="aksess.publishinfo.period"/></kantega:section>
 
 <kantega:section id="head">
-    <script type="text/javascript" language="Javascript" src="../js/date.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/date.jjs"></script>
     <script type="text/javascript">
         var hasSubmitted = false;
         function buttonOkPressed() {

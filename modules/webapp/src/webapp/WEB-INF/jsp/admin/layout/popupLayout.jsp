@@ -40,10 +40,6 @@
         $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
     </script>
 
-    <kantega:getsection id="head"/>
-</head>
-
-<body>
     <script type="text/javascript">
         $(document).ready(function() {
             $("#Content .button .ok").click(function(){
@@ -53,7 +49,7 @@
 
             });
             $("#Content .button .cancel").click(function(){
-                debug("popupLayout: close clicked");                
+                debug("popupLayout: close clicked");
                 closeWindow();
             });
         });
@@ -75,6 +71,10 @@
         }
 
     </script>
+    <kantega:getsection id="head"/>
+</head>
+
+<body>
     <div id="Content" class="popup">
         <kantega:getsection id="body"/>
     </div>

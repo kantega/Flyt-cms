@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
                  no.kantega.commons.util.URLHelper"%>
 <%--
@@ -24,20 +25,23 @@
 %>
 <kantega:section id="head">
 <script language="Javascript" type="text/javascript">
-    if (window.opener) {
+
+    var p = getParent();
+    if (p) {
         <%
             if (insertLink) {
         %>
                 var url = "<%=URLHelper.getRootURL(request)%>attachment.ap?id=<%=id%>";
-                window.opener.createLink(url);
+                p.createLink(url);
+                closeWindow();
         <%
             } else {
         %>
-                window.opener.location.reload();
+                p.location.reload();
         <%
             }
         %>
-        window.close();
+
     }
 </script>
 </kantega:section>

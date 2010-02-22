@@ -35,22 +35,6 @@
 
 <kantega:section id="content">
 <script language="Javascript" type="text/javascript">
-    var hasSubmitted = false;
-
-    function initialize() {
-        // Do nothing
-    }
-
-    function saveContent(status) {
-        if (validatePublishProperties()) {
-            if (!hasSubmitted) {
-                hasSubmitted = true;
-                document.myform.status.value = status;
-                document.myform.submit();
-            }
-        }
-    }
-
     function addAttachment() {
         updateAttachment(-1);
     }
@@ -127,11 +111,6 @@
     <%
         }
     %>
-
-    <input type="hidden" name="status" value="">
-    <input type="hidden" name="action" value="">
-    <input type="hidden" name="currentId" value="${currentContent.id}">
-    <input type="hidden" name="isModified" value="${currentContent.modified}">
 </form>
 </kantega:section>
 <%@ include file="../layout/publishLayout.jsp" %>
