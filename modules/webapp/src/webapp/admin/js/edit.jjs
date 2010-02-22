@@ -173,7 +173,7 @@ openaksess.editcontext = function()  {
             }
 
             if (items >= maxItems) {
-                alert("<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> " + maxItems + " <kantega:label key="aksess.js.advarsel.elementer"/>");
+                alert('<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ' + maxItems + ' <kantega:label key="aksess.js.advarsel.elementer"/>');
             } else {
                 this.focusField = formElement;
                 this.doInsertTag = false;
