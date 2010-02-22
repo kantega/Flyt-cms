@@ -38,9 +38,11 @@ public class SaveFormSubmissionController implements AksessController {
             form = new AksessContentForm(content);
         }
 
-        if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("isAksessFormSubmit") != null) {
-            Map<String, String[]> values = request.getParameterMap();
-            if (form != null) {
+        if (form != null) {
+            if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("isAksessFormSubmit") != null) {
+                Map<String, String[]> values = new HashMap<String, String[]>(request.getParameterMap());
+                addValues(values, request);
+
                 FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form);
 
                 // Validate formsubmission
@@ -52,17 +54,7 @@ public class SaveFormSubmissionController implements AksessController {
                     form = filledFormBuilder.buildFilledForm(formSubmission);
                 } else {
 
-                    SecuritySession session = SecuritySession.getInstance(request);
-                    if (session.isLoggedIn()) {
-                        User user = session.getUser();
-                        formSubmission.setAuthenticatedIdentity(user.getId());
-                        if (formSubmission.getSubmittedBy() == null) {
-                            formSubmission.setSubmittedBy(user.getName());
-                        }
-                        if (formSubmission.getEmail() == null) {
-                            formSubmission.setEmail(user.getEmail());
-                        }
-                    }
+                    addUserInformation(formSubmission, request);
 
                     for (FormDeliveryService service : formDeliveryServices) {
                         service.deliverForm(formSubmission);
@@ -71,6 +63,14 @@ public class SaveFormSubmissionController implements AksessController {
                     model.put("hasSubmitted", Boolean.TRUE);
                     model.put("hasErrors",Boolean.FALSE);
 
+                }
+            } else {
+                // Form is entered for the first time
+                Map<String, String[]> prefillValues = new HashMap<String, String[]>();
+                prefill(prefillValues, request);
+                if (prefillValues.size() > 0) {
+                    FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form);
+                    form = filledFormBuilder.buildFilledForm(formSubmission);
                 }
             }
 
@@ -100,4 +100,51 @@ public class SaveFormSubmissionController implements AksessController {
     public void setFormDeliveryServices(List<FormDeliveryService> formDeliveryServices) {
         this.formDeliveryServices = formDeliveryServices;
     }
+
+    /**
+     * Adds information about the user to the form submission.
+     *
+     * @param formSubmission a form submission
+     * @param request a request
+     */
+    protected void addUserInformation(FormSubmission formSubmission, HttpServletRequest request) {
+        SecuritySession session = SecuritySession.getInstance(request);
+        if (session.isLoggedIn()) {
+            User user = session.getUser();
+            formSubmission.setAuthenticatedIdentity(user.getId());
+            if (formSubmission.getSubmittedBy() == null) {
+                formSubmission.setSubmittedBy(user.getName());
+            }
+            if (formSubmission.getEmail() == null) {
+                formSubmission.setEmail(user.getEmail());
+            }
+        }
+    }
+
+    /**
+     * Prefills values into the form.
+     *
+     * @param values a map of values
+     * @param request a request
+     */
+    protected void prefill(Map<String, String[]> values, HttpServletRequest request) {
+        Object prefillValues = request.getAttribute("aksessFormPrefillValues");
+        if (prefillValues != null && prefillValues instanceof Map) {
+            values.putAll((Map)prefillValues);
+        }
+    }
+
+    /**
+     * Adds additional values to or ovverides values in the form,
+     *
+     * @param values a map of values
+     * @param request a request
+     */
+    protected void addValues(Map<String, String[]> values, HttpServletRequest request) {
+        Map<String, String[]> prefillValues = (Map)request.getAttribute("aksessFormPrefillValues");
+        if (prefillValues != null) {
+            values.putAll(prefillValues);
+        }
+    }
+
 }
