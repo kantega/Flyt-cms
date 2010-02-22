@@ -19,6 +19,7 @@
 var formEditedElement = null;
 var formPrevType = null;
 var formEditorHTML = null;
+var formTextEditorHTML = null;
 
 function formDeleteElement(element) {
     $(element).remove();
@@ -85,8 +86,8 @@ function formEditElement(element) {
     formPrevType = type;
 
 
-    $("#form_Cancel").unbind("click");
-    $("#form_Cancel").click(function() {
+    $("#form_CancelFormElement").unbind("click");
+    $("#form_CancelFormElement").click(function() {
         formRemoveEditor();
     });
 
@@ -103,6 +104,45 @@ function formEditElement(element) {
     }
 }
 
+function formEditText(element) {
+    var fieldName;
+    var type;
+    var text;
+
+    // Show previous edited element and remove editor if visible
+    formRemoveEditor();
+
+    formEditedElement = element;
+
+    // Move edit form to current position
+    $(element).after(formTextEditorHTML);
+
+    // Hide element being edited
+    $(element).hide();
+
+    $("#form_TextChildNo").val($("#form_FormElements .formText").index(element));
+    fieldName = $("div.heading label", element).text();
+    $("#form_TextFieldName").val(fieldName);
+
+    type = "textblock";
+
+    $("#form_CancelFormText").unbind("click");
+    $("#form_CancelFormText").click(function() {
+        formRemoveEditor();
+    });
+
+    $("#form_SaveFormText").unbind("click");
+    $("#form_SaveFormText").click(function() {
+        formSaveText();
+        $("#EditFormText").hide();
+    });
+
+    text = $("p", element).text();
+    $("#form_Text").val(text);
+
+    $(".form_params_textblock").show();
+}
+
 function formGetElementTypeHandler(type) {
     for (n in formElementTypes) {
         if (formElementTypes[n].type == type) {
@@ -117,6 +157,7 @@ function formRemoveEditor() {
         $(formEditedElement).show();
     }
     $("#EditFormElement").remove();
+    $("#EditFormText").remove();
     formEditedElement = null;
 }
 
@@ -135,6 +176,18 @@ function formNewElement() {
 
     $("#form_FieldName").select();
 
+}
+
+function formNewText() {
+    var fieldName, elm;
+
+    $("#form_TextChildNo").val(-1);
+    fieldName = "Text " + ($("#form_FormElements .formText").length + 1);
+    formAddOrSaveText(fieldName, -1);
+    formBindSort();
+    elm = $("#form_FormElements .formText:last-child");
+    formEditText(elm);
+    $("#form_TextFieldName").select();
 }
 
 function formAddInputValue(type, fieldName, value, checked) {
@@ -192,6 +245,32 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
     }
 }
 
+function formAddOrSaveText(fieldName, textChildNo) {
+    var html, elementClz;
+
+    html = "";
+    html += '<div class="heading">&nbsp;<label style=\"display: none\">' + fieldName + '</label></div>';
+    html += '<div class="textblock">';
+
+    if (textChildNo >= 0) {
+        var textValue = $("#form_Text").val();
+        textValue = textValue.replace(/\n/g, '<br>\n');
+        html += '<p name="' + fieldName + '">' + textValue + '</p>';
+    }
+
+    html += '</div>';
+
+    elementClz = "formText";
+
+    if (textChildNo < 0) {
+        $("#form_FormElements").append('<div class="' + elementClz + '">' + html + '</div>');
+        $("#form_TextChildNo").val($("#form_FormElements .formText").length - 1);
+        formBindHover();
+    } else {
+        $("#form_FormElements .formText").eq(textChildNo).html(html);
+    }
+}
+
 function formSaveElement() {
     fieldName = $("#form_FieldName").val();
     type = $("#form_FieldType").val();
@@ -205,6 +284,17 @@ function formSaveElement() {
     formBindSort();
 }
 
+function formSaveText() {
+    var fieldName, textChildNo;
+
+    fieldName = $("#form_TextFieldName").val();
+    textChildNo = $("#form_TextChildNo").val();
+
+    formAddOrSaveText(fieldName, textChildNo);
+
+    formRemoveEditor();
+    formBindSort();
+}
 
 function formBindSort() {
     $('#form_FormElements').sortable(
@@ -220,6 +310,7 @@ function formSave() {
 
     // Remove style set by mozilla
     $("#form_FormElements .formElement").removeAttr("style");
+    $("#form_FormElements .formText").removeAttr("style");
 
     // Remove disabled attribute
     $("#form_FormElements input").removeAttr("disabled");
@@ -246,15 +337,18 @@ function formSave() {
 }
 
 function formBindHover() {
-    $("#form_FormElements .formElement").unbind("hover");
+    $("#form_FormElements .formElement, #form_FormElements .formText").unbind("hover");
 
-    $("#form_FormElements .formElement").hover(
+    $("#form_FormElements .formElement, #form_FormElements .formText").hover(
             function () {
                 if ($(".formElementButtons", this).length == 0) {
                     $(".heading", this).append('<span class="formElementButtons"><span class="edit"><kantega:label key="aksess.button.endre"/></span><span class="delete"><kantega:label key="aksess.button.fjern"/></span></span>');
                     $("#form_FormElements .formElementButtons .edit").unbind("click");
-                    $("#form_FormElements .formElementButtons .edit").click(function() {
+                    $("#form_FormElements .formElement .formElementButtons .edit").click(function() {
                         formEditElement($(this).parent().parent().parent());
+                    });
+                    $("#form_FormElements .formText .formElementButtons .edit").click(function() {
+                        formEditText($(this).parent().parent().parent());
                     });
 
                     $("#form_FormElements .formElementButtons .delete").unbind("click");
@@ -300,10 +394,16 @@ $(document).ready(function() {
 
     formEditorHTML = $("#form_PlaceHolder").html();
     $("#form_PlaceHolder").html("");
+    formTextEditorHTML = $("#form_TextPlaceHolder").html();
+    $("#form_TextPlaceHolder").html("");
 
     $("#form_NewElement a").click(function(event) {
         event.preventDefault();
         formNewElement();
+    });
+    $("#form_NewText a").click(function(event) {
+        event.preventDefault();
+        formNewText();
     });
 });
 
@@ -579,4 +679,22 @@ formElementHidden.onActive = function (isSelected) {
 
 formElementTypes[formElementTypes.length] = formElementHidden;
 
-
+// Text block
+//var formElementTextBlock = new FormElementType("<kantega:label key="aksess.formeditor.type.textblock"/>", "textblock");
+//formElementTextBlock.onEdit = function(element) {
+//    var text = $("div.inputs p", element).text();
+//    $("#form_Text").val(text);
+//}
+//formElementTextBlock.onSave = function(fieldName) {
+//    var text = $("#form_Text").val();
+//    text = text.replace(/\n/g, '<br>\n');
+//    return '<p name="' + fieldName + '">' + text + '</p>';
+//}
+//formElementTextBlock.onActive = function (isSelected) {
+//    if (isSelected) {
+//        $(".form_params_textblock").show();
+//    } else {
+//        $(".form_params_textblock").hide();
+//    }
+//}
+//formElementTypes[formElementTypes.length] = formElementTextBlock;

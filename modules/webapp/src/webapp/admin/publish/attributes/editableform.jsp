@@ -62,6 +62,7 @@
                 <%=value%>
             </div>
             <div id="form_NewElement"><a href="form_NewElement" class="button"><kantega:label key="aksess.formeditor.newfield"/></a></div>
+            <div id="form_NewText"><a href="form_NewText" class="button"><kantega:label key="aksess.formeditor.newtext"/></a></div>
         </div>
         <div>
             <div id="form_PlaceHolder" style="display:none;">
@@ -140,7 +141,30 @@
                         <tr>
                             <td colspan="2" align="right">
                                 <input type="button" id="form_SaveFormElement" value="<kantega:label key="aksess.button.lagre"/>">
-                                <input type="button" id="form_Cancel" value="<kantega:label key="aksess.button.avbryt"/>">
+                                <input type="button" id="form_CancelFormElement" value="<kantega:label key="aksess.button.avbryt"/>">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div id="form_TextPlaceHolder" style="display:none;">
+                <div id="EditFormText">
+                    <input type="hidden" id="form_TextChildNo" value="">
+                    <table>
+                        <tr>
+                            <td><label for="form_TextFieldName"><kantega:label key="aksess.formeditor.fieldname"/></label></td>
+                            <td><input type="text" id="form_TextFieldName" name="form_TextFieldName" size="30" maxlength="80"></td>
+                        </tr>
+                        <tr class="form_params_textblock" style="display:none;">
+                            <td><label for="form_Text" ><kantega:label key="aksess.formeditor.content"/></label></td>
+                            <td>
+                                <textarea id="form_Text" cols="30" rows="3">Skriv tekst her.</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="right">
+                                <input type="button" id="form_SaveFormText" value="<kantega:label key="aksess.button.lagre"/>">
+                                <input type="button" id="form_CancelFormText" value="<kantega:label key="aksess.button.avbryt"/>">
                             </td>
                         </tr>
                     </table>

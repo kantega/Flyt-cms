@@ -18,7 +18,7 @@
     width: 600px;
 }
 
-#form_NewElement {
+#form_NewElement, #form_NewText {
     text-align: right;
     margin-bottom: 15px;
 }
@@ -27,7 +27,7 @@
     width: 300px;
 }
 
-#form_FormElements .formElement {
+#form_FormElements .formElement, #form_FormElements .formText {
     padding-bottom: 15px;
     border-bottom: 1px dotted black;
     cursor: move;
@@ -53,11 +53,11 @@
     background-color: #eeeeee;
 }
 
-#EditFormElement {
+#EditFormElement, #EditFormText {
     background-color: #E3F3FF;
 }
 
-#form_FormElements .formElement .formElementButtons {
+#form_FormElements .formElementButtons {
     float: right;
     cursor: pointer;
 }
@@ -81,7 +81,7 @@
     color: #0030ff;
 }
 
-#form_FieldName {
+#form_FieldName, #form_TextFieldName {
     width: 300px;
 }
 
@@ -89,7 +89,7 @@
     width: 300px;
 }
 
-#form_Cancel {
+#form_CancelFormElement, #form_CancelFormText {
     margin-left: 10px;
 }
 
@@ -100,7 +100,7 @@ a.formOptionDelete {
     width: 10px;
 }
 
-#form_NewElement a {
+#form_NewElement a, #form_NewText a {
     background: url("../bitmaps/common/buttons/mini_legg_til.gif") no-repeat left;
     padding-left: 15px;
     display: inline-block;
