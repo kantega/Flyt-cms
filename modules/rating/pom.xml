@@ -19,6 +19,7 @@
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
         <version>6.2.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -29,6 +30,17 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-api</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
