@@ -30,6 +30,9 @@
         updateSt = c.prepareStatement("ALTER TABLE content ADD NumberOfRatings INT NOT NULL DEFAULT 0");
         updateSt.executeUpdate();
 
+        updateSt = c.prepareStatement("CREATE TABLE ratings (userId VARCHAR(255), objectId VARCHAR(255) NOT NULL, context VARCHAR(255) NOT NULL, rating INT NOT NULL, ratingDate DATETIME NOT NULL)");
+        updateSt.executeUpdate();
+
         updateSt = c.prepareStatement("UPDATE content set Rating = 0, NumberOfRatings = 0");
         updateSt.executeUpdate();
 
