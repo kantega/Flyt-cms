@@ -73,7 +73,7 @@
         <column name="GroupId" required="true" type="INTEGER" size="10"/>
         <column name="Owner" required="false" type="VARCHAR" size="128"/>
         <column name="Location" required="false" type="VARCHAR" size="255"/>
-        <column name="Alias" required="false" type="VARCHAR" size="64"/>
+        <column name="Alias" required="false" type="VARCHAR" size="255"/>
         <column name="PublishDate" required="false" type="TIMESTAMP" size="23,3"/>
         <column name="ExpireDate" required="false" type="TIMESTAMP" size="23,3"/>
         <column name="ExpireAction" required="false" type="INTEGER" size="10"/>
