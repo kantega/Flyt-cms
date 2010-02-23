@@ -16,13 +16,19 @@
 
 package no.kantega.publishing.rating;
 
+import no.kantega.publishing.api.rating.RatingService;
 import no.kantega.publishing.event.ContentListenerAdapter;
 import no.kantega.publishing.common.data.Content;
 
 public class ContentDeleteRatingListener extends ContentListenerAdapter {
-        
+    private RatingService ratingService;
+
     public void contentDeleted(Content content) {
         String objectId = "" + content.getId();
-        // service.deleteRatingsForObject(objectId, "content");
+        ratingService.deleteRatingsForObject(objectId, "content");
+    }
+
+    public void setRatingService(RatingService ratingService) {
+        this.ratingService = ratingService;
     }
 }

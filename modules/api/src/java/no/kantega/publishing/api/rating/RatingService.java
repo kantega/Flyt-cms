@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package no.kantega.publishing.rating.service;
+package no.kantega.publishing.api.rating;
 
 import no.kantega.publishing.api.rating.Rating;
 

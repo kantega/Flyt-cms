@@ -16,10 +16,7 @@
 
 package no.kantega.publishing.rating.service;
 
-import no.kantega.publishing.api.rating.Rating;
-import no.kantega.publishing.api.rating.RatingNotification;
-import no.kantega.publishing.api.rating.RatingNotificationListener;
-import no.kantega.publishing.api.rating.ScoreCalculator;
+import no.kantega.publishing.api.rating.*;
 import no.kantega.publishing.rating.dao.RatingDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,14 +29,12 @@ public class RatingServiceImpl implements RatingService {
     private ScoreCalculator scoreCalculator;
 
     @Autowired
-    public RatingServiceImpl(RatingDao ratingDao, List<RatingNotificationListener> ratingNotificationListeners, ScoreCalculator scoreCalculator) {
+    public RatingServiceImpl(RatingDao ratingDao) {
         this.ratingDao = ratingDao;
-        this.ratingNotificationListeners = ratingNotificationListeners;
-        this.scoreCalculator = scoreCalculator;
     }
 
     /**
-     * @see no.kantega.publishing.rating.service.RatingService#getRatingsForObject(String, String)
+     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObject(String, String)
      */
     public List<Rating> getRatingsForObject(String objectId, String context) {
         return ratingDao.getRatingsForObject(objectId, context);
@@ -47,7 +42,7 @@ public class RatingServiceImpl implements RatingService {
 
 
     /**
-     * @see no.kantega.publishing.rating.service.RatingService#getRatingsForObject(String, String)
+     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObject(String, String)
      */
     public void deleteRatingsForObject(String objectId, String context) {
         ratingDao.deleteRatingsForObject(objectId, context);
@@ -55,7 +50,7 @@ public class RatingServiceImpl implements RatingService {
 
 
     /**
-     * @see no.kantega.publishing.rating.service.RatingService#saveOrUpdateRating(no.kantega.publishing.api.rating.Rating)
+     * @see no.kantega.publishing.api.rating.RatingService#saveOrUpdateRating(no.kantega.publishing.api.rating.Rating)
      */
     public void saveOrUpdateRating(Rating rating) {
 
@@ -65,7 +60,7 @@ public class RatingServiceImpl implements RatingService {
 
         List<Rating> ratings = getRatingsForObject(rating.getObjectId(), rating.getContext());
         notification.setNumberOfRatings(ratings.size());
-        notification.setScore(getScoreForObject(rating.getObjectId(), rating.getContext()));
+        notification.setScore(scoreCalculator.getScoreForRatings(ratings));
         notification.setRating(rating);
 
         for (RatingNotificationListener notificationListener : ratingNotificationListeners) {
@@ -75,7 +70,7 @@ public class RatingServiceImpl implements RatingService {
 
 
     /**
-     * @see no.kantega.publishing.rating.service.RatingService#getRatingsForUser(String)
+     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForUser(String)
      */
     public List<Rating> getRatingsForUser(String userId) {
         return ratingDao.getRatingsForUser(userId);
@@ -83,9 +78,18 @@ public class RatingServiceImpl implements RatingService {
 
 
     /**
-     * @see no.kantega.publishing.rating.service.RatingService#getScoreForObject(String, String)
+     * @see no.kantega.publishing.api.rating.RatingService#getScoreForObject(String, String)
      */
     public float getScoreForObject(String objectId, String context) {
         return scoreCalculator.getScoreForRatings(getRatingsForObject(objectId, context));
+    }
+
+
+    public void setRatingNotificationListeners(List<RatingNotificationListener> ratingNotificationListeners) {
+        this.ratingNotificationListeners = ratingNotificationListeners;
+    }
+
+    public void setScoreCalculator(ScoreCalculator scoreCalculator) {
+        this.scoreCalculator = scoreCalculator;
     }
 }

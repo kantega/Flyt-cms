@@ -60,7 +60,7 @@ public class RatingServiceImplTest {
         RatingDao ratingDao = mock(RatingDao.class);
         when(ratingDao.getRatingsForObject(objectId, context)).thenReturn(expected);
 
-        List<Rating> actual = new RatingServiceImpl(ratingDao, null, null).getRatingsForObject(objectId, context);
+        List<Rating> actual = new RatingServiceImpl(ratingDao).getRatingsForObject(objectId, context);
 
         verify(ratingDao).getRatingsForObject(objectId, context);
 
@@ -74,7 +74,7 @@ public class RatingServiceImplTest {
         String context = "mockContext";
 
         RatingDao ratingDao = mock(RatingDao.class);
-        new RatingServiceImpl(ratingDao, null, null).deleteRatingsForObject(objectId, context);
+        new RatingServiceImpl(ratingDao).deleteRatingsForObject(objectId, context);
 
         verify(ratingDao).deleteRatingsForObject(objectId, context);
     }
@@ -125,7 +125,10 @@ public class RatingServiceImplTest {
         ScoreCalculator scoreCalculator = mock(ScoreCalculator.class);
         when(scoreCalculator.getScoreForRatings(ratings)).thenReturn(3.5f);
 
-        new RatingServiceImpl(ratingDao, notificationListeners, scoreCalculator).saveOrUpdateRating(rating);
+        RatingServiceImpl ratingService = new RatingServiceImpl(ratingDao);
+        ratingService.setRatingNotificationListeners(notificationListeners);
+        ratingService.setScoreCalculator(scoreCalculator);
+        ratingService.saveOrUpdateRating(rating);
 
         verify(ratingDao).saveOrUpdateRating(rating);
         verify(scoreCalculator).getScoreForRatings(ratings);
@@ -159,7 +162,7 @@ public class RatingServiceImplTest {
         RatingDao ratingDao = mock(RatingDao.class);
         when(ratingDao.getRatingsForUser(userId)).thenReturn(expected);
 
-        List<Rating> actual = new RatingServiceImpl(ratingDao, null, null).getRatingsForUser(userId);
+        List<Rating> actual = new RatingServiceImpl(ratingDao).getRatingsForUser(userId);
 
         verify(ratingDao).getRatingsForUser(userId);
 
@@ -206,7 +209,9 @@ public class RatingServiceImplTest {
         ScoreCalculator scoreCalculator = mock(ScoreCalculator.class);
         when(scoreCalculator.getScoreForRatings(ratings)).thenReturn(expected);
 
-        float actual = new RatingServiceImpl(ratingDao, null, scoreCalculator).getScoreForObject(objectId, context);
+        RatingServiceImpl ratingService = new RatingServiceImpl(ratingDao);
+        ratingService.setScoreCalculator(scoreCalculator);
+        float actual = ratingService.getScoreForObject(objectId, context);
 
         verify(ratingDao).getRatingsForObject(objectId, context);
         verify(scoreCalculator).getScoreForRatings(ratings);
