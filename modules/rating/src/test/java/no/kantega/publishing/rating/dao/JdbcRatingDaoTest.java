@@ -24,7 +24,7 @@ public class JdbcRatingDaoTest extends TestCase {
 
         List<Rating> ratings = dao.getRatingsForObject("1", CONTENT);
 
-        assertSame(ratings.size(), 1);
+        assertEquals(ratings.size(), 1);
     }
 
     public void testDeleteRatingsForObject() {
@@ -51,7 +51,7 @@ public class JdbcRatingDaoTest extends TestCase {
         dao.deleteRatingsForObject("5", CONTENT);
         ratings = dao.getRatingsForObject("5", CONTENT);
 
-        assertSame(ratings.size(), 0);
+        assertEquals(ratings.size(), 0);
 
     }
 
@@ -63,6 +63,6 @@ public class JdbcRatingDaoTest extends TestCase {
 
         List<Rating> ratings = dao.getRatingsForUser("andska");
 
-        assertSame(ratings.size(), 2);
+        assertEquals(ratings.size(), 2);
     }
 }

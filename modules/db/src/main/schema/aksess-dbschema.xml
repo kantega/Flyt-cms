@@ -85,6 +85,8 @@
         <column name="OpenInNewWindow" required="false" type="INTEGER" size="10"/>
         <column name="DocumentTypeIdForChildren" required="false" type="INTEGER" size="10"/>
         <column name="IsLocked" required="false" type="INTEGER" size="10" default="0"/>
+        <column name="RatingScore" required="false" type="FLOAT" default="0"/>
+        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>
         <index name="idx_content_alias">
             <index-column name="Alias"/>
         </index>

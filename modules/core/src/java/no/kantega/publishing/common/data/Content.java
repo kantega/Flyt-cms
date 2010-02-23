@@ -93,6 +93,9 @@ public class Content extends BaseObject {
     boolean isCheckedOut = false;
     boolean isLocked = false;
 
+    // Rating
+    private float ratingScore = 0f;
+    private int numberOfRatings = 0;
 
     public Content() {
         lastModified = new Date();
@@ -671,5 +674,21 @@ public class Content extends BaseObject {
 
     public void setLocked(boolean locked) {
         isLocked = locked;
+    }
+
+    public float getRatingScore() {
+        return ratingScore;
+    }
+
+    public void setRatingScore(float ratingScore) {
+        this.ratingScore = ratingScore;
+    }
+
+    public int getNumberOfRatings() {
+        return numberOfRatings;
+    }
+
+    public void setNumberOfRatings(int numberOfRatings) {
+        this.numberOfRatings = numberOfRatings;
     }
 }

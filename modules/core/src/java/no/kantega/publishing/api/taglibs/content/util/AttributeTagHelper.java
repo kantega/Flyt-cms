@@ -218,104 +218,110 @@ public final class AttributeTagHelper {
         }
 
         if (content != null) {
-            if (name.equals(ContentProperty.TITLE)) {
-                result = content.getTitle();
-                isTextAttribute = true;
-            } else if (name.equals(ContentProperty.ID)) {
-                result = "" + content.getAssociation().getId();
-            } else if (name.equals(ContentProperty.CONTENTID)) {
-                result = "" + content.getId();
-            } else if (name.equals(ContentProperty.URL)) {
-                result = content.getUrl();
-            } else if (name.equals(ContentProperty.ALIAS)) {
-                result = content.getAlias();
-            } else if (name.equals(ContentProperty.DESCRIPTION)) {
-                result = content.getDescription();
-                if (result != null) {
-                    result = StringHelper.replace(result, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
-                    result = StringHelper.replace(result, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
+            Attribute attr = content.getAttribute(name, cmd.getAttributeType());
+            if (attr != null) {
+                if (attr instanceof DateAttribute) {
+                    Locale locale = Language.getLanguageAsLocale(content.getLanguage());
+                    DateAttribute date = (DateAttribute)attr;
+                    result = date.getValue(cmd.getFormat(), locale);
+                } else if(attr instanceof MediaAttribute) {
+                    MediaAttribute media = (MediaAttribute)attr;
+                    if (width != -1) {
+                        media.setMaxWidth(width);
+                    }
+                    if (height != -1) {
+                        media.setMaxHeight(height);
+                    }
+                    if (cssClass != null) {
+                        media.setCssclass(cssClass);
+                    }
+                    result = media.getProperty(cmd.getProperty());
+
+                    // Angi om bilde / medieobjekt skal vises inline eller lastes ned
+                    if (cmd.getContentDisposition() != null && AttributeProperty.URL.equalsIgnoreCase(cmd.getProperty())) {
+                        result = result + "&contentdisposition=" + cmd.getContentDisposition();
+                    }
+                } else {
+                    result = attr.getProperty(cmd.getProperty());
                 }
-                isTextAttribute = true;
-            } else if (name.equals(ContentProperty.ALT_TITLE)) {
-                result = content.getAltTitle();
-                isTextAttribute = true;
-            } else if (name.equals(ContentProperty.KEYWORDS)) {
-                result = content.getKeywords();
-                isTextAttribute = true;
-            } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE)) {
-                result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
-            } else if(name.equals(ContentProperty.VERSION)) {
-                result = Integer.toString(content.getVersion());
-            } else if (name.equals(ContentProperty.IMAGE)) {
-                MediaAttribute ma = new MediaAttribute();
-                if (width != -1) {
-                    ma.setMaxWidth(width);
+
+                if (attr instanceof TextAttribute) {
+                    isTextAttribute = true;
                 }
-                if (height != -1) {
-                    ma.setMaxHeight(height);
-                }
-                if (cssClass != null) {
-                    ma.setCssclass(cssClass);
-                }
-                ma.setValue(content.getImage());
-                result = ma.getProperty(cmd.getProperty());
-            } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE)) {
-                Date date = null;
-                if (name.equals(ContentProperty.PUBLISH_DATE)) {
-                    date = content.getPublishDate();
-                } else if (name.equals(ContentProperty.EXPIRE_DATE)) {
-                    date = content.getExpireDate();
-                } else if (name.equals(ContentProperty.LAST_MODIFIED)) {
-                    date = content.getLastModified();
-                }  else if (name.equals(ContentProperty.REVISION_DATE)) {
-                    date = content.getRevisionDate();
-                }
-                if (date != null) {
-                    Locale locale = Language.getLanguageAsLocale(content.getLanguage());                    
-                    DateFormat df = new SimpleDateFormat(cmd.getFormat(), locale);
-                    result = df.format(date);
-                }
-            } else if(name.equals(ContentProperty.MODIFIED_BY)) {
-                result = content.getModifiedBy();
-            } else if(name.equals(ContentProperty.PUBLISHER)) {
-                result = content.getPublisher();
-            }else if(name.equals(ContentProperty.OWNER)) {
-                result = content.getOwner();
-            }else if(name.equals(ContentProperty.OWNERPERSON)) {
-                result = content.getOwnerPerson();
-            }else if (name.equals(ContentProperty.CHANGE_DESCRIPTION)) {
-                result = content.getChangeDescription();
             } else {
-                Attribute attr = content.getAttribute(name, cmd.getAttributeType());
-                if (attr != null) {
-                    if (attr instanceof DateAttribute) {
+                if (name.equals(ContentProperty.TITLE)) {
+                    result = content.getTitle();
+                    isTextAttribute = true;
+                } else if (name.equals(ContentProperty.ID)) {
+                    result = "" + content.getAssociation().getId();
+                } else if (name.equals(ContentProperty.CONTENTID)) {
+                    result = "" + content.getId();
+                } else if (name.equals(ContentProperty.URL)) {
+                    result = content.getUrl();
+                } else if (name.equals(ContentProperty.ALIAS)) {
+                    result = content.getAlias();
+                } else if (name.equals(ContentProperty.DESCRIPTION)) {
+                    result = content.getDescription();
+                    if (result != null) {
+                        result = StringHelper.replace(result, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
+                        result = StringHelper.replace(result, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
+                    }
+                    isTextAttribute = true;
+                } else if (name.equals(ContentProperty.ALT_TITLE)) {
+                    result = content.getAltTitle();
+                    isTextAttribute = true;
+                } else if (name.equals(ContentProperty.KEYWORDS)) {
+                    result = content.getKeywords();
+                    isTextAttribute = true;
+                } else if (name.equals(ContentProperty.IMAGE)) {
+                    MediaAttribute ma = new MediaAttribute();
+                    if (width != -1) {
+                        ma.setMaxWidth(width);
+                    }
+                    if (height != -1) {
+                        ma.setMaxHeight(height);
+                    }
+                    if (cssClass != null) {
+                        ma.setCssclass(cssClass);
+                    }
+                    ma.setValue(content.getImage());
+                    result = ma.getProperty(cmd.getProperty());
+                } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE)) {
+                    Date date = null;
+                    if (name.equals(ContentProperty.PUBLISH_DATE)) {
+                        date = content.getPublishDate();
+                    } else if (name.equals(ContentProperty.EXPIRE_DATE)) {
+                        date = content.getExpireDate();
+                    } else if (name.equals(ContentProperty.LAST_MODIFIED)) {
+                        date = content.getLastModified();
+                    }  else if (name.equals(ContentProperty.REVISION_DATE)) {
+                        date = content.getRevisionDate();
+                    }
+                    if (date != null) {
                         Locale locale = Language.getLanguageAsLocale(content.getLanguage());
-                        DateAttribute date = (DateAttribute)attr;
-                        result = date.getValue(cmd.getFormat(), locale);
-                    } else if(attr instanceof MediaAttribute) {
-                        MediaAttribute media = (MediaAttribute)attr;
-                        if (width != -1) {
-                            media.setMaxWidth(width);
-                        }
-                        if (height != -1) {
-                            media.setMaxHeight(height);
-                        }
-                        if (cssClass != null) {
-                            media.setCssclass(cssClass);
-                        }
-                        result = media.getProperty(cmd.getProperty());
-
-                        // Angi om bilde / medieobjekt skal vises inline eller lastes ned
-                        if (cmd.getContentDisposition() != null && AttributeProperty.URL.equalsIgnoreCase(cmd.getProperty())) {
-                            result = result + "&contentdisposition=" + cmd.getContentDisposition();
-                        }
-                    } else {
-                        result = attr.getProperty(cmd.getProperty());
+                        DateFormat df = new SimpleDateFormat(cmd.getFormat(), locale);
+                        result = df.format(date);
                     }
-
-                    if (attr instanceof TextAttribute) {
-                        isTextAttribute = true;
-                    }
+                } else if(name.equals(ContentProperty.MODIFIED_BY)) {
+                    result = content.getModifiedBy();
+                } else if(name.equals(ContentProperty.PUBLISHER)) {
+                    result = content.getPublisher();
+                } else if(name.equals(ContentProperty.OWNER)) {
+                    result = content.getOwner();
+                } else if(name.equals(ContentProperty.OWNERPERSON)) {
+                    result = content.getOwnerPerson();
+                } else if (name.equals(ContentProperty.CHANGE_DESCRIPTION)) {
+                    result = content.getChangeDescription();
+                } else if (name.equals(ContentProperty.RATING_SCORE)) {
+                    result = "" + content.getRatingScore();
+                } else if (name.equals(ContentProperty.NUMBER_OF_RATINGS)) {
+                    result = "" + content.getNumberOfRatings();
+                } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE)) {
+                    result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
+                } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE_ID)) {
+                    result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getPublicId();
+                } else if(name.equals(ContentProperty.VERSION)) {
+                    result = Integer.toString(content.getVersion());
                 }
             }
 

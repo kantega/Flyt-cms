@@ -719,7 +719,7 @@ public class ContentAO {
             }
 
             if (isNew) {
-                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, Rating, NumberOfRatings) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 // Update
                 st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ? where ContentId = ?");
@@ -1332,6 +1332,17 @@ public class ContentAO {
         int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", new Object[] {contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED});
         return cnt > 0;
     }
+
+    /**
+     * Set new rating score (average rating) for content
+     * @param contentId - ContentId
+     * @param score - score
+     */
+    public static void setRating(int contentId, float score, int numberOfRatings) {
+        JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
+        template.update("update content set RatingScore = ?, NumberOfRatings = ? where ContentId = ?", new Object[] {score, numberOfRatings, contentId});
+    }
+
 
     public interface ContentHandlerStopper {
         public boolean isStopRequested();

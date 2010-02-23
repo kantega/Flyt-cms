@@ -27,6 +27,7 @@
       <li><a href="../tools/generatemultimediausage.jsp">Oppgrader fra 5.13.X til 5.14.0 - generer bildebruk (må gjøres etter alle andre databaseendringer)</a></li>
       <li><a href="upgrade-514x-515x.jsp">Oppgrader fra 5.14.X til 5.15.0 - databaseendringer</a></li>
       <li><a href="upgrade-60x-61x.jsp">Oppgrader fra 6.0.X til 6.1.X - databasechanges new forms module</a></li>
+      <li><a href="upgrade-61x-62x.jsp">Upgrade from 6.1.X to 6.2.X - databasechanges</a></li>
   </ul>
 
   <h1>Export database templates to XML</h1>
