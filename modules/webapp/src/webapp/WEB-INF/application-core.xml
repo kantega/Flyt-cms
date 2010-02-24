@@ -98,4 +98,12 @@
         <property name="scoreCalculator" ref="ratingScoreCalculator"/>
     </bean>
 
+    <bean id="ratingServletContextAttributeExporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
+        <property name="attributes">
+            <map>
+               <entry key="ratingService" value-ref="ratingService"/>
+             </map>
+        </property>
+    </bean>
+
 </beans>

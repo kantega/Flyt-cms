@@ -2,6 +2,7 @@ package no.kantega.publishing.rating.controller;
 
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
+import no.kantega.publishing.rating.util.RatingUtil;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,7 +41,7 @@ public class RatingController {
         rating.setObjectId(objectId);
         rating.setContext(context);
         rating.setRating(ratingValue);
-        rating.setUserid(getUserId(request));
+        rating.setUserid(RatingUtil.getUserId(request));
 
         if (!hasRated(request, objectId, context)) {
             ratingService.saveOrUpdateRating(rating);
@@ -88,14 +89,6 @@ public class RatingController {
 
     private String getCookieNameForObject(String objectId, String context) {
         return "aksess-rating-" + context + "-" + objectId;
-    }
-
-    private String getUserId(HttpServletRequest request) {
-        SecuritySession secSession = SecuritySession.getInstance(request);
-        if(secSession.isLoggedIn()) {
-            return secSession.getUser().getId();
-        }
-        return request.getSession().getId();
     }
 
     public void setJsonView(View jsonView) {
