@@ -104,7 +104,14 @@
                                     <option value="email"><kantega:label key="aksess.formeditor.validator.email"/></option>
                                     <option value="number"><kantega:label key="aksess.formeditor.validator.number"/></option>
                                     <option value="norwegianssn"><kantega:label key="aksess.formeditor.validator.norwegianssn"/></option>
+                                    <option value="regularexpression"><kantega:label key="aksess.formeditor.validator.regularexpression"/></option>
                                 </select>
+                            </td>
+                        </tr>
+                        <tr class="form_params_text" style="display:none;">
+                            <td><label for="form_RegEx"><kantega:label key="aksess.formeditor.fieldregex"/></label></td>
+                            <td>
+                                <input type="text" id="form_RegEx" name="form_RegEx">
                             </td>
                         </tr>
                         <tr class="form_params_textarea" style="display:none;">
