@@ -1,4 +1,4 @@
-package no.kantega.publishing.rating.score;
+package no.kantega.publishing.api.rating;
 
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.ScoreCalculator;

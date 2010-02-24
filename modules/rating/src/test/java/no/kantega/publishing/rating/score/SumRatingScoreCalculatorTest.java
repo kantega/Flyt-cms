@@ -2,6 +2,7 @@ package no.kantega.publishing.rating.score;
 
 import junit.framework.TestCase;
 import no.kantega.publishing.api.rating.Rating;
+import no.kantega.publishing.api.rating.SumRatingScoreCalculator;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,7 @@ import no.kantega.commons.log.Log;
 /**
  *
  */
-public class RatingNotificationContentListener implements RatingNotificationListener{
+public class ContentRatingNotificationListener implements RatingNotificationListener {
     public void newRatingNotification(RatingNotification notification) {
         Rating r = notification.getRating();
         if (r.getContext().equalsIgnoreCase("content")) {

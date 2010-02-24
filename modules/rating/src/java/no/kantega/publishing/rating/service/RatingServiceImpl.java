@@ -18,15 +18,20 @@ package no.kantega.publishing.rating.service;
 
 import no.kantega.publishing.api.rating.*;
 import no.kantega.publishing.rating.dao.RatingDao;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public class RatingServiceImpl implements RatingService {
+public class RatingServiceImpl implements RatingService, ApplicationContextAware {
 
     private RatingDao ratingDao;
-    private List<RatingNotificationListener> ratingNotificationListeners;
     private ScoreCalculator scoreCalculator;
+    private ApplicationContext applicationContext;
 
     @Autowired
     public RatingServiceImpl(RatingDao ratingDao) {
@@ -63,8 +68,11 @@ public class RatingServiceImpl implements RatingService {
         notification.setScore(scoreCalculator.getScoreForRatings(ratings));
         notification.setRating(rating);
 
-        for (RatingNotificationListener notificationListener : ratingNotificationListeners) {
-            notificationListener.newRatingNotification(notification);
+        Map ratingNotificationListenerBeans = applicationContext.getBeansOfType(RatingNotificationListener.class);
+        if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
+            for (RatingNotificationListener notificationListener : (Iterable<? extends RatingNotificationListener>) ratingNotificationListenerBeans.values()) {
+                notificationListener.newRatingNotification(notification);
+            }
         }
     }
 
@@ -84,12 +92,11 @@ public class RatingServiceImpl implements RatingService {
         return scoreCalculator.getScoreForRatings(getRatingsForObject(objectId, context));
     }
 
-
-    public void setRatingNotificationListeners(List<RatingNotificationListener> ratingNotificationListeners) {
-        this.ratingNotificationListeners = ratingNotificationListeners;
-    }
-
     public void setScoreCalculator(ScoreCalculator scoreCalculator) {
         this.scoreCalculator = scoreCalculator;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

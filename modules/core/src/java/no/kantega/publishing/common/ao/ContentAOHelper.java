@@ -93,7 +93,7 @@ public class ContentAOHelper {
         }
 
         content.setLocked(rs.getInt("IsLocked") == 1);
-        content.setRatingScore(rs.getFloat("Rating"));
+        content.setRatingScore(rs.getFloat("RatingScore"));
         content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
 
         // Info som avhenger av i hvilken kontekst dette er publisert

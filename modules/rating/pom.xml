@@ -38,6 +38,12 @@
 
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-core</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>openaksess-test</artifactId>
             <version>${pom.version}</version>
             <scope>test</scope>

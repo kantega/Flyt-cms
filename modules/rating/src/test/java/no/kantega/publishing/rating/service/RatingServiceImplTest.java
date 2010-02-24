@@ -22,10 +22,9 @@ import no.kantega.publishing.api.rating.RatingNotificationListener;
 import no.kantega.publishing.api.rating.ScoreCalculator;
 import no.kantega.publishing.rating.dao.RatingDao;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.refEq;
@@ -113,9 +112,12 @@ public class RatingServiceImplTest {
 
         RatingNotificationListener notificationListener1 = mock(RatingNotificationListener.class);
         RatingNotificationListener notificationListener2 = mock(RatingNotificationListener.class);
-        List<RatingNotificationListener> notificationListeners = new ArrayList<RatingNotificationListener>();
-        notificationListeners.add(notificationListener1);
-        notificationListeners.add(notificationListener2);
+        Map<String, Object> notificationListeners = new HashMap();
+        notificationListeners.put("listener1", notificationListener1);
+        notificationListeners.put("listener2", notificationListener2);
+
+        ApplicationContext mockContext = mock(ApplicationContext.class);
+        when(mockContext.getBeansOfType(RatingNotificationListener.class)).thenReturn(notificationListeners);
 
         RatingNotification expectedNotification = new RatingNotification();
         expectedNotification.setScore(3.5f);
@@ -126,7 +128,7 @@ public class RatingServiceImplTest {
         when(scoreCalculator.getScoreForRatings(ratings)).thenReturn(3.5f);
 
         RatingServiceImpl ratingService = new RatingServiceImpl(ratingDao);
-        ratingService.setRatingNotificationListeners(notificationListeners);
+        ratingService.setApplicationContext(mockContext);
         ratingService.setScoreCalculator(scoreCalculator);
         ratingService.saveOrUpdateRating(rating);
 

@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import java.util.List;
 import java.util.ArrayList;
 
+import no.kantega.publishing.api.rating.AverageRatingScoreCalculator;
 import no.kantega.publishing.api.rating.Rating;
 
 /**
