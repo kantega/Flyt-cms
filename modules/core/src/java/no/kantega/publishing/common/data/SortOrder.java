@@ -25,6 +25,25 @@ public class SortOrder {
 
     private boolean descending = false;
 
+    public SortOrder(String sortOrder) {
+        if (sortOrder.indexOf(",") != -1) {
+            sort1 = sortOrder.substring(0, sortOrder.indexOf(",")).trim();
+            sort2 = sortOrder.substring(sortOrder.indexOf(",") + 1, sortOrder.length()).trim();
+        } else {
+            sort1 = sortOrder.trim();
+        }
+
+        if (sort1.equalsIgnoreCase(ContentProperty.RATING_SCORE) ||
+            sort1.equalsIgnoreCase(ContentProperty.LAST_MODIFIED) ||
+            sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
+            sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_RATINGS)) {
+            this.descending = true;
+        } else {
+            this.descending = false;
+        }
+
+    }
+
     public SortOrder(String sortOrder, boolean descending) {
         if (sortOrder.indexOf(",") != -1) {
             sort1 = sortOrder.substring(0, sortOrder.indexOf(",")).trim();
