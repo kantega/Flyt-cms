@@ -8,6 +8,7 @@
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementRegExValidator"/>
             </list>
         </property>
     </bean>

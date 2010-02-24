@@ -108,6 +108,7 @@ function formEditElement(element) {
         handler.onEdit(element);
         handler.onActive(true);
     }
+
 }
 
 function formEditText(element) {
@@ -414,6 +415,7 @@ $(document).ready(function() {
         event.preventDefault();
         formNewText();
     });
+
 });
 
 
@@ -450,9 +452,19 @@ formElementText.onEdit = function(element) {
         $("#form_MaxLength").val("");
     }
 
+    var regex = $("div.inputs span.regex", element).html();
+    $("#form_RegEx").val(regex);
+
     var clz = $("div.inputs input", element).attr("class");
     $("#form_Validator").val(clz);
 
+    $("#form_Validator").change(function() {
+        if ("regularexpression" === $(this).val()) {
+            $("#form_RegEx").parent().parent().show();
+        } else {
+            $("#form_RegEx").parent().parent().hide();
+        }
+    });
 }
 formElementText.onSave = function (fieldName) {
     var size = $("#form_Length").val();
@@ -460,7 +472,15 @@ formElementText.onSave = function (fieldName) {
         size = parseInt(size, 10);
     }
 
-    var html = '<input type="text" name="' + fieldName + '" disabled';
+    var html = '';
+
+    var validator = $("#form_Validator").val();
+    if ("regularexpression" == validator) {
+        var regex = $("#form_RegEx").val();
+        html += '<span class="regex" style="display:none">' + regex + '</span>';
+    }
+
+    html += '<input type="text" name="' + fieldName + '" disabled';
     if (!isNaN(size) && size > 0) {
         html += ' size="' + size + '"';
     }
@@ -471,16 +491,18 @@ formElementText.onSave = function (fieldName) {
         html += ' maxlength="' + maxsize + '"';
     }
 
-    var validator = $("#form_Validator").val();
     if (validator != '') {
         html += ' class="' + validator + '"';
     }
     html += '>';
+
+
     return html;
 }
 formElementText.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_text").show();
+        $("#form_Validator").change();
     } else {
         $(".form_params_text").hide();
     }

@@ -15,7 +15,7 @@ public class FormElementEmailValidator  implements FormElementValidator {
         return id;
     }
 
-    public List<FormError> validate(FormValue formValue, int currentFieldIndex, List<FormError> formErrors) {
+    public List<FormError> validate(FormValue formValue, int currentFieldIndex, String[] args, List<FormError> formErrors) {
         String value = formValue.getValues()[0];
         if (value!=null && 0 < value.length()) {
             if (!value.matches(emailRegex)) {
