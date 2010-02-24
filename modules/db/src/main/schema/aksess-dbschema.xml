@@ -293,6 +293,13 @@
         <column name="Votes" required="true" type="INTEGER" size="10"/>
         <column name="ContentId" required="true" type="INTEGER" size="10"/>
     </table>
+    <table name="ratings">
+        <column name="UserId" required="false" type="VARCHAR" size="64"/>
+        <column name="ObjectId" required="true" type="VARCHAR" size="64"/>
+        <column name="ContextId" required="true" type="VARCHAR" size="64"/>
+        <column name="Rating" required="true" type="INTEGER" size="10"/>
+        <column name="RatingDate" required="true" type="TIMESTAMP" size="23,3"/>
+    </table>
     <table name="role2topic">
         <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
         <column name="TopicId" required="true" type="VARCHAR" size="64"/>
@@ -320,25 +327,6 @@
         <column name="SiteId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Name" required="false" type="VARCHAR" size="32"/>
         <column name="Alias" required="false" type="VARCHAR" size="32"/>
-    </table>
-    <table name="survey">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="name" required="true" type="VARCHAR" size="128"/>
-        <column name="wizard" required="false" type="BLOB" size="2147483647"/>
-        <column name="type" required="false" type="INTEGER" size="10"/>
-    </table>
-    <table name="survey_participant">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="name" required="true" type="VARCHAR" size="128"/>
-        <column name="email" required="true" type="VARCHAR" size="128"/>
-        <column name="surveyid" required="true" type="INTEGER" size="10"/>
-        <column name="status" required="true" type="INTEGER" size="10"/>
-        <column name="secret" required="true" type="BIGINT" size="19"/>
-    </table>
-    <table name="survey_result">
-        <column name="id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="survey" required="true" type="INTEGER" size="10"/>
-        <column name="resultxml" required="false" type="BLOB" size="2147483647"/>
     </table>
     <table name="tmassociation">
         <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
