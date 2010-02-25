@@ -23,12 +23,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>6.2.0-SNAPSHOT</version>
+    <version>6.1.12</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-6.1.12</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-6.1.12</developerConnection>
     </scm>
 
     <pluginRepositories>
@@ -47,7 +47,6 @@
         <module>modules/api</module>
         <module>modules/commons</module>
         <module>modules/core</module>
-        <module>modules/rating</module>
         <module>modules/search</module>
         <module>modules/test</module>
         <module>modules/useradmin</module>
@@ -237,7 +236,7 @@
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
         <xml-apis.version>1.0.b2</xml-apis.version>
-        <jexmec.version>1.25</jexmec.version>
+        <jexmec.version>1.9</jexmec.version>
         <jtds.version>1.2.4</jtds.version>
     </properties>
 

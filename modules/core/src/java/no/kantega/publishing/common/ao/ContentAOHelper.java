@@ -19,6 +19,7 @@ package no.kantega.publishing.common.ao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
 import no.kantega.commons.exception.SystemException;
@@ -93,8 +94,6 @@ public class ContentAOHelper {
         }
 
         content.setLocked(rs.getInt("IsLocked") == 1);
-        content.setRatingScore(rs.getFloat("RatingScore"));
-        content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
 
         // Info som avhenger av i hvilken kontekst dette er publisert
         if (getAssociationInfo) {

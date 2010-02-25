@@ -125,6 +125,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         pathElementIds = null;
         siteId = -1;
 
+        descending = false;
         findAll = false;
         skipAttributes = false;
         skipTopics = true;

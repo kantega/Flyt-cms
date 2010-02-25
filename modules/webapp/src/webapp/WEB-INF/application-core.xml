@@ -85,25 +85,4 @@
         </constructor-arg>
     </bean>
 
-
-    <bean id="contentRatingNotificationListener" class="no.kantega.publishing.rating.ContentRatingNotificationListener"/>
-    <bean id="ratingScoreCalculator" class="no.kantega.publishing.api.rating.AverageRatingScoreCalculator"/>
-
-    <bean id="ratingDao" class="no.kantega.publishing.rating.dao.JdbcRatingDao">
-        <property name="dataSource" ref="aksessDataSource"/>
-    </bean>
-
-    <bean id="ratingService" class="no.kantega.publishing.rating.service.RatingServiceImpl">
-        <constructor-arg ref="ratingDao"/>
-        <property name="scoreCalculator" ref="ratingScoreCalculator"/>
-    </bean>
-
-    <bean id="ratingServletContextAttributeExporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
-        <property name="attributes">
-            <map>
-               <entry key="ratingService" value-ref="ratingService"/>
-             </map>
-        </property>
-    </bean>
-
 </beans>
