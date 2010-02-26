@@ -123,7 +123,6 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
                         if (fev != null) {
                             // Validate value
                             formSubmission.setErrors(fev.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, formSubmission.getErrors()));
-                            validatorArg = new StringBuilder();
                         }
                     }
                 }
@@ -137,6 +136,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
             formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
         }
 
+        validatorArg = new StringBuilder();
         mandatory = false;
     }
 
