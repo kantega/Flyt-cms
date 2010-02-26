@@ -124,7 +124,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
     public void deleteFormSubmissionsByFormId(int formId) {
         JdbcTemplate template = new JdbcTemplate(dataSource);
-        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmission Id IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", new Object[] {formId});        
+        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", new Object[] {formId});        
         template.update("DELETE FROM formsubmission WHERE FormId = ?", new Object[] {formId});
     }
 
