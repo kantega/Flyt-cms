@@ -40,7 +40,7 @@ public class AssociationAOHelper {
             List sites = SiteCache.getSites();
 
             // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
-            String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + ") AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
+            String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + " AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
                             " (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
             PreparedStatement st = c.prepareStatement(query);
 
@@ -51,7 +51,6 @@ public class AssociationAOHelper {
                 Site site =  (Site)sites.get(i);
                 st.setInt(1, site.getId());
                 st.setInt(2, site.getId());
-                st.setInt(3, site.getId());
                 ResultSet rs = st.executeQuery();
                 while(rs.next()) {
                     int id = rs.getInt(1);
