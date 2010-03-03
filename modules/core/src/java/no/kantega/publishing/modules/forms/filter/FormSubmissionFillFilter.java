@@ -25,7 +25,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     private int currentFieldIndex;
     private FormElementValidatorFactory formElementValidatorFactory;
     private boolean capture = false;
-    private StringBuilder validatorArg = new StringBuilder();
+    private StringBuilder validatorArg;
 
     public FormSubmissionFillFilter(Map<String, String[]> params, Form form) {
         this.params = params;
@@ -86,9 +86,12 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     }
 
     private void processSpan(String name, Attributes attributes) {
-        capture = attributes != null
+        if (attributes != null
                 && attributes.getValue("class") != null
-                && attributes.getValue("class").contains("regex");
+                && attributes.getValue("class").contains("regex")) {
+            capture = true;
+            validatorArg = new StringBuilder();
+        }
     }
 
     private void processInput(String name, Attributes attributes) {
@@ -123,7 +126,6 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
                         if (fev != null) {
                             // Validate value
                             formSubmission.setErrors(fev.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, formSubmission.getErrors()));
-                            validatorArg = new StringBuilder();
                         }
                     }
                 }
