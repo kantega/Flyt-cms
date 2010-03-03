@@ -50,6 +50,11 @@
                 e.preventDefault();
                 gotoMode("Statistics");
             });
+            $("#ModesMenu .button .notes").click(function(e){
+                debug("publishModesAndButtonsJS.notes");
+                e.preventDefault();
+                gotoMode("Notes");
+            });
 
             // Prevent user from clicking top menu
             $("#TopMenu a").click(function (e) {

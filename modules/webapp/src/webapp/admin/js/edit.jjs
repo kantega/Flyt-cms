@@ -90,15 +90,37 @@ openaksess.editcontext = function()  {
          * Update topics
          */
         updateTopics : function (params) {
+            var that = this;
             $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
                 $(".topic > .buttonGroup > a.delete").click(function(event){
                     event.preventDefault();
                     var topicMapId = getQueryParam("topicMapId", $(this).attr("href"));
                     var topicId = getQueryParam("topicId", $(this).attr("href"));
                     debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
-                    removeTopic(topicId, topicMapId);
+                    that.removeTopic(topicId, topicMapId);
                 });
                 debug("updateTopics(): received topics");
+            });
+        },
+
+        addTopicAutocomplete : function() {
+            var $input = $("#TopicInput");
+            
+            var defaultValue = $input.val();
+            $input.focus(function(){
+                $(this).val("");
+            }).blur(function(){
+                $(this).val(defaultValue);
+            });
+
+            var that = this;
+
+            $input.autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
+                var topicName = data[0];
+                var topicId = data[1].split(":");
+                that.focusField = null;
+                that.addTopic(topicId[0], topicId[1], topicName);
+                $(this).blur();
             });
         },
 
@@ -128,7 +150,7 @@ openaksess.editcontext = function()  {
          */
         addTopic : function (topicMapId, topicId, topicName) {
             this.setIsModified();
-
+            debug("add topic: " + topicName + ", topicId:" + topicId[1] + " topicMapId:" + topicId[0]);
             if (this.focusField == null) {
                 // Update topic list
                 var params = new Object();

@@ -41,6 +41,7 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -340,8 +341,10 @@ public class ContentManagementService {
             n.setDate(new Date());
             n.setText(note);
             n.setContentId(cid.getContentId());
-            NotesAO.addNote(n);
-            int count = NotesAO.getNotesByContentId(cid.getContentId()).length;
+
+            NotesDao notesDao = (NotesDao)RootContext.getInstance().getBean("aksessNotesDao");
+            notesDao.addNote(n);
+            int count = notesDao.getNotesByContentId(cid.getContentId()).size();
             ContentAO.setNumberOfNotes(cid.getContentId(), count);
         }
 

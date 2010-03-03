@@ -160,6 +160,7 @@
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
 
                 <!-- Search for autocomplete -->
+                <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
                 <prop key="/ajax/SearchContentAsXML.action">SearchContentAsXMLAction</prop>
                 <prop key="/ajax/SearchMultimediaAsXML.action">SearchMultimediaAsXMLAction</prop>
                 <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
@@ -663,6 +664,7 @@
 
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchContentAsXMLAction" id="SearchContentAsXMLAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>

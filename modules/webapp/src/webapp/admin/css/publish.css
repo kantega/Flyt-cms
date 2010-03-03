@@ -62,6 +62,7 @@ html, body {
 #TopicList .topic .buttonGroup {
     margin-left: 5px;
     float: left;
+    clear: none;
     padding: 0;
 }
 
@@ -73,8 +74,19 @@ html, body {
     background: url("../bitmaps/common/icons/small/remove.png");
 }
 
-#ChooseTopicButton {
+#SelectTopics {
+    float: left;
     clear: left;
+}
+
+#TopicInputContainer {
+    float: left;    
+}
+
+
+#ChooseTopicButton {
+    padding-left: 4px;
+    float: left;
 }
 
 .buttonRow {

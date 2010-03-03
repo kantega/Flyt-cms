@@ -94,6 +94,7 @@
         // Load topics
         var params = new Object();
         openaksess.editcontext.updateTopics(params);
+        openaksess.editcontext.addTopicAutocomplete();
     });
 
 </script>
@@ -174,9 +175,17 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
-            <div id="TopicList">...</div>
-            <div id="ChooseTopicButton">
-                <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+            <div id="Topics">
+                <div id="TopicList">...</div>
+                <div id="SelectTopics">
+                    <div id="TopicInputContainer">
+                        <input type="text" id="TopicInput" size="20" maxlength="128">
+                    </div>
+                    <div id="ChooseTopicButton">
+                        <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+                    </div>
+                </div>
+
             </div>
 
         </fieldset>

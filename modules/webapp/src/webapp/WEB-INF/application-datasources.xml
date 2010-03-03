@@ -37,6 +37,11 @@
         <property name="dataSource" ref="aksessDataSource"/>
         <property name="sqlDialect" ref="sqlDialect"/>
     </bean>
+
+    <bean id="aksessNotesDao" class="no.kantega.publishing.common.ao.JdbcNotesDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
     <bean id="aksessTrafficLogDao" class="no.kantega.publishing.common.ao.JdbcTrafficLogDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

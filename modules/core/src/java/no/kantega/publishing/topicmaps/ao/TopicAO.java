@@ -499,7 +499,10 @@ public class TopicAO {
         topicName = StringHelper.replace(topicName, "\\", "");
 
         sql += "   WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
-        sql += "   AND tmtopic.TopicMapId = " + topicMapId;
+
+        if (topicMapId != -1) {
+            sql += "   AND tmtopic.TopicMapId = " + topicMapId;
+        }
 
         sql += "   ORDER BY tmbasename.Basename";
 
