@@ -19,11 +19,7 @@ package no.kantega.publishing.api.taglibs.util;
 import javax.servlet.jsp.jstl.core.LoopTagStatus;
 import java.util.Collection;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 20.des.2006
- * Time: 10:45:37
- */
+
 public class  CollectionLoopTagStatus implements LoopTagStatus {
 
     private Object[] objs;

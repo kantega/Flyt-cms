@@ -21,11 +21,6 @@ import no.kantega.publishing.common.data.SiteMapEntry;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 21.des.2006
- * Time: 10:21:39
- */
 public class PrintListMenuTag extends AbstractMenuTag {
 
     private String liClass = null;

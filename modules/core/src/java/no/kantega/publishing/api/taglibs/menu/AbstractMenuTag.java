@@ -40,11 +40,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 21.des.2006
- * Time: 10:27:30
- */
+
 public abstract class AbstractMenuTag extends BodyTagSupport {
     private static final String SOURCE = "aksess.AbstractMenuTag";
 

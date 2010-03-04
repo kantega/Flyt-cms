@@ -31,11 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Date;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 20.des.2006
- * Time: 09:19:45
- */
 public class PrintSiteMapTag extends TagSupport {
     private static final String SOURCE = "aksess.PrintSiteMapTag";
 
