@@ -141,9 +141,9 @@
                         </tr>
                         <tr>
                             <td colspan="2">
-                                <input type="checkbox" name="form_FieldReadonly" id="form_FieldReadonly" checked="checked"><label for="form_FieldReadonly"><kantega:label key="aksess.formeditor.readonly"/></label><br>
                                 <input type="checkbox" name="form_FieldMandatory" id="form_FieldMandatory"><label for="form_FieldMandatory"><kantega:label key="aksess.formeditor.mandatory"/></label><br>
-                                <input type="checkbox" name="form_NoBreak" id="form_NoBreak"><label for="form_NoBreak"><kantega:label key="aksess.formeditor.nobreak"/></label>
+                                <input type="checkbox" name="form_NoBreak" id="form_NoBreak"><label for="form_NoBreak"><kantega:label key="aksess.formeditor.nobreak"/></label><br>
+                                <input type="checkbox" name="form_FieldReadonly" id="form_FieldReadonly" checked="checked"><label for="form_FieldReadonly"><kantega:label key="aksess.formeditor.readonly"/></label>
                             </td>
                         </tr>
                         <tr>
@@ -159,14 +159,10 @@
                 <div id="EditFormText">
                     <input type="hidden" id="form_TextChildNo" value="">
                     <table>
-                        <tr>
-                            <td><label for="form_TextFieldName"><kantega:label key="aksess.formeditor.fieldname"/></label></td>
-                            <td><input type="text" id="form_TextFieldName" name="form_TextFieldName" size="30" maxlength="80"></td>
-                        </tr>
-                        <tr class="form_params_textblock" style="display:none;">
+                        <tr valign="top">
                             <td><label for="form_Text" ><kantega:label key="aksess.formeditor.content"/></label></td>
                             <td>
-                                <textarea id="form_Text" cols="30" rows="3">Skriv tekst her.</textarea>
+                                <textarea id="form_Text" cols="50" rows="6"></textarea>
                             </td>
                         </tr>
                         <tr>
