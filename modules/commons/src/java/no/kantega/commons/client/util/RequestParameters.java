@@ -124,6 +124,19 @@ public class RequestParameters  {
         }
     }
 
+    public long getLong (String name) {
+        String value = request.getParameter(name);
+        if (value == null) {
+            return -1;
+        }
+        try {
+            return Long.parseLong(value, 10);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+
+
     public boolean getBoolean (String name, boolean defaultValue) {
         String value = request.getParameter(name);
         if ("true".equalsIgnoreCase(value) || "1".equalsIgnoreCase(value) || "on".equalsIgnoreCase(value)) {
