@@ -39,7 +39,7 @@ public class SearchContentAsXMLAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
         RequestParameters param = new RequestParameters(request);
-        String title = param.getString("value");
+        String title = param.getString("q");
         if (title != null && title.length() >= 3) {
             ContentQuery query = new ContentQuery();
             query.setKeyword(title + '%');

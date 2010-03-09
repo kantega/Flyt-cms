@@ -77,6 +77,6 @@
         <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     </div>
     <script type="text/javascript">
-        Autocomplete.setup({'inputField' :'url', url:'../../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
+        $("#urltext").autocomplete("${pageContext.request.contextPath}/ajax/SearchMultimediaAsXML.action").result(openaksess.editcontext.autocompleteInsertMediaIntoFormCallback);
     </script>
 </div>

@@ -24,8 +24,9 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/autocomplete.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.autocomplete.css">
     <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/admin/js/edit.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
 </kantega:section>
 
 <kantega:section id="body">

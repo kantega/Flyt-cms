@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,8 +14,7 @@
   ~ limitations under the License.
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<values>
-    <c:forEach var="user" items="${userlist}" varStatus="status">
-    <value key="<c:out value="${user.id}"/>"><c:out value="${user.name}"/><c:if test="${user.department != ''}"> (<c:out value="${user.department}"/>)</c:if></value>
-    </c:forEach>
+<c:forEach var="user" items="${userlist}" varStatus="status">
+<c:out value="${user.name}"/><c:if test="${user.department != ''}"> (<c:out value="${user.department}"/>)</c:if>|<c:out value="${user.id}"/>
+</c:forEach>
 </values>

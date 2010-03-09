@@ -325,16 +325,25 @@ table.fullWidth {
     background: url("../bitmaps/default/framework/modus_btn_center_active.png") center center repeat-x;
 }
 
-#ModesMenu .buttonGroup .button:first-child {
+#ModesMenu .buttonGroup .button.first {
     background: url("../bitmaps/default/framework/modus_btn_left.png") left center no-repeat
 }
-#ModesMenu .buttonGroup .button.active:first-child {
+
+#ModesMenu .buttonGroup .button.first.active {
     background: url("../bitmaps/default/framework/modus_btn_left_active.png") left center no-repeat
 }
-#ModesMenu .buttonGroup .button:last-child {
+#ModesMenu .buttonGroup .button.last {
     background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat
 }
-#ModesMenu .buttonGroup .button.active:last-child {
+
+#ModesMenu .buttonGroup span.singlebutton {
+    background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat;
+    padding-right: 4px;
+    margin-left: 4px;
+    display: block;
+}
+
+#ModesMenu .buttonGroup .button.last.active {
     background: url("../bitmaps/default/framework/modus_btn_right_active.png") right center no-repeat
 }
 #ModesMenu .buttonGroup .buttonSeparator {
@@ -579,6 +588,11 @@ table.fullWidth {
 .button .ok{
     background-image: url("../bitmaps/common/icons/small/ok.png");
 }
+
+.button .notes {
+    background: url("../bitmaps/common/icons/small/notes.png");
+}
+
 .button .organize {
     background: url("../bitmaps/common/icons/small/organize.png");
 }

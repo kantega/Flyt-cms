@@ -108,7 +108,7 @@
                                                                         <c:when test="${canModifyPermissions}">
                                                                             <select name="notification_${p.securityIdentifier.id}">
                                                                                 <c:forEach var="priority" items="${priorities}">
-                                                                                    <option value="${priority}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority}"/></option>
+                                                                                    <option value="${priority.notificationPriorityAsInt}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority}"/></option>
                                                                                 </c:forEach>
                                                                             </select>
                                                                         </c:when>

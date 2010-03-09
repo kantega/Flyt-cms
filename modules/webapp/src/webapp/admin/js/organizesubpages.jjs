@@ -41,6 +41,7 @@ function updateMainPane (id, suppressNavigatorUpdate) {
 openaksess.organizesubpages = function()  {
 
     this.currentUrl = "${currentNavigateContent.url}";
+    var that = this;
 
     /**
      * Compiles the association categories and the order of their associations as a requestparameter.
@@ -74,10 +75,10 @@ openaksess.organizesubpages = function()  {
         updateSubPageList: function() {
 
             debug("organizesubpages.updateSubPageList(): Triggering contentupdate event");
-            triggerContentUpdateEvent(this.currentUrl);
+            triggerContentUpdateEvent(that.currentUrl);
 
             debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action");
-            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: url}, function(success){
+            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: that.currentUrl}, function(success){
                 debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
                 $("#SubPages ul").sortable({
                     connectWith: '.associationCategory',
@@ -85,7 +86,7 @@ openaksess.organizesubpages = function()  {
                     axis: 'y',
                     stop: function(e, ui){
                         $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
-                            updateNavigator(url, true);
+                            updateNavigator(that.currentUrl, true);
                         });
                     }
                 });

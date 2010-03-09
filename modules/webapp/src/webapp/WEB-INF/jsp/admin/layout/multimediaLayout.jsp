@@ -61,7 +61,7 @@
 
 <kantega:section id="modesMenu">
     <div class="buttonGroup">
-        <a href="Navigate.action" class="button"><span class="back"><kantega:label key="aksess.mode.back"/></span></a>
+        <span class="singlebutton"><a href="Navigate.action" class="button first"><span class="back"><kantega:label key="aksess.mode.back"/></span></a></span>
     </div>
 </kantega:section>
 

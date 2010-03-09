@@ -84,6 +84,8 @@
     <%@include file="fragments/topMenu.jsp"%>
 </kantega:section>
 
+<c:set var="hideSearch" value="true"/>
+
 <kantega:section id="modesMenu">
     <%@include file="fragments/publishModesMenu.jsp"%>
 </kantega:section>

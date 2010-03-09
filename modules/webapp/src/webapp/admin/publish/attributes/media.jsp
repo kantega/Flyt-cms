@@ -54,7 +54,7 @@
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
     <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
     <script type="text/javascript">
-        Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
+        $("#<%=fieldName%>text").autocomplete("${pageContext.request.contextPath}/ajax/SearchMultimediaAsXML.action").result(openaksess.editcontext.autocompleteInsertMediaIntoFormCallback);
     </script>
 </div>
 <div class="buttonGroup">

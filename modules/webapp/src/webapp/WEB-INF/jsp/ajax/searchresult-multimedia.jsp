@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,6 @@
   ~ limitations under the License.
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<values>
-    <c:forEach var="multimedia" items="${multimedialist}" varStatus="status">
-    <value key="<c:out value="${multimedia.id}"/>"><c:out value="${multimedia.name}"/><c:if test="${multimedia.author != ''}"> (<c:out value="${multimedia.author}"/>)</c:if></value>
-    </c:forEach>
-</values>
+<c:forEach var="multimedia" items="${multimedialist}" varStatus="status">
+<c:out value="${multimedia.name}"/><img src="${pageContext.request.contextPath}/multimedia.ap?id=${multimedia.id}&width=100&height=100" alt="${multimedia.name}" align="left">|<c:out value="${multimedia.id}"/>:<c:out value="${multimedia.name}"/>
+</c:forEach>

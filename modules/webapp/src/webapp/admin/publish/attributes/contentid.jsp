@@ -54,7 +54,7 @@
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
     <input type="text" name="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="fullWidth">
     <script type="text/javascript">
-        Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchContentAsXML.action', 'minChars' :3 });
+        $("#<%=fieldName%>text").autocomplete("${pageContext.request.contextPath}/ajax/SearchContentAsXML.action").result(openaksess.editcontext.autocompleteInsertIntoFormCallback);
     </script>
 </div>
 <div class="buttonGroup">

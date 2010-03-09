@@ -88,13 +88,14 @@ openaksess.editcontext = function()  {
          * Update topics
          */
         updateTopics : function (params) {
+            var ths = this;
             $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
                 $(".topic > .buttonGroup > a.delete").click(function(event){
                     event.preventDefault();
                     var topicMapId = getQueryParam("topicMapId", $(this).attr("href"));
                     var topicId = getQueryParam("topicId", $(this).attr("href"));
                     debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
-                    that.removeTopic(topicId, topicMapId);
+                    ths.removeTopic(topicId, topicMapId);
                 });
                 debug("updateTopics(): received topics");
             });
@@ -110,15 +111,35 @@ openaksess.editcontext = function()  {
                 $(this).val(defaultValue);
             });
 
-            var tmp = this;
+            var ths = this;
             $input.autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
                 var topicName = data[0];
                 var topicId = data[1].split(":");
                 that.focusField = null;
-                tmp.addTopic(topicId[0], topicId[1], topicName);
+                ths.addTopic(topicId[0], topicId[1], topicName);
                 $(this).blur();
             });
         },
+
+        autocompleteInsertIntoFormCallback : function(event, data, formatted) {
+            var name = data[0];
+            var id = data[1];
+            var idField = this.name.substring(0, this.name.length - 4);
+
+            $(this).val(name);
+            $("#" + idField).val(id);
+
+            $(this).blur();
+        },
+
+        autocompleteInsertMediaIntoFormCallback : function(event, data, formatted) {
+            var idAndName = data[1].split(":");
+            var idField = this.name.substring(0, this.name.length - 4);           
+            $(this).val(idAndName[1]);
+            $("#" + idField).val(idAndName[0]);
+
+            $(this).blur();
+        },        
 
         /**
          *  Remove topic from edited page

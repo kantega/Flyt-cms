@@ -34,7 +34,7 @@ public class SearchUsersAsXMLAction implements Controller {
         Map model = new HashMap();
         RequestParameters param = new RequestParameters(request);
 
-        String name = param.getString("value");
+        String name = param.getString("q");
         if (name != null && name.length() >= 3) {
             SecuritySession securitySession = SecuritySession.getInstance(request);
             List users = securitySession.searchUsers(name);
