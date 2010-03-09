@@ -18,7 +18,6 @@ package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.util.ImageHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
@@ -40,8 +39,6 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class MultimediaService {
     private static final String SOURCE = "aksess.ContentManagementService";
@@ -85,45 +82,19 @@ public class MultimediaService {
     /**
      * Saves multimediaobject in database.
      * @param multimedia - Multimedia object
-     * @return
-     * @throws SystemException
-     */
-    public int setMultimedia(Multimedia multimedia) throws SystemException {
-        return setMultimedia(multimedia, true);
-    }
-
-
-    /**
-     * Saves multimediaobject in database.
-     * @param multimedia - Multimedia object
-     * @param preserveImageSize - Resizes image if false and dimensions are greater than max
      *
      * @return
      * @throws SystemException
      */
-    public int setMultimedia(Multimedia multimedia, boolean preserveImageSize) throws SystemException {
+    public int setMultimedia(Multimedia multimedia) throws SystemException {
         if (multimedia.getType() == MultimediaType.FOLDER || multimedia.getData() != null) {
             // For images / media files is updated is only set if a new file is uploaded
             multimedia.setModifiedBy(securitySession.getUser().getId());
         }
 
-        if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
-            if ((!preserveImageSize) && multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                    try {
-                        multimedia = ImageHelper.resizeImage(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                    } catch (InterruptedException e) {
-                        throw new SystemException(SOURCE, "InterruptedException", e);
-                    } catch (IOException e) {
-                        throw new SystemException(SOURCE, "IOException", e);
-                    }
-                }
-            }
-        }
-
         int id = MultimediaAO.setMultimedia(multimedia);
         multimedia.setId(id);
-        if (multimedia != null && Aksess.isEventLogEnabled()) {
+        if (Aksess.isEventLogEnabled()) {
             if (multimedia.getType() == MultimediaType.FOLDER) {
                 EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName());
             } else {

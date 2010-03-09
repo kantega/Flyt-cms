@@ -71,9 +71,6 @@ public class Aksess {
 
     private static String outputImageFormat = "jpg";
     private static int outputImageQuality = 85;
-    // Hvis produktet av bredden og hoyden i piksler kommer under denne verdien ved skalering,
-    // blir det skalerte bildet lagret i png-format.
-    private static long pngPixelLimit = 3000;
     private static boolean imageConversionEnabled = false;
 
     private static boolean openLinksInNewWindow = false;
@@ -150,7 +147,6 @@ public class Aksess {
             // Format and quality in images
             outputImageFormat = c.getString("default.thumbnailformat", outputImageFormat);
             outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
-            pngPixelLimit = c.getLong("default.thumbnail.pngpixellimit", pngPixelLimit);
 
             defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
             defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
@@ -449,10 +445,6 @@ public class Aksess {
 
     public static int getOutputImageQuality() {
         return outputImageQuality;
-    }
-
-    public static long getPngPixelLimit() {
-        return pngPixelLimit;
     }
 
     public static String getLuceneIndexDir() {

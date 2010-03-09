@@ -19,29 +19,31 @@ package no.kantega.publishing.client;
 import com.opensymphony.oscache.base.Cache;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.common.util.ImageHelper;
+import no.kantega.publishing.multimedia.ImageEditor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class MultimediaRequestHandler extends HttpServlet {
+public class MultimediaRequestHandler implements Controller {
     private static String SOURCE = "MultimediaRequestHandler";
 
     public static Cache thumbnailCache = new Cache(true, true, true, false, null, 1000);
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private ImageEditor imageEditor;
+
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         try {
@@ -59,14 +61,14 @@ public class MultimediaRequestHandler extends HttpServlet {
 
             if (mmId == -1) {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return;
+                return null;
             }
 
             Multimedia mm = mediaService.getMultimedia(mmId);
             if (mm == null) {
                 // Multimedia object not found
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
+                return null;
             }
 
             Log.debug(SOURCE, "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
@@ -89,7 +91,7 @@ public class MultimediaRequestHandler extends HttpServlet {
                 response.setContentType(mimetype);
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
+                return null;
             }
 
             // Add cache control headers
@@ -101,10 +103,10 @@ public class MultimediaRequestHandler extends HttpServlet {
             if ((mimetype.indexOf("image") != -1) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
                 byte[] bytes = null;
 
-                String imageFormat = Aksess.getOutputImageFormat();
-                if (width*height <= Aksess.getPngPixelLimit()) {
-                    imageFormat = "png";
-                }
+                //String imageFormat = Aksess.getOutputImageFormat();
+                //if (width*height <= Aksess.getPngPixelLimit()) {
+                //    imageFormat = "png";
+                //}
 
                 try {
                     bytes = (byte[]) thumbnailCache.getFromCache(key);
@@ -117,7 +119,7 @@ public class MultimediaRequestHandler extends HttpServlet {
                         mm.setData(bos.toByteArray());
 
                         // Shrink image
-                        mm = ImageHelper.resizeImage(mm, width, height);
+                        mm = imageEditor.resizeMultimedia(mm, width, height);
                         bytes = mm.getData();
                         thumbnailCache.putInCache(key, bytes, new String[]{Integer.toString(mmId)});
 
@@ -133,8 +135,8 @@ public class MultimediaRequestHandler extends HttpServlet {
                 }
 
                 // Kan kun generere png eller jpg
-                response.setContentType("image/" + imageFormat);
-                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + imageFormat);
+                response.setContentType("image/" + imageEditor.getImageFormat());
+                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + imageEditor.getImageFormat());
                 response.addHeader("Content-Length", "" + bytes.length);
 
                 out.write(bytes);
@@ -151,14 +153,13 @@ public class MultimediaRequestHandler extends HttpServlet {
 
             out.flush();
             out.close();
-        } catch (IOException e) {
-            // Brukeren har avbrutt
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
+        return null;
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
     }
 }

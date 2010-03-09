@@ -27,13 +27,11 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.multimedia.ImageEditor;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipEntry;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -42,21 +40,16 @@ import java.util.List;
 import java.util.zip.ZipException;
 import java.nio.charset.Charset;
 
-import sun.text.Normalizer;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 import com.glaforge.i18n.io.CharsetToolkit;
 
-public class SaveMultimediaAction extends HttpServlet {
+public class SaveMultimediaAction implements Controller {
     private static String SOURCE = "aksess.SaveMultimediaAction";
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+    private ImageEditor imageEditor;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         int id = param.getInt("id");
@@ -172,8 +165,10 @@ public class SaveMultimediaAction extends HttpServlet {
                 }
 
                 boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
-
-                int newId = mediaService.setMultimedia(mm, preserveImageSize);
+                if (!preserveImageSize) {
+                    mm = resizeMultimedia(mm);
+                }
+                int newId = mediaService.setMultimedia(mm);
 
                 if (mm.getType() == MultimediaType.FOLDER) {
                     response.sendRedirect("multimedia.jsp?activetab=viewfolder&id=" + newId + "&updatetree=true");
@@ -295,7 +290,10 @@ public class SaveMultimediaAction extends HttpServlet {
                                 mm.setFilename(entryfilename);
 
                                 boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
-                                mediaService.setMultimedia(mm, preserveImageSize);
+                                if (!preserveImageSize) {
+                                    mm = resizeMultimedia(mm);
+                                }
+                                mediaService.setMultimedia(mm);
                             }
 
                         }
@@ -314,8 +312,8 @@ public class SaveMultimediaAction extends HttpServlet {
             request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
         }
 
+        return null;
     }
-
     private String normalize(String entryfilename) {
         // Replace composed unicode norwegian aring with the single byte aring
         return entryfilename.replaceAll("\u0061\u030a", "\u00e5");
@@ -323,6 +321,25 @@ public class SaveMultimediaAction extends HttpServlet {
 
     private boolean isValidEntry(ZipEntry entry) {
         return !entry.isDirectory() && !entry.getName().startsWith("__MACOSX");
+    }
+
+    public Multimedia resizeMultimedia(Multimedia multimedia) {
+        if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
+                if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+                    if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
+                        try {
+                            multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                        } catch (IOException e) {
+                            throw new SystemException(SOURCE, "IOException", e);
+                        }
+                    }
+                }
+            }
+        return multimedia;
+    }
+
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
     }
 }
 

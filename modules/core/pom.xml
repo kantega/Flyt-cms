@@ -277,6 +277,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>java-image-scaling</artifactId>
+            <version>0.8.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>1.8.0.7</version>

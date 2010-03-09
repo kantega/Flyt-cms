@@ -23,7 +23,6 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.ImageHelper;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.media.ImageInfo;
 import no.kantega.commons.media.MimeType;
@@ -37,8 +36,9 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.awt.*;
 
+import no.kantega.publishing.multimedia.ImageEditor;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -121,9 +121,8 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                             if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
                                 if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
                                     try {
-                                        multimedia = ImageHelper.resizeImage(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                                    } catch (InterruptedException e) {
-                                        Log.error(this.getClass().getName(), e, null, null);
+                                        ImageEditor editor = (ImageEditor)RootContext.getInstance().getBean("aksessImageEditor");
+                                        multimedia = editor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
                                     } catch (IOException e) {
                                         Log.error(this.getClass().getName(), e, null, null);
                                     }

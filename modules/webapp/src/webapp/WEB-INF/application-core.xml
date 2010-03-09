@@ -106,4 +106,10 @@
         </property>
     </bean>
 
+    <bean id="aksessImageEditor" class="no.kantega.publishing.multimedia.DefaultImageEditor">
+        <property name="imageResizeAlgorithm">
+            <bean class="no.kantega.publishing.multimedia.resizers.LanczosImageResizeAlgorithm"/>
+        </property>
+    </bean>
+
 </beans>

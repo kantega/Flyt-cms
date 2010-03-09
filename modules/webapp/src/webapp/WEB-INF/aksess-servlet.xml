@@ -157,13 +157,8 @@
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="MultimediaRequestHandler">
-        <property name="servletClass">
-            <value>no.kantega.publishing.client.MultimediaRequestHandler</value>
-        </property>
-        <property name="servletName">
-            <value>MultimediaRequestHandler</value>
-        </property>
+    <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler">
     </bean>
@@ -327,13 +322,8 @@
     <bean class="no.kantega.publishing.admin.content.action.EditPermissionsAction" id="EditPermissionsAction"/>
     <bean class="no.kantega.publishing.admin.content.action.RemovePermissionAction" id="RemovePermissionAction"/>
     <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageManipulationAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.ImageManipulationAction</value>
-        </property>
-        <property name="servletName">
-            <value>ImageManipulationAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageManipulationAction" id="ImageManipulationAction">
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="ImageMapAction">
         <property name="servletClass">
@@ -390,13 +380,9 @@
             <value>SaveNotesAction</value>
         </property>
     </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveMultimediaAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveMultimediaAction</value>
-        </property>
+
+    <bean class="no.kantega.publishing.admin.multimedia.action.SaveMultimediaAction" id="SaveMultimediaAction">
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.content.action.SavePermissionsAction" id="SavePermissionsAction"/>

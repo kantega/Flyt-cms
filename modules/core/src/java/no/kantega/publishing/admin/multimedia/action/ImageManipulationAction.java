@@ -19,22 +19,23 @@ package no.kantega.publishing.admin.multimedia.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.publishing.common.util.ImageHelper;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.multimedia.ImageEditor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 
-public class ImageManipulationAction  extends HttpServlet {
+public class ImageManipulationAction implements Controller {
     private static String SOURCE = "ImageManipulationAction";
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private ImageEditor imageEditor;
+
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         try {
@@ -60,7 +61,7 @@ public class ImageManipulationAction  extends HttpServlet {
             mm.setData(bos.toByteArray());
 
             if (mm.getMimeType().getType().indexOf("image") != -1) {
-                mm = ImageHelper.resizeAndCropImage(mm, width, height, cropx, cropy, cropwidth, cropheight);
+                mm = imageEditor.resizeAndCropMultimedia(mm, width, height, cropx, cropy, cropwidth, cropheight);
 
                 if (!param.getBoolean("overwrite")) {
                     // Gi nytt navn på bildet
@@ -73,12 +74,6 @@ public class ImageManipulationAction  extends HttpServlet {
                     mm.setId(-1);
                 }
 
-                // Lag nytt filnavn med png/jpg ending etc
-                String filename = mm.getFilename();
-                if (filename.indexOf(".") != -1) {
-                    filename = filename.substring(0, filename.lastIndexOf(".") + 1) + mm.getMimeType().getFileExtension();
-                }
-
                 int newId = mediaService.setMultimedia(mm);
                 mm.setId(newId);
             }
@@ -87,6 +82,11 @@ public class ImageManipulationAction  extends HttpServlet {
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
+        return null;
+    }
+
+    public void setImageEditor(ImageEditor imageEditor) {
+        this.imageEditor = imageEditor;
     }
 }
 
