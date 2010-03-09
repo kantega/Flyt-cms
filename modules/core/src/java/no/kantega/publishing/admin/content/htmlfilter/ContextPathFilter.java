@@ -33,21 +33,27 @@ public class ContextPathFilter extends XMLFilterImpl {
     public void startElement(String string, String localName, String string2, Attributes attributes) throws SAXException {
         attributes = fixContextPathForAttribute(attributes, "href");
         attributes = fixContextPathForAttribute(attributes, "src");
+        attributes = fixContextPathForAttribute(attributes, "movie");
 
         super.startElement(string, localName, string2, attributes);
     }
 
     private Attributes fixContextPathForAttribute(Attributes attributes, String name) {
         String attributeValue = attributes.getValue(name);
-        if (attributeValue != null && contextPath.length() > 0) {
-            if (attributeValue.startsWith(contextPath + "/")) {
-                attributeValue = rootUrlToken + attributeValue.substring(contextPath.length(), attributeValue.length());
+        if (attributeValue != null) {
+            if (attributeValue.startsWith("../")) {
+                attributeValue = rootUrlToken + "/" + attributeValue.substring(attributeValue.lastIndexOf("../") + 3, attributeValue.length());
                 attributes = HtmlFilterHelper.setAttribute(name, attributeValue, attributes);
+            }
 
+            if (contextPath.length() > 0) {
+                if (attributeValue.startsWith(contextPath + "/")) {
+                    attributeValue = rootUrlToken + attributeValue.substring(contextPath.length(), attributeValue.length());
+                    attributes = HtmlFilterHelper.setAttribute(name, attributeValue, attributes);
+                }
             }
         }
         return attributes;
-
     }
 
     public void endElement(String string, String localname, String string2) throws SAXException {

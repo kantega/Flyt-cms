@@ -21,7 +21,6 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.ao.NotesAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
@@ -45,7 +44,7 @@ public class SaveNotesAction extends AbstractSaveContentAction {
         String note = param.getString("note");
         String noteaction = param.getString("noteaction");
 
-
+        /*
         if("addnote".equals(noteaction)) {
             SecuritySession ss = SecuritySession.getInstance(request);
             if(note != null && note.length() > 0 && content.getId() != -1) {
@@ -65,7 +64,7 @@ public class SaveNotesAction extends AbstractSaveContentAction {
             int count = NotesAO.getNotesByContentId(content.getId()).length;
             ContentAO.setNumberOfNotes(content.getId(), count);
             content.setNumberOfNotes(count);
-        }
+        }*/
 
         return new ValidationErrors();
     }

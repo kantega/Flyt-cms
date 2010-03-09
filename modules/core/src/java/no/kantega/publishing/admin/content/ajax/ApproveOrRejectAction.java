@@ -42,7 +42,7 @@ public class ApproveOrRejectAction implements Controller {
 
         String note = param.getString("note", 2000);
 
-        int associationid = param.getInt("thisId");
+        int associationid = param.getInt("id");
 
         HttpSession session = request.getSession(true);
 
@@ -51,10 +51,9 @@ public class ApproveOrRejectAction implements Controller {
 
         ContentManagementService aksessService = new ContentManagementService(request);
 
-        Content content;
         if (approve || reject) {
             int status = approve ? ContentStatus.PUBLISHED : ContentStatus.REJECTED;
-            content = aksessService.setContentStatus(cid, status, note);
+            Content content = aksessService.setContentStatus(cid, status, note);
             Content currentNavigateContent = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
             if (currentNavigateContent != null && currentNavigateContent.getId() == content.getId()) {
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);

@@ -128,6 +128,7 @@
                     <div id="EditContentButtons" class="buttonBar" style="display:none;">
                         <span class="barButton"><input type="button" class="approve" value="<kantega:label key="aksess.button.approve"/>"></span>
                         <span class="barButton"><input type="button" class="reject" value="<kantega:label key="aksess.button.reject"/>"></span>
+                        <span class="ui-state-highlight"><kantega:label key="aksess.navigator.approve.help"/></span>
                     </div>
                 </c:otherwise>
             </c:choose>
