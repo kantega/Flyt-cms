@@ -43,9 +43,9 @@
 
 <kantega:section id="modesMenu">
     <div class="buttonGroup">
-        <a href="#" class="button disabled" id="SettingsButton"><span class="settings"><kantega:label key="aksess.tools.settings"/></span></a>
+        <a href="#" class="button first disabled" id="SettingsButton"><span class="settings"><kantega:label key="aksess.tools.settings"/></span></a>
         <span class="buttonSeparator"></span>
-        <a href="#" class="button disabled" id="ResetMyPageButton"><span class="reset"><kantega:label key="aksess.tools.reset"/></span></a>
+        <a href="#" class="button last disabled" id="ResetMyPageButton"><span class="reset"><kantega:label key="aksess.tools.reset"/></span></a>
     </div>
 </kantega:section>
 
