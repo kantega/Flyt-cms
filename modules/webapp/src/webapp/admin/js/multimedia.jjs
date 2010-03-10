@@ -26,6 +26,12 @@ $(document).ready(function(){
     triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     bindToolButtons();
     stateHandler.init("multimediaupdate");
+    /* TODO: Dette virker ikke
+    var href = location.href;
+    if (href.indexOf("#") != -1) {
+        var id = href.substring(href.indexOf("#") + "#state=".length, href.length)
+        stateHandler.setState(id);
+    }*/
 });
 
 /**

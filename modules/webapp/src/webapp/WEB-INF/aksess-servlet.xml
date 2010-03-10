@@ -147,8 +147,8 @@
                 <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
 
                 <!-- Topic maps -->
-                <prop key="/admin/topicmaps/Navigate.action">NavigateTopicMapsAction</prop>
-                <prop key="/admin/topicmaps/ListTopicTypes.action">ListTopicTypesAction</prop>
+                <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
+                <prop key="/admin/topicmaps/SearchTopics.action">SearchTopicsAction</prop>
                 <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
                 <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
@@ -529,11 +529,11 @@
     </bean>
     <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction"/>
     <!-- Topic maps -->
-    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="NavigateTopicMapsAction">
-        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/index.jsp"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.TopicsAction" id="TopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/topics.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListTopicTypesAction" id="ListTopicTypesAction">
-        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listtopictypes.jsp"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.SearchTopicsAction" id="SearchTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/searchtopics.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>

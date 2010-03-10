@@ -32,7 +32,11 @@
 <kantega:section id="contentclass">topicmaps</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/topicmaps.jjs"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#TopicTabs").tabs();
+        });
+    </script>
 </kantega:section>
 
 <kantega:section id="modesMenu">
@@ -42,7 +46,13 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <%-- The content is loaded with ajax by the ListTopicTypesAction --%>
-    <div id="TopicTypes"></div>
+    <%-- The content is loaded with ajax by the SearchTopicsAction --%>
+    <div id="TopicTabs">
+        <ul>
+            <c:forEach var="topicMap" items="${topicMaps}" varStatus="status">
+                <li><a href="SearchTopics.action?topicMapId=${topicMap.id}"><c:out value="${topicMap.name}"/></a></li>
+            </c:forEach>
+        </ul>
+    </div>
 </kantega:section>
 <%@ include file="../layout/fullwidthLayout.jsp" %>

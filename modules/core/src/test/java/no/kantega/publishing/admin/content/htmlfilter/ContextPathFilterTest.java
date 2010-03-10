@@ -62,7 +62,7 @@ public class ContextPathFilterTest {
         assertEquals(expectedOutput, sw.toString());
 
         input = "<a href=\"../content.ap?thisId=3\">link text</a>";
-        expectedOutput = "<a href=\"/test/content.ap?thisId=3\">link text</a>";
+        expectedOutput = "<a href=\"<@WEB@>/content.ap?thisId=3\">link text</a>";
         sw = new StringWriter();
         pipeline.filter(new StringReader(input), sw);
         assertEquals(expectedOutput, sw.toString());

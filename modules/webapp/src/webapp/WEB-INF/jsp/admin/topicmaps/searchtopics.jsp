@@ -21,21 +21,10 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
-<div class="tabGroup">
-<c:forEach items="${topicTypes}" var="topicType">
-    <div class="tab <c:if test="${currentTopicType != null && currentTopicType.topicMapId == topicType.topicMapId && currentTopicType.id == topicType.id}"> active</c:if>">
-        <a href="?topicMapId=${topicType.topicMapId}&amp;topicId=${topicType.id}"><c:out value="${topicType.baseName}"/></a>
-    </div>
-</c:forEach>
-</div>
-<div class="tabContent">
-    <ul>
-        <c:forEach var="topic" items="${topics}">
-            <li>
-                <a href="ViewTopic.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}"><c:out value="${topic.baseName}"/></a>
-            </li>
-        </c:forEach>
-    </ul>
-
-</div>
-
+<ul>
+    <c:forEach var="topic" items="${topics}">
+        <li>
+            <a href="ViewTopic.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}"><c:out value="${topic.baseName}"/></a>
+        </li>
+    </c:forEach>
+</ul>
