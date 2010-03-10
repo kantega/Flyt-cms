@@ -51,11 +51,11 @@
 
     String plugins = conf.getString(confPrefix + "plugins");
     String buttons = conf.getString(confPrefix + "buttons");
-    String[] buttonRows;
+    String[] buttonRows = null;
     if (buttons != null) {
         buttonRows = buttons.split("<>");
     } else {
-        buttonRows = new String[0];
+        //TODO: handle
     }
 
     boolean hasHtmlEditorRole = false;
@@ -68,11 +68,10 @@
 
     // Let etter /css/site/editor.css og /site/css/editor.css
     String cssPath = "/css" + site.getAlias() + attribute.getCss();
-    InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
-    if (is == null) {
+
+    if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
-    }
-    is.close();
+    }  
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
