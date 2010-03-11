@@ -1,0 +1,16 @@
+#TopicAssociationTabs table {
+    width: 100%;
+}
+
+#AssociatedTopicsButtonGroup {
+    float: left;
+    width: 100%;
+}
+
+#AddNewTopic {
+    float: left;
+}
+
+#AddExistingTopic {
+    float: right;
+}

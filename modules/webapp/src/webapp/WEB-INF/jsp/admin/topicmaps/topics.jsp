@@ -26,15 +26,54 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    <kantega:label key="aksess.topicmaps.title"/>
+    <kantega:label key="aksess.topics.title"/>
 </kantega:section>
 
 <kantega:section id="contentclass">topicmaps</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.columnizer.js"></script>
+    <script type="text/javascript">        
         $(document).ready(function() {
-            $("#TopicTabs").tabs();
+
+            $("#TopicTabs a.topic").live('click', function(event) {
+                event.preventDefault();
+                ModalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: this.href, width: 600, height:600});
+            });
+
+            $("#TopicTabs").tabs({
+                load: function (event, ui) {
+                    openaksess.common.columnize();
+                    $("#TopicQuery").keyup(function(event) {
+                        var q = $("#TopicQuery").val().toUpperCase();
+                        if (q != "") {
+                            $("#TopicList li.letter").each(function() {
+                                var hasElements = false;
+                                $("li", this).each(function() {
+                                    var txt = $("a", this).html().toUpperCase();
+                                    if (txt.indexOf(q) != -1) {
+                                        hasElements = true;
+                                        $(this).show();
+                                    } else {
+                                        $(this).hide();
+                                    }
+                                    
+                                });
+                                if (hasElements) {
+                                    $(this).show();
+                                } else {
+                                    $(this).hide();
+                                }
+                            });
+                        } else {
+                            $("#TopicList li.letter").show();
+                            $("#TopicList li.letter li").show();
+                        }
+                    });
+                }
+            });
+
+
         });
     </script>
 </kantega:section>

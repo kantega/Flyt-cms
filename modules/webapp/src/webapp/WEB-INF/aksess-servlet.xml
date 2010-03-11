@@ -149,10 +149,12 @@
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
                 <prop key="/admin/topicmaps/SearchTopics.action">SearchTopicsAction</prop>
-                <prop key="/admin/topicmaps/DeleteRoleTopic.action">DeleteRoleTopicAction</prop>
+                <prop key="/admin/topicmaps/ViewTopic.action">ViewTopicAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedContent.action">ListAssociatedContentAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedRoles.action">ListAssociatedRolesAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedTopics.action">ListAssociatedTopicsAction</prop>
                 <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
-                <!--<prop key="/admin/publish/DeleteContentTopic.action">DeleteContentTopicAction</prop>-->
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
 
@@ -161,10 +163,10 @@
 
                 <!-- Search for autocomplete -->
                 <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
-                <prop key="/ajax/SearchContentAsXML.action">SearchContentAsXMLAction</prop>
-                <prop key="/ajax/SearchMultimediaAsXML.action">SearchMultimediaAsXMLAction</prop>
+                <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
+                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
                 <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
-                <prop key="/ajax/SearchUsersAsXML.action">SearchUsersAsXMLAction</prop>
+                <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
 
                 <!-- List options -->
                 <prop key="/admin/publish/EditListOption.action">EditListOptionAction</prop>
@@ -535,6 +537,18 @@
     <bean class="no.kantega.publishing.admin.topicmaps.ajax.SearchTopicsAction" id="SearchTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/searchtopics.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ViewTopicAction" id="ViewTopicAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/viewtopic.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedContentAction" id="ListAssociatedContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedcontent.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedRolesAction" id="ListAssociatedRolesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedroles.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedTopicsAction" id="ListAssociatedTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedtopics.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
     </bean>
@@ -557,29 +571,6 @@
             <value>DeleteTopicAction</value>
         </property>
     </bean>
-
-
-
-    <!--
-    Gjøres om i forbindelse med emnekart
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteContentTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteContentTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteContentTopicAction</value>
-        </property>
-    </bean>
-    -->
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteRoleTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.DeleteRoleTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>DeleteRoleTopicAction</value>
-        </property>
-    </bean>
-
 
     <!-- Mini Aksess -->
     <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
@@ -665,12 +656,12 @@
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
-    <bean class="no.kantega.publishing.admin.ajax.SearchContentAsXMLAction" id="SearchContentAsXMLAction">
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.ajax.SearchMultimediaAsXMLAction" id="SearchMultimediaAsXMLAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteMultimediaAction" id="AutocompleteMultimediaAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteUsersAction" id="AutocompleteUsersAction"/>
     <bean class="no.kantega.publishing.admin.ajax.SearchOrgUnitsAsXMLAction" id="SearchOrgUnitsAsXMLAction"/>
-    <bean class="no.kantega.publishing.admin.ajax.SearchUsersAsXMLAction" id="SearchUsersAsXMLAction"/>
 
     <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
     <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>

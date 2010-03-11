@@ -349,6 +349,52 @@ public class TopicAO {
         }
     }
 
+    public static void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+            if (topic == null || contentId == -1) {
+                return;
+            }
+
+            PreparedStatement st = c.prepareStatement("SELECT * FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?");
+            st.setInt(1, topic.getTopicMapId());
+            st.setString(2, topic.getId());
+            st.setInt(3, contentId);
+            ResultSet rs = st.executeQuery();
+
+            boolean exists = false;
+            if (rs.next()) {
+                exists = true;
+            }
+
+            rs.close();
+            rs = null;
+
+            if (!exists) {
+                st = c.prepareStatement("INSERT INTO ct2topic VALUES (?, ?, ?)");
+                st.setInt(1, contentId);
+                st.setInt(2, topic.getTopicMapId());
+                st.setString(3, topic.getId());
+                st.execute();
+            }
+
+            st = null;
+
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+    }
+
 
     public static List getRolesByTopic(Topic topic) throws SystemException {
         Connection c = null;

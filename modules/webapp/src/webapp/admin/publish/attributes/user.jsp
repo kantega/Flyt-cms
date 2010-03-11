@@ -50,7 +50,7 @@
     <input type="hidden" name="${fieldName}" id="${fieldName}" value="<%=value%>">
     <input type="text" name="${fieldName}text" id="${fieldName}text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
     <script type="text/javascript">
-        $("#${fieldName}text").autocomplete("${pageContext.request.contextPath}/ajax/SearchMultimediaAsXML.action").result(openaksess.editcontext.autocompleteInsertIntoFormCallback);
+        $("#${fieldName}text").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteUsers.action").result(openaksess.editcontext.autocompleteInsertIntoFormCallback);
     </script>
 </div>
 <div class="buttonGroup">

@@ -44,7 +44,7 @@ public class TopicAssociationAO {
                 return;
             }
 
-            PreparedStatement st = c.prepareStatement("DELETE FROM tmassociation WHERE TopicMapId = ?, TopicRef = ?, AssociatedTopicRef = ?");
+            PreparedStatement st = c.prepareStatement("DELETE FROM tmassociation WHERE TopicMapId = ? AND TopicRef = ? AND AssociatedTopicRef = ?");
             st.setInt(1, topicRef.getTopicMapId());
             st.setString(2, topicRef.getId());
             st.setString(3, associatedTopicRef.getId());

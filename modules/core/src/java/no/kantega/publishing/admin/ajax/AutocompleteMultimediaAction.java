@@ -16,32 +16,38 @@
 
 package no.kantega.publishing.admin.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.commons.util.StringHelper;
+import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import no.kantega.publishing.security.service.SecurityService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.client.util.RequestParameters;
-
-public class SearchUsersAsXMLAction implements Controller {
+public class AutocompleteMultimediaAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
         RequestParameters param = new RequestParameters(request);
-
+        
         String name = param.getString("q");
         if (name != null && name.length() >= 3) {
-            SecuritySession securitySession = SecuritySession.getInstance(request);
-            List users = securitySession.searchUsers(name);
-            model.put("userlist", users);
+            MultimediaService mms = new MultimediaService(request);
+            List mmlist = mms.searchMultimedia(name);
+            for (int i = 0; i < mmlist.size(); i++) {
+                Multimedia m =  (Multimedia)mmlist.get(i);
+                String mmName = m.getName();
+                mmName = StringHelper.removeIllegalCharsInTitle(mmName);
+                m.setName(mmName);                
+            }
+            model.put("multimedialist", mmlist);
         }
 
-        return new ModelAndView("/WEB-INF/jsp/ajax/searchresult-users.jsp", model);
+        return new ModelAndView("/WEB-INF/jsp/ajax/searchresult-multimedia.jsp", model);
     }
 }
 

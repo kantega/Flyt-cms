@@ -2,7 +2,7 @@
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
 
 /*
@@ -27,6 +27,25 @@
 
 var openaksess =  {
     // All Javascript objects should use this namespace
+};
+
+openaksess.common = {
+    columnize : function() {
+        var columnized = $(".columnized");
+        debug("openaksess.common(): Number of elements found to columnize: " + columnized.size());
+        if (columnized.size() > 0) {
+            var columncount = 1;
+            var classes = columnized.attr("class").split(" ");
+            for (var i in classes) {
+                var c = classes[i];
+                if (c.indexOf("columnCount") > -1) {
+                    columncount = parseInt(c.substring("columnCount".length, c.length));
+                }
+            }
+            debug("openaksess.common(): Column count: " + columncount);
+            columnized.makeacolumnlists({cols:columncount,colWidth:0,equalHeight:false,startN:1});
+        }
+    }
 };
 
 var stateHandler = new StateHandler();
@@ -72,11 +91,11 @@ function ajaxSetup() {
     var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div>');
     $("body").append($ajaxloading);
     $ajaxloading.ajaxStart(function(){
-       $(this).show();
-     });
+        $(this).show();
+    });
 
     $ajaxloading.ajaxStop(function(){
-       $(this).hide();
+        $(this).hide();
     });
 }
 
@@ -143,7 +162,7 @@ var ModalWindow = {
         horizontalPadding: 0,
         verticalPadding: 0,
         open: function(){
-                $.event.trigger("resize");
+            $.event.trigger("resize");
         },
         autoResize: true,
         autoOpen: true,
@@ -183,7 +202,7 @@ var ModalWindow = {
         $content.dialog(ModalWindow.config);
 
         if (ModalWindow.config.iframe) {
-                $content.width(ModalWindow.config.width - ModalWindow.config.horizontalPadding).height(ModalWindow.config.height - ModalWindow.config.verticalPadding);
+            $content.width(ModalWindow.config.width - ModalWindow.config.horizontalPadding).height(ModalWindow.config.height - ModalWindow.config.verticalPadding);
         }
 
         debug("common.ModalWindow.open(): Modal window opened.");
@@ -304,8 +323,8 @@ var WidgetManager = {
                 this.maximize($widget);
             }
             else if($target.hasClass(this.defaults.closeClass)) {
-                this.remove($widget);
-            }
+                    this.remove($widget);
+                }
 
         });
 

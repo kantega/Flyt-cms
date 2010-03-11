@@ -21,10 +21,20 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
-<ul>
-    <c:forEach var="topic" items="${topics}">
-        <li>
-            <a href="ViewTopic.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}"><c:out value="${topic.baseName}"/></a>
-        </li>
-    </c:forEach>
-</ul>
+<div id="TopicFilter">
+    <label for="TopicQuery"><kantega:label key="aksess.topics.filter"/>:</label> <input type="text" name="TopicQuery" id="TopicQuery">
+</div>
+
+<div id="TopicList">
+    <ol class="alphabeticalList columnized columnCount3">
+        <c:forEach var="letter" items="${topics}">
+            <li class="letter" id="Letter_${letter.key}"><span class="letter"><c:out value="${letter.key}"/></span>
+                <ol>
+                    <c:forEach var="topic" items="${letter.value}">
+                        <li><a href="ViewTopic.action?topicId=${topic.id}&amp;topicMapId=${topic.topicMapId}" class="topic"><c:out value="${topic.baseName}"/></a>&nbsp;<span class="type">(${topic.instanceOf.baseName})</span></li>
+                    </c:forEach>
+                </ol>
+            </li>
+        </c:forEach>
+    </ol>
+</div>

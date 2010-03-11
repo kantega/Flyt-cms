@@ -40,7 +40,7 @@ fieldset {
     padding: 4px;
 }
 
-td a {
+td a, .ui-widget-content td a {
     color:#1780b9;
 }
 
@@ -741,23 +741,6 @@ div.sidebarFieldset fieldset legend {
     margin-top: 1em;
     font-weight: bold;
 }
-/************** Popups **************/
-.dialogue .tabGroup .tab {
-    background-color: #00cc00;
-}
-
-.dialogue .tabGroup .selected {
-    background-color: #cccccc;
-}
-
-
-.dialogue .buttonGroup .button {
-    background-color: #ff0000;
-}
-
-.formElement .buttonGroup .button {
-    background-color: #ffffff;
-}
 
 /************** Information slider **************/
 .infoslider {
@@ -1030,4 +1013,28 @@ div.dataTables_paginate {
     line-height: 26px;
     display: inline-block;
     height: 26px;
+}
+
+
+/******** alphabeticalList ***********/
+.alphabeticalList li {
+    margin-top: 1.5em;
+    list-style: none;
+}
+.alphabeticalList span.letter {
+    font-weight: bold;
+}
+.alphabeticalList .occurrences {
+    color: #999;
+}
+.alphabeticalList ol {
+    margin: 0;
+}
+.alphabeticalList ol li {
+    margin: 0;
+}
+.alphabeticalList ol li a {
+}
+.alphabeticalList ol li a:hover {
+    text-decoration: underline;
 }

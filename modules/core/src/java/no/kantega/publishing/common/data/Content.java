@@ -86,9 +86,9 @@ public class Content extends BaseObject {
     private List metaAttributes = new ArrayList();
 
     // File attachments
-    private List attachments = new ArrayList();
+    private List<Attachment> attachments = new ArrayList<Attachment>();
 
-    private List topics = new ArrayList();
+    private List<Topic> topics = new ArrayList<Topic>();
 
     // Status
     boolean isModified = false;
@@ -536,7 +536,7 @@ public class Content extends BaseObject {
         }
     }
 
-    public List getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
@@ -544,23 +544,22 @@ public class Content extends BaseObject {
         attachments.add(attachment);
     }
 
-    public List getTopics() {
+    public List<Topic> getTopics() {
         return topics;
     }
 
 
-    public void setTopics(List topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 
 
     public void addTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList();
+            topics = new ArrayList<Topic>();
         }
         boolean found = false;
-        for (int i = 0; i < topics.size(); i++) {
-            Topic t = (Topic)topics.get(i);
+        for (Topic t : topics) {
             if (t.getId().equalsIgnoreCase(topic.getId()) && t.getTopicMapId() == topic.getTopicMapId()) {
                 found = true;
                 break;

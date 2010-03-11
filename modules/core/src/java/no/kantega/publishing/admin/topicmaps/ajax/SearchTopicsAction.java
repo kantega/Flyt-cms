@@ -29,10 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * List all topic types for all topic maps
@@ -58,7 +55,23 @@ public class SearchTopicsAction extends AdminController {
         } else {
             topics = topicMapService.getTopicsByTopicMapId(topicMapId);
         }
-        model.put("topics", topics);
+
+        Map<String, Topic> instanceOfs = new HashMap<String, Topic>();
+        for (Topic topic : topics) {
+            Topic instanceOf = topic.getInstanceOf();
+            Topic t = instanceOfs.get(instanceOf.getId());
+            if (t == null) {
+                t = topicMapService.getTopic(instanceOf.getTopicMapId(), instanceOf.getId());
+                if (t != null) {
+                    instanceOfs.put(t.getId(), t);
+                } else {
+                    t = instanceOf;
+                }
+            }
+            topic.setInstanceOf(t);
+        }
+
+        model.put("topics", getAlphabeticalMap(topics));
 
         return new ModelAndView(view, model);
     }
@@ -66,4 +79,20 @@ public class SearchTopicsAction extends AdminController {
     public void setView(String view) {
         this.view = view;
     }
+
+    private Map getAlphabeticalMap(List<Topic> allTopics) {
+        Map<String, List<Topic>> letters = new TreeMap<String, List<Topic>>();
+        for (Topic topic : allTopics) {
+            String letter = topic.getBaseName().substring(0, 1).toUpperCase();
+            List<Topic> topicsForLetter = letters.get(letter);
+            if (topicsForLetter == null) {
+                topicsForLetter = new ArrayList<Topic>();
+                letters.put(letter, topicsForLetter);
+            }
+            topicsForLetter.add(topic);
+        }
+
+        return letters;
+    }
+
 }

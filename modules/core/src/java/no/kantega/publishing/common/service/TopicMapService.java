@@ -113,6 +113,13 @@ public class TopicMapService {
     }
 
     public void addTopicAssociation(Topic topic1, Topic topic2) throws SystemException {
+        topic1 = TopicAO.getTopic(topic1.getTopicMapId(), topic1.getId());
+        topic2 = TopicAO.getTopic(topic2.getTopicMapId(), topic2.getId());
+
+        if (topic1 == null || topic2 == null || topic1.getTopicMapId() != topic2.getTopicMapId()) {
+            return;
+        }
+
         // En knytning mellom to emner (topics) går alltid begge veier, dette blir representert som to innslag i basen
         TopicAssociation association1 = new TopicAssociation();
         TopicAssociation association2 = new TopicAssociation();
@@ -130,12 +137,31 @@ public class TopicMapService {
         TopicAssociationAO.addTopicAssociation(association2);
     }
 
+    public void removeTopicAssociation(Topic topic1, Topic topic2) throws SystemException {
+        TopicAssociation association1 = new TopicAssociation();
+        TopicAssociation association2 = new TopicAssociation();
+
+        association1.setTopicRef(topic1);
+        association1.setAssociatedTopicRef(topic2);
+
+        association2.setTopicRef(topic2);
+        association2.setAssociatedTopicRef(topic1);
+
+        TopicAssociationAO.deleteTopicAssociation(association1);
+        TopicAssociationAO.deleteTopicAssociation(association2);
+    }
+
+
     public List getTopicsBySID(SecurityIdentifier sid) throws SystemException {
         return TopicAO.getTopicsBySID(sid);
     }
 
     public List getRolesByTopic(Topic topic) throws SystemException {
         return TopicAO.getRolesByTopic(topic);
+    }
+
+    public void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
+        TopicAO.addTopicContentAssociation(topic, contentId);
     }
 
     public void removeTopicContentAssociation(Topic topic, int contentId) throws SystemException {

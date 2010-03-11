@@ -885,25 +885,12 @@ public class ContentAO {
             }
 
             // Insert topics
-            List topics = content.getTopics();
+            List<Topic> topics = content.getTopics();
             if (topics != null) {
-                if (!isNew) {
-                    st = c.prepareStatement("delete from ct2topic where ContentId = ?");
-                    st.setInt(1, content.getId());
-                    st.execute();
-                    st.close();
+                for (Topic t : topics) {
+                    TopicAO.addTopicContentAssociation(t, content.getId());
                 }
 
-                st = c.prepareStatement("insert into ct2topic values(?,?,?)");
-                for (int i = 0; i < topics.size(); i++) {
-                    Topic t = (Topic)topics.get(i);
-                    st.setInt(1, content.getId());
-                    st.setInt(2, t.getTopicMapId());
-                    st.setString(3, t.getId());
-                    st.execute();
-
-                }
-                st.close();
             }
 
             // Set page as not checked out

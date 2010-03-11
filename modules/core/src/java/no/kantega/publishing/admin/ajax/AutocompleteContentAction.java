@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SearchContentAsXMLAction implements Controller {
+public class AutocompleteContentAction implements Controller {
     private SiteCache siteCache;
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
