@@ -48,7 +48,6 @@
                 if (buttonOkPressed()) {
                     closeWindow();
                 }
-
             });
             $("#Content .button .cancel").click(function(){
                 debug("popupLayout: close clicked");

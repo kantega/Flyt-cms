@@ -149,13 +149,13 @@
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
                 <prop key="/admin/topicmaps/SearchTopics.action">SearchTopicsAction</prop>
+                <prop key="/admin/topicmaps/EditTopic.action">EditTopicAction</prop>
                 <prop key="/admin/topicmaps/ViewTopic.action">ViewTopicAction</prop>
                 <prop key="/admin/topicmaps/ListAssociatedContent.action">ListAssociatedContentAction</prop>
                 <prop key="/admin/topicmaps/ListAssociatedRoles.action">ListAssociatedRolesAction</prop>
                 <prop key="/admin/topicmaps/ListAssociatedTopics.action">ListAssociatedTopicsAction</prop>
                 <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
-                <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
 
 
@@ -537,6 +537,9 @@
     <bean class="no.kantega.publishing.admin.topicmaps.ajax.SearchTopicsAction" id="SearchTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/searchtopics.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicAction" id="EditTopicAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/edittopic.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.ViewTopicAction" id="ViewTopicAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/viewtopic.jsp"/>
     </bean>
@@ -554,14 +557,6 @@
     </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.SelectTopicsAction" id="SelectTopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/select-topic.jsp"/>
-    </bean>
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="UpdateTopicAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.topicmaps.action.UpdateTopicAction</value>
-        </property>
-        <property name="servletName">
-            <value>UpdateTopicAction</value>
-        </property>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="DeleteTopicAction">
         <property name="servletClass">

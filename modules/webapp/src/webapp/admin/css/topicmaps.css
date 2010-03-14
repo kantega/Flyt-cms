@@ -14,3 +14,11 @@
 #AddExistingTopic {
     float: right;
 }
+
+.topicOccurence {
+    margin-bottom: 1em;
+}
+
+.topicOccurence .baseName {
+    font-weight: bold;
+}

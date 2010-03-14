@@ -33,8 +33,8 @@ public class Topic {
 
     private Date lastUpdated = null;
 
-    private List baseNames = null;
-    private List occurences = null;
+    private List<TopicBaseName> baseNames = null;
+    private List<TopicOccurence> occurences = null;
 
     private int noUsages = 0;
 
@@ -122,32 +122,40 @@ public class Topic {
     }
 
     public void setBaseName(String name) {
-        if (baseNames == null) {
-            baseNames = new ArrayList();
+        if (baseNames == null || baseNames.size() == 0) {
+            baseNames = new ArrayList<TopicBaseName>();
             TopicBaseName tbn = new TopicBaseName();
             tbn.setBaseName(name);
             baseNames.add(tbn);
         } else {
-            TopicBaseName tbn = (TopicBaseName)baseNames.get(0);
+            TopicBaseName tbn = baseNames.get(0);
             tbn.setBaseName(name);
         }
     }
 
-    public List getBaseNames() {
+    public List<TopicBaseName> getBaseNames() {
         return baseNames;
     }
 
-    public void setBaseNames(List baseNames) {
+    public void setBaseNames(List<TopicBaseName> baseNames) {
         this.baseNames = baseNames;
     }
 
-    public List getOccurences() {
+    public List<TopicOccurence> getOccurences() {
         return occurences;
     }
 
-    public void setOccurences(List occurences) {
+    public void setOccurences(List<TopicOccurence> occurences) {
         this.occurences = occurences;
     }
+
+    public void addOccurence(TopicOccurence occurence) {
+        if (occurences == null) {
+            occurences = new ArrayList<TopicOccurence>();
+        }
+        occurences.add(occurence);
+    }
+
 
 
     public boolean equals(Object obj) {

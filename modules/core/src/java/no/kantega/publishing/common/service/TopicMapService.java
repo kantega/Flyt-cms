@@ -23,6 +23,7 @@ import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
+import no.kantega.publishing.topicmaps.data.TopicOccurence;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.data.enums.Event;
@@ -69,6 +70,19 @@ public class TopicMapService {
 
     public void setTopic(Topic topic) throws SystemException {
         EventLog.log(securitySession, request, Event.SAVE_TOPIC, topic.getBaseName());
+        List<TopicOccurence> occurences = topic.getOccurences();
+        if (occurences != null) {
+            for (TopicOccurence occurence : occurences) {
+                // Create topicoccurences instanceof if they do not exist
+                if (occurence.getInstanceOf() != null) {
+                    Topic instanceOf = occurence.getInstanceOf();
+                    if (instanceOf != null && TopicAO.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
+                        TopicAO.setTopic(instanceOf);
+                    }
+                }
+            }
+        }
+
         TopicAO.setTopic(topic);
     }
 

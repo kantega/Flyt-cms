@@ -77,6 +77,7 @@
                     bindTopicInfoEvents();
                 }
             });
+            $("")
         });
     </script>
 </kantega:section>
@@ -85,6 +86,11 @@
     <div class="fieldset">
         <fieldset>
             <h1><c:out value="${topic.baseName}"/> <c:if test="${instanceOf != null}"><span class="instanceof">(<c:out value="${instanceOf.baseName}"/>)</span></c:if></h1>
+
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
+                <span class="button"><input type="button" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
+            </div>
 
             <div id="TopicOccurences">
                 <c:forEach var="occurence" items="${topic.occurences}">

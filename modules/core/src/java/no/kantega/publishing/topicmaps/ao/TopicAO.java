@@ -223,10 +223,9 @@ public class TopicAO {
             st.setString(1, topic.getId());
             st.setInt(2, topic.getTopicMapId());
 
-            List occurences = topic.getOccurences();
+            List<TopicOccurence> occurences = topic.getOccurences();
             if (occurences != null) {
-                for (int i = 0; i < occurences.size(); i++) {
-                    TopicOccurence occurence = (TopicOccurence)occurences.get(i);
+                for (TopicOccurence occurence : occurences) {
                     if (occurence.getInstanceOf() != null) {
                         st.setString(3, occurence.getInstanceOf().getId());
                         st.setString(4, occurence.getResourceData());
@@ -484,7 +483,7 @@ public class TopicAO {
 
     public static List<Topic> getAllTopics() throws SystemException {
         String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0";
+        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL";
         sql += "   ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
@@ -492,7 +491,7 @@ public class TopicAO {
 
     public static List<Topic> getTopicsByTopicMapId(int topicMapId) throws SystemException {
         String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.TopicMapId = " + topicMapId;
+        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0  AND tmtopic.InstanceOf IS NOT NULL AND tmtopic.TopicMapId = " + topicMapId;
         sql += "   ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
@@ -544,13 +543,13 @@ public class TopicAO {
         topicName = StringHelper.replace(topicName, "'", "");
         topicName = StringHelper.replace(topicName, "\\", "");
 
-        sql += "   WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
+        sql += " WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
 
         if (topicMapId != -1) {
             sql += "   AND tmtopic.TopicMapId = " + topicMapId;
         }
 
-        sql += "   ORDER BY tmbasename.Basename";
+        sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
     }
@@ -573,7 +572,7 @@ public class TopicAO {
             sql += "   AND tmtopic.TopicMapId = " + instance.getTopicMapId();
         }
 
-        sql += "   ORDER BY tmbasename.Basename";
+        sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
     }

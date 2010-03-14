@@ -38,7 +38,12 @@
 
             $("#TopicTabs a.topic").live('click', function(event) {
                 event.preventDefault();
-                ModalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: this.href, width: 600, height:600});
+                ModalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: this.href, width: 600, height:600, close: function(){
+                        // Reload content with ajax
+                        var selected = $("#TopicTabs").tabs('option', 'selected');                    
+                        $("#TopicTabs").tabs('load', selected);
+                    }
+                });
             });
 
             $("#TopicTabs").tabs({

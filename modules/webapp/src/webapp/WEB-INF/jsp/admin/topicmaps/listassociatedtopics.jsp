@@ -45,7 +45,7 @@
 </table>
 <c:if test="${canAdd}">
     <div id="AssociatedTopicsButtonGroup" class="buttonGroup">
-    <div id="AddNewTopic"><a class="button" href="AddTopic.action?associatedTopicId=${topic.id}&amp;topicMapId=${topic.topicMapId}"><span class="add"><kantega:label key="aksess.viewtopic.newrelatedtopic"/></span></a></div>
+    <div id="AddNewTopic"><a class="button" href="EditTopic.action?associatedTopicId=${topic.id}&amp;topicMapId=${topic.topicMapId}"><span class="add"><kantega:label key="aksess.viewtopic.newrelatedtopic"/></span></a></div>
     <div id="AddExistingTopic"><label><kantega:label key="aksess.viewtopic.addexistingtopic"/>:</label> <input type="text" size="20"></div>
     </div>
 </c:if>
