@@ -256,7 +256,11 @@ table.fullWidth {
     background-image: url(images/ui-icons_222222_256x240.png);
 }
 #Content.mypage .widget-content {
-    padding: 10px; 
+    padding: 10px;
+}
+
+#Content.topicmaps {
+    background-color:#fff;
 }
 .ui-sortable-placeholder { border: 1px dotted black !important; border-radius: 0 !important; background: #fafafa !important; visibility: visible !important; }
 .ui-sortable-placeholder * { visibility: hidden; }

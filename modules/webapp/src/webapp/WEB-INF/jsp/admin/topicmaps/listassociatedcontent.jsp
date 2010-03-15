@@ -27,8 +27,11 @@
         </tr>
     </c:forEach>
     <c:if test="${canAdd}">
-        <div>
-            <label><kantega:label key="aksess.viewtopic.addcontent"/>:</label> <input type="text" id="AddContent" size="20">
+        <div id="AddContent">
+            <label><kantega:label key="aksess.viewtopic.addcontent"/>:</label> <input type="text" id="AddContentButton" size="20">
+            <div class="ui-state-highlight">
+                <kantega:label key="aksess.viewtopic.addcontent.help"/>                
+            </div>
         </div>
     </c:if>
 </table>

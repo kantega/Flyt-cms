@@ -61,7 +61,7 @@
             });
 
             // Add content
-            $("#AddContent").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true").result(function(event, data, formatted) {
+            $("#AddContentButton").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true").result(function(event, data, formatted) {
                 var contentId = data[1];
                 var container = $(this).closest(".ui-tabs-panel");
                 debug("ViewTopic.action add content: " + contentId);

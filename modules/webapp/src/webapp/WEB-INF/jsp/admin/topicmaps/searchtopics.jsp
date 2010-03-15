@@ -21,6 +21,8 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
+<input type="hidden" name="topicMapId" value="${topicMapId}" class="topicMapId">
+
 <div id="TopicFilter">
     <label for="TopicQuery"><kantega:label key="aksess.topics.filter"/>:</label> <input type="text" name="TopicQuery" id="TopicQuery">
 </div>

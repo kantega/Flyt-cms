@@ -15,6 +15,10 @@
     float: right;
 }
 
+#AddContent {
+    margin-top: 1em;
+}
+
 .topicOccurence {
     margin-bottom: 1em;
 }

@@ -29,7 +29,7 @@
     <span class="buttonSeparator"></span>
     <a href="${pageContext.request.contextPath}/admin/publish/Statistics.action" class="button <c:if test="${statisticsActive}"> active</c:if>"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="${pageContext.request.contextPath}/admin/publish/Notes.action" class="button last <c:if test="${statisticsActive}"> active</c:if>"><span class="notes"><kantega:label key="aksess.mode.notes"/><span id="NotesCount"></span></span></a>    
+    <a href="${pageContext.request.contextPath}/admin/publish/Notes.action" class="button last <c:if test="${notesActive}"> active</c:if>"><span class="notes"><kantega:label key="aksess.mode.notes"/><span id="NotesCount"></span></span></a>    
 </div>
 <c:if test="${!hideSearch}">
 <div class="buttonGroup search">

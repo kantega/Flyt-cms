@@ -17,28 +17,31 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<table id="AssociatedRoles">
-    <c:forEach var="role" items="${roles}" varStatus="status">
-        <tr  class="tableRow${status.index mod 2}">
-            <td><c:out value="${role.name}"/></td>
-            <c:if test="${canDelete}">
-                <td align="right"><a href="ListAssociatedRoles.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}&amp;deleteId=${role.id}" target="_new" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a></td>
-            </c:if>
-        </tr>
-    </c:forEach>
-</table>
+<div id="AssociatedRoles">
 
-<c:if test="${canAdd}">
-    <div class="buttonGroup">
-        <select name="AddRole" id="AddRole">
-            <c:forEach var="role" items="${allRoles}">
-                <option value="${role.id}">${role.name}</option>
-            </c:forEach>
-        </select>
-        <span class="button"><input type="button" class="add" value="<kantega:label key="aksess.button.leggtil"/>"></span>
+    <table>
+        <c:forEach var="role" items="${roles}" varStatus="status">
+            <tr  class="tableRow${status.index mod 2}">
+                <td><c:out value="${role.name}"/></td>
+                <c:if test="${canDelete}">
+                    <td align="right"><a href="ListAssociatedRoles.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}&amp;deleteId=${role.id}" target="_new" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a></td>
+                </c:if>
+            </tr>
+        </c:forEach>
+    </table>
+
+    <c:if test="${canAdd}">
+        <div class="buttonGroup">
+            <select name="AddRole" id="AddRole">
+                <c:forEach var="role" items="${allRoles}">
+                    <option value="${role.id}">${role.name}</option>
+                </c:forEach>
+            </select>
+            <span class="button"><input type="button" class="add" value="<kantega:label key="aksess.button.add"/>"></span>
+        </div>
+    </c:if>
+
+    <div class="ui-state-highlight">
+        <kantega:label key="aksess.viewtopic.associatedroles.help"/>
     </div>
-</c:if>
-
-<div class="ui-state-highlight">
-    <kantega:label key="aksess.viewtopic.associatedroles.help"/>
 </div>

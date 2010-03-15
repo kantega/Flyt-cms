@@ -71,6 +71,7 @@ public class SearchTopicsAction extends AdminController {
             topic.setInstanceOf(t);
         }
 
+        model.put("topicMapId", topicMapId);
         model.put("topics", getAlphabeticalMap(topics));
 
         return new ModelAndView(view, model);

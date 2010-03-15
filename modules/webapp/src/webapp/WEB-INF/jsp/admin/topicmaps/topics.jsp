@@ -34,7 +34,23 @@
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.columnizer.js"></script>
     <script type="text/javascript">        
+        function addTopic() {
+            var selected = $("#TopicTabs").tabs('option', 'selected');
+            var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
+            var topicMapId = $(".topicMapId", container).val();
+
+            ModalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: "EditTopic.action?topicMapId=" + topicMapId, width: 600, height:600, close: function(){
+                    // Reload content with ajax
+                    var selected = $("#TopicTabs").tabs('option', 'selected');
+                    $("#TopicTabs").tabs('load', selected);
+                }
+            });
+        }
+
         $(document).ready(function() {
+            $("#AddTopicButton").click(function() {
+                addTopic();
+            });
 
             $("#TopicTabs a.topic").live('click', function(event) {
                 event.preventDefault();
@@ -75,10 +91,9 @@
                             $("#TopicList li.letter li").show();
                         }
                     });
+
                 }
             });
-
-
         });
     </script>
 </kantega:section>
@@ -87,6 +102,9 @@
 </kantega:section>
 
 <kantega:section id="toolsMenu">
+    <div class="buttonGroup">
+        <a href="#" class="button" id="AddTopicButton"><span class="add"><kantega:label key="aksess.tools.newtopic"/></span></a>
+    </div>
 </kantega:section>
 
 <kantega:section id="content">
