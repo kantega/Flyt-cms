@@ -77,7 +77,16 @@
                     bindTopicInfoEvents();
                 }
             });
-            $("")
+            $("#TopicEditDelete .delete").click(function(event) {
+                event.preventDefault();
+                var href = $(this).parent().attr("href");
+                if (confirm("<kantega:label key="aksess.topicmaps.confirmdeletetopic"/>")) {
+                    debug("ViewTopic.action: Delete topic:" + href);
+                    $.post(href, function() {
+                        closeWindow();
+                    });
+                }
+            });
         });
     </script>
 </kantega:section>
@@ -86,11 +95,6 @@
     <div class="fieldset">
         <fieldset>
             <h1><c:out value="${topic.baseName}"/> <c:if test="${instanceOf != null}"><span class="instanceof">(<c:out value="${instanceOf.baseName}"/>)</span></c:if></h1>
-
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
-                <span class="button"><input type="button" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
-            </div>
 
             <div id="TopicOccurences">
                 <c:forEach var="occurence" items="${topic.occurences}">
@@ -103,6 +107,11 @@
                         </div>
                     </c:if>
                 </c:forEach>
+            </div>
+
+            <div id="TopicEditDelete" class="buttonGroup">
+                <a href="EditTopic.action?topicId=${topic.id}&amp;topicMapId=${topic.topicMapId}" class="button"><span class="edit"><kantega:label key="aksess.button.edit"/></span></a>
+                <a href="DeleteTopic.action?topicId=${topic.id}&amp;topicMapId=${topic.topicMapId}" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
             </div>
 
             <div id="TopicAssociationTabs">

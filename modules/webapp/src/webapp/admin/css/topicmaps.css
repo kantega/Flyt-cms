@@ -22,3 +22,7 @@
 .topicOccurence .baseName {
     font-weight: bold;
 }
+
+#TopicEditDelete {
+    margin-bottom: 2em;
+}

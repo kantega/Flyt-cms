@@ -41,7 +41,7 @@
                             <td>${template.view}</td>
                             <td>${template.publicId}</td>
                             <td class="buttonGroup">
-                                <a href="ListDisplayTemplateUsages.action?templateId=${template.id}" class="button show"><span><kantega:label key="aksess.button.vis"/></span></a>
+                                <a href="ListDisplayTemplateUsages.action?templateId=${template.id}" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>
                             </td>
                         </tr>
                     </c:forEach>

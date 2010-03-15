@@ -28,7 +28,7 @@
 </div>
 <% if (value != null && value.length() > 0) {%>
 <div class="buttonGroup">
-    <a href="<%=attribute.getProperty(AttributeProperty.URL)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.visfil"/></span></a>
+    <a href="<%=attribute.getProperty(AttributeProperty.URL)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.showfile"/></span></a>
     <a href="Javascript:openaksess.editcontext.removeAttachment(document.myform.${fieldName})" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
 </div>
 <%}%>

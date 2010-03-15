@@ -49,7 +49,7 @@
                             </c:choose>
                         </td>
                         <td>
-                            <a href="EditTopicMap.action?id=${topicMap.id}" class="button edit"><kantega:label key="aksess.button.rediger"/></a>
+                            <a href="EditTopicMap.action?id=${topicMap.id}" class="button edit"><kantega:label key="aksess.button.edit"/></a>
                             <a href="Javascript:deleteTopicMap(${topicMap.id}, '${topicMap.name}')" class="button delete"><kantega:label key="aksess.button.delete"/>
                         </td>
                     </tr>

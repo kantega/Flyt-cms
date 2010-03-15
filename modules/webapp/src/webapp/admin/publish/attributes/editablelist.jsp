@@ -31,7 +31,7 @@
     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.addListOption(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex}"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
+    <a href="Javascript:openaksess.editcontext.addListOption(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex}"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
     <a href="Javascript:openaksess.editcontext.removeOptionFromList(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex + 1}"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
