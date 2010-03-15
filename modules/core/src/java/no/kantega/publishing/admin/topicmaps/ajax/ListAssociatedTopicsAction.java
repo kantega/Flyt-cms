@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.SecuritySession;
@@ -66,8 +67,11 @@ public class ListAssociatedTopicsAction extends AbstractTopicInfoAction {
 
         SecuritySession session = SecuritySession.getInstance(request);
         if (session.isUserInRole(Aksess.getAdminRole())) {
-            model.put("canAdd", Boolean.TRUE);
-            model.put("canDelete", Boolean.TRUE);
+            TopicMap tm = topicService.getTopicMap(topic.getTopicMapId());
+            if (tm.isEditable()) {
+                model.put("canAdd", Boolean.TRUE);
+                model.put("canDelete", Boolean.TRUE);
+            }
         }
 
         model.put("associatedTopics", topicService.getTopicAssociations(topic));
