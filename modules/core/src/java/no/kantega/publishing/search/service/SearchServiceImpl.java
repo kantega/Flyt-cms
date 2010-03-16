@@ -59,6 +59,7 @@ public class SearchServiceImpl implements SearchService {
 
     private static final String SOURCE = SearchServiceImpl.class.getName();
 
+    private final String source = "SearchServiceImpl";
     private Searcher searcher;
     private TermTranslator termTranslator;
     private IndexManager indexManager;
@@ -82,8 +83,13 @@ public class SearchServiceImpl implements SearchService {
         if (searchServiceQuery != null && searchServiceQuery.getSearchPhrase() != null) {
             // Bare søk hvis det er gitt en søkestreng
             SearchQuery searchQuery = createSearchQuery(searchServiceQuery);
-            searchResult = searcher.search(searchQuery);
-
+            try{
+                searchResult = searcher.search(searchQuery);
+            } catch (NullPointerException e){
+               Log.error(SOURCE, "invalid query", null, null);
+                e.printStackTrace();
+                return null;
+            }
             // Registrer søk med antall treff
             logSearch(searchServiceQuery, searchQuery, searchResult.getNumberOfHits());
 
