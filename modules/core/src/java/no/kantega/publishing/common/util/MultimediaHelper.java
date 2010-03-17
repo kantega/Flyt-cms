@@ -197,7 +197,7 @@ public class MultimediaHelper {
             }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();
             String movieUrl = baseUrl + "/multimedia/" + mm.getId() + "." + mm.getMimeType().getFileExtension();
-            String playerStr = baseUrl + playerUrl + "?autoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
+            String playerStr = baseUrl + playerUrl + "?movieAutoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
             if (Aksess.isFlashUseJavascript()) {
                 String id = "swf" + mm.getId();
                 tag.append("<script type=\"text/javascript\">\n");
