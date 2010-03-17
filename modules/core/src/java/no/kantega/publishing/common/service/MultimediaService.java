@@ -184,4 +184,31 @@ public class MultimediaService {
 
         return pages;
     }
+
+    /**
+     * Retrieves an image associated with the user's profile.
+     * @param userId
+     * @return
+     */
+    public Multimedia getProfileImageForUser(String userId) {
+        return MultimediaAO.getProfileImageForUser(userId);
+    }
+
+    /**
+     * Saves or updates a user's profile image.
+     *
+     * @param mm
+     */
+    public void setProfileImageForUser(Multimedia mm) {
+        if (mm == null || mm.getProfileImageUserId() == null || mm.getProfileImageUserId().trim().equals("") ) {
+            return;
+        }
+        //Check if the user already has an image.
+        Multimedia profileImage = MultimediaAO.getProfileImageForUser(mm.getProfileImageUserId());
+        if (profileImage != null) {
+            mm.setId(profileImage.getId());
+        }
+        MultimediaAO.setMultimedia(mm);
+    }
+
 }

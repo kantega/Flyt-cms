@@ -28,6 +28,7 @@
                 <prop key="/profile/search">searchProfilesController</prop>
                 <prop key="/profile/edit">editProfileController</prop>
                 <prop key="/profile/delete">deleteProfileController</prop>
+                <prop key="/profile/profileimage">profileImageController</prop>
                 <prop key="/role/">searchRolesController</prop>
                 <prop key="/role/search">searchRolesController</prop>
                 <prop key="/role/edit">editRoleController</prop>
@@ -48,6 +49,7 @@
 
     <bean id="editProfileController" class="no.kantega.useradmin.controls.EditProfileController" parent="useradminController"></bean>
     <bean id="deleteProfileController" class="no.kantega.useradmin.controls.DeleteProfileController" parent="useradminController"></bean>
+    <bean id="profileImageController" class="no.kantega.useradmin.controls.ProfileImageController" parent="useradminController"></bean>
 
     <bean id="viewUserRolesController" class="no.kantega.useradmin.controls.ViewUserRolesController" parent="useradminController"></bean>
     <bean id="viewUsersWithRoleController" class="no.kantega.useradmin.controls.ViewUsersWithRoleController" parent="useradminController"></bean>

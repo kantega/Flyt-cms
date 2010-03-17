@@ -23,6 +23,10 @@
 
     <context:annotation-config/>
 
+
+    <context:component-scan  base-package="no.kantega.publishing"/>
+
+
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
 
         <property name="alwaysUseFullPath">

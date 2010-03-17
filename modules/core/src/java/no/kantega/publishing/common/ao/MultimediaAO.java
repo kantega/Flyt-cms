@@ -125,6 +125,46 @@ public class MultimediaAO {
         }
     }
 
+    /**
+     * Retrieves an image associated with the user's profile.
+     *
+     * @param userId -
+     * @return
+     * @throws SystemException
+     */
+    public static Multimedia getProfileImageForUser(String userId) throws SystemException {
+        if (userId == null || userId.trim().equals("")) {
+            return null;
+        }
+
+        Connection c = null;
+
+        String query = "SELECT " + DB_COLS + " FROM multimedia WHERE ProfileImageUserId = '" + userId+"'";
+
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            // Hent content og contentversion
+            ResultSet rs = SQLHelper.getResultSet(c, query);
+            if (!rs.next()) {
+                return null;
+            }
+            Multimedia mm = getMultimediaFromRS(rs);
+            rs.close();
+            return mm;
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
 
     /**
      * Sender multimedia til klienten
@@ -176,7 +216,7 @@ public class MultimediaAO {
 
         List mmList = new ArrayList();
 
-        String query = "select " + DB_COLS + " from multimedia where ParentId = " + parentId + " order by Type, Name";
+        String query = "select " + DB_COLS + " from multimedia where ParentId = " + parentId + " AND ProfileImageUserId IS NULL order by Type, Name";
 
         try {
             c = dbConnectionFactory.getConnection();
@@ -264,7 +304,7 @@ public class MultimediaAO {
             query.append(join);
             query.append(" ");
             
-            query.append("where " + DB_TABLE + ".Type = ? and (");
+            query.append("where ").append(DB_TABLE).append(".Type = ? and ProfileImageUserId is NULL and (");
             query.append(where);
             query.append(") ");
 
@@ -365,9 +405,9 @@ public class MultimediaAO {
             if (mm.getId() == -1) {
                 // Ny
                 if (data == null) {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 } else {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 }
             } else {
                 // Oppdater
@@ -405,7 +445,11 @@ public class MultimediaAO {
             st.setString(p++, mm.getAltname());
             st.setString(p++, mm.getUsage());
 
-            if (mm.getId() != -1) st.setInt(p++, mm.getId());
+            if (mm.getId() != -1) {
+                st.setInt(p++, mm.getId());
+            } else {
+                st.setString(p++, mm.getProfileImageUserId());
+            }
 
             st.execute();
 
@@ -459,6 +503,7 @@ public class MultimediaAO {
         mm.setModifiedBy(rs.getString("LastModifiedBy"));
         mm.setAltname(rs.getString("AltName"));
         mm.setUsage(rs.getString("UsageInfo"));
+        mm.setProfileImageUserId("ProfileImageUserId");
 
         return mm;
     }

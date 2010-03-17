@@ -120,7 +120,6 @@ public class SaveMultimediaAction implements Controller {
                 mm.setDescription(desc);
                 mm.setUsage(usage);
 
-                boolean needsSize = false;
                 if (width != -1) {
                     mm.setWidth(width);
                 }
@@ -129,42 +128,13 @@ public class SaveMultimediaAction implements Controller {
                 }
 
 
+                boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
                 if (file != null) {
                     // Lastet opp en vanlig fil
                     byte[] data = file.getBytes();
-                    mm.setData(data);
-
-                    MimeType mimeType = MimeTypes.getMimeType(filename);
-                    if (mimeType.shouldConvertImage() && Aksess.isImageConversionEnabled()) {
-                        // Konverterer bildet til et format som nettlesere kan vise
-                        mm.setData(MultimediaHelper.convertImageFormat(data));
-                        filename = filename.substring(0, filename.lastIndexOf(".") + 1) + Aksess.getOutputImageFormat();
-                        mimeType = MimeTypes.getMimeType(filename);
-                    }
-
-                    if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-                        // Dette er et bilde eller Flash fil, finn størrelse
-                        ImageInfo ii = new ImageInfo();
-                        ii.setInput(new ByteArrayInputStream(mm.getData()));
-                        if (ii.check()) {
-                            mm.setWidth(ii.getWidth());
-                            mm.setHeight(ii.getHeight());
-                        }
-                    } else if (mimeType.isDimensionRequired() && (mm.getWidth() <= 0 || mm.getHeight() <= 0)) {
-                        mm.setWidth(Aksess.getDefaultMediaWidth());
-                        mm.setHeight(Aksess.getDefaultMediaHeight());
-                        needsSize = true;
-                    }
-
-                    if (filename.length() > 255) {
-                        filename = filename.substring(filename.length() - 255, filename.length());
-                    }
-
-                    mm.setFilename(filename);
-
+                    MultimediaHelper.updateMultimediaFromData(mm, data, filename);
                 }
 
-                boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
                 if (!preserveImageSize) {
                     mm = resizeMultimedia(mm);
                 }
@@ -173,12 +143,7 @@ public class SaveMultimediaAction implements Controller {
                 if (mm.getType() == MultimediaType.FOLDER) {
                     response.sendRedirect("multimedia.jsp?activetab=viewfolder&id=" + newId + "&updatetree=true");
                 } else {
-                    if (needsSize) {
-                        response.sendRedirect("multimedia.jsp?activetab=editmultimedia&id=" + newId + "&updatetree=true");
-                    } else {
-                        response.sendRedirect("multimedia.jsp?activetab=viewmultimedia&id=" + newId + "&updatetree=true");
-                    }
-
+                    response.sendRedirect("multimedia.jsp?activetab=viewmultimedia&id=" + newId + "&updatetree=true");
                 }
             } else {
                 // Zip fil
@@ -243,8 +208,6 @@ public class SaveMultimediaAction implements Controller {
                                 }
 
                                 byte[] data = bos.toByteArray();
-                                mm.setData(data);
-
                                 bos.close();
 
                                 // Basisopplysninger
@@ -265,29 +228,7 @@ public class SaveMultimediaAction implements Controller {
                                 }
                                 mm.setName(name);
 
-                                MimeType mt = MimeTypes.getMimeType(entryfilename);
-
-                                if (mt.shouldConvertImage()) {
-                                    // Konverterer bildet til et format som nettlesere kan vise
-                                    mm.setData(MultimediaHelper.convertImageFormat(data));
-                                    entryfilename = entryfilename.substring(0, entryfilename.lastIndexOf(".") + 1) + Aksess.getOutputImageFormat();
-                                    mt = MimeTypes.getMimeType(entryfilename);
-                                }
-
-                                if (mt.getType().indexOf("image") != -1 || mt.getType().indexOf("flash") != -1) {
-                                    // Dette er et bilde eller Flash fil, finn størrelse
-                                    ImageInfo ii = new ImageInfo();
-                                    ii.setInput(new ByteArrayInputStream(mm.getData()));
-                                    if (ii.check()) {
-                                        mm.setWidth(ii.getWidth());
-                                        mm.setHeight(ii.getHeight());
-                                    }
-                                }
-
-                                if (entryfilename.length() > 255) {
-                                    entryfilename = entryfilename.substring(entryfilename.length() - 255, entryfilename.length());
-                                }
-                                mm.setFilename(entryfilename);
+                                MultimediaHelper.updateMultimediaFromData(mm, data, entryfilename);
 
                                 boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
                                 if (!preserveImageSize) {
@@ -314,6 +255,7 @@ public class SaveMultimediaAction implements Controller {
 
         return null;
     }
+
     private String normalize(String entryfilename) {
         // Replace composed unicode norwegian aring with the single byte aring
         return entryfilename.replaceAll("\u0061\u030a", "\u00e5");

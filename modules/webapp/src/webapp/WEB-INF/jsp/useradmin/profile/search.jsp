@@ -70,6 +70,11 @@
                                     </c:if>
                                 </td>
                                 <td><a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.roles"/></a></td>
+                                <td>
+                                    <c:if test="${canEdit}">
+                                        <a href="profileimage?domain=${user.identity.domain}&amp;userId=${user.identity.userId}"><kantega:label key="useradmin.searchprofiles.profileimage"/></a>
+                                    </c:if>
+                                </td>
                             </tr>
                         </table>
                     </td>

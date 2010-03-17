@@ -18,6 +18,9 @@ package no.kantega.publishing.common.util;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.media.ImageInfo;
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaImageMapAO;
@@ -241,4 +244,28 @@ public class MultimediaHelper {
             return source;
         }
     }
+
+    public static void updateMultimediaFromData(Multimedia mm, byte[] data, String filename) {
+        mm.setData(data);
+
+        MimeType mimeType = MimeTypes.getMimeType(filename);
+        if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
+            // Dette er et bilde eller Flash fil, finn størrelse
+            ImageInfo ii = new ImageInfo();
+            ii.setInput(new ByteArrayInputStream(mm.getData()));
+            if (ii.check()) {
+                mm.setWidth(ii.getWidth());
+                mm.setHeight(ii.getHeight());
+            }
+        } else if (mimeType.isDimensionRequired() && (mm.getWidth() <= 0 || mm.getHeight() <= 0)) {
+            mm.setWidth(Aksess.getDefaultMediaWidth());
+            mm.setHeight(Aksess.getDefaultMediaHeight());
+        }
+
+        if (filename.length() > 255) {
+            filename = filename.substring(filename.length() - 255, filename.length());
+        }
+        mm.setFilename(filename);
+    }
+
 }

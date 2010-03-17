@@ -43,6 +43,7 @@ public class Multimedia extends BaseObject {
 
     private Date lastModified = new Date();
     private String modifiedBy = null;
+    private String profileImageUserId;
 
     public Multimedia() {
 
@@ -192,5 +193,13 @@ public class Multimedia extends BaseObject {
 
     public String getOwnerPerson() {
         return null;
-    }    
+    }
+
+    public String getProfileImageUserId() {
+        return profileImageUserId;
+    }
+
+    public void setProfileImageUserId(String profileImageUserId) {
+        this.profileImageUserId = profileImageUserId;
+    }
 }
