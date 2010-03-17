@@ -37,6 +37,9 @@
         updateSt.executeUpdate();
 
 
+        updateSt = c.prepareStatement("ALTER TABLE multimedia ADD ProfileImageUserId VARCHAR(255)");
+        updateSt.executeUpdate();
+
     } finally {
         c.close();
     }
