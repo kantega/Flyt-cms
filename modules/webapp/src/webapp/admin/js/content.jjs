@@ -140,11 +140,13 @@ function bindFilterEvents() {
         $filters.find("#FilteroptionSites input[name=sites]").each(function(){
             var $site = $(this);
             if (!$site.is(":checked")) {
+                if (hiddenSites != "") {
+                    hiddenSites += ",";
+                }
                 hiddenSites += $site.val();
-
             }
         });
-
+        // TODO: Dette gir problemer fordi navigatoren kan bli oppdatert før userpreference kallet er ferdig...
         UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false);
         updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
     });
