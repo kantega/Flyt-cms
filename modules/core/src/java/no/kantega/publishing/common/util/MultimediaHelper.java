@@ -54,6 +54,8 @@ public class MultimediaHelper {
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH, String cssClass) {
         return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass, false);
     }
+
+    // TODO: Cleanup and delete methods not needed
     public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass) {
         return mm2HtmlTag(baseUrl, mm, align, maxW, maxH, cssClass, false);
     }

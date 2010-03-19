@@ -35,12 +35,12 @@ public class AssociationCategoryHelper {
         this.templateConfigurationCache = templateConfigurationCache;
     }
 
-    public List<AssociationCategory> getAllowedAssociationCategories(ContentTemplate parentTemplate) throws ChildContentNotAllowedException {
+    public List<AssociationCategory> getAllowedAssociationCategories(ContentTemplate parentTemplate) {
         List<AssociationCategory> tmpAllowedAssociations = parentTemplate.getAssociationCategories();
         if (tmpAllowedAssociations == null || tmpAllowedAssociations.size() == 0) {
-            throw new ChildContentNotAllowedException();
+            return new ArrayList<AssociationCategory>();
         } else if (parentTemplate.getContentType() != ContentType.PAGE) {
-            throw new ChildContentNotAllowedException();
+            return new ArrayList<AssociationCategory>();
         }
 
         // Template only holds id of AssociationCategory, get complete AssociationCategory from cache

@@ -17,11 +17,6 @@
 //<%
 request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
-$(document).ready(function(){
-    debug("organizesubpages.$(document).ready()");
-    openaksess.organizesubpages.updateSubPageList();
-
-});
 
 /**
  * Determines what should happen inside the main pane when an action that requires a reload of this occurs,
@@ -39,10 +34,6 @@ function updateMainPane (id, suppressNavigatorUpdate) {
 
 
 openaksess.organizesubpages = function()  {
-
-    this.currentUrl = "${currentNavigateContent.url}";
-    var that = this;
-
     /**
      * Compiles the association categories and the order of their associations as a requestparameter.
      * Used as input to the ReorderSupPages.action
@@ -68,17 +59,18 @@ openaksess.organizesubpages = function()  {
     }
 
     return {
+        currentUrl : "",
         /**
          * Loads the list of subpages for the given url.
          * @param url
          */
         updateSubPageList: function() {
+            var ths = this;
+            debug("organizesubpages.updateSubPageList(): Triggering contentupdate event:" + this.currentUrl);
+            triggerContentUpdateEvent(this.currentUrl);
 
-            debug("organizesubpages.updateSubPageList(): Triggering contentupdate event");
-            triggerContentUpdateEvent(that.currentUrl);
-
-            debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action");
-            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: that.currentUrl}, function(success){
+            debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
+            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
                 debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
                 $("#SubPages ul").sortable({
                     connectWith: '.associationCategory',
@@ -86,7 +78,7 @@ openaksess.organizesubpages = function()  {
                     axis: 'y',
                     stop: function(e, ui){
                         $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
-                            updateNavigator(that.currentUrl, true);
+                            updateNavigator(ths.currentUrl, true);
                         });
                     }
                 });
@@ -104,5 +96,5 @@ openaksess.organizesubpages = function()  {
                 });
             });
         }
-    }
+    };
 }();

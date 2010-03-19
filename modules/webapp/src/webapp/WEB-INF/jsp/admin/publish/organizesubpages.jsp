@@ -27,6 +27,14 @@
 
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            debug("organizesubpages.$(document).ready()");
+            openaksess.organizesubpages.currentUrl = "${currentNavigateContent.url}";
+            openaksess.organizesubpages.updateSubPageList();
+
+        });        
+    </script>
 </kantega:section>
 
 <kantega:section id="content">

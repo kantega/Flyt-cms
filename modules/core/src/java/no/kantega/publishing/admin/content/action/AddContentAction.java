@@ -73,6 +73,10 @@ public class AddContentAction extends AdminController {
 
         AssociationCategoryHelper helper = new AssociationCategoryHelper(templateConfigurationCache);
         List<AssociationCategory> allowedAssociations = helper.getAllowedAssociationCategories(parentTemplate);
+        if (allowedAssociations.size() == 0) {
+            throw new ChildContentNotAllowedException();
+        }
+
         model.put("allowedAssociations", allowedAssociations);
 
 

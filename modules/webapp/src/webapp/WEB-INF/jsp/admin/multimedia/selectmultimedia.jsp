@@ -23,11 +23,6 @@
     Multimedia mm = (Multimedia)request.getAttribute("media");
     RequestParameters param = new RequestParameters(request, "utf-8");
 
-    String align = param.getString("align");
-    String cssClass = "align-center";
-    if ("left".equalsIgnoreCase(align)) cssClass="align-left";
-    if ("right".equalsIgnoreCase(align)) cssClass="align-right";
-
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 
@@ -78,7 +73,7 @@
 </script>
 <body onLoad="insertMMObject()">
 <form name="mediaform" style="display:none;">
-    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, align, maxWidth, -1, cssClass)%></textarea>
+    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
 </form>
 </body>
 </html>
