@@ -126,9 +126,8 @@
             // Theme options
             theme_advanced_toolbar_location : "top",
             theme_advanced_toolbar_align : "left",
-            theme_advanced_statusbar_location : "bottom",
+            theme_advanced_statusbar_location : "none",
             theme_advanced_resizing : false,
-            theme_advanced_path: false,
 
             // Plugin options
             <%
