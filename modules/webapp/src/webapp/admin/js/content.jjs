@@ -112,8 +112,9 @@ function bindFilterEvents() {
     $filterOptions.find("#FilteroptionHideExpired").live('change', function(){
         var value = $(this).is(":checked");
         debug("content.bindFilterEvents(): Hide expired clicked: " + value);
-        UserPreferences.setPreference(UserPreferences.keys.filter.hideExpired, value, false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        UserPreferences.setPreference(UserPreferences.keys.filter.hideExpired, value, false, function() {
+            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        });        
     });
 
     var filterInfoSlider = new InfoSlider();
@@ -129,8 +130,10 @@ function bindFilterEvents() {
         var $this = $(this);
         debug("content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
         if ($this.is(":checked")) {
-            UserPreferences.setPreference(UserPreferences.keys.filter.sort, $this.val(), false);
-            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+            UserPreferences.setPreference(UserPreferences.keys.filter.sort, $this.val(), false, function() {
+                updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+            });
+
         }
     });
 
@@ -146,9 +149,10 @@ function bindFilterEvents() {
                 hiddenSites += $site.val();
             }
         });
-        // TODO: Dette gir problemer fordi navigatoren kan bli oppdatert før userpreference kallet er ferdig...
-        UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false, function() {
+            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        });
+
     });
 
     $("#hideexpiredFilteroptionSites_all").live('click',function(e){
@@ -156,8 +160,10 @@ function bindFilterEvents() {
         $("#Filteroptions .filters input[name=sites]").each(function(){
             $(this).attr("checked", "checked");
         });
-        UserPreferences.setPreference(UserPreferences.keys.filter.sites, '', false);
-        updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        UserPreferences.setPreference(UserPreferences.keys.filter.sites, '', function() {
+            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+        });
+
     });
 }
 

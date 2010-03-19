@@ -234,8 +234,12 @@ var UserPreferences = {
         }
     },
 
-    setPreference: function(key, value, permanent){
-        UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
+    setPreference: function(key, value, permanent, callback){
+        if (arguments.length == 3) {
+            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
+        } else {
+            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
+        }
     },
 
     getPreference: function(key, callback) {
