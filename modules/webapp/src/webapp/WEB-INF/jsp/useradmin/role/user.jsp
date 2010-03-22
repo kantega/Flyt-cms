@@ -72,7 +72,7 @@
                                             <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
                                         </c:forEach>
                                     </select>
-                                    <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.leggtil"/>"></span>
+                                    <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.add"/>"></span>
                                 </form>
                             </td>
                         </tr>

@@ -177,7 +177,7 @@
                             <kantega:label key="aksess.selecttemplate.notauthorized"/>
                         </div>
                     </c:if>
-                    <a href="Javascript:selectContent()" class="button"><span class="add"><kantega:label key="aksess.button.leggtil"/></span></a>
+                    <a href="Javascript:selectContent()" class="button"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
                 </fieldset>
             </div>
 
