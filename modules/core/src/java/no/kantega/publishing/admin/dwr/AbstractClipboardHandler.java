@@ -24,6 +24,11 @@ public abstract class AbstractClipboardHandler extends AbstractDwrController {
         copyOrCut(id, ClipboardStatus.CLIPPED);
     }
 
+    @RemoteMethod
+   public boolean isClipboardEmpty() {
+       return getClipboard().isEmpty();
+   }
+
     private boolean copyOrCut(int id, ClipboardStatus status) {
         List<BaseObject> items = new ArrayList<BaseObject>();
 

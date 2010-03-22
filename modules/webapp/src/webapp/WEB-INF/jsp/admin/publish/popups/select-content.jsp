@@ -35,7 +35,7 @@
             updateNavigator(currentItemIdentifier, true);
         });
 
-        function setContextMenus() {
+        function setContextMenus(clipboardEmpty) {
         }
 
         function getNavigatorAction() {

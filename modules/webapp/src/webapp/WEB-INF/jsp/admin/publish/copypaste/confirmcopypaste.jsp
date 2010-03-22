@@ -58,27 +58,11 @@
                             </p>
                         </c:if>
                         <table>
-                            <c:if test="${allowCrossPublish}">
-                                <tr valign="top">
-                                    <c:choose>
-                                        <c:when test="${allowDuplicate}">
-                                            <td><input type="radio" name="isTextCopy" value="false" checked></td>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <input type="hidden" name="isTextCopy" value="false">
-                                        </c:otherwise>
-                                    </c:choose>
-                                    <td>
-                                        <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i><c:out value="${parentTitle}"/></i></strong><br>
-                                        <kantega:label key="aksess.copypaste.copy.treecopy3"/>
-                                    </td>
-                                </tr>
-                            </c:if>
                             <c:if test="${allowDuplicate}">
                                 <tr valign="top">
                                     <c:choose>
                                         <c:when test="${allowCrossPublish}">
-                                            <td><input type="radio" name="isTextCopy" value="true"></td>
+                                            <td><input type="radio" name="isTextCopy" value="true" checked="checked"></td>
                                         </c:when>
                                         <c:otherwise>
                                             <input type="hidden" name="isTextCopy" value="true">
@@ -87,6 +71,22 @@
                                     <td>
                                         <strong><kantega:label key="aksess.copypaste.copy.textcopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i></strong><br>
                                         <kantega:label key="aksess.copypaste.copy.textcopy2"/>
+                                    </td>
+                                </tr>
+                            </c:if>
+                            <c:if test="${allowCrossPublish}">
+                                <tr valign="top">
+                                    <c:choose>
+                                        <c:when test="${allowDuplicate}">
+                                            <td><input type="radio" name="isTextCopy" value="false"></td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="hidden" name="isTextCopy" value="false">
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <td>
+                                        <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i><c:out value="${parentTitle}"/></i></strong><br>
+                                        <kantega:label key="aksess.copypaste.copy.treecopy3"/>
                                     </td>
                                 </tr>
                             </c:if>

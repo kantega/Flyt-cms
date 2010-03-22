@@ -67,7 +67,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         boolean forbidMoveCrossSite = false;
 
         Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
-        if (clipboard == null || clipboard.getItems().size() == 0) {
+        if (clipboard == null || clipboard.getItems() == null || clipboard.getItems().size() == 0) {
             model.put("error", "aksess.copypaste.emptyclipboard");
             return new ModelAndView(errorView, model);
         }
@@ -78,7 +78,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
         Content selectedContent = (Content)clipboard.getItems().get(0);
-
+        
         int uniqueId = selectedContent.getAssociation().getId();
         String selectedContentTitle = selectedContent.getTitle();
         if (selectedContentTitle.length() > 30) selectedContentTitle = selectedContentTitle.substring(0, 27) + "...";

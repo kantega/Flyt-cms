@@ -17,6 +17,8 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
@@ -93,6 +95,11 @@ public class CopyPasteContentAction implements Controller {
 
             aksessService.modifyAssociation(association);
             model.put("message", "aksess.copypaste.move.ok");
+        }
+
+        Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
+        if (clipboard != null) {
+            clipboard.empty();
         }
 
         // Check for duplicate pages

@@ -126,7 +126,9 @@ function updateNavigator(itemIdentifier, expand) {
 
     $("#Navigator").load(getNavigatorAction(), params, function() {
         debug("navigate.updateNavigator(): response from " + getNavigatorAction() + " received");
-        setContextMenus();
+        ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
+            setContextMenus(clipboardEmpty);
+        });
     });
 }
 

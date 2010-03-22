@@ -23,4 +23,11 @@ ul.ui-tabs-nav li {
 .ui-widget-content {
     border:0;
 }
+.ui-widget .ui-resizable-handle.ui-resizable-e {
+    background: none;
+}
+
+.ui-resizable-handle {
+    z-index: 1000;
+}
 

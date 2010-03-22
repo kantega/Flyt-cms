@@ -49,4 +49,9 @@ public class Clipboard {
     public boolean isEmpty() {
         return (items == null || items.size() == 0);
     }
+
+    public void empty() {
+        items = null;
+        status = null;
+    }
 }

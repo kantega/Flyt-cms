@@ -20,6 +20,9 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.dwr.ContentClipboardHandler;
+import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.common.ao.LinkDao;
@@ -121,7 +124,11 @@ public class ContentPropertiesAction implements Controller {
                     enabledButtons.add("CopyButton");
                     if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
                         showApproveButtons = true;
-                    }                                            
+                    }
+                    Clipboard contentClipboard = (Clipboard) request.getSession().getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
+                    if (contentClipboard != null && !contentClipboard.isEmpty()){
+                        enabledButtons.add("PasteButton");
+                    }
                 }
 
                 ContentLock lock = LockManager.peekAtLock(content.getId());

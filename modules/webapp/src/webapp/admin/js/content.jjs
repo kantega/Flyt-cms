@@ -61,7 +61,6 @@ function bindContentupdateEvents() {
             ContentStatus.details(data.content);
             ContentStatus.associations(data.associations);
             ContentStatus.enableButtons(data.enabledButtons);
-            ContentStatus.enableButtons(data.enabledButtons);
             ContentStatus.showApproveOrReject(data.showApproveButtons);
             ContentStatus.updateFilters(data.sites, data.userPreferences);
         }, "json");
@@ -202,9 +201,15 @@ function navigatorResizeOnResize() {
 /**
  * Sets the context (right click) menus in the navigator.
  */
-function setContextMenus() {
-    setContextMenu("page", ['paste', 'pasteAsShortcut']);
-    setContextMenu("link", ['paste', 'pasteAsShortcut']);
+function setContextMenus(clipboardEmpty) {
+    debug("content.setContextMenus(): Clipboard empty: "+clipboardEmpty);
+    var disabledElements = [];
+    if (clipboardEmpty) {
+        disabledElements[0] = 'paste';
+        disabledElements[1] = 'pasteAsShortcut';
+    }
+    setContextMenu("page", disabledElements);
+    setContextMenu("link", disabledElements);
 }
 
 function getNavigatorAction() {
@@ -366,24 +371,28 @@ var Publish =  {
         debug("content.Publish.cut(): thisId: " + thisId);
         ContentClipboardHandler.cut(thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+        ContentStatus.enableButtons(['PasteButton']);
     },
 
     copy: function(thisId) {
         debug("content.Publish.copy(): thisId: " + thisId);
         ContentClipboardHandler.copy(thisId);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
+        ContentStatus.enableButtons(['PasteButton']);
     },
 
     paste: function(thisId) {
         debug("content.Publish.paste(): thisId: " + thisId);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
-        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentId=" + thisId,width: 350, height:220});
+        ContentStatus.disableButtons(['PasteButton']);
+        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentId=" + thisId,width: 390, height:250});
     },
 
     pasteAsShortcut: function(thisId) {
         debug("content.Publish.pasteAsShortcut(): thisId: " + thisId);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
-        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentId=" + thisId,width: 350, height:220});
+        ContentStatus.disableButtons(['PasteButton']);
+        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentId=" + thisId,width: 390, height:250});
     },
 
     displayPeriod: function(thisId) {

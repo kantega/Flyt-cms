@@ -194,9 +194,13 @@ function addMediaitemClickListeners() {
 /**
  * Sets the context (right click) menus in the navigator.
  */
-function setContextMenus() {
-    setContextMenu("multimedia", ['paste']);
-    setContextMenu("folder", ['paste']);
+function setContextMenus(clipboardEmpty) {
+    var disabledElements = [];
+    if (clipboardEmpty) {
+        disabledElements[0] = 'paste';
+    }
+    setContextMenu("multimedia", disabledElements);
+    setContextMenu("folder", disabledElements);
 }
 
 function getNavigatorAction() {

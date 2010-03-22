@@ -35,7 +35,7 @@
         });
 
 
-        function setContextMenus() {
+        function setContextMenus(clipboardEmpty) {
         }
 
         function getNavigatorAction() {
