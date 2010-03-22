@@ -18,8 +18,12 @@ package no.kantega.publishing.forum;
 
 import no.kantega.publishing.common.data.Content;
 
+import java.util.List;
+
 public interface ForumProvider {
     public String getForumsAsOptionList(long selected);
 
     long getThreadAboutContent(Content current);
+
+    public List getUserPostings(String userid);
 }
