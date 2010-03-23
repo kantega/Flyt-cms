@@ -16,33 +16,33 @@
 
 <ul id="ContextMenu-page" class="contextMenu">
     <li class="open">
-        <a href="#open">Open</a>
+        <a href="#open"><kantega:label key="aksess.navigator.open"/></a>
     </li>
     <li class="openInNewWindow">
-        <a href="#openInNewWindow">Open in new window</a>
+        <a href="#openInNewWindow"><kantega:label key="aksess.navigator.opennewwindow"/></a>
     </li>
     <li class="newSubpage separator">
-        <a href="#newSubpage">New subpage</a>
+        <a href="#newSubpage"><kantega:label key="aksess.navigator.open"/></a>
     </li>
     <li class="edit">
-        <a href="#edit">Edit</a>
+        <a href="#edit"><kantega:label key="aksess.navigator.edit"/></a>
     </li>
     <li class="delete">
-        <a href="#delete">Delete</a>
+        <a href="#delete"><kantega:label key="aksess.navigator.delete"/></a>
     </li>
     <li class="cut separator">
-        <a href="#cut">Cut</a>
+        <a href="#cut"><kantega:label key="aksess.navigator.cut"/></a>
     </li>
     <li class="copy">
-        <a href="#copy">Copy</a>
+        <a href="#copy"><kantega:label key="aksess.navigator.copy"/></a>
     </li>
     <li class="paste">
-        <a href="#paste">Paste</a>
+        <a href="#paste"><kantega:label key="aksess.navigator.paste"/></a>
     </li>
     <li class="pasteAsShortcut">
-        <a href="#pasteAsShortcut">Paste as shortcut</a>
+        <a href="#pasteAsShortcut"><kantega:label key="aksess.navigator.pasteshortcut"/></a>
     </li>
     <li class="managePrivileges separator">
-        <a href="#managePrivileges">Manage privileges</a>
+        <a href="#managePrivileges"><kantega:label key="aksess.navigator.permissions"/></a>
     </li>
 </ul>
