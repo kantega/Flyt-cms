@@ -232,7 +232,7 @@
         <!-- 3.1-FINAL bygger ikke -->
         <poi.version>3.0-FINAL</poi.version>
         <springframework.version>2.5.6.SEC01</springframework.version>
-        <securityapi.version>1.10</securityapi.version>
+        <securityapi.version>1.11</securityapi.version>
         <securityapi.openimpl.version>1.1</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
