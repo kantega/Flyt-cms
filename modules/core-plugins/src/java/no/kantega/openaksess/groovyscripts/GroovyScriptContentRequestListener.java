@@ -16,6 +16,7 @@
 
 package no.kantega.openaksess.groovyscripts;
 
+import no.kantega.publishing.api.annotations.RequestHandler;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
 import no.kantega.publishing.common.data.Content;
 import org.apache.log4j.Logger;
@@ -24,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.beans.factory.annotation.Qualifier;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +34,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.io.IOException;
 import java.io.File;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.*;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.annotation.Annotation;
@@ -167,8 +167,9 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
         Method[] methods = clazz.getDeclaredMethods();
 
+        List<Method> candidateMethods = new ArrayList<Method>();
+        Method annotatedMethod  = null;
 
-        method:
         for (Method method : methods) {
 
             if (method.isSynthetic()) {
@@ -184,38 +185,53 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 continue;
             }
 
-            if(method.getParameterTypes().length == 0) {
-                return method;
-            }
+            boolean methodHasUnsatisfiableParameter= false;
+
             for (int i = 0; i < method.getParameterTypes().length; i++) {
                 Class paramClazz = method.getParameterTypes()[i];
 
-                final Annotation[] annotations = method.getParameterAnnotations()[i];
-
-                if (allowedParameters.containsKey(paramClazz)) {
-                    return method;
-                } else {
+                if (!allowedParameters.containsKey(paramClazz)) {
                     final Map beans = rootApplicationContext.getBeansOfType(paramClazz);
-                    if (beans.size() == 1) {
-                        return method;
-                    } else {
-                        for (Annotation annotation : annotations) {
+
+                    if (beans.size() == 0) {
+                        methodHasUnsatisfiableParameter = true;
+                        break;
+                    }else if (beans.size() > 1) {
+
+                        for (Annotation annotation : method.getParameterAnnotations()[i]) {
                             if (annotation instanceof Qualifier) {
                                 Qualifier q = (Qualifier) annotation;
-                                if (beans.containsKey(q.value())) {
-                                    return method;
+                                if (!beans.containsKey(q.value())) {
+                                    methodHasUnsatisfiableParameter = true;
+                                    break;
                                 }
-
                             }
                         }
                     }
-                    continue method;
                 }
             }
-
-
+            if (!methodHasUnsatisfiableParameter) {
+                candidateMethods.add(method);
+                if(method.getAnnotation(RequestHandler.class) != null) {
+                    if(annotatedMethod != null) {
+                        throw new IllegalArgumentException("Only a single method can be annotated with @" + RequestHandler.class.getSimpleName());
+                    } else {
+                        annotatedMethod = method;
+                    }
+                }
+            }
         }
-        throw new IllegalArgumentException("Groovy class: " + clazz + " contains no valid method taking allowed parameters");
+
+        if(annotatedMethod != null) {
+            return annotatedMethod;
+        } else if(candidateMethods.size() == 1) {
+            return candidateMethods.get(0);
+        } else if(candidateMethods.size() > 1) {
+            throw new IllegalArgumentException("Detected multiple candidate methods for execution, please annotate your handler method with @" + HandlerMapping.class.getSimpleName());
+        } else {
+            throw new IllegalArgumentException("Groovy class: " + clazz + " contains no valid method taking allowed parameters");
+        }
+
     }
 
     public void setServletContext(ServletContext servletContext) {
