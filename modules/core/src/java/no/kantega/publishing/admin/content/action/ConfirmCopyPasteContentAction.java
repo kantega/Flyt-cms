@@ -18,10 +18,8 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -59,11 +57,10 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         Map<String, Object> model = new HashMap<String, Object>();
 
-        int newParentId = param.getInt("newParentId");
+        String url = request.getParameter("newParentUrl");
+        ContentIdentifier newParentCid = new ContentIdentifier(url);
 
         boolean pasteShortCut  = param.getBoolean("pasteShortCut");
-
-
         boolean forbidMoveCrossSite = false;
 
         Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
@@ -83,7 +80,8 @@ public class ConfirmCopyPasteContentAction implements Controller {
         String selectedContentTitle = selectedContent.getTitle();
         if (selectedContentTitle.length() > 30) selectedContentTitle = selectedContentTitle.substring(0, 27) + "...";
 
-        Content newParent = getContent(request, newParentId);
+        Content newParent = cms.getContent(newParentCid);
+
         String parentTitle = newParent.getTitle();
         if (parentTitle.length() > 30) parentTitle = parentTitle.substring(0, 27) + "...";
 
@@ -138,7 +136,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
             model.put("isCopy", isCopy);
             model.put("pasteShortCut", pasteShortCut);
             model.put("uniqueId", uniqueId);
-            model.put("newParentId", newParentId);
+            model.put("newParentId", newParentCid.getAssociationId());
             model.put("selectedContent", selectedContent);
             model.put("selectedContentTitle", selectedContentTitle);
             model.put("parentTitle", parentTitle);
@@ -151,13 +149,6 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
             return new ModelAndView(view, model);
         }
-    }
-
-    private Content getContent(HttpServletRequest request, int uniqueId) throws NotAuthorizedException {
-        ContentManagementService cms = new ContentManagementService(request);
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(uniqueId);
-        return cms.getContent(cid);
     }
 
     private List getAssociationCategories(ContentTemplate template) {

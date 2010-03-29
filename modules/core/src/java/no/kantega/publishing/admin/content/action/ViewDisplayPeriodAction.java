@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.client.util.RequestParameters;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,10 +38,8 @@ public class ViewDisplayPeriodAction extends AdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         ContentManagementService cms = new ContentManagementService(request);
-        RequestParameters param = new RequestParameters(request);
-        int id = param.getInt("id");
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(id);
+        String url = request.getParameter("url");
+        ContentIdentifier cid = new ContentIdentifier(url);
         Content content = cms.getContent(cid, false);
         if (content != null) {
             model.put("content", content);

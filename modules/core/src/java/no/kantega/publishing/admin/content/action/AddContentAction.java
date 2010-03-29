@@ -61,7 +61,8 @@ public class AddContentAction extends AdminController {
         ContentManagementService aksessService = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        ContentIdentifier cidParent = new ContentIdentifier(request);
+        String url = request.getParameter("url");
+        ContentIdentifier cidParent = new ContentIdentifier(url);       
         Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));

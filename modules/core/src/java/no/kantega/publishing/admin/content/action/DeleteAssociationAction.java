@@ -53,12 +53,10 @@ public class DeleteAssociationAction implements Controller {
             // Not post, user should confirm delete of page
 
             // Get association
-            int associationId = param.getInt("id");
-            Association a = aksessService.getAssociationById(associationId);
+            String url = request.getParameter("url");
+            ContentIdentifier cid = new ContentIdentifier(url);
 
-            // Get content (page) that associations points to
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(a.getAssociationId());
+            // Get content (page) that association points to
             Content content = aksessService.getContent(cid);
 
             String contentTitle = "";
@@ -84,7 +82,7 @@ public class DeleteAssociationAction implements Controller {
             if (associations != null) {
                 if (associations.size() > 1) {
                     isCrossPublished = true;
-                    model.put("associationId", associationId);
+                    model.put("associationId", cid.getAssociationId());
                 }
             }
 

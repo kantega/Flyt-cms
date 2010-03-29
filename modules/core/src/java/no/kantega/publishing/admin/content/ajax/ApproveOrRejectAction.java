@@ -42,12 +42,9 @@ public class ApproveOrRejectAction implements Controller {
 
         String note = param.getString("note", 2000);
 
-        int associationid = param.getInt("id");
-
         HttpSession session = request.getSession(true);
 
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(associationid);
+        ContentIdentifier cid = new ContentIdentifier(request.getParameter("url"));
 
         ContentManagementService aksessService = new ContentManagementService(request);
 

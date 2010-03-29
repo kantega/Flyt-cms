@@ -45,7 +45,8 @@ public class EditContentAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
 
-        ContentIdentifier cid = new ContentIdentifier(request);
+        String url = request.getParameter("url");
+        ContentIdentifier cid = new ContentIdentifier(url);
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 

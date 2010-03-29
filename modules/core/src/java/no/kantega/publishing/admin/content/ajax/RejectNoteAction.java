@@ -34,10 +34,8 @@ public class RejectNoteAction extends AdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
-        int associationId = param.getInt("id");
-
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("associationId", associationId);
+        model.put("url", request.getParameter("url"));
 
         return new ModelAndView(view, model);
     }

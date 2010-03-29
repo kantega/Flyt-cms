@@ -57,6 +57,8 @@ public class  EditPermissionsAction extends AbstractController {
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
+
+        String url = param.getString("url");
         int objectId   = param.getInt("id");
         int objectType = param.getInt("type");
 
@@ -91,7 +93,7 @@ public class  EditPermissionsAction extends AbstractController {
             objSecurityId = (Integer)session.getAttribute("tmpObjSecurityId");
         }
 
-        if (objectId != -1 && (permissionObject == null || permissionObject.getId() != objectId)) {
+        if ((objectId != -1 || url != null) && (permissionObject == null || permissionObject.getId() != objectId)) {
             // Objects not in session or wrong objects in session
             if (objectType == ObjectType.CONTENT) {
                 objectType = ObjectType.ASSOCIATION;
@@ -99,9 +101,7 @@ public class  EditPermissionsAction extends AbstractController {
 
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
-
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(objectId);
+                ContentIdentifier cid = new ContentIdentifier(url);
                 Content content  = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();
