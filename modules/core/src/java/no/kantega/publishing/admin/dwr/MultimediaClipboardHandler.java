@@ -8,8 +8,8 @@ import no.kantega.publishing.common.service.MultimediaService;
  */
 public class MultimediaClipboardHandler extends AbstractClipboardHandler {
     @Override
-    public BaseObject getBaseObjectFromId(int id) {
+    public BaseObject getBaseObjectFromId(String id) {
         MultimediaService mediaService = new MultimediaService(getRequest());
-        return mediaService.getMultimedia(id);
+        return mediaService.getMultimedia(Integer.parseInt(id));
     }
 }

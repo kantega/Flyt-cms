@@ -6,6 +6,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.commons.exception.NotAuthorizedException;
 
 /**
@@ -15,14 +16,15 @@ import no.kantega.commons.exception.NotAuthorizedException;
 public class ContentClipboardHandler extends AbstractClipboardHandler {
 
     @Override
-    public BaseObject getBaseObjectFromId(int id) {
+    public BaseObject getBaseObjectFromId(String id) {
         ContentManagementService cms = new ContentManagementService(getRequest());
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(id);
         Content content = null;
         try {
+            ContentIdentifier cid = new ContentIdentifier(id);
             content = cms.getContent(cid);
         } catch (NotAuthorizedException e) {
+            // Do nothing
+        } catch (ContentNotFoundException e) {
             // Do nothing
         }
         return content;

@@ -15,12 +15,12 @@ import java.util.ArrayList;
  */
 public abstract class AbstractClipboardHandler extends AbstractDwrController {
     @RemoteMethod
-    public void copy(int id) {
+    public void copy(String id) {
         copyOrCut(id, ClipboardStatus.COPIED);
     }
 
     @RemoteMethod
-    public void cut(int id) {
+    public void cut(String id) {
         copyOrCut(id, ClipboardStatus.CLIPPED);
     }
 
@@ -29,7 +29,7 @@ public abstract class AbstractClipboardHandler extends AbstractDwrController {
        return getClipboard().isEmpty();
    }
 
-    private boolean copyOrCut(int id, ClipboardStatus status) {
+    private boolean copyOrCut(String id, ClipboardStatus status) {
         List<BaseObject> items = new ArrayList<BaseObject>();
 
         BaseObject current = getBaseObjectFromId(id);
@@ -55,5 +55,5 @@ public abstract class AbstractClipboardHandler extends AbstractDwrController {
         return clipboard;
     }
 
-    public abstract BaseObject getBaseObjectFromId(int id);
+    public abstract BaseObject getBaseObjectFromId(String id);
 }
