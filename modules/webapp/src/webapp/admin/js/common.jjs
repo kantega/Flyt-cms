@@ -1,6 +1,7 @@
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%
 request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
@@ -68,6 +69,17 @@ openaksess.common = {
     },
 
     /**
+     * Returns the uri for a content with a given associationId
+     *
+     * @param associationId
+     */
+    getContentUrlFromAssociationId : function(associationId) {
+        var url = " ${pageContext.request.contextPath}<%="/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
+        openaksess.common.debug("openaksess.common.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
+        return url;
+    },
+
+    /**
      * Prints a debug message to Firebug's debug console.
      *
      * @param msg Debug message. Convention: 'functionName(): value'
@@ -79,9 +91,6 @@ openaksess.common = {
             console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
         }
     }
-
-
-
 
 
 };

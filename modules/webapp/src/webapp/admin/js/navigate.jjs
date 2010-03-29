@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
- //<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 //<%
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
@@ -30,7 +29,6 @@
 var suppressNavigatorUpdate = false;
 
 
-
 /**
  * Navigator load actions
  */
@@ -38,6 +36,7 @@ $(document).ready(function(){
     openaksess.common.debug("navigate.$(document).ready()");
     openaksess.navigate.bindNavigatorClickEvents();
     openaksess.navigate.makeNavigatorResizable();
+    openaksess.search.bindSearchInput();
 });
 
 
@@ -46,7 +45,7 @@ $(document).ready(function(){
  */
 openaksess.navigate = {
 
-
+    dummy : function(){},
     /**
      * Performes necessary actions to make the navigator frame (left column) resizable.
      * Dragging the FramesplitDrag-element resizes the columns.
@@ -62,23 +61,30 @@ openaksess.navigate = {
                 minHeight: 50,
                 handles: 'e',
                 start: function(){
-                    if (typeof navigatorResizeOnStart == 'function') {
-                        navigatorResizeOnStart();
+                    if (typeof openaksess.navigate.navigatorResizeOnStart == 'function') {
+                        openaksess.navigate.navigatorResizeOnStart();
                     }
                 },
                 stop: function() {
-                    if (typeof navigatorResizeOnStop == 'function') {
-                        navigatorResizeOnStop();
+                    if (typeof openaksess.navigate.navigatorResizeOnStop == 'function') {
+                        openaksess.navigate.navigatorResizeOnStop();
                     }
                 },
                 resize: function() {
-                    if (typeof navigatorResizeOnResize == 'function') {
-                        navigatorResizeOnResize();
+                    if (typeof openaksess.navigate.navigatorResizeOnResize == 'function') {
+                        openaksess.navigate.navigatorResizeOnResize();
                     }
                 }
             }
         );
     },
+
+    /**
+     * Default implementations of methods available for overriding in the various layouts.
+     */
+    navigatorResizeOnStart : function(){},
+    navigatorResizeOnStop : function(){},
+    navigatorResizeOnResize : function(){},
 
 
     /**
@@ -89,14 +95,14 @@ openaksess.navigate = {
         $(".navigator span.openState > a.open").live('click', function(event){
             openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click closeTree");
             event.preventDefault();
-            var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($(this).attr("href"));
             openaksess.navigate.closeTree(itemIdentifier);
         });
         //Click on the openState (+/-) icon of a collapsed node.
         $(".navigator span.openState > a.closed").live('click', function(event){
             openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openTree");
             event.preventDefault();
-            var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($(this).attr("href"));
             openaksess.navigate.openTree(itemIdentifier);
         });
         //Click on the title
@@ -104,7 +110,7 @@ openaksess.navigate = {
             openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openContent");
             event.preventDefault();
             var href = $(this).attr("href");
-            var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
+            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
             if(typeof onNavigatorTitleClick == 'function') {
                 onNavigatorTitleClick($(this));
             }
@@ -123,7 +129,7 @@ openaksess.navigate = {
      */
     updateNavigator : function(itemIdentifier, expand) {
         openaksess.common.debug("openaksess.navigate.updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
-        var params = getNavigatorParams();
+        var params = openaksess.navigate.getNavigatorParams();
         if (itemIdentifier) {
             params.itemIdentifier = itemIdentifier;
         }
@@ -132,16 +138,29 @@ openaksess.navigate = {
         }
         params.expand = expand;
 
-        $("#Navigator").load(getNavigatorAction(), params, function() {
-            openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + getNavigatorAction() + " received");
+        $("#Navigator").load(openaksess.navigate.getNavigatorAction(), params, function() {
+            openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + openaksess.navigate.getNavigatorAction() + " received");
             ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
-                setContextMenus(clipboardEmpty);
+                openaksess.navigate.setContextMenus(clipboardEmpty);
             });
         });
     },
 
+    /**
+     * Optional additional parameters to send to the navigator.
+     *
+     * Default implementation available for overriding.
+     */
+    getNavigatorParams : function() {
+        return new Object();
+    },
 
-
+    /**
+     * Default implementation available for overriding.
+     *
+     * @param clipboardEmpty - Boolean. Indicates whether or not there is content on the clipboard.
+     */
+    setContextMenus : function(clipboardEmpty){},
 
 
     /**
@@ -159,7 +178,7 @@ openaksess.navigate = {
             function(action, el, pos) {
                 var href = $(el).attr("href");
                 openaksess.common.debug("openaksess.navigate.setContextMenu(): clicked url: "+ href);
-                eval("handleContextMenuClick_"+type+"(action, href)");
+                eval("openaksess.navigate.handleContextMenuClick_"+type+"(action, href)");
             }
         );
         if (disabledOptions) {
@@ -247,38 +266,35 @@ openaksess.navigate = {
 /********************************************************************************
  * Search
  ********************************************************************************/
- $(document).ready(function(){
-     bindSearchInput();
- });
 
-function bindSearchInput() {
-    $("#SearchButton").click(function(e){
-            e.preventDefault(); //Preventing the form from being subitted the ordinary way.
-            var textInput = $("#SearchQuery");
-            var query = textInput.val();
-            if (Search.inputValid(query)) {
-                Search.search(query);
-            }
-    });
-}
+openaksess.search = {
 
-var Search = {
-    search : function(query){
+    bindSearchInput : function() {
+        $("#SearchButton").click(function(e){
+                e.preventDefault(); //Preventing the form from being subitted the ordinary way.
+                var textInput = $("#SearchQuery");
+                var query = textInput.val();
+                if (openaksess.search.inputValid(query)) {
+                    openaksess.search.performSearch(query);
+                }
+        });
+    },
+
+
+    performSearch : function(query){
         openaksess.common.debug("openaksess.navigate.Search.search(): query: " + query);
         var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
         var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
-        new InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
+        new openaksess.admin.InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
     },
 
     inputValid : function(query){
         openaksess.common.debug("openaksess.navigate.Search.inputValid(): query: " + query);
         query = query.trim();
-        if (query.length >= 3) {
-            return true;
-        } else {
-            return false;
-        }
+        return query.length >= 3;
     }
+
+
 };
 
 

@@ -38,9 +38,9 @@
          */
         function setContentupdateTrigger() {
             $("#Contentmain").load(function() {
-                var currentUrl = getCurrentLocation().href;
+                var currentUrl = openaksess.navigate.getCurrentLocation().href;
                 openaksess.common.debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
-                triggerContentUpdateEvent(currentUrl);
+                openaksess.content.triggerContentUpdateEvent(currentUrl);
             });
         }
 
@@ -59,7 +59,7 @@
             }
             var iframe = document.getElementById("Contentmain");
             if (iframe) {
-                iframe.contentWindow.document.location.href = getContentUrlFromAssociationId(id);
+                iframe.contentWindow.document.location.href = openaksess.common.getContentUrlFromAssociationId(id);
             }
         }
 

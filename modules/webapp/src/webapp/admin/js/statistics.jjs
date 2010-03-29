@@ -48,7 +48,7 @@ $(document).ready(function(){
  */
 function updateMainPane(id, suppressNavigatorUpdate) {
     openaksess.common.debug("statistics.updateMainPane(): id: " + id);
-    currentUrl = getContentUrlFromAssociationId(id);
+    currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
     openaksess.common.debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
     updateStatistics(currentUrl, currentView);
 }
@@ -61,7 +61,7 @@ function updateMainPane(id, suppressNavigatorUpdate) {
 function updateStatistics(url, view) {
 
     openaksess.common.debug("statistics.updatePageStatistics(): Triggering contentupdate event");
-    triggerContentUpdateEvent(url);
+    openaksess.content.triggerContentUpdateEvent(url);
 
     openaksess.common.debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){

@@ -1,5 +1,4 @@
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 //<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 //<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 /*
@@ -54,7 +53,7 @@ var Multimedia =  {
     },
 
     paste: function(id) {
-        openaksess.common.debug("content.Publish.paste(): id: " + id);
+        openaksess.common.debug("multimedia.Publish.paste(): id: " + id);
         $(".contextMenu").disableContextMenuItems("#paste");
     }
 };
@@ -194,18 +193,18 @@ function addMediaitemClickListeners() {
 /**
  * Sets the context (right click) menus in the navigator.
  */
-function setContextMenus(clipboardEmpty) {
+openaksess.navigate.setContextMenus = function(clipboardEmpty) {
     var disabledElements = [];
     if (clipboardEmpty) {
         disabledElements[0] = 'paste';
     }
     openaksess.navigate.setContextMenu("multimedia", disabledElements);
     openaksess.navigate.setContextMenu("folder", disabledElements);
-}
+};
 
-function getNavigatorAction() {
+openaksess.navigate.getNavigatorAction = function() {
     return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
-}
+};
 
 function getViewFolderAction() {
     return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
@@ -215,13 +214,13 @@ function getEditAction() {
     return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
 }
 
-function getItemIdentifierFromNavigatorHref(href) {
+openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
-}
+};
 
 function onNavigatorTitleClick(elm) {
     var href = elm.attr("href");
-    currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
+    currentItemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
     if(elm.hasClass("image")) {
         window.location.href = getEditAction()+"?id="+currentItemIdentifier;
     } else {
@@ -235,7 +234,13 @@ function triggerMultimediaupdateEvent() {
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 
-function setLayoutSpecificSizes(elementProperties) {
+
+/**
+ * Multimedia layout specific implementation. Overrides the default openaksess.admin.setLayoutSpecificSizes.
+ *
+ * @param elementProperties
+ */
+openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
     openaksess.common.debug("multimedia.setLayoutSpecificSizes()");
     $("html, body").css("overflow", "hidden");
     $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
@@ -259,20 +264,16 @@ function setLayoutSpecificSizes(elementProperties) {
 
     $('#MultimediaMain').height( (parseInt($mainPane.height())-parseInt($("#EditMultimediaButtons").outerHeight(true))) + 'px').width($mainPane.outerWidth());
 
-}
+};
 
 /**
 * Navigation layout specific implementation of the navigatorResizeOnResize-function.
 * See navigate.jjs
 */
-function navigatorResizeOnResize() {
+openaksess.navigate.navigatorResizeOnResize = function() {
     $.event.trigger("resize");
-}
+};
 
-function getNavigatorParams() {
-    var params = new Object();
-    return params;
-}
 
 function bindMediaAjaxUpload() {
     var button = $('#UploadButton');

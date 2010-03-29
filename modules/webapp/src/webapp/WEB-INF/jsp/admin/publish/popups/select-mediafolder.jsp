@@ -35,20 +35,17 @@
         });
 
 
-        function setContextMenus(clipboardEmpty) {
-        }
-
-        function getNavigatorAction() {
+        openaksess.navigate.getNavigatorAction = function() {
             return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
-        }
+        };
 
-        function getItemIdentifierFromNavigatorHref(href) {
+        openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
             return openaksess.common.getQueryParam("itemIdentifier", href);
-        }
+        };
 
         function onNavigatorTitleClick(elm) {
             var href = elm.attr("href");
-            currentItemIdentifier = getItemIdentifierFromNavigatorHref(href);
+            currentItemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
 
             var title = elm.attr("title");
             var p = getParent();
@@ -64,11 +61,11 @@
             closeWindow();
         }
 
-        function getNavigatorParams() {
+        openaksess.navigate.getNavigatorParams = function() {
             var params = new Object();
             params.getFoldersOnly = true;
             return params;
-        }
+        };
     </script>
 
 </kantega:section>

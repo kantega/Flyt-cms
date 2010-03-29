@@ -27,7 +27,7 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
  */
 function updateMainPane (id, suppressNavigatorUpdate) {
     openaksess.common.debug("organizesubpages.updateMainPane(): id: " + id);
-    openaksess.organizesubpages.currentUrl = getContentUrlFromAssociationId(id);
+    openaksess.organizesubpages.currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
     openaksess.common.debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
     openaksess.organizesubpages.updateSubPageList();
 }
@@ -67,7 +67,7 @@ openaksess.organizesubpages = function()  {
         updateSubPageList: function() {
             var ths = this;
             openaksess.common.debug("organizesubpages.updateSubPageList(): Triggering contentupdate event:" + this.currentUrl);
-            triggerContentUpdateEvent(this.currentUrl);
+            openaksess.content.triggerContentUpdateEvent(this.currentUrl);
 
             openaksess.common.debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
             $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){

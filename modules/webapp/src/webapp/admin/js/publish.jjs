@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-function setLayoutSpecificSizes(elementProperties) {
+/**
+ * Publish layout specific implementation. Overrides the default openaksess.admin.setLayoutSpecificSizes.
+ *
+ * @param elementProperties
+ */
+openaksess.admin.setLayoutSpecificSizes =  function(elementProperties) {
     openaksess.common.debug("publish.setLayoutSpecificSizes()");
     
     var $sidebar = $("#SideBar");
@@ -26,4 +31,4 @@ function setLayoutSpecificSizes(elementProperties) {
     $('#EditContentMain')
             .height( (parseInt($mainPane.height())-parseInt($("#EditContentButtons").outerHeight(true))) + 'px')
             .width($mainPane.outerWidth());
-}
+};

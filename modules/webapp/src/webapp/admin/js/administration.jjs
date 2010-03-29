@@ -20,17 +20,17 @@
  * Administration layout specific implementation of the setLayoutSpecificSizes-function.
  * See navigate.jjs
  */
-function setLayoutSpecificSizes(elementProperties) {
+openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
     // TODO: Fix size here
     $("#Navigator").css("height", "auto").css("min-height", elementProperties.window.height-elementProperties.top.height);
     $("#Content").css("height", "auto").css("min-height", elementProperties.window.height-elementProperties.top.height);
 
-}
+};
 
 /**
  * Administration layout specific implementation of the navigatorResizeOnResize-function.
  * See navigate.jjs
  */
-function navigatorResizeOnResize() {
+openaksess.navigate.navigatorResizeOnResize = function () {
     $.event.trigger("resize");
-}
+};

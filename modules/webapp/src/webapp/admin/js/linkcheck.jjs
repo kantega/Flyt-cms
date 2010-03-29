@@ -41,7 +41,7 @@ $(document).ready(function(){
  */
 function updateMainPane(id, suppressNavigatorUpdate) {
     openaksess.common.debug("linkcheck.updateMainPane(): id: " + id);
-    currentUrl = getContentUrlFromAssociationId(id);
+    currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
     openaksess.common.debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
     updateLinkList(currentUrl, "title");
 }
@@ -54,7 +54,7 @@ function updateMainPane(id, suppressNavigatorUpdate) {
 function updateLinkList(url, sort) {
 
     openaksess.common.debug("linkcheck.updateLinkList(): Triggering contentupdate event");
-    triggerContentUpdateEvent(url);
+    openaksess.content.triggerContentUpdateEvent(url);
 
     openaksess.common.debug("linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){

@@ -35,12 +35,9 @@
             openaksess.navigate.updateNavigator(currentItemIdentifier, true);
         });
 
-        function setContextMenus(clipboardEmpty) {
-        }
-
-        function getNavigatorAction() {
+        openaksess.navigate.getNavigatorAction = function() {
             return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
-        }
+        };
 
         function onNavigatorTitleClick(elm) {
             var href = elm.attr("href");
@@ -70,13 +67,10 @@
             closeWindow();
         }
 
-        function getNavigatorParams() {
-            return new Object();
-        }
 
-        function getItemIdentifierFromNavigatorHref(href) {
+        openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
             return openaksess.common.getQueryParam("thisId", href);
-        }
+        };
 
     </script>
 </kantega:section>

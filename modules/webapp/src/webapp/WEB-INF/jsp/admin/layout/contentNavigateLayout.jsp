@@ -34,10 +34,10 @@
 
         $(document).ready(function(){
             $("#EditContentButtons .approve").click(function() {
-                Publish.approve(stateHandler.getState());
+                openaksess.content.publish.approve(stateHandler.getState());
             });
             $("#EditContentButtons .reject").click(function() {
-                Publish.reject(stateHandler.getState());
+                openaksess.content.publish.reject(stateHandler.getState());
             });
         });
     </script>
