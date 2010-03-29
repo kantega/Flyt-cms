@@ -29,7 +29,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/organizesubpages.jjs"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            debug("organizesubpages.$(document).ready()");
+            openaksess.common.debug("organizesubpages.$(document).ready()");
             openaksess.organizesubpages.currentUrl = "${currentNavigateContent.url}";
             openaksess.organizesubpages.updateSubPageList();
 

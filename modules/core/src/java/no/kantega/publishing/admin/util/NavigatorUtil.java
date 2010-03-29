@@ -16,7 +16,9 @@
 
 package no.kantega.publishing.admin.util;
 
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
@@ -114,10 +116,8 @@ public class NavigatorUtil {
      * @return
      */
     public static String getNavigatorTitle(ContentType type, String contentTitle) {
-        if (contentTitle.length() > 32) contentTitle = contentTitle.substring(0, 29) + "...";
         if (type == ContentType.SHORTCUT) {
-            //TODO: use locale label
-            contentTitle = contentTitle + " (snarvei)";
+            contentTitle = contentTitle + "&nbsp;"+ LocaleLabels.getLabel("aksess.navigator.title.shortcut", Aksess.getDefaultAdminLocale());
         }
         return contentTitle;
     }

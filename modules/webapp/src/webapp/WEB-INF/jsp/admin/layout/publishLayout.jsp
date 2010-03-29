@@ -24,10 +24,8 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/publish.css">
     <script type="text/javascript" src="../js/publish.jjs"></script>
-    <script type="text/javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" src="../js/date.jjs"></script>
     <script type="text/javascript" src="../js/edit.jjs"></script>
-    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
     <script type="text/javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
@@ -65,7 +63,7 @@
         }
 
         function saveContent(status) {
-            debug("publishLayout.saveContent(): status: " + status);
+            openaksess.common.debug("publishLayout.saveContent(): status: " + status);
 
             if (validatePublishProperties()) {
                 if (!hasSubmitted) {

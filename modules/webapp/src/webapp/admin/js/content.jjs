@@ -26,7 +26,7 @@
 
 
 $(document).ready(function(){
-    debug("content.$(document).ready()");
+    openaksess.common.debug("content.$(document).ready()");
     bindContentupdateEvents();
     bindFilterEvents();
     stateHandler.init("contentupdate");
@@ -41,18 +41,18 @@ $(document).ready(function(){
 function bindContentupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("contentupdate", function(e, url){
-        debug("content.bindContentupdateEvents(): #Navigator has received contentupdate event. Url: " + url);
+        openaksess.common.debug("content.bindContentupdateEvents(): #Navigator has received contentupdate event. Url: " + url);
 
         if (!suppressNavigatorUpdate) {
-            updateNavigator(url, true);
+            openaksess.navigate.updateNavigator(url, true);
         } else {
             suppressNavigatorUpdate = false;
-            debug("content.bindContentupdateEvents(): navigationUpdate suppressed");
+            openaksess.common.debug("content.bindContentupdateEvents(): navigationUpdate suppressed");
         }
     });
 
     $("#Statusbar").bind("contentupdate", function(e, url){
-        debug("content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
+        openaksess.common.debug("content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
         ContentStatus.init();
         ContentStatus.disableButtons();
         $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: url}, function(data){
@@ -83,7 +83,7 @@ function setLayoutSpecificSizes(elementProperties) {
     if ($buttons && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
-    debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
+    openaksess.common.debug("content.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
     $navigator = $("#Navigator");
     $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
@@ -110,9 +110,9 @@ function bindFilterEvents() {
     var $filterOptions = $("#Filteroptions");
     $filterOptions.find("#FilteroptionHideExpired").live('change', function(){
         var value = $(this).is(":checked");
-        debug("content.bindFilterEvents(): Hide expired clicked: " + value);
+        openaksess.common.debug("content.bindFilterEvents(): Hide expired clicked: " + value);
         UserPreferences.setPreference(UserPreferences.keys.filter.hideExpired, value, false, function() {
-            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+            openaksess.navigate.updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
         });        
     });
 
@@ -120,17 +120,17 @@ function bindFilterEvents() {
     var $filters = $filterOptions.find(".filters");
 
     $filterOptions.find(".filtersToggle").live('click', function(){
-        debug("content.bindFilterEvents(): Filter clicked");
+        openaksess.common.debug("content.bindFilterEvents(): Filter clicked");
         $filters.show();
         filterInfoSlider.toggle("#Navigation", $filters, {additionalCssClasses: 'filters'});
     });
 
     $("#FilteroptionSort input[name=sort]").live('change', function(){
         var $this = $(this);
-        debug("content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
+        openaksess.common.debug("content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
         if ($this.is(":checked")) {
             UserPreferences.setPreference(UserPreferences.keys.filter.sort, $this.val(), false, function() {
-                updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+                openaksess.navigate.updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
             });
 
         }
@@ -149,7 +149,7 @@ function bindFilterEvents() {
             }
         });
         UserPreferences.setPreference(UserPreferences.keys.filter.sites, hiddenSites, false, function() {
-            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+            openaksess.navigate.updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
         });
 
     });
@@ -160,7 +160,7 @@ function bindFilterEvents() {
             $(this).attr("checked", "checked");
         });
         UserPreferences.setPreference(UserPreferences.keys.filter.sites, '', function() {
-            updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+            openaksess.navigate.updateNavigator(getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
         });
 
     });
@@ -171,14 +171,14 @@ function bindFilterEvents() {
  * @url - Current url.
  */
 function triggerContentUpdateEvent(url) {
-    debug("content.triggerContentUpdateEvent(): url: " + url);
-    notifyContentUpdate(url);
+    openaksess.common.debug("content.triggerContentUpdateEvent(): url: " + url);
+    openaksess.notifyContentUpdate(url);
     //Event triggering is delegated to the state handler.
     stateHandler.setState(url);
 }
 
 function navigatorResizeOnStart() {
-    debug("content.navigatorResizeOnStart(): Adding overlay");
+    openaksess.common.debug("content.navigatorResizeOnStart(): Adding overlay");
     var height = $("#MainPane").height();
     var width = $("#MainPane").width();
     var contentoverlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "Contentoverlay");
@@ -186,7 +186,7 @@ function navigatorResizeOnStart() {
 }
 
 function navigatorResizeOnStop() {
-    debug("content.navigatorResizeOnStop(): Removing overlay");
+    openaksess.common.debug("content.navigatorResizeOnStop(): Removing overlay");
     $.event.trigger("resize");
     $("#Contentoverlay").remove();
 }
@@ -202,14 +202,14 @@ function navigatorResizeOnResize() {
  * Sets the context (right click) menus in the navigator.
  */
 function setContextMenus(clipboardEmpty) {
-    debug("content.setContextMenus(): Clipboard empty: "+clipboardEmpty);
+    openaksess.common.debug("content.setContextMenus(): Clipboard empty: "+clipboardEmpty);
     var disabledElements = [];
     if (clipboardEmpty) {
         disabledElements[0] = 'paste';
         disabledElements[1] = 'pasteAsShortcut';
     }
-    setContextMenu("page", disabledElements);
-    setContextMenu("link", disabledElements);
+    openaksess.navigate.setContextMenu("page", disabledElements);
+    openaksess.navigate.setContextMenu("link", disabledElements);
 }
 
 function getNavigatorAction() {
@@ -223,38 +223,37 @@ function getNavigatorAction() {
  * @param href The value of the href-attribute for the selected item.
  */
 function handleContextMenuClick_page(action, href) {
-    debug("content.handleContextMenuClick_page(): action: " + action + ", href: " + href);
-    var thisId = getQueryParam("thisId", href);
+    openaksess.common.debug("content.handleContextMenuClick_page(): action: " + action + ", href: " + href);
     switch (action) {
         case 'open':
-            Publish.open(thisId);
+            Publish.open(href);
             break;
         case 'openInNewWindow':
-            Publish.openInNewWindow(thisId);
+            Publish.openInNewWindow(href);
             break;
         case 'newSubpage':
-            Publish.newSubpage(thisId);
+            Publish.newSubpage(href);
             break;
         case 'edit':
-            Publish.edit(thisId);
+            Publish.edit(href);
             break;
         case 'delete':
-            Publish.deleteItem(thisId);
+            Publish.deleteItem(href);
             break;
         case 'cut':
-            Publish.cut(thisId);
+            Publish.cut(href);
             break;
         case 'copy':
-            Publish.copy(thisId);
+            Publish.copy(href);
             break;
         case 'paste':
-            Publish.paste(thisId);
+            Publish.paste(href);
             break;
         case 'pasteAsShortcut':
-            Publish.pasteAsShortcut(thisId);
+            Publish.pasteAsShortcut(href);
             break;
         case 'managePrivileges':
-            Publish.managePrivileges(thisId);
+            Publish.managePrivileges(href);
             break;
     }
 }
@@ -266,35 +265,34 @@ function handleContextMenuClick_page(action, href) {
  * @param href The value of the href-attribute for the selected item.
  */
 function handleContextMenuClick_link(action, href) {
-    debug("content.handleContextMenuClick_link(): " + action + ", href: " + href);
-    var thisId = getQueryParam("thisId", href);
+    openaksess.common.debug("content.handleContextMenuClick_link(): " + action + ", href: " + href);
     switch (action) {
         case 'open':
-            Publish.open(thisId);
+            Publish.open(href);
             break;
         case 'openInNewWindow':
-            Publish.openInNewWindow(thisId);
+            Publish.openInNewWindow(href);
             break;
         case 'edit':
-            Publish.edit(thisId);
+            Publish.edit(href);
             break;
         case 'delete':
-            Publish.deleteItem(thisId);
+            Publish.deleteItem(href);
             break;
         case 'cut':
-            Publish.cut(thisId);
+            Publish.cut(href);
             break;
         case 'copy':
-            Publish.copy(thisId);
+            Publish.copy(href);
             break;
         case 'paste':
-            Publish.paste(thisId);
+            Publish.paste(href);
             break;
         case 'pasteAsShortcut':
-            Publish.pasteAsShortcut(thisId);
+            Publish.pasteAsShortcut(href);
             break;
         case 'managePrivileges':
-            Publish.managePrivileges(thisId);
+            Publish.managePrivileges(href);
             break;
     }
 }
@@ -315,25 +313,25 @@ $(document).ready(function(){
 function bindToolButtons() {
     // TODO: This will only work when page id is in URL, must replace with current id from ContentPropertiesAction(?)
     $("#ToolsMenu .button .newSubpage").click(function(){
-        Publish.newSubpage(getQueryParam("thisId", stateHandler.getState()));
+        Publish.newSubpage(stateHandler.getState());
     });
     $("#ToolsMenu .button .delete").click(function(){
-        Publish.deleteItem(getQueryParam("thisId", stateHandler.getState()));
+        Publish.deleteItem(stateHandler.getState());
     });
     $("#ToolsMenu .button .cut").click(function(){
-        Publish.cut(getQueryParam("thisId", stateHandler.getState()));
+        Publish.cut(stateHandler.getState());
     });
     $("#ToolsMenu .button .copy").click(function(){
-        Publish.copy(getQueryParam("thisId", stateHandler.getState()));
+        Publish.copy(stateHandler.getState());
     });
     $("#ToolsMenu .button .paste").click(function(){
-        Publish.paste(getQueryParam("thisId", stateHandler.getState()));
+        Publish.paste(stateHandler.getState());
     });
     $("#ToolsMenu .button .displayPeriod").click(function(){
-        Publish.displayPeriod(getQueryParam("thisId", stateHandler.getState()));
+        Publish.displayPeriod(stateHandler.getState());
     });
     $("#ToolsMenu .button .privileges").click(function(){
-        Publish.managePrivileges(getQueryParam("thisId", stateHandler.getState()));
+        Publish.managePrivileges(stateHandler.getState());
     });
 }
 
@@ -342,76 +340,76 @@ function bindToolButtons() {
  * Actions associated with each tool.
  */
 var Publish =  {
-    open : function(thisId) {
-        debug("content.Publish.open(): thisId: " + thisId);
-        updateMainPane(getContentUrlFromAssociationId(thisId), false);
+    open : function(url) {
+        openaksess.common.debug("content.Publish.open(): url: " + url);
+        updateMainPane(url, false);
     },
 
-    openInNewWindow : function(thisId) {
-        debug("content.Publish.openInNewWindow(): thisId: " + thisId);
-        window.open(getContentUrlFromAssociationId(thisId));
+    openInNewWindow : function(url) {
+        openaksess.common.debug("content.Publish.openInNewWindow(): url: " + url);
+        window.open(url);
     },
 
-    newSubpage : function(thisId) {
-        debug("content.Publish.newSubpage(): thisId: " + thisId);
-        window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?thisId="+thisId;
+    newSubpage : function(url) {
+        openaksess.common.debug("content.Publish.newSubpage(): url: " + url);
+        window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?url="+url;
     },
 
-    edit: function(thisId) {
-        debug("content.Publish.editItem(): thisId: " + thisId);
-        window.location.href = "${pageContext.request.contextPath}/admin/publish/EditContent.action?thisId="+thisId;
+    edit: function(url) {
+        openaksess.common.debug("content.Publish.editItem(): url: " + url);
+        window.location.href = "${pageContext.request.contextPath}/admin/publish/EditContent.action?url="+url;
     },
 
-    deleteItem: function(thisId) {
-        debug("content.Publish.deleteItem(): thisId: " + thisId);
-        ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?id=" + thisId,width: 450, height:250});
+    deleteItem: function(url) {
+        openaksess.common.debug("content.Publish.deleteItem(): url: " + url);
+        ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
     },
 
-    cut: function(thisId) {
-        debug("content.Publish.cut(): thisId: " + thisId);
-        ContentClipboardHandler.cut(thisId);
+    cut: function(url) {
+        openaksess.common.debug("content.Publish.cut(): url: " + url);
+        ContentClipboardHandler.cut(url);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
         ContentStatus.enableButtons(['PasteButton']);
     },
 
-    copy: function(thisId) {
-        debug("content.Publish.copy(): thisId: " + thisId);
-        ContentClipboardHandler.copy(thisId);
+    copy: function(url) {
+        openaksess.common.debug("content.Publish.copy(): url: " + url);
+        ContentClipboardHandler.copy(url);
         $(".contextMenu").enableContextMenuItems("#paste,#pasteAsShortcut");
         ContentStatus.enableButtons(['PasteButton']);
     },
 
-    paste: function(thisId) {
-        debug("content.Publish.paste(): thisId: " + thisId);
+    paste: function(url) {
+        openaksess.common.debug("content.Publish.paste(): url: " + url);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
         ContentStatus.disableButtons(['PasteButton']);
-        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentId=" + thisId,width: 390, height:250});
+        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
     },
 
-    pasteAsShortcut: function(thisId) {
-        debug("content.Publish.pasteAsShortcut(): thisId: " + thisId);
+    pasteAsShortcut: function(url) {
+        openaksess.common.debug("content.Publish.pasteAsShortcut(): url: " + url);
         $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
         ContentStatus.disableButtons(['PasteButton']);
-        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentId=" + thisId,width: 390, height:250});
+        ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
     },
 
-    displayPeriod: function(thisId) {
-        debug("content.Publish.displayPeriod(): thisId: " + thisId);
-        ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?id=" + thisId,width: 350, height:220});
+    displayPeriod: function(url) {
+        openaksess.common.debug("content.Publish.displayPeriod(): url: " + url);
+        ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
     },
 
-    managePrivileges: function(thisId) {
-        debug("content.Publish.managePrivileges(): thisId: " + thisId);
-        ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + thisId + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:560});
+    managePrivileges: function(url) {
+        openaksess.common.debug("content.Publish.managePrivileges(): url: " + url);
+        ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:560});
     },
 
-    approve: function(thisId) {
-        $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {approve:true, id:thisId});
+    approve: function(url) {
+        $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {approve:true, url:url});
         ContentStatus.showApproveOrReject(false);
     },
 
-    reject: function(thisId) {
-        ModalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?id=" + thisId,width: 350, height:200});
+    reject: function(url) {
+        ModalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
     }
 };
 
@@ -439,10 +437,10 @@ var ContentStatus = {
 
     brokenLinks: function (links) {
         if (links && links.length > 0) {
-            debug("content.ContentStatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
+            openaksess.common.debug("content.ContentStatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
             var brokenLinksInfoSlider = new InfoSlider();
             $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
-                debug("content.ContentStatus.brokenLinks(): click");
+                openaksess.common.debug("content.ContentStatus.brokenLinks(): click");
                 var details = '<table>' +
                             '   <thead>' +
                             '       <tr>' +
@@ -473,10 +471,10 @@ var ContentStatus = {
 
     details: function(content) {
         if (content) {
-            debug("content.ContentStatus.details(): binding details icon to click");
+            openaksess.common.debug("content.ContentStatus.details(): binding details icon to click");
             var detailsInfoSlider = new InfoSlider();
             $("#Statusbar .details").unbind('click').bind('click', function(){
-                debug("content.ContentStatus.details(): click");
+                openaksess.common.debug("content.ContentStatus.details(): click");
                 var details = "<h3>Details</h3><ul>";
                 details += '<li><span class="label"><kantega:label key="aksess.contentproperty.title"/>:</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
@@ -501,10 +499,10 @@ var ContentStatus = {
 
     associations: function (associations) {
         if (associations && associations.length > 1) {
-            debug("content.ContentStatus.associations(): Number of associations: "+associations.length);
+            openaksess.common.debug("content.ContentStatus.associations(): Number of associations: "+associations.length);
             var associationsInfoSlider = new InfoSlider();
             $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
-                debug("content.ContentStatus.details(): click");
+                openaksess.common.debug("content.ContentStatus.details(): click");
                 var details = '<h3>Associations</h3>';
                 for (var i = 0; i < associations.length; i++) {
                     details += '<ul class="breadcrumbs">';
@@ -535,7 +533,7 @@ var ContentStatus = {
 
 
     showApproveOrReject: function(showButtons) {
-        debug("ContentStatus.showApproveOrReject: " + showButtons);
+        openaksess.common.debug("ContentStatus.showApproveOrReject: " + showButtons);
         var $approveButton = $("#EditContentButtons .approve");
         if ($approveButton.size() > 0) {
             if (showButtons) {
@@ -581,7 +579,7 @@ var ContentStatus = {
 
         //Set the site filter
         if (sites && sites.length > 0) {
-            debug("content.ContentStatus.updateSiteFilter(): Number of sites: " + sites.length);
+            openaksess.common.debug("content.ContentStatus.updateSiteFilter(): Number of sites: " + sites.length);
             var $sitesFilterOptionsContainser = $("#FilteroptionSites .options");
             var siteOptions = '';
             //Print all sites
@@ -645,7 +643,7 @@ function InfoSlider() {
      * @param options - Additional options for the infoslider. See property sliderOptions for available options.
      */
     this.toggle = function(location, content, options) {
-        debug("content.InfoSlider.toggle(): location: " + location + ", content: " + content + ", id: " + id);
+        openaksess.common.debug("content.InfoSlider.toggle(): location: " + location + ", content: " + content + ", id: " + id);
         $.extend(sliderOptions, options);
         var $infoslider = $(location).find(".infoslider");
 
@@ -713,7 +711,7 @@ function InfoSlider() {
     var makeResizable = function(infoslider) {
 
         var $infoslider = $(infoslider);
-        debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
+        openaksess.common.debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
 
         $infoslider.resizable({
             handles: 's',
@@ -722,7 +720,7 @@ function InfoSlider() {
                     var $iframe = $(this).find("iframe");
                     //Apply an overlay to the infoslider if it contains an iframe. Iframes mess up the resizing...
                     if ($iframe.size() > 0) {
-                        debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
+                        openaksess.common.debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
                         var height = $infoslider.height();
                         var width = $infoslider.width();
                         var overlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "InforSlider_overlay");
@@ -772,9 +770,9 @@ function  getCurrentLocation() {
  * @param href Navigator href value
  */
 function getItemIdentifierFromNavigatorHref(href) {
-    var thisId = getQueryParam("thisId", href);
+    var thisId = openaksess.common.getQueryParam("thisId", href);
     //var url = getContentUrlFromAssociationId(thisId);
-    debug("content.getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
+    openaksess.common.debug("content.getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
     return thisId;
 }
 
@@ -785,7 +783,7 @@ function getItemIdentifierFromNavigatorHref(href) {
  */
 function getContentUrlFromAssociationId(associationId) {
     var url = " ${pageContext.request.contextPath}<%="/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
-    debug("content.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
+    openaksess.common.debug("content.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
     return url;
 }
 

@@ -39,7 +39,7 @@
         function setContentupdateTrigger() {
             $("#Contentmain").load(function() {
                 var currentUrl = getCurrentLocation().href;
-                debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
+                openaksess.common.debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
                 triggerContentUpdateEvent(currentUrl);
             });
         }
@@ -53,7 +53,7 @@
          * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
          */
         function updateMainPane(id, suppressNavigatorUpdate) {
-            debug("updateMainPane(): id: " + id);
+            openaksess.common.debug("updateMainPane(): id: " + id);
             if (suppressNavigatorUpdate) {
                 suppressNavigatorUpdate = true;
             }

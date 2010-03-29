@@ -1,0 +1,215 @@
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/********************************************************************************
+ * Common functions for the OpenAksess admin interface.
+ ********************************************************************************/
+
+
+/**
+ * Adjusts the height and width of the iframe onload and onresize.
+ */
+openaksess.setWindowSize = function () {
+    $(window).bind('resize load', function(e) {
+        openaksess.common.debug("admin.setWindowSize(): " + e.type + " event received");
+
+        var windowHeight = $(window).height();
+        var windowWidth = $(window).width();
+        var topHeight = $("#Top").height();
+        var navigationWidth = $("#Navigation").width();
+        var framesplitWidth = $("#Framesplit").outerWidth(true);
+
+        openaksess.common.debug("admin.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
+
+        $('#Content').css('height', (windowHeight-topHeight) + 'px');
+
+        if (typeof setLayoutSpecificSizes == 'function') {
+            openaksess.common.debug("admin.setWindowSize(): setLayoutSpecificSizes function found");
+            setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
+        }
+
+    });
+};
+
+openaksess.ajaxSetup = function () {
+    var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div>');
+    $("body").append($ajaxloading);
+    $ajaxloading.ajaxStart(function(){
+        $(this).show();
+    });
+
+    $ajaxloading.ajaxStop(function(){
+        $(this).hide();
+    });
+};
+
+/**
+ * Sets the currently viewed content in the user's session.
+ *
+ * @param url
+ */
+openaksess.notifyContentUpdate = function(url) {
+    ContentStateHandler.notifyContentUpdate(url);
+};
+
+/**
+ * See http://benalman.com/projects/jquery-bbq-plugin/ for further details about the bbq-plugin.
+ */
+openaksess.StateHandler = function (){
+
+    var currentState = '';
+
+    this.init = function(updateEventType) {
+        openaksess.common.debug("common.StateHandler.init()");
+        bindHashChange(updateEventType);
+        $(window).trigger("hashchange");
+    };
+
+    this.setState = function(state) {
+        openaksess.common.debug("common.StateHandler.setState(): state: " + state);
+        $.bbq.pushState({ state : state });
+    };
+
+    this.getState = function() {
+        return currentState;
+    };
+
+    var bindHashChange = function(updateEventType) {
+        openaksess.common.debug("common.StateHandler._bindHashChange(): Binding hashchange event");
+        $(window).bind( 'hashchange', function(e) {
+            //Get the url from the state
+            var state = $.bbq.getState('state');
+            openaksess.common.debug("common.StateHandler._bindHashChange(): hashchange event received. Url: " + state);
+
+            if (state && state != this.currentState) {
+                openaksess.common.debug("common.StateHandler._bindHashChange(): New state ("+state+") different from current state ("+this.currentState+"). Triggering '"+updateEventType+ "' event.");
+                $.event.trigger(updateEventType, state);
+                currentState = state;
+            }
+        });
+    };
+
+};
+
+/**
+ * Handles user settings (perferences). These can either be per session or permanent (persistent).
+ */
+var UserPreferences = {
+
+    keys : {
+        filter : {
+            hideExpired: 'filterHideExpired',
+            sort: 'filterSort',
+            sites: 'filterSites'
+        }
+    },
+
+    setPreference: function(key, value, permanent, callback){
+        if (arguments.length == 3) {
+            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
+        } else {
+            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
+        }
+    },
+
+    getPreference: function(key, callback) {
+        UserPreferencesHandler.getPreference(key, callback);
+    }
+};
+
+var WidgetManager = {
+
+    defaults : {
+        context: 'body',
+        widgetContainerClass: 'widgetcolumn',
+        widgetClass: 'widget',
+        widgetHeaderClass: 'widget-header',
+        widgetContentClass: 'widget-content',
+        minimizeClass: 'ui-icon ui-icon-minus',
+        maximizeClass: 'ui-icon ui-icon-plus',
+        closeClass: 'ui-icon ui-icon-close'
+    },
+
+    init : function(config){
+        $.extend(this.defaults, config);
+
+        var $columns = $('.'+this.defaults.widgetContainerClass, this.defaults.context);
+        $columns.sortable({
+            connectWith: this.defaults.context + ' .'+this.defaults.widgetContainerClass
+        });
+
+        var $widgets = $('.'+this.defaults.widgetClass, this.defaults.context);
+        $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
+                .find('.'+this.defaults.widgetHeaderClass)
+                .addClass("ui-widget-header")
+                .append('<span class="widget-controls"><span class="'+this.defaults.closeClass+'"></span><span class="'+this.defaults.minimizeClass+'"></span></span>');
+
+
+        $widgets.find(".widget-header .widget-controls").live('click', function(e) {
+            var $target = $(e.target);
+            var $widget = $(this).parents(".widget:first");
+
+            if ($target.hasClass(this.defaults.minimizeClass)) {
+                this.minimize($widget);
+            }
+            else if ($target.hasClass(this.defaults.maximizeClass)) {
+                this.maximize($widget);
+            }
+            else if($target.hasClass(this.defaults.closeClass)) {
+                    this.remove($widget);
+                }
+
+        });
+
+        $columns.disableSelection();
+    },
+
+    minimize: function(widget) {
+        var $widget = this._getElementAsJquery(widget);
+        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.minimizeClass).addClass(this.defaults.maximizeClass);
+        $widget.find('.'+this.defaults.widgetContentClass).hide();
+    },
+
+    maximize: function(widget) {
+        var $widget = this._getElementAsJquery(widget);
+        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.maximizeClass).addClass(this.defaults.minimizeClass);
+        $widget.find('.'+this.defaults.widgetContentClass).show();
+    },
+
+    remove: function(widget) {
+        this._getElementAsJquery(widget).remove();
+    },
+
+    _getElementAsJquery: function(elem) {
+        if (elem instanceof jQuery) {
+            return elem;
+        } else {
+            return $(elem);
+        }
+    }
+};
+
+var stateHandler = new openaksess.StateHandler();
+
+$(document).ready(function() {
+    openaksess.common.debug("common.$(document).ready()");
+    if (window.dwr) {
+        dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
+    }
+    openaksess.setWindowSize();
+    openaksess.ajaxSetup();
+    WidgetManager.init({context: '#Content'});
+});

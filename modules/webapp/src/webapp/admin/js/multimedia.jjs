@@ -21,7 +21,7 @@
 var currentItemIdentifier = 0;
 
 $(document).ready(function(){
-    debug("multimedia.$(document).ready(): multimedia");
+    openaksess.common.debug("multimedia.$(document).ready(): multimedia");
     bindMultimediaupdateEvents();
     triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     bindToolButtons();
@@ -39,22 +39,22 @@ $(document).ready(function(){
  */
 var Multimedia =  {
     deleteItem: function(id) {
-        debug("multimedia.Multimedia.deleteItem(): id: " + id);
+        openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
         ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
     },
 
     cut: function(id) {
-        debug("multimedia.Multimedia.cut(): id: " + id);
+        openaksess.common.debug("multimedia.Multimedia.cut(): id: " + id);
         $(".contextMenu").enableContextMenuItems("#paste");
     },
 
     copy: function(id) {
-        debug("multimedia.Multimedia.copy(): id: " + id);
+        openaksess.common.debug("multimedia.Multimedia.copy(): id: " + id);
         $(".contextMenu").enableContextMenuItems("#paste");
     },
 
     paste: function(id) {
-        debug("content.Publish.paste(): id: " + id);
+        openaksess.common.debug("content.Publish.paste(): id: " + id);
         $(".contextMenu").disableContextMenuItems("#paste");
     }
 };
@@ -112,21 +112,21 @@ function bindToolButtons() {
 function bindMultimediaupdateEvents() {
     //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
     $("#Navigator").bind("multimediaupdate", function(e, itemIdentifier){
-        debug("multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
+        openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
         if (!suppressNavigatorUpdate) {
-            updateNavigator(itemIdentifier, true);
+            openaksess.navigate.updateNavigator(itemIdentifier, true);
         } else {
             suppressNavigatorUpdate = false;
-            debug("multimedia.bindMultimediaupdateEvents(): navigationUpdate suppressed");
+            openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): navigationUpdate suppressed");
         }
         updateMainPane(itemIdentifier, suppressNavigatorUpdate);
     });
 
     $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
-        debug("multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
+        openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
         MultimediaStatus.disableButtons();
         $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
-            debug("multimedia.update breadcrumbs");
+            openaksess.common.debug("multimedia.update breadcrumbs");
             MultimediaStatus.breadcrumbs(data.path);
             MultimediaStatus.enableButtons(data.enabledButtons);
         }, "json");
@@ -140,7 +140,7 @@ function bindMultimediaupdateEvents() {
  * @param suppressNavigatorUpdate true/false.
  */
 function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
-    debug("multimedia.updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
+    openaksess.common.debug("multimedia.updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
@@ -167,9 +167,9 @@ function addMediaitemClickListeners() {
         }
 
         else if ($media.hasClass("folder")) {
-            debug("multimedia.addMediaitemClickListeners(): folder click recieved");
+            openaksess.common.debug("multimedia.addMediaitemClickListeners(): folder click recieved");
             if (isNameEditInProgress(this)) {
-                debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+                openaksess.common.debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
                 updateMediaName(this);
             } else {
                 var idAttr = $media.attr("id");
@@ -179,9 +179,9 @@ function addMediaitemClickListeners() {
         }
 
         else if ($media.hasClass("media")) {
-                debug("multimedia.addMediaitemClickListeners(): media click recieved");
+                openaksess.common.debug("multimedia.addMediaitemClickListeners(): media click recieved");
                 if (isNameEditInProgress(this)) {
-                    debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
+                    openaksess.common.debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
                     updateMediaName(this);
                 } else {
                     window.location.href = $media.find(".icon a").attr("href");
@@ -199,8 +199,8 @@ function setContextMenus(clipboardEmpty) {
     if (clipboardEmpty) {
         disabledElements[0] = 'paste';
     }
-    setContextMenu("multimedia", disabledElements);
-    setContextMenu("folder", disabledElements);
+    openaksess.navigate.setContextMenu("multimedia", disabledElements);
+    openaksess.navigate.setContextMenu("folder", disabledElements);
 }
 
 function getNavigatorAction() {
@@ -216,7 +216,7 @@ function getEditAction() {
 }
 
 function getItemIdentifierFromNavigatorHref(href) {
-    return getQueryParam("itemIdentifier", href);
+    return openaksess.common.getQueryParam("itemIdentifier", href);
 }
 
 function onNavigatorTitleClick(elm) {
@@ -230,13 +230,13 @@ function onNavigatorTitleClick(elm) {
 }
 
 function triggerMultimediaupdateEvent() {
-    debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
+    openaksess.common.debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
     stateHandler.setState(currentItemIdentifier);
     $.event.trigger("multimediaupdate",currentItemIdentifier);
 }
 
 function setLayoutSpecificSizes(elementProperties) {
-    debug("multimedia.setLayoutSpecificSizes()");
+    openaksess.common.debug("multimedia.setLayoutSpecificSizes()");
     $("html, body").css("overflow", "hidden");
     $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
@@ -345,17 +345,17 @@ function updateMediaName(obj) {
     var id = idAttr.substring("Media".length, idAttr.length);
     var newName = $obj.find("input.newName").val();
     var oldName = $obj.find("input.oldName").val();
-    debug("multimedia.updateMediaName(): id: "+id+", newName: "+newName+", oldName:"+oldName);
+    openaksess.common.debug("multimedia.updateMediaName(): id: "+id+", newName: "+newName+", oldName:"+oldName);
 
     if (newName.length < 1) {
         return;
     }
 
     if (oldName != newName) {
-        debug("multimedia.updateMediaName(): id: " + id + ", name: " + newName);
+        openaksess.common.debug("multimedia.updateMediaName(): id: " + id + ", name: " + newName);
         $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
             // Update navigation menu
-            updateNavigator(currentItemIdentifier, true);            
+            openaksess.navigate.updateNavigator(currentItemIdentifier, true);
         });
     }
     $obj.find(".name").html(newName);
@@ -365,7 +365,7 @@ function updateMediaName(obj) {
 function createMediaFolder() {
     var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
     if (folderName != null && folderName != "") {
-        debug("multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
+        openaksess.common.debug("multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
         $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
             triggerMultimediaupdateEvent();            
         });

@@ -30,8 +30,8 @@
         var currentItemIdentifier = -1;
 
         $(document).ready(function() {
-            debug("$(document).ready(): select-mediafolder");
-            updateNavigator(currentItemIdentifier, true);
+            openaksess.common.debug("$(document).ready(): select-mediafolder");
+            openaksess.navigate.updateNavigator(currentItemIdentifier, true);
         });
 
 
@@ -43,7 +43,7 @@
         }
 
         function getItemIdentifierFromNavigatorHref(href) {
-            return getQueryParam("itemIdentifier", href);
+            return openaksess.common.getQueryParam("itemIdentifier", href);
         }
 
         function onNavigatorTitleClick(elm) {

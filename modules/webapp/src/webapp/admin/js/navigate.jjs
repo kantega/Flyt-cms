@@ -29,210 +29,216 @@
 
 var suppressNavigatorUpdate = false;
 
+
+
 /**
- * Navigator actions
+ * Navigator load actions
  */
 $(document).ready(function(){
-    debug("navigate.$(document).ready()");
-    bindNavigatorClickEvents();
-    makeNavigatorResizable();
+    openaksess.common.debug("navigate.$(document).ready()");
+    openaksess.navigate.bindNavigatorClickEvents();
+    openaksess.navigate.makeNavigatorResizable();
 });
 
 
 /**
- * Performes necessary actions to make the navigator frame (left column) resizable.
- * Dragging the FramesplitDrag-element resizes the columns.
- * When dragging the navigator column, the content frame must be resized accordingly.
- *
- * TODO: Fix height after resize for IE
+ * Namespace for all navigation related objects and functions.
  */
-function makeNavigatorResizable() {
-    debug("navigate.makeNavigatorResizable(): Init");
-    $("#Navigation").resizable(
-        {
-            minWidth: 50,
-            minHeight: 50,
-            handles: 'e',
-            start: function(){
-                if (typeof navigatorResizeOnStart == 'function') {
-                    navigatorResizeOnStart();
-                }
-            },
-            stop: function() {
-                if (typeof navigatorResizeOnStop == 'function') {
-                    navigatorResizeOnStop();
-                }
-            },
-            resize: function() {
-                if (typeof navigatorResizeOnResize == 'function') {
-                    navigatorResizeOnResize();
+openaksess.navigate = {
+
+
+    /**
+     * Performes necessary actions to make the navigator frame (left column) resizable.
+     * Dragging the FramesplitDrag-element resizes the columns.
+     * When dragging the navigator column, the content frame must be resized accordingly.
+     *
+     * TODO: Fix height after resize for IE
+     */
+    makeNavigatorResizable : function() {
+        openaksess.common.debug("navigate.makeNavigatorResizable(): Init");
+        $("#Navigation").resizable(
+            {
+                minWidth: 50,
+                minHeight: 50,
+                handles: 'e',
+                start: function(){
+                    if (typeof navigatorResizeOnStart == 'function') {
+                        navigatorResizeOnStart();
+                    }
+                },
+                stop: function() {
+                    if (typeof navigatorResizeOnStop == 'function') {
+                        navigatorResizeOnStop();
+                    }
+                },
+                resize: function() {
+                    if (typeof navigatorResizeOnResize == 'function') {
+                        navigatorResizeOnResize();
+                    }
                 }
             }
-        }
-    );
-}
+        );
+    },
 
 
-/**
- * Defines actions for clicks in the navigator.
- */
-function bindNavigatorClickEvents() {
-    //Click on the openState (+/-) icon of an expanded node.
-    $(".navigator span.openState > a.open").live('click', function(event){
-        debug("navigate.bindNavigatorClickEvents(): click closeTree");
-        event.preventDefault();
-        var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
-        closeTree(itemIdentifier);
-    });
-    //Click on the openState (+/-) icon of a collapsed node.
-    $(".navigator span.openState > a.closed").live('click', function(event){
-        debug("navigate.bindNavigatorClickEvents(): click openTree");
-        event.preventDefault();
-        var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
-        openTree(itemIdentifier);
-    });
-    //Click on the title
-    $(".navigator span.title > a, #Breadcrumbs a, #Statusbar .statusDetails .breadcrumbs a").live('click', function(event){
-        debug("navigate.bindNavigatorClickEvents(): click openContent");
-        event.preventDefault();
-        var href = $(this).attr("href");
-        var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
-        if(typeof onNavigatorTitleClick == 'function') {
-            onNavigatorTitleClick($(this));
-        }
-        if(typeof updateMainPane == 'function') {
-            updateMainPane(itemIdentifier, true);
-        }
-    });
-}
-
-
-/**
- * Refreshes the navigator.
- *
- * @param itemIdentifier Current selected item
- * @param expand Expand the menu down to selected item.
- */
-function updateNavigator(itemIdentifier, expand) {
-    debug("navigate.updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
-    var params = getNavigatorParams();
-    if (itemIdentifier) {
-        params.itemIdentifier = itemIdentifier;
-    }
-    if( $("#NavigatorState .openFolders").html() != null) {
-        params.openFolders = $("#NavigatorState .openFolders").html();
-    }
-    params.expand = expand;
-
-    $("#Navigator").load(getNavigatorAction(), params, function() {
-        debug("navigate.updateNavigator(): response from " + getNavigatorAction() + " received");
-        ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
-            setContextMenus(clipboardEmpty);
+    /**
+     * Defines actions for clicks in the navigator.
+     */
+    bindNavigatorClickEvents : function () {
+        //Click on the openState (+/-) icon of an expanded node.
+        $(".navigator span.openState > a.open").live('click', function(event){
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click closeTree");
+            event.preventDefault();
+            var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+            openaksess.navigate.closeTree(itemIdentifier);
         });
-    });
-}
+        //Click on the openState (+/-) icon of a collapsed node.
+        $(".navigator span.openState > a.closed").live('click', function(event){
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openTree");
+            event.preventDefault();
+            var itemIdentifier = getItemIdentifierFromNavigatorHref($(this).attr("href"));
+            openaksess.navigate.openTree(itemIdentifier);
+        });
+        //Click on the title
+        $(".navigator span.title > a, #Breadcrumbs a, #Statusbar .statusDetails .breadcrumbs a").live('click', function(event){
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openContent");
+            event.preventDefault();
+            var href = $(this).attr("href");
+            var itemIdentifier = getItemIdentifierFromNavigatorHref(href);
+            if(typeof onNavigatorTitleClick == 'function') {
+                onNavigatorTitleClick($(this));
+            }
+            if(typeof updateMainPane == 'function') {
+                updateMainPane(itemIdentifier, true);
+            }
+        });
+    },
 
 
-
-
-
-/**
- * Binds a context menu to a specific navigator link type.
- *
- * @param type css class of the a-element in the navigator.
- * @param disabledOptions Array of disabled options. Must be the href-value in the menu's a-element, without the leading hash (#).
- */
-function setContextMenu(type, disabledOptions) {
-
-    $("#Navigator span.title a." + type).contextMenu(
-        {
-            menu: 'ContextMenu-'+type
-        },
-        function(action, el, pos) {
-            var href = $(el).attr("href");
-            debug("navigate.setContextMenu(): clicked url: "+ href);
-            eval("handleContextMenuClick_"+type+"(action, href)");
+    /**
+     * Refreshes the navigator.
+     *
+     * @param itemIdentifier Current selected item
+     * @param expand Expand the menu down to selected item.
+     */
+    updateNavigator : function(itemIdentifier, expand) {
+        openaksess.common.debug("openaksess.navigate.updateNavigator(): itemIdentifier: " + itemIdentifier + ", expand: " + expand);
+        var params = getNavigatorParams();
+        if (itemIdentifier) {
+            params.itemIdentifier = itemIdentifier;
         }
-    );
-    if (disabledOptions) {
-        var disable = "";
-        for(var i = 0; i < disabledOptions.length; i++) {
-            disable += "#"+disabledOptions[i];
-            if (i != (disabledOptions.length-1)) {
-                disable += ",";
+        if( $("#NavigatorState .openFolders").html() != null) {
+            params.openFolders = $("#NavigatorState .openFolders").html();
+        }
+        params.expand = expand;
+
+        $("#Navigator").load(getNavigatorAction(), params, function() {
+            openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + getNavigatorAction() + " received");
+            ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
+                setContextMenus(clipboardEmpty);
+            });
+        });
+    },
+
+
+
+
+
+    /**
+     * Binds a context menu to a specific navigator link type.
+     *
+     * @param type css class of the a-element in the navigator.
+     * @param disabledOptions Array of disabled options. Must be the href-value in the menu's a-element, without the leading hash (#).
+     */
+    setContextMenu : function(type, disabledOptions) {
+
+        $("#Navigator span.title a." + type).contextMenu(
+            {
+                menu: 'ContextMenu-'+type
+            },
+            function(action, el, pos) {
+                var href = $(el).attr("href");
+                openaksess.common.debug("openaksess.navigate.setContextMenu(): clicked url: "+ href);
+                eval("handleContextMenuClick_"+type+"(action, href)");
+            }
+        );
+        if (disabledOptions) {
+            var disable = "";
+            for(var i = 0; i < disabledOptions.length; i++) {
+                disable += "#"+disabledOptions[i];
+                if (i != (disabledOptions.length-1)) {
+                    disable += ",";
+                }
+            }
+            openaksess.common.debug("openaksess.navigate.setContextMenu(): disabled options: "+ disable);
+            $("#ContextMenu-"+type).disableContextMenuItems(disable);
+        }
+        openaksess.common.debug("openaksess.navigate.setContextMenu(): "+ type +" menu set");
+    },
+
+
+
+
+
+    openTree : function(itemIdentifier) {
+        openaksess.common.debug("openaksess.navigate.openTree(): itemIdentifier: " + itemIdentifier);
+        openaksess.navigate.setFolderOpen(itemIdentifier);
+        openaksess.navigate.updateNavigator(itemIdentifier, false);
+    },
+
+
+    closeTree : function (itemIdentifier) {
+        openaksess.common.debug("openaksess.navigate.closeTree(): itemIdentifier: " + itemIdentifier);
+        openaksess.navigate.setFolderClosed(itemIdentifier);
+        openaksess.navigate.updateNavigator(itemIdentifier, false);
+    },
+
+
+
+    setFolderOpen : function (id) {
+        var newList = $("#NavigatorState .openFolders").html();
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList + ", id: " + id);
+
+        var openList = newList.split(",");
+        for (var i = 0; i < openList.length; i++) {
+            var current = openList[i];
+            if (id == current) {
+                return;
             }
         }
-        debug("navigate.setContextMenu(): disabled options: "+ disable);
-        $("#ContextMenu-"+type).disableContextMenuItems(disable);
-    }
-    debug("navigate.setContextMenu(): "+ type +" menu set");
-}
 
-
-
-
-
-function openTree(itemIdentifier) {
-    debug("navigate.openTree(): itemIdentifier: " + itemIdentifier);
-    setFolderOpen(itemIdentifier);
-    updateNavigator(itemIdentifier, false);
-}
-
-
-function closeTree(itemIdentifier) {
-    debug("navigate.closeTree(): itemIdentifier: " + itemIdentifier);
-    setFolderClosed(itemIdentifier);
-    updateNavigator(itemIdentifier, false);
-}
-
-
-
-function setFolderOpen(id) {
-    var newList = $("#NavigatorState .openFolders").html();
-    debug("navigate.setFolderOpen(): newList: " + newList + ", id: " + id);
-
-    var openList = newList.split(",");
-    for (var i = 0; i < openList.length; i++) {
-        var current = openList[i];
-        if (id == current) {
-            return;
+        if (newList.length == 0) {
+            newList = "" + id;
+        } else {
+            newList = newList + "," + id;
         }
+
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList);
+        $("#NavigatorState .openFolders").html(newList);
+    },
+
+
+    setFolderClosed : function (id) {
+        var openList = $("#NavigatorState .openFolders").html().split(",");
+        openaksess.common.debug("openaksess.navigate.setFolderClosed(): openList: " + openList + ", id: " + id);
+
+        var newOpenList  = "";
+        for (var i = 0; i < openList.length; i++) {
+           var current = openList[i];
+           if (id == current) {
+              // Skip
+           } else {
+              if (newOpenList.length > 0) newOpenList += ",";
+              newOpenList += current;
+           }
+        }
+
+        openaksess.common.debug("openaksess.navigate.setFolderClosed(): newOpenList: " + newOpenList);
+        $("#NavigatorState .openFolders").html(newOpenList);
     }
 
-    if (newList.length == 0) {
-        newList = "" + id;
-    } else {
-        newList = newList + "," + id;
-    }
 
-    debug("navigate.setFolderOpen(): newList: " + newList);
-
-    $("#NavigatorState .openFolders").html(newList);
-}
-
-
-function setFolderClosed(id) {
-    var openList = $("#NavigatorState .openFolders").html().split(",");
-    debug("navigate.setFolderClosed(): openList: " + openList + ", id: " + id);
-
-    var newOpenList  = "";
-    for (var i = 0; i < openList.length; i++) {
-       var current = openList[i];
-       if (id == current) {
-          // Skip
-       } else {
-          if (newOpenList.length > 0) newOpenList += ",";
-          newOpenList += current;
-       }
-    }
-
-    debug("navigate.setFolderClosed(): newOpenList: " + newOpenList);
-
-    $("#NavigatorState .openFolders").html(newOpenList);
-}
-
-
-
+};
 
 
 
@@ -258,14 +264,14 @@ function bindSearchInput() {
 
 var Search = {
     search : function(query){
-        debug("navigate.Search.search(): query: " + query);
+        openaksess.common.debug("openaksess.navigate.Search.search(): query: " + query);
         var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
         var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
         new InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
     },
 
     inputValid : function(query){
-        debug("navigate.Search.inputValid(): query: " + query);
+        openaksess.common.debug("openaksess.navigate.Search.inputValid(): query: " + query);
         query = query.trim();
         if (query.length >= 3) {
             return true;

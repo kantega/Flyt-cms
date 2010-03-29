@@ -25,12 +25,12 @@
     <script type="text/javascript">
 
         function bindTopicInfoEvents() {
-            debug("ViewTopic.action bindTopicInfoEvents()");
+            openaksess.common.debug("ViewTopic.action bindTopicInfoEvents()");
 
             $("#TopicAssociationTabs a.delete").click(function(event) {
                 event.preventDefault();
                 var container = $(this).closest(".ui-tabs-panel");
-                debug("ViewTopics.action: load new content:" + this.href);
+                openaksess.common.debug("ViewTopics.action: load new content:" + this.href);
                 if (confirm("<kantega:label key="aksess.viewtopic.deleteassociation"/>")) {
                     container.load(this.href, function() {
                         bindTopicInfoEvents();
@@ -42,7 +42,7 @@
             $("#AssociatedRoles input.add").click(function(event) {
                 var container = $(this).closest(".ui-tabs-panel");
                 var roleId = $("#AddRole").val();
-                debug("ViewTopics.action: add role:" + roleId);
+                openaksess.common.debug("ViewTopics.action: add role:" + roleId);
                 container.load("ListAssociatedRoles.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + roleId, function() {
                     bindTopicInfoEvents();
                 });
@@ -54,7 +54,7 @@
                 var topicMapId = ids[0];
                 var topicId = ids[1];
                 var container = $(this).closest(".ui-tabs-panel");
-                debug("ViewTopic.action add topic: " + topicId);
+                openaksess.common.debug("ViewTopic.action add topic: " + topicId);
                 container.load("ListAssociatedTopics.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + topicId, function() {
                     bindTopicInfoEvents();
                 });
@@ -64,7 +64,7 @@
             $("#AddContentButton").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true").result(function(event, data, formatted) {
                 var contentId = data[1];
                 var container = $(this).closest(".ui-tabs-panel");
-                debug("ViewTopic.action add content: " + contentId);
+                openaksess.common.debug("ViewTopic.action add content: " + contentId);
                 container.load("ListAssociatedContent.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + contentId, function() {
                     bindTopicInfoEvents();
                 });
@@ -81,7 +81,7 @@
                 event.preventDefault();
                 var href = $(this).parent().attr("href");
                 if (confirm("<kantega:label key="aksess.topicmaps.confirmdeletetopic"/>")) {
-                    debug("ViewTopic.action: Delete topic:" + href);
+                    openaksess.common.debug("ViewTopic.action: Delete topic:" + href);
                     $.post(href, function() {
                         closeWindow();
                     });

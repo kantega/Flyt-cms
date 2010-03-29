@@ -62,7 +62,7 @@ openaksess.editcontext = function()  {
 
 
         editKeyPress : function (e) {
-            if (focusField != null) {
+            if (this.focusField != null) {
                 this.editIsModified = true;
             }
             return true;
@@ -89,12 +89,12 @@ openaksess.editcontext = function()  {
             $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
                 $(".topic > .buttonGroup > a.delete").click(function(event){
                     event.preventDefault();
-                    var topicMapId = getQueryParam("topicMapId", $(this).attr("href"));
-                    var topicId = getQueryParam("topicId", $(this).attr("href"));
-                    debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
+                    var topicMapId = openaksess.common.getQueryParam("topicMapId", $(this).attr("href"));
+                    var topicId = openaksess.common.getQueryParam("topicId", $(this).attr("href"));
+                    openaksess.common.debug("bindTopicDeleteButtons(): click a.delete, topicId=" + topicId);
                     ths.removeTopic(topicId, topicMapId);
                 });
-                debug("updateTopics(): received topics");
+                openaksess.common.debug("updateTopics(): received topics");
             });
         },
 
@@ -164,7 +164,7 @@ openaksess.editcontext = function()  {
          */
         addTopic : function (topicMapId, topicId, topicName) {
             this.setIsModified();
-            debug("add topic: " + topicName + ", topicId:" + topicId[1] + " topicMapId:" + topicId[0]);
+            openaksess.common.debug("add topic: " + topicName + ", topicId:" + topicId[1] + " topicMapId:" + topicId[0]);
             if (this.focusField == null) {
                 // Update topic list
                 var params = new Object();
@@ -326,7 +326,7 @@ openaksess.editcontext = function()  {
          */
         removeOptionFromList : function removeOptionFromList(formElement, attributeKey, language) {
             $.post("../publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
-                debug("editable list - option remove:" + formElement.value);
+                openaksess.common.debug("editable list - option remove:" + formElement.value);
                 for (var i=0; i < formElement.options.length; i++) {
                     if (formElement.options[i].selected) {
                         formElement.options[i] = null;

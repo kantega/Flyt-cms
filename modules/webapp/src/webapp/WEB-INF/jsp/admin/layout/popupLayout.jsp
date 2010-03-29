@@ -50,7 +50,7 @@
                 }
             });
             $("#Content .button .cancel").click(function(){
-                debug("popupLayout: close clicked");
+                openaksess.common.debug("popupLayout: close clicked");
                 closeWindow();
             });
         });

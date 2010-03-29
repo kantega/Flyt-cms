@@ -34,7 +34,7 @@
                 var endTime = $("#end_time").val();
                 var updateChild = $("#update_Children").is(":checked");
                 if (validatePublishProperties()) {
-                    debug("showdisplayperiod - set new date:" + fromDate + "-" + endDate);
+                    openaksess.common.debug("showdisplayperiod - set new date:" + fromDate + "-" + endDate);
                     $.post("../publish/UpdateDisplayPeriod.action", {associationId:${content.association.id}, from_date: fromDate, from_time:fromTime, end_date:endDate, end_time:endTime, updateChildren: updateChild}, function(data) {
                         if (data.error) {
                             alert('<kantega:label key="aksess.error.generic"/>');

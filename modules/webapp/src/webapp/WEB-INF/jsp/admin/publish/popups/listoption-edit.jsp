@@ -36,7 +36,7 @@
                 alert("<kantega:label key="aksess.editablelist.missingvalue"/>");
             } else {
                 $.post("../publish/AddListOption.action", {value:optionValue, attributeKey: attributeKey, defaultSelected:defaultSelected, language:language}, function(data) {
-                    debug("editable list - new option added:" + optionValue);
+                    openaksess.common.debug("editable list - new option added:" + optionValue);
                     getParent().openaksess.editcontext.insertOptionIntoList(optionValue);
                     setTimeout("closeWindow()", 10);
                 });

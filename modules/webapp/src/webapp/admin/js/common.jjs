@@ -22,7 +22,9 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
  */
 
 /********************************************************************************
- * Common functions
+ * Common OpenAksess functions. Declares the global namespace for all objects.
+ *
+ * Used both in standard admin context and by MiniAksess.
  ********************************************************************************/
 
 var openaksess =  {
@@ -32,7 +34,7 @@ var openaksess =  {
 openaksess.common = {
     columnize : function() {
         var columnized = $(".columnized");
-        debug("openaksess.common(): Number of elements found to columnize: " + columnized.size());
+        openaksess.common.debug("openaksess.common(): Number of elements found to columnize: " + columnized.size());
         if (columnized.size() > 0) {
             var columncount = 1;
             var classes = columnized.attr("class").split(" ");
@@ -42,106 +44,49 @@ openaksess.common = {
                     columncount = parseInt(c.substring("columnCount".length, c.length));
                 }
             }
-            debug("openaksess.common(): Column count: " + columncount);
+            openaksess.common.debug("openaksess.common(): Column count: " + columncount);
             columnized.makeacolumnlists({cols:columncount,colWidth:0,equalHeight:false,startN:1});
         }
+    },
+
+    /**
+     * Returns the value of a query string parameter
+     *
+     * @param paramName Query parameter name
+     * @param queryString The total query string
+     */
+    getQueryParam : function(paramName, queryString) {
+        var val = null;
+        var inx = queryString.indexOf(paramName + "=");
+        if (inx != -1) {
+            val = queryString.substring(inx + paramName.length + 1, queryString.length);
+            if (val.indexOf("&") != -1) {
+                val = val.substring(0, val.indexOf("&"));
+            }
+        }
+        return val;
+    },
+
+    /**
+     * Prints a debug message to Firebug's debug console.
+     *
+     * @param msg Debug message. Convention: 'functionName(): value'
+     */
+    debug : function (msg) {
+        var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
+        if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
+            var now = new Date();
+            console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
+        }
     }
+
+
+
+
+
 };
 
-var stateHandler = new StateHandler();
 
-$(document).ready(function() {
-    debug("common.$(document).ready()");
-    if (window.dwr) {
-        dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
-    }
-    setWindowSize();
-    ajaxSetup();
-    WidgetManager.init({context: '#Content'});
-});
-
-
-
-/**
- * Adjusts the height and width of the iframe onload and onresize.
- */
-function setWindowSize() {
-    $(window).bind('resize load', function(e) {
-        debug("common.setWindowSize(): " + e.type + " event received");
-
-        var windowHeight = $(window).height();
-        var windowWidth = $(window).width();
-        var topHeight = $("#Top").height();
-        var navigationWidth = $("#Navigation").width();
-        var framesplitWidth = $("#Framesplit").outerWidth(true);
-
-        debug("common.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
-
-        $('#Content').css('height', (windowHeight-topHeight) + 'px');
-
-        if (typeof setLayoutSpecificSizes == 'function') {
-            debug("common.setWindowSize(): setLayoutSpecificSizes function found");
-            setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
-        }
-
-    });
-}
-
-function ajaxSetup() {
-    var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div>');
-    $("body").append($ajaxloading);
-    $ajaxloading.ajaxStart(function(){
-        $(this).show();
-    });
-
-    $ajaxloading.ajaxStop(function(){
-        $(this).hide();
-    });
-}
-
-
-
-/**
- * Returns the value of a query string parameter
- *
- * @param paramName Query parameter name
- * @param queryString The total query string
- */
-function getQueryParam(paramName, queryString) {
-    var val = null;
-    var inx = queryString.indexOf(paramName + "=");
-    if (inx != -1) {
-        val = queryString.substring(inx + paramName.length + 1, queryString.length);
-        if (val.indexOf("&") != -1) {
-            val = val.substring(0, val.indexOf("&"));
-        }
-    }
-    return val;
-}
-
-
-/**
- * Prints a debug message to Firebug's debug console.
- *
- * @param msg Debug message. Convention: 'functionName(): value'
- */
-function debug(msg) {
-    var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
-    if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
-        var now = new Date();
-        console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
-    }
-}
-
-
-/**
- * Sets the currently viewed content in the user's session.
- *
- * @param url
- */
-function notifyContentUpdate(url) {
-    ContentStateHandler.notifyContentUpdate(url);
-}
 
 /**
  * Responsible for drawing pop-ups and modals.
@@ -179,10 +124,10 @@ var ModalWindow = {
      * @param config
      */
     open: function(config){
-        debug("common.ModalWindow.open(): config: " + config);
+        openaksess.common.debug("common.ModalWindow.open(): config: " + config);
 
         if (config && typeof(config) == 'object') {
-            debug("common.ModalWindow.open(): Extending default config with user supplied config.");
+            openaksess.common.debug("common.ModalWindow.open(): Extending default config with user supplied config.");
             $.extend(ModalWindow.config, config);
         }
 
@@ -197,7 +142,7 @@ var ModalWindow = {
             $content = $("<div/>").load(ModalWindow.config.href);
         }
 
-        debug("common.ModalWindow.open(): Opening modal window.");
+        openaksess.common.debug("common.ModalWindow.open(): Opening modal window.");
 
         $content.dialog(ModalWindow.config);
 
@@ -205,7 +150,7 @@ var ModalWindow = {
             $content.width(ModalWindow.config.width - ModalWindow.config.horizontalPadding).height(ModalWindow.config.height - ModalWindow.config.verticalPadding);
         }
 
-        debug("common.ModalWindow.open(): Modal window opened.");
+        openaksess.common.debug("common.ModalWindow.open(): Modal window opened.");
 
     },
 
@@ -214,149 +159,11 @@ var ModalWindow = {
      * Closes the current modal.
      */
     close: function(){
-        debug("common.ModalWindow.close()");
+        openaksess.common.debug("common.ModalWindow.close()");
         $content.dialog('close');
     }
 
 };
 
 
-/**
- * Handles user settings (perferences). These can either be per session or permanent (persistent).
- */
-var UserPreferences = {
-
-    keys : {
-        filter : {
-            hideExpired: 'filterHideExpired',
-            sort: 'filterSort',
-            sites: 'filterSites'
-        }
-    },
-
-    setPreference: function(key, value, permanent, callback){
-        if (arguments.length == 3) {
-            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
-        } else {
-            UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
-        }
-    },
-
-    getPreference: function(key, callback) {
-        UserPreferencesHandler.getPreference(key, callback);
-    }
-};
-
-
-/**
- * See http://benalman.com/projects/jquery-bbq-plugin/ for further details about the bbq-plugin.
- */
-function StateHandler (){
-
-    var currentState = '';
-
-    this.init = function(updateEventType) {
-        debug("common.StateHandler.init()");
-        bindHashChange(updateEventType);
-        $(window).trigger("hashchange");
-    };
-
-    this.setState = function(state) {
-        debug("common.StateHandler.setState(): state: " + state);
-        $.bbq.pushState({ state : state });
-    };
-
-    this.getState = function() {
-        return currentState;
-    };
-
-    var bindHashChange = function(updateEventType) {
-        debug("common.StateHandler._bindHashChange(): Binding hashchange event");
-        $(window).bind( 'hashchange', function(e) {
-            //Get the url from the state
-            var state = $.bbq.getState('state');
-            debug("common.StateHandler._bindHashChange(): hashchange event received. Url: " + state);
-
-            if (state && state != this.currentState) {
-                debug("common.StateHandler._bindHashChange(): New state ("+state+") different from current state ("+this.currentState+"). Triggering '"+updateEventType+ "' event.");
-                $.event.trigger(updateEventType, state);
-                currentState = state;
-            }
-        });
-    };
-
-};
-
-
-var WidgetManager = {
-
-    defaults : {
-        context: 'body',
-        widgetContainerClass: 'widgetcolumn',
-        widgetClass: 'widget',
-        widgetHeaderClass: 'widget-header',
-        widgetContentClass: 'widget-content',
-        minimizeClass: 'ui-icon ui-icon-minus',
-        maximizeClass: 'ui-icon ui-icon-plus',
-        closeClass: 'ui-icon ui-icon-close'
-    },
-
-    init : function(config){
-        $.extend(this.defaults, config);
-
-        var $columns = $('.'+this.defaults.widgetContainerClass, this.defaults.context);
-        $columns.sortable({
-            connectWith: this.defaults.context + ' .'+this.defaults.widgetContainerClass
-        });
-
-        var $widgets = $('.'+this.defaults.widgetClass, this.defaults.context);
-        $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
-                .find('.'+this.defaults.widgetHeaderClass)
-                .addClass("ui-widget-header")
-                .append('<span class="widget-controls"><span class="'+this.defaults.closeClass+'"></span><span class="'+this.defaults.minimizeClass+'"></span></span>');
-
-
-        $widgets.find(".widget-header .widget-controls").live('click', function(e) {
-            var $target = $(e.target);
-            var $widget = $(this).parents(".widget:first");
-
-            if ($target.hasClass(this.defaults.minimizeClass)) {
-                this.minimize($widget);
-            }
-            else if ($target.hasClass(this.defaults.maximizeClass)) {
-                this.maximize($widget);
-            }
-            else if($target.hasClass(this.defaults.closeClass)) {
-                    this.remove($widget);
-                }
-
-        });
-
-        $columns.disableSelection();
-    },
-
-    minimize: function(widget) {
-        var $widget = this._getElementAsJquery(widget);
-        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.minimizeClass).addClass(this.defaults.maximizeClass);
-        $widget.find('.'+this.defaults.widgetContentClass).hide();
-    },
-
-    maximize: function(widget) {
-        var $widget = this._getElementAsJquery(widget);
-        $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.maximizeClass).addClass(this.defaults.minimizeClass);
-        $widget.find('.'+this.defaults.widgetContentClass).show();
-    },
-
-    remove: function(widget) {
-        this._getElementAsJquery(widget).remove();
-    },
-
-    _getElementAsJquery: function(elem) {
-        if (elem instanceof jQuery) {
-            return elem;
-        } else {
-            return $(elem);
-        }
-    }
-};
 

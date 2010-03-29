@@ -46,6 +46,7 @@
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.jjs"></script>
     <kantega:getsection id="head"/>
     <script type="text/javascript">
         $(document).ready(function(){

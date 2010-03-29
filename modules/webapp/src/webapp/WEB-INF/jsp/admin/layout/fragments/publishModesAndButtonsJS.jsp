@@ -26,39 +26,39 @@
             <c:when test="${hasUnsavedChanges || isEditing}">
             // User is editing a page and it is changed
             $("#ModesMenu .button .view").click(function(e){
-                debug("publishModesAndButtonsJS.view");
+                openaksess.common.debug("publishModesAndButtonsJS.view");
                 e.preventDefault();
                 gotoMode("Navigate");
             });
             $("#ModesMenu .button .edit").click(function(e){
-                debug("publishModesAndButtonsJS.edit");
+                openaksess.common.debug("publishModesAndButtonsJS.edit");
                 e.preventDefault();
                 gotoMode("SaveContent");
             });
             $("#ModesMenu .button .organize").click(function(e){
-                debug("publishModesAndButtonsJS.organize");
+                openaksess.common.debug("publishModesAndButtonsJS.organize");
                 e.preventDefault();
                 gotoMode("Organize");
             });
             $("#ModesMenu .button .linkcheck").click(function(e){
-                debug("publishModesAndButtonsJS.linkcheck");
+                openaksess.common.debug("publishModesAndButtonsJS.linkcheck");
                 e.preventDefault();
                 gotoMode("LinkCheck");
             });
             $("#ModesMenu .button .statistics").click(function(e){
-                debug("publishModesAndButtonsJS.statistics");
+                openaksess.common.debug("publishModesAndButtonsJS.statistics");
                 e.preventDefault();
                 gotoMode("Statistics");
             });
             $("#ModesMenu .button .notes").click(function(e){
-                debug("publishModesAndButtonsJS.notes");
+                openaksess.common.debug("publishModesAndButtonsJS.notes");
                 e.preventDefault();
                 gotoMode("Notes");
             });
 
             // Prevent user from clicking top menu
             $("#TopMenu a").click(function (e) {
-                debug("publishModesAndButtonsJS: topmenu click");
+                openaksess.common.debug("publishModesAndButtonsJS: topmenu click");
                 if (!confirmCancel()) {
                     e.preventDefault();
                 }
@@ -68,7 +68,7 @@
             <c:when test="${!hasUnsavedChanges && !isEditing}">
                 // No unsaved changes and user is not editing
                 $("#ModesMenu .button .edit").click(function(){
-                    Publish.edit(getQueryParam("thisId", stateHandler.getState()));
+                    Publish.edit(stateHandler.getState());
                 });
             </c:when>
         </c:choose>
@@ -76,23 +76,23 @@
         <c:if test="${hasUnsavedChanges || isEditing}">
         // These buttons are only displayed when user is editing a page or previewing with a changed page
         $("#EditContentButtons input.publish").click(function(){
-            debug("publishModesAndButtonsJS.publish");
+            openaksess.common.debug("publishModesAndButtonsJS.publish");
             saveContent(<%=ContentStatus.PUBLISHED%>);
         });
         $("#EditContentButtons input.save").click(function(){
-            debug("publishModesAndButtonsJS.save");
+            openaksess.common.debug("publishModesAndButtonsJS.save");
             saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
         });
         $("#EditContentButtons input.savedraft").click(function(){
-            debug("publishModesAndButtonsJS.savedraft");
+            openaksess.common.debug("publishModesAndButtonsJS.savedraft");
             saveContent(<%=ContentStatus.DRAFT%>);
         });
         $("#EditContentButtons input.hearing").click(function(){
-            debug("publishModesAndButtonsJS.hearing");
+            openaksess.common.debug("publishModesAndButtonsJS.hearing");
             saveContent(<%=ContentStatus.HEARING%>);
         });
         $("#EditContentButtons input.cancel").click(function(){
-            debug("publishModesAndButtonsJS.cancel");
+            openaksess.common.debug("publishModesAndButtonsJS.cancel");
             if (confirmCancel) {
                 window.location.href = 'CancelEdit.action';
             }
@@ -103,7 +103,7 @@
     function confirmCancel() {
         var confirmCancel = true;
         if (isPageModified()) {
-            confirmCancel = confirm("Cancel changes?");
+            confirmCancel = confirm("Cancel changes?"); //TODO: Use labels
         }
         return confirmCancel;
     }
@@ -113,12 +113,12 @@
     }
 
     function gotoMode(action) {
-        debug("publishModesAndButtonsJS.gotoMode(): action: "+action);
+        openaksess.common.debug("publishModesAndButtonsJS.gotoMode(): action: "+action);
         action = action + ".action";
         var href = "" + window.location.href;
         if (href.indexOf(action) != -1) {
             // Tried to click current tab
-            debug("publishModesAndButtonsJS.gotoMode(): Tried to click current tab");
+            openaksess.common.debug("publishModesAndButtonsJS.gotoMode(): Tried to click current tab");
             return;
         }
 

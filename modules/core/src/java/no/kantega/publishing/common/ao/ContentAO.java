@@ -1126,7 +1126,7 @@ public class ContentAO {
         try {
             long now = new Date().getTime() + 1000*60*1;
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE (PublishDate < ? AND VisibilityStatus = ?) OR (ContentId IN (SELECT ContentId FROM ContentVersion WHERE Status = ? AND ChangeFrom < ?)) AND ContentId > ? ORDER BY ContentId");
+            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE (PublishDate < ? AND VisibilityStatus = ?) OR (ContentId IN (SELECT ContentId FROM contentversion WHERE Status = ? AND ChangeFrom < ?)) AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(now));
             p.setInt(2, ContentVisibilityStatus.WAITING);
             p.setTimestamp(3, new Timestamp(now));

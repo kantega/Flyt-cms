@@ -22,12 +22,12 @@
 var currentUrl = "${currentNavigateContent.url}";
 
 $(document).ready(function(){
-    debug("linkcheck.$(document).ready()");
+    openaksess.common.debug("linkcheck.$(document).ready()");
     updateLinkList(currentUrl, "title");
     $("#BrokenLinks th a").live('click', function(event) {
         event.preventDefault();
         var sort = $(this).attr("href");
-        debug("linkcheck.click sort: " + sort);
+        openaksess.common.debug("linkcheck.click sort: " + sort);
         updateLinkList(currentUrl, "title");
     });
 });
@@ -40,9 +40,9 @@ $(document).ready(function(){
  * @param suppressNavigatorUpdate
  */
 function updateMainPane(id, suppressNavigatorUpdate) {
-    debug("linkcheck.updateMainPane(): id: " + id);
+    openaksess.common.debug("linkcheck.updateMainPane(): id: " + id);
     currentUrl = getContentUrlFromAssociationId(id);
-    debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
+    openaksess.common.debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
     updateLinkList(currentUrl, "title");
 }
 
@@ -53,12 +53,12 @@ function updateMainPane(id, suppressNavigatorUpdate) {
  */
 function updateLinkList(url, sort) {
 
-    debug("linkcheck.updateLinkList(): Triggering contentupdate event");
+    openaksess.common.debug("linkcheck.updateLinkList(): Triggering contentupdate event");
     triggerContentUpdateEvent(url);
 
-    debug("linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
+    openaksess.common.debug("linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){
-        debug("linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
+        openaksess.common.debug("linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
         $("#MainPaneContent div.fieldset").roundCorners();
     });
 }

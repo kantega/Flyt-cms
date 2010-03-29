@@ -332,7 +332,7 @@ function buildOnClick() {
 	if (formObj.popupreturn.checked)
 		onclick += "return false;";
 
-	// tinyMCE.debug(onclick);
+	// tinyMCE.openaksess.common.debug(onclick);
 
 	formObj.onclick.value = onclick;
 
@@ -492,7 +492,7 @@ function getLinkListHTML(elm_id, target_form_element, onchange_func) {
 
 	return html;
 
-	// tinyMCE.debug('-- image list start --', html, '-- image list end --');
+	// tinyMCE.openaksess.common.debug('-- image list start --', html, '-- image list end --');
 }
 
 function getTargetListHTML(elm_id, target_form_element) {

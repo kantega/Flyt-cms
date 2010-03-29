@@ -71,7 +71,10 @@ function initialize() {
     }
 }
 </script>
+<%@ include file="../../admin/publish/include/calendarsetup.jsp"%>
+    <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
     <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
+    <script type="text/javascript" language="Javascript" src="../../aksess/js/autocomplete.js"></script>
 
 
 </head>
@@ -80,7 +83,7 @@ function initialize() {
         <tr>
             <td align="center">
                 <br>
-                <%@ include file="/WEB-INF/jsp/admin/publish/fragments/infobox.jsp" %>
+                <%@ include file="../include/infobox.jsf" %>
                 <%
                     if (!securitySession.isAuthorized(currentContent, Privilege.APPROVE_CONTENT)) {
                 %>

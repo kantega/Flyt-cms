@@ -75,9 +75,9 @@
     });
 
     $(document).ready(function() {
-        debug("bindTopicButtons(): bind ChooseTopicButton");
+        openaksess.common.debug("bindTopicButtons(): bind ChooseTopicButton");
         $("#ChooseTopicButton input").click(function(event){
-            debug("bindTopicButtons(): click ChooseTopicButton");
+            openaksess.common.debug("bindTopicButtons(): click ChooseTopicButton");
             openaksess.editcontext.selectTopic(null, true);
         });
         $("#Locked").click(function(event){

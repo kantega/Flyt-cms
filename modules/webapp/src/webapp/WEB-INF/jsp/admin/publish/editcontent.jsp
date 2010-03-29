@@ -29,7 +29,7 @@
 <%
     InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.CONTENT_DATA);
 %>
-    <%@ include file="../../../../admin/include/infobox.jsf" %>
+    <%@ include file="fragments/infobox.jsp" %>
     <%
         screen.generateInputScreen();
     %>

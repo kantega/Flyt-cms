@@ -87,7 +87,7 @@
 
             // Active button when something is changed
             $(".sidebarFieldset input").keypress(function(e) {
-                debug("Element changed, enable save button");
+                openaksess.common.debug("Element changed, enable save button");
                 document.editmediaform.changed.value = true;
                 $("#EditMultimediaButtons .save").removeClass("disabled");
                 $("#EditMultimediaButtons .save").removeAttr("disabled");

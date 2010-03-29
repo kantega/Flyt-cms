@@ -35,6 +35,9 @@ import no.kantega.publishing.security.SecuritySession;
 import java.util.List;
 
 public class SimpleEditContentAction implements Controller {
+
+    private String view;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
@@ -70,6 +73,12 @@ public class SimpleEditContentAction implements Controller {
         request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
         session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
-        return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
+
+
+        return new ModelAndView(view, null);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

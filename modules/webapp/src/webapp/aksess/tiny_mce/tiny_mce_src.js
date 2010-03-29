@@ -5932,9 +5932,9 @@ window.tinymce.dom.Sizzle = Sizzle;
 
 			t.parentElementsRE = new RegExp('^(' + s.toLowerCase() + ')$', 'i');
 
-			/*console.debug(t.parentElementsRE.toString());
+			/*console.openaksess.common.debug(t.parentElementsRE.toString());
 			each(t.childRules, function(v) {
-				console.debug(v.toString());
+				console.openaksess.common.debug(v.toString());
 			});*/
 		},
 
@@ -6105,7 +6105,7 @@ window.tinymce.dom.Sizzle = Sizzle;
 			});
 			t.validElementsRE = new RegExp('^(' + wildcardToRE(s.toLowerCase()) + ')$');
 
-			//console.debug(t.validElementsRE.toString());
+			//console.openaksess.common.debug(t.validElementsRE.toString());
 			//console.dir(t.rules);
 			//console.dir(t.wildRules);
 		},
@@ -12142,7 +12142,7 @@ var tinyMCE = window.tinyMCE = tinymce.EditorManager;
 			try {
 				ra.setEndAfter(ec);
 			} catch(ex) {
-				//console.debug(s.focusNode, s.focusOffset);
+				//console.openaksess.common.debug(s.focusNode, s.focusOffset);
 			}
 
 			ra.setStart(en, eo);
@@ -12246,7 +12246,7 @@ var tinyMCE = window.tinyMCE = tinymce.EditorManager;
 			// Is element within viewport
 			if (y < vp.y || y + ch > vp.y + vp.h) {
 				ed.getWin().scrollTo(0, y < vp.y ? y : y - vp.h + 25); // Needs to be hardcoded to roughly one line of text if a huge text block is broken into two blocks
-				//console.debug('SCROLL!', 'vp.y: ' + vp.y, 'y' + y, 'vp.h' + vp.h, 'clientHeight' + aft.clientHeight, 'yyy: ' + (y < vp.y ? y : y - vp.h + aft.clientHeight));
+				//console.openaksess.common.debug('SCROLL!', 'vp.y: ' + vp.y, 'y' + y, 'vp.h' + vp.h, 'clientHeight' + aft.clientHeight, 'yyy: ' + (y < vp.y ? y : y - vp.h + aft.clientHeight));
 			}
 
 			return false;

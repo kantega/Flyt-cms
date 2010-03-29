@@ -2,6 +2,7 @@
 <%@ page import="no.kantega.commons.client.util.ValidationErrors"%>
 <%@ page import="no.kantega.publishing.admin.content.util.AttributeHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
 <%--
   ~ Copyright 2009 Kantega AS

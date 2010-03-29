@@ -23,7 +23,7 @@ var currentUrl = "${currentNavigateContent.url}";
 var currentView = "Page";
 
 $(document).ready(function(){
-    debug("statistics.$(document).ready()");
+    openaksess.common.debug("statistics.$(document).ready()");
     updateStatistics(currentUrl, currentView);
 
     $("#PageStatistics").live('click', function(event) {
@@ -47,9 +47,9 @@ $(document).ready(function(){
  * @param suppressNavigatorUpdate
  */
 function updateMainPane(id, suppressNavigatorUpdate) {
-    debug("statistics.updateMainPane(): id: " + id);
+    openaksess.common.debug("statistics.updateMainPane(): id: " + id);
     currentUrl = getContentUrlFromAssociationId(id);
-    debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
+    openaksess.common.debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
     updateStatistics(currentUrl, currentView);
 }
 
@@ -60,12 +60,12 @@ function updateMainPane(id, suppressNavigatorUpdate) {
  */
 function updateStatistics(url, view) {
 
-    debug("statistics.updatePageStatistics(): Triggering contentupdate event");
+    openaksess.common.debug("statistics.updatePageStatistics(): Triggering contentupdate event");
     triggerContentUpdateEvent(url);
 
-    debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
+    openaksess.common.debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
     $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
-        debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
+        openaksess.common.debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
         $("#MainPaneContent div.fieldset").roundCorners();
         statisticsPageLoaded();
     });

@@ -21,7 +21,7 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
 
 $(document).ready(function(){
-    debug("topicmaps.$(document).ready()");
+    openaksess.common.debug("topicmaps.$(document).ready()");
     openaksess.topicmaps.listTopicTypes(-1, null);
 
 });
@@ -34,19 +34,19 @@ openaksess.topicmaps = function() {
          * @param topicMapId, topicId
          */
         listTopicTypes: function (topicMapId, topicId) {
-            debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
+            openaksess.common.debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
             var params = new Object();
             if (topicMapId != -1) {
                 params.topicMapId = topicMapId;
                 params.topicId = topicId;
             }
             $("#TopicTypes").load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
-                debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
+                openaksess.common.debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
                 $("#TopicTypes .tab a").click(function (event) {
                     event.preventDefault();
                     var href = $(this).attr("href");
-                    var topicId = getQueryParam("topicId", href);
-                    var topicMapId = getQueryParam("topicMapId", href);
+                    var topicId = openaksess.common.getQueryParam("topicId", href);
+                    var topicMapId = openaksess.common.getQueryParam("topicMapId", href);
                     this.listTopicTypes(topicMapId, topicId);
                 });
             });

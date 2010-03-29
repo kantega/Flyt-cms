@@ -57,7 +57,7 @@
 
 </script>
 <body class="bodyWithMargin">
-<%@ include file="../include/infobox.jsf" %>
+<%@ include file="fragments/infobox.jsp" %>
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr>
             <td class="tableHeading"><b><kantega:label key="aksess.editnotes.addnote"/></b></td>

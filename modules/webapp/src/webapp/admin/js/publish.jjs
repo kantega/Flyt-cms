@@ -15,7 +15,7 @@
  */
 
 function setLayoutSpecificSizes(elementProperties) {
-    debug("publish.setLayoutSpecificSizes()");
+    openaksess.common.debug("publish.setLayoutSpecificSizes()");
     
     var $sidebar = $("#SideBar");
     var $mainPane = $('#MainPane');

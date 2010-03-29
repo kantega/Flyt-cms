@@ -31,8 +31,8 @@
         var currentItemIdentifier = -1;
 
         $(document).ready(function() {
-            debug("$(document).ready(): select-content");
-            updateNavigator(currentItemIdentifier, true);
+            openaksess.common.debug("$(document).ready(): select-content");
+            openaksess.navigate.updateNavigator(currentItemIdentifier, true);
         });
 
         function setContextMenus(clipboardEmpty) {
@@ -49,11 +49,11 @@
             var url;
             <c:choose>
                 <c:when test="${selectContentId}">
-                id = getQueryParam("contentId", href);
+                id = openaksess.common.getQueryParam("contentId", href);
                 url = "/content.ap?contentId=" + id + "&amp;contextId=$contextId";
                 </c:when>
                 <c:otherwise>
-                id = getQueryParam("thisId", href);
+                id = openaksess.common.getQueryParam("thisId", href);
                 url = "/content.ap?thisId=" + id;
                 </c:otherwise>
             </c:choose>
@@ -75,7 +75,7 @@
         }
 
         function getItemIdentifierFromNavigatorHref(href) {
-            return getQueryParam("thisId", href);
+            return openaksess.common.getQueryParam("thisId", href);
         }
 
     </script>

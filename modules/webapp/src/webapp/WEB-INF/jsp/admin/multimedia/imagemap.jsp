@@ -35,7 +35,7 @@
         var currentRow = -1;
 
         function startNewBox(x, y) {
-            debug("start box:" + x + "," + y);
+            openaksess.common.debug("start box:" + x + "," + y);
             if (detectCollision(x, y, x + 10, y + 10)) {
                 currentMapArea = -1;
             } else {
@@ -99,7 +99,7 @@
                     var boxStopX = boxStartX + $(this).width();
                     var boxStopY = boxStartY + $(this).height();
                     if ((startX < boxStopX && stopX > boxStartX) && (startY < boxStopY && stopY > boxStartY)) {
-                        debug("overlap with:" + id);
+                        openaksess.common.debug("overlap with:" + id);
                         overlap = true;
                     }                    
                 }

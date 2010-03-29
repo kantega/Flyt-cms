@@ -26,9 +26,9 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
  * @param suppressNavigatorUpdate
  */
 function updateMainPane (id, suppressNavigatorUpdate) {
-    debug("organizesubpages.updateMainPane(): id: " + id);
+    openaksess.common.debug("organizesubpages.updateMainPane(): id: " + id);
     openaksess.organizesubpages.currentUrl = getContentUrlFromAssociationId(id);
-    debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
+    openaksess.common.debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
     openaksess.organizesubpages.updateSubPageList();
 }
 
@@ -66,19 +66,19 @@ openaksess.organizesubpages = function()  {
          */
         updateSubPageList: function() {
             var ths = this;
-            debug("organizesubpages.updateSubPageList(): Triggering contentupdate event:" + this.currentUrl);
+            openaksess.common.debug("organizesubpages.updateSubPageList(): Triggering contentupdate event:" + this.currentUrl);
             triggerContentUpdateEvent(this.currentUrl);
 
-            debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
+            openaksess.common.debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
             $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
-                debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
+                openaksess.common.debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
                 $("#SubPages ul").sortable({
                     connectWith: '.associationCategory',
                     items: 'li:not(.menu)',
                     axis: 'y',
                     stop: function(e, ui){
                         $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
-                            updateNavigator(ths.currentUrl, true);
+                            openaksess.navigate.updateNavigator(ths.currentUrl, true);
                         });
                     }
                 });

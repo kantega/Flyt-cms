@@ -79,7 +79,7 @@ public class InputScreenRenderer {
 
                 try {
                     out.print("\n<div class=\"contentAttribute\">\n");
-                    pageContext.include("../../../../admin/publish/attributes/" + attr.getRenderer() +".jsp");
+                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
                     out.print("\n");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {

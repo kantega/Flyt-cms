@@ -45,7 +45,7 @@
             document.deleteversion.submit();
         }
     </script>
-        <%@ include file="../../../../admin/include/infobox.jsf" %>
+        <%@ include file="fragments/infobox.jsp" %>
 
         <form name="activeversion" action="UseVersion.action" target="content" method="post">
             <input type="hidden" name="version" value="-1">

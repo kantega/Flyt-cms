@@ -24,7 +24,7 @@
     <script type="text/javascript">
         var hasSubmitted = false;
         function saveContent(status) {
-            debug("contentNavigateLayout.saveContent(): status: " + status + ", hasSubmitted: " + hasSubmitted);
+            openaksess.common.debug("contentNavigateLayout.saveContent(): status: " + status + ", hasSubmitted: " + hasSubmitted);
             if (!hasSubmitted) {
                 hasSubmitted = true;
                 document.myform.status.value = status;
@@ -34,10 +34,10 @@
 
         $(document).ready(function(){
             $("#EditContentButtons .approve").click(function() {
-                Publish.approve(getQueryParam("thisId", stateHandler.getState()));
+                Publish.approve(stateHandler.getState());
             });
             $("#EditContentButtons .reject").click(function() {
-                Publish.reject(getQueryParam("thisId", stateHandler.getState()));
+                Publish.reject(stateHandler.getState());
             });
         });
     </script>
