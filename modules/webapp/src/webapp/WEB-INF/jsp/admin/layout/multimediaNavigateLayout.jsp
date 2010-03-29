@@ -61,6 +61,10 @@
         </div>
     </div>
 
+    <%-- Including the context menus so they are available to jQyery. They are default hidden (by css) from view. --%>
+    <%@include file="fragments/contextMenu-media.jsp"%>
+    <%@include file="fragments/contextMenu-folder.jsp"%>    
+
 </kantega:section>
 
 

@@ -171,7 +171,7 @@ ul.breadcrumbs li:first-child {
 .navigator .icon .folder {
     background-image: url("../bitmaps/common/navigator/folder.png");
 }
-.navigator .icon .image {
+.navigator .icon .media {
     background-image: url("../bitmaps/common/navigator/image.png");
 }
 .navigator .icon .link {
@@ -180,6 +180,10 @@ ul.breadcrumbs li:first-child {
 .navigator .icon .link-draft {
     background-image: url("../bitmaps/common/navigator/link_draft.png");
 }
+.navigator .icon .shortcut {
+    background-image: url("../bitmaps/common/navigator/shortcut.png");
+}
+
 .navigator .icon .page {
     background-image: url("../bitmaps/common/navigator/page.png");
 }
@@ -237,7 +241,7 @@ ul.breadcrumbs li:first-child {
 }
 
 .contextMenu a {
-    color: #333;
+    color: #000;
     text-decoration: none;
     display: block;
     line-height: 20px;

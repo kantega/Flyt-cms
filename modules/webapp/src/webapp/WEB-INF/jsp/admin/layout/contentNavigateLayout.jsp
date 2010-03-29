@@ -138,8 +138,9 @@
 
     <%-- Including the context menus so they are available to jQyery. They are default hidden (by css) from view. --%>
     <%@include file="fragments/contextMenu-page.jsp"%>
-
     <%@include file="fragments/contextMenu-link.jsp"%>
+    <%@include file="fragments/contextMenu-shortcut.jsp"%>
+    <%@include file="fragments/contextMenu-file.jsp"%>
 
 </kantega:section>
 

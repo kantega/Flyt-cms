@@ -137,8 +137,6 @@ public class NavigatorUtil {
             return "file";
         } else if (type == ContentType.SHORTCUT) {
             return "shortcut";
-        } else if (type == ContentType.FORM) {
-            return "form";  
         } else {
             return "page";
         }

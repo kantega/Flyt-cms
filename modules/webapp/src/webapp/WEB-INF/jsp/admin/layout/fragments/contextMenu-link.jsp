@@ -34,12 +34,6 @@
     <li class="copy">
         <a href="#copy"><kantega:label key="aksess.navigator.copy"/></a>
     </li>
-    <li class="paste">
-        <a href="#paste"><kantega:label key="aksess.navigator.page"/></a>
-    </li>
-    <li class="pasteAsShortcut">
-        <a href="#pasteAsShortcut"><kantega:label key="aksess.navigator.pasteshortcut"/></a>
-    </li>
     <li class="managePrivileges separator">
         <a href="#managePrivileges"><kantega:label key="aksess.navigator.permissions"/></a>
     </li>

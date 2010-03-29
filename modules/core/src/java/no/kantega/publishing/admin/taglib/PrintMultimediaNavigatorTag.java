@@ -46,7 +46,7 @@ public class PrintMultimediaNavigatorTag  extends PrintNavigatorTag {
         if (currentItem.getType() == MultimediaType.FOLDER) {
             type = "folder";
         } else {
-            type = "image";
+            type = "media";
         }
         out.write("<span class=\"icon\"><a href=\"" + href + "\" class=\""+type+"\"></a></span>");
 
