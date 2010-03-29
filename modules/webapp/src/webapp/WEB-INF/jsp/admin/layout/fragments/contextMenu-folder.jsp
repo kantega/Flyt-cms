@@ -15,9 +15,6 @@
 --%>
 
 <ul id="ContextMenu-folder" class="contextMenu">
-    <li class="edit">
-        <a href="#edit"><kantega:label key="aksess.navigator.edit"/></a>
-    </li>
     <li class="delete">
         <a href="#delete"><kantega:label key="aksess.navigator.delete"/></a>
     </li>

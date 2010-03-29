@@ -544,6 +544,9 @@ openaksess.navigate.setContextMenus = function(clipboardEmpty) {
     }
     openaksess.navigate.setContextMenu("page", disabledElements);
     openaksess.navigate.setContextMenu("link", disabledElements);
+    openaksess.navigate.setContextMenu("file", disabledElements);
+    openaksess.navigate.setContextMenu("shortcut", disabledElements);
+
 };
 
 openaksess.navigate.getNavigatorAction = function() {
@@ -599,36 +602,27 @@ openaksess.navigate.handleContextMenuClick_page = function(action, href) {
  * @param href The value of the href-attribute for the selected item.
  */
 openaksess.navigate.handleContextMenuClick_link = function (action, href) {
-    openaksess.common.debug("openaksess.content.handleContextMenuClick_link(): " + action + ", href: " + href);
-    switch (action) {
-        case 'open':
-            openaksess.content.publish.open(href);
-            break;
-        case 'openInNewWindow':
-            openaksess.content.publish.openInNewWindow(href);
-            break;
-        case 'edit':
-            openaksess.content.publish.edit(href);
-            break;
-        case 'delete':
-            openaksess.content.publish.deleteItem(href);
-            break;
-        case 'cut':
-            openaksess.content.publish.cut(href);
-            break;
-        case 'copy':
-            openaksess.content.publish.copy(href);
-            break;
-        case 'paste':
-            openaksess.content.publish.paste(href);
-            break;
-        case 'pasteAsShortcut':
-            openaksess.content.publish.pasteAsShortcut(href);
-            break;
-        case 'managePrivileges':
-            openaksess.content.publish.managePrivileges(href);
-            break;
-    }
+    return openaksess.navigate.handleContextMenuClick_page(action, href);
+};
+
+/**
+ * Handles selections in the context menu for menu items of type file.
+ *
+ * @param action The selected action e.g. 'copy'
+ * @param href The value of the href-attribute for the selected item.
+ */
+openaksess.navigate.handleContextMenuClick_file = function (action, href) {
+    return openaksess.navigate.handleContextMenuClick_page(action, href);
+};
+
+/**
+ * Handles selections in the context menu for menu items of type shortcut.
+ *
+ * @param action The selected action e.g. 'copy'
+ * @param href The value of the href-attribute for the selected item.
+ */
+openaksess.navigate.handleContextMenuClick_shortcut = function (action, href) {
+    return openaksess.navigate.handleContextMenuClick_page(action, href);
 };
 
 

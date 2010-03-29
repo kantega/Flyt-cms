@@ -24,10 +24,18 @@
 
 <kantega:section id="body">
     <script type="text/javascript">
+        $(document).ready(function() {
+            setTimeout('closePopup()', 3000);
+        });
+
+        function closePopup() {
+            buttonOkPressed();
+            closeWindow();
+        }
+
         function buttonOkPressed() {
-            // TODO: Send event, dont reload page
-            getParent().location.href = "Navigate.action";
-            return false;
+            getParent().stateHandler.setState("${currentPage.url}");
+            return true;
         }
     </script>
     <div class="fieldset">

@@ -81,9 +81,9 @@ public class DeleteAssociationAction implements Controller {
             List associations = content.getAssociations();
             if (associations != null) {
                 if (associations.size() > 1) {
-                    isCrossPublished = true;
-                    model.put("associationId", cid.getAssociationId());
+                    isCrossPublished = true;                    
                 }
+                model.put("associationId", cid.getAssociationId());
             }
 
             model.put("content", content);
@@ -122,6 +122,7 @@ public class DeleteAssociationAction implements Controller {
                     }
                 }
             }
+            model.put("message", "aksess.confirmdelete.finished");
             return new ModelAndView(confirmDeleteView, model);
         }
     }

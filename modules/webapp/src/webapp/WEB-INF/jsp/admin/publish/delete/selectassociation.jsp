@@ -116,7 +116,7 @@
 
                     </c:when>
                     <c:otherwise>
-                        <input type="hidden" name="associationId" value="${associationId}">
+                        <input type="hidden" name="id" value="${associationId}">
                         <kantega:label key="aksess.confirmdelete.text" title="${contentTitle}"/>
                     </c:otherwise>
                 </c:choose>

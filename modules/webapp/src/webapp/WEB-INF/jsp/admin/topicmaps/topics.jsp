@@ -64,11 +64,14 @@
 
             $("#TopicTabs").tabs({
                 load: function (event, ui) {
+                    openaksess.common.debug("Topics.action TopicTabs.load:" + ui.panel.id);
                     openaksess.common.columnize();
-                    $("#TopicQuery").keyup(function(event) {
-                        var q = $("#TopicQuery").val().toUpperCase();
+                    var parent = $(ui.panel);
+                    $(".topicQuery", parent).keyup(function(event) {
+                        var q = $(".topicQuery", $(ui.panel)).val().toUpperCase();
+                        openaksess.common.debug("Topics.action TopicQuery: " + q);
                         if (q != "") {
-                            $("#TopicList li.letter").each(function() {
+                            $(".topicList li.letter", parent).each(function() {
                                 var hasElements = false;
                                 $("li", this).each(function() {
                                     var txt = $("a", this).html().toUpperCase();
@@ -78,7 +81,7 @@
                                     } else {
                                         $(this).hide();
                                     }
-                                    
+
                                 });
                                 if (hasElements) {
                                     $(this).show();
@@ -87,8 +90,8 @@
                                 }
                             });
                         } else {
-                            $("#TopicList li.letter").show();
-                            $("#TopicList li.letter li").show();
+                            $(".topicList li.letter", parent).show();
+                            $(".topicList li.letter li", parent).show();
                         }
                     });
 

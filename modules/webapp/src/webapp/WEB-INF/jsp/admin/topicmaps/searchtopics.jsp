@@ -24,10 +24,10 @@
 <input type="hidden" name="topicMapId" value="${topicMapId}" class="topicMapId">
 
 <div id="TopicFilter">
-    <label for="TopicQuery"><kantega:label key="aksess.topics.filter"/>:</label> <input type="text" name="TopicQuery" id="TopicQuery">
+    <label for="TopicQuery${topicMapId}"><kantega:label key="aksess.topics.filter"/>:</label> <input type="text" name="TopicQuery${topicMapId}" class="topicQuery" id="TopicQuery${topicMapId}">
 </div>
 
-<div id="TopicList">
+<div class="topicList">
     <ol class="alphabeticalList columnized columnCount3">
         <c:forEach var="letter" items="${topics}">
             <li class="letter" id="Letter_${letter.key}"><span class="letter"><c:out value="${letter.key}"/></span>
