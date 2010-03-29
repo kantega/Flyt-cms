@@ -24,7 +24,7 @@
             setAttributes(editor, elements[i], attribs);
         }
         editor.execCommand("mceEndUndoLevel");
-        getParent().ModalWindow.close();
+        getParent().openaksess.common.modalWindow.close();
     }
 
     /*

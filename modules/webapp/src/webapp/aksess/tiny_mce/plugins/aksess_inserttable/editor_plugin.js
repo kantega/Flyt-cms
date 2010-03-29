@@ -29,7 +29,7 @@
 
         _openPopup : function() {
             var modifyExisting = true; // what is this?
-            ModalWindow.open({
+            openaksess.common.modalWindow.open({
                 title: this.editor.getLang('aksess_inserttable.popup_title', 'Sett inn tabell'),
                 iframe:true,
                 href: "popups/InsertTable.action?edit=" + encodeURI(modifyExisting),

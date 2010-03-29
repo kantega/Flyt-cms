@@ -90,89 +90,94 @@ openaksess.common = {
             var now = new Date();
             console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
         }
-    }
+    },
+
+
+    /**
+     * Responsible for drawing pop-ups and modals.
+     */
+    modalWindow : function() {
+
+        var $content = '';
+
+        var config = {
+            title: 'OpenAksess',
+            titlebar: true,
+            resizable: true,
+            modal: true,
+            iframe: false,
+            closeOnEscape: true,
+            height: 400,
+            width: 600,
+            horizontalPadding: 0,
+            verticalPadding: 0,
+            open: function(){
+                $.event.trigger("resize");
+            },
+            autoResize: true,
+            autoOpen: true,
+            overlay: {
+                opacity: 0.2,
+                background: "black"
+            }
+        };
+
+
+        return {
+            /**
+             * Opens a modal with the desired properties.
+             *
+             * @param additionalConfig
+             */
+            open : function(additionalConfig){
+                openaksess.common.debug("openaksess.common.modalWindow.open(): additionalConfig: " + additionalConfig);
+
+                if (additionalConfig && typeof(additionalConfig) == 'object') {
+                    openaksess.common.debug("openaksess.common.modalWindow.open(): Extending default config with user supplied config.");
+                    $.extend(config, additionalConfig);
+                }
+
+                if (!config.position) {
+                    config.position = [(($(window).width()-config.width)/2),(($(window).height()-config.height)/2)];
+                }
+
+
+                if (config.iframe) {
+                    $content = $('<iframe id="externalSite" src="' + config.href + '" />');
+                } else {
+                    $content = $("<div/>").load(config.href);
+                }
+
+                openaksess.common.debug("openaksess.common.modalWindow.open(): Opening modal window.");
+
+                $content.dialog(config);
+
+                if (config.iframe) {
+                    $content.width(config.width - config.horizontalPadding).height(config.height - config.verticalPadding);
+                }
+
+                openaksess.common.debug("openaksess.common.modalWindow.open(): Modal window opened.");
+
+            },
+
+
+            /**
+             * Closes the current modal.
+             */
+            close : function(){
+                openaksess.common.debug("openaksess.common.modalWindow.close()");
+                $content.dialog('close');
+            }
+        };
+
+    }()
 
 
 };
 
 
 
-/**
- * Responsible for drawing pop-ups and modals.
- */
-var ModalWindow = {
 
-    $content: '',
-
-    config: {
-        title: 'OpenAksess',
-        titlebar: true,
-        resizable: true,
-        modal: true,
-        iframe: false,
-        closeOnEscape: true,
-        height: 400,
-        width: 600,
-        horizontalPadding: 0,
-        verticalPadding: 0,
-        open: function(){
-            $.event.trigger("resize");
-        },
-        autoResize: true,
-        autoOpen: true,
-        overlay: {
-            opacity: 0.2,
-            background: "black"
-        }
-    },
-
-
-    /**
-     * Opens a modal with the desired properties.
-     *
-     * @param config
-     */
-    open: function(config){
-        openaksess.common.debug("common.ModalWindow.open(): config: " + config);
-
-        if (config && typeof(config) == 'object') {
-            openaksess.common.debug("common.ModalWindow.open(): Extending default config with user supplied config.");
-            $.extend(ModalWindow.config, config);
-        }
-
-        if (!ModalWindow.config.position) {
-            ModalWindow.config.position = [(($(window).width()-ModalWindow.config.width)/2),(($(window).height()-ModalWindow.config.height)/2)];
-        }
-
-
-        if (ModalWindow.config.iframe) {
-            $content = $('<iframe id="externalSite" src="' + ModalWindow.config.href + '" />');
-        } else {
-            $content = $("<div/>").load(ModalWindow.config.href);
-        }
-
-        openaksess.common.debug("common.ModalWindow.open(): Opening modal window.");
-
-        $content.dialog(ModalWindow.config);
-
-        if (ModalWindow.config.iframe) {
-            $content.width(ModalWindow.config.width - ModalWindow.config.horizontalPadding).height(ModalWindow.config.height - ModalWindow.config.verticalPadding);
-        }
-
-        openaksess.common.debug("common.ModalWindow.open(): Modal window opened.");
-
-    },
-
-
-    /**
-     * Closes the current modal.
-     */
-    close: function(){
-        openaksess.common.debug("common.ModalWindow.close()");
-        $content.dialog('close');
-    }
-
-};
 
 
 

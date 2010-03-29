@@ -59,7 +59,7 @@
             if (window.opener) {
                 window.close();
             } else {
-                window.parent.ModalWindow.close();
+                window.parent.openaksess.common.modalWindow.close();
             }
         }
 

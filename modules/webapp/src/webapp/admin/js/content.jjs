@@ -210,7 +210,7 @@ openaksess.content = {
 
         deleteItem: function(url) {
             openaksess.common.debug("openaksess.content.publish.deleteItem(): url: " + url);
-            ModalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
         },
 
         cut: function(url) {
@@ -231,24 +231,24 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.publish.paste(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
         },
 
         pasteAsShortcut: function(url) {
             openaksess.common.debug("openaksess.content.publish.pasteAsShortcut(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            ModalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
         },
 
         displayPeriod: function(url) {
             openaksess.common.debug("openaksess.content.publish.displayPeriod(): url: " + url);
-            ModalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
         },
 
         managePrivileges: function(url) {
             openaksess.common.debug("openaksess.content.publish.managePrivileges(): url: " + url);
-            ModalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:560});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:560});
         },
 
         approve: function(url) {
@@ -257,7 +257,7 @@ openaksess.content = {
         },
 
         reject: function(url) {
-            ModalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
         }
     },
 

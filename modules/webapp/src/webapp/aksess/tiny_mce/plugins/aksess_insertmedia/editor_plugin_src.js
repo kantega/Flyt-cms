@@ -28,7 +28,7 @@
 
         _openPopup : function() {
             openaksess.editcontext.doInsertTag = true;
-            ModalWindow.open({
+            openaksess.common.modalWindow.open({
                 title:"Sett inn multimedia",
                 iframe:true,
                 href: "../multimedia/EditMultimedia.action",

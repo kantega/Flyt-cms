@@ -60,7 +60,7 @@
         if (window.opener) {
             window.close();
         } else {
-            p.ModalWindow.close();
+            p.openaksess.common.modalWindow.close();
         }
 
     }

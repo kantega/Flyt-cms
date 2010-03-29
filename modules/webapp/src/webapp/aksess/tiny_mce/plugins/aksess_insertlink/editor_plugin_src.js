@@ -54,7 +54,7 @@
                 }
             }
 
-            ModalWindow.open({
+            openaksess.common.modalWindow.open({
                 title:"Sett inn lenke",
                 iframe:true,
                 href: "popups/InsertLink.action?url=" + encodeURI(href) + "&anchor=" + encodeURI(anchor) + "&isOpenInNewWindow=" + encodeURI(newWindow),

@@ -31,7 +31,7 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $("#SettingsButton").click(function(){
-                ModalWindow.open({href: 'MyPageSettings.action', iframe: true, title: '<kantega:label key="aksess.tools.settings"/>'});
+                openaksess.common.modalWindow.open({href: 'MyPageSettings.action', iframe: true, title: '<kantega:label key="aksess.tools.settings"/>'});
             });
         });
     </script>
