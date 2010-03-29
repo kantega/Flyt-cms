@@ -18,20 +18,10 @@
 request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 //%>
 
-/**
- * Determines what should happen inside the main pane when an action that requires a reload of this occurs,
- * e.g. a navigator click.
- *
- * @param id - Current item id.
- * @param suppressNavigatorUpdate
- */
-function updateMainPane (id, suppressNavigatorUpdate) {
-    openaksess.common.debug("organizesubpages.updateMainPane(): id: " + id);
-    openaksess.organizesubpages.currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
-    openaksess.common.debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
-    openaksess.organizesubpages.updateSubPageList();
-}
 
+/********************************************************************************
+ * Namespace for organize subpages
+ ********************************************************************************/
 
 openaksess.organizesubpages = function()  {
     /**
@@ -98,3 +88,25 @@ openaksess.organizesubpages = function()  {
         }
     };
 }();
+
+
+
+
+/********************************************************************************
+ * Overridden functions from inherited namespaces.
+ ********************************************************************************/
+
+
+/**
+ * Determines what should happen inside the main pane when an action that requires a reload of this occurs,
+ * e.g. a navigator click.
+ *
+ * @param id - Current item id.
+ * @param suppressNavigatorUpdate
+ */
+openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
+    openaksess.common.debug("organizesubpages.updateMainPane(): id: " + id);
+    openaksess.organizesubpages.currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
+    openaksess.common.debug("organizesubpages.updateMainPane(): currentUrl: " + openaksess.organizesubpages.currentUrl);
+    openaksess.organizesubpages.updateSubPageList();
+};

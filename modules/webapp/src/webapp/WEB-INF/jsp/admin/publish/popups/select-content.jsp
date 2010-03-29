@@ -39,7 +39,7 @@
             return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
         };
 
-        function onNavigatorTitleClick(elm) {
+        openaksess.navigate.onNavigatorTitleClick = function(elm) {
             var href = elm.attr("href");
             var title = elm.attr("title");
             var id;
@@ -65,7 +65,7 @@
             }
 
             closeWindow();
-        }
+        };
 
 
         openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {

@@ -19,10 +19,10 @@
   ~ limitations under the License.
   --%>
 <script type="text/javascript">
-    function statisticsPageLoaded() {
-        drawDateViewStatistics();
-        drawHourViewStatistics();
-    }
+    openaksess.statistics.pageLoaded = function() {
+        openaksess.statistics.drawDateViewStatistics();
+        openaksess.statistics.drawHourViewStatistics();
+    };
 </script>
 
 <!---->
@@ -82,7 +82,7 @@
                 </table>
 
                 <script type="text/javascript">
-                    function drawDateViewStatistics() {
+                    openaksess.statistics.drawDateViewStatistics = function() {
                         var chart;
                         var data = new google.visualization.DataTable();
                         data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.day"/>');
@@ -95,7 +95,7 @@
 
                         chart = new google.visualization.AreaChart(document.getElementById('dateViewStats_div'));
                         chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Day of month'});
-                    }
+                    };
                 </script>
                 <div id="dateViewStats_div"></div>
 
@@ -119,7 +119,7 @@
                 </table>
 
                 <script type="text/javascript">
-                    function drawHourViewStatistics() {
+                    openaksess.statistics.drawHourViewStatistics = function() {
                         var chart;
                         var data = new google.visualization.DataTable();
                         data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.hour"/>');
@@ -132,7 +132,7 @@
 
                         chart = new google.visualization.AreaChart(document.getElementById('hourViewStats_div'));
                         chart.draw(data, {width: 580, height: 280, legend: 'bottom', title: 'Hour of day'});
-                    }
+                    };
                 </script>
                 <div id="hourViewStats_div"></div>
 

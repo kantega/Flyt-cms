@@ -43,7 +43,7 @@
             return openaksess.common.getQueryParam("itemIdentifier", href);
         };
 
-        function onNavigatorTitleClick(elm) {
+        openaksess.navigate.onNavigatorTitleClick = function(elm) {
             var href = elm.attr("href");
             currentItemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
 
@@ -59,7 +59,7 @@
                 }
             }
             closeWindow();
-        }
+        };
 
         openaksess.navigate.getNavigatorParams = function() {
             var params = new Object();

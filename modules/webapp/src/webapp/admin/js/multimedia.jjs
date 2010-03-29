@@ -22,9 +22,9 @@ var currentItemIdentifier = 0;
 
 $(document).ready(function(){
     openaksess.common.debug("multimedia.$(document).ready(): multimedia");
-    bindMultimediaupdateEvents();
-    triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
-    bindToolButtons();
+    openaksess.multimedia.bindMultimediaupdateEvents();
+    openaksess.multimedia.triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
+    openaksess.multimedia.bindToolButtons();
     stateHandler.init("multimediaupdate");
     /* TODO: Dette virker ikke
     var href = location.href;
@@ -34,120 +34,295 @@ $(document).ready(function(){
     }*/
 });
 
-/**
- * Actions associated with each tool.
- */
-var Multimedia =  {
-    edit: function(id) {
-        openaksess.common.debug("Multimedia.edit(): id: " + id);
-        window.location.href = "EditMultimedia.action?id=" + id;
-    },
 
-    deleteItem: function(id) {
-        openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
-        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
-    },
+/********************************************************************************
+ *
+ * Namespace for multimediaspecific functions and objects.
+ *
+ ********************************************************************************/
+openaksess.multimedia = {
 
-    cut: function(id) {
-        openaksess.common.debug("Multimedia.cut(): id: " + id);
-        MultimediaClipboardHandler.cut(id);
-        $(".contextMenu").enableContextMenuItems("#paste");
-        //openaksess.content.contentstatus.enableButtons(['PasteButton']);
-    },
-
-    copy: function(id) {
-        openaksess.common.debug("Multimedia.copy(): id: " + id);
-        MultimediaClipboardHandler.copy(id);
-        $(".contextMenu").enableContextMenuItems("#paste");
-        //openaksess.content.contentstatus.enableButtons(['PasteButton']);
-    },
-
-    paste: function(id) {
-        openaksess.common.debug("Multimedia.paste(): id: " + id);
-        $(".contextMenu").disableContextMenuItems("#paste");
-        //openaksess.content.contentstatus.disableButtons(['PasteButton']);
-        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
-    },
-
-    managePrivileges: function(id) {
-        openaksess.common.debug("Multimedia.managePrivileges(): id: " + id);
-        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + id + "&type=<%=ObjectType.MULTIMEDIA%>",width: 650, height:560});
-    }
-};
-
-/**
- * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
- */
-var MultimediaStatus = {
-
-    breadcrumbs: function (path) {
-        if (path) {
-            var crumbs = '<ul class="breadcrumbs">';
-            for (var i=0; i<path.length; i++) {
-                crumbs += "<li><a href=\"?itemIdentifier="+path[i].id+"\">"+path[i].title+"</a></li>";
+    /**
+     * Contains the binding of all elements that are listening to the multimediaupdate event.
+     * New global listeners to this event should be added here.
+     */
+    bindMultimediaupdateEvents : function() {
+        //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
+        $("#Navigator").bind("multimediaupdate", function(e, itemIdentifier){
+            openaksess.common.debug("openaksess.multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
+            if (!suppressNavigatorUpdate) {
+                openaksess.navigate.updateNavigator(itemIdentifier, true);
+            } else {
+                suppressNavigatorUpdate = false;
+                openaksess.common.debug("openaksess.multimedia.bindMultimediaupdateEvents(): navigationUpdate suppressed");
             }
-            crumbs += "</ul>";
-            $("#Breadcrumbs").html(crumbs);
+            openaksess.navigate.updateMainPane(itemIdentifier, suppressNavigatorUpdate);
+        });
+
+        $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
+            openaksess.common.debug("openaksess.multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
+            openaksess.multimedia.multimediastatus.disableButtons();
+            $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
+                openaksess.common.debug("openaksess.multimedia.update breadcrumbs");
+                openaksess.multimedia.multimediastatus.breadcrumbs(data.path);
+                openaksess.multimedia.multimediastatus.enableButtons(data.enabledButtons);
+            }, "json");
+        });
+    },
+
+    triggerMultimediaupdateEvent : function() {
+        openaksess.common.debug("openaksess.multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
+        stateHandler.setState(currentItemIdentifier);
+        $.event.trigger("multimediaupdate",currentItemIdentifier);
+    },
+
+    /**
+     * Registers click event actions to each tool
+     */
+    bindToolButtons : function() {
+        openaksess.multimedia.bindMediaAjaxUpload();
+        $("#NewFolderButton").click(function() {
+            if ($(this).not(".disabled")) {
+                openaksess.multimedia.createMediaFolder();
+            }
+        });
+        $("#DeleteFolderButton").click(function() {
+            if ($(this).not(".disabled")) {
+                openaksess.multimedia.tools.deleteItem(currentItemIdentifier);
+            }
+        });
+    },
+
+    /**
+     * Actions associated with each tool.
+     */
+    tools :  {
+        edit: function(id) {
+            openaksess.common.debug("Multimedia.edit(): id: " + id);
+            window.location.href = "EditMultimedia.action?id=" + id;
+        },
+    
+        deleteItem: function(id) {
+            openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
+        },
+    
+        cut: function(id) {
+            openaksess.common.debug("Multimedia.cut(): id: " + id);
+            MultimediaClipboardHandler.cut(id);
+            $(".contextMenu").enableContextMenuItems("#paste");
+            //openaksess.content.contentstatus.enableButtons(['PasteButton']);
+        },
+    
+        copy: function(id) {
+            openaksess.common.debug("Multimedia.copy(): id: " + id);
+            MultimediaClipboardHandler.copy(id);
+            $(".contextMenu").enableContextMenuItems("#paste");
+            //openaksess.content.contentstatus.enableButtons(['PasteButton']);
+        },
+    
+        paste: function(id) {
+            openaksess.common.debug("Multimedia.paste(): id: " + id);
+            $(".contextMenu").disableContextMenuItems("#paste");
+            //openaksess.content.contentstatus.disableButtons(['PasteButton']);
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
+        },
+    
+        managePrivileges: function(id) {
+            openaksess.common.debug("Multimedia.managePrivileges(): id: " + id);
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + id + "&type=<%=ObjectType.MULTIMEDIA%>",width: 650, height:560});
         }
     },
-    disableButtons: function() {
-        $("#ToolsMenu a").addClass("disabled");
-    },
-    enableButtons: function(buttons) {
-        if (buttons) {
-            for (var i=0; i < buttons.length; i++) {
-                var b = buttons[i];
-                $("#" + b).removeClass("disabled");
+
+    /**
+     * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
+     */
+    multimediastatus : {
+
+        breadcrumbs: function (path) {
+            if (path) {
+                var crumbs = '<ul class="breadcrumbs">';
+                for (var i=0; i<path.length; i++) {
+                    crumbs += "<li><a href=\"?itemIdentifier="+path[i].id+"\">"+path[i].title+"</a></li>";
+                }
+                crumbs += "</ul>";
+                $("#Breadcrumbs").html(crumbs);
+            }
+        },
+        disableButtons: function() {
+            $("#ToolsMenu a").addClass("disabled");
+        },
+        enableButtons: function(buttons) {
+            if (buttons) {
+                for (var i=0; i < buttons.length; i++) {
+                    var b = buttons[i];
+                    $("#" + b).removeClass("disabled");
+                }
             }
         }
-    }
 
-};
+    },
+
+    /**
+     * Adds click listeners to the different media types and decides actions on these clicks.
+     */
+    addMediaitemClickListeners : function() {
+
+        $("#MultimediaFolders div[id^=Media]").click(function(event){
+            $media = $(this);
+
+            if ($(event.target).hasClass("name")) {
+                event.stopPropagation();
+                openaksess.multimedia.editMediaName(this);
+            }
+
+            else if ($media.hasClass("folder")) {
+                openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): folder click recieved");
+                if (openaksess.multimedia.isNameEditInProgress(this)) {
+                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
+                    openaksess.multimedia.updateMediaName(this);
+                } else {
+                    var idAttr = $media.attr("id");
+                    currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
+                    openaksess.multimedia.triggerMultimediaupdateEvent();
+                }
+            }
+
+            else if ($media.hasClass("media")) {
+                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
+                    if (openaksess.multimedia.isNameEditInProgress(this)) {
+                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
+                        openaksess.multimedia.updateMediaName(this);
+                    } else {
+                        window.location.href = $media.find(".icon a").attr("href");
+                    }
+                }
+        });
+
+    },
 
 
-/**
- * Registers click event actions to each tool
- */
-function bindToolButtons() {
-    bindMediaAjaxUpload();
-    $("#NewFolderButton").click(function() {
-        if ($(this).not(".disabled")) {
-            createMediaFolder();
-        }
-    });
-    $("#DeleteFolderButton").click(function() {
-        if ($(this).not(".disabled")) {
-            Multimedia.deleteItem(currentItemIdentifier);
-        }
-    });
-}
-/**
- * Contains the binding of all elements that are listening to the multimediaupdate event.
- * New global listeners to this event should be added here.
- */
-function bindMultimediaupdateEvents() {
-    //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
-    $("#Navigator").bind("multimediaupdate", function(e, itemIdentifier){
-        openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
-        if (!suppressNavigatorUpdate) {
-            openaksess.navigate.updateNavigator(itemIdentifier, true);
+    getViewFolderAction : function() {
+        return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
+    },
+
+    getEditAction : function() {
+        return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
+    },
+
+    bindMediaAjaxUpload : function() {
+        var button = $('#UploadButton');
+        new AjaxUpload(button, {
+            action: 'UploadMultimedia.action',
+            name: 'file',
+            onSubmit : function(file, ext){
+                this.setData({
+                    'parentId': currentItemIdentifier,
+                    'id' : -1
+                });
+                button.text('Uploading...');
+                this.disable();
+
+            },
+            onComplete: function(file, response){
+                button.text('New file');
+                // enable upload button
+                this.enable();
+                openaksess.multimedia.displayResults(response);
+            }
+        });
+    },
+
+    displayResults : function(xml) {
+        var files = xml.getElementsByTagName("file");
+
+        if (files) {
+            if (files.length == 1) {
+                var id = files[0].getAttribute("id");
+                location.href = "EditMultimedia.action?id=" + id;
+            } else {
+                alert(files.length + " files uploaded");
+            }
         } else {
-            suppressNavigatorUpdate = false;
-            openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): navigationUpdate suppressed");
+            alert("Upload failed!");
         }
-        updateMainPane(itemIdentifier, suppressNavigatorUpdate);
-    });
+    },
 
-    $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
-        openaksess.common.debug("multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
-        MultimediaStatus.disableButtons();
-        $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
-            openaksess.common.debug("multimedia.update breadcrumbs");
-            MultimediaStatus.breadcrumbs(data.path);
-            MultimediaStatus.enableButtons(data.enabledButtons);
-        }, "json");
-    });
-}
+    /**
+     * Enables inline editing of the media item's name.
+     *
+     * @param obj - Must be the object's containing element, i.e. a div with id=Media[..]
+     */
+    editMediaName : function(obj) {
+        if ($("input", obj).length == 0) {
+            var $name = $(obj).find(".name");
+            var value = $name.html();
+            var html = '<input type="hidden" class="oldName" value="' + value + '">';
+            html += '<input type="text" class="newName" maxlength="255" value="' + value + '">';
+            $name.html(html);
+            $("input.newName", obj)
+                    .keypress(function(e) {
+                        if (e.which == 13 || e.which == 0) {//Enter or tab
+                            openaksess.multimedia.updateMediaName(obj);
+                        }
+                    }).click(function(e){
+                        e.stopPropagation();
+                    }).focus();
+        }
+    },
+
+    isNameEditInProgress : function(obj) {
+        return $("input.newName", obj).length > 0;
+    },
+
+    updateMediaName : function(obj) {
+        var $obj = $(obj);
+        var idAttr = $obj.attr('id');
+        var id = idAttr.substring("Media".length, idAttr.length);
+        var newName = $obj.find("input.newName").val();
+        var oldName = $obj.find("input.oldName").val();
+        openaksess.common.debug("openaksess.multimedia.updateMediaName(): id: "+id+", newName: "+newName+", oldName:"+oldName);
+
+        if (newName.length < 1) {
+            return;
+        }
+
+        if (oldName != newName) {
+            openaksess.common.debug("openaksess.multimedia.updateMediaName(): id: " + id + ", name: " + newName);
+            $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
+                // Update navigation menu
+                openaksess.navigate.updateNavigator(currentItemIdentifier, true);
+            });
+        }
+        $obj.find(".name").html(newName);
+    },
+
+
+    createMediaFolder : function() {
+        var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
+        if (folderName != null && folderName != "") {
+            openaksess.common.debug("openaksess.multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
+            $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
+                openaksess.multimedia.triggerMultimediaupdateEvent();
+            });
+        }
+    }
+
+
+};
+
+
+
+
+
+
+
+/********************************************************************************
+ *
+ * Overridden functions from inherited namespaces.
+ *
+ ********************************************************************************/
+
 
 /**
  * Changes the content of the main pane
@@ -155,57 +330,20 @@ function bindMultimediaupdateEvents() {
  * @param itemIdentifier
  * @param suppressNavigatorUpdate true/false.
  */
-function updateMainPane(itemIdentifier, suppressNavigatorUpdate) {
-    openaksess.common.debug("multimedia.updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
+openaksess.navigate.updateMainPane = function(itemIdentifier, suppressNavigatorUpdate) {
+    openaksess.common.debug("multimedia:openaksess.navigate.updateMainPane(): itemIdentifier: " + itemIdentifier + ", suppressNavigatorUpdate: " + suppressNavigatorUpdate);
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
-    $("#MultimediaFolders").load(getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
-        addMediaitemClickListeners();
+    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
+        openaksess.multimedia.addMediaitemClickListeners();
         $("#MultimediaFolders img.thumbnail").lazyload({
             placeholder : "../bitmaps/blank.gif",
             container: $("#MultimediaFolders")
         });
     });
-}
+};
 
-/**
- * Adds click listeners to the different media types and decides actions on these clicks.
- */
-function addMediaitemClickListeners() {
-
-    $("#MultimediaFolders div[id^=Media]").click(function(event){
-        $media = $(this);
-
-        if ($(event.target).hasClass("name")) {
-            event.stopPropagation();
-            editMediaName(this);
-        }
-
-        else if ($media.hasClass("folder")) {
-            openaksess.common.debug("multimedia.addMediaitemClickListeners(): folder click recieved");
-            if (isNameEditInProgress(this)) {
-                openaksess.common.debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
-                updateMediaName(this);
-            } else {
-                var idAttr = $media.attr("id");
-                currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                triggerMultimediaupdateEvent();
-            }
-        }
-
-        else if ($media.hasClass("media")) {
-                openaksess.common.debug("multimedia.addMediaitemClickListeners(): media click recieved");
-                if (isNameEditInProgress(this)) {
-                    openaksess.common.debug("multimedia.addMediaitemClickListeners(): Name edit in progress");
-                    updateMediaName(this);
-                } else {
-                    window.location.href = $media.find(".icon a").attr("href");
-                }
-            }
-    });
-
-}
 
 /**
  * Sets the context (right click) menus in the navigator.
@@ -225,22 +363,22 @@ openaksess.navigate.handleContextMenuClick_folder = function(action, href) {
     var id = openaksess.common.getQueryParam("itemIdentifier", href);
     switch (action) {
         case 'edit':
-            Multimedia.edit(id);
+            openaksess.multimedia.tools.edit(id);
             break;
         case 'delete':
-            Multimedia.deleteItem(id);
+            openaksess.multimedia.tools.deleteItem(id);
             break;
         case 'cut':
-            Multimedia.cut(id);
+            openaksess.multimedia.tools.cut(id);
             break;
         case 'copy':
-            Multimedia.copy(id);
+            openaksess.multimedia.tools.copy(id);
             break;
         case 'paste':
-            Multimedia.paste(id);
+            openaksess.multimedia.tools.paste(id);
             break;
         case 'managePrivileges':
-            Multimedia.managePrivileges(id);
+            openaksess.multimedia.tools.managePrivileges(id);
             break;
     }
 };
@@ -254,33 +392,39 @@ openaksess.navigate.getNavigatorAction = function() {
     return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
 };
 
-function getViewFolderAction() {
-    return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
-}
-
-function getEditAction() {
-    return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
-}
 
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
 };
 
-function onNavigatorTitleClick(elm) {
+openaksess.navigate.onNavigatorTitleClick = function(elm) {
     var href = elm.attr("href");
     currentItemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
-    if(elm.hasClass("image")) {
-        window.location.href = getEditAction()+"?id="+currentItemIdentifier;
+    openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem.href: "+href+", currentItemIdentifier: "+currentItemIdentifier);
+    if(elm.hasClass("media")) {
+        openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem has class 'media'. Opening for edit.");
+        window.location.href = openaksess.multimedia.getEditAction()+"?id="+currentItemIdentifier;
     } else {
-        triggerMultimediaupdateEvent();
+        openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem does not have class 'media'. Triggering update event.");
+        openaksess.multimedia.triggerMultimediaupdateEvent();
     }
-}
+};
 
-function triggerMultimediaupdateEvent() {
-    openaksess.common.debug("multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
-    stateHandler.setState(currentItemIdentifier);
-    $.event.trigger("multimediaupdate",currentItemIdentifier);
-}
+/**
+* Navigation layout specific implementation of the navigatorResizeOnResize-function.
+* See navigate.jjs
+*/
+openaksess.navigate.navigatorResizeOnResize = function() {
+    $.event.trigger("resize");
+};
+
+
+
+
+
+
+
+
 
 
 /**
@@ -289,7 +433,7 @@ function triggerMultimediaupdateEvent() {
  * @param elementProperties
  */
 openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
-    openaksess.common.debug("multimedia.setLayoutSpecificSizes()");
+    openaksess.common.debug("multimedia:openaksess.admin.setLayoutSpecificSizes.setLayoutSpecificSizes()");
     $("html, body").css("overflow", "hidden");
     $("#Navigator").css('height', (elementProperties.window.height-elementProperties.top.height-5) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height) + 'px');
@@ -314,109 +458,5 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
 
 };
 
-/**
-* Navigation layout specific implementation of the navigatorResizeOnResize-function.
-* See navigate.jjs
-*/
-openaksess.navigate.navigatorResizeOnResize = function() {
-    $.event.trigger("resize");
-};
 
 
-function bindMediaAjaxUpload() {
-    var button = $('#UploadButton');
-    new AjaxUpload(button, {
-        action: 'UploadMultimedia.action',
-        name: 'file',
-        onSubmit : function(file, ext){
-            this.setData({
-                'parentId': currentItemIdentifier,
-                'id' : -1
-            });
-            button.text('Uploading...');
-            this.disable();
-
-        },
-        onComplete: function(file, response){
-            button.text('New file');
-            // enable upload button
-            this.enable();
-            displayResults(response);
-        }
-    });
-}
-
-function displayResults(xml) {
-    var files = xml.getElementsByTagName("file");
-
-    if (files) {
-        if (files.length == 1) {
-            var id = files[0].getAttribute("id");
-            location.href = "EditMultimedia.action?id=" + id;
-        } else {
-            alert(files.length + " files uploaded");
-        }
-    } else {
-        alert("Upload failed!");
-    }
-}
-
-/**
- * Enables inline editing of the media item's name.
- *
- * @param obj - Must be the object's containing element, i.e. a div with id=Media[..]
- */
-function editMediaName(obj) {
-    if ($("input", obj).length == 0) {
-        var $name = $(obj).find(".name");
-        var value = $name.html();
-        var html = '<input type="hidden" class="oldName" value="' + value + '">';
-        html += '<input type="text" class="newName" maxlength="255" value="' + value + '">';
-        $name.html(html);
-        $("input.newName", obj)
-                .keypress(function(e) {
-                    if (e.which == 13 || e.which == 0) {//Enter or tab
-                        updateMediaName(obj);
-                    }
-                }).click(function(e){
-                    e.stopPropagation();
-                }).focus();
-    }
-}
-
-function isNameEditInProgress(obj) {
-    return $("input.newName", obj).length > 0;
-}
-
-function updateMediaName(obj) {
-    var $obj = $(obj);
-    var idAttr = $obj.attr('id');
-    var id = idAttr.substring("Media".length, idAttr.length);
-    var newName = $obj.find("input.newName").val();
-    var oldName = $obj.find("input.oldName").val();
-    openaksess.common.debug("multimedia.updateMediaName(): id: "+id+", newName: "+newName+", oldName:"+oldName);
-
-    if (newName.length < 1) {
-        return;
-    }
-
-    if (oldName != newName) {
-        openaksess.common.debug("multimedia.updateMediaName(): id: " + id + ", name: " + newName);
-        $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
-            // Update navigation menu
-            openaksess.navigate.updateNavigator(currentItemIdentifier, true);
-        });
-    }
-    $obj.find(".name").html(newName);
-}
-
-
-function createMediaFolder() {
-    var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
-    if (folderName != null && folderName != "") {
-        openaksess.common.debug("multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
-        $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
-            triggerMultimediaupdateEvent();            
-        });
-    }
-}

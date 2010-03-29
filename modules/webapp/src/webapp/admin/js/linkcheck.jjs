@@ -23,42 +23,57 @@ var currentUrl = "${currentNavigateContent.url}";
 
 $(document).ready(function(){
     openaksess.common.debug("linkcheck.$(document).ready()");
-    updateLinkList(currentUrl, "title");
+    openaksess.linkcheck.updateLinkList(currentUrl, "title");
     $("#BrokenLinks th a").live('click', function(event) {
         event.preventDefault();
         var sort = $(this).attr("href");
         openaksess.common.debug("linkcheck.click sort: " + sort);
-        updateLinkList(currentUrl, "title");
+        openaksess.linkcheck.updateLinkList(currentUrl, "title");
     });
 });
+
+
+/********************************************************************************
+ * Namespace for linkcheck
+ ********************************************************************************/
+openaksess.linkcheck = {
+
+    /**
+     * Loads the list of subpages for the given url.
+     * @param url
+     */
+    updateLinkList : function(url, sort) {
+
+        openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Triggering contentupdate event");
+        openaksess.content.triggerContentUpdateEvent(url);
+
+        openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
+        $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){
+            openaksess.common.debug("openaksess.linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
+            $("#MainPaneContent div.fieldset").roundCorners();
+        });
+    }
+};
+
+
+
+/********************************************************************************
+ * Overridden functions.
+ ********************************************************************************/
 
 /**
  * Determines what should happen inside the main pane when an action that requires a reload of this occurs,
  * e.g. a navigator click.
  *
+ * Overrides the default implementation. See navigate.jjs
+ *
  * @param id - Current item id.
  * @param suppressNavigatorUpdate
  */
-function updateMainPane(id, suppressNavigatorUpdate) {
+openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
     openaksess.common.debug("linkcheck.updateMainPane(): id: " + id);
     currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
     openaksess.common.debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
-    updateLinkList(currentUrl, "title");
-}
+    openaksess.linkcheck.updateLinkList(currentUrl, "title");
+};
 
-
-/**
- * Loads the list of subpages for the given url.
- * @param url
- */
-function updateLinkList(url, sort) {
-
-    openaksess.common.debug("linkcheck.updateLinkList(): Triggering contentupdate event");
-    openaksess.content.triggerContentUpdateEvent(url);
-
-    openaksess.common.debug("linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
-    $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){
-        openaksess.common.debug("linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
-        $("#MainPaneContent div.fieldset").roundCorners();
-    });
-}

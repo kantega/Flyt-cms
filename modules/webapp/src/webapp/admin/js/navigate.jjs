@@ -111,15 +111,26 @@ openaksess.navigate = {
             event.preventDefault();
             var href = $(this).attr("href");
             var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
-            if(typeof onNavigatorTitleClick == 'function') {
-                onNavigatorTitleClick($(this));
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: "+itemIdentifier);
+            if(typeof openaksess.navigate.onNavigatorTitleClick == 'function') {
+                openaksess.navigate.onNavigatorTitleClick($(this));
             }
-            if(typeof updateMainPane == 'function') {
-                updateMainPane(itemIdentifier, true);
+            if(typeof openaksess.navigate.updateMainPane == 'function') {
+                openaksess.navigate.updateMainPane(itemIdentifier, true);
             }
         });
     },
 
+    /**
+     * Empty default implementation.
+     * @param clickedElement - jQuery object representing the clicked navigator menu element.
+     */
+    onNavigatorTitleClick : function(clickedElement){},
+
+    /**
+     * Empty default implementation.
+     */
+    updateMainPane : function(itemIdentifier, suppressNavigatorUpdate){},
 
     /**
      * Refreshes the navigator.

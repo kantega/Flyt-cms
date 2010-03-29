@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
+
+/********************************************************************************
+ * Namespace for the publish layout
+ ********************************************************************************/
+
+
+
+
+
+
+/********************************************************************************
+ * Overridden functions from inherited namespaces.
+ ********************************************************************************/
+
 /**
  * Publish layout specific implementation. Overrides the default openaksess.admin.setLayoutSpecificSizes.
  *

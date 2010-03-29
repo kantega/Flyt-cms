@@ -49,11 +49,13 @@
          * Changes the content of the contentmain iframe.
          * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
          *
+         * Overrides the default implementation. See navigate.jjs
+         *
          * @param id
          * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
          */
-        function updateMainPane(id, suppressNavigatorUpdate) {
-            openaksess.common.debug("updateMainPane(): id: " + id);
+        openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
+            openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
             if (suppressNavigatorUpdate) {
                 suppressNavigatorUpdate = true;
             }
@@ -61,7 +63,7 @@
             if (iframe) {
                 iframe.contentWindow.document.location.href = openaksess.common.getContentUrlFromAssociationId(id);
             }
-        }
+        };
 
 
     </script>

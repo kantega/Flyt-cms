@@ -190,7 +190,7 @@ openaksess.content = {
     publish : {
         open : function(url) {
             openaksess.common.debug("openaksess.content.publish.open(): url: " + url);
-            updateMainPane(url, false);
+            openaksess.navigate.updateMainPane(url, false);
         },
 
         openInNewWindow : function(url) {
