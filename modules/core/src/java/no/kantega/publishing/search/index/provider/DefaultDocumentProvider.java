@@ -134,6 +134,8 @@ public class DefaultDocumentProvider implements DocumentProvider {
                 if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
                     searchHit.setDoOpenInNewWindow(true);
                 }
+                
+                searchHit.setId(c.getAssociation().getAssociationId());
             }
 
             List<PathEntry> path = PathWorker.getPathByContentId(cid);

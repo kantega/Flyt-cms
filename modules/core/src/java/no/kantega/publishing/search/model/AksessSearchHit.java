@@ -37,7 +37,15 @@ public class AksessSearchHit implements SearchHit {
     private String fileExtension = null;
     private String fileName = null;
     private boolean doOpenInNewWindow = false;
+    private int id = -1;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Document getDocument() {
         return document;

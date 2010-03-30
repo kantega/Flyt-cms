@@ -96,7 +96,7 @@
             </map>
         </property>
     </bean>
-
+                
     <bean id="defaultDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultDocumentProvider">
         <property name="aksessDao" ref="aksessDao"/>
         <property name="sourceId" value="aksessContent"/>
