@@ -75,7 +75,7 @@
             <c:when test="${miniAksess}">
                 <!-- For users without access to mediaarchive - simple file upload -->
                 <input type="file" class="inp" style="width:600px;" name="<%=fieldName%>_upload" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
-                <input type="hidden" name="<%=fieldName%>" value="0">
+                <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
             </c:when>
             <c:otherwise>
                 <!-- For users with access to mediaarchive -->
