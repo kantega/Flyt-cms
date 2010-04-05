@@ -149,6 +149,7 @@ openaksess.navigate = {
         }
         params.expand = expand;
 
+        // TODO: Cant check contentclipboard handler -- what about mediaarchive?
         $("#Navigator").load(openaksess.navigate.getNavigatorAction(), params, function() {
             openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + openaksess.navigate.getNavigatorAction() + " received");
             ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
@@ -291,12 +292,18 @@ openaksess.search = {
         });
     },
 
+    getSearchAction : function() {
+        return null;
+    },
 
     performSearch : function(query){
         openaksess.common.debug("openaksess.navigate.Search.search(): query: " + query);
-        var searchUrl = "<%=request.getContextPath()%>/admin/publish/Search.action?q=" + query;
-        var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
-        new openaksess.admin.InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
+        var searchAction = openaksess.search.getSearchAction();
+        if (searchAction) {
+            var searchUrl = searchAction + "?q=" + query;
+            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
+            new openaksess.admin.InfoSlider().toggle("#MainPane", content, {resizable: true, additionalCssClasses: 'search'});
+        }
     },
 
     inputValid : function(query){
@@ -304,8 +311,6 @@ openaksess.search = {
         query = query.trim();
         return query.length >= 3;
     }
-
-
 };
 
 

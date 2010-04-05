@@ -174,10 +174,6 @@
         }
 
         function saveForm() {
-            if (!document.imagemapform.overwrite[0].checked && !document.imagemapform.overwrite[1].checked) {
-                alert("<kantega:label key="aksess.multimedia.crop.overwriteorcreatenew"/>");
-                return;
-            }
             if (!hasSubmitted) {
                 hasSubmitted = true;
                 document.imagemapform.submit();
@@ -239,7 +235,6 @@
     <div id="ImageMapContainer">
         <form name="imagemapform" id="ImageMapForm" action="ImageMap.action" method="post">
             <input type="hidden" name="id" value="${media.id}">
-
             <table id="ImageMapTable">
                 <thead>
                         <th class="imageMapLink"><kantega:label key="aksess.multimedia.imagemap.lenke"/></th>
@@ -250,14 +245,8 @@
                 <tbody>
                 </tbody>
             </table>
-
-            <input type="radio" id="overwrite" name="overwrite" value="true" <c:if test="${!allowOverwrite}">disabled</c:if>>
-            <label for="overwrite"><kantega:label key="aksess.multimedia.overwrite"/></label><br>
-
-            <input type="radio" id="createnew" name="overwrite" value="false" <c:if test="${!allowOverwrite}">checked="checked"</c:if>>
-            <label for="createnew"><kantega:label key="aksess.multimedia.createnew"/></label>
         </form>
     </div>
 </kantega:section>
 
-<%@ include file="../layout/multimediaLayout.jsp" %>
+<%@ include file="../layout/editMultimediaLayout.jsp" %>

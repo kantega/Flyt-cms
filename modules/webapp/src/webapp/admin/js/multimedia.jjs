@@ -241,10 +241,10 @@ openaksess.multimedia = {
                 var id = files[0].getAttribute("id");
                 location.href = "EditMultimedia.action?id=" + id;
             } else {
-                alert(files.length + " files uploaded");
+                alert(files.length + '<kantega:label key="aksess.multimedia.upload.files"/>');
             }
         } else {
-            alert("Upload failed!");
+            alert('<kantega:label key="aksess.multimedia.upload.failed"/>');
         }
     },
 
@@ -392,7 +392,6 @@ openaksess.navigate.getNavigatorAction = function() {
     return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
 };
 
-
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
 };
@@ -418,13 +417,9 @@ openaksess.navigate.navigatorResizeOnResize = function() {
     $.event.trigger("resize");
 };
 
-
-
-
-
-
-
-
+openaksess.search.getSearchAction = function() {
+    return "${pageContext.request.contextPath}/admin/multimedia/Search.action";
+};
 
 
 /**

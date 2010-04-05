@@ -21,9 +21,6 @@
     <li class="cut separator">
         <a href="#cut"><kantega:label key="aksess.navigator.cut"/></a>
     </li>
-    <li class="copy">
-        <a href="#copy"><kantega:label key="aksess.navigator.copy"/></a>
-    </li>
     <li class="paste">
         <a href="#paste"><kantega:label key="aksess.navigator.paste"/></a>
     </li>

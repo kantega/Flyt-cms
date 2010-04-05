@@ -53,17 +53,17 @@ openaksess.editcontext = function()  {
         doInsertTag : false,
 
         setIsModified : function() {
-            this.editIsModified = true;
+            openaksess.editcontext.editIsModified = true;
         },
 
         isModified : function () {
-            return this.editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
+            return openaksess.editcontext.editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
         },
 
 
         editKeyPress : function (e) {
-            if (this.focusField != null) {
-                this.editIsModified = true;
+            if (openaksess.editcontext.focusField != null) {
+                openaksess.editcontext.editIsModified = true;
             }
             return true;
         },
@@ -72,12 +72,13 @@ openaksess.editcontext = function()  {
          *  Sets field as focused element
          */
         setFocusField : function (field) {
-            this.focusField = field;
+            openaksess.common.debug("setFocusField:" + field.name);
+            openaksess.editcontext.focusField = field;
         },
 
 
         blurField : function () {
-            this.focusField = null;
+            openaksess.editcontext.focusField = null;
         },
 
 
@@ -112,7 +113,7 @@ openaksess.editcontext = function()  {
             $input.autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
                 var topicName = data[0];
                 var topicId = data[1].split(":");
-                this.focusField = null;
+                openaksess.editcontext.focusField = null;
                 ths.addTopic(topicId[0], topicId[1], topicName);
                 $(this).blur();
             });
@@ -146,7 +147,7 @@ openaksess.editcontext = function()  {
             params.topicId = topicId;
             params.topicMapId = topicMapId;
             params.remove = true;
-            this.updateTopics(params);
+            openaksess.editcontext.updateTopics(params);
         },
 
 
@@ -155,7 +156,7 @@ openaksess.editcontext = function()  {
          *  Let user select a topic
          */
         selectTopic : function (formElement, multiple) {
-            this.focusField = formElement;
+            openaksess.editcontext.focusField = formElement;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.selecttopic.title"/>', iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
         },
 
@@ -163,21 +164,21 @@ openaksess.editcontext = function()  {
          *  Callback to add topic to current page
          */
         addTopic : function (topicMapId, topicId, topicName) {
-            this.setIsModified();
+            openaksess.editcontext.setIsModified();
             openaksess.common.debug("add topic: " + topicName + ", topicId:" + topicId[1] + " topicMapId:" + topicId[0]);
-            if (this.focusField == null) {
+            if (openaksess.editcontext.focusField == null) {
                 // Update topic list
                 var params = new Object();
                 params.topicId = topicId;
                 params.topicMapId = topicMapId;
                 params.add = true;
-                this.updateTopics(params);
+                openaksess.editcontext.updateTopics(params);
             } else {
                 // Topic should be inserted into a input field
-                var name = this.focusField.name;
-                var textField = this.focusField.form.elements[name + 'text'];
+                var name = openaksess.editcontext.focusField.name;
+                var textField = openaksess.editcontext.focusField.form.elements[name + 'text'];
                 if (textField) {
-                    this.focusField.value = "" + topicMapId + ":" + topicId;
+                    openaksess.editcontext.focusField.value = "" + topicMapId + ":" + topicId;
                     textField.value = topicName;
                 }
             }
@@ -187,8 +188,8 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting a page url
          */
         selectContentUrl : function (formElement) {
-            this.focusField = formElement;
-            this.doInsertTag = true;
+            openaksess.editcontext.focusField = formElement;
+            openaksess.editcontext.doInsertTag = true;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
         },
 
@@ -211,8 +212,8 @@ openaksess.editcontext = function()  {
             if (items >= maxItems) {
                 alert('<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ' + maxItems + ' <kantega:label key="aksess.js.advarsel.elementer"/>');
             } else {
-                this.focusField = formElement;
-                this.doInsertTag = false;
+                openaksess.editcontext.focusField = formElement;
+                openaksess.editcontext.doInsertTag = false;
                 openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
             }
         },
@@ -222,8 +223,8 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting a user
          */
         selectUser : function (formElement) {
-            this.focusField = formElement;
-            this.doInsertTag = false;
+            openaksess.editcontext.focusField = formElement;
+            openaksess.editcontext.doInsertTag = false;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
         },
 
@@ -231,8 +232,8 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting a organizational unit
          */
         selectOrgunit : function (formElement) {
-            this.focusField = formElement;
-            this.doInsertTag = false;
+            openaksess.editcontext.focusField = formElement;
+            openaksess.editcontext.doInsertTag = false;
             var orgwin = window.open("../popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
             orgwin.focus();
         },
@@ -241,8 +242,8 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting a category
          */
         selectCategory : function (formElement) {
-            this.focusField = formElement;
-            this.doInsertTag = false;
+            openaksess.editcontext.focusField = formElement;
+            openaksess.editcontext.doInsertTag = false;
             var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
             catwin.focus();
         },
@@ -251,13 +252,13 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting media object
          */
         selectMultimedia : function (formElement, filter) {
-            this.focusField = formElement;
+            openaksess.editcontext.focusField = formElement;
             var id = -1;
-            if (this.focusField.value != "") {
-                id = this.focusField.value;
+            if (openaksess.editcontext.focusField.value != "") {
+                id = openaksess.editcontext.focusField.value;
             }
 
-            this.doInsertTag = false;
+            openaksess.editcontext.doInsertTag = false;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
         },
 
@@ -266,8 +267,8 @@ openaksess.editcontext = function()  {
          * Popup window for selecting media folder
          */
         selectMediaFolder : function (formElement) {
-            this.focusField = eval(formElement);
-            this.doInsertTag = false;
+            openaksess.editcontext.focusField = eval(formElement);
+            openaksess.editcontext.doInsertTag = false;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
         },
 
@@ -276,7 +277,7 @@ openaksess.editcontext = function()  {
          * Popup window for selecting a role
          */
         selectRole : function (formElement) {
-            this.focusField = formElement;
+            openaksess.editcontext.focusField = formElement;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
         },
 
@@ -285,7 +286,7 @@ openaksess.editcontext = function()  {
          * Popup for adding a list option used for editablelists
          */
         addListOption : function (formElement, attributeKey, language) {
-            this.focusField = formElement;
+            openaksess.editcontext.focusField = formElement;
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
         },
 
@@ -298,20 +299,20 @@ openaksess.editcontext = function()  {
             option.value = value;
             option.text = value;
 
-            for(var i = 0; i < this.focusField.options.length; i++) {
-                var o = this.focusField.options[i];
+            for(var i = 0; i < openaksess.editcontext.focusField.options.length; i++) {
+                var o = openaksess.editcontext.focusField.options[i];
                 if(value < o.value) {
                     try {
-                        this.focusField.add(option, focusField.options[i]);
+                        openaksess.editcontext.focusField.add(option, focusField.options[i]);
                     } catch(ex) { // IE
-                        this.focusField.add(option, i);
+                        openaksess.editcontext.focusField.add(option, i);
                     }
                     break;
-                } else if(i == this.focusField.options.length - 1) {
+                } else if(i == openaksess.editcontext.focusField.options.length - 1) {
                     try {
-                        this.focusField.add(option);
+                        openaksess.editcontext.focusField.add(option);
                     } catch (ex) {
-                        this.focusField.add(option, null);
+                        openaksess.editcontext.focusField.add(option, null);
                     }
 
                     break;
@@ -330,7 +331,7 @@ openaksess.editcontext = function()  {
                 for (var i=0; i < formElement.options.length; i++) {
                     if (formElement.options[i].selected) {
                         formElement.options[i] = null;
-                        this.setIsModified();
+                        openaksess.editcontext.setIsModified();
                     }
                 }
             });
@@ -341,13 +342,13 @@ openaksess.editcontext = function()  {
          * Insert id and value into form field
          */
         insertIdAndValueIntoForm : function insertIdAndValueIntoForm(id, text) {
-            this.setIsModified();
+            openaksess.editcontext.setIsModified();
 
-            if (this.focusField != null) {
-                var name = this.focusField.name;
+            if (openaksess.editcontext.focusField != null) {
+                var name = openaksess.editcontext.focusField.name;
 
-                var textField = this.focusField.form.elements[name + 'text'];
-                var listField = this.focusField.form.elements[name + 'list'];
+                var textField = openaksess.editcontext.focusField.form.elements[name + 'text'];
+                var listField = openaksess.editcontext.focusField.form.elements[name + 'list'];
                 if (listField) {
                     // Field is a list
                     var found = false;
@@ -361,14 +362,14 @@ openaksess.editcontext = function()  {
                     }
                     if(!found) {
                         listField.options[listField.options.length] = new Option(text, id, 0, 0);
-                        this.focusField.value = getEntriesFromList(listField);
+                        openaksess.editcontext.focusField.value = getEntriesFromList(listField);
                     }
                 } else if (textField) {
                     // Is textfield
-                    this.focusField.value = "" + id;
+                    openaksess.editcontext.focusField.value = "" + id;
                     textField.value = text;
                 } else {
-                    this.focusField.value = "" + id;
+                    openaksess.editcontext.focusField.value = "" + id;
                 }
             }
         },
@@ -383,14 +384,14 @@ openaksess.editcontext = function()  {
             var list = frm.elements[field.name + 'list'];
 
             if (text) {
-                this.setIsModified();
+                openaksess.editcontext.setIsModified();
                 field.value = "";
                 text.value = "";
             } else if (list) {
                 for (var i=0; i < list.options.length; i++) {
                     if (list.options[i].selected) {
                         list.options[i] = null;
-                        this.setIsModified();
+                        openaksess.editcontext.setIsModified();
                     }
                 }
 
@@ -431,7 +432,7 @@ openaksess.editcontext = function()  {
 
                     list.options[i+dir].selected = true;
 
-                    this.setIsModified();
+                    openaksess.editcontext.setIsModified();
                     field.value = getEntriesFromList(list);
 
                     return;
@@ -443,9 +444,9 @@ openaksess.editcontext = function()  {
          * Insert value into form
          */
         insertValueIntoForm : function (val) {
-            this.setIsModified();
-            if (this.focusField != null) {
-                this.focusField.value = "" + val;
+            openaksess.editcontext.setIsModified();
+            if (openaksess.editcontext.focusField != null) {
+                openaksess.editcontext.focusField.value = "" + val;
             }
         },
 
@@ -453,7 +454,7 @@ openaksess.editcontext = function()  {
          * Set flag indicating attachment should be deleted
          */
         removeAttachment : function (element) {
-            this.setIsModified();
+            openaksess.editcontext.setIsModified();
             var name = element.name;
             var field = element.form['delete_' + name];
             field.value = "1";

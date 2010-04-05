@@ -63,6 +63,7 @@ public class DeleteMultimediaAction implements Controller {
                 }
 
             }
+            model.put("message", "aksess.confirmdelete.multimedia.finished");            
             return new ModelAndView(confirmDeleteView, model);
         }
     }

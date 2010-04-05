@@ -113,6 +113,6 @@
     %>
 </form>
 </kantega:section>
-<%@ include file="../layout/publishLayout.jsp" %>
+<%@ include file="../layout/editContentLayout.jsp" %>
 
 

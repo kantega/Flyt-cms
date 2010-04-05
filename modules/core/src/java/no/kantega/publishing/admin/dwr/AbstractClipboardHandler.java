@@ -46,14 +46,16 @@ public abstract class AbstractClipboardHandler extends AbstractDwrController {
         Clipboard clipboard = null;
         HttpSession session = getSession();
         if (session != null) {
-            clipboard = (Clipboard) session.getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT) ;
+            clipboard = (Clipboard) session.getAttribute(getClipboardType()) ;
             if (clipboard == null) {
                 clipboard = new Clipboard();
-                session.setAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT, clipboard);
+                session.setAttribute(getClipboardType(), clipboard);
             }
         }
         return clipboard;
     }
 
     public abstract BaseObject getBaseObjectFromId(String id);
+
+    public abstract String getClipboardType();
 }

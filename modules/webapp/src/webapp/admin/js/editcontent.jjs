@@ -34,7 +34,7 @@
  * @param elementProperties
  */
 openaksess.admin.setLayoutSpecificSizes =  function(elementProperties) {
-    openaksess.common.debug("publish.setLayoutSpecificSizes()");
+    openaksess.common.debug("editcontent.setLayoutSpecificSizes()");
     
     var $sidebar = $("#SideBar");
     var $mainPane = $('#MainPane');

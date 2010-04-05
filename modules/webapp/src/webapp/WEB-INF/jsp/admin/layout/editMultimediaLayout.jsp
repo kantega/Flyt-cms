@@ -20,15 +20,11 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/sidebar.publish.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            // TODO: Include of multimedia.jjs causes problems, dependency should be removed,
-            // but that will break somethings
-            //bindToolButtons();
+            bindToolButtons();
         });
 
         /**
@@ -50,7 +46,6 @@
                     openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
                 });
             </c:if>
-
         }
     </script>
 

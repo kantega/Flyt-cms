@@ -654,24 +654,9 @@ openaksess.navigate.getNavigatorParams = function() {
     return params;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/*
+ * Return URL to search action
+ */
+openaksess.search.getSearchAction = function() {
+    return "${pageContext.request.contextPath}/admin/publish/Search.action";
+};

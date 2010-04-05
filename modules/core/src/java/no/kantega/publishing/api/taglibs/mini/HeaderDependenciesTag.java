@@ -36,7 +36,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/edit.jjs\"></script>");
+        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/editcontext.jjs\"></script>");
         out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce.js\"></script>");
     }
 }

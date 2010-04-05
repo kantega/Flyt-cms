@@ -12,6 +12,11 @@
     overflow: auto;
 }
 
+#SearchResult #MultimediaFolders {    
+    background-color: #FFF;
+    padding: 20px 0 0;
+}
+
 #MultimediaFolders .folder, #MultimediaFolders .media {
     padding: 10px;
     width: 240px;
@@ -49,6 +54,7 @@
     -webkit-box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
     box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
 }
+
 .media .icon .file {
     background: url("../bitmaps/common/mm/file.png") no-repeat center top;
     height: 100%;
@@ -68,6 +74,10 @@
     padding-left: 7px;
     padding-top: 10px;
     float: left;
+}
+
+#SearchResult .mediaInfo {
+    color: #000;
 }
 
 .mediaInfo .name {

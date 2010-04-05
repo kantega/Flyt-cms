@@ -26,7 +26,7 @@
 <kantega:section id="contentclass">mypage</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript" src="../js/edit.jjs"></script>
+    <script type="text/javascript" src="../js/editcontext.jjs"></script>
     <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){

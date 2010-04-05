@@ -23,6 +23,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/ajaxupload.3.5.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/interface/MultimediaClipboardHandler.js"></script>
 
 </kantega:section>
 
@@ -57,6 +58,7 @@
             <div id="Statusbar">
                 <div id="Breadcrumbs"></div> <%-- Loaded by MultimediaPropertiesAction --%>
             </div>
+            <div class="infoslider"></div>            
             <kantega:getsection id="content"/>
         </div>
     </div>

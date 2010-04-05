@@ -133,6 +133,7 @@
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
                 <prop key="/admin/multimedia/MultimediaNavigator.action">multimediaNavigatorAjaxAction</prop>
                 <prop key="/admin/multimedia/ViewFolder.action">viewFolderAjaxAction</prop>
+                <prop key="/admin/multimedia/Search.action">adminMultimediaSearchController</prop>
 
                 <!-- Multimedia -->
                 <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
@@ -343,6 +344,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
     <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
     <!-- Search content -->
@@ -500,9 +502,17 @@
     <bean id="viewFolderAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.ViewFolderAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/viewfolder.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction"/>
-    <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction"/>
-
+    <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/copypaste/confirmcopypaste.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/generic/popup-error.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/reloadparent.jsp"/>
+    </bean>
+    <!-- Search multimedia -->
+    <bean id="adminMultimediaSearchController" class="no.kantega.publishing.admin.multimedia.action.SearchMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/search.jsp"/>
+    </bean>   
     <!-- Multimedia -->
     <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>

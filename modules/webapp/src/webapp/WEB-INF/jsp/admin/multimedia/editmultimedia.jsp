@@ -100,4 +100,4 @@
     </div>
 </kantega:section>
 
-<%@ include file="../layout/multimediaLayout.jsp" %>
+<%@ include file="../layout/editMultimediaLayout.jsp" %>

@@ -7,6 +7,7 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.exception.NotAuthorizedException;
 
 /**
@@ -15,7 +16,6 @@ import no.kantega.commons.exception.NotAuthorizedException;
 @RemoteProxy(name="ContentClipboardHandler")
 public class ContentClipboardHandler extends AbstractClipboardHandler {
 
-    @Override
     public BaseObject getBaseObjectFromId(String id) {
         ContentManagementService cms = new ContentManagementService(getRequest());
         Content content = null;
@@ -28,5 +28,9 @@ public class ContentClipboardHandler extends AbstractClipboardHandler {
             // Do nothing
         }
         return content;
+    }
+
+    public String getClipboardType() {
+        return AdminSessionAttributes.CLIPBOARD_CONTENT;
     }
 }

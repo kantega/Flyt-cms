@@ -17,17 +17,12 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaImageMap;
-import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.ao.MultimediaImageMapAO;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 import org.springframework.web.servlet.ModelAndView;
@@ -42,10 +37,6 @@ public class ImageMapAction extends AbstractEditMultimediaAction {
 
     protected ModelAndView handleGet(Multimedia mm, HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        SecuritySession securitySession = SecuritySession.getInstance(request);
-        if (securitySession.isUserInRole(Aksess.getAdminRole()) || securitySession.getUser().getId().equalsIgnoreCase(mm.getModifiedBy())) {
-            model.put("allowOverwrite", Boolean.TRUE);
-        }
 
         MultimediaImageMap imageMap = MultimediaImageMapAO.loadImageMap(mm.getId());
         if (imageMap != null) {
@@ -78,25 +69,6 @@ public class ImageMapAction extends AbstractEditMultimediaAction {
                     mim.addCoordUrlMap(coords, url, altName, newWindow ? 1 : 0);
                 }
             }
-        }
-
-        if (!param.getBoolean("overwrite", true)) {
-            // Create a new image with imagemap
-            MultimediaService mediaService = new MultimediaService(request);
-            String name = mm.getName();
-            String suffix = " (bildekart)";
-
-            if (name.length() + suffix.length() > 255) {
-                name = name.substring(0, 250 - suffix.length()) + "...";
-            }
-            mm.setName(name + suffix);
-
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            mediaService.streamMultimediaData(mm.getId(), new InputStreamHandler(bos));
-            mm.setData(bos.toByteArray());
-            mm.setId(-1);
-            int id = mediaService.setMultimedia(mm);
-            mm.setId(id);
         }
 
         mim.setMultimediaId(mm.getId());

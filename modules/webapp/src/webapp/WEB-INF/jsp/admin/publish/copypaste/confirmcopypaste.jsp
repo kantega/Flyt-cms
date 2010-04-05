@@ -40,7 +40,7 @@
         }
     </script>
 </kantega:section>
-<kantega:section id="body">    
+<kantega:section id="body">
 
     <form name="myform" method="post" action="CopyPasteContent.action">
         <div class="fieldset">
@@ -132,6 +132,7 @@
                     <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
             </fieldset>
+        </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

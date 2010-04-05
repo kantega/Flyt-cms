@@ -35,6 +35,7 @@
 
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
     <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
     <bean id="userPreferencesHandler" class="no.kantega.publishing.admin.dwr.UserPreferencesHandler"/>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">

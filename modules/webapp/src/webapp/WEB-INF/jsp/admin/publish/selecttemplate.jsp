@@ -34,7 +34,7 @@
 </kantega:section>
 
 <kantega:section id="head extras">
-    <script src="${pageContext.request.contextPath}/admin/js/edit.jjs" type="text/javascript"></script>
+    <script src="${pageContext.request.contextPath}/admin/js/editcontext.jjs" type="text/javascript"></script>
     <script type="text/javascript">
         openaksess.editcontext.insertIdAndValueIntoForm = function(id, title) {
             if (addedParents != "") {

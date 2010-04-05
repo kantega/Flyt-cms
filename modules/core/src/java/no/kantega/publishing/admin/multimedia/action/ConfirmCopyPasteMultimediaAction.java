@@ -22,6 +22,8 @@ import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.admin.model.Clipboard;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -37,6 +39,9 @@ import java.util.Map;
  * Time: 10:17:34 AM
  */
 public class ConfirmCopyPasteMultimediaAction implements Controller {
+    private String errorView;
+    private String view;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
 
@@ -47,9 +52,13 @@ public class ConfirmCopyPasteMultimediaAction implements Controller {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
         int newParentId = param.getInt("newParentId");
-        int mmId = param.getInt("clipboard");
+        Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_MEDIA);
+        if (clipboard == null || clipboard.getItems() == null || clipboard.getItems().size() == 0) {
+            model.put("error", "aksess.copypaste.emptyclipboard");
+            return new ModelAndView(errorView, model);
+        }
 
-        Multimedia multimedia = mediaService.getMultimedia(mmId);
+        Multimedia multimedia = (Multimedia)clipboard.getItems().get(0);
         Multimedia newParent = null;
         if (newParentId > 0) {
             newParent = mediaService.getMultimedia(newParentId);
@@ -59,6 +68,7 @@ public class ConfirmCopyPasteMultimediaAction implements Controller {
             newParent.setId(0);
             newParent.setSecurityId(0);
         }
+
         boolean isAuthorized = false;
         if (securitySession.isAuthorized(newParent, Privilege.UPDATE_CONTENT)) {
             if (securitySession.isAuthorized(multimedia, Privilege.UPDATE_CONTENT)) {
@@ -71,7 +81,7 @@ public class ConfirmCopyPasteMultimediaAction implements Controller {
         if (parents != null && parents.size() > 0) {
             for (int i = 0; i < parents.size(); i++) {
                 PathEntry parent = (PathEntry)parents.get(i);
-                if (parent.getId() == mmId) {
+                if (parent.getId() == multimedia.getId()) {
                     recursive = true;
                     break;
                 }
@@ -81,20 +91,28 @@ public class ConfirmCopyPasteMultimediaAction implements Controller {
         String error = null;
 
         if (!isAuthorized) {
-            // Bruker har ikke tilgang
-            error = "aksess.copypaste.ikketilgang";
+            // Not authorized
+            error = "aksess.copypaste.notauthorized";
         } else if (recursive) {
-            // Malen finnes ikke i nettstedet
-            error = "aksess.copypaste.crosssite";
+            // Recursive copy
+            error = "aksess.copypaste.recursion";
         }
 
         if (error != null) {
             model.put("error", error);
-            return new ModelAndView("/admin/popups/error.jsp", model);
+            return new ModelAndView(errorView, model);
         } else {
             model.put("multimedia", multimedia);
             model.put("newParent", newParent);
-            return new ModelAndView("/admin/multimedia/copypaste.jsp", model);
+            return new ModelAndView(view, model);
         }
+    }
+
+    public void setErrorView(String errorView) {
+        this.errorView = errorView;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }
