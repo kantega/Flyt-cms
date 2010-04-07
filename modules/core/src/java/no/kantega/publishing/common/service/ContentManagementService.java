@@ -853,6 +853,7 @@ public class ContentManagementService {
             for (int i = 0; i < pagesToBeDeleted.size(); i++) {
                 Content c =  (Content)pagesToBeDeleted.get(i);
                 EventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
+                ContentListenerUtil.getContentNotifier().contentDeleted(c);
             }
         }
 
