@@ -21,6 +21,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.realm.SecurityRealm;
@@ -36,6 +38,11 @@ public class RevisionContentAlertJob {
 
     public void execute() {
 
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
+        
         try {
             Log.debug(SOURCE, "Looking for content revision in " + daysBeforeWarning + " days", null, null);
 

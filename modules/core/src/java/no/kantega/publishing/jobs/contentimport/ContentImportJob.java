@@ -23,9 +23,11 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.event.ContentImporter;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.security.SecuritySession;
@@ -44,8 +46,12 @@ public class ContentImportJob {
 
     private static final String SOURCE = "aksess.ContentImportJob";
 
-    
+
     public void execute() {
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
         try {
             SecuritySession session = SecuritySession.createNewAdminInstance();
             ContentManagementService cms = new ContentManagementService(session);
@@ -91,6 +97,5 @@ public class ContentImportJob {
         } catch (NotAuthorizedException e) {
             Log.error(SOURCE, e, null, null);
         }
-
     }
 }

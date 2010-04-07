@@ -453,9 +453,6 @@
         <property name="indexManager">
             <ref bean="indexManager"/>
         </property>
-        <property name="indexSearcherManager">
-            <ref bean="indexSearcherManager"/>
-        </property>
     </bean>
     <bean class="no.kantega.publishing.admin.searchlog.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>

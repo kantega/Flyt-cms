@@ -24,6 +24,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
 import org.quartz.StatefulJob;
@@ -41,6 +42,11 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     private String interval = MailSubscription.IMMEDIATE;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
+
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
 
         boolean jobDisabled = false;
         try {

@@ -29,6 +29,7 @@ import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
@@ -42,6 +43,11 @@ public class ExpireContentAlertJob {
 
     public void execute() {
 
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
+        
         try {
             Log.info(SOURCE, "Looking for content will expire in less than " + daysBeforeWarning + " days", null, null);
 

@@ -275,6 +275,30 @@
         </property>
     </bean>
 
+    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob"/>
+
+    <bean id="rebuildSearchIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="rebuildSearchIndexJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+    <bean id="rebuildSearchIndexJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="rebuildSearchIndexJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- This job is default off (set to run in 2099) can be overriden in projects -->
+            <value>${jobs.rebuildindex.trigger}</value>
+        </property>
+    </bean>
+
     <!-- Kommenter inn denne for å faktisk kjøre jobbene -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
@@ -289,6 +313,7 @@
                 <ref local="databaseCleanupTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
+                <ref local="rebuildSearchIndexJobTrigger"/>
             </list>
         </property>
     </bean>

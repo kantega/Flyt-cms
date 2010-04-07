@@ -18,13 +18,20 @@ package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.publishing.common.ao.LinkAO;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
+import no.kantega.commons.log.Log;
 
 public class LinkCrawlerJob {
 
     private LinkCheckerJob checker;
 
     public void execute() {
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(getClass().getName(), "Job is disabled for server type slave", null, null);
+            return;
+        }
+
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }

@@ -22,6 +22,7 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.HTMLVersion;
+import no.kantega.publishing.common.data.enums.ServerType;
 
 import java.io.File;
 import java.io.IOException;
@@ -123,6 +124,8 @@ public class Aksess {
     private static Configuration c;
     
     private static String multimediaDefaultCopyright;
+
+    private static ServerType serverType;
 
     public static void loadConfiguration() {
 
@@ -241,8 +244,6 @@ public class Aksess {
 
             htmlVersion = c.getString("html.version", HTMLVersion.HTML_401_TRANS);
 
-            databaseCacheTimeout = c.getInt("database.cache.timeout", -1);
-
             // Format of alt and title-attributes
             multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
             multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
@@ -250,6 +251,15 @@ public class Aksess {
             multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
 
             csrfCheckEnabled = c.getBoolean("csrfcheck.enabled",true);
+
+            serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.toString()).toUpperCase());
+
+            if (serverType == ServerType.SLAVE) {
+                // Caching of database only lasts 15 minutes for slave servers
+                databaseCacheTimeout = 900000;
+            }
+            databaseCacheTimeout = c.getInt("database.cache.timeout", databaseCacheTimeout);
+
 
             // Load version from file in classpath
             {
@@ -550,5 +560,9 @@ public class Aksess {
 
     public static String getMultimediaDefaultCopyright() {
         return multimediaDefaultCopyright;
+    }
+
+    public static ServerType getServerType() {
+        return serverType;
     }
 }

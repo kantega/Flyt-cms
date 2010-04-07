@@ -38,7 +38,6 @@ public class RebuildIndexController implements Controller {
     int total = -1;
 
     private IndexManager indexManager;
-    private IndexSearcherManager indexSearcherManager;
     private String docType ="";
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -76,30 +75,26 @@ public class RebuildIndexController implements Controller {
 
     private synchronized void startIndex() {
         current = 0;
-                ProgressReporter p = new ProgressReporter() {
+        ProgressReporter p = new ProgressReporter() {
 
-                    public void reportProgress(int c, String d, int t) {
-                        current = c;
-                        total = t;
-                        docType = d;
-                    }
+            public void reportProgress(int c, String d, int t) {
+                current = c;
+                total = t;
+                docType = d;
+            }
 
-                    public void reportFinished() {
-                        current = -1;
-                        total = -1;
-                    }
-                };
+            public void reportFinished() {
+                current = -1;
+                total = -1;
+            }
+        };
 
 
-          indexManager.addIndexJob(new RebuildIndexJob(p));
+        indexManager.addIndexJob(new RebuildIndexJob(p));
 
     }
 
     public void setIndexManager(IndexManager indexManager) {
         this.indexManager = indexManager;
-    }
-
-    public void setIndexSearcherManager(IndexSearcherManager indexSearcherManager) {
-        this.indexSearcherManager = indexSearcherManager;
     }
 }

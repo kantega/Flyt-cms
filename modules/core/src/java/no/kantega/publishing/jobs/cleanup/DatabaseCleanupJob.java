@@ -23,6 +23,7 @@ import no.kantega.publishing.common.ao.LinkAO;
 import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -39,6 +40,11 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
+
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
         Connection c = null;
         try {
             c = dbConnectionFactory.getConnection();
@@ -124,16 +130,5 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             }
         }
     }
-
-    public static void main(String[] args) {
-        Calendar cal = null;
-        cal = new GregorianCalendar();
-        System.out.println("Antall mnd:" + Aksess.getEventLogMaxAge());
-        cal.add(Calendar.MONTH, -Aksess.getEventLogMaxAge());
-        java.sql.Timestamp t = new java.sql.Timestamp(cal.getTime().getTime());
-
-        System.out.println(t);
-    }
-
 }
 
