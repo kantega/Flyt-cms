@@ -1762,11 +1762,26 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
+        <attribute>
+            <description>Sets whether the user should be retrieved from cache. Increases performance at the risk of returning outdated user data.</description>
+            <name>usecache</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
         <example>
             <![CDATA[
                     Display a link with current users email:
                         <aksess:getuser name="user"/>
                         <a href="mailto:${user.email}">${user.name}</a>
+
+                    Display the names of users from a list of userids. Using cache for increased performance:
+                        <ul>
+                        <c:forEach items="${userids}" var="userid">
+                            <aksess:getuser name="user" userid="${userid}" usecache="true"/>
+                            <li>${user.name}</li>
+                        </c:forEach>
+                        </ul>
             ]]>
         </example>
     </tag>
@@ -1780,6 +1795,13 @@
             <name>userid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sets whether the user should be retrieved from cache. Increases performance at the risk of returning outdated user data.</description>
+            <name>usecache</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
     </tag>
     <tag>

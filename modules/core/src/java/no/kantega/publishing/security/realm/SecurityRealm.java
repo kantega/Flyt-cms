@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.security.realm;
 
+import com.opensymphony.oscache.base.Cache;
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.util.SecurityHelper;
@@ -38,6 +41,7 @@ import java.util.Iterator;
 public class SecurityRealm {
     private static final String SOURCE = "aksess.SecurityRealm";
 
+    private Cache userCache = new Cache(true, true, true, false, null, 1000);
     ProfileManager profileManager;
     RoleManager roleManager;
     IdentityResolver identityResolver;
@@ -92,21 +96,54 @@ public class SecurityRealm {
         return results;
     }
 
-
+    /**
+     * Returns an instance of User for the given userid.
+     * @param userid
+     * @return User or null if not found.
+     * @throws SystemException
+     */
     public User lookupUser(String userid) throws SystemException {
-        try {
-            if (userid==null || userid.equalsIgnoreCase("")) { return null;}
-            Profile p = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
-            if (p==null) {return null;}
-            return SecurityHelper.createAksessUser(p);
-        } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "lookupUser failed", e);
-        }
+        return lookupUser(userid, false);
     }
 
+    /**
+     * Returns an instance of User for the given userid.
+     * @param userid
+     * @param useCache - If true, the userid is first looked up in the cache.
+     * If the user is not found in the cache, an ordinary user lookup is performed and the user is added to the cache.
+     * @return User or null if not found.
+     * @throws SystemException
+     */
+    public User lookupUser(String userid, boolean useCache) throws SystemException {
+        if (userid==null || userid.trim().length() == 0) { return null;}
 
-    public List lookupRolesForUser(String userid) throws SystemException {
-        List roles = new ArrayList();
+        Profile profile = null;
+        if (useCache) {
+            try {
+                profile = (Profile) userCache.getFromCache(userid);
+            } catch (NeedsRefreshException e) {
+                //Thrown when the profile is not found in the cache.
+                //Do nothing, since the user is looked up and added to the cache below.
+                Log.debug(this.getClass().getName(), "User " + userid +" is not found in the userCache", null, null);
+            }
+        }
+
+        if (profile == null) {
+            try {
+                profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
+                userCache.putInCache(userid, profile);
+                Log.debug(this.getClass().getName(), "User " + userid +" is added to the userCache", null, null);
+            } catch (no.kantega.security.api.common.SystemException e) {
+                Log.error(this.getClass().getName(), e, null, null);
+            }
+        }
+
+        if (profile==null) {return null;}
+        return SecurityHelper.createAksessUser(profile);
+    }
+
+    public List<Role> lookupRolesForUser(String userid) throws SystemException {
+        List<Role> roles = new ArrayList<Role>();
         try {
             Iterator it = roleManager.getRolesForUser(SecurityHelper.createApiIdentity(userid));
             if (it != null) {

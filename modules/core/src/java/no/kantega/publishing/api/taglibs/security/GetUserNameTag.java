@@ -33,6 +33,7 @@ public class GetUserNameTag extends TagSupport {
     private static final String SOURCE = "aksess.GetUserNameTag";
 
     private String userid;
+    private boolean useCache;
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -45,7 +46,7 @@ public class GetUserNameTag extends TagSupport {
             if (userid != null) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
-                    user = realm.lookupUser(userid);
+                    user = realm.lookupUser(userid, useCache);
                 } catch (SystemException e) {
                     user = null;
                 }
@@ -74,6 +75,10 @@ public class GetUserNameTag extends TagSupport {
 
     public void setUserid(String userid) {
         this.userid = userid;
+    }
+
+    public void setUsecache(boolean useCache) {
+        this.useCache = useCache;
     }
 }
 

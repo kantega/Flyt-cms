@@ -40,6 +40,7 @@ public class GetUserTag  extends TagSupport {
     private String userid = null;
     private boolean getRoles = false;
     private boolean getRoleTopics = false;
+    private boolean useCache;
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -51,7 +52,7 @@ public class GetUserTag  extends TagSupport {
             if(userid != null) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
-                    user = realm.lookupUser(userid);
+                    user = realm.lookupUser(userid, useCache);
 
                     if (user != null) {
                         if (getRoles || getRoleTopics) {
@@ -116,6 +117,10 @@ public class GetUserTag  extends TagSupport {
 
     public void setGetroletopics(boolean getTopics) {
         this.getRoleTopics = getTopics;
+    }
+
+    public void setUsecache(boolean useCache) {
+        this.useCache = useCache;
     }
 }
 
