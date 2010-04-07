@@ -44,7 +44,7 @@
         </property>
         <property name="cronExpression">
             <!-- Hvert 5 minutt -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>0 0/5 * * * ?</value>
         </property>
     </bean>
@@ -156,7 +156,7 @@
         </property>
         <property name="cronExpression">
             <!-- Hvert 15 minutt -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>50 0/3 * * * ?</value>
         </property>
     </bean>
@@ -167,7 +167,7 @@
         </property>
         <property name="cronExpression">
             <!-- Klokka 15 hver dag -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>0 0 15 * * ?</value>
         </property>
     </bean>
@@ -178,7 +178,7 @@
         </property>
         <property name="cronExpression">
             <!-- Klokka 15 hver fredag -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>0 0 15 ? * FRI</value>
         </property>
     </bean>
@@ -195,7 +195,7 @@
         </property>
         <property name="cronExpression">
             <!-- run every five minutes -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>30 0/5 * * * ?</value>
         </property>
     </bean>
@@ -244,7 +244,7 @@
         </property>
         <property name="cronExpression">
             <!-- Hvert natt klokka ti over tre  -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>0 10 3 * * ?</value>
         </property>
     </bean>
@@ -270,7 +270,7 @@
         </property>
         <property name="cronExpression">
             <!-- Hvert natt klokka tjue over tre  -->
-            <!-- Se http://quartz.sourceforge.net/javadoc/org/quartz/CronTrigger.html for eksempler -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
             <value>0 20 3 * * ?</value>
         </property>
     </bean>
@@ -299,7 +299,6 @@
         </property>
     </bean>
 
-    <!-- Kommenter inn denne for å faktisk kjøre jobbene -->
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
