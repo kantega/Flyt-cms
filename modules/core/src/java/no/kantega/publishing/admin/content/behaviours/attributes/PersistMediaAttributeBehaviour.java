@@ -139,6 +139,8 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     mediaAttr.setValue("" + id);
                     mediaAttr.setImportFile(null);
                 }
+            } catch (IllegalStateException e) {
+                Log.info(this.getClass().getName(), "Uploaded file was discarded, has been deleted", null, null);
             } catch (FileNotFoundException e) {
                 throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
             } catch (IOException e) {
