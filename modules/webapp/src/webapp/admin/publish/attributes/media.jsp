@@ -55,7 +55,7 @@
             <tr>
                 <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
                 <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <c:if test="${!miniAksess}">
+                <c:if test="${miniAksessMediaArchive}">
                     <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
                     <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
                 </c:if>
@@ -72,7 +72,7 @@
 <tr>
     <td>
         <c:choose>
-            <c:when test="${miniAksess}">
+            <c:when test="${!miniAksessMediaArchive}">
                 <!-- For users without access to mediaarchive - simple file upload -->
                 <input type="file" class="inp" style="width:600px;" name="<%=fieldName%>_upload" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
                 <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
