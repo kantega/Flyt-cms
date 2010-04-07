@@ -33,6 +33,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.configuration.Configuration;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -80,6 +81,10 @@ public class SimpleEditSaveContentAction implements Controller {
 
                 request.setAttribute("currentContent", content);
                 session.setAttribute("currentContent", content);
+
+                Configuration config = Aksess.getConfiguration();
+                Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
+                request.setAttribute("miniAksessMediaArchive", allowArchive);
 
                 return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
 
