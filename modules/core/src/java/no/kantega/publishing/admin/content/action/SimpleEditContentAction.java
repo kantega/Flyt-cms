@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -69,7 +71,9 @@ public class SimpleEditContentAction implements Controller {
         request.setAttribute("currentContent", content);
         session.setAttribute("currentContent", content);
 
-        request.setAttribute("miniAksess", Boolean.TRUE);
+        Configuration config = Aksess.getConfiguration();
+        Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
+        request.setAttribute("miniAksessMediaArchive", allowArchive);
 
         return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
     }
