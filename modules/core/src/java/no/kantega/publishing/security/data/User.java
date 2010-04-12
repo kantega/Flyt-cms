@@ -32,8 +32,8 @@ public class User extends SecurityIdentifier {
     private String surname = "";
     private String email = null;
     private String department;
-    private HashMap roles = new HashMap();
-    private List topics = null;
+    private HashMap<String, Role> roles = new HashMap<String, Role>();
+    private List<Topic> topics = null;
     private List orgUnits = new ArrayList();
     private Properties attributes;
 
@@ -89,11 +89,11 @@ public class User extends SecurityIdentifier {
         roles.put(role.getId(), role);
     }
 
-    public List getTopics() {
+    public List<Topic> getTopics() {
         return topics;
     }
 
-    public void setTopics(List topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 
