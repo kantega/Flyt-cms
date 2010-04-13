@@ -70,7 +70,9 @@ public class SaveFormSubmissionController implements AksessController {
                 prefill(prefillValues, request);
                 if (prefillValues.size() > 0) {
                     FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form);
-                    form = filledFormBuilder.buildFilledForm(formSubmission);
+                    if (formSubmission != null) {
+                        form = filledFormBuilder.buildFilledForm(formSubmission);
+                    }
                 }
             }
 
