@@ -38,6 +38,7 @@ import java.util.*;
 
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -76,6 +77,10 @@ public class ContentRequestHandler extends AbstractController {
                 }
                 cid = new ContentIdentifier(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
+
+                if (request instanceof MultipartHttpServletRequest) {
+                    Log.error(SOURCE, "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action", null, null);
+                }
             }
 
             if("hearing".equals(request.getParameter("status"))) {
