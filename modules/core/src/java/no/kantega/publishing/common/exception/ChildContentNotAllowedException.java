@@ -18,7 +18,7 @@ package no.kantega.publishing.common.exception;
 
 public class ChildContentNotAllowedException extends no.kantega.commons.exception.KantegaException {
     public ChildContentNotAllowedException() {
-        super("Ikke tillatt å opprette underobjekter", "", null);
+        super("Creating subpages are not allowed", "", null);
     }
 }
 
