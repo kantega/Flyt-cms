@@ -39,7 +39,6 @@ public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAt
     private static String BODY_END   = "</BODY>";
 
 
-    @Override
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         String inputField = AttributeHelper.getInputFieldName(attribute.getName());
 
