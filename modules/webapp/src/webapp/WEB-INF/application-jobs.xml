@@ -219,6 +219,8 @@
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
+    <bean name="linkEmitter" class="no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter"/>
+    
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
         <property name="checker">
             <ref bean="linkCheckJob"/>

@@ -33,74 +33,10 @@ public class HTMLEditorHelper {
     private static String BODY_START = "<BODY>";
     private static String BODY_END   = "</BODY>";
 
-    private HttpServletRequest request = null;
-
-    public HTMLEditorHelper(HttpServletRequest request) {
-        this.request = request;
-    }
-
-    /**
-     * Extended cleanup of HTML code, used when pasting from Word
-     * @param value
-     * @return
-     */
-    public String cleanupHTML(String value) {
-        FilterPipeline pipe = new FilterPipeline();
-
-        // Remove all comments
-
-        // Remove Word markup
-        pipe.addFilter(new MSWordFilter());
-
-        // Remove font tags always
-        pipe.addFilter(new FontFilter());
-
-        String origVal = value;
-
-        try {
-            // Filter expects complete document
-            value = "<html><body>" + value + "</body></html>";
-
-            StringWriter sw = new StringWriter();
-            pipe.filter(new StringReader(value), sw);
-            value = sw.getBuffer().toString();
-
-            // Filter twice to remove comments leftover from removed STYLE tags
-            sw = new StringWriter();
-            pipe.filter(new StringReader(value), sw);
-            value = sw.getBuffer().toString();
-
-            int start = value.indexOf(BODY_START.toLowerCase());
-            if (start == -1) {
-                start = value.indexOf(BODY_START.toUpperCase());
-            }
-
-            int end = value.indexOf(BODY_END.toLowerCase());
-            if (end == -1) {
-                end = value.indexOf(BODY_END.toUpperCase());
-            }
-
-            value = value.substring(start + BODY_START.length(), end);
-        } catch (Exception e) {
-            value = origVal;
-            Log.error("", e, null, null);
-        }
-
-        // Some versions of Xerces creates XHTML tags
-        value = StringHelper.replace(value, "</HR>", "");
-        value = StringHelper.replace(value, "</BR>", "");
-        value = StringHelper.replace(value, "</IMG>", "");
-
-
-        return value;
-
-    }
-
-
     /**
      * Cleanup / replacement done after editing content
-     * @param value
-     * @return
+     * @param value - HTML text
+     * @return - cleaned HTML
      */
     public String postEditFilter(String value) {
         FilterPipeline pipe = new FilterPipeline();
@@ -153,6 +89,9 @@ public class HTMLEditorHelper {
         // Replace the align attribute from p elements with inline style
         pipe.addFilter(new ReplaceAlignAttributeFilter());
 
+        // Fix image width and height, shrink images automatically
+        pipe.addFilter(new ImgHeightAndWidthFilter());
+
         // Replace context path with <@WEB@>
         ContextPathFilter contextPathFilter = new ContextPathFilter();
         contextPathFilter.setContextPath(Aksess.getContextPath());
@@ -203,13 +142,13 @@ public class HTMLEditorHelper {
 
     /**
      * Replacements done before editing content
-     * @param value
-     * @return
+     * @param value - HTML text
+     * @return - cleaned HTML
      */
-    public String preEditFilter(String value) {
+    public String preEditFilter(String value, String rootUrl) {
 
-        value = StringHelper.replace(value, "\"" + Aksess.VAR_WEB + "\"/", URLHelper.getRootURL(request));
-        value = StringHelper.replace(value, Aksess.VAR_WEB + "/", URLHelper.getRootURL(request));
+        value = StringHelper.replace(value, "\"" + Aksess.VAR_WEB + "\"/", rootUrl);
+        value = StringHelper.replace(value, Aksess.VAR_WEB + "/", rootUrl);
 
         // Convert strong and em tags back to b and i tags to enable edit of text with these tags.
         value = value.replaceAll("<strong>", "<b>");

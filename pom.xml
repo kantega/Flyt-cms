@@ -23,7 +23,7 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>6.2.1-SNAPSHOT</version>
+    <version>7.0ea-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
@@ -52,7 +52,7 @@
         <module>modules/test</module>
         <module>modules/useradmin</module>
         <module>modules/webapp</module>
-    <module>modules/core-plugins</module>
+        <module>modules/core-plugins</module>
   </modules>
 
     <dependencies>

@@ -24,18 +24,12 @@
     DocumenttypeAttribute attribute = (DocumenttypeAttribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
 %>
-<tr>
-    <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
 <%
     String value = attribute.getValue();
     int ids[] = StringHelper.getInts(value, ",");
-    out.write("<select class=inp style=\"width:600px;\"");
+    out.write("<select class=\"fullWidth\"");
     out.write(" name=\"" + fieldName + "\"");
     out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
     if (attribute.getMultiple()) {
@@ -43,6 +37,10 @@
     }
     out.write(">");
     List all  = DocumentTypeCache.getDocumentTypes();
+
+    if (!attribute.isMandatory() && !attribute.getMultiple()) {
+        out.write("<option value=\"\"></option>");
+    }
 
     for (int i = 0; i < all.size(); i++) {
         DocumentType dt = (DocumentType)all.get(i);
@@ -62,5 +60,4 @@
     }
     out.write("</select>");
 %>
-    </td>
-</tr>
+</div>

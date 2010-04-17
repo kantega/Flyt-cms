@@ -1,4 +1,4 @@
-<%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,16 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<?xml version="1.0" encoding="utf-8"?>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<values>
-    <c:forEach var="content" items="${contentlist}" varStatus="status">
-        <c:if test="${useContentId}">
-            <value key="<c:out value="${content.id}"/>"><c:out value="${content.title}"/></value>
-        </c:if>
-        <c:if test="${!useContentId}">
-            <value key="<c:out value="${content.association.id}"/>"><c:out value="${content.title}"/></value>
-        </c:if>
-    </c:forEach>
-</values>
+<c:forEach var="content" items="${contentlist}" varStatus="status">
+    <c:if test="${useContentId}">
+        <c:out value="${content.title}"/>|<c:out value="${content.id}"/>
+    </c:if>
+    <c:if test="${!useContentId}">
+        <c:out value="${content.title}"/>|<c:out value="${content.association.id}"/>
+    </c:if>
+</c:forEach>

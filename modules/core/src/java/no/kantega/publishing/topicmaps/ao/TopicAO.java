@@ -223,10 +223,9 @@ public class TopicAO {
             st.setString(1, topic.getId());
             st.setInt(2, topic.getTopicMapId());
 
-            List occurences = topic.getOccurences();
+            List<TopicOccurence> occurences = topic.getOccurences();
             if (occurences != null) {
-                for (int i = 0; i < occurences.size(); i++) {
-                    TopicOccurence occurence = (TopicOccurence)occurences.get(i);
+                for (TopicOccurence occurence : occurences) {
                     if (occurence.getInstanceOf() != null) {
                         st.setString(3, occurence.getInstanceOf().getId());
                         st.setString(4, occurence.getResourceData());
@@ -249,43 +248,6 @@ public class TopicAO {
     }
 
     
-    /**
-     * Adds topic to specified content id
-     * @param topic - topic
-     * @param contentId - id of content object
-     * @throws SystemException
-     */
-    public static void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
-
-        // Remove old association if exists
-        removeTopicContentAssociation(topic, contentId);
-
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            // Add association
-            PreparedStatement st = c.prepareStatement("INSERT INTO ct2topic VALUES (?,?,?)");
-            st.setInt(1, contentId);
-            st.setInt(2, topic.getTopicMapId());
-            st.setString(3, topic.getId());
-            st.execute();
-
-        } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-        }
-
-    }
-
-
     /**
      * Remove topic from specified content id
      * @param topic - topic
@@ -394,10 +356,63 @@ public class TopicAO {
     }
 
 
-    public static List getRolesByTopic(Topic topic) throws SystemException {
+    /**
+     * Adds topic to specified content id
+     * @param topic - topic
+     * @param contentId - id of content object
+     * @throws SystemException
+     */    
+    public static void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
         Connection c = null;
 
-        List roles = new ArrayList();
+        try {
+            c = dbConnectionFactory.getConnection();
+            if (topic == null || contentId == -1) {
+                return;
+            }
+
+            PreparedStatement st = c.prepareStatement("SELECT * FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?");
+            st.setInt(1, topic.getTopicMapId());
+            st.setString(2, topic.getId());
+            st.setInt(3, contentId);
+            ResultSet rs = st.executeQuery();
+
+            boolean exists = false;
+            if (rs.next()) {
+                exists = true;
+            }
+
+            rs.close();
+            rs = null;
+
+            if (!exists) {
+                st = c.prepareStatement("INSERT INTO ct2topic VALUES (?, ?, ?)");
+                st.setInt(1, contentId);
+                st.setInt(2, topic.getTopicMapId());
+                st.setString(3, topic.getId());
+                st.execute();
+            }
+
+            st = null;
+
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+    }
+
+
+    public static List<Role> getRolesByTopic(Topic topic) throws SystemException {
+        Connection c = null;
+
+        List<Role> roles = new ArrayList<Role>();
 
         try {
             c = dbConnectionFactory.getConnection();
@@ -435,7 +450,7 @@ public class TopicAO {
         try {
             c = dbConnectionFactory.getConnection();
             String sql = "";
-            sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
+            sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
             sql += "   FROM tmtopic";
             sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 
@@ -462,6 +477,7 @@ public class TopicAO {
 
                 topic.setIsTopicType(rs.getInt("IsTopicType") == 1);
                 topic.setIsAssociation(rs.getInt("IsAssociation") == 1);
+                topic.setIsSelectable(rs.getInt("IsSelectable") == 1);
 
                 topics.add(topic);
             }
@@ -485,7 +501,7 @@ public class TopicAO {
 
     public static List<Topic> getAllTopics() throws SystemException {
         String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0";
+        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL";
         sql += "   ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
@@ -493,7 +509,7 @@ public class TopicAO {
 
     public static List<Topic> getTopicsByTopicMapId(int topicMapId) throws SystemException {
         String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.TopicMapId = " + topicMapId;
+        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0  AND tmtopic.InstanceOf IS NOT NULL AND tmtopic.TopicMapId = " + topicMapId;
         sql += "   ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
@@ -545,10 +561,13 @@ public class TopicAO {
         topicName = StringHelper.replace(topicName, "'", "");
         topicName = StringHelper.replace(topicName, "\\", "");
 
-        sql += "   WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
-        sql += "   AND tmtopic.TopicMapId = " + topicMapId;
+        sql += " WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
 
-        sql += "   ORDER BY tmbasename.Basename";
+        if (topicMapId != -1) {
+            sql += "   AND tmtopic.TopicMapId = " + topicMapId;
+        }
+
+        sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
     }
@@ -571,7 +590,7 @@ public class TopicAO {
             sql += "   AND tmtopic.TopicMapId = " + instance.getTopicMapId();
         }
 
-        sql += "   ORDER BY tmbasename.Basename";
+        sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
     }

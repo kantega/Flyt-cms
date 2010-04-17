@@ -17,12 +17,13 @@
 package no.kantega.publishing.search.control.util;
 
 import no.kantega.publishing.search.service.SearchServiceQuery;
+import no.kantega.publishing.search.service.SearchServiceResultImpl;
+import no.kantega.publishing.search.service.SearchServiceResult;
 import no.kantega.search.result.HitCount;
+import no.kantega.search.result.SearchResultExtendedImpl;
+import no.kantega.search.index.Fields;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 
@@ -166,5 +167,86 @@ public class QueryStringGenerator {
             }
         }
         return retVal;
+    }
+
+    /**
+     * Get URL to previous page
+     * @param query
+     * @param result
+     * @return
+     */
+    public String getPrevPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
+        String prevPageUrl = prevPage(query, result.getCurrentPage());
+        return prevPageUrl == null || "".equals(prevPageUrl) ? null : prevPageUrl;
+    }
+
+    /**
+     * Get URL to next page
+     * @param query
+     * @param result
+     * @return
+     */
+    public String getNextPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
+        String nextPageUrl = nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), result.getSearchResult().getNumberOfHits());
+        return nextPageUrl == null || "".equals(nextPageUrl) ? null : nextPageUrl;
+    }
+
+    /**
+     * Generate URL for navigation to pages in search result
+     * @param urlPrefix
+     * @param query - query
+     * @param result - result
+     * @return - list of URLs
+     */
+    public LinkedHashMap<String, String> createPageUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResultImpl result) {
+        LinkedHashMap<String, String> pageUrls = new LinkedHashMap<String, String>();
+        int currentpage = result.getCurrentPage() + 1;
+        int startPage = ((currentpage / 10) * 10) + 1;
+        int endPage = startPage + 9;
+        if (endPage * query.getHitsPerPage() >= result.getSearchResult().getNumberOfHits()) {
+            endPage = (result.getSearchResult().getNumberOfHits() - 1) / query.getHitsPerPage();
+            endPage++;
+        }
+        if (startPage > 1) {
+            startPage--;
+        }
+        for (int i = startPage; i <= endPage; i++) {
+            String[] keys = new String[]{ SearchServiceQuery.METAPARAM_PAGE };
+            String[] values = new String[]{ "" + (i-1) };
+            pageUrls.put("" + i, urlPrefix + replaceParams(query, keys, values));
+        }
+        return pageUrls;
+    }
+
+/**
+     * Get links for drilldown
+     * @param urlPrefix
+     * @param query
+     * @param result
+     * @return
+     */
+    public Map<String, String> getHitCountUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResult result) {
+        Map<String, String> hitCounts = new HashMap<String, String>();
+        SearchServiceResultImpl serviceResult = (SearchServiceResultImpl)result;
+
+        if (serviceResult.getSearchResult() instanceof SearchResultExtendedImpl) {
+            SearchResultExtendedImpl sr = (SearchResultExtendedImpl)serviceResult.getSearchResult();
+
+            for (HitCount hitCount : sr.getHitCounts()) {
+                if (Fields.LAST_MODIFIED.equals(hitCount.getField())) {
+                    String url = createLastModifiedUrl(query, hitCount);
+                    if (url != null) {
+                        String name = hitCount.getField() + "." + hitCount.getTerm();
+                        hitCounts.put(name, urlPrefix + url);
+                    }
+                } else {
+                    if (query.getStringParam(hitCount.getField()) == null || Fields.CONTENT_PARENTS.equals(hitCount.getField())) {
+                        String name = hitCount.getField() + "." + hitCount.getTerm();
+                        hitCounts.put(name, urlPrefix + replaceParam(query, hitCount.getField(), hitCount.getTerm()));
+                    }
+                }
+            }
+        }
+        return hitCounts;
     }
 }

@@ -23,6 +23,7 @@ import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.event.ContentListenerAdapter;
 
 import java.util.List;
@@ -42,10 +43,12 @@ public class MultimediaUsageListener extends ContentListenerAdapter {
 
         // Add all metadataattributes
         addAttributes(content.getId(), content.getAttributes(AttributeDataType.META_DATA));
-
     }
 
-    // TODO: Dette bør skje ved sletting
+    public void contentDeleted(Content content) {
+        MultimediaUsageAO.removeUsageForContentId(content.getId());
+    }
+
     public void contentExpired(Content content) {
         int action = content.getExpireAction();
 
@@ -53,7 +56,6 @@ public class MultimediaUsageListener extends ContentListenerAdapter {
             MultimediaUsageAO.removeUsageForContentId(content.getId());
         }
     }
-
 
     private static void addAttributes(int contentId, List attributes) {
         for (int i = 0; i < attributes.size(); i++) {
@@ -76,35 +78,12 @@ public class MultimediaUsageListener extends ContentListenerAdapter {
                 // Links to multimediaobjects have /multimedia/ or multimedia.ap in URL
                 String value = textAttribute.getValue();
                 if (value != null) {
-                    findUsagesInText(contentId, value, "multimedia.ap?id=");
-                    findUsagesInText(contentId, value, "/multimedia/");
+                    List<Integer> ids = MultimediaHelper.getMultimediaIdsFromText(value);
+                    for (Integer id : ids) {
+                        MultimediaUsageAO.addUsageForContentId(contentId, id);
+                    }
                 }
             }
-        }
-    }
-
-    private static void findUsagesInText(int contentId, String value, String key) {
-        int foundPos = value.indexOf(key);
-        while (foundPos != -1) {
-            value = value.substring(foundPos + key.length(), value.length());
-
-            int endPos = 0;
-            char c = value.charAt(endPos);
-            while (c >= '0' && c <= '9') {
-                c = value.charAt(++endPos);
-            }
-
-            String id = value.substring(0, endPos);
-
-            try {
-                int multimediaId = Integer.parseInt(id);
-                MultimediaUsageAO.addUsageForContentId(contentId, multimediaId);
-            } catch (NumberFormatException e) {
-                // Error in URL
-            }
-
-            // Find next
-            foundPos = value.indexOf(key, foundPos);
         }
     }
 }

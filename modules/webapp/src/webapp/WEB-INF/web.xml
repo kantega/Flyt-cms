@@ -63,7 +63,7 @@
     <filter-mapping>
         <filter-name>ParamEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
-    </filter-mapping>    
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>MultipartFilter</filter-name>
@@ -112,6 +112,20 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>dwr</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+        <init-param>
+            <param-name>debug</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <init-param>
+            <param-name>crossDomainSessionSecurity</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>SetupServlet</servlet-name>
         <url-pattern>/Setup.initialAction</url-pattern>
@@ -152,7 +166,7 @@
 
     <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
-        <url-pattern>/admin/useradmin/*</url-pattern>
+        <url-pattern>/admin/administration/useradmin/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -160,7 +174,11 @@
         <url-pattern>/admin/oap/*</url-pattern>
     </servlet-mapping>
 
-
+    <servlet-mapping>
+        <servlet-name>dwr</servlet-name>
+        <url-pattern>/admin/dwr/*</url-pattern>
+    </servlet-mapping>
+    
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/oap/*</url-pattern>

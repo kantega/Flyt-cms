@@ -17,39 +17,36 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
 
-</kantega:section>
-
-<kantega:section id="innhold">
-    <%@ include file="/admin/include/infobox.jsf" %>
+<kantega:section id="content">
+    <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
 
     <c:if test="${noemail != null}">
-        <p>
-            E-postadresse er ikke lagret for denne brukeren.<br/>
-        </p>
+        <div class="ui-state-highlight">
+            E-postadresse er ikke lagret for denne brukeren.
+        </div>
     </c:if>
     <c:if test="${mailtemplate != null}">
-    <script type="text/javascript">
+        <script type="text/javascript">
 
-        function updateVisibility() {
-            var elems = document.getElementById("typeform").elements;
-            var passform = document.getElementById("passwordform");
-            var mailform = document.getElementById("mailform");
+            function updateVisibility() {
+                var elems = document.getElementById("typeform").elements;
+                var passform = document.getElementById("passwordform");
+                var mailform = document.getElementById("mailform");
 
-            var sel = "";
-            for(var i = 0; i < elems.length; i++) {
-                var e = elems[i];
-                if(e.type == "radio" && e.checked) {
-                    sel = e.value;
+                var sel = "";
+                for(var i = 0; i < elems.length; i++) {
+                    var e = elems[i];
+                    if(e.type == "radio" && e.checked) {
+                        sel = e.value;
+                    }
                 }
+
+                passform.style.display = sel == "type" ? "block" : "none";
+                mailform.style.display = sel == "mail" ? "block" : "none";
+
             }
-
-            passform.style.display = sel == "type" ? "block" : "none";
-            mailform.style.display = sel == "mail" ? "block" : "none";
-
-        }
-    </script>
+        </script>
         <form id="typeform">
             <input value="type" name="sendortype" type="radio" <c:if test="${!maildefault}">checked="checked"</c:if> onclick="updateVisibility()"> Skriv inn passord
             <input value="mail" name="sendortype" type="radio" <c:if test="${maildefault}">checked="checked"</c:if> onclick="updateVisibility()"> Send ut generert passord på epost
@@ -58,6 +55,7 @@
         <form action="reset" name="myform" method="post" id="mailform" style="<c:if test="${!maildefault}">display: none;</c:if>">
             <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
             <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+            <div class="fieldset">
             <fieldset>
                 <p>
                     <label>Fra:</label>
@@ -76,16 +74,16 @@
 
                 <p>
                     <label>Tekst:</label>
-
                     <textarea name="message" style="width: 600px; height: 110px"><c:out value="${mailtemplate}"/></textarea>
 
                 </p>
 
-                <p>
-                    <input type="submit" name="mailsubmit" class="button" value="Send">
-                    <input type="button" class="button" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.avbryt"/>">
-                </p>
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" name="mailsubmit" class="button ok" value="<kantega:label key="aksess.button.send"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
             </fieldset>
+            </div>
         </form>
 
     </c:if>
@@ -93,25 +91,27 @@
     <form action="reset" name="myform" method="post" id="passwordform" style="<c:if test="${maildefault}">display: none;</c:if>">
         <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
         <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+        <div class="fieldset">
         <fieldset>
-            <p>
-                <label><kantega:label key="useradmin.password.password1"/></label>
-                <input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64">
-            </p>
+            <div class="formElement">
+                <div class="heading"><label><kantega:label key="useradmin.password.password1"/></label></div>
+                <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+            </div>
 
-            <p>
-                <label><kantega:label key="useradmin.password.password2"/></label>
-                <input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64">
-            </p>
+            <div class="formElement">
+                <div class="heading"><label><kantega:label key="useradmin.password.password2"/></label></div>
+                <div class="inputs"><input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+            </div>
 
-            <p>
-                <input type="submit" name="passwordsubmit" class="button" value="<kantega:label key="aksess.button.lagre"/>">
-                <input type="button" class="button" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.avbryt"/>">
-            </p>
+            <div class="buttonGroup">
+                <span class="button"><input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>"></span>
+                <span class="button"><input type="button" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
         </fieldset>
+        </div>
     </form>
 
 
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

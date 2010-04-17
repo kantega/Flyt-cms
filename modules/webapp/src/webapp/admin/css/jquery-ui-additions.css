@@ -1,0 +1,33 @@
+.ui-state-highlight, .ui-state-error {
+    padding: 4px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+ul.ui-tabs-nav li {
+    list-style-type:none;
+}
+
+.ui-tabs ul.ui-widget-header {
+    background: none;
+    border: 0;
+    border-bottom: 1px solid #cccccc;
+}
+.ui-tabs .ui-tabs-nav li a {
+    padding:0.25em 1em;
+}
+
+.ui-widget {
+    font-size: 1em;
+}
+.ui-widget-content {
+    border:0;
+}
+.ui-widget .ui-resizable-handle.ui-resizable-e {
+    background: none;
+}
+
+.ui-resizable-handle {
+    z-index: 1000;
+}
+

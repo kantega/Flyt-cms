@@ -53,65 +53,6 @@ public class InputScreenRenderer {
 
 
     /**
-     * Genererer Javascript som kalles før redigering starter (ved lasting av siden)
-     */
-    public void generatePreJavascript() throws IOException {
-        JspWriter out = pageContext.getOut();
-        List attrlist  = content.getAttributes(attributeType);
-
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() &&  !attr.isHidden(content)) {
-                if (attr instanceof HtmltextAttribute) {
-                    HtmltextAttribute htmlAttr = (HtmltextAttribute)attr;
-
-                    // Initialiser kode for editor
-                    String inputField = AttributeHelper.getInputFieldName(attr.getName());
-                    String editor = "editor_" + inputField;
-                    String hidden  = "document.myform." + inputField;
-
-                    String cssPath = "";
-                    String cssfile = htmlAttr.getCss();
-                    try {
-                        Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
-                        cssPath = "/css" + site.getAlias() + htmlAttr.getCss();
-                        InputStream is = pageContext.getServletContext().getResourceAsStream(cssPath);
-                        if (is == null) {
-                            cssPath = site.getAlias() + "css/" + htmlAttr.getCss();
-                        }
-                    } catch (SystemException e) {
-                        cssPath = "/css/" + cssfile;
-                    }
-
-                    out.write("rtInitEditor('" + editor + "'," + hidden + ", '" + cssPath + "');\n");
-                }
-            }
-        }
-    }
-
-
-    /**
-     * Genererer Javascript som kalles etter redigering er ferdig (før submit)
-     */
-    public void generatePostJavascript() throws IOException {
-        JspWriter out = pageContext.getOut();
-        List attrlist  = content.getAttributes(attributeType);
-
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() && !attr.isHidden(content)) {
-                if (attr instanceof HtmltextAttribute) {
-                    String inputField = AttributeHelper.getInputFieldName(attr.getName());
-                    String editor = "editor_" + inputField;
-                    String hidden  = "document.myform." + inputField;
-                    out.write("if (!rtCopyValue('" + editor + "'," + hidden + ")) return;");
-                }
-            }
-        }
-    }
-
-
-    /**
      * Lager inputskjermbilde ved å gå gjennom alle attributter
      */
     public void generateInputScreen() throws IOException, SystemException, ServletException {
@@ -137,23 +78,24 @@ public class InputScreenRenderer {
                 request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
 
                 try {
-                    pageContext.include("attributes/" + attr.getRenderer() +".jsp");
+                    out.print("\n<div class=\"contentAttribute\">\n");
+                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
+                    out.print("\n");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {
-                        out.print("<tr><td><div class=helpText>" + helptext + "</div></td></tr>\n");
+                        out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
                     }
                     if (attr.inheritsFromAncestors()) {
                         String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
-                        out.print("<tr><td><div class=helpText>" + inheritText + "</div></td></tr>\n");
+                        out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
                     }
-
+                    out.print("</div>\n");
                 } catch (Exception e) {
+                    out.print("</div>\n");
                     Log.error(SOURCE, e, null, null);
                     String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
-                    out.print("<tr><td><div class=errorText>" + errorMessage + ":" + attr.getTitle() + "</div></td></tr>\n");
+                    out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
                 }
-
-                out.print("<tr><td><img src=\"../bitmaps/blank.gif\" width=\"2\" height=\"8\"></td></tr>");
             }
         }
     }

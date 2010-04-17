@@ -87,7 +87,7 @@ public class DeletedItemsAO {
     }
 
 
-    public static List getDeletedItems(String userId) throws SystemException {
+    public static List<DeletedItem> getDeletedItems(String userId) throws SystemException {
 
         List items = new ArrayList();
 

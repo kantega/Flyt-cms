@@ -16,9 +16,9 @@
   -->
 
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-         version="2.0">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
     <description>Aksess CMS Taglib API for Content Admin</description>
     <tlib-version>2.0</tlib-version>
     <short-name>admin</short-name>
@@ -44,5 +44,64 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Format a date using admin locale</description>
+        <name>formatdate</name>
+        <tag-class>no.kantega.publishing.admin.taglib.FormatDateTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>date</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Format a date time using admin locale</description>
+        <name>formattime</name>
+        <tag-class>no.kantega.publishing.admin.taglib.FormatTimeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>date</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Prints a navigator for content</description>
+        <name>printcontentnavigator</name>
+        <tag-class>no.kantega.publishing.admin.taglib.PrintContentNavigatorTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>root</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.NavigationMapEntry</type>
+        </attribute>
+        <attribute>
+            <name>currentId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Prints a navigator for multimedia</description>
+        <name>printmultimedianavigator</name>
+        <tag-class>no.kantega.publishing.admin.taglib.PrintMultimediaNavigatorTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>root</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.NavigationMapEntry</type>
+        </attribute>
+        <attribute>
+            <name>currentId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
 </taglib>
 

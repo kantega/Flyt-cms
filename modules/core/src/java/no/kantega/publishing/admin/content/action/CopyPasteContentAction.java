@@ -17,6 +17,8 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
@@ -25,7 +27,6 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +35,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CopyPasteContentAction implements Controller {
-    private static String SOURCE = "aksess.CopyPasteContentAction";
+    private String confirmCopyPasteView;
+    private String duplicateAliasesView;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -59,7 +61,7 @@ public class CopyPasteContentAction implements Controller {
 
         if (isCopy) {
             if (isTextCopy) {
-                // Kopierer innhold på en side
+                // Copy text from one page to a new page
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setAssociationId(source.getAssociationId());
                 Content content = aksessService.getContent(cid);
@@ -67,7 +69,7 @@ public class CopyPasteContentAction implements Controller {
                 aksessService.copyContent(content, parent, category);
 
             } else if (pasteShortCut) {
-                // Opprett en snarvei
+                // Create a shortcut
                 Association association = new Association();
                 association.setParentAssociationId(newParentId);
                 association.setCategory(category);
@@ -77,12 +79,12 @@ public class CopyPasteContentAction implements Controller {
                 association.setAssociationtype(AssociationType.SHORTCUT);
                 aksessService.addAssociation(association);
             } else {
-                // Kopier struktur inkludert undersider
+                // Copy structure (cross publish)
                 aksessService.copyAssociations(source, parent, category, true);
             }
-            model.put("statusmessage", "copycontent");
+            model.put("message", "aksess.copypaste.copy.ok");
         } else {
-            // Flytt side...
+            // Move page / structure
             Association association = new Association();
             association.setParentAssociationId(newParentId);
             association.setCategory(category);
@@ -92,16 +94,29 @@ public class CopyPasteContentAction implements Controller {
             association.setAssociationId(uniqueId);
 
             aksessService.modifyAssociation(association);
-            model.put("statusmessage", "movecontent");
+            model.put("message", "aksess.copypaste.move.ok");
         }
 
-        // Sjekk om det ble laget duplikate alias
+        Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
+        if (clipboard != null) {
+            clipboard.empty();
+        }
+
+        // Check for duplicate pages
         List aliases = aksessService.findDuplicateAliases(parent);
         if (aliases.size() == 0) {
-            return new ModelAndView(new RedirectView("updatetree.jsp"), model);
+            return new ModelAndView(confirmCopyPasteView, model);
         } else {
             model.put("aliases", aliases);
-            return new ModelAndView("copypaste_duplicatealiases.jsp", model);
+            return new ModelAndView(duplicateAliasesView, model);
         }
+    }
+
+    public void setConfirmCopyPasteView(String confirmCopyPasteView) {
+        this.confirmCopyPasteView = confirmCopyPasteView;
+    }
+
+    public void setDuplicateAliasesView(String duplicateAliasesView) {
+        this.duplicateAliasesView = duplicateAliasesView;
     }
 }

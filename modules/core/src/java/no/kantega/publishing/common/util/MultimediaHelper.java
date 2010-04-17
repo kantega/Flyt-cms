@@ -32,30 +32,38 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MultimediaHelper {
     private static final String SOURCE = "aksess.MultimediaHelper";
 
     public static String mm2HtmlTag(Multimedia mm) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String cssClass) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, int maxW, int maxH) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, maxW, maxH, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, null, maxW, maxH, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, null);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH, String cssClass) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass);
+        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass, false);
     }
+
+    // TODO: Cleanup and delete methods not needed
     public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass) {
+        return mm2HtmlTag(baseUrl, mm, align, maxW, maxH, cssClass, false);
+    }
+
+    public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass, boolean skipImageMap) {
         StringBuffer tag = new StringBuffer();
 
         String url = mm.getUrl();
@@ -129,43 +137,45 @@ public class MultimediaHelper {
             }
             tag.append(" src=\"" + url + "\"");
 
-            try {
-                MultimediaImageMap mim = MultimediaImageMapAO.loadImageMap(mm.getId());
-                if (mim.getCoordUrlMap().length > 0) {
-                    Date dt = new Date();
-                    String mapId = "imagemap" + mm.getId() + dt.getTime();
+            if (!skipImageMap) {
+                try {
+                    MultimediaImageMap mim = MultimediaImageMapAO.loadImageMap(mm.getId());
+                    if (mim.getCoordUrlMap().length > 0) {
+                        Date dt = new Date();
+                        String mapId = "imagemap" + mm.getId() + dt.getTime();
 
-                    // Avslutter bildet med referanse til bildekart
-                    tag.append(" usemap=\"#").append(mapId).append("\">");
-                    tag.append("<map id=\"").append(mapId).append("\" name=\"").append(mapId).append("\">");
+                        // Avslutter bildet med referanse til bildekart
+                        tag.append(" usemap=\"#").append(mapId).append("\">");
+                        tag.append("<map id=\"").append(mapId).append("\" name=\"").append(mapId).append("\">");
 
-                    for (int i=0; i < mim.getCoordUrlMap().length; i++){
-                        String mapURL = mim.getCoordUrlMap()[i].getUrl();
-                        if (mapURL.startsWith("/")) {
-                            mapURL = Aksess.getContextPath() + mapURL;
-                        }
-
-                        // Henter eventuelle resizede koordinater
-                        String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
-                        if (coord != null) {
-                            String target = "";
-                            if (mim.getCoordUrlMap()[i].openInNewWindow()) {
-                                target = " onclick=\"window.open(this.href); return false\"";
+                        for (int i=0; i < mim.getCoordUrlMap().length; i++){
+                            String mapURL = mim.getCoordUrlMap()[i].getUrl();
+                            if (mapURL.startsWith("/")) {
+                                mapURL = Aksess.getContextPath() + mapURL;
                             }
-                            tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
-                        }
-                    }
-                    tag.append("</map>");
-                }
-            } catch(SystemException e){
-                System.err.println(e);
-                Log.error(SOURCE, e, null, null);
-            }
 
+                            // Henter eventuelle resizede koordinater
+                            String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
+                            if (coord != null) {
+                                String target = "";
+                                if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
+                                    target = " onclick=\"window.open(this.href); return false\"";
+                                }
+                                tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
+                            }
+                        }
+                        tag.append("</map>");
+                    }
+                } catch(SystemException e){
+                    System.err.println(e);
+                    Log.error(SOURCE, e, null, null);
+                }
+            }
             // Legg til > på slutten hvis ikke avsluttet
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }
+
         } else if (mimeType.indexOf("flash") != -1) {
             int width  = mm.getWidth();
             int height = mm.getHeight();
@@ -266,6 +276,49 @@ public class MultimediaHelper {
             filename = filename.substring(filename.length() - 255, filename.length());
         }
         mm.setFilename(filename);
+    }
+
+    public static List<Integer> getMultimediaIdsFromText(String text) {
+        List<Integer> ids = new ArrayList<Integer>();
+        if (text != null) {
+            ids.addAll(findUsagesInText(text, "multimedia.ap?id="));
+            ids.addAll(findUsagesInText(text, "/multimedia/"));
+        }
+        return ids;
+    }
+
+
+    private static List<Integer> findUsagesInText(String value, String key) {
+        List<Integer> ids = new ArrayList<Integer>();
+
+        int foundPos = value.indexOf(key);
+        while (foundPos != -1) {
+            value = value.substring(foundPos + key.length(), value.length());
+
+            int endPos = 0;
+            char c = value.charAt(endPos);
+            while (c >= '0' && c <= '9') {
+                ++endPos;
+                if (endPos < value.length()) {
+                    c = value.charAt(endPos);
+                } else {
+                    break;
+                }
+            }
+            String id = value.substring(0, endPos);
+
+            try {
+                int multimediaId = Integer.parseInt(id);
+                ids.add(multimediaId);
+            } catch (NumberFormatException e) {
+                // Error in URL
+            }
+
+            // Find next
+            foundPos = value.indexOf(key, foundPos);
+        }
+
+        return ids;
     }
 
 }

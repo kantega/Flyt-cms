@@ -25,24 +25,27 @@ import java.util.Map;
 import java.util.HashMap;
 
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Feb 4, 2009
- * Time: 10:35:25 AM
  */
-public class ListAssociationCategoriesAction extends AbstractController {
-    private TemplateConfigurationCache templateConfigurationCache;   
+public class ListAssociationCategoriesAction extends AdminController {
+    private TemplateConfigurationCache templateConfigurationCache;
+    private String view;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         model.put("associationCategories", templateConfigurationCache.getTemplateConfiguration().getAssociationCategories());
 
-        return new ModelAndView("/WEB-INF/jsp/admin/templates/listassociationcategories.jsp", model);
+        return new ModelAndView(view, model);
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

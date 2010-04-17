@@ -47,7 +47,7 @@ public class AssociationAO  {
         association.setPath(rs.getString("Path"));
         association.setDepth(rs.getInt("Depth"));
         association.setDeleted(rs.getInt("IsDeleted") == 1);
-
+        association.setNumberOfViews(rs.getInt("NumberOfViews"));
         return association;
     }
 

@@ -243,7 +243,7 @@ public class ContentSearchController implements AksessController, InitializingBe
     protected void addHitCountQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
         if (hitCountDocumentType) {
             // Document types
-            HitCountQuery hitCountDocType = new HitCountQueryDefaultImpl(Fields.DOCUMENT_TYPE_ID, getDocumentTypes(), true);
+            HitCountQuery hitCountDocType = new HitCountQueryDefaultImpl(Fields.DOCUMENT_TYPE_ID, HitCountHelper.getDocumentTypes(), true);
             query.addHitCountQuery(hitCountDocType);
         }
 
@@ -253,7 +253,7 @@ public class ContentSearchController implements AksessController, InitializingBe
             if (content != null) {
                 siteId = content.getAssociation().getSiteId();
             }
-            HitCountQuery hitCountParents = new HitCountQueryDefaultImpl(Fields.CONTENT_PARENTS, getParents(siteId, request), true);
+            HitCountQuery hitCountParents = new HitCountQueryDefaultImpl(Fields.CONTENT_PARENTS, HitCountHelper.getParents(siteId, request), true);
             query.addHitCountQuery(hitCountParents);
         }
 
@@ -261,7 +261,7 @@ public class ContentSearchController implements AksessController, InitializingBe
             // Modified date
             query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));
         }
-    }
+    }    
 
 
     public String getDescription() {

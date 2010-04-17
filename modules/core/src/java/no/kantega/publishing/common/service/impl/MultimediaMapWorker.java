@@ -72,6 +72,11 @@ public class MultimediaMapWorker {
 
                 MultimediaMapEntry entry = new MultimediaMapEntry(id, parentId, MultimediaType.getMultimediaTypeAsEnum(type), title);
                 entry.setSecurityId(rs.getInt(5));
+                int children = rs.getInt(6) + rs.getInt(7);
+                if (children > 0) {
+                    entry.setHasChildren(true);
+                }
+
                 tmpentries.add(entry);
             }
             rs.close();
@@ -98,14 +103,14 @@ public class MultimediaMapWorker {
     public static MultimediaMapEntry getSiteMap() throws SystemException {
         StringBuffer query = new StringBuffer();
 
-        query.append("select Id, ParentId, Type, Name, SecurityId from multimedia order by ParentId, Type, Name");
+        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders from multimedia order by ParentId, Type, Name");
         return getSiteMapBySQL(query.toString());
     }
 
 
     public static MultimediaMapEntry getPartialSiteMap(int[] idList, boolean getOnlyFolders) throws SystemException {
         StringBuffer query = new StringBuffer();
-        query.append("select Id, ParentId, Type, Name, SecurityId from multimedia where ParentId in (0");
+        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders from multimedia where ParentId in (0");
         if (idList != null) {
             for (int i = 0; i < idList.length; i++) {
                 query.append("," + idList[i]);
@@ -119,29 +124,4 @@ public class MultimediaMapWorker {
         return getSiteMapBySQL(query.toString());
     }
 
-    /**
-     *  Metoder for testing, skriver ut sitemap over hele nettstedet...
-     */
-
-    private static void printSiteMap(MultimediaMapEntry sitemap, int depth) {
-        if (sitemap != null) {
-            for (int i = 0; i < depth; i++) {
-                System.out.print("---");
-            }
-            System.out.print(sitemap.title + "(" + sitemap.currentId + ")");
-            System.out.print("\n");
-            List children = sitemap.getChildren();
-            if (children != null) {
-                for (int i = 0; i < children.size(); i++) {
-                    printSiteMap((MultimediaMapEntry)children.get(i), depth + 1);
-                }
-            }
-        }
-    }
-
-    public static void main(String args[]) throws Exception {
-        MultimediaMapEntry entry = getSiteMap();
-
-        printSiteMap(entry, 0);
-    }
 }

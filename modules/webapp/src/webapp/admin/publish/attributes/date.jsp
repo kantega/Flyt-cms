@@ -23,32 +23,16 @@
     int len = df.length();
 
     DateAttribute attribute = (DateAttribute)request.getAttribute("attribute");
-    String    fieldName = (String)request.getAttribute("fieldName");
 
     attribute.setFormat(df);
     String value = attribute.getValue();
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif" alt=""></td>
-                <td><a href="#" id="velgdato<%=fieldName%>0"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0" alt=""></a></td>
-                <td><a href="#" id="velgdato<%=fieldName%>1" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2" alt=""></td>
-</tr>
-<tr>
-    <td>
-        <input type="text" class="inp" id="<%=fieldName%>" size="<%=len%>" maxlength="<%=len%>" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)<br>
-        <script type="text/javascript">
-            Calendar.setup( { inputField  : "<%=fieldName%>", ifFormat : "%d.%m.%Y", button : "velgdato<%=fieldName%>0", firstDay: 1} );
-            Calendar.setup( { inputField  : "<%=fieldName%>", ifFormat : "%d.%m.%Y", button : "velgdato<%=fieldName%>1", firstDay: 1} );
-        </script>
-    </td>
-</tr>
+<script type="text/javascript">
+    $(function() {
+        $("#${fieldName}").datepicker();
+    });
+</script>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+    <input type="text" id="${fieldName}" size="<%=len%>" maxlength="<%=len%>" name="${fieldName}" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)
+</div>

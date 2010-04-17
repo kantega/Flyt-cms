@@ -25,17 +25,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 
 /**
  *
  */
-public class ListTopicMapsAction  extends AbstractController {
+public class ListTopicMapsAction extends AdminController {
+    private String view;
 
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         model.put("topicMaps", new TopicMapService(request).getTopicMaps());
 
-        return new ModelAndView("/WEB-INF/jsp/admin/topicmaps/admin/listtopicmaps.jsp", model);
+        return new ModelAndView(view, model);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

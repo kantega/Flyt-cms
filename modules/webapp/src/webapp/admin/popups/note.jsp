@@ -23,8 +23,6 @@
 	<title><kantega:label key="aksess.note.title"/></title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
-<script language="Javascript" src="../js/common.js">
-</script>
 <script language="Javascript">
 function addNote() {
    if (window.opener) {

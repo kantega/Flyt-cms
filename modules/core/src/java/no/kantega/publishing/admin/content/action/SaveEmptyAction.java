@@ -26,17 +26,30 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.HashMap;
+
 
 public class SaveEmptyAction extends AbstractSaveContentAction {
-    private static String SOURCE = "aksess.SaveEmptyAction";
+    private String view;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+        // No data is editable on this page, return no errors
         ValidationErrors errors  = new ValidationErrors();
 
         return errors;
     }
 
-    public String getEditPage() {
-        return "previewcontent";
+    public String getView() {
+        return view;
+    }
+
+    Map<String, Object> getModel(Content content, HttpServletRequest request) {
+        return new HashMap<String, Object>();
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

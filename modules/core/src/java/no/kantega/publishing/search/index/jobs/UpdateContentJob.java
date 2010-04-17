@@ -42,7 +42,9 @@ public class UpdateContentJob extends IndexJob {
             IndexWriter writer = context.getIndexWriterManager().getIndexWriter("aksess", false);
             DocumentProvider provider = context.getDocumentProviderSelector().select(getSource());
             Document d = provider.provideDocument(getContentId());
-            writer.addDocument(d);
+            if (d != null) {
+                writer.addDocument(d);
+            }
         } catch (IOException e) {
             log.error(e);
         } finally {

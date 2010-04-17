@@ -16,25 +16,23 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-
-<kantega:section id="head">
-
+<kantega:section id="title">
+    <kantega:label key="useradmin.deleteprofile.title"/>
 </kantega:section>
 
-<kantega:section id="innhold">
+<kantega:section id="content">
     <form action="delete" name="myform" method="post">
         <input type="hidden" name="domain" value="<c:out value="${profile.identity.domain}"/>">
         <input type="hidden" name="userId" value="<c:out value="${profile.identity.userId}"/>">
         <input type="hidden" name="confirm" value="true">
-            <p>
-                <kantega:label key="useradmin.deleteprofile.confirm"/> <c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/> ?
-            </p>
-
-            <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.slett"/>">
-                <input type="button" class="button" onclick="history.back();" value="<kantega:label key="aksess.button.avbryt"/>">
-            </p>
+        <p>
+            <kantega:label key="useradmin.deleteprofile.confirm"/> <c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/> ?
+        </p>
+        <div class="buttonGroup">
+            <span class="button"></span><input type="submit" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="submit" class="cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

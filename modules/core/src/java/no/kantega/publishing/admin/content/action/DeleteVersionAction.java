@@ -17,59 +17,37 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
-
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 
-public class DeleteVersionAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteVersionAction";
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+public class DeleteVersionAction implements Controller {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute("currentContent");
         if (content == null) {
-            response.sendRedirect("content.jsp?activetab=previewcontent");
+            return new ModelAndView(new RedirectView("Navigate.action"));
         } else {
-            try {
-                ContentManagementService aksessService = new ContentManagementService(request);
-                int version = param.getInt("version");
-                if (version != -1) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(content.getAssociation().getId());
-                    cid.setVersion(version);
-                    cid.setLanguage(content.getLanguage());
-                    aksessService.deleteContentVersion(cid);
-                }
-                response.sendRedirect("content.jsp?activetab=editversions");
-            } catch (Exception e) {
-                Log.error(SOURCE, e, null, null);
-
-                ExceptionHandler handler = new ExceptionHandler();
-                handler.setThrowable(e, SOURCE);
-                request.getSession(true).setAttribute("handler", handler);
-                request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+            ContentManagementService aksessService = new ContentManagementService(request);
+            int version = param.getInt("version");
+            if (version != -1) {
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setAssociationId(content.getAssociation().getId());
+                cid.setVersion(version);
+                cid.setLanguage(content.getLanguage());
+                aksessService.deleteContentVersion(cid);
             }
+            return new ModelAndView(new RedirectView("SaveVersion.action"));
         }
     }
 }

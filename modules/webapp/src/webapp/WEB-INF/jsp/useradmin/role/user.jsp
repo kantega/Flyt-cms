@@ -17,7 +17,11 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
+<kantega:section id="title">
+    <kantega:label key="useradmin.userroles.title"/>
+</kantega:section>
+
+<kantega:section id="content">
     <script type="text/javascript">
         function removeRole(roleId, roleDomain) {
             if (confirm("<kantega:label key="useradmin.userroles.remove.confirm"/>")) {
@@ -27,55 +31,61 @@
             }
         }
     </script>
+
+    <div class="fieldset">
+        <fieldset>
+            <h1><kantega:label key="useradmin.userroles.title"/></h1>
+
+            <form action="removeuserrole" name="removerole" method="post">
+                <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+                <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
+                <input type="hidden" name="roleId" value="">
+                <input type="hidden" name="roleDomain" value="">
+                <input type="hidden" name="context" value="user">
+            </form>
+            <table border="0" cellspacing="0" cellpadding="0" width="400">
+                <c:forEach items="${roleSets}" var="roleSet">
+                    <tr class="tableHeading">
+                        <td><c:out value="${roleSet.description}"/></td>
+                        <td></td>
+                    </tr>
+                    <c:forEach items="${roleSet.userRoles}" var="role" varStatus="status">
+                        <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                            <td><c:out value="${role.name}"/></td>
+                            <td align="right">
+                                <c:if test="${roleSet.isEditable}">
+                                    <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')"><kantega:label key="useradmin.userroles.remove"/></a>
+                                </c:if>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    <c:if test="${roleSet.isEditable}">
+                        <tr>
+                            <td colspan="2" align="right">
+                                <kantega:label key="useradmin.userroles.add"/>:<br>
+                                <form action="adduserrole" method="post">
+                                    <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+                                    <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
+                                    <input type="hidden" name="roleDomain" value="<c:out value="${roleSet.domain}"/>">
+                                    <select name="roleId">
+                                        <c:forEach items="${roleSet.availableRoles}" var="role">
+                                            <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                    <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.add"/>"></span>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:if>
+                    <tr>
+                        <td colspan="2">&nbsp;</td>
+                    </tr>
+                </c:forEach>
+            </table>
+
+        </fieldset>
+    </div>
+
 </kantega:section>
 
-<kantega:section id="innhold">
-    <form action="removeuserrole" name="removerole" method="post">
-        <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-        <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
-        <input type="hidden" name="roleId" value="">
-        <input type="hidden" name="roleDomain" value="">
-        <input type="hidden" name="context" value="user">
-    </form>
-    <table border="0" cellspacing="0" cellpadding="0" width="400">
-        <c:forEach items="${roleSets}" var="roleSet">
-            <tr class="tableHeading">
-                <td><c:out value="${roleSet.description}"/></td>
-                <td></td>
-            </tr>
-            <c:forEach items="${roleSet.userRoles}" var="role" varStatus="status">
-                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                    <td><c:out value="${role.name}"/></td>
-                    <td align="right">
-                        <c:if test="${roleSet.isEditable}">
-                            <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')"><kantega:label key="useradmin.userroles.remove"/></a>
-                        </c:if>
-                    </td>
-                </tr>
-            </c:forEach>
-            <c:if test="${roleSet.isEditable}">
-            <tr>
-                <td colspan="2" align="right">
-                    <kantega:label key="useradmin.userroles.add"/>:<br>
-                    <form action="adduserrole" method="post">
-                        <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-                        <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
-                        <input type="hidden" name="roleDomain" value="<c:out value="${roleSet.domain}"/>">
-                        <select name="roleId">
-                            <c:forEach items="${roleSet.availableRoles}" var="role">
-                                <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
-                            </c:forEach>
-                        </select>
-                        <input type="submit" value="Legg til">
-                    </form>
-                </td>
-            </tr>
-            </c:if>
-            <tr>
-                <td colspan="2">&nbsp;</td>
-            </tr>
-        </c:forEach>
-    </table>
-</kantega:section>
-
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

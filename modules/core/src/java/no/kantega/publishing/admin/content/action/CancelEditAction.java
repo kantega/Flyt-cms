@@ -21,65 +21,42 @@ import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.Date;
 
-public class CancelEditAction  extends HttpServlet {
-    private static String SOURCE = "aksess.CancelEditAction";
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+public class CancelEditAction implements Controller {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
 
-        try {
-            ContentManagementService aksessService = new ContentManagementService(request);
+        ContentManagementService aksessService = new ContentManagementService(request);
 
-            Content content = (Content)session.getAttribute("currentContent");
-            if (content != null) {
-
-                LockManager.releaseLock(content.getId());
-                ContentIdentifier cid = new ContentIdentifier();
-                if (content.getId() == -1) {
-                    // Nytt innhold, vis parent
-                    Association a = content.getAssociation();
-                    cid.setAssociationId(a.getParentAssociationId());
-                    cid.setLanguage(content.getLanguage());
-                } else {
-                    // Hent siste versjon
-                    cid.setAssociationId(content.getAssociation().getId());
-                }
-
-                content = aksessService.getContent(cid);
-
-                session.setAttribute("currentContent", content);
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+        if (content != null) {
+            LockManager.releaseLock(content.getId());
+            ContentIdentifier cid = new ContentIdentifier();
+            if (content.getId() == -1) {
+                // New content, show parent
+                Association a = content.getAssociation();
+                cid.setAssociationId(a.getParentAssociationId());
+                cid.setLanguage(content.getLanguage());
+            } else {
+                // Fetch latest version
+                cid.setAssociationId(content.getAssociation().getId());
             }
-            response.sendRedirect("content.jsp?activetab=previewcontent&dummy=" + new Date().getTime());
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
 
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+            content = aksessService.getContent(cid);
+            session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
+            session.removeAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         }
+
+        return new ModelAndView(new RedirectView("Navigate.action"));
     }
 }

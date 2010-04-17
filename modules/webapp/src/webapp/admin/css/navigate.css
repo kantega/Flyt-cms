@@ -1,0 +1,268 @@
+/************** Layout **************/
+#Navigation {
+    position: relative;
+    float: left;
+    width: 190px;
+    padding-right: 10px;/*Framesplit.width*/
+    background: #ffffff;
+}
+
+#Navigator {
+    overflow: auto;
+    padding-top: 5px;
+}
+
+#Framesplit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 10px;
+    height: 100%;
+    background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
+}
+
+/* Frame resize handle */
+.ui-resizable-handle.ui-resizable-e {
+    position: absolute;
+    height: 17px;
+    width: 10px;
+    right: 0;
+    top: 50%;
+    cursor: e-resize;
+    background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
+}
+
+
+#MainPane iframe {
+    border: none;
+}
+
+/************** Content frame (right column) **************/
+#MainPane #Statusbar {
+    height: 2em;
+    line-height: 2em;
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    border-bottom: 1px solid #cccccc;
+    padding: 0 10px;
+    position: relative;
+}
+
+#MainPane .supportMenu a {
+    display: none;
+    float: left;
+    height: 22px;
+    padding-left: 20px;
+    margin-left: 20px;
+}
+#MainPane .supportMenu a.brokenLink {
+    background: url("../bitmaps/common/icons/small/brokenlink.png") left center no-repeat;
+}
+#MainPane .supportMenu a.crossPublish {
+    background: url("../bitmaps/common/icons/small/crosspublish.png") left center no-repeat;
+}
+#MainPane .supportMenu a.details {
+    background: url("../bitmaps/common/icons/small/details.png") left center no-repeat;
+}
+
+
+/************** Navigation (left column) **************/
+#Filteroptions {
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") left top repeat-x;
+    border-bottom: 1px solid #cccccc;
+    height: 2em;
+    position: relative;
+}
+#Filteroptions .hideexpired {
+    display: inline;
+    line-height:22px;
+}
+#Filteroptions .hideexpired input[type=checkbox] {
+    vertical-align: -15%;
+}
+#Filteroptions .hideexpired label {
+    cursor: pointer;
+}
+#Filteroptions .filtersToggle {
+    background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
+    padding-left: 15px;
+    margin: 0 5px;
+}
+
+/************** Breadcrumbs **************/
+ul.breadcrumbs {
+    float: left;
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+ul.breadcrumbs li {
+    display: inline;
+    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
+    padding-left: 10px;
+    padding-right: 3px;
+}
+ul.breadcrumbs li:first-child {
+    /*TODO: Change bitmap*/
+    background: url("../bitmaps/common/icons/small/site.png") left center no-repeat;
+    padding-left: 18px;
+}
+
+/************** Navigator **************/
+.navigator {
+    margin: 0 0 0 0.25em;
+}
+.navigator li{
+    list-style: none;
+    margin-top: 0.25em;
+    white-space: nowrap;
+}
+.navigator li li {
+    margin-left: 1em;
+}
+
+.navigator li span {
+
+}
+
+.navigator .openState {
+    margin-right: 2px;
+}
+
+.navigator .openState a, .navigator .openState span {
+    display: inline-block;
+    position: relative;
+    top: 1px;
+    width: 9px;
+    height: 9px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+.navigator .openState a.open {
+    background-image: url("../bitmaps/common/navigator/nav_open.png");;
+}
+.navigator .openState a.closed {
+    background-image: url("../bitmaps/common/navigator/nav_closed.png");
+}
+.navigator .openState span.noChildren {
+    background-image: none;
+}
+
+.navigator .icon {
+}
+.navigator .icon a {
+    display: inline-block;
+    position: relative;
+    top: 4px;
+    width: 13px;
+    height: 15px;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.navigator .icon .expired {
+    background-image: url("../bitmaps/common/navigator/expired.png");
+}
+.navigator .icon .file {
+    background-image: url("../bitmaps/common/navigator/file.png");
+}
+.navigator .icon .file-draft {
+    background-image: url("../bitmaps/common/navigator/file.png");
+}
+.navigator .icon .folder {
+    background-image: url("../bitmaps/common/navigator/folder.png");
+}
+.navigator .icon .media {
+    background-image: url("../bitmaps/common/navigator/image.png");
+}
+.navigator .icon .link {
+    background-image: url("../bitmaps/common/navigator/link.png");
+}
+.navigator .icon .link-draft {
+    background-image: url("../bitmaps/common/navigator/link_draft.png");
+}
+.navigator .icon .shortcut {
+    background-image: url("../bitmaps/common/navigator/shortcut.png");
+}
+
+.navigator .icon .page {
+    background-image: url("../bitmaps/common/navigator/page.png");
+}
+.navigator .icon .page-draft {
+    background-image: url("../bitmaps/common/navigator/page_draft.png");
+}
+.navigator .icon .root{
+    width: 14px;
+    height: 14px;
+    top: 3px;
+    background-image: url("../bitmaps/common/navigator/root.png");
+}
+.navigator .icon .shortcut {
+    background-image: url("../bitmaps/common/navigator/shortcut.png");
+}
+.navigator .icon .waiting{
+    background-image: url("../bitmaps/common/navigator/waiting.png");
+}
+
+
+.navigator .title {
+}
+.navigator .title a {
+    padding: 2px;
+    text-decoration: none;
+}
+
+.navigator .title a:hover {
+    background: #dddddd;
+}
+
+.navigator .title a.selected {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
+}
+
+/* Generic context menu styles */
+.contextMenu {
+    position: absolute;
+    width: 130px;
+    z-index: 99999;
+    border: solid 1px #cccccc;
+    background: #ffffff;
+    padding: 0;
+    margin: 0;
+    display: none;
+}
+
+.contextMenu li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.contextMenu a {
+    color: #000;
+    text-decoration: none;
+    display: block;
+    line-height: 20px;
+    outline: none;
+    padding: 1px 5px;
+}
+
+.contextMenu li.hover a {
+    color: #ffffff;
+    background-color: #3399ff;
+}
+
+.contextMenu li.disabled a {
+    color: #aaaaaa;
+    cursor: default;
+}
+
+.contextMenu li.hover.disabled a {
+    background-color: transparent;
+}
+
+.contextMenu li.separator {
+    border-top: solid 1px #cccccc;
+}

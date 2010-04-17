@@ -44,9 +44,7 @@
 	<title></title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
     <%@ include file="include/calendarsetup.jsp"%>
-    <script type="text/javascript" language="Javascript" src="../js/browserdetect.js"></script>
-    <script type="text/javascript" language="Javascript" src="../js/edit.jsp"></script>
-    <script type="text/javascript" language="Javascript" src="../js/richtext.jsp"></script>
+    <script type="text/javascript" language="Javascript" src="../js/edit.jjs"></script>
 
     <script type="text/javascript">
 
@@ -60,11 +58,11 @@
 
 <c:if test="${errors.length > 0}">
     <div id="errorMessageArea" style="display:block;">
-        <table border="0" cellspacing="0" cellpadding="0" class="error">
+        <table border="0" cellspacing="0" cellpadding="0">
                 <tr>
                     <td>
 
-                        <div id="errorMessage">
+                        <div id="errorMessage" class="ui-state-error">
                             <b>Vennligst fyll ut følgende felt riktig:</b>
                             <ul>
                                 <c:forEach items="${errors.errors}" var="error">

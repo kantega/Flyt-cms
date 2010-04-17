@@ -25,99 +25,76 @@ import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.admin.content.util.EditContentHelper;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.Date;
+import java.util.Map;
+import java.util.HashMap;
 
-public class EditContentAction  extends HttpServlet {
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+public class EditContentAction implements Controller {
     private static String SOURCE = "aksess.EditContentAction";
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        ContentManagementService aksessService = new ContentManagementService(request);
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
+        String url = request.getParameter("url");
+        ContentIdentifier cid = new ContentIdentifier(url);
+        HttpSession session = request.getSession();
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestParameters param = new RequestParameters(request);
-
-        String action = param.getString("action");
-        try {
-            if (action == null) {
-                throw new InvalidParameterException("action parameter missing", SOURCE);
-            }
-
-            ContentManagementService aksessService = new ContentManagementService(request);
-
-            ContentIdentifier cid = new ContentIdentifier(request);
-            HttpSession session = request.getSession();
-            Content content = (Content)session.getAttribute("currentContent");
-
-            if (cid.getAssociationId() == -1 && content == null) {
-                // Hvis basen er tom, kan hjemmesida opprettes
-                Connection c = null;
-                try {
-                    c = dbConnectionFactory.getConnection();
-                    ResultSet rs = SQLHelper.getResultSet(c, "select * from contentversion where isActive = 1");
-                    if (!rs.next()) {
-                        // Opprett hjemmesida
-                        int templateId = SQLHelper.getInt(c, "select DisplayTemplateId from displaytemplates where urlfullview = '" + Aksess.getStartPage() + "'", "DisplayTemplateId");
-                        if (templateId == -1) {
-                            throw new MissingTemplateException(Aksess.getStartPage(), SOURCE);
-                        }
-                        response.sendRedirect("SelectTemplate.action?parentId=0&templateId=dt;" + templateId);
-                        return;
-                    } else {
-                        throw new ContentNotFoundException("-1", SOURCE);
+        if (cid.getAssociationId() == -1 && content == null) {
+            Connection c = null;
+            try {
+                c = dbConnectionFactory.getConnection();
+                ResultSet rs = SQLHelper.getResultSet(c, "select * from contentversion where isActive = 1");
+                if (!rs.next()) {
+                    // Database is empty, create homepage
+                    int templateId = SQLHelper.getInt(c, "select DisplayTemplateId from displaytemplates where urlfullview = '" + Aksess.getStartPage() + "'", "DisplayTemplateId");
+                    if (templateId == -1) {
+                        throw new MissingTemplateException(Aksess.getStartPage(), SOURCE);
                     }
-                } finally {
-                    if (c != null) {
-                        c.close();
-                    }
+
+                    return new ModelAndView(new RedirectView("SelectTemplate.action?parentId=0&templateId=dt;" + templateId));
+                } else {
+                    throw new ContentNotFoundException("-1", SOURCE);
+                }
+            } finally {
+                if (c != null) {
+                    c.close();
                 }
             }
-
-            String infomessage = "";
-
-            // Vi har funnet innholdet som det skal gjøres noe med...
-            if ((content == null) || (cid.getAssociationId() != content.getAssociation().getId()) || (!content.isCheckedOut())) {
-                // Innholdet ligger ikke i session eller er ikke riktig innhold
-                content = aksessService.checkOutContent(cid);
-
-                // Hvis siste versjon er en kladd eller ikke godkjent side, gi brukeren beskjed om dette!
-                if (content.getStatus() == ContentStatus.DRAFT && content.getVersion() > 1) {
-                    infomessage = "&infomessage=editdraft";
-                } else if (content.getStatus() == ContentStatus.WAITING) {
-                    infomessage = "&infomessage=editwaiting";
-                }
-            }
-            session.setAttribute("currentContent", content);
-
-            if (action.indexOf("edit") != -1) {
-                response.sendRedirect("content.jsp?activetab=" + action + infomessage + "&dummy=" + new Date().getTime());
-            } else {
-                response.sendRedirect(action + ".jsp?dummy=" + new Date().getTime());
-            }
-        } catch (Exception e) {
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
         }
 
+        String infomessage = "";
+
+        if ((content == null) || (cid.getAssociationId() != content.getAssociation().getId()) || (!content.isCheckedOut())) {
+            // Content is not in session or not correct content
+            content = aksessService.checkOutContent(cid);
+
+            if (content.getStatus() == ContentStatus.DRAFT && content.getVersion() > 1) {
+                // Tell user this is a draft
+                infomessage = "editdraft";
+            } else if (content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL) {
+                // Tell user this page is waiting for approval
+                infomessage = "editwaiting";
+            }
+        }
+
+        Map model = new HashMap();
+        if (infomessage.length() > 0) {
+            model.put("infomessage", infomessage);            
+        }
+
+        session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+
+        return new ModelAndView(new RedirectView("SaveContent.action"), model);
     }
 }

@@ -60,7 +60,7 @@ public class ValidationErrors {
     }
 
     private ValidationError item(int i) {
-        return (ValidationError)errors.get(i);
+        return errors.get(i);
     }
 
     /**
@@ -82,7 +82,15 @@ public class ValidationErrors {
         return item(i).getField();
     }
 
-    public List getErrors() {
+    public List<ValidationError> getErrors() {
         return errors;
+    }
+
+    /**
+     * Add errors
+     * @param errors - errors
+     */
+    public void addAll(ValidationErrors errors) {
+        this.errors.addAll(errors.getErrors());
     }
 }

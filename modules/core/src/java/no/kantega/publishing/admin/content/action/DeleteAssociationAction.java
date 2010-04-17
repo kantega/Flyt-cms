@@ -17,77 +17,129 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.exception.ExceptionHandler;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.SecuritySession;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-public class DeleteAssociationAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteAssociationAction";
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
 
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+public class DeleteAssociationAction implements Controller {
+    private String errorView;
+    private String selectAssociationView;
+    private String confirmDeleteSubPagesView;
+    private String confirmDeleteView;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
+        ContentManagementService aksessService = new ContentManagementService(request);
+        SecuritySession securitySession = SecuritySession.getInstance(request);
         RequestParameters param = new RequestParameters(request, "utf-8");
         HttpSession session = request.getSession();
-        try {
-            ContentManagementService aksessService = new ContentManagementService(request);
 
-            int[] ids = param.getInts("associationId");
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        if (!request.getMethod().equalsIgnoreCase("POST")) {
+            // Not post, user should confirm delete of page
+
+            // Get association
+            String url = request.getParameter("url");
+            ContentIdentifier cid = new ContentIdentifier(url);
+
+            // Get content (page) that association points to
+            Content content = aksessService.getContent(cid);
+
+            String contentTitle = "";
+            if (content.getTitle() != null) {
+                contentTitle = content.getTitle();
+            }
+            if (contentTitle.length() > 30) contentTitle = contentTitle.substring(0, 27) + "...";
+            model.put("contentTitle", contentTitle);
+
+
+            if (!securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
+                model.put("error", "aksess.confirmdelete.notauthorized");
+                return new ModelAndView(errorView, model);
+            }
+
+            if (content.isLocked()) {
+                model.put("error", "aksess.confirmdelete.locked");
+                return new ModelAndView(errorView, model);
+            }
+
+            boolean isCrossPublished = false;
+            List associations = content.getAssociations();
+            if (associations != null) {
+                if (associations.size() > 1) {
+                    isCrossPublished = true;                    
+                }
+                model.put("associationId", cid.getAssociationId());
+            }
+
+            model.put("content", content);
+            model.put("isCrossPublished", isCrossPublished);
+
+            return new ModelAndView(selectAssociationView, model);
+
+        } else {
+            // User has confirmed deletion
+            int[] ids = param.getInts("id");
             boolean confirmMultipleDelete = param.getBoolean("confirmMultipleDelete", false);
 
-            String view = "updatetree.jsp";
             List toBeDeleted = null;
             if (ids.length > 0) {
                 toBeDeleted = aksessService.deleteAssociationsById(ids, confirmMultipleDelete);
                 if (toBeDeleted != null && toBeDeleted.size() > 1 && !confirmMultipleDelete) {
-                    request.setAttribute("toBeDeleted", toBeDeleted);
-                    view = "confirmdelete_multiple.jsp";
+                    // User must confirm deletion of subpages
+                    model.put("toBeDeleted", toBeDeleted);
+                    return new ModelAndView(confirmDeleteSubPagesView, model);
                 } else {
-                    Content current = (Content)session.getAttribute("currentContent");
+                    Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
                     if (current != null) {
                         ContentIdentifier cid = new ContentIdentifier();
                         cid.setAssociationId(current.getAssociation().getAssociationId());
                         if (aksessService.getContent(cid, false) == null) {
-                            // Objektet brukeren kikker på er slettet, hent parent
+                            // The page the user is watching is deleted, show parent
                             int parentId = current.getAssociation().getParentAssociationId();
                             if (parentId > 0) {
                                 ContentIdentifier parentCid = new ContentIdentifier();
                                 parentCid.setAssociationId(parentId);
                                 current = aksessService.getContent(parentCid, false);
-                                session.setAttribute("currentContent", current);
+                                session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
+                                model.put("currentPage", current);
                             }
                         }
-                        request.setAttribute("statusmessage", "deletecontent");
                     }
                 }
             }
-            request.getRequestDispatcher(view).forward(request, response);
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+            model.put("message", "aksess.confirmdelete.finished");
+            return new ModelAndView(confirmDeleteView, model);
         }
+    }
+
+    public void setErrorView(String errorView) {
+        this.errorView = errorView;
+    }
+
+    public void setSelectAssociationView(String selectAssociationView) {
+        this.selectAssociationView = selectAssociationView;
+    }
+
+    public void setConfirmDeleteSubPagesView(String confirmDeleteSubPagesView) {
+        this.confirmDeleteSubPagesView = confirmDeleteSubPagesView;
+    }
+
+    public void setConfirmDeleteView(String confirmDeleteView) {
+        this.confirmDeleteView = confirmDeleteView;
     }
 }

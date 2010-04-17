@@ -22,10 +22,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaUsageAO;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.MultimediaMapEntry;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
@@ -56,7 +53,7 @@ public class MultimediaService {
     }
 
 
-    public List getMultimediaPath(Multimedia mm) throws SystemException {
+    public List<PathEntry> getMultimediaPath(Multimedia mm) throws SystemException {
         return PathWorker.getMultimediaPath(mm);
     }
 
@@ -64,14 +61,13 @@ public class MultimediaService {
         MultimediaAO.streamMultimediaData(id, ish);
     }
 
-    public List getMultimediaList(int parentId) throws SystemException {
-        List list = MultimediaAO.getMultimediaList(parentId);
+    public List<Multimedia> getMultimediaList(int parentId) throws SystemException {
+        List<Multimedia> list = MultimediaAO.getMultimediaList(parentId);
 
-        List approved = new ArrayList();
+        List<Multimedia> approved = new ArrayList<Multimedia>();
         // Vis alle bilder + kun de mapper som brukeren har tilgang til
-        for (int i = 0; i < list.size(); i++) {
-            Multimedia m = (Multimedia)list.get(i);
-            if (m.getType() != MultimediaType.FOLDER ||securitySession.isAuthorized(m, Privilege.VIEW_CONTENT)) {
+        for (Multimedia m: list) {
+            if (m.getType() != MultimediaType.FOLDER || securitySession.isAuthorized(m, Privilege.VIEW_CONTENT)) {
                 approved.add(m);
             }
         }

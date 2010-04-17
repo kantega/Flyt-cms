@@ -80,6 +80,13 @@
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
 
+    <bean id="adminSearchService" class="no.kantega.publishing.search.service.AdminSearchService">
+        <property name="searcher" ref="searcher"/>
+        <property name="termTranslator" ref="termTranslator"/>
+        <property name="indexManager" ref="indexManager"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
     <bean id="aksessDao" class="no.kantega.publishing.search.dao.AksessDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

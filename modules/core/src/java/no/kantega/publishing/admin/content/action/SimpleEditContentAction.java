@@ -31,11 +31,15 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.security.SecuritySession;
 
 import java.util.List;
 
 public class SimpleEditContentAction implements Controller {
+
+    private String view;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
@@ -68,13 +72,17 @@ public class SimpleEditContentAction implements Controller {
         if(redirectUrl != null && redirectUrl.length() > 0) {
             request.setAttribute("redirectUrl", redirectUrl);
         }
-        request.setAttribute("currentContent", content);
-        session.setAttribute("currentContent", content);
+        request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+        session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
         Configuration config = Aksess.getConfiguration();
         Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
-        request.setAttribute("miniAksessMediaArchive", allowArchive);
+        request.setAttribute("miniAksessMediaArchive", allowArchive);        
 
-        return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
+        return new ModelAndView(view, null);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

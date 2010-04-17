@@ -20,14 +20,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.XMLFilterImpl;
 import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
+import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaDimensions;
+import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.multimedia.ImageEditor;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.commons.log.Log;
+
+import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS
  * Date: Apr 28, 2009
  * Time: 1:26:12 PM
  */
-public class ImgHeightAndWidthFilter extends XMLFilterImpl {
-    
+public class ImgHeightAndWidthFilter extends XMLFilterImpl {        
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if(localName.equalsIgnoreCase("img")) {
@@ -49,6 +57,40 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
                 }
 
                 attributes = HtmlFilterHelper.removeAttribute("style", attributes);
+            }
+
+            String width = attributes.getValue("width");
+            String height = attributes.getValue("height");
+
+            // Replace image URL with resized image URL if necessary
+            if (width != null && height != null) {
+                try {
+                    int imageWidth = Integer.parseInt(width);
+                    int imageHeight = Integer.parseInt(height);
+
+                    String url = attributes.getValue("src");
+                    if (url != null) {
+                        List<Integer> ids = MultimediaHelper.getMultimediaIdsFromText(url);
+                        if (ids.size() == 1) {
+                            int multimediaId = ids.get(0);
+                            Multimedia image = MultimediaAO.getMultimedia(multimediaId);
+                            if (imageWidth != image.getWidth() || imageHeight != image.getHeight() ) {
+                                ImageEditor imageEditor = (ImageEditor) RootContext.getInstance().getBean("aksesImageEditor");
+
+                                MultimediaDimensions d = imageEditor.getResizedImageDimensions(image.getWidth(), image.getHeight(), imageWidth, imageHeight);
+                                attributes = HtmlFilterHelper.setAttribute("height", "" + d.getHeight(), attributes);
+                                attributes = HtmlFilterHelper.setAttribute("width", "" + d.getWidth(), attributes);
+                                String resizedImageUrl = image.getUrl();
+                                resizedImageUrl += resizedImageUrl.indexOf("?") == -1 ? "?" : "&";
+                                resizedImageUrl += "width=" + d.getWidth();
+                                attributes = HtmlFilterHelper.setAttribute("src", resizedImageUrl, attributes);
+                            }                           
+                        }
+                    }
+
+                } catch (NumberFormatException e) {
+                    Log.error(getClass().getName(), e, null, null);
+                }
             }
 
         }

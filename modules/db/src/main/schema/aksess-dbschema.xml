@@ -86,7 +86,8 @@
         <column name="DocumentTypeIdForChildren" required="false" type="INTEGER" size="10"/>
         <column name="IsLocked" required="false" type="INTEGER" size="10" default="0"/>
         <column name="RatingScore" required="false" type="FLOAT" default="0"/>
-        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>
+        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>        
+        <column name="IsSearchable" required="false" type="INTEGER" size="10" default="1"/>
         <index name="idx_content_alias">
             <index-column name="Alias"/>
         </index>
@@ -131,6 +132,7 @@
         <column name="LastModifiedBy" required="false" type="VARCHAR" size="64"/>
         <column name="ChangeDescription" required="false" type="CLOB" size="2147483647"/>
         <column name="ApprovedBy" required="false" type="VARCHAR" size="64"/>
+        <column name="ChangeFrom" required="false" type="TIMESTAMP" size="23,3"/>
         <index name="idx_contentversion">
             <index-column name="ContentId"/>
             <index-column name="Version"/>
@@ -256,6 +258,8 @@
         <column name="AltName" required="false" type="VARCHAR" size="255"/>
         <column name="UsageInfo" required="false" type="CLOB" size="2147483647"/>
         <column name="ProfileImageUserId" required="false" type="VARCHAR" size="64"/>
+        <column name="NoFiles" required="false" type="INTEGER" size="10"/>
+        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>        
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>

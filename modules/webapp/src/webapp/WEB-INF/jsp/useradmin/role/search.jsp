@@ -17,11 +17,11 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
-
+<kantega:section id="title">
+    <kantega:label key="useradmin.searchroles.title"/>
 </kantega:section>
 
-<kantega:section id="innhold">
+<kantega:section id="content">
     <script type="text/javascript">
         function doAction(action, domain, userId) {
             var af = document.actionform;
@@ -31,62 +31,56 @@
             af.submit();
         }
     </script>
-    <c:if test="${numRoleConfigurations > 1}">
-    <form action="search" method="post">
-        <select name="domain">
-            <c:forEach items="${roleConfigurations}" var="config">
-                <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
-            </c:forEach>
-        </select>
+    <div class="fieldset">
+        <fieldset>
+            <h1><kantega:label key="useradmin.searchroles.title"/></h1>
 
-        <input type="submit" value="Vis">
-
-    </form>
-    </c:if>
-    <table border="0" cellspacing="0" cellpadding="0" width="400">
-        <thead>
-            <tr class="tableHeading">
-                <th><kantega:label key="useradmin.searchroles.rolename"/></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <c:forEach var="role" items="${roles}" varStatus="status">
-                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                    <td><a href="Javascript:doAction('edit', '${role.domain}', '${role.id}')">${role.name}</a></td>
-                    <td align="right">
-                        <table border="0">
-                            <tr>
-                                <td>
-                                    <c:if test="${canEdit}">
-                                        <a href="Javascript:doAction('delete', '${role.domain}', '${role.id}')"><kantega:label key="useradmin.searchroles.delete"/></a>
-                                    </c:if>
-                                </td>
-                                <td><a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')"><kantega:label key="useradmin.searchroles.users"/></a></td>
-                            </tr>
-                        </table>
-                    </td>
+            <c:if test="${numRoleConfigurations > 1}">
+                <form action="search" method="post">
+                    <select name="domain">
+                        <c:forEach items="${roleConfigurations}" var="config">
+                            <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
+                        </c:forEach>
+                    </select>
+                    <span class="button"><input type="submit" class="show" value="<kantega:label key="useradmin.searchroles.show"/>"></span>
+                </form>
+            </c:if>
+            <table border="0" cellspacing="0" cellpadding="0" width="400">
+                <thead>
+                <tr>
+                    <th><kantega:label key="useradmin.searchroles.rolename"/></th>
+                    <th></th>
                 </tr>
-            </c:forEach>
+                </thead>
+                <tbody>
+                <c:forEach var="role" items="${roles}" varStatus="status">
+                    <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                        <td><a href="Javascript:doAction('edit', '${role.domain}', '${role.id}')">${role.name}</a></td>
+                        <td>
+                            <c:if test="${canEdit}">
+                                <a href="Javascript:doAction('delete', '${role.domain}', '${role.id}')" class="button delete"><span><kantega:label key="useradmin.searchroles.delete"/></span></a>
+                            </c:if>
+                            <a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')" class="button users"><span><kantega:label key="useradmin.searchroles.users"/></a></span></td>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
             <c:if test="${canEdit}">
-            <tr>
-                <td colspan="2">&nbsp;</td>
-            </tr>
-            <tr>
-                <td colspan="2" align="right">
+                <div class="buttonGroup">
                     <form action="edit">
                         <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-                        <input type="submit" value="<kantega:label key="useradmin.searchroles.newrole"/>">
+                        <span class="button"><input type="submit" class="add" value="<kantega:label key="useradmin.searchroles.newrole"/>"></span>
                     </form>
-                </td>
-            </tr>
+                </div>
             </c:if>
-        </tbody>
-    </table>
+
+        </fieldset>
+    </div>
     <form action="edit" name="actionform" method="post">
         <input type="hidden" name="domain" value="">
         <input type="hidden" name="roleId" value="">
-    </form>    
+    </form>
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

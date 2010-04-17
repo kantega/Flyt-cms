@@ -64,9 +64,9 @@ public void printCategory(Content base, ContentCategory category, JspWriter out,
             var w = window.parent.opener;
             if (w) {
                 if (w.doInsertTag) {
-                    w.insertValueIntoForm(category);
+                    w.openaksess.editcontext.insertValueIntoForm(category);
                 } else {
-                    w.insertIdAndValueIntoForm(category, title);
+                    w.openaksess.editcontext.insertIdAndValueIntoForm(category, title);
                 }
                 window.parent.close();
             }

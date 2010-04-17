@@ -19,20 +19,24 @@ package no.kantega.commons.taglib.util;
 import no.kantega.commons.util.LocaleLabels;
 
 import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.jsp.tagext.DynamicAttributes;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  *
  */
-public class LabelTag extends TagSupport {
+public class LabelTag extends TagSupport implements DynamicAttributes {
     private String key = null;
     private String bundle = LocaleLabels.DEFAULT_BUNDLE;
     private String locale = null;
+    private Map<String, Object> params = null;
 
     public void setKey(String key) {
         this.key = key;
@@ -61,19 +65,28 @@ public class LabelTag extends TagSupport {
                     locale = new Locale("no", "NO");
                 }
 
-                String textLabel = LocaleLabels.getLabel(key, bundle, locale);
+                String textLabel = LocaleLabels.getLabel(key, bundle, locale, params);
                 out.print(textLabel);
             } else {
                 out.print("ERROR: LabelTag, missing key");
             }
+            params = null;
         } catch (IOException e) {
             throw new JspException("ERROR: LabelTag:" + e);
         }
+
         return SKIP_BODY;
     }
 
 
     public int doEndTag() throws JspException {
          return EVAL_PAGE;
+    }
+
+    public void setDynamicAttribute(String uri, String localname, Object o) throws JspException {
+        if (params == null) {
+            params = new HashMap<String, Object>();
+        }
+        params.put(localname, o);
     }
 }

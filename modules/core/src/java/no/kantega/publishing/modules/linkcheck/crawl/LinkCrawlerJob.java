@@ -16,15 +16,22 @@
 
 package no.kantega.publishing.modules.linkcheck.crawl;
 
-import no.kantega.publishing.common.ao.LinkAO;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import no.kantega.commons.log.Log;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LinkCrawlerJob {
 
     private LinkCheckerJob checker;
+
+    @Autowired
+    private LinkDao linkDao;
+
+    @Autowired
+    private LinkEmitter emitter;
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
@@ -35,15 +42,16 @@ public class LinkCrawlerJob {
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }
-        LinkEmitter emitter = new LinkEmitter();
-
-        LinkAO.saveAllLinks(emitter);
-
+        linkDao.saveAllLinks(emitter);
         checker.execute();
 
     }
 
     public void setChecker(LinkCheckerJob checker) {
         this.checker = checker;
+    }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
     }
 }

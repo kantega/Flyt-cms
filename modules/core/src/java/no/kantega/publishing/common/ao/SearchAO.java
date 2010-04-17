@@ -18,7 +18,6 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.SearchResult;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.search.index.Fields;
 import no.kantega.search.index.IndexSearcherManager;

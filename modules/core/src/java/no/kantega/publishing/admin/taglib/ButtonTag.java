@@ -33,6 +33,7 @@ public class ButtonTag  extends TagSupport {
     String href = null;
     String button = null;
     String title = null;
+    String tabindex = null;
 
     public void setHref(String href) {
         this.href = href;
@@ -54,7 +55,11 @@ public class ButtonTag  extends TagSupport {
 
             out = pageContext.getOut();
 
-            out.write("<a href=\"" + href + "\">");
+            out.write("<a href=\"" + href + "\"");
+            if (tabindex != null) {
+                out.write(" tabindex=\"" + tabindex + "\"");
+            }
+            out.write(">");
             out.write("<img src=\"" + Aksess.getContextPath() + "/admin/buttons/default/" + language + "/" + button + ".gif\" alt=\"" + title + "\" title=\"" + title + "\" border=\"0\">");
             out.write("</a>");
         } catch (IOException e) {
@@ -64,6 +69,7 @@ public class ButtonTag  extends TagSupport {
         href = null;
         button = null;
         title = null;
+        tabindex = null;
 
         return SKIP_BODY;
     }

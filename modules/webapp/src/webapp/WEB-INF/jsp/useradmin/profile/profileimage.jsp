@@ -18,13 +18,13 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
+<kantega:section id="title">
 
 </kantega:section>
 
-<kantega:section id="innhold">
+<kantega:section id="content">
 
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
 
     <form action="profileimage" method="post" enctype="multipart/form-data">
         <fieldset>
@@ -53,4 +53,4 @@
 
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

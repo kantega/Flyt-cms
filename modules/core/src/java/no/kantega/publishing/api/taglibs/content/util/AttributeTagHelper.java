@@ -97,15 +97,15 @@ public final class AttributeTagHelper {
                             ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
                             if (cid != null) {
                                 // Next or previous page found
-                                content = cs.getContent(cid, false);
-                                if (collection == null) {
+                            content = cs.getContent(cid, false);
+                            if (collection == null) {
                                     request.setAttribute(getCacheKeyPrefix(request) + contentId, content);
-                                }
+                            }
                             } else {
                                 // Page was not found
                                 content = null;
-                            }
                         }
+                    }
                     }
                 } catch (NotAuthorizedException e) {
                     // Viser ikke elementet dersom brukeren ikke har tilgang til det
@@ -256,6 +256,8 @@ public final class AttributeTagHelper {
                     result = "" + content.getAssociation().getId();
                 } else if (name.equals(ContentProperty.CONTENTID)) {
                     result = "" + content.getId();
+                } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
+                    result = "" + content.getAssociation().getNumberOfViews();                    
                 } else if (name.equals(ContentProperty.URL)) {
                     result = content.getUrl();
                 } else if (name.equals(ContentProperty.ALIAS)) {

@@ -2,6 +2,7 @@ package no.kantega.publishing.multimedia;
 
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.multimedia.resizers.ImageResizeAlgorithm;
 
@@ -40,33 +41,10 @@ public class DefaultImageEditor implements ImageEditor {
                 int w = image.getWidth();
                 int h = image.getHeight();
 
-                if (targetWidth == -1 || targetWidth > w) {
-                    targetWidth = w;
-                }
-
-                if (targetHeight == -1 || targetHeight > h) {
-                    targetHeight = h;
-                }
-
-                // make sure target is smaller that src-image
-                if (w < targetWidth || h < targetHeight) {
-                    if (w < targetWidth) {
-                        w = targetWidth;
-                    }
-
-                    if (h < targetHeight) {
-                        h = targetHeight;
-                    }
-                }
-
-                // Keep aspect ratio
-                double thumbRatio = (double) targetWidth / (double) targetHeight;
-                double imageRatio = (double) w / (double) h;
-                if (thumbRatio < imageRatio) {
-                    targetHeight = (int) (targetWidth / imageRatio);
-                } else {
-                    targetWidth = (int) (targetHeight * imageRatio);
-                }
+                // Get resized image dimensions with correct aspect ratio
+                MultimediaDimensions d = getResizedImageDimensions(w, h, targetWidth, targetHeight);
+                targetWidth = d.getWidth();
+                targetHeight = d.getHeight();
 
                 // Resize image
                 long start = new Date().getTime();
@@ -119,6 +97,48 @@ public class DefaultImageEditor implements ImageEditor {
             }
         }
         return multimedia;
+    }
+
+    /**
+     * Get dimensions of resized image with correct aspect ratio
+     * @param originalWidth - original width of image
+     * @param originalHeight  - original height of image
+     * @param targetWidth - max width of resized image
+     * @param targetHeight - max height of resized image
+     * @return - MultimediaDimensions - dimensions of resized image
+     */
+    public MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight) {
+                // make sure target-size is valid
+        if (targetWidth == -1 || targetWidth > originalWidth) {
+            targetWidth = originalWidth;
+        }
+
+        if (targetHeight == -1 || targetHeight > originalHeight) {
+            targetHeight = originalHeight;
+        }
+
+        // Make sure target is smaller that src-image
+        if (originalWidth < targetWidth || originalHeight < targetHeight) {
+            if (originalWidth < targetWidth) {
+                originalWidth = targetWidth;
+            }
+
+            if (originalHeight < targetHeight) {
+                originalHeight = targetHeight;
+            }
+        }
+
+
+        // Keep aspect ratio
+        double thumbRatio = (double) targetWidth / (double) targetHeight;
+        double imageRatio = (double) originalWidth / (double) originalHeight;
+        if (thumbRatio < imageRatio) {
+            targetHeight = (int) (targetWidth / imageRatio);
+        } else {
+            targetWidth = (int) (targetHeight * imageRatio);
+        }
+
+        return new MultimediaDimensions(targetWidth, targetHeight);
     }
 
     public String getImageFormat() {

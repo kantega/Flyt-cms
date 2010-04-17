@@ -41,6 +41,7 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -113,7 +114,7 @@ public class ContentManagementService {
         // Last attributter fra XML fil
         EditContentHelper.updateAttributesFromTemplate(content, securitySession);
 
-        // Kjï¿½r plugins        
+        // Kjør plugins        
         ContentListenerUtil.getContentNotifier().contentCreated(content);
 
         return content;
@@ -182,9 +183,9 @@ public class ContentManagementService {
 
     /**
      * Lagrer et innholdsobjekt med en gitt status. Oppretter i gitte tilfeller en ny versjon.
-     * Legger til objektet i sï¿½keindeks dersom status = Publish
+     * Legger til objektet i søkeindeks dersom status = Publish
      * @param content - Endret objekt
-     * @param newStatus - Status som skal settes pï¿½ nytt objekt
+     * @param status - Status som skal settes på nytt objekt
      * @return
      * @throws SystemException
      * @throws NotAuthorizedException
@@ -198,12 +199,26 @@ public class ContentManagementService {
 
         content.setModifiedBy(securitySession.getUser().getId());
 
-        // Check if user is authorized to publish, if not set status to WAITING
+        // Check if user is authorized to publish directly
         if (newStatus == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
-            newStatus = ContentStatus.WAITING;
+            // User is not authorized, set waiting status
+            newStatus = ContentStatus.WAITING_FOR_APPROVAL;
             content.setApprovedBy("");
         } else {
             content.setApprovedBy(securitySession.getUser().getId());
+        }
+        
+        // Check if change should be active now
+        if (content.getChangeFromDate() != null) {
+            if (content.getChangeFromDate().getTime() > new Date().getTime()) {
+                // Change should not be active yet
+                if (newStatus == ContentStatus.PUBLISHED) {
+                    newStatus = ContentStatus.PUBLISHED_WAITING;
+                }
+            } else {
+                // Reset change from date, since it has passed
+                content.setChangeFromDate(null);
+            }
         }
 
         if (newStatus == ContentStatus.PUBLISHED) {
@@ -248,7 +263,7 @@ public class ContentManagementService {
                 case ContentStatus.DRAFT:
                     event = Event.SAVE_DRAFT;
                     break;
-                case ContentStatus.WAITING:
+                case ContentStatus.WAITING_FOR_APPROVAL:
                     event = Event.SEND_FOR_APPROVAL;
                     break;
                 default:
@@ -321,8 +336,8 @@ public class ContentManagementService {
     }
 
     /**
-     * Setter ny status pï¿½ et objekt, f.eks ved godkjenning av en side.
-     * Legger til / fjerner objektet til/fra sï¿½keindeks
+     * Setter ny status på et objekt, f.eks ved godkjenning av en side.
+     * Legger til / fjerner objektet til/fra søkeindeks
      * @param cid - ContentIdenfier for nytt objekt
      * @param newStatus - Ny status
      * @param note - melding
@@ -342,8 +357,10 @@ public class ContentManagementService {
             n.setDate(new Date());
             n.setText(note);
             n.setContentId(cid.getContentId());
-            NotesAO.addNote(n);
-            int count = NotesAO.getNotesByContentId(cid.getContentId()).length;
+
+            NotesDao notesDao = (NotesDao)RootContext.getInstance().getBean("aksessNotesDao");
+            notesDao.addNote(n);
+            int count = notesDao.getNotesByContentId(cid.getContentId()).size();
             ContentAO.setNumberOfNotes(cid.getContentId(), count);
         }
 
@@ -391,7 +408,7 @@ public class ContentManagementService {
             if (c != null) {
                 int priv = Privilege.UPDATE_CONTENT;
                 if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
-                    // Hvis siden er publisert eller versjon > 1 fï¿½r ikke slettet uten godkjenningsrett
+                    // Hvis siden er publisert eller versjon > 1 får ikke slettet uten godkjenningsrett
                     priv = Privilege.APPROVE_CONTENT;
                 }
                 if (!securitySession.isAuthorized(c, priv)) {
@@ -405,7 +422,7 @@ public class ContentManagementService {
                 if (!canDelete.booleanValue()) {
                     throw new ObjectInUseException(SOURCE, "I bruk");
                 }
-
+                
                 cid = ContentAO.deleteContent(id);
                 if (title != null) {
                     EventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
@@ -449,9 +466,9 @@ public class ContentManagementService {
 
     /**
      * Henter en liste med innholdsobjekter fra basen
-     * @param query - Sï¿½k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefï¿½lge
+     * @param sort - Sorteringsrekkefølge
      * @param getAttributes - Hent attributter (true) for en side eller bare basisdata (false)
      * @param getTopics - Hent topics (true) for en side eller ikke (false) 
      * @return Liste med innholdsobjekter
@@ -460,7 +477,7 @@ public class ContentManagementService {
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List list = ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
 
-        List approved = new ArrayList();
+        List<Content> approved = new ArrayList<Content>();
         // Legg kun til elementer som brukeren har tilgang til
         for (int i = 0; i < list.size(); i++) {
             Content c = (Content)list.get(i);
@@ -475,22 +492,22 @@ public class ContentManagementService {
 
     /**
      * Henter en liste med innholdsobjekter fra basen med innholdsattributter
-     * @param query - Sï¿½k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefï¿½lge
+     * @param sort - Sorteringsrekkefølge
      * @return
      * @throws SystemException
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, true, false);
     }
-
+    
 
     /**
      * Henter en liste med innholdsobjekter fra basen uten attributter
-     * @param query - Sï¿½k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefï¿½lge
+     * @param sort - Sorteringsrekkefølge
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
@@ -551,6 +568,25 @@ public class ContentManagementService {
 
 
     /**
+     * Updates publish date and expire date on a content object and all child objects
+     * @param cid - ContentIdentifier to content object
+     * @param publishDate - new publish date
+     * @param expireDate - new expire date
+     * @param updateChildren - true = update children / false = dont update children
+     */
+    public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) throws NotAuthorizedException {
+        Content content = ContentAO.getContent(cid, true);
+        if (content != null) {
+            if (securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
+                ContentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
+                EventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
+            } else {
+                throw new NotAuthorizedException(SOURCE, "Cant update display period");
+            }
+        }
+    }
+
+    /**
      * Henter en liste over antall endringer gjort av brukere
      * @return Liste med innholdsobjekter
      * @throws SystemException
@@ -563,11 +599,11 @@ public class ContentManagementService {
     /**
      * Hent sitemap
      * @param siteId - Site det skal hentes for
-     * @param depth - Antall nivï¿½er som skal hentes
-     * @param language - Sprï¿½k det skal hentes for
+     * @param depth - Antall nivåer som skal hentes
+     * @param language - Språk det skal hentes for
      * @param associationCategoryName - Spalte / knytning det skal hentes for.  (F.eks alt som er publisert i "venstremeny"
      * @param rootId - Startpunkt for sitemap
-     * @param currentId - Id for side man stï¿½r pï¿½
+     * @param currentId - Id for side man står på
      * @return
      * @throws SystemException
      */
@@ -582,13 +618,14 @@ public class ContentManagementService {
     /**
      * Hent meny
      * @param siteId - Site det skal hentes for
-     * @param idList - Liste med ï¿½pne element i menyen, henter alle med parent som ligger i lista
-     * @param language - Sprï¿½k det skal hentes for
+     * @param idList - Liste med åpne element i menyen, henter alle med parent som ligger i lista
+     * @param sort
+     * @param showExpired
      * @return
      * @throws SystemException
      */
-    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, int language, String sort) throws SystemException {
-        return SiteMapWorker.getPartialSiteMap(siteId, idList, language, true, sort);
+    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, String sort, boolean showExpired) throws SystemException {
+        return SiteMapWorker.getPartialSiteMap(siteId, idList, sort, showExpired);
     }
 
 
@@ -600,6 +637,7 @@ public class ContentManagementService {
      * @return
      * @throws SystemException
      */
+    @Deprecated
     public SiteMapEntry getMenu(Content content, String associationCategory, boolean useLocalMenus) throws SystemException {
         AssociationCategory category = null;
         if (associationCategory != null) {
@@ -625,17 +663,24 @@ public class ContentManagementService {
 
 
     /**
-     * Hent sti basert pï¿½ kopling
+     * Hent sti basert på kopling
      * @param association - Kopling til innholdsobjekt
      * @return Liste med PathEntry objekter
      * @throws SystemException
      */
-    public List getPathByAssociation(Association association) throws SystemException {
-        return PathWorker.getPathByAssociation(association);
+    public List<PathEntry> getPathByAssociation(Association association) throws SystemException {
+        List<PathEntry> paths = PathWorker.getPathByAssociation(association);
+        if (paths != null && paths.size() > 0) {
+            Site site = SiteCache.getSiteById(paths.get(0).getId());
+            if (site != null) {
+                paths.get(0).setTitle(site.getName());
+            }
+        }
+        return paths;
     }
 
     /**
-     * Hent sti basert pï¿½ ContentIdentifier
+     * Hent sti basert på ContentIdentifier
      * @param cid - Innholdsid
      * @return Liste med PathEntry objekter
      * @throws SystemException
@@ -646,22 +691,11 @@ public class ContentManagementService {
 
 
     /**
-     * Utfï¿½rer et SQL sï¿½k mot basen, brukes for internt sï¿½k i applikasjonen
-     * @param phrase - sï¿½keord
-     * @return
-     * @throws SystemException
-     */
-    public List search(String phrase) throws SystemException {
-        return SearchAO.search(phrase);
-    }
-
-
-    /**
-     * Sï¿½k i eventlogg
+     * Søk i eventlogg
      * @param from - Dato fra
      * @param end - Dato til
      * @param userId - Brukerid
-     * @param subjectName - Navn pï¿½ objekt i loggen (navn pï¿½ side f.eks)
+     * @param subjectName - Navn på objekt i loggen (navn på side f.eks)
      * @param eventName - Hendelse
      * @return
      * @throws SystemException
@@ -696,7 +730,7 @@ public class ContentManagementService {
 
 
     /**
-     * Hent visningsmal basert pï¿½ id
+     * Hent visningsmal basert på id
      * @param id - Id til visningsmal
      * @return liste med DisplayTemplate objekter
      * @throws SystemException
@@ -720,9 +754,9 @@ public class ContentManagementService {
         return TemplateHelper.getAllowedDisplayTemplatesForChange(content, isAdmin);
     }
 
-
+   
     /**
-     * Henter en spalte basert pï¿½ id
+     * Henter en spalte basert på id
      * @param id - Id til spalten som skal hentes
      * @return
      * @throws SystemException
@@ -733,8 +767,8 @@ public class ContentManagementService {
 
 
     /**
-     * Henter en spalte basert pï¿½ public id
-     * @param id - Id pï¿½ spalten som skal hentes
+     * Henter en spalte basert på public id
+     * @param id - Id på spalten som skal hentes
      * @return
      * @throws SystemException
      */
@@ -743,8 +777,8 @@ public class ContentManagementService {
     }
 
     /**
-     * Henter en spalte basert pï¿½ navn
-     * @param name - Navnet pï¿½ spalten som skal hentes
+     * Henter en spalte basert på navn
+     * @param name - Navnet på spalten som skal hentes
      * @return
      * @throws SystemException
      * @deprecated - Use getAssociationCategoryByPublicId 
@@ -756,7 +790,7 @@ public class ContentManagementService {
 
 
     /**
-     * Setter rekkefï¿½lge pï¿½ koplinger for sortering i menyer
+     * Setter rekkefølge på koplinger for sortering i menyer
      * @param associations
      * @throws SystemException
      */
@@ -803,11 +837,11 @@ public class ContentManagementService {
      * Sletter de angitte koplinger fra basen, dvs markerer dem som slettet. Legger innslag i deleteditems
      * slik at brukeren kan gjenopprette dem senere.
      *
-     * Dersom deleteMultiple = false og det finnes underobjekter vil ikke sletting bli utfï¿½rt, men
-     * man fï¿½r en liste med hva som blir slettet, som kan vises for brukeren
+     * Dersom deleteMultiple = false og det finnes underobjekter vil ikke sletting bli utført, men
+     * man får en liste med hva som blir slettet, som kan vises for brukeren
      *
      * @param associationIds - Koplinger som skal slettes
-     * @param deleteMultiple - Mï¿½ vï¿½re satt til true for ï¿½ utfï¿½re sletting hvis det finnes underobjekter
+     * @param deleteMultiple - Må være satt til true for å utføre sletting hvis det finnes underobjekter
      * @return
      * @throws SystemException
      */
@@ -824,7 +858,7 @@ public class ContentManagementService {
                         associations.add(new Integer(a.getId()));
                     }
                 } else {
-                    // Sjekk tilgangen til innholdsobjektet den peker pï¿½
+                    // Sjekk tilgangen til innholdsobjektet den peker på
                     ContentIdentifier cid = new ContentIdentifier();
                     cid.setAssociationId(a.getId());
                     Content c = ContentAO.getContent(cid, false);
@@ -834,7 +868,7 @@ public class ContentManagementService {
                     }
                     int priv = Privilege.UPDATE_CONTENT;
                     if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
-                        // Hvis siden er publisert eller versjon > 1 fï¿½r ikke slettet uten godkjenningsrett
+                        // Hvis siden er publisert eller versjon > 1 får ikke slettet uten godkjenningsrett
                         priv = Privilege.APPROVE_CONTENT;
                     }
                     if (securitySession.isAuthorized(c, priv)) {
@@ -847,7 +881,7 @@ public class ContentManagementService {
 
         List pagesToBeDeleted = AssociationAO.deleteAssociationsById(associations, deleteMultiple, securitySession.getUser().getId());
 
-        // Hvis ikke brukeren har angitt at flere skal kunne slettes sï¿½ blir de ikke slettet
+        // Hvis ikke brukeren har angitt at flere skal kunne slettes så blir de ikke slettet
         if (pagesToBeDeleted.size() == 1 || deleteMultiple) {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (int i = 0; i < pagesToBeDeleted.size(); i++) {
@@ -862,7 +896,7 @@ public class ContentManagementService {
 
 
     /**
-     * Endrer en kopling i systemet.  F.eks nï¿½r en bruker flytter et punkt i strukturen. Oppdaterer
+     * Endrer en kopling i systemet.  F.eks når en bruker flytter et punkt i strukturen. Oppdaterer
      * alle underliggende koplinger.
      *
      * @param association - Kopling som skal oppdateres
@@ -900,23 +934,23 @@ public class ContentManagementService {
     }
 
     /**
-     * Finner eventuelle duplikate alias innenfor omrï¿½de av strukturen
+     * Finner eventuelle duplikate alias innenfor område av strukturen
      *
      * @return - Liste med alias (String)
      * @throws SystemException
-     */
+     */   
     public List findDuplicateAliases(Association parent) throws SystemException {
         return AssociationAO.findDuplicateAliases(parent);
     }
 
 
     /**
-     * Henter en liste med innhold som er slettet av brukeren, slik at han kan angre pï¿½ dette senere
+     * Henter en liste med innhold som er slettet av brukeren, slik at han kan angre på dette senere
      *
      * @return - Liste med DeletedItem
      * @throws SystemException
      */
-    public List getDeletedItems() throws SystemException {
+    public List<DeletedItem> getDeletedItems() throws SystemException {
         return DeletedItemsAO.getDeletedItems(securitySession.getUser().getId());
     }
 
@@ -927,21 +961,22 @@ public class ContentManagementService {
      */
     public void restoreDeletedItem(int id) throws SystemException {
         AssociationAO.restoreAssociations(id);
+        DeletedItemsAO.purgeDeletedItem(id);
     }
 
     /**
-     * Henter et vedlegg fra databasen med angitt id. NB! Henter ikke data i objektet, mï¿½ streames
+     * Henter et vedlegg fra databasen med angitt id. NB! Henter ikke data i objektet, må streames
      *
      * @param id - id til vedlegg som skal hentes
      * @return - Attachment objekt
      * @throws SystemException
-     * @throws NotAuthorizedException - Brukeren har ikke rettighet til ï¿½ lese vedlegg
+     * @throws NotAuthorizedException - Brukeren har ikke rettighet til å lese vedlegg
      */
     public Attachment getAttachment(int id, int siteId) throws SystemException, NotAuthorizedException {
         Attachment attachment = AttachmentAO.getAttachment(id);
         if (attachment != null) {
             int contentId = attachment.getContentId();
-            // Mï¿½ hente ut tilhï¿½rende contentobject for ï¿½ vite om bruker er autorisert og at ikke vedlegget er slettet
+            // Må hente ut tilhørende contentobject for å vite om bruker er autorisert og at ikke vedlegget er slettet
             if (contentId != -1) {
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setContentId(contentId);
@@ -961,7 +996,7 @@ public class ContentManagementService {
     /**
      * Streamer et vedlegg fra databasen til en stream ved hjelp av en callback
      * @param id - Id til vedlegg som skal streames
-     * @param ish - Callback for ï¿½ streame data
+     * @param ish - Callback for å streame data
      * @throws SystemException
      */
     public void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
@@ -1022,8 +1057,8 @@ public class ContentManagementService {
 
 
     /**
-     * Henter et objekt fra XML cachen i systemet.  XML cachen brukes for ï¿½ lagre XML dokumenter lokalt
-     * istedet for ï¿½ hente dem med HTTP for hver visning.  Kan brukes for f.eks nyheter.
+     * Henter et objekt fra XML cachen i systemet.  XML cachen brukes for å lagre XML dokumenter lokalt
+     * istedet for å hente dem med HTTP for hver visning.  Kan brukes for f.eks nyheter.
      *
      * @param id - unik identifikator i basen
      * @return
@@ -1034,7 +1069,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Henter en liste med innslag fra XML-cachen.  Brukes for ï¿½ se hvilke objekter som ligger der og nï¿½r
+     * Henter en liste med innslag fra XML-cachen.  Brukes for å se hvilke objekter som ligger der og når
      * de er oppdatert.
      *
      * @return

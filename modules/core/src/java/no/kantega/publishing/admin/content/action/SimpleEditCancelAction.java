@@ -30,6 +30,7 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.client.util.RequestParameters;
 
 /**
@@ -41,7 +42,7 @@ public class SimpleEditCancelAction implements Controller {
 
         ContentManagementService cms = new ContentManagementService(request);
 
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content == null) {
             return new ModelAndView(new RedirectView(Aksess.getContextPath()));
         }

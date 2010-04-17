@@ -24,11 +24,14 @@
   --%>
 
 <%
-    Attribute attribute = (MediaAttribute)request.getAttribute("attribute");
+    MediaAttribute attribute = (MediaAttribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
 
     String value = attribute.getValue();
     String mmname = "";
+
+    String filter = attribute.getFilter();
+    if (filter == null) filter = "";
 
     if (value != null && value.length() > 0) {
         try {
@@ -49,42 +52,27 @@
     }
 
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <c:if test="${miniAksessMediaArchive == null || miniAksessMediaArchive}">
-                    <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
-                    <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
-                </c:if>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <c:choose>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+    <c:choose>
             <c:when test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">
                 <!-- For users without access to mediaarchive - simple file upload -->
-                <input type="file" class="inp" style="width:600px;" name="<%=fieldName%>_upload" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
+                <input type="file" class="inp" name="<%=fieldName%>_upload" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
                 <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
             </c:when>
             <c:otherwise>
-                <!-- For users with access to mediaarchive -->
                 <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
-                <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" onFocus="this.select()" style="width: 600px;">
+                <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
                 <script type="text/javascript">
-                    Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchMultimediaAsXML.action', 'minChars' :3 });
+                    $("#<%=fieldName%>text").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action").result(openaksess.editcontext.autocompleteInsertMediaIntoFormCallback);
                 </script>
             </c:otherwise>
         </c:choose>
-    </td>
-</tr>
+                
+</div>
+<c:if test="${miniAksessMediaArchive == null || miniAksessMediaArchive}">
+<div class="buttonGroup">
+    <a href="Javascript:openaksess.editcontext.selectMultimedia(document.myform.<%=fieldName%>, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:openaksess.editcontext.removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+</div>
+</c:if>

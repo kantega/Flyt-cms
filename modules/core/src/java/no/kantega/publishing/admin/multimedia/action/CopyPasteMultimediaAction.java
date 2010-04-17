@@ -24,11 +24,16 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
+import java.util.HashMap;
 
-public class CopyPasteMultimediaAction  implements Controller {
+public class CopyPasteMultimediaAction implements Controller {
+    private String view;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
+        Map<String, String> model = new HashMap<String, String>();
 
         MultimediaService mediaService = new MultimediaService(request);
 
@@ -37,6 +42,12 @@ public class CopyPasteMultimediaAction  implements Controller {
 
         mediaService.moveMultimedia(mmId, newParentId);
 
-        return new ModelAndView(new RedirectView("updatetree.jsp"));
+        model.put("message", "aksess.copypaste.move.multimedia.ok");
+
+        return new ModelAndView(view, model);
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

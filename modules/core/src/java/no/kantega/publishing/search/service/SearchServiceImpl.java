@@ -86,8 +86,7 @@ public class SearchServiceImpl implements SearchService {
             try{
                 searchResult = searcher.search(searchQuery);
             } catch (NullPointerException e){
-               Log.error(SOURCE, "invalid query", null, null);
-                e.printStackTrace();
+                Log.error(SOURCE, "invalid query", null, null);
                 return null;
             }
             // Registrer søk med antall treff
@@ -184,7 +183,12 @@ public class SearchServiceImpl implements SearchService {
         return alternatives;
     }
 
-    private List<Criterion> getDefaultFilters() {
+    
+    /**
+     * Returns default filters: only search visible published pages
+     * @return - List of criterion
+     */
+    protected List<Criterion> getDefaultFilters() {
         List<Criterion> criterions = new ArrayList<Criterion>();
 
         // Bare søk i aktivt innhold

@@ -27,17 +27,16 @@ import java.util.List;
 
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.client.util.RequestParameters;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Feb 4, 2009
- * Time: 10:13:54 AM
  */
-public class ListContentTemplatesAction extends AbstractController {
+public class ListContentTemplatesAction extends AdminController {
     private TemplateConfigurationCache templateConfigurationCache;
+    private String view;
     
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         RequestParameters param = new RequestParameters(request);
@@ -58,10 +57,14 @@ public class ListContentTemplatesAction extends AbstractController {
         model.put("templates", templates);
         model.put("isContentTemplates", isContentTemplates);
 
-        return new ModelAndView("/WEB-INF/jsp/admin/templates/listcontenttemplates.jsp", model);
+        return new ModelAndView(view, model);
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

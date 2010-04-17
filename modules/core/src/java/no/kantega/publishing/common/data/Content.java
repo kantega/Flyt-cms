@@ -50,6 +50,7 @@ public class Content extends BaseObject {
     private Date publishDate = null;
     private Date expireDate  = null;
     private Date revisionDate = null;
+    private Date changeFromDate = null;
     private int expireAction = ExpireAction.HIDE;
     private int visibilityStatus = ContentVisibilityStatus.ACTIVE;
     private int numberOfNotes = 0;
@@ -93,6 +94,9 @@ public class Content extends BaseObject {
     boolean isCheckedOut = false;
     boolean isLocked = false;
 
+    boolean isSearchable = true;
+    boolean isMinorChange = false;    
+    
     // Rating
     private float ratingScore = 0f;
     private int numberOfRatings = 0;
@@ -254,7 +258,7 @@ public class Content extends BaseObject {
         return null;
     }
 
-    public List getAssociations() {
+    public List<Association> getAssociations() {
         return associations;
     }
 
@@ -456,7 +460,7 @@ public class Content extends BaseObject {
         }
     }
 
-    public Map getContentAttributes() {
+    public Map<String, Attribute> getContentAttributes() {
         Map<String, Attribute> map = new HashMap<String, Attribute>();
         if (contentAttributes != null) {
             for (Attribute a : contentAttributes) {
@@ -466,7 +470,7 @@ public class Content extends BaseObject {
         return map;
     }
 
-    public Map getMetaAttributes() {
+    public Map<String, Attribute> getMetaAttributes() {
         Map<String, Attribute> map = new HashMap<String, Attribute>();
         if (metaAttributes != null) {
             for (Attribute a : metaAttributes) {
@@ -560,7 +564,7 @@ public class Content extends BaseObject {
         }
     }
 
-    public List getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
@@ -690,5 +694,29 @@ public class Content extends BaseObject {
 
     public void setNumberOfRatings(int numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
+    }
+    
+    public boolean isSearchable() {
+        return isSearchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        this.isSearchable = searchable;
+    }
+
+    public boolean isMinorChange() {
+        return isMinorChange;
+    }
+
+    public void setMinorChange(boolean minorChange) {
+        isMinorChange = minorChange;
+    }
+
+    public Date getChangeFromDate() {
+        return changeFromDate;
+    }
+
+    public void setChangeFromDate(Date changeFromDate) {
+        this.changeFromDate = changeFromDate;
     }
 }

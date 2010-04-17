@@ -27,12 +27,11 @@ import java.util.Date;
  */
 public class TrafficLogQuery {
     private ContentIdentifier cid = null;
+    private boolean includeSubPages = false;
     private int siteId = -1;
     private Date start = null;
     private Date end = null;
     private int trafficOrigin = TrafficOrigin.ALL_USERS;
-    private int minDepth = -1;
-    private String documentType = null;
 
     public ContentIdentifier getCid() {
         return cid;
@@ -74,19 +73,11 @@ public class TrafficLogQuery {
         this.trafficOrigin = trafficOrigin;
     }
 
-    public int getMinDepth() {
-        return minDepth;
+    public boolean isIncludeSubPages() {
+        return includeSubPages;
     }
 
-    public void setMinDepth(int minDepth) {
-        this.minDepth = minDepth;
-    }
-
-    public String getDocumentType() {
-        return documentType;
-    }
-
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
+    public void setIncludeSubPages(boolean includeSubPages) {
+        this.includeSubPages = includeSubPages;
     }
 }

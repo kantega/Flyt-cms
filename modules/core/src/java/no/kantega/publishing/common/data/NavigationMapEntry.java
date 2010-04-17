@@ -25,20 +25,24 @@ public abstract class NavigationMapEntry extends BaseObject {
     public int status = 0;
     public String title = "";
 
-    List children = null;
+    List<NavigationMapEntry> children = null;
+    protected int depth = 0;
+    protected boolean isOpen = false;
+    protected boolean isSelected = false;
+    protected boolean hasChildren = false;
 
     public NavigationMapEntry() {
     }
 
-
     public void addChild(NavigationMapEntry child) {
         if (children == null) {
-            children = new ArrayList();
+            children = new ArrayList<NavigationMapEntry>();
         }
         children.add(child);
+        hasChildren = true;
     }
 
-    public List getChildren() {
+    public List<NavigationMapEntry> getChildren() {
         return children;
     }
 
@@ -54,5 +58,37 @@ public abstract class NavigationMapEntry extends BaseObject {
 
     public int getParentId() {
         return parentId;
+    }
+
+    public int getDepth() {
+        return depth;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public boolean isHasChildren() {
+        return hasChildren;
+    }
+
+    public void setHasChildren(boolean hasChildren) {
+        this.hasChildren = hasChildren;
     }
 }

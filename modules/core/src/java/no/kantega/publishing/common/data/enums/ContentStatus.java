@@ -17,10 +17,11 @@
 package no.kantega.publishing.common.data.enums;
 
 public class ContentStatus {
-    public static final int WAITING = 0;    // Venter på godkjenning
-    public static final int REJECTED = 5;   // Godkjenning avslått
-    public static final int ARCHIVED = 10;  // Arkivert
-    public static final int DRAFT = 20;     // Kladd, ikke publisert enda
-    public static final int PUBLISHED = 30; // Publisert
-    public static final int HEARING = 40;   // Sendt til høring
+    public static final int WAITING_FOR_APPROVAL = 0;
+    public static final int REJECTED = 5;   // Rejected by editor
+    public static final int ARCHIVED = 10;
+    public static final int DRAFT = 20;
+    public static final int PUBLISHED_WAITING = 25; // Waiting to become PUBLISHED
+    public static final int PUBLISHED = 30;
+    public static final int HEARING = 40; // Sent to hearing
 }

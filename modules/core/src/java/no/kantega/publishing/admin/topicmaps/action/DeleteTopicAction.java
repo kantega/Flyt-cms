@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.log.Log;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.common.Aksess;
@@ -30,38 +31,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-public class DeleteTopicAction extends HttpServlet {
-    private static String SOURCE = "aksess.DeleteTopicAction";
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-    }
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.ModelAndView;
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doPost(request, response);
-    }
+public class DeleteTopicAction implements Controller {
+    @Override
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        TopicMapService topicService = new TopicMapService(request);
 
-        HttpSession session = request.getSession(true);
+        RequestParameters param = new RequestParameters(request);
+        int topicMapId = param.getInt("topicMapId");
+        String topicId = param.getString("topicId");
 
-        Topic current = (Topic)session.getAttribute("currentTopic");
-        if (current == null) {
-            response.sendRedirect("topicmap.jsp");
+        if (topicId != null && topicMapId != -1) {
+            Topic topic = topicService.getTopic(topicMapId, topicId);
+            if (topic != null) {
+                topicService.deleteTopic(topic);
+            }            
         }
 
-        try {
-            TopicMapService topicService = new TopicMapService(request);
-            topicService.deleteTopic(current);
-
-            current = topicService.getTopic(current.getTopicMapId(), current.getInstanceOf().getId());
-            session.setAttribute("currentTopic", current);
-            response.sendRedirect("topicmap.jsp?activetab=instances");
-        } catch (Exception e) {
-            ExceptionHandler handler = new ExceptionHandler();
-            handler.setThrowable(e, SOURCE);
-            request.getSession(true).setAttribute("handler", handler);
-            request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
-        }
+        return null;
     }
-
 }

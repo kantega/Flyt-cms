@@ -32,7 +32,7 @@ public class SiteManagementService {
         this.securitySession = SecuritySession.getInstance(request);
     }
 
-    public List getSites() throws SystemException {
+    public List<Site> getSites() throws SystemException {
         return SiteCache.getSites();
     }
 

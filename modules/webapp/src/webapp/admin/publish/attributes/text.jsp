@@ -35,23 +35,17 @@
         value = content.getTitle();
     }
 %>
-<tr>
-    <td class="inpHeading"><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
     <%
         if (maxLength <= 255) {
     %>
-    <input type="text" class="inp" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
+    <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
     <%
         if (maxLength <  72) {
             out.write(" size=" + maxLength);
         } else {
-            out.write(" style=\"width:600px;\"");
+            out.write(" class=\"fullWidth\"");
         }
         if (maxLength != -1) {
             out.write(" maxlength=" + maxLength);
@@ -59,9 +53,8 @@
     %>><%
         } else {
     %>
-    <textarea rows="<%=rows%>" cols=72 class=inp style="width:600px;" wrap="soft" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
+    <textarea rows="<%=rows%>" cols="72" class="fullWidth" wrap="soft" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
  <%
     }
  %>
-    </td>
-</tr>
+</div>

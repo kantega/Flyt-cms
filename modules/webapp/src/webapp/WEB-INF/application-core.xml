@@ -49,14 +49,21 @@
             <list>
                 <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
                     <property name="exposedBeanNames">
-                        <list>                            
+                        <list>
                         </list>
                     </property>
                 </bean>
                 <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
             </list>
         </property>
+    </bean>
 
+    <bean name="aksessJsonWriter"  class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
+        <property name="keepValueTypesMode" value="ALL"/>
+    </bean>
+
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView">
+        <property name="jsonWriter" ref="aksessJsonWriter"/>
     </bean>
 
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
@@ -85,6 +92,9 @@
         </constructor-arg>
     </bean>
 
+    <bean id="userPreferencesManager" class="no.kantega.publishing.admin.preferences.DefaultUserPreferencesManager"/>
+
+    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckerServiceImpl" id="aksessSpellCheckerService"/>
 
     <bean id="contentRatingNotificationListener" class="no.kantega.publishing.rating.ContentRatingNotificationListener"/>
     <bean id="ratingScoreCalculator" class="no.kantega.publishing.api.rating.AverageRatingScoreCalculator"/>
@@ -101,8 +111,8 @@
     <bean id="ratingServletContextAttributeExporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
         <property name="attributes">
             <map>
-               <entry key="ratingService" value-ref="ratingService"/>
-             </map>
+                <entry key="ratingService" value-ref="ratingService"/>
+            </map>
         </property>
     </bean>
 

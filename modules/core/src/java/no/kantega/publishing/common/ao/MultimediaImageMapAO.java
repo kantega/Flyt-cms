@@ -18,23 +18,11 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.MultimediaImageMap;
-import no.kantega.publishing.client.MultimediaRequestHandler;
-import no.kantega.publishing.security.ao.PermissionsAO;
 
 import java.sql.*;
-import java.io.IOException;
-import java.io.ByteArrayInputStream;
-import java.util.List;
-import java.util.ArrayList;
 
 public class MultimediaImageMapAO {
     private static final String SOURCE = "aksess.MultimediaImageMapAO";
@@ -68,6 +56,7 @@ public class MultimediaImageMapAO {
                     c.close();
                 }
             } catch (SQLException e) {
+                //
             }
         }
     }
@@ -94,7 +83,7 @@ public class MultimediaImageMapAO {
                 ps.setString(2, coordUrlMapArray[i].getCoord());
                 ps.setString(3, coordUrlMapArray[i].getUrl());
                 ps.setString(4, coordUrlMapArray[i].getAltName());
-                ps.setInt(5, coordUrlMapArray[i].openInNewWindow() ? 1 : 0);
+                ps.setInt(5, coordUrlMapArray[i].isOpenInNewWindow() ? 1 : 0);
                 ps.execute();
             }
         } catch (SQLException e) {

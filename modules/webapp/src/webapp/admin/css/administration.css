@@ -1,0 +1,10 @@
+#PropertiesTable .property {
+    width: 400px;
+    max-width: 400px;
+    overflow:hidden;
+}
+#PropertiesTable .parameter {
+    width: 200px;
+    max-width: 200px;
+    overflow:hidden;
+}

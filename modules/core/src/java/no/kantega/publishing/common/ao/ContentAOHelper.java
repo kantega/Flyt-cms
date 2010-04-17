@@ -95,6 +95,8 @@ public class ContentAOHelper {
         content.setLocked(rs.getInt("IsLocked") == 1);
         content.setRatingScore(rs.getFloat("RatingScore"));
         content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
+        content.setSearchable(rs.getInt("IsSearchable") == 1);
+        content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));        
 
         // Info som avhenger av i hvilken kontekst dette er publisert
         if (getAssociationInfo) {

@@ -39,7 +39,7 @@ public class MultimediaAO {
     private static final String SOURCE = "aksess.MultimediaAO";
 
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, NoFiles, NoSubFolders";
 
 
     /**
@@ -61,10 +61,17 @@ public class MultimediaAO {
                 throw new ObjectInUseException(SOURCE, "");
             }
 
+            // Get parent id
+            int parentId = SQLHelper.getInt(c, "select parentId from multimedia where Id = " + id, "ParentId");
+
             PreparedStatement st = c.prepareStatement("delete from multimedia where Id = ?");
             st.setInt(1, id);
             st.execute();
             st.close();
+
+            if (parentId > 0) {
+                updateNoSubFoldersAndFiles(c, parentId);
+            }
 
             // Slett eventuelle tilgangsrettigheter
             st = c.prepareStatement("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?");
@@ -87,6 +94,23 @@ public class MultimediaAO {
             } catch (SQLException e) {
             }
         }
+    }
+
+    /**
+     * Update number of subfolders and files in a folder
+     * @param c - connection
+     * @param parentId - parent
+     * @throws SQLException
+     */
+    private static void updateNoSubFoldersAndFiles(Connection c, int parentId) throws SQLException {
+        int noFiles = SQLHelper.getInt(c, "select count(Id) as cnt from multimedia where ParentId = " + parentId + " and Type = " + MultimediaType.MEDIA.getTypeAsInt(), "cnt");
+        int noSubFolders = SQLHelper.getInt(c, "select count(Id) as cnt from multimedia where ParentId = " + parentId + " and Type = " + MultimediaType.FOLDER.getTypeAsInt(), "cnt");
+        PreparedStatement st = c.prepareStatement("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?");
+        st.setInt(1, noFiles);
+        st.setInt(2, noSubFolders);
+        st.setInt(3, parentId);
+        st.execute();
+        st.close();
     }
 
 
@@ -211,10 +235,10 @@ public class MultimediaAO {
      * @return
      * @throws SystemException
      */
-    public static List getMultimediaList(int parentId) throws SystemException {
+    public static List<Multimedia> getMultimediaList(int parentId) throws SystemException {
         Connection c = null;
 
-        List mmList = new ArrayList();
+        List<Multimedia> mmList = new ArrayList<Multimedia>();
 
         String query = "select " + DB_COLS + " from multimedia where ParentId = " + parentId + " AND ProfileImageUserId IS NULL order by Type, Name";
 
@@ -241,6 +265,36 @@ public class MultimediaAO {
         }
     }
 
+    /**
+     * Henter antall objekter i multimediaarkiv.
+     *
+     * @return antall objekter i multimediaarkiv.
+     * @throws SystemException
+     */
+    public static int getMultimediaCount() throws SystemException {
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?");
+            p.setInt(1, MultimediaType.MEDIA.getTypeAsInt());
+            ResultSet rs = p.executeQuery();
+            if (!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("count");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                // Could not close connection, probably closed already
+            }
+        }
+    }
 
     /**
      * Searches the multimedia-archive for the given criteria
@@ -370,10 +424,23 @@ public class MultimediaAO {
 
         try {
             c = dbConnectionFactory.getConnection();
+
+            // Get parent id
+            int oldParentId = SQLHelper.getInt(c, "select parentId from multimedia where Id = " + mmId, "ParentId");
+
+            // Set new parent id
             PreparedStatement st =  c.prepareStatement("update multimedia set ParentId = ? where Id = ?");
             st.setInt(1, newParentId);
             st.setInt(2, mmId);
             st.execute();
+
+            // Update count in old and new folder
+            if (oldParentId > 0) {
+                updateNoSubFoldersAndFiles(c, oldParentId);
+            }
+            if (newParentId > 0) {
+                updateNoSubFoldersAndFiles(c, newParentId);
+            }
         } catch (SQLException e) {
             Log.error(SOURCE, e, null, null);
             throw new SystemException(SOURCE, "SQL feil ved flytting av multimediaobjekt", e);
@@ -465,10 +532,16 @@ public class MultimediaAO {
                 }
             }
 
+            // Update parent count
+            if (mm.getParentId() > 0) {
+                updateNoSubFoldersAndFiles(c, mm.getParentId());
+            }
+
             if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
                 PermissionsAO.setPermissions(mm, null);
                 mm.setSecurityId(mm.getId());
             }
+
         } catch (SQLException e) {
             Log.error(SOURCE, e, null, null);
             throw new SystemException(SOURCE, "SQL feil ved lagring av multimediaobjekt", e);

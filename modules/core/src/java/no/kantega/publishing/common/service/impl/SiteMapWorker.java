@@ -18,11 +18,9 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.AssociationCategory;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.SiteMapEntry;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -64,10 +62,10 @@ public class SiteMapWorker {
     }
 
 
-    public static SiteMapEntry getSiteMapBySQL(StringBuffer where, int rootId, boolean getAll, String sort) throws SystemException {
+    public static SiteMapEntry getSiteMapBySQL(StringBuilder where, int rootId, boolean getAll, String sort) throws SystemException {
         List tmpentries = new ArrayList();
 
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
         query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, contentversion.Status, contentversion.Title, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
@@ -173,22 +171,22 @@ public class SiteMapWorker {
 
 
     public static SiteMapEntry getSiteMap(int siteId, int depth, int language, AssociationCategory associationCategory, int rootId, int currentId) throws SystemException {
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
 
         if (depth != -1) {
-            query.append(" and associations.Depth < " + (depth+1));
+            query.append(" and associations.Depth < ").append(depth + 1);
         }
         if (language != -1) {
-            query.append(" and contentversion.Language = " + language);
+            query.append(" and contentversion.Language = ").append(language);
         }
-        query.append(" and associations.SiteId = " + siteId);
+        query.append(" and associations.SiteId = ").append(siteId);
         if (associationCategory != null) {
-            query.append(" and (associations.Category = 0 or associations.Category = " + associationCategory.getId());
+            query.append(" and (associations.Category = 0 or associations.Category = ").append(associationCategory.getId());
             if (currentId != -1) {
-                query.append(" or associations.AssociationId = " + currentId);
+                query.append(" or associations.AssociationId = ").append(currentId);
             }
             if (rootId != -1) {
-  	            query.append(" or associations.AssociationId = " + rootId);
+                query.append(" or associations.AssociationId = ").append(rootId);
   	        }
             query.append(")");
 
@@ -197,26 +195,85 @@ public class SiteMapWorker {
         return getSiteMapBySQL(query, rootId, false, null);
     }
 
-    public static SiteMapEntry getPartialSiteMap(int siteId, int[] idList, int language, boolean getAll, String sort) throws SystemException {
-        StringBuffer query = new StringBuffer();
+    public static SiteMapEntry getPartialSiteMap(int siteId, int[] idList, String sort, boolean showExpired) throws SystemException {
+        StringBuilder query = new StringBuilder();
 
-        if (language != -1) {
-            query.append(" and contentversion.Language = " + language);
-        }
-        query.append(" and associations.SiteId = " + siteId);
+        query.append(" and associations.SiteId = ").append(siteId);
         query.append(" and associations.ParentAssociationId in (0");
         if (idList != null) {
-            for (int i = 0; i < idList.length; i++) {
-                query.append("," + idList[i]);
+            for (int id : idList) {
+                query.append(",").append(id);
             }
         }
         query.append(")");
 
-        return getSiteMapBySQL(query, -1, getAll, sort);
+        // Hide the expired pages
+        if (!showExpired) {
+            query.append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.ARCHIVED).append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.EXPIRED);
+        }
+
+        // Determine if element has children
+        SiteMapEntry sitemap = getSiteMapBySQL(query, -1, true, sort);
+        List<SiteMapEntry> leafNodes = new ArrayList<SiteMapEntry>();
+        getLeafNodes(leafNodes, sitemap);
+
+        updateStatusForLeafNodes(leafNodes);
+
+        return sitemap;
     }
 
+    private static void updateStatusForLeafNodes(List<SiteMapEntry> leafNodes) {
+        Connection c = null;
+
+        StringBuilder query = new StringBuilder();
+
+        query.append("select ParentAssociationId from associations where associations.ParentAssociationId in (");
+        for (int i = 0; i < leafNodes.size(); i++) {
+            SiteMapEntry leafNode = leafNodes.get(i);
+            if (i > 0) {
+                query.append(",");
+            }
+            query.append(leafNode.currentId);
+        }
+        query.append(")");
+        try {
+            c = dbConnectionFactory.getConnection();
+            ResultSet rs = SQLHelper.getResultSet(c, query.toString());
+            while(rs.next()) {
+                int id = rs.getInt("ParentAssociationId");
+                for (SiteMapEntry leafNode : leafNodes) {
+                    if (leafNode.currentId == id) {
+                        leafNode.setHasChildren(true);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    private static void getLeafNodes(List<SiteMapEntry> leafNodes, SiteMapEntry sitemap) {
+        List children = sitemap.getChildren();
+        if (children != null && children.size() > 0) {
+            for (int i = 0; i < children.size(); i++) {
+                getLeafNodes(leafNodes, (SiteMapEntry)children.get(i));
+            }
+        } else {
+            leafNodes.add(sitemap);
+        }
+    }
+
+
     public static SiteMapEntry getPartialSiteMap(Content content, AssociationCategory associationCategory, boolean useLocalMenus, boolean getAll) throws SystemException {
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
 
         if (content == null) {
             return null;
@@ -239,14 +296,14 @@ public class SiteMapWorker {
         int pathStartOffset = 0;
 
         if (siteId != -1) {
-            query.append(" and associations.SiteId = " + siteId);
+            query.append(" and associations.SiteId = ").append(siteId);
         }
 
         if (pathIds != null) {
             query.append(" and ((associations.ParentAssociationId in (");
             if (useLocalMenus) {
                 // Ved lokale menyer skal kun endel av pathen returneres
-                List associations = AssociationAO.getAssociationsByContentId(content.getGroupId());                
+                List associations = AssociationAO.getAssociationsByContentId(content.getGroupId());
                 for (int i = 0; i < pathIds.length; i++) {
                     for (int j = 0; j < associations.size(); j++) {
                         Association a =  (Association)associations.get(j);
@@ -269,7 +326,7 @@ public class SiteMapWorker {
             }
 
             if (associationCategory != null) {
-                query.append(") and (associations.Category = 0 or associations.Category = " + associationCategory.getId() + "))");
+                query.append(") and (associations.Category = 0 or associations.Category = ").append(associationCategory.getId()).append("))");
             } else {
                 query.append("))");
             }
@@ -285,31 +342,5 @@ public class SiteMapWorker {
         }
 
         return getSiteMapBySQL(query, rootId, getAll, null);
-    }
-
-    /**
-     *  Metoder for testing, skriver ut sitemap over hele nettstedet...
-     */
-
-    private static void printSiteMap(SiteMapEntry sitemap, int depth) {
-        if (sitemap != null) {
-            for (int i = 0; i < depth; i++) {
-                System.out.print("---");
-            }
-            System.out.print(sitemap.title + "(" + sitemap.currentId + ")");
-            System.out.print("\n");
-            List children = sitemap.getChildren();
-            if (children != null) {
-                for (int i = 0; i < children.size(); i++) {
-                    printSiteMap((SiteMapEntry)children.get(i), depth + 1);
-                }
-            }
-        }
-    }
-
-    public static void main(String args[]) throws Exception {
-        SiteMapEntry entry = getPartialSiteMap(1, new int[] {1,32,45,46,47}, 0, true, null);
-
-        printSiteMap(entry, 0);
     }
 }

@@ -149,6 +149,12 @@ public class Topic {
         this.occurences = occurences;
     }
 
+    public void addOccurence(TopicOccurence occurence) {
+        if (occurences == null) {
+            occurences = new ArrayList<TopicOccurence>();
+        }
+        occurences.add(occurence);
+    }
 
     public boolean equals(Object obj) {
         try {

@@ -16,21 +16,15 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.log.Log;
 
-import java.util.Date;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.List;
 
 public class MultimediaImageMap {
     private static final String SOURCE = "aksess.MultimediaImageMap";
-    private List coordUrlMap = new ArrayList();
+    private List<CoordUrlMap> coordUrlMap = new ArrayList<CoordUrlMap>();
     private int multimediaId;
 
     public int getMultimediaId() {
@@ -48,34 +42,8 @@ public class MultimediaImageMap {
         }
     }
 
-    public String generateJavascript(){
-        String js = "";
-        int i=0;
-        for (i=0; i < getCoordUrlMap().length; i++){
-            StringTokenizer st = new StringTokenizer(getCoordUrlMap()[i].getCoord(), ",");
-            String startX = st.nextToken();
-            String startY = st.nextToken();
-            String stopX = st.nextToken();
-            String stopY = st.nextToken();
-
-            String strBoxes = "boxes[" + i + "]";
-            js += strBoxes + " = new CoordUrlMap();\n";
-            js += strBoxes + ".startX = " + startX + ";\n";
-            js += strBoxes + ".startY = " + startY + ";\n";
-            js += strBoxes + ".stopX = " + stopX + ";\n";
-            js += strBoxes + ".stopY = " + stopY + ";\n";
-            js += strBoxes + ".url = '" + getCoordUrlMap()[i].getUrl() + "';\n";
-            js += strBoxes + ".altName = '" + getCoordUrlMap()[i].getAltName() + "';\n";
-
-            js += "drawRectangle(" + i + ");\n";
-            js += "addRow();\n";
-
-        }
-        return js;
-    }
-
     public CoordUrlMap[] getCoordUrlMap(){
-        return (CoordUrlMap[]) coordUrlMap.toArray(new CoordUrlMap[0]);
+        return coordUrlMap.toArray(new CoordUrlMap[0]);
     }
 
     public class CoordUrlMap {
@@ -93,6 +61,32 @@ public class MultimediaImageMap {
 
         public String getCoord() {
             return coord;
+        }
+
+        public int getStartX() {
+            StringTokenizer st = new StringTokenizer(coord, ",");
+            return Integer.parseInt(st.nextToken(), 10);
+        }
+
+        public int getStartY() {
+            StringTokenizer st = new StringTokenizer(coord, ",");
+            st.nextToken();
+            return Integer.parseInt(st.nextToken(), 10);
+        }
+
+        public int getStopX() {
+            StringTokenizer st = new StringTokenizer(coord, ",");
+            st.nextToken();
+            st.nextToken();
+            return Integer.parseInt(st.nextToken(), 10);
+        }
+        
+        public int getStopY() {
+            StringTokenizer st = new StringTokenizer(coord, ",");
+            st.nextToken();
+            st.nextToken();
+            st.nextToken();
+            return Integer.parseInt(st.nextToken(), 10);
         }
 
         public String getResizedCoord(int newWidth, int orgW, int newHeight, int orgH) {
@@ -146,7 +140,7 @@ public class MultimediaImageMap {
             return altName;
         }
 
-        public boolean openInNewWindow() {
+        public boolean isOpenInNewWindow() {
             return newWindow;
         }
     }

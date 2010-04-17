@@ -36,10 +36,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.List;
-import no.kantega.publishing.admin.sites.action.CreateRootAction;
-import no.kantega.publishing.admin.sites.action.ListSitesAction;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,8 +50,6 @@ public class LoginAction implements Controller {
     private String loginView = null;
 
     private boolean rolesExists = false;
-
-    private CreateRootAction createRootAction;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("j_username");
@@ -129,13 +123,6 @@ public class LoginAction implements Controller {
                     // Finish login by getting instance
                     SecuritySession.getInstance(request);
 
-                    // Create root page if this has not been done already
-                    List<Integer> existingSiteIds = new ListSitesAction().getExistingSiteIds();
-                    if (existingSiteIds.isEmpty()) {
-                        int siteId = 1; // This assumes that a site with databaseId = 1 exists in WEB-INF/aksess-templateconfig.xml
-                        createRootAction.createRootPage(siteId, request);
-                    }
-                    
                     return new ModelAndView(new RedirectView(redirect));
                 } else {
                     // Register failed login
@@ -185,10 +172,5 @@ public class LoginAction implements Controller {
         }
 
         return false;
-    }
-
-    @Autowired
-    public void setCreateRootAction(CreateRootAction createRootAction) {
-        this.createRootAction = createRootAction;
     }
 }

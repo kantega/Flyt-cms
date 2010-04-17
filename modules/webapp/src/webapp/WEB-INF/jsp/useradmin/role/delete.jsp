@@ -17,24 +17,24 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
-
+<kantega:section id="title">
+    <kantega:label key="useradmin.deleterole.title"/>
 </kantega:section>
 
-<kantega:section id="innhold">
+<kantega:section id="content">
     <form action="delete" name="myform" method="post">
         <input type="hidden" name="domain" value="<c:out value="${role.domain}"/>">
         <input type="hidden" name="roleId" value="<c:out value="${role.id}"/>">
         <input type="hidden" name="confirm" value="true">
-            <p>
-                <kantega:label key="useradmin.deleterole.confirm"/> <c:out value="${role.name}"/> ?
-            </p>
+        <p>
+            <kantega:label key="useradmin.deleterole.confirm"/> <c:out value="${role.name}"/> ?
+        </p>
 
-            <p>
-                <input type="submit" class="button" value="<kantega:label key="aksess.button.slett"/>">
-                <input type="button" class="button" onclick="history.back();" value="<kantega:label key="aksess.button.avbryt"/>">
-            </p>
+        <div class="buttonGroup">
+            <span class="button"><input type="submit" class="delete" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="button" class="cancel" onclick="history.back();" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 
-<%@ include file="../include/design/standard.jsp" %>
+<%@ include file="../../admin/layout/administrationLayout.jsp" %>

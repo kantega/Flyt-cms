@@ -45,6 +45,10 @@ public class Multimedia extends BaseObject {
     private String modifiedBy = null;
     private String profileImageUserId;
 
+
+    private int noFiles = 0; // Number of files in folder
+    private int noSubFolders = 0; // Number of sub folders in folder
+
     public Multimedia() {
 
     }
@@ -151,7 +155,7 @@ public class Multimedia extends BaseObject {
 
     public String getFileType() {
         if (type == MultimediaType.FOLDER) {
-            return "Mappe";
+            return "Folder";
         } else {
             return MimeTypes.getMimeType(filename).getDescription();
         }
@@ -201,5 +205,21 @@ public class Multimedia extends BaseObject {
 
     public void setProfileImageUserId(String profileImageUserId) {
         this.profileImageUserId = profileImageUserId;
+    }
+    
+    public int getNoFiles() {
+        return noFiles;
+    }
+
+    public void setNoFiles(int noFiles) {
+        this.noFiles = noFiles;
+    }
+
+    public int getNoSubFolders() {
+        return noSubFolders;
+    }
+
+    public void setNoSubFolders(int noSubFolders) {
+        this.noSubFolders = noSubFolders;
     }
 }

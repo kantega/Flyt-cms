@@ -120,6 +120,7 @@ public class Aksess {
     private static String htmlVersion;
 
     private static boolean csrfCheckEnabled = true;
+    private static boolean javascriptDebugEnabled;
 
     private static Configuration c;
     
@@ -218,7 +219,7 @@ public class Aksess {
             if (formsEnabled) {
                 Log.debug(SOURCE, "Tillegsmodul: Skjema", null, null);
             }
-            linkCheckerEnabled = c.getBoolean("linkchecker.enabled", false);
+            linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
 
 
             // Location of search-index
@@ -243,6 +244,8 @@ public class Aksess {
             country = c.getString("admin.locale.country", "NO");
 
             htmlVersion = c.getString("html.version", HTMLVersion.HTML_401_TRANS);
+            
+            javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
 
             // Format of alt and title-attributes
             multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
@@ -499,6 +502,10 @@ public class Aksess {
 
     public static String getHtmlVersion() {
         return htmlVersion;
+    }
+
+    public static boolean isJavascriptDebugEnabled() {
+        return javascriptDebugEnabled;
     }
 
     public static int getDatabaseCacheTimeout() {

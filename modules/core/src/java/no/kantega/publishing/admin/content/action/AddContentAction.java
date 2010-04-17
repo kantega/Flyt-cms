@@ -16,26 +16,22 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.AssociationCategoryCache;
+import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,37 +42,36 @@ import java.util.Map;
  * Date: Nov 12, 2007
  * Time: 2:56:05 PM
  */
-public class AddContentAction implements Controller {
+public class AddContentAction extends AdminController {
+    private String view;
 
     private TemplateConfigurationCache templateConfigurationCache;
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
 
         RequestParameters param = new RequestParameters(request);
 
-        HttpSession session = request.getSession(true);
-
         ContentManagementService aksessService = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        Content parent = (Content)session.getAttribute("currentContent");
+        String url = request.getParameter("url");
+        ContentIdentifier cidParent = new ContentIdentifier(url);       
+        Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
-            return new ModelAndView(new RedirectView("/admin/publish/content.jsp?action=previewcontent"));
-        }
-
-        // Refresh object from database, might be modified in database, but not in session
-        parent = aksessService.getContent(parent.getContentIdentifier(), false);
-        if (parent == null) {
-            return new ModelAndView(new RedirectView("/admin/publish/content.jsp?action=previewcontent"));
+            return new ModelAndView(new RedirectView("Navigate.action"));
         }
 
         model.put("parent", parent);
 
         ContentTemplate parentTemplate = aksessService.getContentTemplate(parent.getContentTemplateId());
 
+        AssociationCategoryHelper helper = new AssociationCategoryHelper(templateConfigurationCache);
+        List<AssociationCategory> allowedAssociations = helper.getAllowedAssociationCategories(parentTemplate);
+        if (allowedAssociations.size() == 0) {
+            throw new ChildContentNotAllowedException();
+        }
 
-        List<AssociationCategory> allowedAssociations = getAllowedAssociationCategories(parentTemplate);
         model.put("allowedAssociations", allowedAssociations);
 
 
@@ -120,7 +115,7 @@ public class AddContentAction implements Controller {
                             Association a = aksessService.getAssociationById(parents[i]);
                             associations.add(a);
                         } else {
-                            model.put("error", LocaleLabels.getLabel("aksess.selecttemplate.ikketilgang", Aksess.getDefaultAdminLocale()));
+                            model.put("notAuthorized", Boolean.TRUE);
                         }
                     }
                 }
@@ -133,31 +128,14 @@ public class AddContentAction implements Controller {
         ContentListenerUtil.getContentNotifier().beforeSelectTemplate(model);
 
         // Show page where user selects template etc
-        return new ModelAndView("/admin/publish/selecttemplate_body.jsp", model);
-    }
-
-    private List<AssociationCategory> getAllowedAssociationCategories(ContentTemplate parentTemplate) throws ChildContentNotAllowedException {
-        List<AssociationCategory> tmpAllowedAssociations = parentTemplate.getAssociationCategories();
-        if (tmpAllowedAssociations == null || tmpAllowedAssociations.size() == 0) {
-            throw new ChildContentNotAllowedException();
-        } else if (parentTemplate.getContentType() != ContentType.PAGE) {
-            throw new ChildContentNotAllowedException();
-        }
-
-        // Template only holds id of AssociationCategory, get complete AssociationCategory from cache
-        List<AssociationCategory> allAssociations = templateConfigurationCache.getTemplateConfiguration().getAssociationCategories();
-        List<AssociationCategory> allowedAssociations = new ArrayList<AssociationCategory>();
-        for (AssociationCategory allowedAssociation : tmpAllowedAssociations) {
-            for (AssociationCategory allAssociation : allAssociations) {
-                if (allAssociation.getId() == allowedAssociation.getId()) {
-                    allowedAssociations.add(allAssociation);
-                }
-            }
-        }
-        return allowedAssociations;
+        return new ModelAndView(view, model);
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
         this.templateConfigurationCache = templateConfigurationCache;
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }

@@ -1,0 +1,32 @@
+#TopicAssociationTabs table {
+    width: 100%;
+}
+
+#AssociatedTopicsButtonGroup {
+    float: left;
+    width: 100%;
+}
+
+#AddNewTopic {
+    float: left;
+}
+
+#AddExistingTopic {
+    float: right;
+}
+
+#AddContent {
+    margin-top: 1em;
+}
+
+.topicOccurence {
+    margin-bottom: 1em;
+}
+
+.topicOccurence .baseName {
+    font-weight: bold;
+}
+
+#TopicEditDelete {
+    margin-bottom: 2em;
+}

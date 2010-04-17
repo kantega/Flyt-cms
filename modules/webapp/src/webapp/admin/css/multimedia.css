@@ -1,0 +1,175 @@
+#MultimediaPane {
+    margin: 10px;
+}
+
+#MultimediaMain {
+    overflow: auto;
+}
+
+#MultimediaFolders {
+    background: #767676;
+    padding: 20px;/*Important: Must be a px value.*/
+    overflow: auto;
+}
+
+#SearchResult #MultimediaFolders {    
+    background-color: #FFF;
+    padding: 20px 0 0;
+}
+
+#MultimediaFolders .folder, #MultimediaFolders .media {
+    padding: 10px;
+    width: 240px;
+    float: left;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+#MultimediaFolders .folder:hover, #MultimediaFolders .media:hover {
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    background-color: #5e5e5e;
+}
+
+#MultimediaFolders .mediaInfo .name:hover {
+    background: url("../bitmaps/common/icons/editname.png") no-repeat right top;
+}
+
+.navigateMultimedia .navigator .icon a {
+    width: 16px;
+}
+
+.folder .icon, .media .icon {
+    float: left;
+    width: 109px;
+    height: 100px;
+    padding: 10px 0;
+
+}
+.media .icon img {
+    padding: 1px;
+    background: #ffffff;
+    -moz-box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 3px 6px 6px rgba(0, 0, 0, 0.4);
+}
+
+.media .icon .file {
+    background: url("../bitmaps/common/mm/file.png") no-repeat center top;
+    height: 100%;
+    width: 100%;
+}
+.media .icon .file.application-octet-stream {
+    
+}
+
+.folder .icon {
+    background: url("../bitmaps/common/mm/folder.png") no-repeat top left;
+}
+
+.folder .mediaInfo, .media .mediaInfo {
+    width: 123px;
+    color: #ffffff;
+    padding-left: 7px;
+    padding-top: 10px;
+    float: left;
+}
+
+#SearchResult .mediaInfo {
+    color: #000;
+}
+
+.mediaInfo .name {
+    padding-right: 25px;
+    font-weight: bold;
+    margin-bottom: 14px;
+}
+
+.mediaInfo .name input {
+    width: 120px;
+}
+
+#CropOptions {
+    margin-top: 20px;
+}
+
+#EditMultimediaButtons input.insert {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+}
+
+#EditMultimediaButtons input.cancel {
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+}
+
+#EditMultimediaButtons input.save {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+}
+
+div.imagemap {
+    margin: 0;
+    padding: 0;
+    border: 1px dotted black;
+}
+
+.imagemap0 {
+    background-color: #ff0000;
+}
+
+.imagemap1 {
+    background-color: #ffff00;
+}
+
+.imagemap2 {
+    background-color: #ffaa00;
+}
+
+.imagemap3 {
+    background-color: #ccff00;
+}
+
+.imagemap4 {
+    background-color: #ffcc00;
+}
+
+.imagemap5 {
+    background-color: #00ccff;
+}
+
+.imagemap6 {
+    background-color: #00ffcc;
+}
+
+.imagemap7 {
+    background-color: #ff00aa;
+}
+
+.imagemap8 {
+    background-color: #aaffaa;
+}
+
+.imagemap9 {
+    background-color: #ffaaff;
+}
+
+#MainPane #ImageMapTable {
+    width: 600px;
+}
+
+th.imageMapLink {
+    width: 250px;
+}
+
+th.imageMapAltTitle {
+    width: 200px;
+}
+
+th.imageMapNewWindow {
+    width: 75px;
+}
+
+th.imageMapDelete {
+    width: 75px;
+}

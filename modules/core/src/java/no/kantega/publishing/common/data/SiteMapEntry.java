@@ -29,22 +29,20 @@ public class SiteMapEntry extends NavigationMapEntry {
     private String alias = null;
     private int visibilityStatus = -1;
     private int numberOfNotes = 0;
-    private int depth = 0;
     private int associationCategory = 0;
     private int contentId = -1;
     private int groupId = -1;
-    private boolean isOpen = false;
-    private boolean isSelected = false;
     private boolean openInNewWindow = false;
     private Date lastModified = null;
     private String owner = null;
     private String ownerPerson = null;
     public ContentType type = ContentType.PAGE;
 
-    public SiteMapEntry () {
+    public SiteMapEntry() {
     }
 
-    public SiteMapEntry (int uniqueId, int currentId, int parentId, ContentType type, int status, int visibilityStatus, String title, int numberOfNotes) {
+    @Deprecated
+    public SiteMapEntry(int uniqueId, int currentId, int parentId, ContentType type, int status, int visibilityStatus, String title, int numberOfNotes) {
         this.uniqueId = uniqueId;
         this.currentId = currentId;
         this.parentId  = parentId;
@@ -70,6 +68,10 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public int getStatus() {
         return status;
+    }
+
+    public void setUniqueId(int uniqueId) {
+        this.uniqueId = uniqueId;
     }
 
     public int getUniqueId() {
@@ -117,30 +119,6 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public void setOpenInNewWindow(boolean openInNewWindow) {
         this.openInNewWindow = openInNewWindow;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
-    }
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean selected) {
-        isSelected = selected;
     }
 
     public String getTarget(HttpServletRequest request) {

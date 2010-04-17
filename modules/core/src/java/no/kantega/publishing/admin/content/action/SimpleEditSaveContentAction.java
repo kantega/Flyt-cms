@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.Content;
@@ -35,16 +36,13 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 
-import java.util.Map;
-import java.util.HashMap;
-
 public class SimpleEditSaveContentAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
 
-        Content content = (Content)session.getAttribute("currentContent");
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         if (content != null && request.getMethod().equalsIgnoreCase("POST")) {
             // Lagre opplysninger
@@ -60,7 +58,7 @@ public class SimpleEditSaveContentAction implements Controller {
                     ContentManagementService cms = new ContentManagementService(request);
                     content = cms.checkInContent(content, ContentStatus.PUBLISHED);
                 }
-                session.removeAttribute("currentContent");
+                session.removeAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
                 String url;
                 String redirectUrl = param.getString("redirectUrl");
@@ -79,8 +77,8 @@ public class SimpleEditSaveContentAction implements Controller {
 
                 RequestHelper.setRequestAttributes(request, content);
 
-                request.setAttribute("currentContent", content);
-                session.setAttribute("currentContent", content);
+                request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+                session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
                 Configuration config = Aksess.getConfiguration();
                 Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));

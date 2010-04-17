@@ -28,41 +28,24 @@
 
     String value = attribute.getValue();
 %>
-<tr>
-    <td class="inpHeading">
-        <table border="0" cellspacing="0" cellpadding="0">
-            <tr>
-                <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectTopic(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
-                <td><a href="Javascript:selectTopic(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.leggtil"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.flyttopp"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.flyttned"/></a></td>
-            </tr>
-        </table>
-    </td>
-</tr>
-<tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
-</tr>
-<tr>
-    <td>
-        <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-        <select name="<%=fieldName%>list" class="inp" style="width:600px;" size="10">
-        <%
-            if (value != null && value.length() > 0) {
-                List<Topic> topics = attribute.getValueAsTopics();
+<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
+<div class="inputs">
+    <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
+    <select name="<%=fieldName%>list" class="inp" style="width:600px;" size="10">
+    <%
+        if (value != null && value.length() > 0) {
+            List<Topic> topics = attribute.getValueAsTopics();
 
-                for (Topic topic : topics) {
-                    out.write("<option value=\"" + topic.getTopicMapId() + ":" + topic.getId() + "\">" + topic.getBaseName() + "</option>");
-                }
+            for (Topic topic : topics) {
+                out.write("<option value=\"" + topic.getTopicMapId() + ":" + topic.getId() + "\">" + topic.getBaseName() + "</option>");
             }
-        %>
-        </select>
-    </td>
-</tr>
+        }
+    %>
+    </select>
+</div>
+<div class="buttonGroup">
+    <a href="Javascript:openaksess.editcontext.selectTopic(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
+    <a href="Javascript:openaksess.editcontext.removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+2)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()+3%>"><span class="moveUp"><kantega:label key="aksess.button.moveup"/></span></a>
+    <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+4)%>"><span class="moveDown"><kantega:label key="aksess.button.movedown"/></span></a>
+</div>

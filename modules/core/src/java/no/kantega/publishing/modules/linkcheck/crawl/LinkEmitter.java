@@ -20,16 +20,20 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.ao.LinkAO;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class LinkEmitter {
     private LinkExtractor linkExtractor;
 
     private Logger log = Logger.getLogger(getClass());
+
+    @Autowired
+    private LinkDao linkDao;
 
     public LinkEmitter() {
         this.linkExtractor = new LinkExtractor();
@@ -46,7 +50,7 @@ public class LinkEmitter {
             ContentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
                 public void handleContent(Content content) {
 
-                    LinkAO.deleteLinksForContentId(content.getId());
+                    linkDao.deleteLinksForContentId(content.getId());
 
                     contentCount.increment();
 
@@ -82,5 +86,9 @@ public class LinkEmitter {
     }
     private boolean isValidLink(String link) {
         return link.startsWith("http://") || link.startsWith(Aksess.VAR_WEB);
+    }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
     }
 }

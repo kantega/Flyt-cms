@@ -50,10 +50,10 @@ public class TopicMapAO {
     }
 
 
-    public static List getTopicMaps() throws SystemException {
+    public static List<TopicMap> getTopicMaps() throws SystemException {
         Connection c = null;
 
-        List topicmaps = new ArrayList();
+        List<TopicMap> topicmaps = new ArrayList<TopicMap>();
 
         try {
             c = dbConnectionFactory.getConnection();

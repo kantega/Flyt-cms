@@ -19,6 +19,9 @@ package no.kantega.publishing.topicmaps.data;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.ObjectType;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class TopicMap extends BaseObject {
     private String name = "";
     private String defaultTopicInstance = "";
@@ -26,6 +29,7 @@ public class TopicMap extends BaseObject {
     private String wSOperation = "";
     private String wSSoapAction = "";
     private String wSEndPoint = "";
+    private List<Topic> topicTypes = new ArrayList<Topic>();
 
     public TopicMap() {
     }
@@ -88,5 +92,13 @@ public class TopicMap extends BaseObject {
 
     public String getOwnerPerson() {
         return null;
-    }    
+    }
+
+    public List<Topic> getTopicTypes() {
+        return topicTypes;
+    }
+
+    public void setTopicTypes(List<Topic> topicTypes) {
+        this.topicTypes = topicTypes;
+    }
 }

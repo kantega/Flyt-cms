@@ -23,14 +23,15 @@ import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
+import no.kantega.publishing.topicmaps.data.TopicOccurence;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletContext;
 import java.util.List;
 
 public class TopicMapService {
@@ -59,7 +60,7 @@ public class TopicMapService {
         return TopicMapAO.setTopicMap(topicMap);
     }
 
-    public List getTopicMaps() throws SystemException {
+    public List<TopicMap> getTopicMaps() throws SystemException {
         return TopicMapAO.getTopicMaps();
     }
 
@@ -69,6 +70,19 @@ public class TopicMapService {
 
     public void setTopic(Topic topic) throws SystemException {
         EventLog.log(securitySession, request, Event.SAVE_TOPIC, topic.getBaseName());
+        List<TopicOccurence> occurences = topic.getOccurences();
+        if (occurences != null) {
+            for (TopicOccurence occurence : occurences) {
+                // Create topicoccurences instanceof if they do not exist
+                if (occurence.getInstanceOf() != null) {
+                    Topic instanceOf = occurence.getInstanceOf();
+                    if (instanceOf != null && TopicAO.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
+                        TopicAO.setTopic(instanceOf);
+                    }
+                }
+            }
+        }
+
         TopicAO.setTopic(topic);
     }
 
@@ -113,6 +127,13 @@ public class TopicMapService {
     }
 
     public void addTopicAssociation(Topic topic1, Topic topic2) throws SystemException {
+        topic1 = TopicAO.getTopic(topic1.getTopicMapId(), topic1.getId());
+        topic2 = TopicAO.getTopic(topic2.getTopicMapId(), topic2.getId());
+
+        if (topic1 == null || topic2 == null || topic1.getTopicMapId() != topic2.getTopicMapId()) {
+            return;
+        }
+
         // En knytning mellom to emner (topics) går alltid begge veier, dette blir representert som to innslag i basen
         TopicAssociation association1 = new TopicAssociation();
         TopicAssociation association2 = new TopicAssociation();
@@ -130,11 +151,44 @@ public class TopicMapService {
         TopicAssociationAO.addTopicAssociation(association2);
     }
 
-    public List getTopicsBySID(SecurityIdentifier sid) throws SystemException {
-        return TopicAO.getTopicsBySID(sid);
+
+    /**
+     * Remove association between two topics
+     * @param topic1 - topic 1
+     * @param topic2 - topic 2
+     * @throws SystemException
+     */
+    public void removeTopicAssociation(Topic topic1, Topic topic2) throws SystemException {
+        TopicAssociation association1 = new TopicAssociation();
+        TopicAssociation association2 = new TopicAssociation();
+
+        association1.setTopicRef(topic1);
+        association1.setAssociatedTopicRef(topic2);
+
+        association2.setTopicRef(topic2);
+        association2.setAssociatedTopicRef(topic1);
+
+        TopicAssociationAO.deleteTopicAssociation(association1);
+        TopicAssociationAO.deleteTopicAssociation(association2);
     }
 
-    public List getRolesByTopic(Topic topic) throws SystemException {
+    /**
+     * Get topics connected securityidentifier (user or role)
+     * @param securityIdentifier - User or Role
+     * @return
+     * @throws SystemException
+     */
+    public List<Topic> getTopicsBySID(SecurityIdentifier securityIdentifier) throws SystemException {
+        return TopicAO.getTopicsBySID(securityIdentifier);
+    }
+
+    /**
+     * Get all roles which are connected to this topic
+     * @param topic - topic
+     * @return - list of <Role>
+     * @throws SystemException
+     */
+    public List<Role> getRolesByTopic(Topic topic) throws SystemException {
         return TopicAO.getRolesByTopic(topic);
     }
 
@@ -160,11 +214,23 @@ public class TopicMapService {
         TopicAO.removeTopicContentAssociation(topic, contentId);
     }
 
-    public void addTopicSIDAssociation(Topic topic, SecurityIdentifier sid) throws SystemException {
-        TopicAO.addTopicSIDAssociation(topic, sid);
+    /**
+     * Add association between User or Role and topic
+     * @param topic - Topic
+     * @param securityIdentifier - User or Role
+     * @throws SystemException
+     */
+    public void addTopicSIDAssociation(Topic topic, SecurityIdentifier securityIdentifier) throws SystemException {
+        TopicAO.addTopicSIDAssociation(topic, securityIdentifier);
     }
 
-    public void removeTopicSIDAssociation(Topic topic, SecurityIdentifier sid) throws SystemException {
-        TopicAO.removeTopicSIDAssociation(topic, sid);
+    /**
+     * Remove association between User or Role and topic
+     * @param topic - Topic
+     * @param securityIdentifier - User or Role
+     * @throws SystemException
+     */
+    public void removeTopicSIDAssociation(Topic topic, SecurityIdentifier securityIdentifier) throws SystemException {
+        TopicAO.removeTopicSIDAssociation(topic, securityIdentifier);
     }
 }

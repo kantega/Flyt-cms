@@ -48,8 +48,9 @@ public class UpdateAttachmentJob extends IndexJob {
             IndexWriter writer = context.getIndexWriterManager().getIndexWriter("aksess", false);
             DocumentProvider provider = context.getDocumentProviderSelector().select(getSource());
             Document d = provider.provideDocument(attachmentId);
-            writer.addDocument(d);
-
+            if (d != null) {
+                writer.addDocument(d);
+            }
         } catch (IOException e) {
             log.error(e);
         } finally {

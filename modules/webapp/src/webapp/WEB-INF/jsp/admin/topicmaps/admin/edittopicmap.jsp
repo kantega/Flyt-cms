@@ -1,6 +1,8 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ include file="../../../../../admin/include/jsp_header.jsf" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -16,120 +18,54 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title">
+    <kantega:label key="aksess.topicmaps.title"/>
+</kantega:section>
 
-<%
-    RequestParameters param = new RequestParameters(request, "utf-8");
+<kantega:section id="content">
+    <script type="text/javascript">
+        function saveForm() {
+            var form = document.myform;
 
-    TopicMap topicmap = new TopicMap();
-    int id = param.getInt("id");
-    if (id != -1) {
-        topicmap = topicService.getTopicMap(id);
-    }
-%>
+            // Reset validationErrors
+            validationErrors.length = 0;
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title>edittopicmap.jsp</title>
-    <link rel="stylesheet" type="text/css" href="../../css/<%=skin%>.css">
+            validateChar(form.name, true, false);
 
-<script language="Javascript" src="../../js/validation.js"></script>
-<script language="Javascript">
-function saveForm() {
-    var form = document.myform;
+            if (showValidationErrors()) {
+                form.submit();
+            }
+        }
 
-    // Reset validationErrors
-    validationErrors.length = 0;
+    </script>
+    <form name="myform" action="EditTopicMap.action" method="post">
+        <div class="fieldset">
+            <fieldset>
+                <h1><kantega:label key="aksess.topicmaps.title"/></h1>
 
-    validateChar(form.name, true, false);
+                <input type="hidden" name="id" value="${topicMap.id}">
 
-    if (showValidationErrors()) {
-        form.submit();
-    }
-}
-</script>
-</head>
+                <div class="formElement">
+                    <div class="heading"><label for="name"><kantega:label key="aksess.topicmaps.admin.name"/></label></div>
+                    <div class="inputs">
+                        <input type="text" name="name" id="name" title="<kantega:label key="aksess.topicmaps.admin.name"/>" size="64" maxlength="64" value="${topicMap.name}">
+                    </div>
+                </div>
 
-<body class="bodyWithMargin">
-<%@ include file="../../../../../admin/include/infobox.jsf" %>
-<form name="myform" action="EditTopicMap.action" method="post">
-    <input type="hidden" name="id" value="${topicMap.id}">
+                <div class="formElement">
+                    <div class="heading"><kantega:label key="aksess.topicmaps.admin.iseditable"/></div>
+                    <div class="inputs">
+                        <input name="iseditable" id="iseditable" type="radio" value="true" <c:if test="${topicMap.editable}"> checked</c:if>><label for="iseditable"><kantega:label key="aksess.text.ja"/><br></label>
+                        <input name="iseditable" id="isnoteditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><label for="isnoteditable"><kantega:label key="aksess.text.nei"/></label>                        
+                    </div>
+                </div>
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                    <span class="button"><input type="submit" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
+            </fieldset>
 
-    <table border="0" cellspacing="0" cellpadding="0" width="600">
-        <tr>
-            <td class="tableHeading"><b><kantega:label key="aksess.topicmaps.admin.name"/></b></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="2"></td>
-        </tr>
-        <tr>
-            <td><input type="text" name="name" title="<kantega:label key="aksess.topicmaps.admin.name"/>" maxlength="64" style="width:600px;" value="${topicMap.name}"></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="16"></td>
-        </tr>
-        <tr>
-            <td class="tableHeading"><b><kantega:label key="aksess.topicmaps.admin.iseditable"/></b></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="2"></td>
-        </tr>
-        <tr>
-            <td>
-                <input name="iseditable" type="radio" value="true" <c:if test="${topicMap.editable}"> checked</c:if>><kantega:label key="aksess.text.ja"/><br>
-                <input name="iseditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><kantega:label key="aksess.text.nei"/><br>
-            </td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="16"></td>
-        </tr>
-        <!-- WS Operation -->
-        <tr>
-            <td class="tableHeading"><b><kantega:label key="aksess.topicmaps.admin.wsoperation"/></b></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="2"></td>
-        </tr>
-
-        <tr>
-            <td><input type="text" name="wsoperation" title="<kantega:label key="aksess.topicmaps.admin.wsoperation"/>" maxlength="64" style="width:600px;" value="${topicMap.WSOperation}"></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="16"></td>
-        </tr>
-        <!-- WS SOAP Action -->
-        <tr>
-            <td class="tableHeading"><b><kantega:label key="aksess.topicmaps.admin.wssoapaction"/></b></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="2"></td>
-        </tr>
-
-        <tr>
-            <td><input type="text" name="name" title="<kantega:label key="aksess.topicmaps.admin.wssoapaction"/>" maxlength="255" style="width:600px;" value="${topicMap.WSSoapAction}"></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="16"></td>
-        </tr>
-        <!-- WS Endpoint -->
-
-        <tr>
-            <td class="tableHeading"><b><kantega:label key="aksess.topicmaps.admin.wsendpoint"/></b></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="2"></td>
-        </tr>
-        <tr>
-            <td><input type="text" name="wsendpoint" title="<kantega:label key="aksess.topicmaps.admin.wsendpoint"/>" maxlength="255" style="width:600px;" value="${topicMap.WSEndPoint}"></td>
-        </tr>
-        <tr>
-            <td><img src="../../bitmaps/blank.gif" width="2" height="16"></td>
-        </tr>
-    </table>
-    <p>
-        <a href="Javascript:saveForm()"><img src="../../bitmaps/<%=skin%>/buttons/lagre.gif" border="0"></a>&nbsp;&nbsp;<a href="Javascript:location='ListTopicMaps.action'"><img src="../../bitmaps/<%=skin%>/buttons/avbryt.gif" border="0"></a>
-    </p>
-</form>
-</body>
-</html>
-<%@ include file="../../../../../admin/include/jsp_footer.jsf" %>
+        </div>
+    </form>
+</kantega:section>
+<%@ include file="../../layout/administrationLayout.jsp" %>
