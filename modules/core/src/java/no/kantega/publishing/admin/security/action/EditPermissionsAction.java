@@ -46,21 +46,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 16, 2009
- * Time: 11:02:24 AM
- */
-public class  EditPermissionsAction extends AbstractController {
+public class EditPermissionsAction extends AbstractController {
     public final static String PERMISSIONS_LIST = "tmpPermissionsList";
     public final static String PERMISSIONS_OBJECT = "tmpPermissionsObject";
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        String url = param.getString("url");
         int objectId   = param.getInt("id");
         int objectType = param.getInt("type");
+        String url = param.getString("url");
+        if (objectId == -1 && url != null) {
+            ContentIdentifier cid = new ContentIdentifier(url);
+            objectId = cid.getAssociationId();
+        }
 
         Integer objSecurityId = objectId;
 
@@ -93,8 +92,8 @@ public class  EditPermissionsAction extends AbstractController {
             objSecurityId = (Integer)session.getAttribute("tmpObjSecurityId");
         }
 
-        if ((objectId != -1 || url != null) && (permissionObject == null || permissionObject.getId() != objectId)) {
-            // Objects not in session or wrong objects in session
+        if ((objectId != -1) && (permissionObject == null || permissionObject.getId() != objectId)) {
+            // Object not in session or wrong object in session
             if (objectType == ObjectType.CONTENT) {
                 objectType = ObjectType.ASSOCIATION;
             }
@@ -102,7 +101,7 @@ public class  EditPermissionsAction extends AbstractController {
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
                 ContentIdentifier cid = new ContentIdentifier(url);
-                Content content  = aksessService.getContent(cid);
+                Content content = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();
                 if (objSecurityId != objectId) {

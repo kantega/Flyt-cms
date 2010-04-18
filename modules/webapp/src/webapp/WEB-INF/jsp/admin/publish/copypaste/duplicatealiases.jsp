@@ -1,5 +1,15 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ include file="../include/jsp_header.jsf" %>
+<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.List" %>
+<%@ page import="no.kantega.publishing.common.data.Association" %>
+<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.data.PathEntry" %>
+<%@ page import="no.kantega.publishing.common.data.enums.AssociationType" %>
+<%@ page import="no.kantega.publishing.common.data.AssociationCategory" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -15,43 +25,35 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title">
 
-<%
-    String statusmessage = (String)request.getAttribute("statusmessage");
-    if (statusmessage != null) {
-        statusmessage = "&statusmessage=" + statusmessage;
-    } else {
-        statusmessage = "";
-    }
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title><kantega:label key="aksess.copypaste.title"/></title>
-    <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
-</head>
+</kantega:section>
 
-<script language="Javascript">
-    if (window.opener) {
-        window.opener.top.main.content.location.href = 'content.jsp?activetab=previewcontent<%=statusmessage%>&updatetree=true';
-    }
-</script>
+<kantega:section id="head">
+    <script type="text/javascript">
+        function buttonOkPressed() {
+            getParent().stateHandler.setState("${currentPage.url}");
+            return true;
+        }        
+    </script>
+</kantega:section>
+<kantega:section id="body">
+    <div class="fieldset">
+        <fieldset>
+            <p>
+                <kantega:label key="aksess.copypaste.duplicatealias"/>
+            </p>
 
-<body class="bodyWithMargin">
-<p>
-    <kantega:label key="aksess.copypaste.duplicatealias"/>
-</p>
+            <ul>
+                <c:forEach items="${aliases}" var="alias">
+                    <li><c:out value="${alias}"/></li>
+                </c:forEach>
+            </ul>
 
-<ul>
-    <c:forEach items="${aliases}" var="alias">
-        <li><c:out value="${alias}"/></li>
-    </c:forEach>
-</ul>
-
-<p>
-   <a href="Javascript:window.close()"><img src="../bitmaps/<%=skin%>/buttons/ok.gif" border="0"></a>&nbsp;&nbsp;
-</p>
-
-</body>
-</html>
-<%@ include file="../include/jsp_footer.jsf" %>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+            </div>
+        </fieldset>
+    </div>
+</kantega:section>
+<%@ include file="../../layout/popupLayout.jsp" %>

@@ -1,4 +1,8 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
+<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -14,22 +18,17 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="title">
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-    <title>...</title>
-</head>
-<script language="Javascript">
-    if (window.opener) {
+</kantega:section>
+
+<kantega:section id="body">
+    <script type="text/javascript">
         <c:if test="${reloadWindow}">
             window.opener.document.location.reload(1);
         </c:if>
 
-        window.close();
-    }
-</script>
-<body>
-</body>
-</html>
+        closeWindow();
+    </script>
+</kantega:section>
+<%@ include file="../layout/popupLayout.jsp" %>

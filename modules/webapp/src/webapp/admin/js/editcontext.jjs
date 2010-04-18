@@ -278,7 +278,7 @@ openaksess.editcontext = function()  {
          */
         selectRole : function (formElement) {
             openaksess.editcontext.focusField = formElement;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?select=true&refresh=" + getRefresh() ,width: 280, height:340});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?multiple=false&refresh=" + getRefresh() ,width: 280, height:340});
         },
 
 

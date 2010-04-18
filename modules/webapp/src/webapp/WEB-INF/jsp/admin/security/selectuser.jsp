@@ -44,7 +44,7 @@
             <fieldset>
                 <form name="searchform" action="SelectUsers.action" method="post">
                     <input type="hidden" name="action" value="${action}">
-                    <input type="hidden" name="select" value="${select}">
+                    <input type="hidden" name="multiple" value="${multiple}">
                     <strong><kantega:label key="aksess.adduser.search"/>:</strong> <input type="text" name="name" value="${name}" size="10" maxlength="30">
                     <span class="button"><input type="button" onclick="document.searchform.submit()" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
                     <c:if test="${notFound}">
@@ -57,7 +57,7 @@
                         <input type="hidden" name="roletype" value="User">
                         <table width="340">
                             <tr>
-                                <c:if test="${!select}">
+                                <c:if test="${multiple}">
                                     <td width="20">&nbsp;</td>
                                 </c:if>
                                 <td width="320">&nbsp;</td>
@@ -76,7 +76,7 @@
                             %>
                             <tr class="tableRow<%=(i%2)%>">
                                 <c:choose>
-                                    <c:when test="${!select}">
+                                    <c:when test="${multiple}">
                                         <td><input type="checkbox" name="role" id="role<%=i%>" value="<c:out value="${user.id}"/>"></td>
                                         <td title="<c:out value="${user.id}"/>"><label for="role<%=i%>">${displayName}</label></td>
                                     </c:when>
@@ -92,7 +92,7 @@
                     </form>
                 </div>
                 <div class="buttonGroup">
-                    <c:if test="${select}">
+                    <c:if test="${multiple}">
                         <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                     </c:if>
                     <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>

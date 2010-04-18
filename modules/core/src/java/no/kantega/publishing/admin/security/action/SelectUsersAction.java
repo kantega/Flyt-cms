@@ -39,14 +39,14 @@ public class SelectUsersAction extends AdminController {
         RequestParameters param = new RequestParameters(request);
         String action = param.getString("action");
         String name = param.getString("name");
-        boolean select = param.getBoolean("select", false);
+        boolean multiple = param.getBoolean("multiple", true);
         if (action == null || action.length() == 0) {
             action = "AddUserRolePermission.action";
         }
 
         Map<String, Object> model =  new HashMap<String, Object>();
         model.put("action", action);
-        model.put("select", select);
+        model.put("multiple", multiple);
         model.put("name", name);
 
         List users;

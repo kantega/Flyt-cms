@@ -52,7 +52,7 @@
                         <input type="hidden" name="roletype" value="Role">
                         <table>
                             <tr>
-                                <c:if test="${!select}">
+                                <c:if test="${!multiple}">
                                     <td width="20">&nbsp;</td>
                                 </c:if>
                                 <td>&nbsp;</td>
@@ -66,7 +66,7 @@
                             %>
                             <tr class="tableRow<%=(i%2)%>">
                                 <c:choose>
-                                    <c:when test="${!select}">
+                                    <c:when test="${multiple}">
                                         <td><input type="checkbox" name="role" id="role<%=i%>" value="<c:out value="${role.id}"/>"></td>
                                         <td><label for="role<%=i%>">${displayName}</label></td>
                                     </c:when>
@@ -81,7 +81,7 @@
                         </table>
                     </div>
                     <div class="buttonGroup">
-                        <c:if test="${select}">
+                        <c:if test="${multiple}">
                             <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                         </c:if>
                         <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>

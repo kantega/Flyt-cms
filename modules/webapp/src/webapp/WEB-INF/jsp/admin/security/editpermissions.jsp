@@ -30,9 +30,9 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <script language="Javascript">
+    <script language="Javascript" type="text/javascript">
         function addRole() {
-            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
+            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=400,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
         function addUser() {
@@ -54,7 +54,7 @@
     </script>
 
     <div id="EditPermissionsForm">
-        <form action="" name="linkform">
+        <form action="SavePermissions.action" method="post">
             <div class="fieldset">
                 <fieldset>
                     <h1>${title}</h1>
