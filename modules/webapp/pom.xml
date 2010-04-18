@@ -169,11 +169,13 @@
             <version>1.5.6</version>
         </dependency>
         
+        <!--
 	<dependency>
             <groupId>org.kantega.openaksess</groupId>
             <artifactId>openaksess-dictionary-en-us</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>javax.servlet</groupId>
