@@ -638,7 +638,6 @@ table.fullWidth {
 .contentAttribute .heading, .formElement .heading {
     font-weight: bold;
     float: left;
-    font-size: 1.1em;
 }
 
 #Content .contentAttribute .buttonGroup, .formElement .buttonGroup {

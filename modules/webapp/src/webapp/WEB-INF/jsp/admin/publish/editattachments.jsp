@@ -89,8 +89,8 @@
                 <td><%=FormatHelper.formatSize(a.getSize())%></td>
                 <td><%=modifiedDate%></td>
                 <td align="right">
-                    <a href="Javascript:updateAttachment(<%=a.getId()%>)" class="button"><span class="edit"><kantega:label key="aksess.button.replaceattachment"/></a></span>
-                    <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="button"><span class="delete"><kantega:label key="aksess.button.deleteattachment"/></a></span>
+                    <a href="Javascript:updateAttachment(<%=a.getId()%>)" class="button"><span class="edit"><kantega:label key="aksess.button.replaceattachment"/></span></a>
+                    <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="button"><span class="delete"><kantega:label key="aksess.button.deleteattachment"/></span></a>
                 </td>
             </tr>
     <%
