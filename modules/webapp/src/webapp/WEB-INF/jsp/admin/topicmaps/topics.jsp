@@ -39,7 +39,7 @@
             var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
             var topicMapId = $(".topicMapId", container).val();
 
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: "EditTopic.action?topicMapId=" + topicMapId, width: 600, height:600, close: function(){
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.viewtopic.title"/>', iframe:true, href: "EditTopic.action?topicMapId=" + topicMapId, width: 600, height:550, close: function(){
                     // Reload content with ajax
                     var selected = $("#TopicTabs").tabs('option', 'selected');
                     $("#TopicTabs").tabs('load', selected);
