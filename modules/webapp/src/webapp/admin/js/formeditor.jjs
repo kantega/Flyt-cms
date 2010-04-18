@@ -344,7 +344,7 @@ function formBindHover() {
     $("#form_FormElements .formElement, #form_FormElements .formText").hover(
             function () {
                 if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit"><kantega:label key="aksess.button.endre"/></span><span class="delete"><kantega:label key="aksess.button.fjern"/></span></span>');
+                    $(this).prepend('<span class="formElementButtons"><span class="edit"><kantega:label key="aksess.button.edit"/></span><span class="delete"><kantega:label key="aksess.button.delete"/></span></span>');
                     $("#form_FormElements .formElementButtons .edit").unbind("click");
                     $("#form_FormElements .formElement .formElementButtons .edit").click(function() {
                         formEditElement($(this).parent().parent());
@@ -399,11 +399,11 @@ $(document).ready(function() {
     formTextEditorHTML = $("#form_TextPlaceHolder").html();
     $("#form_TextPlaceHolder").html("");
 
-    $("#form_NewElement a").click(function(event) {
+    $("#form_NewElement").click(function(event) {
         event.preventDefault();
         formNewElement();
     });
-    $("#form_NewText a").click(function(event) {
+    $("#form_NewText").click(function(event) {
         event.preventDefault();
         formNewText();
     });

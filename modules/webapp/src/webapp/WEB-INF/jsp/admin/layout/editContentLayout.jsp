@@ -23,6 +23,7 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/editcontent.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/formeditor.css">
     <script type="text/javascript" src="../js/editcontent.jjs"></script>
     <script type="text/javascript" src="../js/date.jjs"></script>
     <script type="text/javascript" src="../js/editcontext.jjs"></script>
@@ -69,6 +70,7 @@
             if (validatePublishProperties()) {
                 if (!hasSubmitted) {
                     hasSubmitted = true;
+                    formSave();
                     $("#ContentIsModified").val(openaksess.editcontext.isModified());
                     $("#ContentStatus").val(status);
                     document.myform.submit();
