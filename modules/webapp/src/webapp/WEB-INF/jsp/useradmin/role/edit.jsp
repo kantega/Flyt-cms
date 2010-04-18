@@ -23,7 +23,7 @@
 
 
 <kantega:section id="content">
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
     <form action="edit" name="myform" method="post">
         <input type="hidden" name="save" value="true">
         <div class="fieldset">

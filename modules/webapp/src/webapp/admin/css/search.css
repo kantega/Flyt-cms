@@ -2,9 +2,16 @@ body {
     background: #ffffff url("../bitmaps/common/icons/large/search.png") 10px 10px no-repeat;
 }
 #SearchResult {
-    padding: 1em;
-    padding-left: 40px;
+    float: left;
+    padding: 1em 1em 1em 30px;
 }
+
+#SearchDrilldown {
+    padding-top: 40px;
+    padding-left: 10px;
+    float: left;
+}
+
 .hit {
     margin-top: 1em;
 }
@@ -28,3 +35,5 @@ body {
 .highlight {
     background-color: #fcec5a;
 }
+
+
