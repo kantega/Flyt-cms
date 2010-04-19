@@ -57,7 +57,8 @@ public class DefaultImageEditor implements ImageEditor {
                     BufferedImage cropImage = new BufferedImage(cropwidth, cropheight, BufferedImage.TYPE_INT_RGB);
                     Graphics2D graphics2D = cropImage.createGraphics();
                     graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    graphics2D.drawImage(resizedImage, -cropx, -cropy, resizedImage.getWidth(), resizedImage.getHeight(), null);
+                    graphics2D.drawImage(resizedImage, -cropx, -cropy, resizedImage.getWidth(), resizedImage.getHeight(), null);                   
+                    resizedImage = cropImage;
                 }
 
                 // Write image

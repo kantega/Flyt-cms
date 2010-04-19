@@ -43,7 +43,7 @@ public class Multimedia extends BaseObject {
 
     private Date lastModified = new Date();
     private String modifiedBy = null;
-    private String profileImageUserId;
+    private String profileImageUserId = null;
 
 
     private int noFiles = 0; // Number of files in folder

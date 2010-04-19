@@ -526,6 +526,7 @@
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.action.ImageCropAction" id="ImageCropAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagecrop.jsp"/>
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.ImageMapAction" id="ImageMapAction">
