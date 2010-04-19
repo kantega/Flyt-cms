@@ -27,8 +27,8 @@
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-6.2.x/</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-6.2.x/</developerConnection>
     </scm>
 
     <pluginRepositories>
