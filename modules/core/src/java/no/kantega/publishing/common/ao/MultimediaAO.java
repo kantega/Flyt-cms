@@ -503,7 +503,7 @@ public class MultimediaAO {
         mm.setModifiedBy(rs.getString("LastModifiedBy"));
         mm.setAltname(rs.getString("AltName"));
         mm.setUsage(rs.getString("UsageInfo"));
-        mm.setProfileImageUserId("ProfileImageUserId");
+        mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
 
         return mm;
     }
