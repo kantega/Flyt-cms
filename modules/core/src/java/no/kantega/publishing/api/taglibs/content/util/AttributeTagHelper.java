@@ -318,6 +318,8 @@ public final class AttributeTagHelper {
                     result = "" + content.getRatingScore();
                 } else if (name.equals(ContentProperty.NUMBER_OF_RATINGS)) {
                     result = "" + content.getNumberOfRatings();
+                } else if (name.equals(ContentProperty.NUMBER_OF_COMMENTS)) {
+                    result = "" + content.getNumberOfComments();
                 } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE)) {
                     result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
                 } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE_ID)) {

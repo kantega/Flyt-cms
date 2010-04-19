@@ -101,6 +101,9 @@ public class Content extends BaseObject {
     private float ratingScore = 0f;
     private int numberOfRatings = 0;
 
+    // Comments
+    private int numberOfComments = 0;
+
     public Content() {
         lastModified = new Date();
     }
@@ -718,5 +721,13 @@ public class Content extends BaseObject {
 
     public void setChangeFromDate(Date changeFromDate) {
         this.changeFromDate = changeFromDate;
+    }
+
+    public int getNumberOfComments() {
+        return numberOfComments;
+    }
+
+    public void setNumberOfComments(int numberOfComments) {
+        this.numberOfComments = numberOfComments;
     }
 }

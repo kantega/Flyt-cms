@@ -96,6 +96,7 @@ public class ContentAOHelper {
         content.setRatingScore(rs.getFloat("RatingScore"));
         content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
         content.setSearchable(rs.getInt("IsSearchable") == 1);
+        content.setNumberOfComments(rs.getInt("NumberOfComments"));
         content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));        
 
         // Info som avhenger av i hvilken kontekst dette er publisert

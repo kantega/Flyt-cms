@@ -33,6 +33,12 @@
         updateSt = c.prepareStatement("UPDATE content SET IsSearchable=1");
         updateSt.executeUpdate();
 
+        updateSt = c.prepareStatement("ALTER TABLE content ADD NumberOfComments INT");
+        updateSt.executeUpdate();
+
+        updateSt = c.prepareStatement("UPDATE content SET NumberOfComments=0");
+        updateSt.executeUpdate();
+
         updateSt = c.prepareStatement("ALTER TABLE multimedia ADD NoFiles INT");
         updateSt.executeUpdate();
 

@@ -718,7 +718,7 @@ public class ContentAO {
             }
 
             if (isNew) {
-                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?)", Statement.RETURN_GENERATED_KEYS);
+                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
             } else {
                 // Update
                 st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
@@ -1421,6 +1421,17 @@ public class ContentAO {
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
         template.update("update content set RatingScore = ?, NumberOfRatings = ? where ContentId = ?", new Object[] {score, numberOfRatings, contentId});
     }
+
+    /**
+     * Set number of comments for content
+     * @param contentId - ContentId
+     * @param numberOfRatings - numberOfRatings
+     */
+    public static void setNumberOfComments(int contentId, int numberOfComments) {
+        JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
+        template.update("update content set NumberOfComments = ? where ContentId = ?", new Object[] {numberOfComments, contentId});
+    }
+
     
     
     /**

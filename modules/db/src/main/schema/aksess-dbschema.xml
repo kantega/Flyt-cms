@@ -88,6 +88,7 @@
         <column name="RatingScore" required="false" type="FLOAT" default="0"/>
         <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>        
         <column name="IsSearchable" required="false" type="INTEGER" size="10" default="1"/>
+        <column name="NumberOfComments" required="false" type="INTEGER" size="10" default="0"/>
         <index name="idx_content_alias">
             <index-column name="Alias"/>
         </index>
