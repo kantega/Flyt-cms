@@ -26,4 +26,6 @@ public interface ForumProvider {
     long getThreadAboutContent(Content current);
 
     public List getUserPostings(String userid);
+
+    public List getUserPostings(String userid, int maxNumberOfResults);
 }
