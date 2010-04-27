@@ -62,13 +62,15 @@ openaksess.content = {
             openaksess.content.contentstatus.init();
             openaksess.content.contentstatus.disableButtons();
             $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: url}, function(data){
-                openaksess.content.contentstatus.breadcrumbs(data.path);
-                openaksess.content.contentstatus.brokenLinks(data.links);
-                openaksess.content.contentstatus.details(data.content);
-                openaksess.content.contentstatus.associations(data.associations);
-                openaksess.content.contentstatus.enableButtons(data.enabledButtons);
-                openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
-                openaksess.content.contentstatus.updateFilters(data.sites, data.userPreferences);
+                if (data) {
+                    openaksess.content.contentstatus.breadcrumbs(data.path);
+                    openaksess.content.contentstatus.brokenLinks(data.links);
+                    openaksess.content.contentstatus.details(data.content);
+                    openaksess.content.contentstatus.associations(data.associations);
+                    openaksess.content.contentstatus.enableButtons(data.enabledButtons);
+                    openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
+                    openaksess.content.contentstatus.updateFilters(data.sites, data.userPreferences);
+                }
             }, "json");
         });
 
