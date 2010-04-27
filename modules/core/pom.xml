@@ -316,6 +316,22 @@
             <groupId>net.sf.spring-json</groupId>
             <artifactId>spring-json</artifactId>
             <version>1.2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib-full</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--
+            cglib is included by Hibernate.
+            Adding a dependency to the cglib version used by Hibernate 3.6.2.
+            Needed when Hibernate is not included in the project.
+        -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.1_3</version>
         </dependency>
 
         <!-- Dependencies for google analytics -->
