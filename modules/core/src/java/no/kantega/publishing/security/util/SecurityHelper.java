@@ -19,6 +19,7 @@ package no.kantega.publishing.security.util;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.security.api.profile.DefaultProfile;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.identity.DefaultIdentity;
@@ -108,5 +109,19 @@ public class SecurityHelper {
         role.setDomain(domain);
 
         return role;
+    }
+
+    public static Profile createApiProfile(User user) {
+        if(user==null){
+            return null;
+        }
+        DefaultProfile profile = new DefaultProfile();
+        profile.setIdentity(createApiIdentity(user.getId()));
+        profile.setRawAttributes(user.getAttributes());
+        profile.setDepartment(user.getDepartment());
+        profile.setEmail(user.getEmail());
+        profile.setGivenName(user.getGivenName());
+        profile.setSurname(user.getSurname());
+        return profile;
     }
 }
