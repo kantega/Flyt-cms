@@ -39,7 +39,7 @@ public class MultimediaAO {
     private static final String SOURCE = "aksess.MultimediaAO";
 
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, NoFiles, NoSubFolders";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId, NoFiles, NoSubFolders";
 
 
     /**
