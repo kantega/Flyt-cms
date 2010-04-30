@@ -37,6 +37,9 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 
 public class SimpleEditSaveContentAction implements Controller {
+
+    private String view;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         HttpSession session = request.getSession();
@@ -84,7 +87,7 @@ public class SimpleEditSaveContentAction implements Controller {
                 Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
                 request.setAttribute("miniAksessMediaArchive", allowArchive);
 
-                return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
+                return new ModelAndView(view);
 
             }
         }
@@ -92,5 +95,9 @@ public class SimpleEditSaveContentAction implements Controller {
         session.removeAttribute("adminMode");
 
         return new ModelAndView(new RedirectView(Aksess.getContextPath()));
+    }
+
+    public void setView(String view) {
+        this.view = view;
     }
 }
