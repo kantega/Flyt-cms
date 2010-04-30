@@ -165,7 +165,7 @@ openaksess.editcontext = function()  {
          */
         addTopic : function (topicMapId, topicId, topicName) {
             openaksess.editcontext.setIsModified();
-            openaksess.common.debug("add topic: " + topicName + ", topicId:" + topicId[1] + " topicMapId:" + topicId[0]);
+            openaksess.common.debug("add topic: " + topicName + " topicMapId:" + topicMapId + ", topicId:" + topicId);
             if (openaksess.editcontext.focusField == null) {
                 // Update topic list
                 var params = new Object();
