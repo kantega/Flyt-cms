@@ -46,14 +46,6 @@
         }
     </script>
         <%@ include file="fragments/infobox.jsp" %>
-
-        <form name="activeversion" action="UseVersion.action" target="content" method="post">
-            <input type="hidden" name="version" value="-1">
-        </form>
-        <form name="deleteversion" action="DeleteVersion.action" target="content" method="post">
-            <input type="hidden" name="version" value="-1">
-        </form>
-
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
             <thead>
             <tr>

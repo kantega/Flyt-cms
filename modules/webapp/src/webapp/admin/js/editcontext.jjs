@@ -165,7 +165,7 @@ openaksess.editcontext = function()  {
          */
         addTopic : function (topicMapId, topicId, topicName) {
             openaksess.editcontext.setIsModified();
-            openaksess.common.debug("add topic: " + topicName + " topicMapId:" + topicMapId + ", topicId:" + topicId);
+            openaksess.common.debug("add topic: " + topicName + ", topicId:" + topicId + " topicMapId:" + topicMapId);
             if (openaksess.editcontext.focusField == null) {
                 // Update topic list
                 var params = new Object();
@@ -175,12 +175,7 @@ openaksess.editcontext = function()  {
                 openaksess.editcontext.updateTopics(params);
             } else {
                 // Topic should be inserted into a input field
-                var name = openaksess.editcontext.focusField.name;
-                var textField = openaksess.editcontext.focusField.form.elements[name + 'text'];
-                if (textField) {
-                    openaksess.editcontext.focusField.value = "" + topicMapId + ":" + topicId;
-                    textField.value = topicName;
-                }
+                openaksess.editcontext.insertIdAndValueIntoForm(topicMapId + ":" + topicId, topicName);
             }
         },
 

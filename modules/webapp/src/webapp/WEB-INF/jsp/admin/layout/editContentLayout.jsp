@@ -126,6 +126,14 @@
         <input type="hidden" id="ContentIsModified" name="isModified" value="${currentContent.modified}">
     </form>
 
+    <form name="activeversion" action="UseVersion.action" method="post">
+        <input type="hidden" name="version" value="-1">
+    </form>
+    
+    <form name="deleteversion" action="DeleteVersion.action" method="post">
+        <input type="hidden" name="version" value="-1">
+    </form>
+
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>

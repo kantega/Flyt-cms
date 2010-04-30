@@ -56,7 +56,6 @@
     }
 
 </script>
-<form name="myform" action="SaveAttachments.action" method="post" enctype="multipart/form-data">
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr class="tableHeading">
             <td><strong><kantega:label key="aksess.attachments.attachment"/></strong></td>
@@ -111,7 +110,6 @@
     <%
         }
     %>
-</form>
 </kantega:section>
 <%@ include file="../layout/editContentLayout.jsp" %>
 
