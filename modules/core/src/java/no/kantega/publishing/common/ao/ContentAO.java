@@ -1425,7 +1425,7 @@ public class ContentAO {
     /**
      * Set number of comments for content
      * @param contentId - ContentId
-     * @param numberOfRatings - numberOfRatings
+     * @param numberOfComments - numberOfComments
      */
     public static void setNumberOfComments(int contentId, int numberOfComments) {
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();

@@ -35,7 +35,7 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
 public class DeleteTopicAction implements Controller {
-    @Override
+    
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         TopicMapService topicService = new TopicMapService(request);
