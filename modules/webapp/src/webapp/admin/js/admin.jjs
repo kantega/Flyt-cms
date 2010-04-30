@@ -221,6 +221,10 @@ openaksess.admin = {
         $ajaxloading.ajaxStop(function(){
             $(this).hide();
         });
+
+        $.ajaxSetup ({
+                cache: false
+        });        
     },
 
     /**
