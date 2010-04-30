@@ -343,9 +343,8 @@ public final class AttributeTagHelper {
         // Cut text after N characters
         if (maxLength > 3 && isTextAttribute && result.length() > maxLength) {
             // Strip HTML-tags
-            result = result.replaceAll("<(.|\\n)+?>", "");
-            if(result.length() > maxLength)
-            {
+            result = StringHelper.stripHtml(result);
+            if(result.length() > maxLength) {
                 result = result.substring(0, maxLength - 3) + "...";
             }
         }

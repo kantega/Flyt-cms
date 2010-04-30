@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
+import no.kantega.commons.util.StringHelper;
 import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -27,7 +28,7 @@ import java.io.IOException;
  * Author: Kristian Lier Selnæs, Kantega
  * Date: 05.jan.2007
  * Time: 12:15:21
- * 
+ *
  * <br><br>
  * Tar strengen som ligger i taggens body og forkorter den til det antall tegn som er
  * spesifisert i maxsize. Legger på ... etter den forkortede strengen.
@@ -68,15 +69,17 @@ public class AbbreviateTag extends BodyTagSupport {
      */
     public int doAfterBody() throws JspException {
 
-        String bcs = bodyContent.getString();
-        if (bcs == null) {
-            bcs = "";
-        }
-
-        try {
-            text = StringUtils.abbreviate(bcs, leftedge, maxsize);
-        } catch (IllegalArgumentException iae) {
+        text = bodyContent.getString();
+        if (text == null) {
             text = "";
+        }
+        text = StringHelper.stripHtml(text);
+        if(text.length() > maxsize) {
+            try {
+                text = StringUtils.abbreviate(text, leftedge, maxsize);
+            } catch (IllegalArgumentException iae) {
+                text = "";
+            }
         }
 
         leftedge = 0;

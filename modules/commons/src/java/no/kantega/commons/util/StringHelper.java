@@ -183,4 +183,13 @@ public class StringHelper {
 
         return newstr;
     }
+
+    /**
+     * Strips off all html-tags
+     * @param source - The text to strip
+     * @return The text with tags replaced by an empty string.
+     */
+    public static String stripHtml(String source) {
+        return source.replaceAll("<(.|\\n)+?>", "");
+    }
 }
