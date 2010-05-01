@@ -47,8 +47,7 @@
                 <input type="text" name="q" value="<c:out value="${query}"/>">
                 <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
             </form>
-
-            <c:if test="${fn:length(users) > 0}">                
+            <br>
             <table>
                 <thead>
                 <tr>
@@ -69,7 +68,7 @@
                         <c:if test="${canEdit}">
                             <a class="button" href="Javascript:doAction('delete', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.delete"/></a>
                         </c:if>
-                            <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.roles"/></a><
+                            <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.roles"/></a>
                         <c:if test="${canEdit}">
                             <a class="button" href="profileimage?domain=${user.identity.domain}&amp;userId=${user.identity.userId}"><kantega:label key="useradmin.searchprofiles.profileimage"/></a>
                         </c:if>
@@ -77,7 +76,7 @@
                     </tr>
                 </c:forEach>
             </table>
-            </c:if>
+            
             <c:if test="${canEdit}">
                 <div class="buttonGroup">
                     <form action="edit">

@@ -104,7 +104,7 @@
             </div>
 
             <div class="buttonGroup">
-                <span class="button"><input type="submit" name="passwordsubmit" class="button save" value="<kantega:label key="aksess.button.save"/>"></span>
+                <span class="button"><input type="submit" name="passwordsubmit" class="ok" value="<kantega:label key="aksess.button.save"/>"></span>
                 <span class="button"><input type="button" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </fieldset>
