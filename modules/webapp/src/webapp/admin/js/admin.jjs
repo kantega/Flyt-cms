@@ -100,7 +100,7 @@ openaksess.admin = {
             }
 
             //Apply closer
-            $('<div class="close"><span><kantega:label key="aksess.infoslider.close"/></span></div>').appendTo($infoslider).click(function(){
+            $('<div class="close"><span>&nbsp;</span></div>').appendTo($infoslider).click(function(){
                 hide(location);
             });
         };
