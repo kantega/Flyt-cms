@@ -39,6 +39,11 @@ fieldset {
     border: 1px solid black;
     padding: 4px;
 }
+legend {
+    color: #000;
+    margin-left: 0;
+    padding-left: 0;
+}
 
 td a, .ui-widget-content td a {
     color:#1780b9;
