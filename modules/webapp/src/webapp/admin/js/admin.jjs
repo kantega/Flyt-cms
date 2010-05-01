@@ -314,9 +314,9 @@ openaksess.admin = {
     },
 
 
-    widgetmanager : {
+    widgetmanager : function() {
 
-        defaults : {
+        var config = {
             context: 'body',
             widgetContainerClass: 'widgetcolumn',
             widgetClass: 'widget',
@@ -325,66 +325,88 @@ openaksess.admin = {
             minimizeClass: 'ui-icon ui-icon-minus',
             maximizeClass: 'ui-icon ui-icon-plus',
             closeClass: 'ui-icon ui-icon-close'
-        },
-
-        init : function(config){
-            $.extend(this.defaults, config);
-
-            var $columns = $('.'+this.defaults.widgetContainerClass, this.defaults.context);
-            $columns.sortable({
-                connectWith: this.defaults.context + ' .'+this.defaults.widgetContainerClass
-            });
-
-            var $widgets = $('.'+this.defaults.widgetClass, this.defaults.context);
-            $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
-                    .find('.'+this.defaults.widgetHeaderClass)
-                    .addClass("ui-widget-header")
-                    .append('<span class="widget-controls"><span class="'+this.defaults.closeClass+'"></span><span class="'+this.defaults.minimizeClass+'"></span></span>');
+        };
 
 
-            $widgets.find(".widget-header .widget-controls").live('click', function(e) {
-                var $target = $(e.target);
-                var $widget = $(this).parents(".widget:first");
-
-                if ($target.hasClass(this.defaults.minimizeClass)) {
-                    this.minimize($widget);
-                }
-                else if ($target.hasClass(this.defaults.maximizeClass)) {
-                    this.maximize($widget);
-                }
-                else if($target.hasClass(this.defaults.closeClass)) {
-                        this.remove($widget);
-                    }
-
-            });
-
-            $columns.disableSelection();
-        },
-
-        minimize: function(widget) {
-            var $widget = this._getElementAsJquery(widget);
-            $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.minimizeClass).addClass(this.defaults.maximizeClass);
-            $widget.find('.'+this.defaults.widgetContentClass).hide();
-        },
-
-        maximize: function(widget) {
-            var $widget = this._getElementAsJquery(widget);
-            $widget.find('.'+this.defaults.widgetHeaderClass+' .widget-controls :last').removeClass(this.defaults.maximizeClass).addClass(this.defaults.minimizeClass);
-            $widget.find('.'+this.defaults.widgetContentClass).show();
-        },
-
-        remove: function(widget) {
-            this._getElementAsJquery(widget).remove();
-        },
-
-        _getElementAsJquery: function(elem) {
+        var _getElementAsJquery = function(elem) {
             if (elem instanceof jQuery) {
                 return elem;
             } else {
                 return $(elem);
             }
-        }
-    }
+        };
+
+        var minimize = function(widget) {
+            var $widget = _getElementAsJquery(widget);
+            $widget.find('.'+config.widgetHeaderClass+' .widget-controls :last').removeClass(config.minimizeClass).addClass(config.maximizeClass);
+            $widget.find('.'+config.widgetContentClass).hide();
+        };
+
+        var maximize = function(widget) {
+            var $widget = _getElementAsJquery(widget);
+            $widget.find('.'+config.widgetHeaderClass+' .widget-controls :last').removeClass(config.maximizeClass).addClass(config.minimizeClass);
+            $widget.find('.'+config.widgetContentClass).show();
+        };
+
+        var remove = function(widget) {
+            _getElementAsJquery(widget).remove();
+        };
+        
+        return {
+
+            init : function(additionalConfig){
+                openaksess.common.debug("openaksess.admin.widgetmanager.init(): Starting widget manager."); 
+
+                if (additionalConfig && typeof(additionalConfig) == 'object') {
+                    openaksess.common.debug("openaksess.admin.widgetmanager.init(): Extending default config with user supplied config.");
+                    $.extend(config, additionalConfig);
+                }
+    
+                var $columns = $('.'+config.widgetContainerClass, config.context);
+                $columns.sortable({
+                    connectWith: config.context + ' .'+config.widgetContainerClass
+                });
+    
+                var $widgets = $('.'+config.widgetClass, config.context);
+                $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
+                        .find('.'+config.widgetHeaderClass)
+                        .addClass("ui-widget-header")
+                        .append('<span class="widget-controls"><span class="'+config.closeClass+'"></span><span class="'+config.minimizeClass+'"></span></span>');
+    
+                //Attach click listeners to controls (minimize/maximize/close)
+                $widgets.find(".widget-header .widget-controls").live('click', function(e) {
+                    var $target = $(e.target);
+                    openaksess.common.debug("widgetmanager: Control click received. target: " + config.minimizeClass);
+                    var $widget = $(this).parents(".widget:first");
+    
+                    if ($target.hasClass(config.minimizeClass)) {
+                        openaksess.common.debug("widgetmanager: Click is minimize.");
+                        minimize($widget);
+                    }
+                    else if ($target.hasClass(config.maximizeClass)) {
+                        openaksess.common.debug("widgetmanager: Click is maximize.");
+                        maximize($widget);
+                    }
+                    else if($target.hasClass(config.closeClass)) {
+                        openaksess.common.debug("widgetmanager: Click is close.");
+                        remove($widget);
+                    }
+    
+                });
+    
+                $columns.disableSelection();
+            },
+
+            minimize : minimize,
+            maximize : maximize,
+            remove : remove
+            
+        };
+
+
+
+
+    }()
 
 };
 
