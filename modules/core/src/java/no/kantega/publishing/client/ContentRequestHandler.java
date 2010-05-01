@@ -117,6 +117,7 @@ public class ContentRequestHandler extends AbstractController {
                     long end = new Date().getTime();
                     Log.info(this.getClass().getName(), "Tidsforbruk:" + (end- start) + " ms (" + content.getTitle() + ", id: " + content.getId() + ", template:" + content.getDisplayTemplateId() + ")", null, null);
                 } else {
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     throw new ContentNotFoundException(SOURCE, "");
                 }
             } catch (NotAuthorizedException e) {
@@ -129,6 +130,7 @@ public class ContentRequestHandler extends AbstractController {
                     // Start login process (redirect)
                     secSession.initiateLogin(request, response);
                 }
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
         } catch (ContentNotFoundException e) {
             try {
