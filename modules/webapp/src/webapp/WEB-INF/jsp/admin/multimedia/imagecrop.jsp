@@ -84,6 +84,8 @@
 
             // Enable JQuery crop
             $('#MediaObject img').Jcrop({
+                boxWidth: 600,
+                boxHeight: 400,
                 onChange: updateCoords,
                 onSelect: updateCoords
             });

@@ -112,7 +112,7 @@ public class MultimediaRequestHandler implements Controller {
                     bytes = (byte[]) thumbnailCache.getFromCache(key);
                 } catch (NeedsRefreshException e) {
                     try {
-                        Log.debug(SOURCE, "Krymper bilde (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
+                        Log.debug(SOURCE, "Resizing image (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
 
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
                         mediaService.streamMultimediaData(mmId, new InputStreamHandler(bos));
@@ -126,7 +126,7 @@ public class MultimediaRequestHandler implements Controller {
                         // Hmmm?
                         // thumbnailCache.flushGroup(Integer.toString(mmId));
                     } catch (IOException ie) {
-                        // Brukeren har avbrutt nedlasting
+                        // User has cancelled download
                         thumbnailCache.cancelUpdate(key);
                     } catch (Throwable t) {
                         thumbnailCache.cancelUpdate(key);
@@ -134,15 +134,14 @@ public class MultimediaRequestHandler implements Controller {
                     }
                 }
 
-                // Kan kun generere png eller jpg
-                response.setContentType("image/" + imageEditor.getImageFormat());
-                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + imageEditor.getImageFormat());
+                response.setContentType(mm.getMimeType().getType());
+                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension());
                 response.addHeader("Content-Length", "" + bytes.length);
 
                 out.write(bytes);
 
             } else {
-                // Send direkte
+                // Send directly
                 response.setContentType(mimetype);
                 if (mm.getSize() != 0) {
   	                response.addHeader("Content-Length", "" + mm.getSize());

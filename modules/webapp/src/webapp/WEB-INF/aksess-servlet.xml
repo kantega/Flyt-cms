@@ -540,6 +540,7 @@
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UploadMultimediaAction" id="UploadMultimediaAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/fileupload.jsp"/>
+        <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>

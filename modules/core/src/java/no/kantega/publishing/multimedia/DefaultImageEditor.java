@@ -24,7 +24,7 @@ import java.util.Locale;
 public class DefaultImageEditor implements ImageEditor {
     ImageResizeAlgorithm imageResizeAlgorithm;
 
-    private String imageFormat = "jpg";
+    private String defaultImageFormat = "png";
 
     private int jpgOutputQuality = 85;
 
@@ -61,6 +61,12 @@ public class DefaultImageEditor implements ImageEditor {
                     resizedImage = cropImage;
                 }
 
+                // Determine output format
+                String imageFormat = getDefaultImageFormat();
+                if (multimedia.getMimeType().getType().contains("jpg")) {
+                    imageFormat = "jpg";
+                }
+                
                 // Write image
                 ImageWriter writer = null;
                 Iterator iter = ImageIO.getImageWritersByFormatName(imageFormat);
@@ -142,16 +148,16 @@ public class DefaultImageEditor implements ImageEditor {
         return new MultimediaDimensions(targetWidth, targetHeight);
     }
 
-    public String getImageFormat() {
-        return imageFormat;
-    }
-
     public void setImageResizeAlgorithm(ImageResizeAlgorithm imageResizeAlgorithm) {
         this.imageResizeAlgorithm = imageResizeAlgorithm;
     }
 
-    public void setImageFormat(String imageFormat) {
-        this.imageFormat = imageFormat;
+    public String getDefaultImageFormat() {
+        return defaultImageFormat;
+    }
+
+    public void setDefaultImageFormat(String defaultImageFormat) {
+        this.defaultImageFormat = defaultImageFormat;
     }
 
     public void setJpgOutputQuality(int jpgOutputQuality) {
