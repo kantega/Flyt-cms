@@ -150,7 +150,6 @@
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
             <table class="noborder" id="ChangeDate">
                 <tr>
-                    <td><!--<label for="change_date"><kantega:label key="aksess.publishinfo.change.from"/></label>--></td>
                     <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                     <td><label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label></td>
                     <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
