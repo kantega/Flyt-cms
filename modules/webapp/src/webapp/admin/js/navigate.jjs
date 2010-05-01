@@ -35,7 +35,9 @@ var suppressNavigatorUpdate = false;
 $(document).ready(function(){
     openaksess.common.debug("navigate.$(document).ready()");
     openaksess.navigate.bindNavigatorClickEvents();
-    openaksess.navigate.makeNavigatorResizable();
+    if (!openaksess.common.isPopup()) {
+        openaksess.navigate.makeNavigatorResizable();
+    }
     openaksess.search.bindSearchInput();
 });
 

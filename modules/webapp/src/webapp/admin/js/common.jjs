@@ -92,6 +92,10 @@ openaksess.common = {
         }
     },
 
+    isPopup : function() {
+        return window.opener || window.parent != window;
+    },
+
 
     /**
      * Responsible for drawing pop-ups and modals.
@@ -171,8 +175,6 @@ openaksess.common = {
         };
 
     }()
-
-
 };
 
 

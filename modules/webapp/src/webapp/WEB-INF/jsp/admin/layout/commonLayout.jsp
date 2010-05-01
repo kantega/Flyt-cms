@@ -26,14 +26,14 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
     <!--[if lt IE 8]>
-        <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.7.2.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.8.1.custom.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.autocomplete.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8rc3.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.1.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
@@ -73,8 +73,7 @@
     <kantega:hassection id="topMenu">
         <script type="text/javascript">
             // Hides top menu when opened in a popup
-            var isPopup = window.opener || window.parent != window;
-            if (isPopup) {
+            if(openaksess.common.isPopup()) {
                 document.write('<div style="display:none;">');
             }
         </script>
@@ -82,7 +81,7 @@
             <kantega:getsection id="topMenu"/>
         </div>
         <script type="text/javascript">
-            if (isPopup) {
+            if (openaksess.common.isPopup()) {
                 document.write('<\/div>');
             }
         </script>

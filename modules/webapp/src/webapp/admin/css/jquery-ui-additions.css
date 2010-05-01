@@ -31,3 +31,7 @@ ul.ui-tabs-nav li {
     z-index: 1000;
 }
 
+.ui-dialog .ui-dialog-content {
+    border:0;
+    margin:0;
+}
