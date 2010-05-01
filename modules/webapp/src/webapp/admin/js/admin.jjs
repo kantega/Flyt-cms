@@ -45,9 +45,12 @@ openaksess.admin = {
      * Handles opening and closing of the support information container,
      * typically located below the status bar and the content filters.
      *
+     * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
+     * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
+     * @param options - Additional options for the infoslider. See property sliderOptions for available options.*
      * This slider has the css-class "infoslider".
      */
-    InfoSlider : function() {
+    InfoSlider : function(location, options) {
 
         var sliderOptions = {
             speed: 300,
@@ -55,7 +58,15 @@ openaksess.admin = {
             additionalCssClasses: ''
         };
 
-        var id = new Date().valueOf();
+        $.extend(sliderOptions, options);
+        var $infoslider = $(location).find(".infoslider");
+        var id = new Date().valueOf();                      
+
+        openaksess.common.debug("content.InfoSlider() Slider created: location: " + location + ", id: " + id);
+
+        $infoslider.bind('contentupdate', function(){
+            close();
+        });
 
         /**
          * Opens the infoslider if it's hidden.
@@ -63,18 +74,16 @@ openaksess.admin = {
          * If the infoslider is open and toogle() is called by a different element than the one opening it, the content is replaced
          * and the slider is kept open.
          *
-         * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
          * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
          * @param content - The content to display in the info slider.
-         * @param options - Additional options for the infoslider. See property sliderOptions for available options.
          */
-        this.toggle = function(location, content, options) {
-            openaksess.common.debug("content.InfoSlider.toggle(): location: " + location + ", content: " + content + ", id: " + id);
-            $.extend(sliderOptions, options);
-            var $infoslider = $(location).find(".infoslider");
+        this.toggle = function(content) {
+
+            openaksess.common.debug("content.InfoSlider.toogle() Toggle slider with id " + id + ", location: " + location);
 
             //The slider is physically closed. Set own content and open it.
             if ($infoslider.is(":hidden")) {
+                openaksess.common.debug("content.InfoSlider.toggle(): Slider is closed. Opening.");
                 setContent($infoslider, content);
                 if (sliderOptions.resizable) {
                     makeResizable($infoslider);
@@ -86,10 +95,12 @@ openaksess.admin = {
             else {
                 //Opened by self. Closing the slider
                 if (isOpenedBySelf($infoslider)) {
-                    hide(location);
+                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by self. Closing");
+                    close();
                 }
                 //Somone else has already opened it. Keep it open and replace the content.
                 else {
+                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by someone else. Replacing content and keeping it open.");
                     setContent($infoslider, content);
 
                     if (sliderOptions.resizable) {
@@ -101,20 +112,17 @@ openaksess.admin = {
 
             //Apply closer
             $('<div class="close"><span>&nbsp;</span></div>').appendTo($infoslider).click(function(){
-                hide(location);
+                close();
             });
         };
 
         /**
-         * Hides the infoslider in the given location.
+         * Closes the infoslider .
          *
-         * @param location
          */
-        this.hide = function(location) {
+        var close = function() {
             $(location).find(".infoslider").html("").slideUp(sliderOptions.speed);
         };
-        //Expose hide() to local functions
-        var hide = this.hide;
 
 
         var setContent = function(infoslider, content) {
