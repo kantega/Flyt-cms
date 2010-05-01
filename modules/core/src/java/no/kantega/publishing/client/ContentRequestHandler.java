@@ -125,12 +125,13 @@ public class ContentRequestHandler extends AbstractController {
                 SecuritySession secSession = SecuritySession.getInstance(request);
                 if (secSession.isLoggedIn()) {
                     RequestHelper.setRequestAttributes(request, null);
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     request.getRequestDispatcher("/403.jsp").forward(request, response);
                 } else {
                     // Start login process (redirect)
                     secSession.initiateLogin(request, response);
                 }
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
             }
         } catch (ContentNotFoundException e) {
             try {
