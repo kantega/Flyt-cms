@@ -369,6 +369,7 @@ table.fullWidth {
     height: 37px;
     background-position: left center;
     background-repeat: no-repeat;
+    cursor: pointer;
 }
 
 
@@ -412,6 +413,7 @@ table.fullWidth {
 #TabToolsMenu .tab span {
     display: inline-block;
     line-height: 26px;
+    cursor: pointer;
 }
 
 #TabToolsMenu .tab span span {
