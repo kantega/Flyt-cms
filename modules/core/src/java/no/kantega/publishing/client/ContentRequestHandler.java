@@ -130,7 +130,7 @@ public class ContentRequestHandler extends AbstractController {
                     // Start login process (redirect)
                     secSession.initiateLogin(request, response);
                 }
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             }
         } catch (ContentNotFoundException e) {
             try {
