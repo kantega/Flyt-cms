@@ -525,8 +525,8 @@ openaksess.navigate.navigatorResizeOnStart = function() {
         position: "absolute",
         height: height + "px",
         width: width + "px",
-        background: "#00ffff",
-        opacity: "1"
+        background: "#ffffff",
+        opacity: "0"
     }).attr("id", "Contentoverlay");
 
     $("#MainPane iframe[name=contentmain]").before(contentoverlay);
