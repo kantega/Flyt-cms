@@ -154,9 +154,12 @@ openaksess.navigate = {
         // TODO: Cant check contentclipboard handler -- what about mediaarchive?
         $("#Navigator").load(openaksess.navigate.getNavigatorAction(), params, function() {
             openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + openaksess.navigate.getNavigatorAction() + " received");
-            ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
-                openaksess.navigate.setContextMenus(clipboardEmpty);
-            });
+            if (typeof ContentClipboardHandler == "object") {
+                ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
+                    openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
+                    openaksess.navigate.setContextMenus(clipboardEmpty);
+                });                
+            }
         });
     },
 

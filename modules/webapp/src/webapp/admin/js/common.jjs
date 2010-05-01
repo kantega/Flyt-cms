@@ -103,6 +103,10 @@ openaksess.common = {
     modalWindow : function() {
 
         var $content = '';
+        var $overlay = $("<div/>").css("position", "absolute").css("background", "#ffffff").css("opacity", "0").attr("id", "Contentoverlay");
+        var $iframe = $('<iframe id="externalSite" frameborder="0" src="" />');
+
+        var useIframe = false;
 
         var config = {
             title: 'OpenAksess',
@@ -123,6 +127,28 @@ openaksess.common = {
             overlay: {
                 opacity: 0.2,
                 background: "black"
+            },
+            resizeStart: function(){
+                openaksess.common.debug("openaksess.common.modalWindow.resizeStart()");
+                if (useIframe) {
+                    openaksess.common.debug("openaksess.common.modalWindow.resizeStart(): Has iframe. Adding overlay");
+                    var height = $iframe.height();
+                    var width = $iframe.width();
+                    $overlay.css({height : height + "px", width : width + "px"});
+                    $iframe.before($overlay);
+                }
+            },
+            resize: function() {
+                if (useIframe) {
+                    var height = $iframe.height();
+                    var width = $iframe.width();
+                    $overlay.css({height : height + "px", width : width + "px"});
+                }
+            },
+            resizeStop: function(){
+                if (useIframe) {
+                    $overlay.remove();
+                }
             }
         };
 
@@ -154,7 +180,8 @@ openaksess.common = {
                         href = href + "&";
                     }
                     href = href + "dummy=" + new Date().getTime();
-                    $content = $('<iframe id="externalSite" frameborder="0" src="' + href + '" />');
+                    $content = $iframe.attr("src", href);
+                    useIframe = true;
                 } else {
                     $content = $("<div/>").load(config.href);
                 }
@@ -170,7 +197,6 @@ openaksess.common = {
                 openaksess.common.debug("openaksess.common.modalWindow.open(): Modal window opened.");
 
             },
-
 
             /**
              * Closes the current modal.
