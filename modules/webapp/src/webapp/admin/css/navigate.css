@@ -6,6 +6,9 @@
     padding-right: 10px;/*Framesplit.width*/
     background: #ffffff;
 }
+#Navigation .infoslider {
+    position: relative;
+}
 body.popup #Navigation{
     width:90%;
 }

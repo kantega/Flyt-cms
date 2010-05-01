@@ -760,7 +760,7 @@ div.sidebarFieldset fieldset legend {
     display: none;
     width: 100%;
     background: #ffffff url("../bitmaps/default/framework/infoslider_bottom.png") bottom left repeat-x;
-    position: relative;
+    position: absolute;
     z-index: 100;
     left: 0;
     padding-bottom: 20px;
