@@ -38,9 +38,13 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
 
             row = sheet.createRow((short)0);
 
+
+            cell = row.createCell((short)0);
+            cell.setCellValue("Dato innsendt");
+
             for (int i = 0; i < fieldNames.size(); i++) {
                 String header = fieldNames.get(i);
-                cell = row.createCell((short)i);
+                cell = row.createCell((short)(i+1));
                 cell.setCellValue(header);
             }
 
@@ -55,13 +59,17 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 for (FormValue value : formSubmission.getValues()) {                    
                     values.put(value.getName(), value.getValuesAsString());
                 }
+
+                cell = row.createCell((short)0);
+                cell.setCellValue(formSubmission.getSubmissionDate());
+
                 for (int j = 0; j < fieldNames.size(); j++) {
                     String fieldName = fieldNames.get(j);
                     String value = values.get(fieldName);
                     if (value == null) {
                         value = "";
                     }
-                    cell = row.createCell((short) j);
+                    cell = row.createCell((short) (j+1));
                     cell.setCellValue(value);
                 }
             }

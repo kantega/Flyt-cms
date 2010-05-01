@@ -343,6 +343,8 @@
     <!-- Navigate content -->
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
+        <property name="createRootAction" ref="createRootAction"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
@@ -580,9 +582,7 @@
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction">
         <property name="view" value="${miniaksess.view}"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction">
-        <property name="view" value="${miniaksess.view}"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
 
     <!-- Administrator controllers -->

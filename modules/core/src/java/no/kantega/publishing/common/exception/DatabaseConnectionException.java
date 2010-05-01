@@ -20,6 +20,6 @@ import no.kantega.commons.exception.SystemException;
 
 public class DatabaseConnectionException extends SystemException {
     public DatabaseConnectionException(String source, Throwable original) {
-        super("Klarte ikke å kople til databasen", source, original);
+        super("Unable to connect to database", source, original);
     }
 }

@@ -98,7 +98,7 @@ public class CreateRootAction  extends AbstractController {
                 throw new RootExistsException("Finnes allerede en side med dette aliaset", SOURCE);
             }
 
-            // Finn hjemmesida
+            // Find homepage
             String url = site.getAlias();
             url = url.substring(0, url.length() - 1);
             url = url + Aksess.getStartPage();

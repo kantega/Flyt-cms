@@ -18,11 +18,16 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.administration.action.CreateRootAction;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.exception.ConfigurationException;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
@@ -38,6 +44,9 @@ import java.util.HashMap;
  */
 public class NavigateController extends AbstractContentAction {
     private String view;
+
+    private SiteCache siteCache;
+    private CreateRootAction createRootAction;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -61,8 +70,23 @@ public class NavigateController extends AbstractContentAction {
         }
 
         if (current == null ) {
-            // No current object, go to start page
-            ContentIdentifier cid = new ContentIdentifier(request, "/");
+            ContentIdentifier cid = null;
+            try {
+                // No current object, go to start page
+                cid = new ContentIdentifier(request, "/");
+            } catch (ContentNotFoundException cnfe) {
+                // Start page has not been created
+                Site site = siteCache.getSiteByHostname(request.getServerName());
+                if (site == null) {
+                    List<Site> sites = siteCache.getSites();
+                    if (sites.size() == 0) {
+                        throw new ConfigurationException("No sites defined in template configuration (aksess-templateconfig.xml)");
+                    }
+                    site = sites.get(0);
+                }
+                createRootAction.createRootPage(site.getId(), request);
+                cid = new ContentIdentifier(request, "/");
+            }
             current = aksessService.getContent(cid);
         }
 
@@ -93,5 +117,13 @@ public class NavigateController extends AbstractContentAction {
 
     public void setView(String view) {
         this.view = view;
+    }
+
+    public void setCreateRootAction(CreateRootAction createRootAction) {
+        this.createRootAction = createRootAction;
+    }
+
+    public void setSiteCache(SiteCache siteCache) {
+        this.siteCache = siteCache;
     }
 }
