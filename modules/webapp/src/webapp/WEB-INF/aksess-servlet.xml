@@ -178,6 +178,9 @@
                 <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>
 
                 <prop key="/Rating.action">RatingController</prop>
+
+                <!-- Information -->
+                <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
             </props>
         </property>
     </bean>
@@ -683,7 +686,11 @@
 
     <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
     <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>
-
+    
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSystemInformationAction" id="OpenAksessInformationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/openaksessinformation.jsp"/>        
+    </bean>
+          
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
