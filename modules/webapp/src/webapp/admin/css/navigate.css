@@ -71,6 +71,8 @@
     border-bottom: 1px solid #cccccc;
     height: 2em;
     position: relative;
+    overflow: hidden;
+    white-space: nowrap;
 }
 #Filteroptions .hideexpired {
     display: inline;
