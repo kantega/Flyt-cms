@@ -231,7 +231,12 @@ openaksess.admin = {
         });
 
         $.ajaxSetup ({
-                cache: false
+            cache: false,
+            error: function(xhr, textStatus, errorThrown) {
+                if (xhr.status == 401) {
+                    window.location.href = '${pageContext.request.contextPath}/admin/?dummy=' + new Date().getTime();
+                }
+            }
         });        
     },
 

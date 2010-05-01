@@ -99,7 +99,7 @@ public class NavigateController extends AbstractContentAction {
         Map<String, Object> model = new HashMap<String, Object>();
         if (editedContent != null && editedContent.isModified()) {
             // User is editing a page and has modified it, show preview 
-            currentUrl = "ViewContentPreviewFrame.action?thisId=";
+            currentUrl = request.getContextPath() + "/admin/publish/ViewContentPreviewFrame.action?thisId=";
             if (editedContent.getId() == -1) {
                 // New page
                 currentUrl += editedContent.getAssociation().getParentAssociationId();

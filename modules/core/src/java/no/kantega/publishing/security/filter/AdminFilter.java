@@ -57,8 +57,14 @@ public class AdminFilter implements Filter {
 
             // Sjekk at bruker er logget inn
             if (!securitySession.isLoggedIn()) {
-                securitySession.initiateLogin(request, response);
-                return;
+                if("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+                    // Requested with ajax
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                } else {
+                    securitySession.initiateLogin(request, response);
+                    return;
+                }
             }
 
             // Sjekk at bruker er autorisert

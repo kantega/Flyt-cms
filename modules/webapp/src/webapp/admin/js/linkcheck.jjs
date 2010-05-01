@@ -43,7 +43,6 @@ openaksess.linkcheck = {
      * @param url
      */
     updateLinkList : function(url, sort) {
-
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Triggering contentupdate event");
         openaksess.content.triggerContentUpdateEvent(url);
 

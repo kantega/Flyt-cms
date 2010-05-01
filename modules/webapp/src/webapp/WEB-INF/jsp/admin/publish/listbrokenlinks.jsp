@@ -101,9 +101,7 @@
                 </div>
             </c:otherwise>
         </c:choose>
-
-
     </fieldset>
 </div>
-</div>
+
 
