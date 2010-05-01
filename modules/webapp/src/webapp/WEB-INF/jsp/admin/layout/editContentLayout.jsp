@@ -71,7 +71,10 @@
                 if (!hasSubmitted) {
                     hasSubmitted = true;
                     formSave();
-                    $("#ContentIsModified").val(openaksess.editcontext.isModified());
+                    var $contentIsModified = $("#ContentIsModified");
+                    if ($contentIsModified.val() == "false") {
+                        $contentIsModified.val(openaksess.editcontext.isModified());
+                    }
                     $("#ContentStatus").val(status);
                     document.myform.submit();
                 }

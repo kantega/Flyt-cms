@@ -48,17 +48,25 @@
         </c:choose>
 
         <div id="MultimediaFolders">
-            <c:forEach items="${hits}" var="media">
+            <c:forEach items="${hits}" var="media" varStatus="status">
                 <div class="media" id="Media${media.id}">
                     <div class="icon">
+                        <c:set var="imageIndex" value="${status.index}"/>
                         <a href="EditMultimedia.action?id=${media.id}" target="_top">
                             <%
+                                Integer imageIndex = (Integer)pageContext.getAttribute("imageIndex");
                                 Multimedia mm = (Multimedia)pageContext.getAttribute("media");
                                 String mimeType = mm.getMimeType().getType();
                                 mimeType = mimeType.replace('/', '-');
                                 mimeType = mimeType.replace('.', '-');
                                 if (mimeType.indexOf("image") != -1) {
-                                    out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                    if (imageIndex < 30) {
+                                        // Workaround for first images not being displayed in IE 7 with lazy load plugin
+                                        out.write("<img class=\"thumbnail\" src=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                    } else {
+                                        out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                    }
+
                                 } else {
                                     out.write("<div class=\"file " + mimeType + "\"></div>");
                                 }

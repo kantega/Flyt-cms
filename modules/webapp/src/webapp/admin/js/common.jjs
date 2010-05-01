@@ -147,7 +147,14 @@ openaksess.common = {
 
 
                 if (config.iframe) {
-                    $content = $('<iframe id="externalSite" src="' + config.href + '" />');
+                    var href = config.href;
+                    if (config.href.indexOf("?") == -1) {
+                        href = href + "?";
+                    } else {
+                        href = href + "&";
+                    }
+                    href = href + "dummy=" + new Date().getTime();
+                    $content = $('<iframe id="externalSite" frameborder="0" src="' + href + '" />');
                 } else {
                     $content = $("<div/>").load(config.href);
                 }

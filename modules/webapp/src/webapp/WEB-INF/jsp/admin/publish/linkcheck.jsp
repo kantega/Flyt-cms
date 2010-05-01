@@ -32,6 +32,7 @@
 <kantega:section id="content">
     <div id="MainPaneContent">
     <%-- The content is loaded with ajax by the ListBrokenLinks.action --%>
+    </div>
 </kantega:section>
 
 <%@include file="../layout/contentNavigateLayout.jsp"%>

@@ -78,10 +78,7 @@ public class AdminFilter implements Filter {
                     log.info("... but CSRF-checking is disabled for this site");
                 }
             }
-
             response.setDateHeader("Expires", 0);
-
-
 
             filterChain.doFilter(request,  response);
         } catch (Exception e) {

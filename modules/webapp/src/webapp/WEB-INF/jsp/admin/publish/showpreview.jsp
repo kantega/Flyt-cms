@@ -37,7 +37,7 @@
 </script>
 <form name="myform" action="ViewContentPreview.action" method="post" enctype="multipart/form-data">
     <div id="EditPane">
-            <iframe width="600" height="500" src="ViewContentPreviewFrame.action"></iframe>
+            <iframe width="600" height="500" src="ViewContentPreviewFrame.action" frameborder="0"></iframe>
     </div>
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">

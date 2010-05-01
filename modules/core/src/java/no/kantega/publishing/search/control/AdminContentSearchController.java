@@ -37,6 +37,7 @@ import no.kantega.search.query.hitcount.HitCountQuery;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.io.FileNotFoundException;
 
 /**
  *
@@ -71,26 +72,30 @@ public class AdminContentSearchController extends AdminController implements Ini
         // Perform search
 
         // SearchServiceResultImpl should be renamed or something in future
-        SearchServiceResultImpl result = (SearchServiceResultImpl)searchService.search(query);
-        model.put("result", result);
+        try {
+            SearchServiceResultImpl result = (SearchServiceResultImpl)searchService.search(query);
+            model.put("result", result);
 
-        Map<String, Object> links = new HashMap<String, Object>();
-        // QueryStrings for drilldown
-        links.put("hitcounts", queryStringGenerator.getHitCountUrls(urlPrefix, query, result));
+            Map<String, Object> links = new HashMap<String, Object>();
+            // QueryStrings for drilldown
+            links.put("hitcounts", queryStringGenerator.getHitCountUrls(urlPrefix, query, result));
 
-        // QueryString to previous and next page
-        String prevPageUrl = queryStringGenerator.getPrevPageUrl(query, result);
-        if (prevPageUrl != null) {
-            links.put("prevPageUrl", urlPrefix + prevPageUrl);
+            // QueryString to previous and next page
+            String prevPageUrl = queryStringGenerator.getPrevPageUrl(query, result);
+            if (prevPageUrl != null) {
+                links.put("prevPageUrl", urlPrefix + prevPageUrl);
+            }
+            String nextPageUrl = queryStringGenerator.getNextPageUrl(query, result);
+            if (nextPageUrl != null) {
+                links.put("nextPageUrl", urlPrefix + nextPageUrl);
+            }
+
+            // QueryStrings for pages
+            links.put("pageUrls", queryStringGenerator.createPageUrls(urlPrefix, query, result));
+            model.put("links", links);
+        } catch (Exception ex) {
+            model.put("error", "true");
         }
-        String nextPageUrl = queryStringGenerator.getNextPageUrl(query, result);
-        if (nextPageUrl != null) {
-            links.put("nextPageUrl", urlPrefix + nextPageUrl);
-        }
-
-        // QueryStrings for pages
-        links.put("pageUrls", queryStringGenerator.createPageUrls(urlPrefix, query, result));
-        model.put("links", links);
 
         return model;
     }

@@ -287,7 +287,7 @@ openaksess.search = {
         $("#SearchButton").click(function(e){
                 e.preventDefault(); //Preventing the form from being subitted the ordinary way.
                 var textInput = $("#SearchQuery");
-                var query = textInput.val();
+                var query = textInput.val();            
                 if (openaksess.search.inputValid(query)) {
                     openaksess.search.performSearch(query);
                 }
@@ -303,14 +303,14 @@ openaksess.search = {
         var searchAction = openaksess.search.getSearchAction();
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
-            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" style="height: 100%; width:100%;">';
+            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%;">';
             new openaksess.admin.InfoSlider("#MainPane", {resizable: true, additionalCssClasses: 'search'}).toggle(content);
         }
     },
 
     inputValid : function(query){
         openaksess.common.debug("openaksess.navigate.Search.inputValid(): query: " + query);
-        query = query.trim();
+        query = $.trim(query);
         return query.length >= 3;
     }
 };
