@@ -202,10 +202,11 @@
                     </c:if>
                     <option value="${template.id}" <c:if test="${template.id == currentContent.displayTemplateId}"> selected</c:if>>${templateName}</option>
                 </c:forEach>
-                <c:if test="${isAdmin}">
-                    <div class="ui-state-highlight"><kantega:label key="aksess.editpublishinfo.displaytemplate.hjelp"/></div>
-                </c:if>
+
             </select>
+            <c:if test="${isAdmin}">
+                <div class="ui-state-highlight"><kantega:label key="aksess.publishinfo.displaytemplate.hjelp"/></div>
+            </c:if>
         </fieldset>
     </div>
 </c:if>
