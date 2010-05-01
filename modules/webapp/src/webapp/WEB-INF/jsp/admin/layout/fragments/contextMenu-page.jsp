@@ -22,7 +22,7 @@
         <a href="#openInNewWindow"><kantega:label key="aksess.navigator.opennewwindow"/></a>
     </li>
     <li class="newSubpage separator">
-        <a href="#newSubpage"><kantega:label key="aksess.navigator.open"/></a>
+        <a href="#newSubpage"><kantega:label key="aksess.navigator.newpage"/></a>
     </li>
     <li class="edit">
         <a href="#edit"><kantega:label key="aksess.navigator.edit"/></a>
