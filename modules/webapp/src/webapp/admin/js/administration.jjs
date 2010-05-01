@@ -27,10 +27,3 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
 
 };
 
-/**
- * Administration layout specific implementation of the navigatorResizeOnResize-function.
- * See navigate.jjs
- */
-openaksess.navigate.navigatorResizeOnResize = function () {
-    $.event.trigger("resize");
-};
