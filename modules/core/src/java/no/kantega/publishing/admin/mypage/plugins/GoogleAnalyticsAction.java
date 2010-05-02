@@ -18,6 +18,8 @@ package no.kantega.publishing.admin.mypage.plugins;
 
 import com.google.gdata.client.analytics.AnalyticsService;
 import com.google.gdata.client.analytics.DataQuery;
+import com.google.gdata.data.analytics.AccountEntry;
+import com.google.gdata.data.analytics.AccountFeed;
 import com.google.gdata.data.analytics.DataEntry;
 import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
@@ -36,31 +38,44 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
 public class GoogleAnalyticsAction implements Controller {
 
-    private String view;
+    private String formView;
+    private String resultsView;
 
 
-    public ModelAndView handleRequest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception {
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
+        String view = formView;
 
         Configuration config = Aksess.getConfiguration();
         String username = config.getString("google.username");
         String password = config.getString("google.password");
-        String tableId = config.getString("google.analytics.tableid");
-
-        if ("".equals(username) || "".equals(password) || "".equals(tableId)) {
+        if ("".equals(username) || "".equals(password)) {
             model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.noinfo", Aksess.getDefaultAdminLocale()));
         } else {
             try {
-                GAFacade facade = new GAFacade(username, password, tableId);
-                model.put("pageviews", facade.getPageviews());
-                model.put("usage", facade.getUsage());
+                GAFacade facade = new GAFacade(username, password);
+                String tableId = request.getParameter("tableId");
+                if (tableId == null || "".equals(tableId)) {
+                    model.put("profiles", facade.getProfiles());
+                } else {
+                    view = resultsView;
+                    model.put("profile", facade.getProfileForTableId(tableId));
+                    model.put("pageviews", facade.getPageviews(tableId));
+                    model.put("usage", facade.getUsage(tableId));
+                }
             } catch (AuthenticationException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
                 Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
@@ -78,22 +93,53 @@ public class GoogleAnalyticsAction implements Controller {
         return new ModelAndView(view, model);
     }
 
-    public void setView(String view) {
-        this.view = view;
+    public void setFormView(String formView) {
+        this.formView = formView;
+    }
+
+    public void setResultsView(String resultsView) {
+        this.resultsView = resultsView;
+    }
+
+    
+    public class GAProfile {
+
+        private String name;
+        private String id;
+        private String tableId;
+
+
+        private GAProfile(String name, String id, String tableId) {
+            this.name = name;
+            this.id = id;
+            this.tableId = tableId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getTableId() {
+            return tableId;
+        }
+
     }
 
 
     private class GAFacade {
 
-        private String tableId;
-
         private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         private AnalyticsService analyticsService;
+        private URL accountFeedUrl;
         private URL dataFeedUrl;
 
 
-        private GAFacade(String username, String password, String tableId) throws AuthenticationException, MalformedURLException {
-            this.tableId = tableId;
+        private GAFacade(String username, String password) throws AuthenticationException, MalformedURLException {
+            accountFeedUrl = new URL("https://www.google.com/analytics/feeds/accounts/default");
             dataFeedUrl = new URL("https://www.google.com/analytics/feeds/data");
 
             String companyId = "Kantega AS";
@@ -108,7 +154,31 @@ public class GoogleAnalyticsAction implements Controller {
             analyticsService.setUserCredentials(username, password);
         }
 
-        private List<Map> getPageviews() throws IOException, ServiceException {
+        private List<GAProfile> getProfiles() throws IOException, ServiceException {
+            List<GAProfile> profiles = new ArrayList<GAProfile>();
+            AccountFeed accountFeed = analyticsService.getFeed(accountFeedUrl, AccountFeed.class);
+            for (AccountEntry entry : accountFeed.getEntries()) {
+                String name = entry.getTitle().getPlainText();
+                String id = entry.getProperty("ga:profileId");
+                String tableId = entry.getTableId().getValue();
+                profiles.add(new GAProfile(name, id, tableId));
+            }
+            return profiles;
+        }
+
+        private GAProfile getProfileForTableId(String tableId) throws IOException, ServiceException {
+            GAProfile retVal = null;
+            List<GAProfile> profiles = getProfiles();
+            for (GAProfile profile : profiles) {
+                if (profile.getTableId().equals(tableId)) {
+                    retVal = profile;
+                    break;
+                }
+            }
+            return retVal;
+        }
+
+        private List<Map> getPageviews(String tableId) throws IOException, ServiceException {
             List<Map> pageViews = new ArrayList<Map>();
             Calendar cal = Calendar.getInstance();
             Date now = cal.getTime();
@@ -140,7 +210,7 @@ public class GoogleAnalyticsAction implements Controller {
             return pageViews;
         }
 
-        private Map<String, Object> getUsage() throws IOException, ServiceException {
+        private Map<String, Object> getUsage(String tableId) throws IOException, ServiceException {
             Map<String, Object> usage = new HashMap<String, Object>();
             Calendar cal = Calendar.getInstance();
             Date now = cal.getTime();
@@ -218,6 +288,8 @@ public class GoogleAnalyticsAction implements Controller {
 
             return usage;
         }
+
     }
+
 
 }

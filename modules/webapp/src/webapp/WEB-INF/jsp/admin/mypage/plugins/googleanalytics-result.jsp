@@ -20,30 +20,6 @@
   --%>
 
 <script type="text/javascript">
-    function widgetLoaded() {
-        drawPerMonthStatsChart();
-    }
-
-    var monthNames = [
-        '<kantega:label key="aksess.googleanalytics.january"/>',
-        '<kantega:label key="aksess.googleanalytics.february"/>',
-        '<kantega:label key="aksess.googleanalytics.march"/>',
-        '<kantega:label key="aksess.googleanalytics.april"/>',
-        '<kantega:label key="aksess.googleanalytics.may"/>',
-        '<kantega:label key="aksess.googleanalytics.june"/>',
-        '<kantega:label key="aksess.googleanalytics.july"/>',
-        '<kantega:label key="aksess.googleanalytics.august"/>',
-        '<kantega:label key="aksess.googleanalytics.september"/>',
-        '<kantega:label key="aksess.googleanalytics.october"/>',
-        '<kantega:label key="aksess.googleanalytics.november"/>',
-        '<kantega:label key="aksess.googleanalytics.december"/>'
-    ];
-
-    function getMonthName(month) {
-        var monthIdx = Number(month);
-        return monthNames[monthIdx-1];
-    }
-
     function drawPerMonthStatsChart() {
         var chart;
         var data = new google.visualization.DataTable();
@@ -62,22 +38,23 @@
     }
 </script>
 
-
 <c:choose>
     <c:when test="${not empty errorMsg}">
         <p><c:out value="${errorMsg}"/></p>
     </c:when>
     <c:otherwise>
+        <h3><c:out value="${profile.name}"/></h3>
+
         <div id="permonthstats_div"></div>
 
-        <h2><kantega:label key="aksess.googleanalytics.lastmonth"/></h2>
+        <h4><kantega:label key="aksess.googleanalytics.lastmonth"/></h4>
         <ul>
             <li><c:out value="${usage.visits}"/> <kantega:label key="aksess.googleanalytics.visits"/></li>
             <li><c:out value="${usage.pageviews}"/> <kantega:label key="aksess.googleanalytics.pageviews"/></li>
             <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> <kantega:label key="aksess.googleanalytics.pages"/>/<kantega:label key="aksess.googleanalytics.visits"/></li>
         </ul>
 
-        <h2><kantega:label key="aksess.googleanalytics.toppages"/></h2>
+        <h4><kantega:label key="aksess.googleanalytics.toppages"/></h4>
         <table class="fullWidth">
             <tr>
                 <th><strong><kantega:label key="aksess.googleanalytics.path"/></strong></th>
@@ -87,14 +64,25 @@
 
             <c:forEach items="${pageviews}" var="entry">
                 <tr class="tableRow${status.index mod 2}">
-                    <td><a href="<aksess:geturl/><c:out value="${entry.path}"/>" target="_top"><c:out value="${entry.path}"/></a></td>
+                    <td>
+                        <a href="<aksess:geturl/><c:out value="${entry.path}"/>" target="_top">
+                            <c:choose>
+                                <c:when test="${fn:length(entry.path) gt 20}">
+                                    ${fn:substring(entry.path, 0, 19)}...
+                                </c:when>
+                                <c:otherwise>
+                                    ${entry.path}
+                                </c:otherwise>
+                            </c:choose>
+                        </a>
+                    </td>
                     <td><c:out value="${entry.title}"/></td>
                     <td class="number"><c:out value="${entry.views}"/></td>
                 </tr>
             </c:forEach>
         </table>
 
-        <h2><kantega:label key="aksess.googleanalytics.topbrowsers"/></h2>
+        <h4><kantega:label key="aksess.googleanalytics.topbrowsers"/></h4>
         <table class="fullWidth">
             <tr>
                 <th><strong><kantega:label key="aksess.googleanalytics.browser"/></strong></th>
