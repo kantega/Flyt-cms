@@ -72,7 +72,6 @@ public class GoogleAnalyticsAction implements Controller {
                     model.put("profiles", facade.getProfiles());
                 } else {
                     view = resultsView;
-                    model.put("profile", facade.getProfileForTableId(tableId));
                     model.put("pageviews", facade.getPageviews(tableId));
                     model.put("usage", facade.getUsage(tableId));
                 }
@@ -164,18 +163,6 @@ public class GoogleAnalyticsAction implements Controller {
                 profiles.add(new GAProfile(name, id, tableId));
             }
             return profiles;
-        }
-
-        private GAProfile getProfileForTableId(String tableId) throws IOException, ServiceException {
-            GAProfile retVal = null;
-            List<GAProfile> profiles = getProfiles();
-            for (GAProfile profile : profiles) {
-                if (profile.getTableId().equals(tableId)) {
-                    retVal = profile;
-                    break;
-                }
-            }
-            return retVal;
         }
 
         private List<Map> getPageviews(String tableId) throws IOException, ServiceException {

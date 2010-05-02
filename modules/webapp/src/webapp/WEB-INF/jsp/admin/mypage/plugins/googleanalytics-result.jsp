@@ -43,18 +43,16 @@
         <p><c:out value="${errorMsg}"/></p>
     </c:when>
     <c:otherwise>
-        <h3><c:out value="${profile.name}"/></h3>
-
         <div id="permonthstats_div"></div>
 
-        <h4><kantega:label key="aksess.googleanalytics.lastmonth"/></h4>
+        <h3><kantega:label key="aksess.googleanalytics.lastmonth"/></h3>
         <ul>
             <li><c:out value="${usage.visits}"/> <kantega:label key="aksess.googleanalytics.visits"/></li>
             <li><c:out value="${usage.pageviews}"/> <kantega:label key="aksess.googleanalytics.pageviews"/></li>
             <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> <kantega:label key="aksess.googleanalytics.pages"/>/<kantega:label key="aksess.googleanalytics.visits"/></li>
         </ul>
 
-        <h4><kantega:label key="aksess.googleanalytics.toppages"/></h4>
+        <h3><kantega:label key="aksess.googleanalytics.toppages"/></h3>
         <table class="fullWidth">
             <tr>
                 <th><strong><kantega:label key="aksess.googleanalytics.path"/></strong></th>
@@ -82,7 +80,7 @@
             </c:forEach>
         </table>
 
-        <h4><kantega:label key="aksess.googleanalytics.topbrowsers"/></h4>
+        <h3><kantega:label key="aksess.googleanalytics.topbrowsers"/></h3>
         <table class="fullWidth">
             <tr>
                 <th><strong><kantega:label key="aksess.googleanalytics.browser"/></strong></th>
