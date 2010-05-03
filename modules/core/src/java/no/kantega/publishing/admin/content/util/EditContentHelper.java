@@ -19,7 +19,6 @@ package no.kantega.publishing.admin.content.util;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.util.XMLHelper;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -39,27 +38,16 @@ import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import org.apache.xpath.XPathAPI;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
-
-import javax.xml.transform.TransformerException;
-
 
 public class EditContentHelper {
     private static final String SOURCE = "aksess.admin.EditContentHelper";
 
     /**
-     * Oppretter et nytt Content objekt
+     * Create a new Content object
      * @param securitySession - SecuritySession
      * @param param - ContentCreateParameters
      * @return new Content object
@@ -91,7 +79,7 @@ public class EditContentHelper {
                 allParents[i] = p.getId();
             }
             param.setParentIds(allParents);
-        }        
+        }
 
         // Set author
         content.setPublisher(securitySession.getUser().getName());
@@ -104,7 +92,7 @@ public class EditContentHelper {
             content.setContentTemplateId(displayTemplate.getContentTemplate().getId());
             if (displayTemplate.getMetaDataTemplate() != null) {
                 content.setMetaDataTemplateId(displayTemplate.getMetaDataTemplate().getId());
-            }            
+            }
 
             param.setContentTemplateId(displayTemplate.getContentTemplate().getId());
 
@@ -113,7 +101,7 @@ public class EditContentHelper {
             }
 
             if (displayTemplate.getDefaultForumId() != null) {
-                content.setForumId(displayTemplate.getDefaultForumId());                
+                content.setForumId(displayTemplate.getDefaultForumId());
             }
         } else {
             content.setContentTemplateId(param.getContentTemplateId());
@@ -147,7 +135,7 @@ public class EditContentHelper {
             content.setDocumentTypeId(contentTemplate.getDocumentType().getId());
         }
         if (contentTemplate.getDocumentTypeForChildren() != null) {
-            content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());            
+            content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
         }
         content.setType(contentTemplate.getContentType());
 
@@ -160,13 +148,13 @@ public class EditContentHelper {
         content.setOwnerPerson(parent.getOwnerPerson());
         content.setLanguage(parent.getLanguage());
 
-        //Setter dokumenttype hvis ikke dokumenttype er satt spesifikt for dette objektet og defaultDocumentTypeIdForChildren er satt på parent.
+        // Set documenttype if documentype is not set for this object and defaultDocumentTypeIdForChildren is set for parent
         if (content.getDocumentTypeId() <= 0 && parent.getDocumentTypeIdForChildren() > 0) {
             content.setDocumentTypeId(parent.getDocumentTypeIdForChildren());
         }
 
         if (inheritGroup) {
-            // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
+            // Inherit properties from pages above.  Used to create things which should be special for a subtree, eg a menu
             content.setGroupId(parent.getGroupId());
         }
 
@@ -177,7 +165,7 @@ public class EditContentHelper {
             content.setExpireDate(calendar.getTime());
         }
         if (contentTemplate.getExpireAction() != null) {
-            content.setExpireAction(contentTemplate.getExpireAction());            
+            content.setExpireAction(contentTemplate.getExpireAction());
         }
 
         // Inherit properties set to be inherited in contenttemplate
@@ -197,10 +185,10 @@ public class EditContentHelper {
 
         int templateId = -1;
         if (attributeType == AttributeDataType.CONTENT_DATA) {
-            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
+            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
-                template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId());
+                template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
                 content.setAttributes(new ArrayList(), attributeType);
@@ -211,120 +199,101 @@ public class EditContentHelper {
             return;
         }
 
-        String templateFile = template.getTemplateFile();
+        // Some attributes are mapped to specific properties in the Content object, search for these
+        String titleField = null;
+        String descField = null;
+        String imageField = null;
 
-        if (templateFile != null && templateFile.length() > 0) {
+        List<Element> attributes = template.getAttributeElements();
+        List newAttributes = new ArrayList();
+        for (Element attr : attributes) {
+            String name = attr.getAttribute("name");
+            String type = attr.getAttribute("type");
+            if (type == null || type.length() == 0) {
+                type = "text";
+            }
+            type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
 
-            // Some attributes are mapped to specific properties in the Content object, search for these
-            String titleField = null;
-            String descField = null;
-            String imageField = null;
-
-            // Loop through and create all attributes
-            Document def = getTemplateAsDocument(templateFile);
-
+            Attribute attribute = null;
             try {
-                NodeList attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attributes/attribute");
-                if (attributes.getLength()  == 0) {
-                    attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attribute");
+                attribute = (Attribute) Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
+            } catch (ClassNotFoundException e) {
+                throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
+            } catch (Exception e) {
+                throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+            }
+
+            attribute.setType(attributeType);
+
+            Map model = new HashMap();
+            if (securitySession != null) {
+                model.put("currentUser", securitySession.getUser());
+            }
+
+            attribute.setConfig(attr, model);
+
+            String field = attribute.getField();
+            if (field != null && field.length() > 0) {
+                field = field.toLowerCase();
+                if (field.indexOf(ContentProperty.TITLE) != -1) {
+                    titleField = attribute.getName();
+                } else if (field.indexOf(ContentProperty.DESCRIPTION) != -1) {
+                    descField = attribute.getName();
+                } else if (field.indexOf(ContentProperty.IMAGE) != -1) {
+                    imageField = attribute.getName();
                 }
+            }
 
-                List newAttributes = new ArrayList(attributes.getLength());
-                for (int i = 0; i < attributes.getLength(); i++) {
-                    Element attr = (Element)attributes.item(i);
-                    String name = attr.getAttribute("name");
-                    String type = attr.getAttribute("type");
-                    if (type == null || type.length() == 0) {
-                        type = "text";
+            // Save old values
+            Attribute oldAttribute = content.getAttribute(name, attributeType);
+            if (oldAttribute != null) {
+                attribute.cloneValue(oldAttribute);
+            }
+
+            newAttributes.add(attribute);
+        }
+
+
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
+            /*
+            * If mapping of attributes to Content properties are not specified
+            * map them as follows:
+            *  - First image -> content.image
+            *  - First text > 255 chars -> content.description
+            *  - First text < 255 chars -> content.title
+            */
+
+            if ((titleField == null) || (descField == null) || (imageField == null)) {
+                for (int i = 0; i < newAttributes.size(); i++) {
+                    Attribute attr = (Attribute)newAttributes.get(i);
+                    if (attr instanceof ImageAttribute && imageField == null) {
+                        attr.setField(ContentProperty.IMAGE);
+                        imageField = attr.getName();
                     }
-                    type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
-
-                    Attribute attribute = null;
-                    try {
-                        attribute = (Attribute)Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
-                    } catch (ClassNotFoundException e) {
-                        throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " +  type + ", fil:" + templateFile, SOURCE, null);
-                    } catch (Exception e) {
-                        throw new SystemException("Feil ved oppretting av klasse for attributt" +  type, SOURCE, e);
-                    }
-
-                    attribute.setType(attributeType);
-
-                    Map model = new HashMap();
-                    if (securitySession != null) {
-                        model.put("currentUser", securitySession.getUser());
-                    }
-
-                    attribute.setConfig(attr, model);
-
-                    String field = attribute.getField();
-                    if (field != null && field.length() > 0) {
-                        field = field.toLowerCase();
-                        if (field.indexOf(ContentProperty.TITLE) != -1) {
-                            titleField = attribute.getName();
-                        } else if (field.indexOf(ContentProperty.DESCRIPTION) != -1) {
-                            descField = attribute.getName();
-                        } else if (field.indexOf(ContentProperty.IMAGE) != -1) {
-                            imageField = attribute.getName();
+                    if (attr instanceof TextAttribute && titleField == null) {
+                        int maxlength = attr.getMaxLength();
+                        if (maxlength < 255) {
+                            attr.setField(ContentProperty.TITLE);
+                            titleField = attr.getName();
                         }
                     }
-
-                    // Save old values
-                    Attribute oldAttribute = content.getAttribute(name, attributeType);
-                    if (oldAttribute != null) {
-                        attribute.cloneValue(oldAttribute);
-                    }
-
-                    newAttributes.add(attribute);
-                }
-
-
-                if (attributeType == AttributeDataType.CONTENT_DATA) {
-                    /*
-                    * If mapping of attributes to Content properties are not specified
-                    * map them as follows:
-                    *  - First image -> content.image
-                    *  - First text > 255 chars -> content.description
-                    *  - First text < 255 chars -> content.title
-                    */
-
-                    if ((titleField == null) || (descField == null) || (imageField == null)) {
-                        for (int i = 0; i < newAttributes.size(); i++) {
-                            Attribute attr = (Attribute)newAttributes.get(i);
-                            if (attr instanceof ImageAttribute && imageField == null) {
-                                attr.setField(ContentProperty.IMAGE);
-                                imageField = attr.getName();
-                            }
-                            if (attr instanceof TextAttribute && titleField == null) {
-                                int maxlength = attr.getMaxLength();
-                                if (maxlength < 255) {
-                                    attr.setField(ContentProperty.TITLE);
-                                    titleField = attr.getName();
-                                }
-                            }
-                            if (attr instanceof TextAttribute && descField == null && (!attr.getName().equalsIgnoreCase(titleField))) {
-                                int maxlength = attr.getMaxLength();
-                                if (maxlength >= 255) {
-                                    attr.setField(ContentProperty.DESCRIPTION);
-                                    descField = attr.getName();
-                                }
-                            }
-                        }
-                    }
-                    if (attributeType == AttributeDataType.CONTENT_DATA) {
-                        if (titleField == null) {
-                            throw new InvalidTemplateException("Malen inkluderer ingen felt som kan benyttes som tittel for siden.  Sett field=title på en attributt:" + templateFile, SOURCE, null);
+                    if (attr instanceof TextAttribute && descField == null && (!attr.getName().equalsIgnoreCase(titleField))) {
+                        int maxlength = attr.getMaxLength();
+                        if (maxlength >= 255) {
+                            attr.setField(ContentProperty.DESCRIPTION);
+                            descField = attr.getName();
                         }
                     }
                 }
-
-                content.setAttributes(newAttributes, attributeType);
-
-
-            } catch (TransformerException e) {
-                throw new InvalidTemplateException("Feil ved lesing av mal:" + templateFile, SOURCE, e);
+            }
+            if (attributeType == AttributeDataType.CONTENT_DATA) {
+                if (titleField == null) {
+                    throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
+                }
             }
         }
+
+        content.setAttributes(newAttributes, attributeType);
     }
 
 
@@ -350,58 +319,35 @@ public class EditContentHelper {
 
 
     private static void inheritPropertiesByTemplate(Content content, ContentTemplate template) throws SystemException, InvalidFileException, InvalidTemplateException {
+        List<Element> properties = template.getPropertyElements();
 
-        String templateFile = template.getTemplateFile();
+        for (Element property  : properties) {
+            String name = property.getAttribute("name");
+            String from = property.getAttribute("from");
 
-        if (templateFile != null && templateFile.length() > 0) {
-
-            Document def = getTemplateAsDocument(templateFile);
-
-            try {
-                NodeList properties = XPathAPI.selectNodeList(def.getDocumentElement(), "properties/property");
-
-                for (int i = 0; i < properties.getLength(); i++) {
-                    Element property = (Element)properties.item(i);
-                    String name = property.getAttribute("name");
-                    String from = property.getAttribute("from");
-
-                    if (name != null && from != null && from.length() > 0) {
-                        try {
-                            ContentIdentifier parentCid = ContentIdHelper.findRelativeContentIdentifier(content, from);
-                            Content parent = ContentAO.getContent(parentCid, true);
-                            if (parent != null) {
-                                copyProperty(parent, content, name);
-                            }
-                        } catch (ContentNotFoundException e) {
-                            Log.info(SOURCE, "Template:" + templateFile + " has reference to none existing content", null, null);
-                        }
+            if (name != null && from != null && from.length() > 0) {
+                try {
+                    ContentIdentifier parentCid = ContentIdHelper.findRelativeContentIdentifier(content, from);
+                    Content parent = ContentAO.getContent(parentCid, true);
+                    if (parent != null) {
+                        copyProperty(parent, content, name);
                     }
+                } catch (ContentNotFoundException e) {
+                    Log.info(SOURCE, "Template:" + template.getName() + " has reference to none existing content", null, null);
                 }
-            } catch (TransformerException e) {
-                throw new InvalidTemplateException("Error reading template:" + templateFile, SOURCE, e);
             }
         }
     }
 
-    private static Document getTemplateAsDocument(String templateFile) throws InvalidFileException {
-        ResourceLoader loader = (ResourceLoader) RootContext.getInstance().getBean("contentTemplateResourceLoader");
-        Resource resource = loader.getResource(templateFile);
-        ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(loader);
-        if (resource == null) {
-            throw new InvalidFileException(templateFile, SOURCE, null);
-        }
-        return XMLHelper.openDocument(resource, entityResolver);
-    }
-
     private static void setDefaultProperties(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
         if (content.getMetaDataTemplateId() > 0) {
-            ContentTemplate template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId());
+            ContentTemplate template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
             }
         }
         if (content.getContentTemplateId() > 0) {
-            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getMetaDataTemplateId());
+            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
             }

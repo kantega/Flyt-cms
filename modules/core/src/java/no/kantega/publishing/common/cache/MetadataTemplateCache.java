@@ -34,11 +34,19 @@ public class MetadataTemplateCache {
     private static Date lastUpdate = null;
 
     public static ContentTemplate getTemplateById(int id) throws SystemException {
+        return getTemplateById(id, false);
+    }
+
+    public static ContentTemplate getTemplateById(int id, boolean updateFromFile) throws SystemException {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
             reloadCache();
         }
         synchronized (templates) {
-            return (ContentTemplate) templates.get("" + id);
+            ContentTemplate template = (ContentTemplate) templates.get("" + id);
+            if (template != null && updateFromFile) {
+                TemplateConfigurationCache.getInstance().updateContentTemplateFromFile(template);
+            }
+            return template;
         }
     }
 
@@ -46,7 +54,7 @@ public class MetadataTemplateCache {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
             reloadCache();
         }
-        
+
         for (Object o : templates.entrySet()) {
             Map.Entry entry = (Map.Entry) o;
             ContentTemplate template = (ContentTemplate) entry.getValue();
@@ -56,7 +64,7 @@ public class MetadataTemplateCache {
         }
         return null;
     }
-
+   
     public static synchronized void reloadCache() throws SystemException {
         List listtemplates = getTemplates();
 

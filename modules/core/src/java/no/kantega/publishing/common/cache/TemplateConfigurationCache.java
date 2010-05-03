@@ -18,6 +18,7 @@ package no.kantega.publishing.common.cache;
 
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.templates.ContentTemplateReader;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationFactory;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
 import no.kantega.publishing.spring.RootContext;
@@ -41,6 +42,7 @@ public class TemplateConfigurationCache {
     private TemplateConfiguration configuration;
     private TemplateConfigurationFactory configurationFactory;
     private TemplateConfigurationValidator configurationValidator;
+    private ContentTemplateReader contentTemplateReader;
 
     public TemplateConfiguration getTemplateConfiguration() throws SystemException {
         if ((configuration == null) || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime())) {
@@ -84,6 +86,15 @@ public class TemplateConfigurationCache {
             }
         });
 
+        // Load content templates from file
+        for (ContentTemplate contentTemplate : configuration.getContentTemplates()) {
+            List<TemplateConfigurationValidationError> templateErrors = contentTemplateReader.updateContentTemplateFromTemplateFile(contentTemplate);
+            for (TemplateConfigurationValidationError error : templateErrors) {
+                String msg = LocaleLabels.getLabel(error.getMessage(), new Locale("en", "EN"));
+                Log.error(SOURCE, "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData(), null, null);
+            }
+        }
+
         // Validate
         List <TemplateConfigurationValidationError> errors = configurationValidator.validate(configuration);
         for (TemplateConfigurationValidationError error : errors) {
@@ -110,11 +121,23 @@ public class TemplateConfigurationCache {
         lastUpdate = new Date();
     }
 
+    public synchronized void updateContentTemplateFromFile(ContentTemplate contentTemplate) {
+        List<TemplateConfigurationValidationError> templateErrors = contentTemplateReader.updateContentTemplateFromTemplateFile(contentTemplate);
+        for (TemplateConfigurationValidationError error : templateErrors) {
+            String msg = LocaleLabels.getLabel(error.getMessage(), new Locale("en", "EN"));
+            Log.error(SOURCE, "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData(), null, null);
+        }
+    }
+
     public void setConfigurationFactory(TemplateConfigurationFactory configurationFactory) {
         this.configurationFactory = configurationFactory;
     }
 
     public void setConfigurationValidator(TemplateConfigurationValidator configurationValidator) {
         this.configurationValidator = configurationValidator;
+    }
+
+    public void setContentTemplateReader(ContentTemplateReader contentTemplateReader) {
+        this.contentTemplateReader = contentTemplateReader;
     }
 }

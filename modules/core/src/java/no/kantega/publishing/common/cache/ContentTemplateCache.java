@@ -30,13 +30,22 @@ public class ContentTemplateCache  {
     private static Date lastUpdate = null;
 
     public static ContentTemplate getTemplateById(int id) throws SystemException {
+        return getTemplateById(id, false);
+    }
+
+    public static ContentTemplate getTemplateById(int id, boolean updateFromFile) throws SystemException {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
             reloadCache();
         }
         synchronized (templates) {
-            return (ContentTemplate) templates.get("" + id);
+            ContentTemplate template = (ContentTemplate) templates.get("" + id);
+            if (template != null && updateFromFile) {
+                TemplateConfigurationCache.getInstance().updateContentTemplateFromFile(template);
+            }
+            return template;
         }
     }
+
 
     public static ContentTemplate getTemplateByPublicId(String id) {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {

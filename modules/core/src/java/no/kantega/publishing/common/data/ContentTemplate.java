@@ -19,6 +19,7 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.api.model.PublicIdObject;
+import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -47,6 +48,11 @@ public class ContentTemplate implements PublicIdObject {
 
     private int id = -1;
     private String publicId = "";
+
+    private String helptext;
+
+    private List<Element> attributeElements;
+    private List<Element> propertyElements;
 
     public ContentType getContentType() {
         if (contentType == null) {
@@ -195,5 +201,35 @@ public class ContentTemplate implements PublicIdObject {
         }
 
         return str;
+    }
+
+    public String getHelptext() {
+        return helptext;
+    }
+
+    public void setHelptext(String helptext) {
+        this.helptext = helptext;
+    }
+
+    public List<Element> getAttributeElements() {
+        if (attributeElements == null) {
+            attributeElements = new ArrayList<Element>();
+        }
+        return attributeElements;
+    }
+
+    public void setAttributeElements(List<Element> attributeElements) {
+        this.attributeElements = attributeElements;
+    }
+
+    public List<Element> getPropertyElements() {
+        if (propertyElements == null) {
+            propertyElements = new ArrayList<Element>();
+        }
+        return propertyElements;
+    }
+
+    public void setPropertyElements(List<Element> propertyElements) {
+        this.propertyElements = propertyElements;
     }
 }

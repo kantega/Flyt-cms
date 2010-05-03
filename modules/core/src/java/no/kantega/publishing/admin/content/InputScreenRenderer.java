@@ -24,11 +24,15 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 
 import javax.servlet.ServletException;
@@ -77,6 +81,23 @@ public class InputScreenRenderer {
                     errorsForField.add(error);                    
                 }
             }
+        }
+
+        String globalHelptext = null;
+        ContentTemplate template = null;
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
+            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+        } else if (attributeType == AttributeDataType.META_DATA && content.getMetaDataTemplateId() > 0) {
+            template = MetadataTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+        }
+
+        String globalHelpText = null;
+        if (template != null) {
+            globalHelpText = template.getHelptext();
+        }
+
+        if (globalHelpText != null && globalHelpText.length() > 0) {
+            out.print("<div id=\"TemplateGlobalHelpText\" class=\"ui-state-highlight\">" + globalHelpText + "</div>");
         }
 
         int tabIndex = 100; // Angir tabindex for å få cursor til å hoppe til rette felter

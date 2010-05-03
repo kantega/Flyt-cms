@@ -28,6 +28,10 @@
 
     <bean id="aksessTemplateConfigurationValidator" class="no.kantega.publishing.common.util.templates.TemplateConfigurationValidator"/>
 
+    <bean id="aksessContentTemplateReader" class="no.kantega.publishing.common.util.templates.ContentTemplateReader">
+        <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
+    </bean>
+
     <bean id="aksessTemplateValidator" class="no.kantega.publishing.common.util.templates.ContentTemplateValidator">
         <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
     </bean>
@@ -35,6 +39,7 @@
     <bean id="aksessTemplateConfigurationCache" class="no.kantega.publishing.common.cache.TemplateConfigurationCache">
         <property name="configurationFactory" ref="aksessTemplateConfigurationFactory"/>
         <property name="configurationValidator" ref="aksessTemplateConfigurationValidator"/>
+        <property name="contentTemplateReader" ref="aksessContentTemplateReader"/>
     </bean>
 
     <bean id="aksessSiteCache" class="no.kantega.publishing.common.cache.DefaultSiteCache">
