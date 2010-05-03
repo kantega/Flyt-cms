@@ -189,7 +189,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             } else if(topics != null) {
                 query.setTopics(topics);
                 useAssociatedId = false;
-            } else if (topicId != null && topicMapId != -1) {
+            } else if (topicId != null && topicId.trim().length() > 0 && topicMapId != -1) {
                 TopicMapService topicService = new TopicMapService(request);
                 query.setTopic(topicService.getTopic(topicMapId, topicId));
                 useAssociatedId = false;
