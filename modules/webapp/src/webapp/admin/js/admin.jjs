@@ -297,24 +297,54 @@ openaksess.admin = {
      */
     userpreferences : {
 
+        cookiePrefix : "userpreferences_",
+
         keys : {
             filter : {
                 hideExpired: 'filterHideExpired',
                 sort: 'filterSort',
                 sites: 'filterSites'
+            },
+            multimedia : {
+                currentfolder: 'currentMultimediaFolder'
             }
         },
 
+        /**
+         * Saves a user preference.
+         * @param key - one of the userpreferences.keys
+         * @param value
+         * @param permanent - If false, the preference is erased when the user session ends.
+         * For client side stored preferences, a permanent preference is saved for one year.
+         * @param callback - If supplied, the preference is saved server side.
+         * Permanent server side preferences are stored in the databse, non-permanent ones in the session.
+         * If not supplied, the preference is saved client side.
+         */
         setPreference: function(key, value, permanent, callback){
-            if (arguments.length == 3) {
-                UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent});
+
+            if (callback) {
+                    UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
             } else {
-                UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
+                var ttl = undefined;
+                if (permanent) {
+                    ttl = 365;
+                }
+                openaksess.common.cookies.create(openaksess.admin.userpreferences.cookiePrefix+key, value, ttl);
             }
         },
 
+        /**
+         * Returns the value of a preference with the given key.
+         * If callback is supplied, the preference is retrieved from server side storage.
+         * @param key
+         * @param callback
+         */
         getPreference: function(key, callback) {
-            UserPreferencesHandler.getPreference(key, callback);
+            if (callback) {
+                UserPreferencesHandler.getPreference(key, callback);
+            } else {
+                return openaksess.common.cookies.read(openaksess.admin.userpreferences.cookiePrefix+key);
+            }
         }
     },
 

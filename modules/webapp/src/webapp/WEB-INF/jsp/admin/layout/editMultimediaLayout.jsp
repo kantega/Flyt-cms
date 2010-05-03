@@ -57,7 +57,7 @@
 
 <kantega:section id="modesMenu">
     <div class="buttonGroup">
-        <span class="singlebutton"><a href="Navigate.action#state=${media.parentId}" class="button first"><span class="back"><kantega:label key="aksess.mode.back"/></span></a></span>
+        <span class="singlebutton"><a href="Navigate.action" class="button first"><span class="back"><kantega:label key="aksess.mode.back"/></span></a></span>
     </div>
 </kantega:section>
 

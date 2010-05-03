@@ -23,15 +23,14 @@ var currentItemIdentifier = 0;
 $(document).ready(function(){
     openaksess.common.debug("multimedia.$(document).ready(): multimedia");
     openaksess.multimedia.bindMultimediaupdateEvents();
-    openaksess.multimedia.triggerMultimediaupdateEvent();//Must be fired at startup in order to load the navigator
     openaksess.multimedia.bindToolButtons();
     stateHandler.init("multimediaupdate");
-    /* TODO: Dette virker ikke
-    var href = location.href;
-    if (href.indexOf("#") != -1) {
-        var id = href.substring(href.indexOf("#") + "#state=".length, href.length)
-        stateHandler.setState(id);
-    }*/
+    var url = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder);
+    if (!url) {
+        openaksess.common.debug("multimedia.$(document).ready(): No state found in user preferences. Opening root element.");
+        url = currentItemIdentifier;  
+    }
+    openaksess.multimedia.triggerMultimediaupdateEvent(url);//Must be fired at startup in order to load the navigator
 });
 
 
@@ -70,10 +69,11 @@ openaksess.multimedia = {
         });
     },
 
-    triggerMultimediaupdateEvent : function() {
-        openaksess.common.debug("openaksess.multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered");
-        stateHandler.setState(currentItemIdentifier);
-        $.event.trigger("multimediaupdate",currentItemIdentifier);
+    triggerMultimediaupdateEvent : function(url) {
+        openaksess.common.debug("openaksess.multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered. Url: " + url);
+        openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder, url);
+        //Event triggering is delegated to the state handler.
+        stateHandler.setState(url);
     },
 
     /**
@@ -184,7 +184,7 @@ openaksess.multimedia = {
                 } else {
                     var idAttr = $media.attr("id");
                     currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                    openaksess.multimedia.triggerMultimediaupdateEvent();
+                    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
                 }
             }
 
@@ -303,7 +303,7 @@ openaksess.multimedia = {
         if (folderName != null && folderName != "") {
             openaksess.common.debug("openaksess.multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
             $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
-                openaksess.multimedia.triggerMultimediaupdateEvent();
+                openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
             });
         }
     }
@@ -405,7 +405,7 @@ openaksess.navigate.onNavigatorTitleClick = function(elm) {
         window.location.href = openaksess.multimedia.getEditAction()+"?id="+currentItemIdentifier;
     } else {
         openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem does not have class 'media'. Triggering update event.");
-        openaksess.multimedia.triggerMultimediaupdateEvent();
+        openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
     }
 };
 
