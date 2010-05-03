@@ -489,13 +489,22 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     if ($buttons && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
+
+    var navigationWidth = elementProperties.navigation.width;
+    var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
+    if (preferredNavigationWidth) {
+        var $navigation = $("#Navigation");
+        $navigation.width(preferredNavigationWidth + "px");
+        navigationWidth = preferredNavigationWidth;
+    }
+
     openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
     $navigator = $("#Navigator");
     $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
     $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
 
     var $mainPane = $('#MainPane');
-    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width) + 'px');
     $mainPane.find('iframe[name=contentmain]').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
 
     var $mainPaneContent = $("#MainPaneContent");
@@ -530,10 +539,12 @@ openaksess.navigate.navigatorResizeOnStart = function() {
     }).attr("id", "Contentoverlay");
 
     $("#MainPane iframe[name=contentmain]").before(contentoverlay);
+    openaksess.admin.userpreferences.deletePreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
 };
 
 openaksess.navigate.navigatorResizeOnStop = function() {
     openaksess.common.debug("openaksess.content.navigatorResizeOnStop(): Removing overlay");
+    openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.content.navigationwidth, $("#Navigation").width());
     $.event.trigger("resize");
     $("#Contentoverlay").remove();
 };

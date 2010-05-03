@@ -437,8 +437,16 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
 
     $mainPane.height( (elementProperties.window.height-elementProperties.top.height) + 'px');
 
+
     if (elementProperties.navigation.width) {
-        $mainPane.width( (elementProperties.window.width-elementProperties.navigation.width-elementProperties.framesplit.width) + 'px');
+        var navigationWidth = elementProperties.navigation.width;
+        var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth);
+        if (preferredNavigationWidth) {
+            var $navigation = $("#Navigation");
+            $navigation.width(preferredNavigationWidth + "px");
+            navigationWidth = preferredNavigationWidth;
+        }
+        $mainPane.width( (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width) + 'px');
     } else {
         $mainPane.width( (elementProperties.window.width-elementProperties.framesplit.width-$("#SideBar").outerWidth(true)) + 'px');
     }
@@ -452,6 +460,15 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
     $('#MultimediaMain').height( (parseInt($mainPane.height())-parseInt($("#EditMultimediaButtons").outerHeight(true))) + 'px').width($mainPane.outerWidth());
 
 };
+
+openaksess.navigate.navigatorResizeOnStart = function() {
+    openaksess.admin.userpreferences.deletePreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth);
+};
+
+openaksess.navigate.navigatorResizeOnStop = function() {
+    openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth, $("#Navigation").width());
+};
+
 
 
 

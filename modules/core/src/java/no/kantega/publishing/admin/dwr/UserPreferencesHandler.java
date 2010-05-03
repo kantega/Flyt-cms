@@ -56,6 +56,15 @@ public class UserPreferencesHandler extends AbstractDwrController {
     }
 
     /**
+     * Removes a preference.
+     * @param key - Preference identifier.
+     */
+    @RemoteMethod
+    public void deletePreference(String key) {
+        userPreferencesManager.deletePreference(key, getRequest());
+    }
+
+    /**
      * Returns all preferences for the current user.
      * @return List of all preferences, permanent and non-permanent.
      */

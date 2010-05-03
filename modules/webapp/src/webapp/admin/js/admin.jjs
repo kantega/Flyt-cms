@@ -306,7 +306,11 @@ openaksess.admin = {
                 sites: 'filterSites'
             },
             multimedia : {
-                currentfolder: 'currentMultimediaFolder'
+                currentfolder: 'currentMultimediaFolder',
+                navigationwidth : 'multimediaNavigationWidth'
+            },
+            content : {
+                navigationwidth : 'contentNavigationWidth'
             }
         },
 
@@ -344,6 +348,14 @@ openaksess.admin = {
                 UserPreferencesHandler.getPreference(key, callback);
             } else {
                 return openaksess.common.cookies.read(openaksess.admin.userpreferences.cookiePrefix+key);
+            }
+        },
+
+        deletePreference : function(key, callback) {
+            if (callback) {
+                UserPreferencesHandler.deletePreference(key, callback);
+            } else {
+                openaksess.common.cookies.erase(openaksess.admin.userpreferences.cookiePrefix+key);
             }
         }
     },

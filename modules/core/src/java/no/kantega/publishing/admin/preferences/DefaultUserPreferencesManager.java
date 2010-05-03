@@ -56,6 +56,16 @@ public class DefaultUserPreferencesManager implements UserPreferencesManager {
         return preferences.get(key);
     }
 
+    public void deletePreference(String key, HttpServletRequest request) {
+        if (key == null || key.trim().length() == 0) {
+            return;
+        }
+        HttpSession session = request.getSession();
+        Map<String, UserPreference> preferences = (Map<String, UserPreference>) session.getAttribute(PREFERENCES_ATTRIBUTE);
+        
+        preferences.remove(key);
+    }
+
     public List<UserPreference> getAllPreferences(HttpServletRequest request) {
         HttpSession session = request.getSession();
         Map<String, UserPreference> preferences = (Map<String, UserPreference>) session.getAttribute(PREFERENCES_ATTRIBUTE);

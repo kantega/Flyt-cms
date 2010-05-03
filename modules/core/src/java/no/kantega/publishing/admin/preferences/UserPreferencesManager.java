@@ -24,6 +24,8 @@ public interface UserPreferencesManager {
     public void setPreference(UserPreference preference, HttpServletRequest request);
 
     public UserPreference getPreference(String key, HttpServletRequest request);
-    
+
+    public void deletePreference(String key, HttpServletRequest request);
+
     public List<UserPreference> getAllPreferences(HttpServletRequest request);
 }
