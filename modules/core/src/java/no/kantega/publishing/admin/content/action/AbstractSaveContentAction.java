@@ -92,6 +92,8 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             if (errors.getLength() > 0) {
                 // Error on page, send user back to correct error
                 model.put("errors", errors);
+                model.put("isEditing", Boolean.TRUE);
+                setRequestVariables(request, content, aksessService, model);                
                 return new ModelAndView(getView(), model);
             } else {
                 if (status != -1 && errors.getLength() == 0) {

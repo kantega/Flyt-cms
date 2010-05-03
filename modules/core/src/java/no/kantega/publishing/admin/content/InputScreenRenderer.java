@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.admin.content;
 
+import no.kantega.commons.client.util.ValidationError;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
@@ -36,7 +38,10 @@ import javax.servlet.jsp.PageContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InputScreenRenderer {
     private static final String SOURCE = "aksess.admin.InputScreenRenderer";
@@ -59,6 +64,21 @@ public class InputScreenRenderer {
         JspWriter out = pageContext.getOut();
         ServletRequest request = pageContext.getRequest();
 
+        Map<String, List<ValidationError>> fieldErrors = new HashMap<String, List<ValidationError>>();
+        ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
+        if (errors != null) {
+            for (ValidationError error : errors.getErrors()) {
+                if (error.getField() != null && error.getField().length() > 0) {
+                    List<ValidationError> errorsForField = fieldErrors.get(error.getField());
+                    if (errorsForField == null) {
+                        errorsForField = new ArrayList<ValidationError>();
+                        fieldErrors.put(error.getField(), errorsForField);
+                    }
+                    errorsForField.add(error);                    
+                }
+            }
+        }
+
         int tabIndex = 100; // Angir tabindex for å få cursor til å hoppe til rette felter
         List attrlist = content.getAttributes(attributeType);
         for (int i = 0; i < attrlist.size(); i++) {
@@ -78,7 +98,11 @@ public class InputScreenRenderer {
                 request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
 
                 try {
-                    out.print("\n<div class=\"contentAttribute\">\n");
+                    if (fieldErrors.get(attr.getName()) != null) {
+                        out.print("\n<div class=\"contentAttribute error\">\n");
+                    } else {
+                        out.print("\n<div class=\"contentAttribute\">\n");
+                    }
                     pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
                     out.print("\n");
                     String helptext = attr.getHelpText();

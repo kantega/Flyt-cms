@@ -649,6 +649,10 @@ table.fullWidth {
     float: left;
 }
 
+.contentAttribute.error .heading {
+    color: #ff0000;
+}
+
 #Content .contentAttribute .buttonGroup, .formElement .buttonGroup {
     padding-top: 2px;
     text-align: right;
@@ -751,7 +755,7 @@ div.sidebarFieldset fieldset {
     padding: 10px;
 }
 div.sidebarFieldset fieldset legend {
-    margin-top: 1em;
+    padding-top: 1em;
     font-weight: bold;
 }
 
@@ -1050,4 +1054,9 @@ div.dataTables_paginate {
 }
 .alphabeticalList ol li a:hover {
     text-decoration: underline;
+}
+
+/******** Popup windows ***********/
+iframe#externalSite {
+    padding: 0;
 }
