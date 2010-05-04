@@ -57,6 +57,11 @@
         </dependency>
 
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
             <version>0.9.5</version>

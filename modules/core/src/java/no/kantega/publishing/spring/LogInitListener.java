@@ -25,7 +25,11 @@ import javax.servlet.ServletContextEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
+/**
+ * Ensure logging is configured and initiates logging.
+ */
 public class LogInitListener implements ServletContextListener {
 
 
@@ -44,24 +48,28 @@ public class LogInitListener implements ServletContextListener {
         final File configFile = new File(new File(dataDirectory, "conf"),  "log4j.xml");
 
         if(!configFile.exists()) {
-            writeDefaultConfigFile(configFile, logsDirectory);
+            writeDefaultConfigFile(configFile);
         }
-        Log.init(configFile);
+        Log.init(configFile, logsDirectory);
     }
 
-    private void writeDefaultConfigFile(File configFile, File logDirectory) {
+    /**
+     * Read the default log4.xml file from classpath and write it out to disk.
+     * @param configFile where to write the default log4.xml
+     */
+    private void writeDefaultConfigFile(File configFile) {
         configFile.getParentFile().mkdirs();
 
         try {
-            String content = IOUtils.toString(getClass().getClassLoader().getResourceAsStream("no/kantega/publishing/log/default-log4j.xml"), "iso-8859-1");
-            String logDirectoryPath = logDirectory.getAbsolutePath();
-            // Escape backslash for Windows
-            logDirectoryPath = logDirectoryPath.replaceAll("\\\\", "/");            
-            content = content.replaceAll("@logDirectory@", logDirectoryPath);
-            final FileOutputStream out = new FileOutputStream(configFile);
-            IOUtils.write(content, out, "iso-8859-1");
-            out.close();
+            InputStream is = getClass().getClassLoader().getResourceAsStream("no/kantega/publishing/log/default-log4j.xml");
 
+            final FileOutputStream out = new FileOutputStream(configFile);
+            try {
+                IOUtils.copy(is, out);
+            } finally {
+                IOUtils.closeQuietly(out);
+                IOUtils.closeQuietly(is);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
