@@ -9,7 +9,7 @@
     </appender>
 
     <appender name="FileAppender" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="@logDirectory@/aksess.log"/>
+        <param name="File" value="${logsDirectory}/aksess.log"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[%-5p]%x %d{dd MM yyyy HH:mm} %-4r %c - %m%n"/>
