@@ -23,6 +23,7 @@
     float: left;
     margin-right: 10px;
     cursor: pointer;
+    overflow:hidden;
 }
 
 #MultimediaFolders .folder:hover, #MultimediaFolders .media:hover {
