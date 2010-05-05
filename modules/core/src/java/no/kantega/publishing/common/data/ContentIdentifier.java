@@ -231,4 +231,34 @@ public class ContentIdentifier {
     public void setStatus(int status) {
         this.status = status;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ContentIdentifier that = (ContentIdentifier) o;
+
+        if (associationId != that.associationId) return false;
+        if (contentId != that.contentId) return false;
+        if (contextId != that.contextId) return false;
+        if (language != that.language) return false;
+        if (siteId != that.siteId) return false;
+        if (status != that.status) return false;
+        if (version != that.version) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = contentId;
+        result = 31 * result + associationId;
+        result = 31 * result + siteId;
+        result = 31 * result + contextId;
+        result = 31 * result + language;
+        result = 31 * result + version;
+        result = 31 * result + status;
+        return result;
+    }
 }
