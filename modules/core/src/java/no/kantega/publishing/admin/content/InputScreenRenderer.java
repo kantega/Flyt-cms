@@ -83,7 +83,6 @@ public class InputScreenRenderer {
             }
         }
 
-        String globalHelptext = null;
         ContentTemplate template = null;
         if (attributeType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
