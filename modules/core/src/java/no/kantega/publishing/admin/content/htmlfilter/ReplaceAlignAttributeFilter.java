@@ -45,9 +45,9 @@ public class ReplaceAlignAttributeFilter extends XMLFilterImpl {
             if (align != null) {
                 if("right".equalsIgnoreCase(align)){
                     attributes = HtmlFilterHelper.setAttribute("style", "text-align: right;", attributes);
-                }else if("left".equalsIgnoreCase(align)){
+                } else if("left".equalsIgnoreCase(align)){
                     attributes = HtmlFilterHelper.setAttribute("style", "text-align: left;", attributes);
-                }else if("center".equalsIgnoreCase(align)){
+                } else if("center".equalsIgnoreCase(align)){
                     attributes = HtmlFilterHelper.setAttribute("style", "text-align: center;", attributes);
                 }
                 attributes = HtmlFilterHelper.removeAttribute("align", attributes);

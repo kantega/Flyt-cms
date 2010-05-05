@@ -34,7 +34,11 @@
         }
 
         function buttonOkPressed() {
-            getParent().stateHandler.setState("${currentPage.url}");
+            <c:choose>
+                <c:when test="${currentPage != null}">
+                    getParent().openaksess.content.triggerContentUpdateEvent("${currentPage.url}");
+                </c:when>
+            </c:choose>
             return true;
         }
     </script>

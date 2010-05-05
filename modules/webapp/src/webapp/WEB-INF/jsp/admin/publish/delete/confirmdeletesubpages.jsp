@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -56,12 +57,12 @@
 
                 <p><kantega:label key="aksess.confirmdelete.multiple.sikker"/></p>
 
-                <p><kantega:label key="aksess.confirmdelete.multiple.tekst"/></p>
+                <p><kantega:label key="aksess.confirmdelete.multiple.tekst" subpages="${fn:length(toBeDeleted)}"/></p>
 
-                <div style="overflow:auto; height:200px;">
+                <div style="overflow:auto; max-height:100px;">
                     <ul>
-                        <c:forEach var="c" items="${contentList}">
-                            <li>${c.title}</li>
+                        <c:forEach var="content" items="${toBeDeleted}">
+                            <li>${content.title}</li>
                         </c:forEach>
                     </ul>
                 </div>

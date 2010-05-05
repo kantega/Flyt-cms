@@ -43,6 +43,9 @@ public class ContentTemplateReader {
     public List<TemplateConfigurationValidationError> updateContentTemplateFromTemplateFile(ContentTemplate contentTemplate) {
         List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
+        contentTemplate.setAttributeElements(new ArrayList<Element>());
+        contentTemplate.setPropertyElements(new ArrayList<Element>());
+
         // Check attributes in XML file
         try {
             Resource resource = contentTemplateResourceLoader.getResource(contentTemplate.getTemplateFile());

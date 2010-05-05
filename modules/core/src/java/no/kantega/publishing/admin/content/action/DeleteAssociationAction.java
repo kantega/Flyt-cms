@@ -101,6 +101,7 @@ public class DeleteAssociationAction implements Controller {
                 toBeDeleted = aksessService.deleteAssociationsById(ids, confirmMultipleDelete);
                 if (toBeDeleted != null && toBeDeleted.size() > 1 && !confirmMultipleDelete) {
                     // User must confirm deletion of subpages
+                    model.put("associationIds", ids);
                     model.put("toBeDeleted", toBeDeleted);
                     return new ModelAndView(confirmDeleteSubPagesView, model);
                 } else {

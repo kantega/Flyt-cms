@@ -326,21 +326,26 @@ openaksess.content = {
                 var detailsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'details'});
                 $("#Statusbar .details").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                    var details = "<h3>Details</h3><ul>";
+                    var details = "<h3><kantega:label key="aksess.infoslider.details"/></h3><ul>";
                     details += '<li><span class="label"><kantega:label key="aksess.contentproperty.title"/>:</span>&nbsp;'+content.title+'</li>';
                     if (content.alias) {
                         details += '<li><span class="label"><kantega:label key="aksess.publishinfo.alias"/>:</span>&nbsp;'+content.alias+'</li>';
                     }
                     if (content.lastModified) {
-                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.lastmodified"/>:</span>&nbsp;'+content.lastModified+'</li>';
+                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.lastmodified"/>:</span>&nbsp;'+content.lastModified + ' <kantega:label key="aksess.contentproperty.modifiedby"/> ' + content.modifiedBy + '</li>';
+                    }
+                    if (content.modifiedBy != content.approvedBy) {
+                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.approvedby"/>:</span>&nbsp;'+content.approvedBy + '</li>';                        
                     }
                     if (content.changeFromDate) {
                         details += '<li><span class="label"><kantega:label key="aksess.contentproperty.changefrom"/>:</span>&nbsp;'+content.changeFromDate+'</li>';
                     }
                     if (content.expireDate) {
-                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.expiredate"/>:</span>&nbsp;'+content.changeFromDate+'</li>';
+                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.expiredate"/>:</span>&nbsp;'+content.expireDate+'</li>';
                     }
-
+                    if (content.ownerperson) {
+                        details += '<li><span class="label"><kantega:label key="aksess.contentproperty.ownerperson"/>:</span>&nbsp;'+content.ownerperson+'</li>';
+                    }
                     details +="</ul>";
 
                     detailsInfoSlider.toggle(details);

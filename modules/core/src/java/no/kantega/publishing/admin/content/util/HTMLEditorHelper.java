@@ -18,14 +18,12 @@ package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.util.RegExp;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.util.URLHelper;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.htmlfilter.*;
 import no.kantega.publishing.common.Aksess;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -67,24 +65,8 @@ public class HTMLEditorHelper {
         value = value.replaceAll("<U>", "<span style=\"text-decoration: underline;\">");
         value = value.replaceAll("</U>", "</span>");
 
-        // Remove xml tags (paste from Word)
-        try {
-            value = RegExp.replace("<\\?xml.*?\\/>", value, "");
-        } catch (RegExpSyntaxException e) {
-
-        }
-
-        // Remove font tags always
-        pipe.addFilter(new FontFilter());
-
-        // Replace A "name" with placeholder
-        pipe.addFilter(new PlaceHolder2ANameFilter());
-
         // Replace illegal chars in id, name and href
         pipe.addFilter(new IdAndNameFilter());
-
-        // Remove cellspacing from tables
-  	    pipe.addFilter(new RemoveCellspacingFilter());
 
         // Replace the align attribute from p elements with inline style
         pipe.addFilter(new ReplaceAlignAttributeFilter());
@@ -157,12 +139,6 @@ public class HTMLEditorHelper {
         value = value.replaceAll("</em>", "</i>");
 
         FilterPipeline pipe = new FilterPipeline();
-
-        // Add placeholder for a name
-        pipe.addFilter(new AName2PlaceHolderFilter());
-
-        // Insert cellspacing to make table borders visible
-  	    pipe.addFilter(new AddCellspacingFilter());
 
         // Replace inline style text alignment with align attribute.
         pipe.addFilter(new ReplaceStyleAlignWithAttributeAlignFilter());
