@@ -300,11 +300,12 @@ table.fullWidth {
     height: 26px;
     border: none;
     color: #dddddd;
-    font-size: 11px;
-    padding-top: 11px;
-    padding-left: 25px;
+    font-size: 14px;
+    margin-top:3px;
+    padding:0 5px 5px 25px;
     background: url("../bitmaps/default/framework/search_inputfield.png") center left no-repeat;
     float: left;
+    font-family:verdana, sans-serif;
 }
 #ModesMenu .search input[type=submit]{
     height: 37px;
