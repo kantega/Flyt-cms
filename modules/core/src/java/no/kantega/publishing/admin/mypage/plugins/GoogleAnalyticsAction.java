@@ -142,8 +142,8 @@ public class GoogleAnalyticsAction implements Controller {
             dataFeedUrl = new URL("https://www.google.com/analytics/feeds/data");
 
             String companyId = "Kantega AS";
-            String appName = "mypage";
-            String appVersion = "v1.0";
+            String appName = "OpenAksess";
+            String appVersion = Aksess.getVersion();
             String applicationName = companyId + "-" + appName + "-" + appVersion;
 
             // Service Object to work with the Google Analytics Data Export API.
