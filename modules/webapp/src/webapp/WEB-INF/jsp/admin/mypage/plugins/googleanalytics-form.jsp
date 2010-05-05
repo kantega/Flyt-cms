@@ -18,7 +18,12 @@
 
 <script type="text/javascript">
     function widgetLoaded() {
+        // Reload statistics initially and when a new profile is selected
         $("#profile_selector").change(updateStats).change();
+        // Redraw chart when widget is moved
+        $(".widgetcolumn").bind('sortstop', function() {
+            drawPerMonthStatsChart();
+        });
     }
 
     function updateStats() {
