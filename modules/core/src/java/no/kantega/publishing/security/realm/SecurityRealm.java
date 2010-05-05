@@ -47,14 +47,14 @@ public class SecurityRealm {
     IdentityResolver identityResolver;
     PasswordManager passwordManager;
 
-    public List searchUsers(String name) throws SystemException {
-        List results = new ArrayList();
+    public List<User> searchUsers(String name) throws SystemException {
+        List<User> results = new ArrayList<User>();
         try {
-            SearchResult result = profileManager.searchProfiles(name);
+            SearchResult<Profile> result = profileManager.searchProfiles(name);
             if (result != null) {
-                Iterator it = result.getAllResults();
+                Iterator<Profile> it = result.getAllResults();
                 while (it.hasNext()) {
-                    Profile p =  (Profile)it.next();
+                    Profile p =  it.next();
                     results.add(SecurityHelper.createAksessUser(p));
                 }
             }
@@ -67,8 +67,8 @@ public class SecurityRealm {
     }
 
 
-    public List getAllRoles() throws SystemException {
-        List results = new ArrayList();
+    public List<Role> getAllRoles() throws SystemException {
+        List<Role> results = new ArrayList<Role>();
 
         Role everyone = new Role();
         everyone.setId(Aksess.getEveryoneRole());
@@ -81,10 +81,10 @@ public class SecurityRealm {
         results.add(owner);
 
         try {
-            Iterator it = roleManager.getAllRoles();
+            Iterator<no.kantega.security.api.role.Role> it = roleManager.getAllRoles();
             if (it != null) {
                 while (it.hasNext()) {
-                    no.kantega.security.api.role.Role role =  (no.kantega.security.api.role.Role)it.next();
+                    no.kantega.security.api.role.Role role =  it.next();
                     results.add(SecurityHelper.createAksessRole(role));
                 }
             }
@@ -164,13 +164,13 @@ public class SecurityRealm {
         }
     }
 
-    public List lookupUsersWithRole(String roleId) throws SystemException {
-        List userIds = new ArrayList();
+    public List<String> lookupUsersWithRole(String roleId) throws SystemException {
+        List<String> userIds = new ArrayList<String>();
         try {
-            Iterator it = roleManager.getUsersWithRole(SecurityHelper.createApiRole(roleId));
+            Iterator<Identity> it = roleManager.getUsersWithRole(SecurityHelper.createApiRole(roleId));
             if (it != null) {
                 while (it.hasNext()) {
-                    Identity role =  (Identity)it.next();
+                    Identity role =  it.next();
                     if(role != null) {
                         userIds.add(role.getUserId());
                     }
