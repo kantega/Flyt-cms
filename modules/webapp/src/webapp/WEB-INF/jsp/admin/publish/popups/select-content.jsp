@@ -72,6 +72,11 @@
             return openaksess.common.getQueryParam("thisId", href);
         };
 
+        openaksess.navigate.getCurrentItemIdentifier = function() {
+            return currentItemIdentifier;
+        };
+
+
     </script>
 </kantega:section>
 

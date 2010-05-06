@@ -212,21 +212,17 @@ openaksess.navigate = {
         openaksess.common.debug("openaksess.navigate.setContextMenu(): "+ type +" menu set");
     },
 
-
-
-
-
     openTree : function(itemIdentifier) {
         openaksess.common.debug("openaksess.navigate.openTree(): itemIdentifier: " + itemIdentifier);
         openaksess.navigate.setFolderOpen(itemIdentifier);
-        openaksess.navigate.updateNavigator(itemIdentifier, false);
+        openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), false);
     },
 
 
     closeTree : function (itemIdentifier) {
         openaksess.common.debug("openaksess.navigate.closeTree(): itemIdentifier: " + itemIdentifier);
         openaksess.navigate.setFolderClosed(itemIdentifier);
-        openaksess.navigate.updateNavigator(itemIdentifier, false);
+        openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), false);
     },
 
 

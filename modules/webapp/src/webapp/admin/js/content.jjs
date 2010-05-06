@@ -90,7 +90,7 @@ openaksess.content = {
             var value = $(this).is(":checked");
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Hide expired clicked: " + value);
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.hideExpired, value, false, function() {
-                openaksess.navigate.updateNavigator(openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+                openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
             });
         });
 
@@ -108,7 +108,7 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
             if ($this.is(":checked")) {
                 openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sort, $this.val(), false, function() {
-                    openaksess.navigate.updateNavigator(openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+                    openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
                 });
 
             }
@@ -127,7 +127,7 @@ openaksess.content = {
                 }
             });
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sites, hiddenSites, false, function() {
-                openaksess.navigate.updateNavigator(openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+                openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
             });
 
         });
@@ -138,7 +138,7 @@ openaksess.content = {
                 $(this).attr("checked", "checked");
             });
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sites, '', function() {
-                openaksess.navigate.updateNavigator(openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState()), true);
+                openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
             });
 
         });
@@ -671,6 +671,10 @@ openaksess.navigate.getItemIdentifierFromNavigatorHref = function (href) {
     var thisId = openaksess.common.getQueryParam("thisId", href);
     openaksess.common.debug("openaksess.content.getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
     return thisId;
+};
+
+openaksess.navigate.getCurrentItemIdentifier = function() {
+    return openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState());
 };
 
 openaksess.navigate.getNavigatorParams = function() {

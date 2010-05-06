@@ -241,7 +241,7 @@ openaksess.multimedia = {
                 var id = files[0].getAttribute("id");
                 location.href = "EditMultimedia.action?id=" + id;
             } else {
-                alert(files.length + '<kantega:label key="aksess.multimedia.upload.files"/>');
+                alert(files.length + ' <kantega:label key="aksess.multimedia.upload.files"/>');
             }
         } else {
             alert('<kantega:label key="aksess.multimedia.upload.failed"/>');
@@ -394,6 +394,10 @@ openaksess.navigate.getNavigatorAction = function() {
 
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
+};
+
+openaksess.navigate.getCurrentItemIdentifier = function() {
+    return currentItemIdentifier;
 };
 
 openaksess.navigate.onNavigatorTitleClick = function(elm) {

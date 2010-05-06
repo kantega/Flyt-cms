@@ -66,6 +66,10 @@
             params.getFoldersOnly = true;
             return params;
         };
+
+        openaksess.navigate.getCurrentItemIdentifier = function() {
+            return currentItemIdentifier;
+        };        
     </script>
 
 </kantega:section>
