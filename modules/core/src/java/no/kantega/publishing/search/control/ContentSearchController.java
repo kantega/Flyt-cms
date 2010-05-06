@@ -1,29 +1,39 @@
 package no.kantega.publishing.search.control;
 
-import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.search.service.*;
-import no.kantega.publishing.search.control.util.QueryStringGenerator;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
-import no.kantega.search.query.hitcount.DateHitCountQuery;
-import no.kantega.search.result.SearchResultExtendedImpl;
-import no.kantega.search.result.HitCount;
-import no.kantega.search.index.Fields;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.DocumentType;
+import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.controls.AksessController;
+import no.kantega.publishing.search.SearchField;
+import no.kantega.publishing.search.control.util.QueryStringGenerator;
+import no.kantega.publishing.search.service.SearchService;
+import no.kantega.publishing.search.service.SearchServiceQuery;
+import no.kantega.publishing.search.service.SearchServiceResult;
+import no.kantega.publishing.search.service.SearchServiceResultImpl;
+import no.kantega.search.index.Fields;
+import no.kantega.search.query.hitcount.DateHitCountQuery;
+import no.kantega.search.query.hitcount.HitCountQuery;
+import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
+import no.kantega.search.result.HitCount;
+import no.kantega.search.result.SearchResultExtendedImpl;
+import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import org.springframework.beans.factory.InitializingBean;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -34,6 +44,7 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     private SearchService searchService;
     private String queryStringEncoding = "iso-8859-1"; // Must be iso-8859-1 in Tomcat, utf-8 in Jetty
+    private List<SearchField> customSearchFields;
 
     private boolean hitCountDocumentType = true;
     private boolean hitCountParents = true;
@@ -42,6 +53,7 @@ public class ContentSearchController implements AksessController, InitializingBe
     static final String INVALIDQUERY = "invalidquery";
 
     private QueryStringGenerator queryStringGenerator;
+
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
@@ -53,19 +65,9 @@ public class ContentSearchController implements AksessController, InitializingBe
     private Map<String, Object> performSearches(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
 
-        RequestParameters param = new RequestParameters(request);
-
         Content content = (Content)request.getAttribute("aksess_this");
 
-        SearchServiceQuery query = new SearchServiceQuery(request);
-        if (content != null) {
-            query.putSearchParam("thisId", "" + content.getAssociation().getId());
-            int siteId = param.getInt(SearchServiceQuery.PARAM_SITE_ID);
-            if (siteId == -1) {
-                siteId = content.getAssociation().getSiteId();
-            }
-            query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
-        }
+        SearchServiceQuery query = createSearchServiceQuery(content, request);
 
         // Add hit counts
         addHitCountQueries(query, request, content);
@@ -105,6 +107,20 @@ public class ContentSearchController implements AksessController, InitializingBe
 
         }
         return model;
+    }
+
+    private SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
+        SearchServiceQuery query = new SearchServiceQuery(request, customSearchFields);
+        RequestParameters params = new RequestParameters(request);
+        if (content != null) {
+            query.putSearchParam("thisId", "" + content.getAssociation().getId());
+            int siteId = params.getInt(SearchServiceQuery.PARAM_SITE_ID);
+            if (siteId == -1) {
+                siteId = content.getAssociation().getSiteId();
+            }
+            query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
+        }
+        return query;
     }
 
     /**
@@ -261,18 +277,17 @@ public class ContentSearchController implements AksessController, InitializingBe
             // Modified date
             query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));
         }
-    }
 
+        addCustomQueries(query, request, content);
+    }
 
     public String getDescription() {
         return description;
     }
 
-
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public void setSearchService(SearchService searchService) {
         this.searchService = searchService;
@@ -294,6 +309,9 @@ public class ContentSearchController implements AksessController, InitializingBe
         this.queryStringEncoding = queryStringEncoding;
     }
 
+    public void setCustomSearchFields(List<SearchField> customSearchFields) {
+        this.customSearchFields = customSearchFields;
+    }
 
     public void afterPropertiesSet() throws Exception {
         try {
@@ -303,4 +321,16 @@ public class ContentSearchController implements AksessController, InitializingBe
             Log.error(this.getClass().getName(), e, null, null);
         }
     }
+
+    private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
+        for (SearchField field : customSearchFields) {
+            List<HitCountQuery> hitCountQueries = field.getHitCountQueries(query, request, content);
+            if (hitCountQueries != null) {
+                for (HitCountQuery hcQuery : hitCountQueries) {
+                    query.addHitCountQuery(hcQuery);
+                }
+            }
+        }
+    }
+
 }

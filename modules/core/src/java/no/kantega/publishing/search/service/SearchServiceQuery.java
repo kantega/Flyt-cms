@@ -16,15 +16,20 @@
 
 package no.kantega.publishing.search.service;
 
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.search.SearchField;
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.commons.log.Log;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Date: Jan 28, 2009
@@ -54,14 +59,14 @@ public class SearchServiceQuery {
     private static int defaultPage = 0;
     private static int defaultHitsPerPage = 10;
     private static DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-    private static List<String> paramNames;
 
     private HttpServletRequest request;
     private Map<String, String> searchParams;
     private List<HitCountQuery> hitCountQueries = new ArrayList<HitCountQuery>();
+    private List<SearchField> customSearchFields;
+    private List<String> paramNames;
 
-
-    static {
+    {
         paramNames = new ArrayList<String>();
         paramNames.add(PARAM_SEARCH_PHRASE);
         paramNames.add(PARAM_DOCUMENT_TYPE);
@@ -78,7 +83,15 @@ public class SearchServiceQuery {
 
 
     public SearchServiceQuery(HttpServletRequest request) {
+        this(request, new ArrayList<SearchField>());
+    }
+
+    public SearchServiceQuery(HttpServletRequest request, List<SearchField> customSearchFields) {
         this.request = request;
+        this.customSearchFields = customSearchFields;
+        for (SearchField field : customSearchFields) {
+            paramNames.add(field.getFieldname());
+        }
         searchParams = new HashMap<String, String>();
         for (String paramName : paramNames) {
             String paramValue = getString(request.getParameter(paramName), null);
@@ -174,6 +187,10 @@ public class SearchServiceQuery {
 
     public List<HitCountQuery> getHitCountQueries() {
         return hitCountQueries;
+    }
+
+    public List<SearchField> getCustomSearchFields() {
+        return customSearchFields;
     }
 
     protected static String getString(String s, String defaultValue) {

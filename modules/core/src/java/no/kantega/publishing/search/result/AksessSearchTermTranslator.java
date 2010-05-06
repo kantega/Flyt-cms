@@ -1,30 +1,22 @@
 package no.kantega.publishing.search.result;
 
-import no.kantega.search.result.TermTranslatorDefaultImpl;
-import no.kantega.search.result.TermTranslator;
-import no.kantega.search.index.IndexSearcherManager;
-import no.kantega.search.index.Fields;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
-import no.kantega.publishing.common.data.DocumentType;
-import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DocumentType;
+import no.kantega.search.index.Fields;
+import no.kantega.search.result.TermTranslator;
+import no.kantega.search.result.TermTranslatorDefaultImpl;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
-
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.index.Term;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -37,7 +29,7 @@ public class AksessSearchTermTranslator implements TermTranslator {
     private DateFormat toFormat = new SimpleDateFormat("dd.MM.yy");
 
     public String fromField(String field) {
-        String retVal = "search.other";
+        String retVal = "search." + field;
         if (Fields.CONTENT_TEMPLATE_ID.equals(field)) {
             retVal = "search.contenttemplate";
         } else if (Fields.DOCTYPE.equals(field)) {

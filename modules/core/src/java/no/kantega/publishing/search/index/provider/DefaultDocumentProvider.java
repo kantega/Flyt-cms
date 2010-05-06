@@ -31,6 +31,7 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.dao.AksessDao;
 import no.kantega.publishing.search.index.boost.ContentBooster;
 import no.kantega.publishing.search.index.model.TmBaseName;
@@ -49,7 +50,11 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.highlight.*;
+import org.apache.lucene.search.highlight.Formatter;
+import org.apache.lucene.search.highlight.Highlighter;
+import org.apache.lucene.search.highlight.QueryScorer;
+import org.apache.lucene.search.highlight.Scorer;
+import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
 import org.cyberneko.html.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -72,6 +77,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     private int docCount = -1;
     private final String SOURCE = "aksess.DefaultDocumentProvider";
     private String sourceId;
+    private List<SearchField> customSearchFields;
 
 
     /**
@@ -152,6 +158,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
     public void setSourceId(String sourceId) {
         this.sourceId = sourceId;
+    }
+
+    public void setCustomSearchFields(List<SearchField> customSearchFields) {
+        this.customSearchFields = customSearchFields;
     }
 
     public void provideDocuments(final DocumentProviderHandler handler, final ProgressReporter reporter) {
@@ -303,6 +313,11 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             addAttributeFields(content, d);
             addOtherFields(content, d);
+
+            for (SearchField searchField : customSearchFields) {
+                searchField.addToIndex(content, d);
+            }
+            
             return d;
         } catch(Throwable e) {
             Log.error(getClass().getName(), "Exception creating index document for content id " + content.getId() +": " + e.getMessage(), null, null);
