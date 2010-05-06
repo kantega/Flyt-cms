@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 .file.application-octet-stream {
-    background: url("../aksess/bitmaps/mimetype/default.gif");
+    background-image: url("../aksess/bitmaps/mimetype/default.gif");
 }
 
 .file.application-pdf {
-    background: url("../aksess/bitmaps/mimetype/application/pdf.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/pdf.gif");
 }
 
 .file.application-msword, file.application-vnd-openxmlformats-officedocument-wordprocessingml-document {
-    background: url("../aksess/bitmaps/mimetype/application/msword.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/msword.gif");
 }
 
 .file.application-vnd-ms-excel, file.application-vnd-openxmlformats-officedocument-spreadsheetml-sheet {
-    background: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.gif");
 }
 
 .file.application-vnd-ms-powerpoint, file.application-vnd-openxmlformats-officedocument-presentationml-presentation {
-    background: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.gif");
 }

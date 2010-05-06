@@ -77,6 +77,13 @@
 }
 
 
+a.file {
+    font-size: 1.2em;
+    background-repeat: no-repeat;
+    padding-left: 20px;
+    color: #00F;
+}
+
 .folder .icon {
     background: url("../bitmaps/common/mm/folder.png") no-repeat top left;
 }
