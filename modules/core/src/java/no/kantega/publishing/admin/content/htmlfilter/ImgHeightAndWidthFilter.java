@@ -39,26 +39,6 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if(localName.equalsIgnoreCase("img")) {
-            // Remove style and replace with width= and height=
-            String style = attributes.getValue("style");
-            if (style != null) {
-                // Replace style="width: xx" with width
-                String width = HtmlFilterHelper.getSubAttributeValue(style, "width");
-                if (width != null) {
-                    width = width.replaceAll("px", "");
-                    attributes = HtmlFilterHelper.setAttribute("width", width, attributes);
-                }
-
-                // Replace style="height: xx" with height
-                String height = HtmlFilterHelper.getSubAttributeValue(style, "height");
-                if (height != null) {
-                    height = height.replaceAll("px", "");
-                    attributes = HtmlFilterHelper.setAttribute("height", height, attributes);
-                }
-
-                attributes = HtmlFilterHelper.removeAttribute("style", attributes);
-            }
-
             String width = attributes.getValue("width");
             String height = attributes.getValue("height");
 
