@@ -28,7 +28,7 @@
             <h1><kantega:label key="aksess.search.log.title"/></h1>
 
             <form name="myform" action="" method="get" style="margin-bottom: 20px">
-                <strong><kantega:label key="aksess.search.log.site.site"/>:</strong>
+                <strong><kantega:label key="aksess.search.log.site"/>:</strong>
                 <select name="siteId" onchange="document.myform.submit()">
                     <c:forEach items="${sites}" var="site">
                         <option value="${site.id}" <c:if test="${site.id == selectedSiteId}"> selected</c:if>>${site.name}</option>
