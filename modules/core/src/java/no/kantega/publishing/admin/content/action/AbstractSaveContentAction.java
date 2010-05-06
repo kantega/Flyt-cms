@@ -26,6 +26,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -121,6 +122,17 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     }
                     model.put("message", message);
 
+                    if (content.getType() == ContentType.FILE) {
+                        // Go to parent page when finished for files, annoying to get a file download dialogue
+                        ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
+                        Content parent = aksessService.getContent(parentCid, false);
+                        if (parent != null) {
+                            session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, parent);
+                        }
+                    } else {
+                        // Go to this page when finished
+                        session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
+                    }
                     return new ModelAndView(new RedirectView("Navigate.action"));
                 }
                 session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);

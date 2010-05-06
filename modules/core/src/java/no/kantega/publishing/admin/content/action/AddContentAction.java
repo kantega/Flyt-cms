@@ -16,8 +16,10 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
@@ -123,6 +125,12 @@ public class AddContentAction extends AdminController {
         }
 
         model.put("associations", associations);
+
+        List<Site> sites = templateConfigurationCache.getTemplateConfiguration().getSites();
+        boolean displayAddAssociation = sites.size() > 1;
+
+        Configuration config = Aksess.getConfiguration();
+        model.put("displayAddAssociation", config.getBoolean("admin.addassociation.display", displayAddAssociation));
 
         // Run plugins
         ContentListenerUtil.getContentNotifier().beforeSelectTemplate(model);

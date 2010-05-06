@@ -41,7 +41,7 @@
                 addedParents +=",";
             }
             addedParents += id;
-            window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?thisId=${parent.association.id}&addedParents=" + addedParents;
+            window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?url=thisId=${parent.association.id}&addedParents=" + addedParents;
         };
 
         var addedParents = "${addedParents}";
@@ -84,7 +84,7 @@
 
         <c:if test="${fn:length(allowedAssociations) > 1}">
             if (!isChecked(document.myform.associationCategory)) {
-                alert("<kantega:label key="aksess.selecttemplate.menu.notselected"/>");
+                alert("<kantega:label key="aksess.selecttemplate.category.notselected"/>");
                 return;
             }
         </c:if>
@@ -121,12 +121,15 @@
 <kantega:section id="contentclass">selecttemplate</kantega:section>
 
 <kantega:section id="content">
-
+    <%
+        ContentManagementService aksessService = new ContentManagementService(request);
+    %>
 
     <div id="MainPaneContent">
 
         <form action="SelectTemplate.action" name="myform" method="get">
             <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
+            <c:if test="${displayAddAssociation}">
             <div class="fieldset">
                 <fieldset>
                     <legend></legend>
@@ -135,7 +138,6 @@
                     <table width="100%">
                         <%
                             List path ;
-                            ContentManagementService aksessService = new ContentManagementService(request);
                             for (int i = 0; i < associations.size(); i++) {
                                 Association parentAssociation = (Association)associations.get(i);
                                 path = aksessService.getPathByAssociation(parentAssociation);
@@ -177,10 +179,12 @@
                             <kantega:label key="aksess.selecttemplate.notauthorized"/>
                         </div>
                     </c:if>
-                    <a href="Javascript:selectContent()" class="button"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
+                    <div style="text-align:right">
+                        <a href="Javascript:selectContent()" class="button"><span class="add"><kantega:label key="aksess.button.addassociation"/></span></a>
+                    </div>
                 </fieldset>
             </div>
-
+            </c:if>
             <div class="fieldset">
                 <fieldset>
                     <legend></legend>
@@ -258,7 +262,7 @@
                     <div class="fieldset">
                         <fieldset>
                             <legend></legend>
-                            <h2><kantega:label key="aksess.selecttemplate.menu"/></h2>
+                            <h2><kantega:label key="aksess.selecttemplate.category"/></h2>
                                     <%
                                         if (defaultAssociationCategory == -1 && parent.getAssociation() != null) {
                                             defaultAssociationCategory = parent.getAssociation().getCategory().getId();
@@ -289,7 +293,7 @@
                         }
                     %>
 
-                    <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="info">
+                    <div id="categoryinfo" style="display:<% if (foundDefault) out.write("block"); else out.write("none");%>;" class="ui-state-highlight">
                         <div id="categorydesc"><%=defaultText%></div><br>
                         <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
                     </div>

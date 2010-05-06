@@ -59,11 +59,19 @@
                                 link = Aksess.getContextPath() + "/multimedia.ap?id=" + subjectId;
                             }
                         }
-                        String eventName = "aksess.event." + event.getEventName();
+
+                        String eventInfo = "";
+                        String eventName = event.getEventName();
+                        if (eventName.indexOf(":") != -1) {
+                            // If eventname contains :, the text after : is additional info
+                            eventInfo = ": " + eventName.substring(eventName.indexOf(":"), eventName.length());
+                            eventName = eventName.substring(0, eventName.indexOf(":"));
+                        }
+                        eventName = "aksess.event." + eventName;
                 %>
                 <tr class="tableRow<%=(i%2)%>">
                     <td><%=date%></td>
-                    <td><kantega:label key="<%=eventName%>"/></td>
+                    <td><kantega:label key="<%=eventName%>"/><%=eventInfo%></td>
                     <td>
                         <%
                             if (link != null) {

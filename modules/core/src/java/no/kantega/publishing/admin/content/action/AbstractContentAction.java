@@ -56,9 +56,11 @@ public abstract class AbstractContentAction  extends AdminController {
             saveStatus = ContentStatus.PUBLISHED;
             model.put("canPublish", Boolean.TRUE);
 
-            if (current.getType() == ContentType.PAGE) {
-                model.put("canChangeTemplate", Boolean.TRUE);
-                model.put("allowedTemplates", aksessService.getAllowedDisplayTemplates(current));
+            if (securitySession.isAuthorized(current, Privilege.FULL_CONTROL)) {
+                if (current.getType() == ContentType.PAGE) {
+                    model.put("canChangeTemplate", Boolean.TRUE);
+                    model.put("allowedTemplates", aksessService.getAllowedDisplayTemplates(current));
+                }
             }
         }
 
