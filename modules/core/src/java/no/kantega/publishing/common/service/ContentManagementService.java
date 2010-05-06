@@ -952,6 +952,19 @@ public class ContentManagementService {
                 if (c == null) {
                     return null;
                 }
+                boolean adminMode = HttpHelper.isAdminMode(request);
+                if (!adminMode && siteId != -1) {
+                    boolean publishedInThisSite = false;
+                    for (Association a : c.getAssociations()) {
+                        if (a.getSiteId() == siteId) {
+                            publishedInThisSite = true;
+                            break;
+                        }
+                    }
+                    if (!publishedInThisSite) {
+                        return null;
+                    }
+                }
             }
         }
 

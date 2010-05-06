@@ -153,6 +153,8 @@ public class MultimediaRequestHandler implements Controller {
 
             out.flush();
             out.close();
+        }catch (IOException e) {
+            Log.error(SOURCE, "Client aborted request before multimedia was downloaded", null, null);    
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }

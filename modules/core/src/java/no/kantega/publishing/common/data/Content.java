@@ -254,7 +254,7 @@ public class Content extends BaseObject {
         return null;
     }
 
-    public List getAssociations() {
+    public List<Association> getAssociations() {
         return associations;
     }
 
