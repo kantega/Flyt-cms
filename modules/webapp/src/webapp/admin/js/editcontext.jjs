@@ -56,6 +56,15 @@ openaksess.editcontext = function()  {
             openaksess.editcontext.editIsModified = true;
         },
 
+        saveAll : function() {
+            // Save forms
+            formSave();
+
+            if (tinyMCE) {
+                tinyMCE.triggerSave();
+            }
+        },
+
         isModified : function () {
             return openaksess.editcontext.editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
         },

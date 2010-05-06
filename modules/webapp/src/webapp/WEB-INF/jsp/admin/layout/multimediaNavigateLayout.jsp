@@ -19,6 +19,7 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.lazyload.mini.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/ajaxupload.3.5.js"></script>

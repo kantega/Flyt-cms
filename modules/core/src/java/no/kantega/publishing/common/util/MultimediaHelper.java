@@ -233,12 +233,9 @@ public class MultimediaHelper {
                 tag.append("</noscript>");
             }
         } else {
-            tag.append("<A href=" + url + ">" + mm.getName());
-            if (mimeType.indexOf("octet-stream") == -1) {
-                tag.append(" (" + mm.getMimeType().getDescription() + ")");
-            }
-            tag.append("</A>");
-
+            mimeType = mimeType.replace('/', '-');
+            mimeType = mimeType.replace('.', '-');
+            tag.append("<A href=" + url + " class=\"file " + mimeType + "\">" + mm.getName() + "</A>");
         }
         return tag.toString();
     }

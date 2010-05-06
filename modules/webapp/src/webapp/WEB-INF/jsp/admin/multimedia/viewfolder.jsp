@@ -65,9 +65,8 @@
                                 } else {
                                     out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
                                 }
-
                             } else {
-                                out.write("<div class=\"file " + mimeType + "\"></div>");
+                                out.write("<span class=\"mediafile\"><span class=\"file " + mimeType + "\"></span></span>");
                             }
                         %>
                     </a>

@@ -96,7 +96,7 @@ public class ImageCropAction extends AbstractEditMultimediaAction {
         Map<String, Integer> model = new HashMap<String, Integer>();
         model.put("id", mm.getId());
 
-        return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
+        return new ModelAndView(new RedirectView("Navigate.action"), model);
     }
 
     public void setView(String view) {
