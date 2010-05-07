@@ -88,7 +88,7 @@ public class IndexManagerImpl implements IndexManager {
      * {@inheritDoc}
      */
     public IndexWriterManager getIndexWriterManager() {
-        return null;
+        return indexWriterManager;
     }
 
     public void setIndexWriterManager(IndexWriterManager indexWriterManager) {
