@@ -20,9 +20,20 @@ import no.kantega.commons.log.Log;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.SearchQuery;
-import no.kantega.search.result.*;
+import no.kantega.search.result.DocumentHit;
+import no.kantega.search.result.DocumentHitImpl;
+import no.kantega.search.result.QueryInfo;
+import no.kantega.search.result.SearchResult;
+import no.kantega.search.result.SearchResultDefaultImpl;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.CachingWrapperFilter;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopDocs;
 
 import java.io.IOException;
 import java.util.List;
@@ -64,14 +75,16 @@ public class SearchHandlerDefaultImpl implements SearchHandler {
         return indexManager.getIndexSearcherManager().getSearcher("aksess");
     }
 
-
-
     private SearchResult doSearch(SearchQuery searchQuery) throws IOException {
         long start = System.currentTimeMillis();
         Query query = getQueryFromCriteria(searchQuery.getCriteria());
         CachingWrapperFilter filter = getFilter(searchQuery);
         IndexSearcher is = getIndexSearcher();
-        TopDocs topDocs = is.search(query, filter, searchQuery.getMaxHits());
+        Sort sort = searchQuery.getSort();
+        if (sort == null) {
+            sort = Sort.RELEVANCE;
+        }
+        TopDocs topDocs = is.search(query, filter, searchQuery.getMaxHits(), sort);
         SearchResultDefaultImpl searchResult = createSearchResult(topDocs, query, is);
         searchResult.setTime(System.currentTimeMillis() - start);
         Log.info(SOURCE, "Query: " + query, "doSearch", null);

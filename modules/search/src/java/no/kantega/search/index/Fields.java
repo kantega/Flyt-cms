@@ -24,6 +24,7 @@ public interface Fields {
     public static final String ATTACHMENT_ID = "AttachmentId";
     public static final String CONTENT = "Content";
     public static final String TITLE = "Title";
+    public static final String TITLE_UNANALYZED = "TitleUnanalyzed";
     public static final String ALT_TITLE = "AltTitle";
     public static final String DOCTYPE = "DocType";
     public static final String TYPE_CONTENT = "Content";

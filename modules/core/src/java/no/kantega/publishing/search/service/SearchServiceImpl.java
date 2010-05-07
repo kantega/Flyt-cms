@@ -62,6 +62,7 @@ import no.kantega.search.result.Suggestion;
 import no.kantega.search.result.TermTranslator;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.Sort;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -150,6 +151,9 @@ public class SearchServiceImpl implements SearchService {
         SearchQueryExtendedImpl searchQuery = new SearchQueryExtendedImpl();
         searchQuery.setTermTranslator(termTranslator);
         searchQuery.setMaxHits(searchServiceQuery.getToIndex());
+        if (searchServiceQuery.getOrderBy() != null) {
+            searchQuery.setSort(new Sort(searchServiceQuery.getOrderBy(), searchServiceQuery.isSortReverse()));
+        }
         List<Criterion> criterionList = parseSearchParameters(searchServiceQuery);
         for (Criterion criterion : criterionList) {
             searchQuery.addCriterion(criterion);
@@ -170,6 +174,9 @@ public class SearchServiceImpl implements SearchService {
     private SearchQuery createDefaultSearchQuery(SearchServiceQuery searchServiceQuery) {
         SearchQueryDefaultImpl searchQuery = new SearchQueryDefaultImpl();
         searchQuery.setMaxHits(searchServiceQuery.getToIndex());
+        if (searchServiceQuery.getOrderBy() != null) {
+            searchQuery.setSort(new Sort(searchServiceQuery.getOrderBy(), searchServiceQuery.isSortReverse()));
+        }
         List<Criterion> criterionList = parseSearchParameters(searchServiceQuery);
         for (Criterion criterion : criterionList) {
             searchQuery.addCriterion(criterion);
