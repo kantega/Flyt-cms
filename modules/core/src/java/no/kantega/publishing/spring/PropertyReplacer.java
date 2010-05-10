@@ -33,8 +33,7 @@ import java.io.File;
 /**
  *
  */
-public class PropertyReplacer implements BeanFactoryPostProcessor, ServletContextAware {
-    private ServletContext servletContext;
+public class PropertyReplacer implements BeanFactoryPostProcessor {
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
 
@@ -42,8 +41,7 @@ public class PropertyReplacer implements BeanFactoryPostProcessor, ServletContex
             PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
             Properties properties = new Properties(Aksess.getConfiguration().getProperties());
 
-            File dataDir = (File) servletContext.getAttribute(OpenAksessContextLoaderListener.APPLICATION_DIRECTORY);
-            properties.setProperty("appDir", dataDir.getAbsolutePath());
+            properties.setProperty("appDir", Configuration.getApplicationDirectory());
 
             cfg.setProperties(properties);
             cfg.postProcessBeanFactory(configurableListableBeanFactory);
@@ -51,9 +49,5 @@ public class PropertyReplacer implements BeanFactoryPostProcessor, ServletContex
         } catch (ConfigurationException e) {
             System.out.println("Error getting configuration");
         }
-    }
-
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 }
