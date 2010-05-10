@@ -23,7 +23,7 @@ import java.util.Locale;
 public class DefaultImageEditor implements ImageEditor {
     ImageResizeAlgorithm imageResizeAlgorithm;
 
-    private String imageFormat = "jpg";
+    private String defaultImageFormat = "png";
 
     private int jpgOutputQuality = 85;
 
@@ -83,6 +83,12 @@ public class DefaultImageEditor implements ImageEditor {
                     resizedImage = cropImage;
                 }
 
+                // Determine output format
+                String imageFormat = getDefaultImageFormat();
+                if (multimedia.getMimeType().getType().contains("jpg")) {
+                    imageFormat = "jpg";
+                }
+
                 // Write image
                 ImageWriter writer = null;
                 Iterator iter = ImageIO.getImageWritersByFormatName(imageFormat);
@@ -106,7 +112,6 @@ public class DefaultImageEditor implements ImageEditor {
                 ios.flush();
                 writer.dispose();
 
-
                 // Update filename and data
                 String filename = multimedia.getFilename();
                 if (filename.indexOf(".") != -1) {
@@ -122,16 +127,16 @@ public class DefaultImageEditor implements ImageEditor {
         return multimedia;
     }
 
-    public String getImageFormat() {
-        return imageFormat;
+    public String getDefaultImageFormat() {
+        return defaultImageFormat;
     }
 
     public void setImageResizeAlgorithm(ImageResizeAlgorithm imageResizeAlgorithm) {
         this.imageResizeAlgorithm = imageResizeAlgorithm;
     }
 
-    public void setImageFormat(String imageFormat) {
-        this.imageFormat = imageFormat;
+    public void setDefaultImageFormat(String defaultImageFormat) {
+        this.defaultImageFormat = defaultImageFormat;
     }
 
     public void setJpgOutputQuality(int jpgOutputQuality) {

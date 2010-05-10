@@ -134,10 +134,8 @@ public class MultimediaRequestHandler implements Controller {
                     }
                 }
 
-                // Kan kun generere png eller jpg
-                response.setContentType("image/" + imageEditor.getImageFormat());
-                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + imageEditor.getImageFormat());
-                response.addHeader("Content-Length", "" + bytes.length);
+                response.setContentType(mm.getMimeType().getType());
+                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension());
 
                 out.write(bytes);
 
