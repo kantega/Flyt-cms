@@ -157,6 +157,10 @@ public class ContentIdHelper {
             throw new ContentNotFoundException(url, SOURCE);
         }
 
+        if (url.indexOf("#") > 0) {
+            url = url.substring(0, url.indexOf("#"));
+        }
+
         url = url.toLowerCase();
         if (url.indexOf("://") != -1) {
             url = url.substring(url.indexOf("://") + 3, url.length());

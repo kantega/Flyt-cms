@@ -72,10 +72,12 @@
         }
 
         function doSelectTemplate() {
+            <c:if test="${displayAddAssociation}">
             if (!isChecked(document.myform.parentIds)) {
                 alert("<kantega:label key="aksess.selecttemplate.parent.notselected"/>");
                 return;
             }
+            </c:if>
 
             if (!isChecked(document.myform.templateId)) {
                 alert("<kantega:label key="aksess.selecttemplate.template.notselected"/>");
