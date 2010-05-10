@@ -76,6 +76,7 @@
     if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
+    request.setAttribute("cssPath", cssPath);
 %>
 <div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
@@ -145,8 +146,8 @@
                 }
             %>
 
-            // Example content CSS (should be your site CSS)
-            content_css : "${cssPath}"
+            // Path to editor.css
+            content_css : "${pageContext.request.contextPath}${cssPath}"
         };
 
         for (var i = 0, n = buttonRows.length; i < n; i++) {
