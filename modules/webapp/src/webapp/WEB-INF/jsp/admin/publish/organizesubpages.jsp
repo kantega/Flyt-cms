@@ -33,14 +33,17 @@
             openaksess.organizesubpages.currentUrl = "${currentNavigateContent.url}";
             openaksess.organizesubpages.updateSubPageList();
 
-        });        
+        });
     </script>
 </kantega:section>
 
 <kantega:section id="content">
     <div id="MainPaneContent">
-        <%-- The content is loaded with ajax by the ListSubPagesAction --%>
+            <%-- The content is loaded with ajax by the ListSubPagesAction --%>
         <div id="SubPages"></div>
+        <div class="ui-state-highlight">
+            <kantega:label key="aksess.organizesubpages.help"/>
+        </div>
     </div>
 </kantega:section>
 

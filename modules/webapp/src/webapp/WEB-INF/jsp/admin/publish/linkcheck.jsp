@@ -27,6 +27,19 @@
 
 <kantega:section id="head extras">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/linkcheck.jjs"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            openaksess.common.debug("linkcheck.$(document).ready()");
+            openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
+            openaksess.linkcheck.updateLinkList("title");
+            $("#BrokenLinks th a").live('click', function(event) {
+                event.preventDefault();
+                var sort = $(this).attr("href");
+                openaksess.common.debug("linkcheck.click sort: " + sort);
+                openaksess.linkcheck.updateLinkList("title");
+            });
+        });
+    </script>
 </kantega:section>
 
 <kantega:section id="content">

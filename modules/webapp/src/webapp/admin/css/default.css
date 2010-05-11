@@ -890,7 +890,7 @@ div.sidebarFieldset fieldset legend {
 }
 
 #SubPages li.menu {
-    color: #cccccc;
+    color: #aaa;
 }
 
 #SubPages li.menu .name{
@@ -1061,3 +1061,34 @@ div.dataTables_paginate {
 iframe#externalSite {
     padding: 0;
 }
+
+
+/*****  Notes *****/
+#NoteText {
+    background: #FFFDAA;
+    width: 596px;
+    height: 100px;
+    padding: 2px;
+    border: 1px solid #a9a9a9;
+}
+    
+#Notes .noteButtons .delete {
+    background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
+    display: inline-block;
+    margin: 5px 5px 5px 20px;
+    padding: 5px 5px 5px 20px;
+}
+
+#Notes .noteButtons {
+    float: right;
+    cursor: pointer;    
+}
+
+#Notes {
+    margin-top: 2em;
+}
+
+#Notes .note h2 {
+    text-align: left;
+}
+

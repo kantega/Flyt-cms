@@ -29,7 +29,7 @@ public class JdbcNotesDao  extends JdbcDaoSupport implements NotesDao {
 
     @SuppressWarnings("unchecked")
     public List<Note> getNotesByContentId(int contentId) {
-        return getJdbcTemplate().query("SELECT * FROM notes WHERE ContentId = ?", new Object[] {contentId}, rowMapper);
+        return getJdbcTemplate().query("SELECT * FROM notes WHERE ContentId = ? ORDER BY CreatedDate DESC", new Object[] {contentId}, rowMapper);
     }
 
     public void addNote(Note note) {

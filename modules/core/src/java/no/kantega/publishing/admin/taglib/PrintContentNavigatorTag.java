@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.admin.taglib;
 
+import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentType;
@@ -72,6 +74,11 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
             titleClass += " selected";
         }
         out.write("<span class=\"title\"><a href=\""+ href +"\" class=\""+ titleClass +"\" title=\"" + title + "\">" + title +"</a></span>");
+
+        if (currentItem.getNumberOfNotes() > 0) {
+            String notesTxt = LocaleLabels.getLabel("aksess.navigator.notes", Aksess.getDefaultAdminLocale());
+            out.write("<span class=\"notes\"><a href=\"" + href + "\" title=\"" + + currentItem.getNumberOfNotes() + " " + notesTxt + "\"></span>");
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2010 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,28 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
-import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Note;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Note;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.Map;
 
-public class AddNoteAction extends SimpleAdminController {
+public class DeleteNoteAction  extends SimpleAdminController {
     @Autowired
     NotesDao notesDao;
 
@@ -46,9 +47,9 @@ public class AddNoteAction extends SimpleAdminController {
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        String noteText = params.getString("note");
-
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
+
+        int noteId = params.getInt("noteId");
 
         // Extracting currently selected content from it's url
         Content currentContent = null;
@@ -57,16 +58,16 @@ public class AddNoteAction extends SimpleAdminController {
             try {
                 cid = new ContentIdentifier(request, url);
 
-                Note note = new Note();
-                note.setText(noteText);
-                note.setDate(new Date());
-                note.setContentId(cid.getContentId());
-                note.setAuthor(securitySession.getUser().getName());
+                ContentManagementService cms = new ContentManagementService(request);
 
-                notesDao.addNote(note);
-                int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-                ContentAO.setNumberOfNotes(cid.getContentId(), count);
-
+                Content content = cms.getContent(cid);
+                if (securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
+                    if (noteId != -1) {
+                        notesDao.removeNote(noteId);
+                        int count = notesDao.getNotesByContentId(cid.getContentId()).size();
+                        ContentAO.setNumberOfNotes(cid.getContentId(), count);
+                    }
+                }
             } catch (ContentNotFoundException e) {
                 // Do nothing
             }
@@ -74,6 +75,6 @@ public class AddNoteAction extends SimpleAdminController {
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put(AdminRequestParameters.ITEM_IDENTIFIER, url);
-        return new ModelAndView(new RedirectView("ListNotes.action"), model);
+        return new ModelAndView(new RedirectView("ListNotes.action"));
     }
 }

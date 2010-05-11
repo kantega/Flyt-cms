@@ -88,6 +88,12 @@
                 <prop key="/admin/publish/PageStatistics.action">PageStatisticsAction</prop>
                 <prop key="/admin/publish/TotalStatistics.action">TotalStatisticsAction</prop>
 
+                <!-- Notes -->
+                <prop key="/admin/publish/Notes.action">NotesAction</prop>
+                <prop key="/admin/publish/ListNotes.action">ListNotesAction</prop>
+                <prop key="/admin/publish/AddNote.action">AddNoteAction</prop>
+                <prop key="/admin/publish/DeleteNote.action">DeleteNoteAction</prop>
+
                 <!-- Publish -->
                 <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
                 <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
@@ -106,7 +112,6 @@
                 <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
                 <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
-                <prop key="/admin/publish/SaveNotes.action">SaveNotesAction</prop>
                 <prop key="/admin/publish/SaveVersion.action">SaveVersionAction</prop>
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
@@ -373,6 +378,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/listsubpages.jsp"/>
     </bean>
     <bean id="ReorderSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ReorderSubpagesAction"/>
+
     <!-- Link check -->
     <bean id="LinkCheckAction" class="no.kantega.publishing.admin.content.action.LinkCheckAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/linkcheck.jsp"/>
@@ -380,6 +386,7 @@
     <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/listbrokenlinks.jsp"/>
     </bean>
+
     <!-- Statistics -->
     <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/statistics.jsp"/>
@@ -390,6 +397,16 @@
     <bean id="TotalStatisticsAction" class="no.kantega.publishing.admin.content.ajax.TotalStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/totalstatistics.jsp"/>
     </bean>
+
+    <!-- Notes -->
+    <bean id="NotesAction" class="no.kantega.publishing.admin.content.action.NotesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/notes.jsp"/>
+    </bean>
+    <bean id="ListNotesAction" class="no.kantega.publishing.admin.content.ajax.ListNotesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listnotes.jsp"/>
+    </bean>
+    <bean id="AddNoteAction" class="no.kantega.publishing.admin.content.ajax.AddNoteAction"/>
+    <bean id="DeleteNoteAction" class="no.kantega.publishing.admin.content.ajax.DeleteNoteAction"/>
 
     <!-- Copy, Paste, Delete -->
     <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
@@ -428,9 +445,6 @@
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.SaveMetadataAction" id="SaveMetadataAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editmetadata.jsp"/>
-    </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SaveNotesAction" id="SaveNotesAction">
-        <property name="view" value="/WEB-INF/jsp/admin/publish/editnotes.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.SaveVersionAction" id="SaveVersionAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editversions.jsp"/>

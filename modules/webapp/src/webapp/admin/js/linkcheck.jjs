@@ -19,35 +19,22 @@
 //%>
 
 
-var currentUrl = "${currentNavigateContent.url}";
-
-$(document).ready(function(){
-    openaksess.common.debug("linkcheck.$(document).ready()");
-    openaksess.linkcheck.updateLinkList(currentUrl, "title");
-    $("#BrokenLinks th a").live('click', function(event) {
-        event.preventDefault();
-        var sort = $(this).attr("href");
-        openaksess.common.debug("linkcheck.click sort: " + sort);
-        openaksess.linkcheck.updateLinkList(currentUrl, "title");
-    });
-});
-
-
 /********************************************************************************
  * Namespace for linkcheck
  ********************************************************************************/
 openaksess.linkcheck = {
+    currentUrl : "",
 
     /**
      * Loads the list of subpages for the given url.
      * @param url
      */
-    updateLinkList : function(url, sort) {
+    updateLinkList : function(sort) {
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Triggering contentupdate event");
-        openaksess.content.triggerContentUpdateEvent(url);
+        openaksess.content.triggerContentUpdateEvent(openaksess.linkcheck.currentUrl);
 
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
-        $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: url, sort:sort}, function(success){
+        $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: openaksess.linkcheck.currentUrl, sort:sort}, function(success){
             openaksess.common.debug("openaksess.linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
             $("#MainPaneContent div.fieldset").roundCorners();
         });
@@ -71,8 +58,8 @@ openaksess.linkcheck = {
  */
 openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
     openaksess.common.debug("linkcheck.updateMainPane(): id: " + id);
-    currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
-    openaksess.common.debug("linkcheck.updateMainPane(): currentUrl: " + currentUrl);
-    openaksess.linkcheck.updateLinkList(currentUrl, "title");
+    openaksess.linkcheck.currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
+    openaksess.common.debug("linkcheck.updateMainPane(): currentUrl: " + openaksess.linkcheck.currentUrl);
+    openaksess.linkcheck.updateLinkList("title");
 };
 
