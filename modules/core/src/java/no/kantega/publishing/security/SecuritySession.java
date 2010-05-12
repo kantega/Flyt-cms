@@ -153,6 +153,29 @@ public class SecuritySession {
 
     }
 
+    /**
+     * Creates a new SecuritySession pre set with an unauthenticated user.
+     *  
+     * @return SecuritySession
+     */
+    public static SecuritySession createNewUnauthenticatedInstance() {
+        SecuritySession session = createNewInstance();
+
+        User unauthenticatedUser = new User();
+        unauthenticatedUser.setGivenName("Aksess - Unauthenticated");
+        unauthenticatedUser.setSurname("CMS");
+        unauthenticatedUser.setId("adminUnauthenticated");
+
+        Role role = new Role();
+        role.setId(Aksess.getEveryoneRole());
+        role.setName(Aksess.getEveryoneRole());
+        unauthenticatedUser.addRole(role);
+
+        session.user = unauthenticatedUser;
+
+        return session;
+    }
+
     private static SecuritySession createNewInstance() throws SystemException {
         SecuritySession session = new SecuritySession();
         session.realm = SecurityRealmFactory.getInstance();
