@@ -483,10 +483,13 @@ table.fullWidth {
     background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
 }
 
+/*
+TODO: What is this?
 #Content .buttonBar .barButton {
     margin-right: 10px;
     background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") no-repeat;
 }
+*/
 #Content .buttonBar .barButton > .disabled {
     cursor: default;
 }

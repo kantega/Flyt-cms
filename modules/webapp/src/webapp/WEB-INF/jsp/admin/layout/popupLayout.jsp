@@ -65,7 +65,7 @@
 
         function getParent() {
             if (window.opener) {
-                return window.opener();
+                return window.opener;
             } else {
                 return window.parent;
             }

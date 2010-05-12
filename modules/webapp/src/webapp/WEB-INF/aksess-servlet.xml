@@ -147,6 +147,7 @@
                 <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
+                <prop key="/admin/multimedia/ViewUploadMultimediaForm.action">ViewUploadMultimediaFormAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
                 <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
                 <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
@@ -556,8 +557,11 @@
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>
         <property name="selectMediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.ajax.UploadMultimediaAction" id="UploadMultimediaAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/fileupload.jsp"/>
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/uploadform.jsp"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
         <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.multimedia.ajax;
+package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.service.MultimediaService;
@@ -46,8 +46,6 @@ import com.glaforge.i18n.io.CharsetToolkit;
  *
  */
 public class UploadMultimediaAction extends AdminController {
-    private String view;
-
     private ImageEditor imageEditor;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -63,9 +61,14 @@ public class UploadMultimediaAction extends AdminController {
             parent = mediaService.getMultimedia(parentId);
         }
 
+        String name = param.getString("name");
+        String altName = param.getString("altname");
+        String author = param.getString("author");
+
         List<Multimedia> multimedia = getUploadedFiles(param);
 
         for (Multimedia m : multimedia) {
+
             if (m.getId() == -1) {
                 // New file
                 if (parent != null) {
@@ -73,6 +76,11 @@ public class UploadMultimediaAction extends AdminController {
                     m.setParentId(parentId);
                 } else {
                     m.setSecurityId(0);
+                }
+                if (multimedia.size() == 1) {
+                    m.setName(name);
+                    m.setAltname(altName);
+                    m.setAuthor(author);
                 }
             }
 
@@ -100,18 +108,21 @@ public class UploadMultimediaAction extends AdminController {
                 filename = filename.substring(filename.length() - 255, filename.length());
             }
 
-            m.setFilename(filename);
-
+            m.setFilename(filename);            
 
             // Save object
             int newId = mediaService.setMultimedia(m);
             m.setId(newId);
         }
 
-        Map model = new HashMap();
-        model.put("files", multimedia);
 
-        return new ModelAndView(view, model);
+        if (multimedia.size() == 1) {
+            Map model = new HashMap();
+            model.put("id", multimedia.get(0).getId());
+            return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
+        } else {
+            return new ModelAndView(new RedirectView("Navigate.action"));
+        }
     }
 
     private List<Multimedia> getUploadedFiles(RequestParameters param) throws IOException {
@@ -274,11 +285,6 @@ public class UploadMultimediaAction extends AdminController {
                 }
             }
         return multimedia;
-    }
-
-
-    public void setView(String view) {
-        this.view = view;
     }
 
     public void setImageEditor(ImageEditor imageEditor) {

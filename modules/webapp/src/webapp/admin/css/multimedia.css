@@ -128,6 +128,16 @@ a.file {
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
 }
 
+#UploadStatus {
+    display: none;
+}
+
+#UploadStatus .progress {
+    background: url("../bitmaps/common/icons/small/loader_inline.gif") left center no-repeat;
+    line-height: 28px;
+    padding-left: 20px;
+}
+
 div.imagemap {
     margin: 0;
     padding: 0;

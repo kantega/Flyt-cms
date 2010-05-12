@@ -28,7 +28,7 @@ $(document).ready(function(){
     var url = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder);
     if (!url) {
         openaksess.common.debug("multimedia.$(document).ready(): No state found in user preferences. Opening root element.");
-        url = currentItemIdentifier;  
+        url = currentItemIdentifier;
     }
     openaksess.multimedia.triggerMultimediaupdateEvent(url);//Must be fired at startup in order to load the navigator
 });
@@ -80,7 +80,11 @@ openaksess.multimedia = {
      * Registers click event actions to each tool
      */
     bindToolButtons : function() {
-        openaksess.multimedia.bindMediaAjaxUpload();
+        $("#UploadButton").click(function() {
+            if ($(this).not(".disabled")) {
+                openaksess.multimedia.showUploadForm();
+            }
+        });
         $("#NewFolderButton").click(function() {
             if ($(this).not(".disabled")) {
                 openaksess.multimedia.createMediaFolder();
@@ -101,33 +105,33 @@ openaksess.multimedia = {
             openaksess.common.debug("Multimedia.edit(): id: " + id);
             window.location.href = "EditMultimedia.action?id=" + id;
         },
-    
+
         deleteItem: function(id) {
             openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
         },
-    
+
         cut: function(id) {
             openaksess.common.debug("Multimedia.cut(): id: " + id);
             MultimediaClipboardHandler.cut(id);
             $(".contextMenu").enableContextMenuItems("#paste");
             //openaksess.content.contentstatus.enableButtons(['PasteButton']);
         },
-    
+
         copy: function(id) {
             openaksess.common.debug("Multimedia.copy(): id: " + id);
             MultimediaClipboardHandler.copy(id);
             $(".contextMenu").enableContextMenuItems("#paste");
             //openaksess.content.contentstatus.enableButtons(['PasteButton']);
         },
-    
+
         paste: function(id) {
             openaksess.common.debug("Multimedia.paste(): id: " + id);
             $(".contextMenu").disableContextMenuItems("#paste");
             //openaksess.content.contentstatus.disableButtons(['PasteButton']);
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
         },
-    
+
         managePrivileges: function(id) {
             openaksess.common.debug("Multimedia.managePrivileges(): id: " + id);
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + id + "&type=<%=ObjectType.MULTIMEDIA%>",width: 650, height:560});
@@ -189,14 +193,14 @@ openaksess.multimedia = {
             }
 
             else if ($media.hasClass("media")) {
-                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
-                    if (openaksess.multimedia.isNameEditInProgress(this)) {
-                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
-                        openaksess.multimedia.updateMediaName(this);
-                    } else {
-                        window.location.href = $media.find(".icon a").attr("href");
-                    }
+                openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
+                if (openaksess.multimedia.isNameEditInProgress(this)) {
+                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
+                    openaksess.multimedia.updateMediaName(this);
+                } else {
+                    window.location.href = $media.find(".icon a").attr("href");
                 }
+            }
         });
 
     },
@@ -210,43 +214,6 @@ openaksess.multimedia = {
         return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
     },
 
-    bindMediaAjaxUpload : function() {
-        var button = $('#UploadButton');
-        new AjaxUpload(button, {
-            action: 'UploadMultimedia.action',
-            name: 'file',
-            onSubmit : function(file, ext){
-                this.setData({
-                    'parentId': currentItemIdentifier,
-                    'id' : -1
-                });
-                button.text('Uploading...');
-                this.disable();
-
-            },
-            onComplete: function(file, response){
-                button.text('New file');
-                // enable upload button
-                this.enable();
-                openaksess.multimedia.displayResults(response);
-            }
-        });
-    },
-
-    displayResults : function(xml) {
-        var files = xml.getElementsByTagName("file");
-
-        if (files) {
-            if (files.length == 1) {
-                var id = files[0].getAttribute("id");
-                location.href = "EditMultimedia.action?id=" + id;
-            } else {
-                alert(files.length + ' <kantega:label key="aksess.multimedia.upload.files"/>');
-            }
-        } else {
-            alert('<kantega:label key="aksess.multimedia.upload.failed"/>');
-        }
-    },
 
     /**
      * Enables inline editing of the media item's name.
@@ -262,12 +229,12 @@ openaksess.multimedia = {
             $name.html(html);
             $("input.newName", obj)
                     .keypress(function(e) {
-                        if (e.which == 13 || e.which == 0) {//Enter or tab
-                            openaksess.multimedia.updateMediaName(obj);
-                        }
-                    }).click(function(e){
-                        e.stopPropagation();
-                    }).focus();
+                if (e.which == 13 || e.which == 0) {//Enter or tab
+                    openaksess.multimedia.updateMediaName(obj);
+                }
+            }).click(function(e){
+                e.stopPropagation();
+            }).focus();
         }
     },
 
@@ -306,9 +273,12 @@ openaksess.multimedia = {
                 openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
             });
         }
+    },
+
+    showUploadForm : function() {
+        openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + currentItemIdentifier);
+        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.upload"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier, width: 450, height:350});
     }
-
-
 };
 
 
@@ -414,9 +384,9 @@ openaksess.navigate.onNavigatorTitleClick = function(elm) {
 };
 
 /**
-* Navigation layout specific implementation of the navigatorResizeOnResize-function.
-* See navigate.jjs
-*/
+ * Navigation layout specific implementation of the navigatorResizeOnResize-function.
+ * See navigate.jjs
+ */
 openaksess.navigate.navigatorResizeOnResize = function() {
     $.event.trigger("resize");
 };

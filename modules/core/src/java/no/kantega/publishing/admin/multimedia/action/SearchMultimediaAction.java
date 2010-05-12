@@ -58,7 +58,7 @@ public class SearchMultimediaAction extends AdminController {
         if (q != null && q.length() >= 3) {
             List<Multimedia> media = mediaService.searchMultimedia(q);
             model.put("numberOfHits", media.size());
-            model.put("hits", media);
+            model.put("mediaList", media);
         }
 
         return model;

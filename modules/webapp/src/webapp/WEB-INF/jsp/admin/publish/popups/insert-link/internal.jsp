@@ -21,11 +21,23 @@
     function buttonOkPressed() {
         var frm = document.linkform;
 
-        var url = frm.url.value;
-        if (url == "" || url == "http://") {
+        var id = "";
+        if (frm.smartlink.checked) {
+            id = frm.url_contentId.value ;
+        } else {
+            id = frm.url_associationId.value ;
+        }
+
+        if (id == "") {
             alert("<kantega:label key="aksess.insertlink.nourl"/>");
-            frm.url.focus();
             return;
+        }
+
+        var url;
+        if (frm.smartlink.checked) {
+            url =  "/content.ap?thisId="+ id;
+        } else {
+            url = "/content.ap?contentId=" + id + "&amp;contextId=$contextId$";
         }
 
         if (url.charAt(0) == '/') {
@@ -40,7 +52,7 @@
             url = url + "#" + anchor;
         }
 
-        var attribs = {'href': url}; // TODO: "smartlink"??
+        var attribs = {'href': url};
         var editor = getParent().tinymce.EditorManager.activeEditor;
         editor.execCommand("mceBeginUndoLevel");
         var elements = getSelectedElements(editor);
@@ -119,12 +131,15 @@
         </div>
         <div>
             <input type="checkbox" name="smartlink" onclick="updateVisibleFields()" <c:if test="${smartlink}">checked="checked"</c:if>><kantega:label key="aksess.insertlink.smart"/>
-            <div class="ui-state-highlight"><kantega:label key="aksess.insertlink.smart.hint"/></div>
         </div>
     </div>
     <div class="buttonGroup">
         <a href="#" onclick="selectPage()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     </div>
+    <div class="inputs">
+        <div class="ui-state-highlight"><kantega:label key="aksess.insertlink.smart.hint"/></div>
+    </div>
+
 </div>
 
 
