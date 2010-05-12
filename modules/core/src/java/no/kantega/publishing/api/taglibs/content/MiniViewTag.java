@@ -16,19 +16,23 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.client.DefaultDispatchContext;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.spring.RootContext;
+import org.kantega.jexmec.PluginManager;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
 
 public class MiniViewTag  extends TagSupport {
     private static final String SOURCE = "aksess.MiniViewTag";
@@ -41,6 +45,9 @@ public class MiniViewTag  extends TagSupport {
 
     public int doStartTag() throws JspException {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
+        PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
+        SiteCache siteCache = (SiteCache) RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+
         try {
             Content currentPage = (Content)request.getAttribute("aksess_this");
             Content content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
@@ -54,7 +61,7 @@ public class MiniViewTag  extends TagSupport {
                 if (template != null && template.length() > 0) {
                     if (template.indexOf("$SITE") != -1) {
                         int siteId = currentPage.getAssociation().getSiteId();
-                        Site site = SiteCache.getSiteById(siteId);
+                        Site site = siteCache.getSiteById(siteId);
                         String alias = site.getAlias();
                         template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
                     }
@@ -64,6 +71,17 @@ public class MiniViewTag  extends TagSupport {
                     // Ved å legge content på request'en med navn aksess_this vil malen kunne bruke standard tagger
                     RequestHelper.setRequestAttributes(request, content);
                     try {
+                        int siteId = content.getAssociation().getSiteId();
+                        no.kantega.publishing.api.model.Site site = siteCache.getSiteById(siteId);
+                        String alias = site.getAlias();
+                        if (template.indexOf("$SITE") != -1) {
+                            template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
+                        }
+                        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+                            for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
+                                listener.beforeMiniviewDispatch(new DefaultDispatchContext((HttpServletRequest)pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), template));
+                            }
+                        }
                         pageContext.include(template);
                     } catch (Exception e) {
                         Log.error(SOURCE, "Unable to display miniview for: " + content.getTitle(), null, null);

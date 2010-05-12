@@ -27,4 +27,8 @@ public class ContentRequestListenerAdapter implements ContentRequestListener {
     public void beforeDisplayTemplateDispatch(DispatchContext context) {
 
     }
+
+    public void beforeMiniviewDispatch(DispatchContext defaultDispatchContext) {
+
+    }
 }

@@ -17,6 +17,7 @@
 package no.kantega.openaksess.groovyscripts;
 
 import no.kantega.publishing.api.annotations.RequestHandler;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
 import no.kantega.publishing.common.data.Content;
 import org.apache.log4j.Logger;
@@ -58,6 +59,11 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
     @Override
     public void beforeIncludeTemplateDispatch(DispatchContext context) {
+        executeTemplate(context);
+    }
+
+    @Override
+    public void beforeMiniviewDispatch(DispatchContext context) {
         executeTemplate(context);
     }
 
