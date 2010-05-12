@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
-import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.ao.LinkDao;
-import no.kantega.publishing.event.ContentListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -26,17 +26,17 @@ import org.springframework.beans.factory.annotation.Autowired;
  * Date: Dec 6, 2007
  * Time: 2:04:36 PM
  */
-public class RemoveFromLinkCheckerListener extends ContentListenerAdapter {
+public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
     @Autowired
     private LinkDao linkDao;
 
-    public void contentExpired(Content content) {
-        linkDao.deleteLinksForContentId(content.getId());
+    public void contentExpired(ContentEvent event) {
+        linkDao.deleteLinksForContentId(event.getContent().getId());
     }
 
-    public void contentSaved(Content content) {
-        if (content.getId() != -1) {
-            linkDao.deleteLinksForContentId(content.getId());
+    public void contentSaved(ContentEvent event) {
+        if (event.getContent().getId() != -1) {
+            linkDao.deleteLinksForContentId(event.getContent().getId());
         }
     }
 }

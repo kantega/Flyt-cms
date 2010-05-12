@@ -36,16 +36,16 @@ public class ContentListenerNotifierFactory implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    public ContentListener createInstance() {
-        return (ContentListener) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ContentListener.class}, new InvocationHandler() {
+    public ContentEventListener createInstance() {
+        return (ContentEventListener) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ContentEventListener.class}, new InvocationHandler() {
             public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
                 Map lists = applicationContext.getBeansOfType(ContentListenerList.class);
                 Iterator it = lists.values().iterator();
                 while (it.hasNext()) {
                     ContentListenerList contentListenerList = (ContentListenerList) it.next();
                     for (int i = 0; i < contentListenerList.getListeners().size(); i++) {
-                        ContentListener contentListener = (ContentListener) contentListenerList.getListeners().get(i);
-                        method.invoke(contentListener, objects);    
+                        ContentEventListener contentEventListener = (ContentEventListener) contentListenerList.getListeners().get(i);
+                        method.invoke(contentEventListener, objects);
                     }
 
                 }

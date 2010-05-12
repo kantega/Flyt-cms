@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.service;
 
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.enums.*;
@@ -115,7 +116,7 @@ public class ContentManagementService {
         EditContentHelper.updateAttributesFromTemplate(content, securitySession);
 
         // Kjør plugins        
-        ContentListenerUtil.getContentNotifier().contentCreated(content);
+        ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(content));
 
         return content;
     }
@@ -185,7 +186,7 @@ public class ContentManagementService {
      * Lagrer et innholdsobjekt med en gitt status. Oppretter i gitte tilfeller en ny versjon.
      * Legger til objektet i søkeindeks dersom status = Publish
      * @param content - Endret objekt
-     * @param status - Status som skal settes på nytt objekt
+     * @param newStatus - Status som skal settes på nytt objekt
      * @return
      * @throws SystemException
      * @throws NotAuthorizedException
@@ -251,11 +252,11 @@ public class ContentManagementService {
             content.setVisibilityStatus(ContentVisibilityStatus.ACTIVE);
         }
 
-        ContentListenerUtil.getContentNotifier().beforeContentSave(content);
+        ContentListenerUtil.getContentNotifier().beforeContentSave(new ContentEvent().setContent(content));
 
         Content c = ContentAO.checkInContent(content, newStatus);
 
-        ContentListenerUtil.getContentNotifier().contentSaved(c);
+        ContentListenerUtil.getContentNotifier().contentSaved(new ContentEvent().setContent(c));
 
         if (Aksess.isEventLogEnabled()) {
             String event;
@@ -318,7 +319,7 @@ public class ContentManagementService {
         }
 
         // Kjï¿½r plugins
-        ContentListenerUtil.getContentNotifier().contentCreated(sourceContent);
+        ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(sourceContent));
 
         // Legg til kopling til parent
         List associations = new ArrayList();
@@ -418,7 +419,7 @@ public class ContentManagementService {
                     title = c.getTitle();
                 }
                 Boolean canDelete = new Boolean(true);
-                ContentListenerUtil.getContentNotifier().beforeContentDelete(c, canDelete);
+                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(canDelete));
                 if (!canDelete.booleanValue()) {
                     throw new ObjectInUseException(SOURCE, "I bruk");
                 }
@@ -428,7 +429,7 @@ public class ContentManagementService {
                     EventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }
 
-                ContentListenerUtil.getContentNotifier().contentDeleted(c);
+                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
 
 
             }
@@ -887,7 +888,7 @@ public class ContentManagementService {
             for (int i = 0; i < pagesToBeDeleted.size(); i++) {
                 Content c =  (Content)pagesToBeDeleted.get(i);
                 EventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
-                ContentListenerUtil.getContentNotifier().contentDeleted(c);
+                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
             }
         }
 
@@ -926,11 +927,11 @@ public class ContentManagementService {
             }
         }
 
-        ContentListenerUtil.getContentNotifier().beforeAssociationUpdate(association);
+        ContentListenerUtil.getContentNotifier().beforeAssociationUpdate(new ContentEvent().setAssociation(association));
 
         AssociationAO.modifyAssociation(association, true, true);
 
-        ContentListenerUtil.getContentNotifier().associationUpdated(association);
+        ContentListenerUtil.getContentNotifier().associationUpdated(new ContentEvent().setAssociation(association));
     }
 
     /**
@@ -1019,7 +1020,7 @@ public class ContentManagementService {
         int id = AttachmentAO.setAttachment(attachment);
         attachment.setId(id);
 
-        ContentListenerUtil.getContentNotifier().attachmentUpdated(attachment);
+        ContentListenerUtil.getContentNotifier().attachmentUpdated(new ContentEvent().setAttachment(attachment));
 
         return attachment.getId();
     }

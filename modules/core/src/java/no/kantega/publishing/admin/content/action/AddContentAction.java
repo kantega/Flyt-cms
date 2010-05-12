@@ -25,6 +25,7 @@ import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.event.ContentListenerUtil;
@@ -50,7 +51,7 @@ public class AddContentAction extends AdminController {
     private TemplateConfigurationCache templateConfigurationCache;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
 
         RequestParameters param = new RequestParameters(request);
 
@@ -87,34 +88,33 @@ public class AddContentAction extends AdminController {
         model.put("allowedTemplates", allowedTemplates);
 
         // Create an associations for all places where the parentpage has associations
-        List parentAssociations = parent.getAssociations();
-        List associations = new ArrayList();
-        for (int i = 0; i < parentAssociations.size(); i++) {
-            associations.add(parentAssociations.get(i));
+        List<Association> parentAssociations = parent.getAssociations();
+        List<Association> associations = new ArrayList<Association>();
+        for (Association parentAssociation : parentAssociations) {
+            associations.add(parentAssociation);
         }
 
         // Add associations (parents) added by user ...
         if (addedParents.length() > 0) {
             int parents[] = StringHelper.getInts(addedParents, ",");
-            for (int i = 0; i < parents.length; i++) {
+            for (int parent1 : parents) {
                 boolean found = false;
 
                 // Only add those that does not exist
-                for (int j = 0; j < associations.size(); j++) {
-                    Association tmp = (Association)associations.get(j);
-                    if (parents[i] == tmp.getAssociationId()) {
+                for (Association association : associations) {
+                    if (parent1 == association.getAssociationId()) {
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
                     ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(parents[i]);
-                    Content tmp = aksessService.getContent(cid);
-                    if (tmp != null) {
+                    cid.setAssociationId(parent1);
+                    Content association = aksessService.getContent(cid);
+                    if (association != null) {
                         // Check if user is authorized to publish here
-                        if (securitySession.isAuthorized(tmp, Privilege.APPROVE_CONTENT)) {
-                            Association a = aksessService.getAssociationById(parents[i]);
+                        if (securitySession.isAuthorized(association, Privilege.APPROVE_CONTENT)) {
+                            Association a = aksessService.getAssociationById(parent1);
                             associations.add(a);
                         } else {
                             model.put("notAuthorized", Boolean.TRUE);
@@ -133,7 +133,7 @@ public class AddContentAction extends AdminController {
         model.put("displayAddAssociation", config.getBoolean("admin.addassociation.display", displayAddAssociation));
 
         // Run plugins
-        ContentListenerUtil.getContentNotifier().beforeSelectTemplate(model);
+        ContentListenerUtil.getContentNotifier().beforeSelectTemplate(new ContentEvent().setModel(model));
 
         // Show page where user selects template etc
         return new ModelAndView(view, model);

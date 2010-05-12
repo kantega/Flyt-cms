@@ -16,21 +16,21 @@
 
 package no.kantega.publishing.event.impl;
 
-import no.kantega.publishing.event.ContentListenerAdapter;
-import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import org.apache.log4j.Logger;
 
 /**
  *
  */
-public class LoggingContentListener extends ContentListenerAdapter {
+public class LoggingContentListener extends ContentEventListenerAdapter {
     private Logger log = Logger.getLogger(getClass());
 
-    public void beforeContentSave(Content content) {
-        log.info("beforeContentSave(" +content.getTitle() +")");
+    public void beforeContentSave(ContentEvent event) {
+        log.info("beforeContentSave(" +event.getContent().getTitle() +")");
     }
 
-    public void contentSaved(Content content) {
-        log.info("contentSaved(" +content.getTitle() +")");
+    public void contentSaved(ContentEvent event) {
+        log.info("contentSaved(" +event.getContent().getTitle() +")");
     }
 }

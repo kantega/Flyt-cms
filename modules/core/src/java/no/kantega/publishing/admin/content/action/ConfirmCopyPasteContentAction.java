@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
@@ -145,7 +146,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
             model.put("allowCrossPublish", true);
 
             // Run plugins
-            ContentListenerUtil.getContentNotifier().beforeConfirmCopyPasteContent(selectedContent, model);
+            ContentListenerUtil.getContentNotifier().beforeConfirmCopyPasteContent(new ContentEvent().setContent(selectedContent).setModel(model));
 
             return new ModelAndView(view, model);
         }

@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.rating;
 
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.api.rating.RatingService;
-import no.kantega.publishing.event.ContentListenerAdapter;
-import no.kantega.publishing.common.data.Content;
 
-public class ContentDeleteRatingListener extends ContentListenerAdapter {
+public class ContentDeleteRatingListener extends ContentEventListenerAdapter {
     private RatingService ratingService;
 
-    public void contentDeleted(Content content) {
-        String objectId = "" + content.getId();
+    public void contentDeleted(ContentEvent event) {
+        String objectId = "" + event.getContent().getId();
         ratingService.deleteRatingsForObject(objectId, "content");
     }
 

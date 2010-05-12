@@ -19,13 +19,13 @@ package no.kantega.publishing.event;
 import java.util.List;
 
 public class ContentListenerList {
-    private List listeners;
+    private List<ContentEventListener> listeners;
 
-    public List getListeners() {
+    public List<ContentEventListener> getListeners() {
         return listeners;
     }
 
-    public void setListeners(List listeners) {
+    public void setListeners(List<ContentEventListener> listeners) {
         this.listeners = listeners;
     }
 }

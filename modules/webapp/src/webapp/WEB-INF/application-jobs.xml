@@ -19,7 +19,7 @@
 
 <beans>
     <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob">
-        <property name="contentNotifier">
+        <property name="contentEventNotifier">
             <ref bean="contentListenerNotifier"/>
         </property>
     </bean>

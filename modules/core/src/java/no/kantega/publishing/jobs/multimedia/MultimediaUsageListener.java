@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.ao.MultimediaUsageAO;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.util.MultimediaHelper;
-import no.kantega.publishing.event.ContentListenerAdapter;
 
 import java.util.List;
 
@@ -33,27 +33,27 @@ import java.util.List;
  * Date: Oct 13, 2008
  * Time: 10:47:32 AM
  */
-public class MultimediaUsageListener extends ContentListenerAdapter {
-    public void contentSaved(Content content) {
+public class MultimediaUsageListener extends ContentEventListenerAdapter {
+    public void contentSaved(ContentEvent event) {
         // Delete all usages for this content
-        MultimediaUsageAO.removeUsageForContentId(content.getId());
+        MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
         
         // Add all contentattributes
-        addAttributes(content.getId(), content.getAttributes(AttributeDataType.CONTENT_DATA));
+        addAttributes(event.getContent().getId(), event.getContent().getAttributes(AttributeDataType.CONTENT_DATA));
 
         // Add all metadataattributes
-        addAttributes(content.getId(), content.getAttributes(AttributeDataType.META_DATA));
+        addAttributes(event.getContent().getId(), event.getContent().getAttributes(AttributeDataType.META_DATA));
     }
 
-    public void contentDeleted(Content content) {
-        MultimediaUsageAO.removeUsageForContentId(content.getId());
+    public void contentDeleted(ContentEvent event) {
+        MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
     }
 
-    public void contentExpired(Content content) {
-        int action = content.getExpireAction();
+    public void contentExpired(ContentEvent event) {
+        int action = event.getContent().getExpireAction();
 
         if(action == ExpireAction.DELETE) {
-            MultimediaUsageAO.removeUsageForContentId(content.getId());
+            MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
         }
     }
 

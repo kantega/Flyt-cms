@@ -16,28 +16,27 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.modules.mailsender.MailSender;
-import no.kantega.publishing.event.ContentListenerAdapter;
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 import org.apache.log4j.Logger;
 
-public class DeleteIfExpiredListener extends ContentListenerAdapter  {
+public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
 
     private static final String SOURCE = "DeleteIfExpiredListener";
 
     private Logger log = Logger.getLogger(getClass());
 
-    public void contentExpired(Content content) {
+    public void contentExpired(ContentEvent event) {
+        Content content = event.getContent();
         int action = content.getExpireAction();
 
 

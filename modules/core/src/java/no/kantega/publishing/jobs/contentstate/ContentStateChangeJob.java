@@ -19,6 +19,7 @@ package no.kantega.publishing.jobs.contentstate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -26,7 +27,7 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.event.ContentListener;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 
 /**
@@ -35,7 +36,7 @@ import no.kantega.publishing.security.SecuritySession;
 public class ContentStateChangeJob  {
     private static String SOURCE = "ContentStateChangeJob";
 
-    private ContentListener contentNotifier;
+    private ContentEventListener contentEventNotifier;
 
     public void execute() {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
@@ -53,7 +54,7 @@ public class ContentStateChangeJob  {
                         newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
                     }
                     ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
-                    contentNotifier.contentExpired(content);
+                    contentEventNotifier.contentExpired(new ContentEvent().setContent(content));
                 }
             }
             Log.debug(SOURCE, "Looking for content that needs activation", null, null);
@@ -74,7 +75,7 @@ public class ContentStateChangeJob  {
                         activated = true;                        
                     }
                     if (activated) {
-                        contentNotifier.contentActivated(content);
+                        contentEventNotifier.contentActivated(new ContentEvent().setContent(content));
                     }
                 }
             }
@@ -87,7 +88,7 @@ public class ContentStateChangeJob  {
 
     }
 
-    public void setContentNotifier(ContentListener contentNotifier) {
-        this.contentNotifier = contentNotifier;
+    public void setContentEventNotifier(ContentEventListener contentEventNotifier) {
+        this.contentEventNotifier = contentEventNotifier;
     }
 }

@@ -16,50 +16,54 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.ao.AttachmentAO;
-import no.kantega.search.index.IndexManager;
-import no.kantega.publishing.search.index.jobs.UpdateContentJob;
-import no.kantega.publishing.search.index.jobs.UpdateAttachmentJob;
-import no.kantega.publishing.search.index.jobs.RemoveContentJob;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
-import no.kantega.publishing.event.ContentListenerAdapter;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
+import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
+import no.kantega.publishing.search.index.jobs.RemoveContentJob;
+import no.kantega.publishing.search.index.jobs.UpdateAttachmentJob;
+import no.kantega.publishing.search.index.jobs.UpdateContentJob;
+import no.kantega.search.index.IndexManager;
 
 import java.util.List;
 
 /**
  *
  */
-public class IndexUpdaterListener extends ContentListenerAdapter {
+public class IndexUpdaterListener extends ContentEventListenerAdapter {
     private static final String SOURCE = "aksess.IndexUpdaterListener";
 
     private IndexManager indexManager;
 
-    public void contentSaved(Content content) {
-        updateIndex(content);
+    @Override
+    public void contentSaved(ContentEvent event) {
+        updateIndex(event.getContent());
     }
 
-    public void contentExpired(Content content) {
-        updateIndex(content);
+    @Override
+    public void contentExpired(ContentEvent event) {
+        updateIndex(event.getContent());
     }
 
-    public void contentActivated(Content content) {
-        updateIndex(content);
+    @Override
+    public void contentActivated(ContentEvent event) {
+        updateIndex(event.getContent());
     }
 
-    public void contentDeleted(Content c) {
+    @Override
+    public void contentDeleted(ContentEvent event) {
         // Slett innhold
-        indexManager.addIndexJob(new RemoveContentJob(Integer.toString(c.getId()), "aksessContent"));
+        indexManager.addIndexJob(new RemoveContentJob(Integer.toString(event.getContent().getId()), "aksessContent"));
 
         // Slett vedlegg
-        List attachments = null;
+        List<Attachment> attachments = null;
         try {
-            attachments = AttachmentAO.getAttachmentList(c.getContentIdentifier());
-            for (int j = 0; j < attachments.size(); j++) {
-                Attachment attachment =  (Attachment)attachments.get(j);
+            attachments = AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier());
+            for (Attachment attachment : attachments) {
                 indexManager.addIndexJob(new RemoveAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
             }
         } catch (SystemException e) {
@@ -67,17 +71,16 @@ public class IndexUpdaterListener extends ContentListenerAdapter {
         }
     }
 
-    public void attachmentUpdated(Attachment attachment) {
-        indexManager.addIndexJob(new UpdateAttachmentJob(""+attachment.getId(), "aksessAttachments"));
+    public void attachmentUpdated(ContentEvent event) {
+        indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
     }
 
     private void updateIndex(Content content) {
         indexManager.addIndexJob(new UpdateContentJob(Integer.toString(content.getId()), "aksessContent"));
-        List attachments = null;
+        List<Attachment> attachments = null;
         try {
             attachments = AttachmentAO.getAttachmentList(content.getContentIdentifier());
-            for (int j = 0; j < attachments.size(); j++) {
-                Attachment attachment =  (Attachment)attachments.get(j);
+            for (Attachment attachment : attachments) {
                 indexManager.addIndexJob(new UpdateAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
             }
         } catch (SystemException e) {

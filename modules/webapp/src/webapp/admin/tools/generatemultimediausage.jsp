@@ -1,8 +1,9 @@
 <%@ page import="no.kantega.publishing.common.ao.ContentAO" %>
 <%@ page import="no.kantega.publishing.common.ao.ContentHandler" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.event.ContentListener" %>
+<%@ page import="no.kantega.publishing.event.ContentEventListener" %>
 <%@ page import="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener" %>
+<%@ page import="no.kantega.publishing.event.ContentEvent" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
@@ -28,8 +29,8 @@
   <%
         ContentAO.forAllContentObjects(new ContentHandler() {
             public void handleContent(Content content) {
-                ContentListener listener = new MultimediaUsageListener();
-                listener.contentSaved(content);
+                ContentEventListener eventListenertener = new MultimediaUsageListener();
+                eventListenertener.contentSaved(new ContentEvent().setContent(content));
             }
         }, new ContentAO.ContentHandlerStopper() {
 

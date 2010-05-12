@@ -23,8 +23,8 @@ import no.kantega.publishing.spring.RootContext;
  *
  */
 public class ContentListenerUtil {
-    public static ContentListener getContentNotifier() {
+    public static ContentEventListener getContentNotifier() {
         ApplicationContext context = RootContext.getInstance();
-        return (ContentListener) context.getBean("contentListenerNotifier");
+        return (ContentEventListener) context.getBean("contentListenerNotifier");
     }
 }
