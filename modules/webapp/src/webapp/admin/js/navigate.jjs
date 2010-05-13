@@ -93,34 +93,40 @@ openaksess.navigate = {
      * Defines actions for clicks in the navigator.
      */
     bindNavigatorClickEvents : function () {
-        //Click on the openState (+/-) icon of an expanded node.
-        $(".navigator span.openState > a.open").live('click', function(event){
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click closeTree");
-            event.preventDefault();
-            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($(this).attr("href"));
-            openaksess.navigate.closeTree(itemIdentifier);
-        });
-        //Click on the openState (+/-) icon of a collapsed node.
-        $(".navigator span.openState > a.closed").live('click', function(event){
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openTree");
-            event.preventDefault();
-            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($(this).attr("href"));
-            openaksess.navigate.openTree(itemIdentifier);
-        });
-        //Click on the title
-        $(".navigator span.title > a, #Breadcrumbs a, #Statusbar .statusDetails .breadcrumbs a").live('click', function(event){
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openContent");
-            event.preventDefault();
-            var href = $(this).attr("href");
-            var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: "+itemIdentifier);
-            if(typeof openaksess.navigate.onNavigatorTitleClick == 'function') {
-                openaksess.navigate.onNavigatorTitleClick($(this));
+
+        $("#Navigator, #Breadcrumbs, Statusbar .statusDetails .breadcrumbs").live('click', function(event) {
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click" + event.target.tagName);
+            if (event.target.tagName == 'A') {
+                event.preventDefault();
+
+                var $target = $(event.target);
+                if ($target.hasClass('open')) {
+                    //Click on the openState (+) icon
+                    openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click closeTree");
+                    event.preventDefault();
+                    var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($target.attr("href"));
+                    openaksess.navigate.closeTree(itemIdentifier);
+                } else if ($target.hasClass('closed')) {
+                    //Click on the openState (-) icon
+                    openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openTree");
+                    event.preventDefault();
+                    var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($target.attr("href"));
+                    openaksess.navigate.openTree(itemIdentifier);
+                } else {
+                    // Click an item
+                    var href = $target.attr("href");
+                    var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
+                    openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: "+itemIdentifier);
+                    if(typeof openaksess.navigate.onNavigatorTitleClick == 'function') {
+                        openaksess.navigate.onNavigatorTitleClick($target);
+                    }
+                    if(typeof openaksess.navigate.updateMainPane == 'function') {
+                        openaksess.navigate.updateMainPane(itemIdentifier, true);
+                    }
+                }
             }
-            if(typeof openaksess.navigate.updateMainPane == 'function') {
-                openaksess.navigate.updateMainPane(itemIdentifier, true);
-            }
-        });
+
+        });        
     },
 
     /**

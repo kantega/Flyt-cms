@@ -73,18 +73,6 @@
                 </td>
             </tr>
         </c:if>
-        <c:if test="${not empty currentUser.attributes}">
-            <tr>
-                <td><kantega:label key="aksess.userinformation.attributes"/></td>
-                <td>
-                    <ul>
-                        <c:forEach items="${currentUser.attributes}" var="attribute">
-                            <li><c:out value="${attribute.key}"/></li>
-                        </c:forEach>
-                    </ul>
-                </td>
-            </tr>
-        </c:if>
     </table>
 </div>
 <div class="floatRight"><img src="${currentUserImageUrl}" alt="Bilde" align="right"></div>
