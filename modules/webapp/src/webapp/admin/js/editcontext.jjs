@@ -229,7 +229,7 @@ openaksess.editcontext = function()  {
         selectUser : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?select=true&refresh=" + getRefresh(),width: 380, height:450});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?multiple=false&refresh=" + getRefresh(),width: 380, height:450});
         },
 
         /*
