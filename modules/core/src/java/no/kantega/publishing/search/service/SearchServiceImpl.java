@@ -107,7 +107,7 @@ public class SearchServiceImpl implements SearchService {
             try{
                 searchResult = searcher.search(searchQuery);
             } catch (NullPointerException e){
-               Log.error(SOURCE, "invalid query", null, null);
+                Log.error(SOURCE, "invalid query", null, null);
                 e.printStackTrace();
                 return null;
             }
@@ -249,13 +249,15 @@ public class SearchServiceImpl implements SearchService {
             c.add(new TextCriterion(Fields.TM_TOPICS, queryPhrase, analyzer));
             c.add(new TextCriterion(Fields.KEYWORDS, queryPhrase, analyzer));
             c.add(new PhraseCriterion(Fields.CONTENT_UNSTEMMED, queryPhrase));
-            for (SearchField field : query.getCustomSearchFields()) {
-                List<Criterion> criteria = field.getQueryCriteria(queryPhrase, analyzer);
-                if (criteria != null) {
-                    for (Criterion criterion : criteria) {
-                        c.add(criterion);
+            if (query.getCustomSearchFields() != null) {
+                for (SearchField field : query.getCustomSearchFields()) {
+                    List<Criterion> criteria = field.getQueryCriteria(queryPhrase, analyzer);
+                    if (criteria != null) {
+                        for (Criterion criterion : criteria) {
+                            c.add(criterion);
+                        }
                     }
-                }
+                }                
             }
             criterionList.add(c);
         }
@@ -350,14 +352,17 @@ public class SearchServiceImpl implements SearchService {
         /*
          * Custom filter parameters
          */
-        for (SearchField field : query.getCustomSearchFields()) {
-            List<Criterion> criteria = field.getFilterCriteria(query);
-            if (criteria != null) {
-                for (Criterion criterion : criteria) {
-                    criterionList.add(criterion);
+        if (query.getCustomSearchFields() != null) {
+            for (SearchField field : query.getCustomSearchFields()) {
+                List<Criterion> criteria = field.getFilterCriteria(query);
+                if (criteria != null) {
+                    for (Criterion criterion : criteria) {
+                        criterionList.add(criterion);
+                    }
                 }
             }
         }
+
 
         return criterionList;
     }

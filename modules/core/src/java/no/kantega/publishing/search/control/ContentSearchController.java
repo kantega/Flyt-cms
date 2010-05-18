@@ -323,14 +323,17 @@ public class ContentSearchController implements AksessController, InitializingBe
     }
 
     private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
-        for (SearchField field : customSearchFields) {
-            List<HitCountQuery> hitCountQueries = field.getHitCountQueries(query, request, content);
-            if (hitCountQueries != null) {
-                for (HitCountQuery hcQuery : hitCountQueries) {
-                    query.addHitCountQuery(hcQuery);
+        if (customSearchFields != null) {
+            for (SearchField field : customSearchFields) {
+                List<HitCountQuery> hitCountQueries = field.getHitCountQueries(query, request, content);
+                if (hitCountQueries != null) {
+                    for (HitCountQuery hcQuery : hitCountQueries) {
+                        query.addHitCountQuery(hcQuery);
+                    }
                 }
             }
         }
+
     }
 
 }

@@ -315,8 +315,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
             addAttributeFields(content, d);
             addOtherFields(content, d);
 
-            for (SearchField searchField : customSearchFields) {
-                searchField.addToIndex(content, d);
+            if (customSearchFields != null) {
+                for (SearchField searchField : customSearchFields) {
+                    searchField.addToIndex(content, d);
+                }
             }
             
             return d;

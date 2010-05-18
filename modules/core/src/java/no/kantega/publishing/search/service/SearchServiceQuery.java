@@ -91,8 +91,10 @@ public class SearchServiceQuery {
     public SearchServiceQuery(HttpServletRequest request, List<SearchField> customSearchFields) {
         this.request = request;
         this.customSearchFields = customSearchFields;
-        for (SearchField field : customSearchFields) {
-            paramNames.add(field.getFieldname());
+        if (customSearchFields != null) {
+            for (SearchField field : customSearchFields) {
+                paramNames.add(field.getFieldname());
+            }
         }
         searchParams = new HashMap<String, String>();
         for (String paramName : paramNames) {
