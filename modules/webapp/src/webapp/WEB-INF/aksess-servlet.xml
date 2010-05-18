@@ -548,7 +548,17 @@
 
     <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 
-    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
+        <bean name="aksessJsonWriter" class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
+        <property name="keepValueTypesMode" value="ALL"/>
+    </bean>
+
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView">
+        <property name="jsonWriter" ref="aksessJsonWriter"/>
+    </bean>   
+
+    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController">
+        <property name="jsonView" ref="aksessJsonView"/>
+    </bean>
 
 
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
