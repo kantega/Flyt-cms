@@ -32,11 +32,14 @@ public class FilterPipelineTest extends TestCase {
 
     public void testEmptyPipeline() {
         filterPipeline.removeFilters();
-        String input = "<html>test<body>Dette er en test med ÆØÅ æøå</body></html>";
+        String pre = "<html><head>";
+        String meta = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>";
+        String body = "<body>Dette er en test med ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½</body></html>";
+        String input = pre + body;        
         StringWriter sw = new StringWriter();
         try {
             filterPipeline.filter(new StringReader(input), sw);
-            assertEquals(input, sw.toString());
+            assertEquals(pre + meta + body, sw.toString());
         } catch (SystemException e) {
             fail(e.getMessage());
         }
