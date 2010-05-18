@@ -53,7 +53,7 @@
             <div class="contentAttribute">
                 <div class="heading"><kantega:label key="aksess.contentproperty.doctypeforchildren"/></div>
                 <div class="inputs">
-                    <select name="documenttype" class="fullWidth" tabindex="10">
+                    <select name="documenttypeidforchildren" class="fullWidth" tabindex="10">
                         <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
                         <c:forEach var="dt" items="${documentTypes}">
                             <option value="${dt.id}" <c:if test="${dt.id == currentContent.documentTypeIdForChildren}">selected</c:if>>${dt.name}</option>

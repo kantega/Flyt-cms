@@ -47,7 +47,7 @@ public class SaveMetadataAction extends AbstractSaveContentAction {
         content.setKeywords(param.getString("keywords", 8000));
         content.setPublisher(param.getString("publisher", 64));
         content.setDocumentTypeId(param.getInt("documenttype"));
-        content.setDocumentTypeIdForChildren(param.getInt("documenttypeforchildren"));
+        content.setDocumentTypeIdForChildren(param.getInt("documenttypeidforchildren"));
         content.setOwner(param.getString("owner", 128));
         content.setOwnerPerson(param.getString("ownerperson", 128));
         content.setLanguage(param.getInt("language"));
