@@ -45,7 +45,7 @@
                     <span class="button"><input type="submit" class="show" value="<kantega:label key="useradmin.searchroles.show"/>"></span>
                 </form>
             </c:if>
-            <table border="0" cellspacing="0" cellpadding="0" width="400">
+            <table border="0" cellspacing="0" cellpadding="0" class="fullWidth">
                 <thead>
                 <tr>
                     <th><kantega:label key="useradmin.searchroles.rolename"/></th>

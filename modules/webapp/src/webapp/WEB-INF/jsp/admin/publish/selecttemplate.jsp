@@ -58,7 +58,8 @@
             templatedesc.innerHTML = document.getElementById('template' + i).innerHTML;
             if (defaultCategory != -1) {
                 showCategoryInfo(defaultCategory);
-                document.getElementById("category" + defaultCategory).checked = true;
+                var category = document.getElementById("category" + defaultCategory);
+                if (category != null) category.checked = true;
             }
             templateinfo.style.display = 'block';
         }

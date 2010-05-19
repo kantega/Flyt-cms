@@ -55,8 +55,13 @@
                     </tr>
                 </c:forEach>
             </table>
+
+            <div class="buttonGroup">
+                <a href="EditTopicMap.action" class="button"><span class="add"><kantega:label key="aksess.topicmaps.admin.newmap"/></span></a>
+            </div>            
+
         </fieldset>
     </div>
-    <a href="EditTopicMap.action" class="button"><kantega:label key="aksess.topicmaps.admin.newmap"/></a>
+
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

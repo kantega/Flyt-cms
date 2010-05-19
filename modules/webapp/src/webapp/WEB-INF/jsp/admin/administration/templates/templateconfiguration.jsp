@@ -30,22 +30,22 @@
     <div class="fieldset">
         <fieldset>
             <h1><kantega:label key="aksess.templateconfig.title"/></h1>
-            <table>
+            <table class="fullWidth">
                 <tr>
                     <th>&nbsp;</th>
-                    <th><kantega:label key="aksess.templateconfig.items"/></th>
+                    <th class="number"><kantega:label key="aksess.templateconfig.items"/></th>
                 </tr>
                 <tr class="tableRow0">
                     <td><a href="ListAssociationCategories.action"><kantega:label key="aksess.associationcategories.title"/></a></td>
-                    <td><%=tc.getAssociationCategories().size()%></td>
+                    <td class="number"><%=tc.getAssociationCategories().size()%></td>
                 </tr>
                 <tr class="tableRow1">
                     <td><a href="ListContentTemplates.action"><kantega:label key="aksess.contenttemplates.title"/></a></td>
-                    <td><%=(tc.getContentTemplates().size() + tc.getMetadataTemplates().size()) %></td>
+                    <td class="number"><%=(tc.getContentTemplates().size() + tc.getMetadataTemplates().size()) %></td>
                 </tr>
                 <tr class="tableRow0">
                     <td><a href="ListDisplayTemplates.action"><kantega:label key="aksess.displaytemplates.title"/></a></td>
-                    <td><%=tc.getDisplayTemplates().size()%></td>
+                    <td class="number"><%=tc.getDisplayTemplates().size()%></td>
                 </tr>
             </table>
 

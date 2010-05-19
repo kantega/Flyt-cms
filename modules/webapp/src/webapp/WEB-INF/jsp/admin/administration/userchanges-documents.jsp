@@ -27,10 +27,10 @@
         <div class="fieldset">
             <fieldset>
                 <h1><kantega:label key="aksess.userchanges.username"/>:</strong> ${username}</h1>
-                <table>
+                <table class="fullWidth">
                     <tr>
                         <th><strong><kantega:label key="aksess.userchanges.documents.title"/></strong></th>
-                        <th><strong><kantega:label key="aksess.userchanges.documents.changed"/></strong></th>
+                        <th class="date"><strong><kantega:label key="aksess.userchanges.documents.changed"/></strong></th>
                     </tr>
                     <aksess:getcollection contentquery="${cq}" name="changes" skipattributes="true" orderby="lastmodified" max="200" descending="true" varStatus="status">
                         <tr class="tableRow${status.index mod 2}">

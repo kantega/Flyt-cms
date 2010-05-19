@@ -51,15 +51,13 @@
                         </table>
                     </div>
                 </div>
-
                 <div class="buttonGroup">
                     <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                 </div>
-
                 <aksess:ifcollectionnotempty findall="true" name="pages" skipattributes="true" showexpired="true" expirefromdate="${expireFromDate}" expiretodate="${expireToDate}" orderby="expiredate">
-                    <table style="margin-top:20px">
+                    <table style="margin-top:20px;" class="fullWidth">
                         <tr>
-                            <th><kantega:label key="aksess.contentexpire.date"/></th>
+                            <th class="date"><kantega:label key="aksess.contentexpire.date"/></th>
                             <th><kantega:label key="aksess.contentexpire.page"/></th>
                         </tr>
                         <aksess:getcollection name="pages" varStatus="status">

@@ -19,9 +19,7 @@
   --%>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/administration.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/administration.jjs"></script>
 </kantega:section>
 
 <kantega:section id="topMenu">
@@ -84,7 +82,6 @@
 
                 </ul>
             </div>
-            <div id="Framesplit"></div>
         </div>
 
         <div id="MainPane">

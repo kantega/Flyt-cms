@@ -42,7 +42,7 @@
             </div>
 
             </div>
-            <table>
+            <table class="fullWidth">
             <%
                 List userchanges = (List)request.getAttribute("userChanges");
                 if (userchanges != null) {

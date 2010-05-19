@@ -45,7 +45,7 @@
                     <option value="<%=ObjectType.TOPICMAP%> ${topicMapSelected}"><kantega:label key="aksess.objecttype.topicmap"/></option>
                 </select>
 
-                <table>
+                <table class="fullWidth">
                     <%
                         List permissionsOverview = (List)request.getAttribute("permissionsOverview");
                         if (permissionsOverview != null) {
