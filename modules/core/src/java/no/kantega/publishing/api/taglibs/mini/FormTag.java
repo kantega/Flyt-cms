@@ -75,7 +75,11 @@ public class FormTag extends BodyTagSupport {
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
             out.write("    <input class=\"editContentButton submit\" type=\"submit\" value=\""+submitButtonLabel+"\">");
-            String cancelAction = request.getContextPath()+"/admin/publish/SimpleEditCancel.action?";
+            String cancelAction = request.getContextPath()+"/admin/publish/SimpleEditCancel.action";
+            String redirectUrl = request.getParameter("redirectUrl");
+            if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
+                cancelAction = cancelAction+"?redirectUrl="+redirectUrl;
+            }
             out.write("    <input class=\"editContentButton cancel\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.cancel", locale)+"\" onclick=\"window.location.href ='"+cancelAction+"'\">");
             out.write("</form>");
 

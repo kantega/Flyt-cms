@@ -84,6 +84,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Additional query parameters, eg: queryParms="param1=some&amp;param2=thing"</description>
+            <name>queryParams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Lager en link til for å redigere en side med MiniAksess.</description>

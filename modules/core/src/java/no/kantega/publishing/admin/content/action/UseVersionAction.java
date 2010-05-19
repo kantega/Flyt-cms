@@ -32,6 +32,9 @@ import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UseVersionAction implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -53,7 +56,7 @@ public class UseVersionAction implements Controller {
                 content = aksessService.checkOutContent(cid);
 
                 // Reload attributes from XML template
-                EditContentHelper.updateAttributesFromTemplate(content, SecuritySession.getInstance(request));
+                EditContentHelper.updateAttributesFromTemplate(content);
 
                 session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
             }

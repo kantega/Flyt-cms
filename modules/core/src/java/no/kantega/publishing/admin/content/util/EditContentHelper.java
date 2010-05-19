@@ -175,12 +175,16 @@ public class EditContentHelper {
     }
 
 
-    public static void updateAttributesFromTemplate(Content content, SecuritySession securitySession) throws SystemException, InvalidFileException, InvalidTemplateException {
-        updateAttributesFromTemplate(content, AttributeDataType.CONTENT_DATA, securitySession);
-        updateAttributesFromTemplate(content, AttributeDataType.META_DATA, securitySession);
+    public static void updateAttributesFromTemplate(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
+        updateAttributesFromTemplate(content, null);
     }
 
-    private static void updateAttributesFromTemplate(Content content, int attributeType, SecuritySession securitySession) throws SystemException, InvalidFileException, InvalidTemplateException {
+    public static void updateAttributesFromTemplate(Content content, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
+        updateAttributesFromTemplate(content, AttributeDataType.CONTENT_DATA, defaultValues);
+        updateAttributesFromTemplate(content, AttributeDataType.META_DATA, defaultValues);
+    }
+
+    private static void updateAttributesFromTemplate(Content content, int attributeType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
         ContentTemplate template = null;
 
         int templateId = -1;
@@ -225,12 +229,7 @@ public class EditContentHelper {
 
             attribute.setType(attributeType);
 
-            Map model = new HashMap();
-            if (securitySession != null) {
-                model.put("currentUser", securitySession.getUser());
-            }
-
-            attribute.setConfig(attr, model);
+            attribute.setConfig(attr, defaultValues);
 
             String field = attribute.getField();
             if (field != null && field.length() > 0) {

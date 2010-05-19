@@ -38,10 +38,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  *
@@ -81,7 +78,7 @@ public abstract class Attribute {
         this.value = value;
     }
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         if (config != null) {
             name = config.getAttribute("name");
             if (name == null) {
@@ -147,33 +144,23 @@ public abstract class Attribute {
                         throw new SystemException("", "Feil ved lesing av default fil:" + file, e);
                     }
                 } else {
-                    Calendar cal = new GregorianCalendar(Aksess.getDefaultLocale());
-                    defaultValue = defaultValue.replaceAll("YEAR", "" + cal.get(Calendar.YEAR));
-                    int month = cal.get(Calendar.MONTH)+1;
-                    String m = (month<10) ? "0"+month : ""+month;
-                    int day = cal.get(Calendar.DAY_OF_MONTH);
-                    String d = (day<10) ? "0"+day : ""+day;
-                    defaultValue = defaultValue.replaceAll("MONTH", m);
-                    defaultValue = defaultValue.replaceAll("DAY", "" + d);
-                    defaultValue = defaultValue.replaceAll("WEEK", "" + cal.get(Calendar.WEEK_OF_YEAR));
+                    for (String key : model.keySet()) {
+                        String value = model.get(key);
+                        if (value == null) {
+                            value = "";
+                        }
+                        String keyToken = "\\$\\{" + key + "\\}";
 
-                    User user = (User)model.get("currentUser");
+                        String tmp = defaultValue.replaceAll(keyToken, value);
+                        if (tmp.equals(defaultValue)) {
+                            defaultValue = defaultValue.replaceAll(key, value);
+                        } else {
+                            defaultValue = tmp;
+                        }
 
-                    String userId = "";
-                    String userName = "";
-                    String department = "";
-                    String email = "";
-                    if (user != null) {
-                        userId = user.getId();
-                        userName = user.getName();
-                        department = user.getDepartment();
-                        email = user.getEmail();
                     }
 
-                    defaultValue = defaultValue.replaceAll("USER.ID", userId);
-                    defaultValue = defaultValue.replaceAll("USER.NAME", userName);
-                    defaultValue = defaultValue.replaceAll("USER.DEPARTMENT", department);
-                    defaultValue = defaultValue.replaceAll("USER.EMAIL", email);
+                    defaultValue = defaultValue.replaceAll("\\$\\{(.*)\\}", "");
 
                     value = defaultValue;
                 }

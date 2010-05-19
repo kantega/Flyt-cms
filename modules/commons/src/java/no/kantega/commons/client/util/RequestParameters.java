@@ -54,8 +54,8 @@ public class RequestParameters  {
         return request;
     }
 
-    public Map getParametersAsMap() {
-        Map param = new HashMap();
+    public Map<String, String> getParametersAsMap() {
+        Map<String, String> param = new HashMap<String, String>();
 
         Enumeration parameterNames = request.getParameterNames();
         while(parameterNames.hasMoreElements()) {

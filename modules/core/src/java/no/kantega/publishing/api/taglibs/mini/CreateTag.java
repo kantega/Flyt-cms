@@ -46,6 +46,7 @@ public class CreateTag extends AbstractSimpleEditTag {
     private int contentTemplateId = -1;
     private String parentId = null;
     private String associationcategory = null;
+    private String queryParams;
 
     public int doAfterBody() throws JspException {
         try {
@@ -86,6 +87,15 @@ public class CreateTag extends AbstractSimpleEditTag {
                 if (redirectUrl != null) {
                     link.append("&amp;redirectUrl=");
                     link.append(redirectUrl);
+                }
+                if (queryParams != null) {
+                    if (queryParams.startsWith("?")) {
+                        queryParams = queryParams.replaceFirst("\\?", "");
+                    }
+                    if (!queryParams.startsWith("&")) {
+                        link.append("&amp;");
+                    }
+                    link.append(queryParams);
                 }
                 link.append("\">");
                 link.append(body);
@@ -140,5 +150,9 @@ public class CreateTag extends AbstractSimpleEditTag {
 
     public void setAssociationcategory(String associationcategory) {
         this.associationcategory = associationcategory;
+    }
+
+    public void setQueryParams(String queryParams) {
+        this.queryParams = queryParams;
     }
 }

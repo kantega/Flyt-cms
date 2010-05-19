@@ -45,9 +45,7 @@ import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Date;
-import java.util.ArrayList;
+import java.util.*;
 import java.sql.SQLException;
 
 /**
@@ -103,7 +101,7 @@ public class ContentManagementService {
         }
         LockManager.lockContent(securitySession.getUser().getId(), c.getId());
 
-        EditContentHelper.updateAttributesFromTemplate(c, securitySession);
+        EditContentHelper.updateAttributesFromTemplate(c);
 
         return c;
     }
@@ -112,8 +110,24 @@ public class ContentManagementService {
     public Content createNewContent(ContentCreateParameters parameters) throws SystemException, InvalidFileException, InvalidTemplateException, NotAuthorizedException {
         Content content = EditContentHelper.createContent(securitySession, parameters);
 
+        Map<String, String> defaultValues = parameters.getDefaultValues();
+        defaultValues.put(AttributeDefaultValues.USER_ID, securitySession.getUser().getId());
+        defaultValues.put(AttributeDefaultValues.USER_NAME, securitySession.getUser().getName());
+        defaultValues.put(AttributeDefaultValues.USER_DEPARTMENT, securitySession.getUser().getDepartment());
+        defaultValues.put(AttributeDefaultValues.USER_EMAIL, securitySession.getUser().getEmail());
+
+        Calendar cal = new GregorianCalendar(Aksess.getDefaultLocale());
+        defaultValues.put(AttributeDefaultValues.YEAR, "" + cal.get(Calendar.YEAR));
+        int month = cal.get(Calendar.MONTH)+1;
+        String m = (month<10) ? "0"+month : ""+month;
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        String d = (day<10) ? "0"+day : ""+day;
+        defaultValues.put(AttributeDefaultValues.MONTH, m);
+        defaultValues.put(AttributeDefaultValues.DAY, "" + d);
+        defaultValues.put(AttributeDefaultValues.WEEK, "" + cal.get(Calendar.WEEK_OF_YEAR));
+
         // Last attributter fra XML fil
-        EditContentHelper.updateAttributesFromTemplate(content, securitySession);
+        EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());
 
         // Kjør plugins        
         ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(content));

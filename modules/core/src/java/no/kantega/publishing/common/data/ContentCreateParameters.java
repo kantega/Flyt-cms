@@ -21,6 +21,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -33,6 +35,7 @@ public class ContentCreateParameters {
     private int mainParentId = -1;
     private int[] parentIds = null;
     private int categoryId = -1;
+    private Map<String, String> defaultValues = new HashMap<String, String>();
 
     public ContentCreateParameters() {
         
@@ -55,6 +58,15 @@ public class ContentCreateParameters {
                 }
             }
         }
+        
+        Map<String, String> paramMap = param.getParametersAsMap();
+        paramMap.remove("parentId");
+        paramMap.remove("templateId");
+        paramMap.remove("contentTemplateId");
+        paramMap.remove("categoryId");
+        paramMap.remove("categoryName");
+        defaultValues.putAll(paramMap);
+
 
     }
 
@@ -96,5 +108,13 @@ public class ContentCreateParameters {
 
     public void setCategoryId(int category) {
         this.categoryId = category;
+    }
+
+    public Map<String, String> getDefaultValues() {
+        return defaultValues;
+    }
+
+    public void setDefaultValues(Map<String, String> defaultValues) {
+        this.defaultValues = defaultValues;
     }
 }
