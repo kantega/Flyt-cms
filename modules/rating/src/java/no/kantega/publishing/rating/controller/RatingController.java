@@ -50,6 +50,7 @@ public class RatingController {
 
         if("json".equalsIgnoreCase(responsetype)) {
             model.put("rating", ratingValue);
+            model.put("ratingscore", ratingService.getScoreForObject(objectId, context));
             List<Rating> allRatings = ratingService.getRatingsForObject(objectId, context);
             if (allRatings != null) {
                 model.put("totalRatings", allRatings.size());
