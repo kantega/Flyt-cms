@@ -20,12 +20,12 @@ import no.kantega.search.core.SearchHandler;
 import no.kantega.search.core.SearchHandlerDefaultImpl;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.index.IndexManager;
-import no.kantega.commons.log.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Sort;
 
 /**
  * Date: Dec 3, 2008
@@ -40,6 +40,7 @@ public class SearchQueryDefaultImpl implements SearchQuery {
     private List<Criterion> criteria;
     private List<Criterion> filters;
     private int maxHits = 1000;
+    private Sort sort;
 
 
     public SearchQueryDefaultImpl() {
@@ -75,6 +76,17 @@ public class SearchQueryDefaultImpl implements SearchQuery {
      */
     public int getMaxHits() {
         return maxHits;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Sort getSort() {
+        return sort;
+    }
+
+    public void setSort(Sort sort) {
+        this.sort = sort;
     }
 
     public void setMaxHits(int maxHits) {

@@ -55,6 +55,8 @@ public class SearchServiceQuery {
     
     public static final String METAPARAM_PAGE = "page";
     public static final String METAPARAM_HITS_PER_PAGE = "hpp";
+    public static final String METAPARAM_ORDERBY = "orderby";
+    public static final String METAPARAM_SORTORDER = "sortorder";
 
     private static int defaultPage = 0;
     private static int defaultHitsPerPage = 10;
@@ -171,6 +173,21 @@ public class SearchServiceQuery {
 
     public int getHitsPerPage() {
         return getStrictlyPositiveInteger(request.getParameter(METAPARAM_HITS_PER_PAGE), defaultHitsPerPage);
+    }
+
+    public String getOrderBy() {
+        String orderby = request.getParameter(METAPARAM_ORDERBY);
+        if ("title".equalsIgnoreCase(orderby)) {
+            orderby = Fields.TITLE_UNANALYZED;
+        } else if ("modified".equalsIgnoreCase(orderby)) {
+            orderby = Fields.LAST_MODIFIED;
+        }
+        return orderby;
+    }
+
+    public boolean isSortReverse() {
+        String sortorder = request.getParameter(METAPARAM_SORTORDER);
+        return null != sortorder && ("desc".equalsIgnoreCase(sortorder) || "descending".equalsIgnoreCase(sortorder));
     }
 
     public int getFromIndex() {

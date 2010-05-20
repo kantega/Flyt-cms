@@ -191,6 +191,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         fKeywords.setBoost(1.5f);
         d.add(fKeywords);                    
 
+        d.add(new Field(Fields.TITLE_UNANALYZED, content.getTitle(), Field.Store.NO, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.DOCTYPE, Fields.TYPE_ATTACHMENT, Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.ATTACHMENT_ID, Integer.toString(a.getId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.ATTACHMENT_CONTENT_ID_REF, Integer.toString(a.getContentId()), Field.Store.YES, Field.Index.NOT_ANALYZED));

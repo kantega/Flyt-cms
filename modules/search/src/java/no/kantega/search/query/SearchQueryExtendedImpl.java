@@ -21,13 +21,13 @@ import no.kantega.search.core.SearchHandlerExtendedImpl;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.result.TermTranslator;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
 import no.kantega.search.query.hitcount.HitCountQuery;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Sort;
 
 /**
  * Date: Dec 3, 2008
@@ -44,6 +44,7 @@ public class SearchQueryExtendedImpl implements SearchQuery {
     private int maxHits = 1000;
     private TermTranslator termTranslator;
     private List<HitCountQuery> hitCountQueries;
+    private Sort sort;
 
 
     public SearchQueryExtendedImpl() {
@@ -80,6 +81,17 @@ public class SearchQueryExtendedImpl implements SearchQuery {
      */
     public int getMaxHits() {
         return maxHits;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Sort getSort() {
+        return sort;
+    }
+
+    public void setSort(Sort sort) {
+        this.sort = sort;
     }
 
     public TermTranslator getTermTranslator() {

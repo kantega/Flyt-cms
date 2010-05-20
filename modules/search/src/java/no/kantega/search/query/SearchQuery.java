@@ -22,6 +22,8 @@ import no.kantega.search.index.IndexManager;
 
 import java.util.List;
 
+import org.apache.lucene.search.Sort;
+
 /**
  * Date: Dec 3, 2008
  * Time: 7:49:37 AM
@@ -59,5 +61,14 @@ public interface SearchQuery {
      * @return det maksimale antallet treff som skal returneres for dette søket
      */
     public int getMaxHits();
+
+    /**
+     * Returns the sort that should be applied on the results returned
+     * from this search query. May return <tt>null</tt> if default sort
+     * should be used.
+     *
+     * @return the sort that should be applied.
+     */
+    public Sort getSort();
 
 }
