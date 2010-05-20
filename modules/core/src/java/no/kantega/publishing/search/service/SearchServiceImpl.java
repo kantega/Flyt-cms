@@ -19,17 +19,30 @@ package no.kantega.publishing.search.service;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.SearchAO;
-import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.model.AksessSearchHitContext;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.core.Searcher;
-import no.kantega.search.criteria.*;
+import no.kantega.search.criteria.ContentParentCriterion;
+import no.kantega.search.criteria.ContentStatusCriterion;
+import no.kantega.search.criteria.ContentTemplateCriterion;
+import no.kantega.search.criteria.ContentTypeCriterion;
+import no.kantega.search.criteria.Criterion;
+import no.kantega.search.criteria.DocumentTypeCriterion;
+import no.kantega.search.criteria.LanguageCriterion;
+import no.kantega.search.criteria.LastModifiedCriterion;
+import no.kantega.search.criteria.OrCriterion;
+import no.kantega.search.criteria.PhraseCriterion;
+import no.kantega.search.criteria.SiteCriterion;
+import no.kantega.search.criteria.TextCriterion;
+import no.kantega.search.criteria.VisibilityStatusCriterion;
 import no.kantega.search.index.Fields;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.index.provider.DocumentProvider;
@@ -39,15 +52,22 @@ import no.kantega.search.query.SearchQuery;
 import no.kantega.search.query.SearchQueryDefaultImpl;
 import no.kantega.search.query.SearchQueryExtendedImpl;
 import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.result.*;
+import no.kantega.search.result.Alternative;
+import no.kantega.search.result.DocumentHit;
+import no.kantega.search.result.HitCount;
+import no.kantega.search.result.SearchHit;
+import no.kantega.search.result.SearchResult;
+import no.kantega.search.result.SearchResultExtendedImpl;
+import no.kantega.search.result.Suggestion;
+import no.kantega.search.result.TermTranslator;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.BooleanClause;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.lucene.search.BooleanClause;
 
 /**
  * Date: Jan 28, 2009
@@ -226,6 +246,14 @@ public class SearchServiceImpl implements SearchService {
             c.add(new TextCriterion(Fields.TM_TOPICS, queryPhrase, analyzer));
             c.add(new TextCriterion(Fields.KEYWORDS, queryPhrase, analyzer));
             c.add(new PhraseCriterion(Fields.CONTENT_UNSTEMMED, queryPhrase));
+            for (SearchField field : query.getCustomSearchFields()) {
+                List<Criterion> criteria = field.getQueryCriteria(queryPhrase, analyzer);
+                if (criteria != null) {
+                    for (Criterion criterion : criteria) {
+                        c.add(criterion);
+                    }
+                }
+            }
             criterionList.add(c);
         }
 
@@ -314,6 +342,18 @@ public class SearchServiceImpl implements SearchService {
             Integer languageId = query.getIntegerParam(SearchServiceQuery.PARAM_LANGUAGE);
             LanguageCriterion c = new LanguageCriterion(languageId);
             criterionList.add(c);
+        }
+
+        /*
+         * Custom filter parameters
+         */
+        for (SearchField field : query.getCustomSearchFields()) {
+            List<Criterion> criteria = field.getFilterCriteria(query);
+            if (criteria != null) {
+                for (Criterion criterion : criteria) {
+                    criterionList.add(criterion);
+                }
+            }
         }
 
         return criterionList;

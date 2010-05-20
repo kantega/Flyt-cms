@@ -107,6 +107,7 @@
     <bean id="defaultDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultDocumentProvider">
         <property name="aksessDao" ref="aksessDao"/>
         <property name="sourceId" value="aksessContent"/>
+        <property name="customSearchFields" ref="aksessCustomSearchFields"/>
     </bean>
 
     <bean id="defaultAttachmentDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultAttachmentDocumentProvider">
@@ -134,6 +135,13 @@
                     <bean class="no.kantega.publishing.search.extraction.impl.PdfExtractor"/>
                 </entry>
             </map>
+        </property>
+    </bean>
+
+    <bean id="aksessCustomSearchFields" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+            </list>
         </property>
     </bean>
 
