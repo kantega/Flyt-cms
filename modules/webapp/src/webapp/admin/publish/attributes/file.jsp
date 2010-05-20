@@ -21,7 +21,6 @@
     Attribute attribute = (Attribute)request.getAttribute("attribute");
     String value = attribute.getValue();
 %>
-<div class="heading">${attribute.title}<%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="file" class="fullWidth" name="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}">
     <input type="hidden" name="delete_${fieldName}" value="0">

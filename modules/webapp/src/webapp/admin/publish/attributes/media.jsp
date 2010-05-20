@@ -52,7 +52,6 @@
     }
 
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <c:choose>
             <c:when test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">

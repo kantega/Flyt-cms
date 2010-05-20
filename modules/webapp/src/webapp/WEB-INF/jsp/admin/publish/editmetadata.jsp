@@ -78,6 +78,7 @@
         </div>
         <!-- Owner -->
         <div class="contentAttribute">
+            <div class="heading"><kantega:label key="aksess.contentproperty.owner"/></div>
             <%
                 OrgunitAttribute orgunit = new OrgunitAttribute();
 
@@ -90,6 +91,7 @@
         </div>
         <!-- OwnerPerson-->
         <div class="contentAttribute">
+            <div class="heading"><kantega:label key="aksess.contentproperty.ownerperson"/></div>
             <%
                 UserAttribute user = new UserAttribute();
 

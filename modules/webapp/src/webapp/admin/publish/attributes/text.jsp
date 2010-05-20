@@ -35,7 +35,6 @@
         value = content.getTitle();
     }
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <%
         if (maxLength <= 255) {

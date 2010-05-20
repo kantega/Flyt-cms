@@ -27,7 +27,6 @@
     TopicmapAttribute attribute = (TopicmapAttribute) request.getAttribute("attribute");
     String fieldName = (String)request.getAttribute("fieldName");
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
 <%
     String value = attribute.getValue();

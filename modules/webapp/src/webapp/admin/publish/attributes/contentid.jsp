@@ -49,7 +49,6 @@
     }
 
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
     <input type="text" name="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="fullWidth">

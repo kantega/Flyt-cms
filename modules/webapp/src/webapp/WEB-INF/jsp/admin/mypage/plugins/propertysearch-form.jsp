@@ -54,6 +54,7 @@
 </script>
 <form name="myform" action="" method="post">
     <div class="contentAttribute">
+        <div class="heading"><kantega:label key="aksess.contentproperty.parent"/></div>
         <%
             ContentidAttribute parent = new ContentidAttribute();
             parent.setName(LocaleLabels.getLabel("aksess.contentproperty.parent", Aksess.getDefaultAdminLocale()));
@@ -64,6 +65,7 @@
         %>
     </div>
     <div class="contentAttribute">
+        <div class="heading"><kantega:label key="aksess.contentproperty.lastmodified"/></div>
         <%
             DateAttribute changed = new DateAttribute();
             changed.setName(LocaleLabels.getLabel("aksess.contentproperty.lastmodified", Aksess.getDefaultAdminLocale()));
@@ -74,6 +76,7 @@
         %>
     </div>
     <div class="contentAttribute">
+        <div class="heading"><kantega:label key="aksess.contentproperty.doctype"/></div>
         <%
             DocumenttypeAttribute doctype = new DocumenttypeAttribute();
             doctype.setName(LocaleLabels.getLabel("aksess.contentproperty.doctype", Aksess.getDefaultAdminLocale()));
@@ -84,6 +87,7 @@
         %>
     </div>
     <div class="contentAttribute">
+        <div class="heading"><kantega:label key="aksess.contentproperty.ownerperson"/></div>
         <%
             UserAttribute user = new UserAttribute();
             user.setName(LocaleLabels.getLabel("aksess.contentproperty.ownerperson", Aksess.getDefaultAdminLocale()));
@@ -94,6 +98,7 @@
         %>
     </div>
     <div class="contentAttribute">
+        <div class="heading"><kantega:label key="aksess.contentproperty.owner"/></div>
         <%
             OrgunitAttribute orgunit = new OrgunitAttribute();
             orgunit.setName(LocaleLabels.getLabel("aksess.contentproperty.owner", Aksess.getDefaultAdminLocale()));

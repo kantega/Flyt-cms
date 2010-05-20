@@ -187,6 +187,10 @@ public class EditContentHelper {
     private static void updateAttributesFromTemplate(Content content, int attributeType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
         ContentTemplate template = null;
 
+        if (defaultValues == null) {
+            defaultValues = new HashMap<String, String>();
+        }
+
         int templateId = -1;
         if (attributeType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
@@ -228,6 +232,7 @@ public class EditContentHelper {
             }
 
             attribute.setType(attributeType);
+
 
             attribute.setConfig(attr, defaultValues);
 

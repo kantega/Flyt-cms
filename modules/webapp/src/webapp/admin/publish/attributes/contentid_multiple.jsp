@@ -30,7 +30,6 @@
 
     ContentManagementService cms = new ContentManagementService(request);
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
     <select name="<%=fieldName%>list" size="10" class="fullWidth">

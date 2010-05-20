@@ -32,7 +32,6 @@
         roleName = role.getName();
     }
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=roleId%>">
     <input type="text" name="<%=fieldName%>text" value="<%=roleName%>" onFocus="this.select()" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">

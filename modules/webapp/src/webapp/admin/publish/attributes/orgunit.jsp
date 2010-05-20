@@ -43,7 +43,6 @@
         }
     }
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <%
         if (manager != null) {

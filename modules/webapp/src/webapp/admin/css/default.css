@@ -493,6 +493,11 @@ TODO: What is this?
 #Content .buttonBar .barButton > .disabled {
     cursor: default;
 }
+
+#Content .buttonBar {
+    margin-right: 20px;
+}
+
 #Content .buttonBar input {
     padding-left: 24px;
     line-height: 26px;
@@ -650,7 +655,6 @@ TODO: What is this?
 
 .contentAttribute .heading, .formElement .heading {
     font-weight: bold;
-    float: left;
 }
 
 .contentAttribute.error .heading {

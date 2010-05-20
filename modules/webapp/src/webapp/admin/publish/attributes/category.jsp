@@ -68,7 +68,6 @@
         value = "";
     }    
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=categoryId%>">
     <input type="text" class="disabled fullWidth" readonly onFocus="this.blur()"  name="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">

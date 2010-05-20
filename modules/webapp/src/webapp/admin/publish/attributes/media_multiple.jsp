@@ -28,7 +28,6 @@
 
     MultimediaService mediaService = new MultimediaService(request);
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
         <select name="<%=fieldName%>list" class="inp" style="width:600px;" size="10">

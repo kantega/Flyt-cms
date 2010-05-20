@@ -123,8 +123,11 @@ public class InputScreenRenderer {
                     } else {
                         out.print("\n<div class=\"contentAttribute\">\n");
                     }
-                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
-                    out.print("\n");
+                    out.print("<div class=\"heading\">" + attr.getTitle());
+                    if (attr.isMandatory()) {
+                        out.print("<span class=\"mandatory\">*</span>");
+                    }
+                    out.print("</div>");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {
                         out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
@@ -133,6 +136,8 @@ public class InputScreenRenderer {
                         String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
                         out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
                     }
+                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
+                    out.print("\n");
                     out.print("</div>\n");
                 } catch (Exception e) {
                     out.print("</div>\n");

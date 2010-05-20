@@ -35,7 +35,6 @@
         }
     }
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="hidden" name="${fieldName}" value="<%=value%>">
     <input type="text" class="disabled fullWidth" name="${fieldName}text" value="<%=topicname%>" readonly onFocus="this.blur()">

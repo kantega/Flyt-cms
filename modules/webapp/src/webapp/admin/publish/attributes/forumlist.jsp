@@ -19,7 +19,6 @@
 <%
     ForumlistAttribute attribute = (ForumlistAttribute)request.getAttribute("attribute");
 %>
-<div class="heading">${attribute.title}<%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <select name="${fieldName}" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
         <option value="-1"><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>

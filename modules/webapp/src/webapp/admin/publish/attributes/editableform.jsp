@@ -26,7 +26,6 @@
 
     String value = attribute.getValue();
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <div id="form_EditableForm">
         <div id="form_FormElements">

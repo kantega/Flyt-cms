@@ -32,7 +32,6 @@
         $("#${fieldName}").datepicker();
     });
 </script>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <input type="text" id="${fieldName}" size="<%=len%>" maxlength="<%=len%>" name="${fieldName}" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">&nbsp;(<%=df%>)
 </div>

@@ -28,7 +28,6 @@
     OrganizationManager manager = (OrganizationManager)
     RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
         <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
         <select name="<%=fieldName%>list" class="fullWidth" size="6">

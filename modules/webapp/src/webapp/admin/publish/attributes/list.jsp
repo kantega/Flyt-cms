@@ -19,7 +19,6 @@
 <%
     ListAttribute attribute = (ListAttribute)request.getAttribute("attribute");
 %>
-<div class="heading"><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></div>
 <div class="inputs">
     <%@include file="listoptions.jsf"%>
 </div>
