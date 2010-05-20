@@ -64,6 +64,7 @@ public class SearchServiceQuery {
 
     private HttpServletRequest request;
     private Map<String, String> searchParams;
+    private Map<String, String> metaParams;
     private List<HitCountQuery> hitCountQueries = new ArrayList<HitCountQuery>();
     private List<SearchField> customSearchFields;
     private List<String> paramNames;
@@ -101,6 +102,11 @@ public class SearchServiceQuery {
                 searchParams.put(paramName, paramValue);
             }
         }
+        metaParams = new HashMap<String, String>();
+        metaParams.put(METAPARAM_PAGE, request.getParameter(METAPARAM_PAGE));
+        metaParams.put(METAPARAM_HITS_PER_PAGE, request.getParameter(METAPARAM_HITS_PER_PAGE));
+        metaParams.put(METAPARAM_ORDERBY, request.getParameter(METAPARAM_ORDERBY));
+        metaParams.put(METAPARAM_SORTORDER, request.getParameter(METAPARAM_SORTORDER));
     }
 
     /**
@@ -167,16 +173,27 @@ public class SearchServiceQuery {
         return getStringParam(PARAM_SEARCH_PHRASE);
     }
 
+    /**
+     * Adds a metaparameter to this query. Overwrites any existing parameter
+     * with the same name.
+     *
+     * @param name the parameter's name
+     * @param value the parameter's value
+     */
+    public void putMetaParam(String name, String value) {
+        metaParams.put(name, value);
+    }
+
     public int getPage() {
-        return getPositiveInteger(request.getParameter(METAPARAM_PAGE), defaultPage);
+        return getPositiveInteger(metaParams.get(METAPARAM_PAGE), defaultPage);
     }
 
     public int getHitsPerPage() {
-        return getStrictlyPositiveInteger(request.getParameter(METAPARAM_HITS_PER_PAGE), defaultHitsPerPage);
+        return getStrictlyPositiveInteger(metaParams.get(METAPARAM_HITS_PER_PAGE), defaultHitsPerPage);
     }
 
     public String getOrderBy() {
-        String orderby = request.getParameter(METAPARAM_ORDERBY);
+        String orderby = metaParams.get(METAPARAM_ORDERBY);
         if ("title".equalsIgnoreCase(orderby)) {
             orderby = Fields.TITLE_UNANALYZED;
         } else if ("modified".equalsIgnoreCase(orderby)) {
@@ -186,7 +203,7 @@ public class SearchServiceQuery {
     }
 
     public boolean isSortReverse() {
-        String sortorder = request.getParameter(METAPARAM_SORTORDER);
+        String sortorder = metaParams.get(METAPARAM_SORTORDER);
         return null != sortorder && ("desc".equalsIgnoreCase(sortorder) || "descending".equalsIgnoreCase(sortorder));
     }
 

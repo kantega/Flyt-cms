@@ -68,6 +68,7 @@
     </bean>
 
     <bean id="searcher" class="no.kantega.search.core.SearcherImpl">
+        <constructor-arg value="5120"/>
         <property name="indexManager" ref="indexManager"/>
     </bean>
 
