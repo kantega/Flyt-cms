@@ -16,12 +16,23 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateEditableformAttributeFromRequestBehaviour;
+
 /**
  *
  */
 public class EditableformAttribute extends Attribute {
+
+
     @Override
     public String getRenderer() {
         return "editableform";
     }
+
+    @Override
+    public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
+        return new UpdateEditableformAttributeFromRequestBehaviour();
+    }
+
 }
