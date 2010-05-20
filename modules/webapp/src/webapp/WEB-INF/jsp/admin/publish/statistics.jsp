@@ -31,7 +31,7 @@
         $(document).ready(function(){
             openaksess.common.debug("organizesubpages.$(document).ready()");
             openaksess.statistics.currentUrl = "${currentNavigateContent.url}";
-            openaksess.statistics.;
+            openaksess.statistics.updateStatistics(openaksess.statistics.currentUrl, openaksess.statistics.currentView);            
 
         });
     </script>

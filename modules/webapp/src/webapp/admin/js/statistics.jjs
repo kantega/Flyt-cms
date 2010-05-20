@@ -19,22 +19,21 @@
 //%>
 
 
-var currentUrl = "${currentNavigateContent.url}";
+var currentUrl = "";
 var currentView = "Page";
 
 $(document).ready(function(){
     openaksess.common.debug("statistics.$(document).ready()");
-    openaksess.statistics.updateStatistics(currentUrl, currentView);
 
     $("#PageStatistics").live('click', function(event) {
         event.preventDefault();
-        currentView = "Page";
-        openaksess.statistics.updateStatistics(currentUrl, currentView);
+        openaksess.statistics.currentView = "Page";
+        openaksess.statistics.updateStatistics(currentUrl, openaksess.statistics.currentView);
     });
     $("#TotalStatistics").live('click', function(event) {
         event.preventDefault();
-        currentView = "Total";
-        openaksess.statistics.updateStatistics(currentUrl, currentView);
+        openaksess.statistics.currentView = "Total";
+        openaksess.statistics.updateStatistics(currentUrl, openaksess.statistics.currentView);
     });
 
 });
@@ -46,6 +45,8 @@ $(document).ready(function(){
  ********************************************************************************/
 
 openaksess.statistics = {
+    currentUrl : "",
+    currentView : "Page",
     /**
      * Loads the list of subpages for the given url.
      * @param url
