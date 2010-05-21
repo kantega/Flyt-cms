@@ -44,5 +44,13 @@ public interface SpellcheckerService {
      */
     public List<String> suggest(String word, String lang); // ta inn språk eller spellchecker
 
+    /**
+     * Checks whether this SpellcheckerService supports the locale given as
+     * parameter, ie. whether spellchecking and suggestions are supported.
+     *
+     * @param locale a Locale
+     * @return true if the given locale is supported, false otherwise.
+     */
     public boolean supportsLocale(Locale locale);
+
 }

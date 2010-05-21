@@ -139,7 +139,7 @@
                 Locale contentLocale = Language.getLanguageAsLocale(content.getLanguage());
                 if (service.supportsLocale(contentLocale)) {
             %>
-            spellchecker_languages : "<%=contentLocale.toString()%>",
+            spellchecker_languages : "+<%=contentLocale.getDisplayName()%>=<%=contentLocale.toString()%>",
             spellchecker_rpc_url : "<aksess:geturl url="/admin/publish/Spellcheck.action"/>",
             <%
                 }

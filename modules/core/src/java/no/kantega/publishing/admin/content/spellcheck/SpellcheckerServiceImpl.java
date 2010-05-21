@@ -38,6 +38,9 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
     private Map<String, SpellChecker> spellCheckers;
 
 
+    /**
+     * {@inheritDoc}
+     */
     public List<String> spellcheck(List<String> words, String lang) {
         List<String> retVal = new ArrayList<String>();
         SpellChecker c = getSpellChecker(lang);
@@ -49,6 +52,9 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         return retVal;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<String> suggest(String word, String lang) {
         List<String> retVal = new ArrayList<String>();
         SpellChecker c = getSpellChecker(lang);
@@ -60,6 +66,13 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         return retVal;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean supportsLocale(Locale locale) {
+        return getSpellChecker(locale.toString()) != null;
+    }
+
     private synchronized Map<String, SpellChecker> getSpellCheckers() {
         if (spellCheckers == null) {
             spellCheckers = new HashMap<String, SpellChecker>();
@@ -69,10 +82,7 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
     }
 
     private SpellChecker getSpellChecker(String locale) {
-        locale = locale.toLowerCase();
-        Map<String, SpellChecker> spellCheckers = getSpellCheckers();
-
-        return spellCheckers.get(locale);
+        return getSpellCheckers().get(locale);
     }
 
     private List<String> doSpellcheck(List<String> words, SpellChecker c) {
@@ -97,7 +107,6 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
                     p.load(url.openStream());
                     String dict = p.getProperty("dictionary");
                     if (dict != null) {
-                        dict = dict.toLowerCase();
                         SpellChecker c = loadSpellchecker(dict);
                         if (c != null) {
                             spellCheckers.put(dict, c);
@@ -123,6 +132,7 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
 
     private SpellChecker loadSpellchecker(String dict) throws IOException {
         SpellChecker c = null;
+        dict = dict.toLowerCase();
         String resource = DICTIONARY_RESOURCE_NAME_PREFIX + dict + DICTIONARY_RESOURCE_NAME_SUFFIX;
         URL zipUrl = getClass().getClassLoader().getResource(resource);
         if (zipUrl != null) {
@@ -136,7 +146,4 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         return c;
     }
 
-    public boolean supportsLocale(Locale locale) {
-        return true;
-    }
 }
