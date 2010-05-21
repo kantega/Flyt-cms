@@ -144,25 +144,27 @@ public abstract class Attribute {
                         throw new SystemException("", "Feil ved lesing av default fil:" + file, e);
                     }
                 } else {
-                    for (String key : model.keySet()) {
-                        String value = model.get(key);
-                        if (value == null) {
-                            value = "";
-                        }
-                        String keyToken = "\\$\\{" + key + "\\}";
+                    if (model != null && model.size() > 0) {
+                        for (String key : model.keySet()) {
+                            String value = model.get(key);
+                            if (value == null) {
+                                value = "";
+                            }
+                            String keyToken = "\\$\\{" + key + "\\}";
 
-                        String tmp = defaultValue.replaceAll(keyToken, value);
-                        if (tmp.equals(defaultValue)) {
-                            defaultValue = defaultValue.replaceAll(key, value);
-                        } else {
-                            defaultValue = tmp;
+                            String tmp = defaultValue.replaceAll(keyToken, value);
+                            if (tmp.equals(defaultValue)) {
+                                defaultValue = defaultValue.replaceAll(key, value);
+                            } else {
+                                defaultValue = tmp;
+                            }
+
                         }
 
+                        defaultValue = defaultValue.replaceAll("\\$\\{(.*)\\}", "");
+
+                        value = defaultValue;
                     }
-
-                    defaultValue = defaultValue.replaceAll("\\$\\{(.*)\\}", "");
-
-                    value = defaultValue;
                 }
             }
 
