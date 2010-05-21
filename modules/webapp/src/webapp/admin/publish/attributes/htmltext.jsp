@@ -91,7 +91,7 @@
 
         var options = {
             // General options
-            language : 'nb', // en / nb
+            language : 'en', // en / nb
             mode : "exact",
             elements : "<%=fieldName%>",
             theme : "advanced",
