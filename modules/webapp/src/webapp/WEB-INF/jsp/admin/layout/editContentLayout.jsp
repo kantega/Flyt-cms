@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../js/date.jjs"></script>
     <script type="text/javascript" src="../js/editcontext.jjs"></script>
     <script type="text/javascript" src="../js/formeditor.jjs"></script>
-    <script type="text/javascript" src="../../aksess/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="../../aksess/tiny_mce.3.3.6/tiny_mce.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 
