@@ -45,12 +45,15 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
 
     }
 
-
     public void beforeContentSave(ContentEvent event) {
 
     }
 
     public void contentSaved(ContentEvent event) {
+
+    }
+
+    public void newContentSaved(ContentEvent event) {
 
     }
 

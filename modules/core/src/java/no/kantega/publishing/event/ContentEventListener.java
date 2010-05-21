@@ -29,6 +29,7 @@ public interface ContentEventListener {
     public void beforeContentSave(ContentEvent event);
     public void beforeContentDelete(ContentEvent event);
     public void contentSaved(ContentEvent event);
+    public void newContentSaved(ContentEvent event);
     public void contentExpired(ContentEvent event);
     public void contentActivated(ContentEvent event);
     public void contentDeleted(ContentEvent event);

@@ -268,9 +268,14 @@ public class ContentManagementService {
 
         ContentListenerUtil.getContentNotifier().beforeContentSave(new ContentEvent().setContent(content));
 
+        boolean isNewContent = (content.getId() == -1);
         Content c = ContentAO.checkInContent(content, newStatus);
 
         ContentListenerUtil.getContentNotifier().contentSaved(new ContentEvent().setContent(c));
+        //New content created
+        if (isNewContent) {
+            ContentListenerUtil.getContentNotifier().newContentSaved(new ContentEvent().setContent(c));    
+        }
 
         if (Aksess.isEventLogEnabled()) {
             String event;
