@@ -103,5 +103,12 @@
         </attribute>
     </tag>
 
+    <tag>
+        <description>Print a box</description>
+        <name>box</name>
+        <tag-class>no.kantega.publishing.admin.taglib.BoxTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+
 </taglib>
 
