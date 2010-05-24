@@ -25,6 +25,7 @@ $(document).ready(function() {
     openaksess.admin.setWindowSize();
     openaksess.admin.ajaxSetup();
     openaksess.admin.widgetmanager.init({context: '#Content'});
+    openaksess.admin.bindGlobalButtons();
 });
 
 
@@ -33,6 +34,17 @@ $(document).ready(function() {
  ********************************************************************************/
 
 openaksess.admin = {
+
+    bindGlobalButtons : function() {
+        $("#OpenAksessInfoButton").click(function() {
+            var selected = $("#TopicTabs").tabs('option', 'selected');
+            var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
+            var topicMapId = $(".topicMapId", container).val();
+
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.title"/>', width: 660, height:550, iframe: true,
+            href:'${pageContext.request.contextPath}/OpenAksessInformation.action'});
+        });
+    },
 
     /**
      * Default implementation that can be overridden by the layout.
@@ -214,11 +226,9 @@ openaksess.admin = {
                 openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
             }
 
-            $(window).ready(function() {
-                $("body").addClass("fuckIE7");
-                $("body").removeClass("fuckIE7");
+            $(document).ready(function() {
+                $("body").addClass("fuckIE7").removeClass("fuckIE7");
             });
-            
         });
     },
 

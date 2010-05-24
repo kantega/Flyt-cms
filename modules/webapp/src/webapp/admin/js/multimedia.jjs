@@ -190,7 +190,7 @@ openaksess.multimedia = {
                 } else {
                     var idAttr = $media.attr("id");
                     currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                    openaksess.multimedia.triggerMultimediaupdateEvent();
+                    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
                 }
             }
 

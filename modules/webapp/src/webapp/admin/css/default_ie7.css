@@ -11,7 +11,18 @@
     word-wrap: break-word;
 }
 
+#Navigator {
+    position: relative;
+}
 
-div.roundCorners div.top {
-    /*top: 100px;*/
+#Top {
+    position: relative;
+}
+
+#MainPaneContent {
+    position: relative;
+}
+
+body {
+    position: relative;
 }

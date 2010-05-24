@@ -86,7 +86,7 @@ openaksess.content = {
      */
     bindFilterEvents : function () {
         var $filterOptions = $("#Filteroptions");
-        $filterOptions.find("#FilteroptionHideExpired").live('change', function(){
+        $filterOptions.find("#FilteroptionHideExpired").bind('change', function(){
             var value = $(this).is(":checked");
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Hide expired clicked: " + value);
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.hideExpired, value, false, function() {
@@ -97,13 +97,13 @@ openaksess.content = {
         var $filters = $filterOptions.find(".filters");
         var filterInfoSlider = new openaksess.admin.InfoSlider("#Navigation", {additionalCssClasses: 'filters'});
 
-        $filterOptions.find(".filtersToggle").live('click', function(){
+        $filterOptions.find(".filtersToggle").bind('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked");
             $filters.show();
             filterInfoSlider.toggle($filters);
         });
 
-        $("#FilteroptionSort input[name=sort]").live('change', function(){
+        $("#FilteroptionSort input[name=sort]").bind('change', function(){
             var $this = $(this);
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
             if ($this.is(":checked")) {
@@ -114,10 +114,9 @@ openaksess.content = {
             }
         });
 
-        var $sites = $("#FilteroptionSites input[name=sites]");
-        $sites.live('change',function(){
+        $("#FilteroptionSites input[name=sites]").live('click',function(){
             var hiddenSites = "";
-            $filters.find("#FilteroptionSites input[name=sites]").each(function(){
+            $filters.find("#FilteroptionSites [name=sites]").each(function(){
                 var $site = $(this);
                 if (!$site.is(":checked")) {
                     if (hiddenSites != "") {
@@ -126,6 +125,7 @@ openaksess.content = {
                     hiddenSites += $site.val();
                 }
             });
+
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sites, hiddenSites, false, function() {
                 openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
             });
@@ -461,6 +461,7 @@ openaksess.content = {
                          '</div>';
                 }
                 $sitesFilterOptionsContainser.html(siteOptions);
+
             }
 
             //Has the user chosen to hide expired elements?

@@ -26,18 +26,3 @@
 
 <a href="${pageContext.request.contextPath}/Logout.action" class="menuitem logout"><kantega:label key="aksess.menu.logout"/></a>
 <a href="#" class="menuitem help"><kantega:label key="aksess.menu.help"/></a>
-
-<script type="text/javascript">
-
-      $(document).ready(function() {
-            $("#OpenAksessInfoButton").click(function() {
-                var selected = $("#TopicTabs").tabs('option', 'selected');
-                var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
-                var topicMapId = $(".topicMapId", container).val();
-
-                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.title"/>', width: 660, height:550, iframe: true,
-                href:'${pageContext.request.contextPath}/OpenAksessInformation.action'});
-            });
-      });
-
-</script>

@@ -19,21 +19,18 @@
 //%>
 
 
-var currentUrl = "";
-var currentView = "Page";
-
 $(document).ready(function(){
     openaksess.common.debug("statistics.$(document).ready()");
 
     $("#PageStatistics").live('click', function(event) {
         event.preventDefault();
         openaksess.statistics.currentView = "Page";
-        openaksess.statistics.updateStatistics(currentUrl, openaksess.statistics.currentView);
+        openaksess.statistics.updateStatistics(openaksess.statistics.currentUrl, openaksess.statistics.currentView);
     });
     $("#TotalStatistics").live('click', function(event) {
         event.preventDefault();
         openaksess.statistics.currentView = "Total";
-        openaksess.statistics.updateStatistics(currentUrl, openaksess.statistics.currentView);
+        openaksess.statistics.updateStatistics(openaksess.statistics.currentUrl, openaksess.statistics.currentView);
     });
 
 });
@@ -89,9 +86,9 @@ openaksess.statistics = {
  */
 openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
     openaksess.common.debug("statistics.updateMainPane(): id: " + id);
-    currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
-    openaksess.common.debug("statistics.updateMainPane(): currentUrl: " + currentUrl);
-    openaksess.statistics.updateStatistics(currentUrl, currentView);
+    openaksess.statistics.currentUrl = openaksess.common.getContentUrlFromAssociationId(id);
+    openaksess.common.debug("statistics.updateMainPane(): currentUrl: " + openaksess.statistics.currentUrl);
+    openaksess.statistics.updateStatistics(openaksess.statistics.currentUrl, openaksess.statistics.currentView);
 };
 
 
