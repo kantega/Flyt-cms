@@ -712,6 +712,7 @@ div.roundCorners div.top div.corner {
 
 div.roundCorners div.bottom {
     background: url("../bitmaps/default/boxes/groupbottomleft.png") no-repeat top left;
+    /*background: blue;*/
     height: 5px;
     position: relative;
 }
@@ -734,21 +735,17 @@ div.roundCorners div.body div.right {
     background: #ffffff url("../bitmaps/default/boxes/groupright.png") repeat-y right;
 }
 
-div.fieldset fieldset {
-    border: 0;
-    padding: 0;
-}
-div.fieldset fieldset .row {
+div.roundCorners .row {
     margin-bottom: 0.5em;
 }
-div.fieldset h1, div.fieldset h2 {
+div.roundCorners h1, div.roundCorners h2 {
     padding: 0 0 3px 0;
     text-align: center;
     font-weight: bold;
     border-bottom: 1px solid #dbdbdb;
 }
 
-div.fieldset>h1, div.fieldset>h2 {
+div.roundCorners>h1, div.roundCorners>h2 {
     margin: -5px -10px 10px -15px;
 }
 

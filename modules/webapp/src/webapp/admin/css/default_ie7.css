@@ -10,3 +10,8 @@
 #PropertiesTable .property {
     word-wrap: break-word;
 }
+
+
+div.roundCorners div.top {
+    /*top: 100px;*/
+}
