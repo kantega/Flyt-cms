@@ -34,54 +34,52 @@
 
 <kantega:section id="content">
     <form name="permissions" action="" method="post">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.viewpermissions.title"/></h1>
-                <strong><kantega:label key="aksess.viewpermissions.selecttype"/>:</strong>
-                <select name="objectType" onchange="document.permissions.submit()">
-                    <option value="-1"></option>
-                    <option value="<%=ObjectType.ASSOCIATION%>" ${associationSelected}><kantega:label key="aksess.objecttype.content"/></option>
-                    <option value="<%=ObjectType.MULTIMEDIA%>" ${multimediaSelected} ><kantega:label key="aksess.objecttype.multimedia"/></option>
-                    <option value="<%=ObjectType.TOPICMAP%> ${topicMapSelected}"><kantega:label key="aksess.objecttype.topicmap"/></option>
-                </select>
+        <admin:box>
+            <h1><kantega:label key="aksess.viewpermissions.title"/></h1>
+            <strong><kantega:label key="aksess.viewpermissions.selecttype"/>:</strong>
+            <select name="objectType" onchange="document.permissions.submit()">
+                <option value="-1"></option>
+                <option value="<%=ObjectType.ASSOCIATION%>" ${associationSelected}><kantega:label key="aksess.objecttype.content"/></option>
+                <option value="<%=ObjectType.MULTIMEDIA%>" ${multimediaSelected} ><kantega:label key="aksess.objecttype.multimedia"/></option>
+                <option value="<%=ObjectType.TOPICMAP%> ${topicMapSelected}"><kantega:label key="aksess.objecttype.topicmap"/></option>
+            </select>
 
-                <table class="fullWidth">
-                    <%
-                        List permissionsOverview = (List)request.getAttribute("permissionsOverview");
-                        if (permissionsOverview != null) {
-                    %>
-                    <tr class="tableHeading">
-                        <td><b><kantega:label key="aksess.viewpermissions.objekt"/></b></td>
-                        <td><b><kantega:label key="aksess.viewpermissions.rolle"/></b></td>
-                        <td><b><kantega:label key="aksess.viewpermissions.rettighet"/></b></td>
-                    </tr>
-                    <%
-                            for (int i = 0; i < permissionsOverview.size(); i++) {
-                                ObjectPermissionsOverview opo = (ObjectPermissionsOverview)permissionsOverview.get(i);
-                                List permissions = opo.getPermissions();
-                    %>
-                                <tr class="tableRow<%=(i%2)%>">
-                                    <td colspan="3"><strong><%=opo.getName()%></strong></td>
-                                </tr>
-                    <%
-                                for (int j = 0; j < permissions.size(); j++) {
-                                    Permission p = (Permission)permissions.get(j);
-                                    String role = p.getSecurityIdentifier().getId();
-                                    String key = "aksess.editpermissions.priv" + p.getPrivilege();
-                    %>
-                                    <tr class="tableRow<%=(i%2)%>">
-                                        <td>&nbsp;</td>
-                                        <td><%=role%></td>
-                                        <td><kantega:label key="<%=key%>"/></td>
-                                    </tr>
-                    <%
-                                }
+            <table class="fullWidth">
+                <%
+                    List permissionsOverview = (List)request.getAttribute("permissionsOverview");
+                    if (permissionsOverview != null) {
+                %>
+                <tr class="tableHeading">
+                    <td><b><kantega:label key="aksess.viewpermissions.objekt"/></b></td>
+                    <td><b><kantega:label key="aksess.viewpermissions.rolle"/></b></td>
+                    <td><b><kantega:label key="aksess.viewpermissions.rettighet"/></b></td>
+                </tr>
+                <%
+                    for (int i = 0; i < permissionsOverview.size(); i++) {
+                        ObjectPermissionsOverview opo = (ObjectPermissionsOverview)permissionsOverview.get(i);
+                        List permissions = opo.getPermissions();
+                %>
+                <tr class="tableRow<%=(i%2)%>">
+                    <td colspan="3"><strong><%=opo.getName()%></strong></td>
+                </tr>
+                <%
+                    for (int j = 0; j < permissions.size(); j++) {
+                        Permission p = (Permission)permissions.get(j);
+                        String role = p.getSecurityIdentifier().getId();
+                        String key = "aksess.editpermissions.priv" + p.getPrivilege();
+                %>
+                <tr class="tableRow<%=(i%2)%>">
+                    <td>&nbsp;</td>
+                    <td><%=role%></td>
+                    <td><kantega:label key="<%=key%>"/></td>
+                </tr>
+                <%
                             }
                         }
-                    %>
-                </table>
-            </fieldset>
-        </div>
+                    }
+                %>
+            </table>
+        </admin:box>
     </form>
 
 </kantega:section>

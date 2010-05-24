@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -49,60 +50,57 @@
         </c:if>
         <input type="hidden" name="topicMapId" value="${topic.topicMapId}">
 
-        <div class="fieldset">
-            <fieldset>
+        <admin:box>
+            <div class="formElement">
+                <div class="heading">
+                    <label for="TopicName"><kantega:label key="aksess.topicmaps.name"/></label>
+                </div>
+                <div class="inputs">
+                    <input type="text" id="TopicName" name="name"  maxlength="62" value="${topic.baseName}">
+                </div>
+            </div>
+
+            <c:if test="${topic.instanceOf == null}">
                 <div class="formElement">
                     <div class="heading">
-                        <label for="TopicName"><kantega:label key="aksess.topicmaps.name"/></label>
+                        <label for="TopicInstanceOf"><kantega:label key="aksess.topicmaps.instanceof"/></label>
                     </div>
                     <div class="inputs">
-                        <input type="text" id="TopicName" name="name"  maxlength="62" value="${topic.baseName}">
+                        <select name="instanceOf" id="TopicInstanceOf">
+                            <c:forEach var="topicType" items="${topicTypes}">
+                                <option value="${topicType.id}"><c:out value="${topicType.baseName}"/></option>
+                            </c:forEach>
+                        </select>
                     </div>
                 </div>
+            </c:if>
 
-                <c:if test="${topic.instanceOf == null}">
-                    <div class="formElement">
-                        <div class="heading">
-                            <label for="TopicInstanceOf"><kantega:label key="aksess.topicmaps.instanceof"/></label>
-                        </div>
-                        <div class="inputs">
-                            <select name="instanceOf" id="TopicInstanceOf">
-                                <c:forEach var="topicType" items="${topicTypes}">
-                                    <option value="${topicType.id}"><c:out value="${topicType.baseName}"/></option>
-                                </c:forEach>
-                            </select>
-                        </div>
+            <c:forEach var="occurence" items="${topic.occurences}" varStatus="status">
+                <div class="formElement">
+                    <div class="heading">
+                        <label for="TopicOccurence${status.index}">
+                            <c:choose>
+                                <c:when test="${occurence.instanceOf.baseName != ''}">
+                                    <c:out value="${occurence.instanceOf.baseName}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:out value="${occurence.instanceOf.id}"/>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </label>
                     </div>
-                </c:if>
-
-                <c:forEach var="occurence" items="${topic.occurences}" varStatus="status">
-                    <div class="formElement">
-                        <div class="heading">
-                            <label for="TopicOccurence${status.index}">
-                                <c:choose>
-                                    <c:when test="${occurence.instanceOf.baseName != ''}">
-                                        <c:out value="${occurence.instanceOf.baseName}"/>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <c:out value="${occurence.instanceOf.id}"/>
-                                    </c:otherwise>
-                                </c:choose>
-
-                            </label>
-                        </div>
-                        <div class="inputs">
-                            <textarea name="occurence_resourcedata_${status.index}" wrap="soft" rows="6" cols="40"><c:out value="${occurence.resourceData}"/></textarea>
-                        </div>
+                    <div class="inputs">
+                        <textarea name="occurence_resourcedata_${status.index}" wrap="soft" rows="6" cols="40"><c:out value="${occurence.resourceData}"/></textarea>
                     </div>
-                </c:forEach>
-
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
-                
-            </fieldset>
-        </div>
+            </c:forEach>
+
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </admin:box>
     </form>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

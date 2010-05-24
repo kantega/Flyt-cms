@@ -25,29 +25,27 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.mailsubscription.title"/></h1>
-            <table class="fullWidth">
-                <tr class="tableHeading">
-                    <td><strong><kantega:label key="aksess.mailsubscription.email"/></strong></td>
-                    <td>&nbsp;</td>
+    <admin:box>
+        <h1><kantega:label key="aksess.mailsubscription.title"/></h1>
+        <table class="fullWidth">
+            <tr class="tableHeading">
+                <td><strong><kantega:label key="aksess.mailsubscription.email"/></strong></td>
+                <td>&nbsp;</td>
+            </tr>
+            <c:forEach var="email" items="${mailSubscriptions}" varStatus="status">
+                <%
+                    String email = (String)request.getAttribute("email");
+                    String emailEnc = URLEncoder.encode(email, "iso-8859-1");
+                %>
+                <tr class="tableRow${status.index mod 2}">
+                    <td><a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a></td>
+                    <td>
+                        <a href="ViewMailSubscribers.action?delete=<%=emailEnc%>" class="button delete"><kantega:label key="aksess.button.delete"/></a>
+                    </td>
                 </tr>
-                <c:forEach var="email" items="${mailSubscriptions}" varStatus="status">
-                    <%
-                        String email = (String)request.getAttribute("email");
-                        String emailEnc = URLEncoder.encode(email, "iso-8859-1");
-                    %>
-                    <tr class="tableRow${status.index mod 2}">
-                        <td><a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a></td>
-                        <td>
-                            <a href="ViewMailSubscribers.action?delete=<%=emailEnc%>" class="button delete"><kantega:label key="aksess.button.delete"/></a>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </table>
-        </fieldset>
-    </div>
+            </c:forEach>
+        </table>
+    </admin:box>
     </form>
 
 </kantega:section>

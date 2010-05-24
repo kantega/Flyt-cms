@@ -124,19 +124,16 @@
 <kantega:section id="contentclass">selecttemplate</kantega:section>
 
 <kantega:section id="content">
-<%
-    ContentManagementService aksessService = new ContentManagementService(request);
-%>
+    <%
+        ContentManagementService aksessService = new ContentManagementService(request);
+    %>
 
-<div id="MainPaneContent">
-
-    <form action="SelectTemplate.action" name="myform" method="get">
-        <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
-        <c:choose>
-            <c:when test="${displayAddAssociation}">
-                <div class="fieldset">
-                    <fieldset>
-                        <legend></legend>
+    <div id="MainPaneContent">
+        <admin:box>
+            <form action="SelectTemplate.action" name="myform" method="get">
+                <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
+                <c:choose>
+                    <c:when test="${displayAddAssociation}">
                         <h2><kantega:label key="aksess.selecttemplate.parent"/></h2>
 
                         <table width="100%">
@@ -189,18 +186,13 @@
                         <div style="text-align:right">
                             <a href="Javascript:selectContent()" class="button"><span class="add"><kantega:label key="aksess.button.addassociation"/></span></a>
                         </div>
-                    </fieldset>
-                </div>
-            </c:when>
-            <c:otherwise>
-                <c:forEach var="association" items="${associations}">
-                    <input type="hidden" name="parentIds" value="${association.id}">
-                </c:forEach>
-            </c:otherwise>
-        </c:choose>
-        <div class="fieldset">
-            <fieldset>
-                <legend></legend>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach var="association" items="${associations}">
+                            <input type="hidden" name="parentIds" value="${association.id}">
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
                 <h2><kantega:label key="aksess.selecttemplate.template"/></h2>
                 <%
                     List allowedTemplates = (List) request.getAttribute("allowedTemplates");
@@ -267,14 +259,8 @@
                     <div id="templatedesc"><%=defaultText%></div><br>
                     <img name="templateimage" src="../bitmaps/blank.gif" alt="">
                 </div>
-            </fieldset>
-        </div>
-
-        <c:choose>
-            <c:when test="${fn:length(allowedAssociations) > 1}">
-                <div class="fieldset">
-                    <fieldset>
-                        <legend></legend>
+                <c:choose>
+                    <c:when test="${fn:length(allowedAssociations) > 1}">
                         <h2><kantega:label key="aksess.selecttemplate.category"/></h2>
                         <%
                             if (defaultAssociationCategory == -1 && parent.getAssociation() != null) {
@@ -292,7 +278,11 @@
                                     out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
                                 }
                         %>
-                        <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label><br>
+                        <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label>
+                        <div class="clearing"></div>
+                        <%
+                            out.write("</div>");
+                        %>
                         <div id="categoryinfo<%=tmp.getId()%>" style="display:none;">
                             <strong><%=tmp.getName()%></strong><br>
                             <%
@@ -302,7 +292,6 @@
                             %>
                         </div>
                         <%
-                                out.write("</div>");
                             }
                         %>
                         <div class="clearing"></div>
@@ -310,27 +299,26 @@
                             <div id="categorydesc"><%=defaultText%></div><br>
                             <img name="categoryimage" src="../bitmaps/blank.gif" alt="">
                         </div>
-                    </fieldset>
+
+                    </c:when>
+                    <c:otherwise>
+                        <%
+                            AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
+                            out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
+                        %>
+                    </c:otherwise>
+                </c:choose>
+
+                <div class="buttonGroup">
+                    <span class="button"><input type="button" onclick="doSelectTemplate()" class="ok" value="<kantega:label key="aksess.button.continue"/>"></span>
+                    <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
-            </c:when>
-            <c:otherwise>
-                <%
-                    AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
-                    out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
-                %>
-            </c:otherwise>
-        </c:choose>
 
-        <div class="buttonGroup">
-            <span class="button"><input type="button" onclick="doSelectTemplate()" class="ok" value="<kantega:label key="aksess.button.continue"/>"></span>
-            <span class="button"><input type="button" onclick="window.location.href='Navigate.action'" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-        </div>
+            </form>
+        </admin:box>
+    </div>
 
-    </form>
-
-</div>
-
-<div class="clearing"></div>
+    <div class="clearing"></div>
 
 </kantega:section>
 <%@include file="../layout/fullwidthLayout.jsp"%>

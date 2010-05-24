@@ -27,58 +27,53 @@
     <%
         TemplateConfiguration tc = (TemplateConfiguration)request.getAttribute("templateConfiguration");
     %>
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.templateconfig.title"/></h1>
-            <table class="fullWidth">
-                <tr>
-                    <th>&nbsp;</th>
-                    <th class="number"><kantega:label key="aksess.templateconfig.items"/></th>
-                </tr>
-                <tr class="tableRow0">
-                    <td><a href="ListAssociationCategories.action"><kantega:label key="aksess.associationcategories.title"/></a></td>
-                    <td class="number"><%=tc.getAssociationCategories().size()%></td>
-                </tr>
-                <tr class="tableRow1">
-                    <td><a href="ListContentTemplates.action"><kantega:label key="aksess.contenttemplates.title"/></a></td>
-                    <td class="number"><%=(tc.getContentTemplates().size() + tc.getMetadataTemplates().size()) %></td>
-                </tr>
-                <tr class="tableRow0">
-                    <td><a href="ListDisplayTemplates.action"><kantega:label key="aksess.displaytemplates.title"/></a></td>
-                    <td class="number"><%=tc.getDisplayTemplates().size()%></td>
-                </tr>
-            </table>
+    <admin:box>
+        <h1><kantega:label key="aksess.templateconfig.title"/></h1>
 
-            <div class="ui-state-highlight"><kantega:label key="aksess.templateconfig.info"/></div>
+        <div class="ui-state-highlight"><kantega:label key="aksess.templateconfig.info"/></div>
+        
+        <table class="fullWidth">
+            <tr>
+                <th>&nbsp;</th>
+                <th class="number"><kantega:label key="aksess.templateconfig.items"/></th>
+            </tr>
+            <tr class="tableRow0">
+                <td><a href="ListAssociationCategories.action"><kantega:label key="aksess.associationcategories.title"/></a></td>
+                <td class="number"><%=tc.getAssociationCategories().size()%></td>
+            </tr>
+            <tr class="tableRow1">
+                <td><a href="ListContentTemplates.action"><kantega:label key="aksess.contenttemplates.title"/></a></td>
+                <td class="number"><%=(tc.getContentTemplates().size() + tc.getMetadataTemplates().size()) %></td>
+            </tr>
+            <tr class="tableRow0">
+                <td><a href="ListDisplayTemplates.action"><kantega:label key="aksess.displaytemplates.title"/></a></td>
+                <td class="number"><%=tc.getDisplayTemplates().size()%></td>
+            </tr>
+        </table>
 
-            <form action="ReloadTemplateConfiguration.action" method="post">
-                <div class="buttonGroup">
-                    <span class="button"><input type="submit" name="submit" value="<kantega:label key="aksess.templateconfig.reload"/>"></span>
-                </div>
-            </form>
+        <form action="ReloadTemplateConfiguration.action" method="post">
+            <div class="buttonGroup">
+                <span class="button"><input type="submit" name="submit" value="<kantega:label key="aksess.templateconfig.reload"/>"></span>
+            </div>
+        </form>
 
-        </fieldset>
-    </div>
-
+    </admin:box>
     <c:if test="${not empty errors}">
-
-    <div class="fieldset">
-        <fieldset>
+        <admin:box>
             <h1><kantega:label key="aksess.templateconfig.error"/></h1>
-                <table>
-                    <tr>
-                        <th><kantega:label key="aksess.templateconfig.error.object"/></th>
-                        <th><kantega:label key="aksess.templateconfig.error.message"/></th>
+            <table>
+                <tr>
+                    <th><kantega:label key="aksess.templateconfig.error.object"/></th>
+                    <th><kantega:label key="aksess.templateconfig.error.message"/></th>
+                </tr>
+                <c:forEach var="errorMessage" items="${errors}" varStatus="status">
+                    <tr class="tableRow${status.index mod 2}">
+                        <td>${errorMessage.object}</td>
+                        <td><kantega:label key="${errorMessage.message}"/>: ${errorMessage.data}</td>
                     </tr>
-                    <c:forEach var="errorMessage" items="${errors}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td>${errorMessage.object}</td>
-                            <td><kantega:label key="${errorMessage.message}"/>: ${errorMessage.data}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-        </fieldset>
-    </div>
+                </c:forEach>
+            </table>
+        </admin:box>
     </c:if>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

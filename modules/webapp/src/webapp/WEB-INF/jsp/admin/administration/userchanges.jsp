@@ -26,59 +26,57 @@
 <kantega:section id="content">
     <form name="myform" action="" method="get">
 
-    <div class="fieldset">
-        <fieldset>
+        <admin:box>
             <h1><kantega:label key="aksess.userchanges.title"/></h1>
 
             <div class="formElement">
-            <div class="inputs">
-                <kantega:label key="aksess.userchanges.month"/>
-                <select name="months" onchange="document.myform.submit()">
-                    <option value="1" <c:if test="${month == 1}">selected</c:if>>1</option>
-                    <option value="3" <c:if test="${month == 3}">selected</c:if>>3</option>
-                    <option value="6" <c:if test="${month == 6}">selected</c:if>>6</option>
-                    <option value="12" <c:if test="${month == 12}">selected</c:if>>12</option>
-                </select>
-            </div>
+                <div class="inputs">
+                    <kantega:label key="aksess.userchanges.month"/>
+                    <select name="months" onchange="document.myform.submit()">
+                        <option value="1" <c:if test="${month == 1}">selected</c:if>>1</option>
+                        <option value="3" <c:if test="${month == 3}">selected</c:if>>3</option>
+                        <option value="6" <c:if test="${month == 6}">selected</c:if>>6</option>
+                        <option value="12" <c:if test="${month == 12}">selected</c:if>>12</option>
+                    </select>
+                </div>
 
             </div>
             <table class="fullWidth">
-            <%
-                List userchanges = (List)request.getAttribute("userChanges");
-                if (userchanges != null) {
-                    int total = 0;
-            %>
-            <tr>
-                <th><kantega:label key="aksess.userchanges.username"/></th>
-                <th><kantega:label key="aksess.userchanges.changes"/></th>
-            </tr>
-            <%
-                int i = 0;
-                for (i = 0; i < userchanges.size(); i++) {
-                    UserContentChanges ucc = (UserContentChanges)userchanges.get(i);
-                    total += ucc.getNoChanges();
-            %>
-            <tr class="tableRow<%=(i%2)%>">
-                <td><a href="ListUserChanges.action?username=<%=ucc.getUserName()%>"><%=ucc.getUserName()%></a></td>
-                <td align="right"><%=ucc.getNoChanges()%></td>
-            </tr>
-            <%
+                <%
+                    List userchanges = (List)request.getAttribute("userChanges");
+                    if (userchanges != null) {
+                        int total = 0;
+                %>
+                <tr>
+                    <th><kantega:label key="aksess.userchanges.username"/></th>
+                    <th><kantega:label key="aksess.userchanges.changes"/></th>
+                </tr>
+                <%
+                    int i = 0;
+                    for (i = 0; i < userchanges.size(); i++) {
+                        UserContentChanges ucc = (UserContentChanges)userchanges.get(i);
+                        total += ucc.getNoChanges();
+                %>
+                <tr class="tableRow<%=(i%2)%>">
+                    <td><a href="ListUserChanges.action?username=<%=ucc.getUserName()%>"><%=ucc.getUserName()%></a></td>
+                    <td align="right"><%=ucc.getNoChanges()%></td>
+                </tr>
+                <%
 
-                }
-            %>
-            <tr class="tableRow<%=(i%2)%>">
-                <td><strong><kantega:label key="aksess.userchanges.total"/></strong></td>
-                <td align="right"><strong><%=total%></strong></td>
-            </tr>
-            <%
-                }
+                    }
+                %>
+                <tr class="tableRow<%=(i%2)%>">
+                    <td><strong><kantega:label key="aksess.userchanges.total"/></strong></td>
+                    <td align="right"><strong><%=total%></strong></td>
+                </tr>
+                <%
+                    }
 
-            %>
+                %>
             </table>
 
             <div class="ui-state-highlight"><kantega:label key="aksess.userchanges.help"/></div>
-        </fieldset>
-    </div>
+        </admin:box>
     </form>
 
 </kantega:section>

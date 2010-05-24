@@ -31,59 +31,56 @@
 <kantega:section id="content">
     <form name="myform" action="EditDomainNames.action" method="post">
         <input type="hidden" name="siteId" value="${site.id}">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.sites.title"/></h1>
+        <admin:box>
+            <h1><kantega:label key="aksess.sites.title"/></h1>
 
-
-                <div class="formElement">
-                    <div class="heading">
-                        <label><kantega:label key="aksess.site.name"/></label>
-                    </div>
-                    <div class="content">${site.name}</div>
+            <div class="formElement">
+                <div class="heading">
+                    <label><kantega:label key="aksess.site.name"/></label>
                 </div>
+                <div class="content">${site.name}</div>
+            </div>
 
-                <div class="formElement">
-                    <div class="heading">
-                        <label><kantega:label key="aksess.site.alias"/></label>
-                    </div>
-                    <div class="content">${site.alias}</div>
+            <div class="formElement">
+                <div class="heading">
+                    <label><kantega:label key="aksess.site.alias"/></label>
                 </div>
+                <div class="content">${site.alias}</div>
+            </div>
 
-                <div class="formElement">
-                    <div class="heading">
-                        <label><kantega:label key="aksess.site.domains"/></label>
-                    </div>
-                    <div class="content">
-                        <table>
-                            <%
+            <div class="formElement">
+                <div class="heading">
+                    <label><kantega:label key="aksess.site.domains"/></label>
+                </div>
+                <div class="content">
+                    <table>
+                        <%
 
-                                for (int i = 0; i < Math.min(hostnames.size() + 10, 40); i++) {
-                                    String hostname = "";
-                                    if (i < hostnames.size()) {
-                                        hostname = (String)hostnames.get(i);
-                                    }
-                            %>
-                            <tr>
-                                <td width="80"><kantega:label key="aksess.site.domain"/> <%=(i+1)%></td>
-                                <td><input type="text" name="hostname<%=i%>" value="<%=hostname%>" size="40" maxlength="128"></td>
-                            </tr>
-                            <%
+                            for (int i = 0; i < Math.min(hostnames.size() + 10, 40); i++) {
+                                String hostname = "";
+                                if (i < hostnames.size()) {
+                                    hostname = (String)hostnames.get(i);
                                 }
-                            %>
-                        </table>
-                        <br>
-                        <div class="ui-state-highlight"><kantega:label key="aksess.site.domain.tip"/></div>
-                    </div>
+                        %>
+                        <tr>
+                            <td width="80"><kantega:label key="aksess.site.domain"/> <%=(i+1)%></td>
+                            <td><input type="text" name="hostname<%=i%>" value="<%=hostname%>" size="40" maxlength="128"></td>
+                        </tr>
+                        <%
+                            }
+                        %>
+                    </table>
+                    <br>
+                    <div class="ui-state-highlight"><kantega:label key="aksess.site.domain.tip"/></div>
                 </div>
-            </fieldset>
-        </div>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" onclick="location.href='ListSites.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>            
+        </admin:box>
     </form>
 
-    <div class="buttonGroup">
-        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-        <span class="button"><input type="button" onclick="location.href='ListSites.action'" class="button cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-    </div>
-    
+
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

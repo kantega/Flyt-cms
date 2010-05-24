@@ -1,6 +1,7 @@
 <%@ page import="no.kantega.commons.client.util.RequestParameters" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -109,7 +110,7 @@
                 cellpadding = table.cellPadding;
                 if (table.summary) {
                     summary = table.summary;
-                }                
+                }
             }
 
             document.myform.cellpadding.value = cellpadding;
@@ -134,9 +135,8 @@
 
 <kantega:section id="body">
     <form action="" name="myform">
-    <div id="InsertTableForm">
-        <div class="fieldset">
-            <fieldset>
+        <div id="InsertTableForm">
+            <admin:box>
                 <h1><kantega:label key="aksess.inserttable.title"/></h1>
                 <c:if test="${!modifyExisting}">
                     <div class="formElement">
@@ -183,11 +183,8 @@
                     <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                     <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
-            </fieldset>
-
+            </admin:box>
         </div>
-
-    </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

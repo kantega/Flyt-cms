@@ -39,33 +39,30 @@
 
     </script>
     <form name="myform" action="EditTopicMap.action" method="post">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.topicmaps.title"/></h1>
+        <admin:box>
+            <h1><kantega:label key="aksess.topicmaps.title"/></h1>
 
-                <input type="hidden" name="id" value="${topicMap.id}">
+            <input type="hidden" name="id" value="${topicMap.id}">
 
-                <div class="formElement">
-                    <div class="heading"><label for="name"><kantega:label key="aksess.topicmaps.admin.name"/></label></div>
-                    <div class="inputs">
-                        <input type="text" name="name" id="name" title="<kantega:label key="aksess.topicmaps.admin.name"/>" size="64" maxlength="64" value="${topicMap.name}">
-                    </div>
+            <div class="formElement">
+                <div class="heading"><label for="name"><kantega:label key="aksess.topicmaps.admin.name"/></label></div>
+                <div class="inputs">
+                    <input type="text" name="name" id="name" title="<kantega:label key="aksess.topicmaps.admin.name"/>" size="64" maxlength="64" value="${topicMap.name}">
                 </div>
+            </div>
 
-                <div class="formElement">
-                    <div class="heading"><kantega:label key="aksess.topicmaps.admin.iseditable"/></div>
-                    <div class="inputs">
-                        <input name="iseditable" id="iseditable" type="radio" value="true" <c:if test="${topicMap.editable}"> checked</c:if>><label for="iseditable"><kantega:label key="aksess.text.ja"/><br></label>
-                        <input name="iseditable" id="isnoteditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><label for="isnoteditable"><kantega:label key="aksess.text.nei"/></label>                        
-                    </div>
+            <div class="formElement">
+                <div class="heading"><kantega:label key="aksess.topicmaps.admin.iseditable"/></div>
+                <div class="inputs">
+                    <input name="iseditable" id="iseditable" type="radio" value="true" <c:if test="${topicMap.editable}"> checked</c:if>><label for="iseditable"><kantega:label key="aksess.text.ja"/><br></label>
+                    <input name="iseditable" id="isnoteditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><label for="isnoteditable"><kantega:label key="aksess.text.nei"/></label>
                 </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
-                    <span class="button"><input type="submit" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-            </fieldset>
-
-        </div>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+                <span class="button"><input type="submit" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </admin:box>
     </form>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

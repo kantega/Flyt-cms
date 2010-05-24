@@ -24,8 +24,7 @@
 </kantega:section>
 
 <kantega:section id="content">
-        <div class="fieldset">
-            <fieldset>
+        <admin:box>
                 <h1><kantega:label key="aksess.userchanges.username"/>:</strong> ${username}</h1>
                 <table class="fullWidth">
                     <tr>
@@ -41,7 +40,6 @@
 
                 </table>
                 <div class="ui-state-highlight"><kantega:label key="aksess.userchanges.documents.help"/></div>
-            </fieldset>
-        </div>
+        </admin:box>
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

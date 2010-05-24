@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -48,31 +49,29 @@
 
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteAssociation.action">
-        <div class="fieldset">
-            <fieldset>
-                <input type="hidden" name="confirmMultipleDelete" value="true">
-                <c:forEach var="a" items="${associationIds}">
-                    <input type="hidden" name="id" value="${a}">
-                </c:forEach>
+        <admin:box>
+            <input type="hidden" name="confirmMultipleDelete" value="true">
+            <c:forEach var="a" items="${associationIds}">
+                <input type="hidden" name="id" value="${a}">
+            </c:forEach>
 
-                <p><kantega:label key="aksess.confirmdelete.multiple.sikker"/></p>
+            <p><kantega:label key="aksess.confirmdelete.multiple.sikker"/></p>
 
-                <p><kantega:label key="aksess.confirmdelete.multiple.tekst" subpages="${fn:length(toBeDeleted)}"/></p>
+            <p><kantega:label key="aksess.confirmdelete.multiple.tekst" subpages="${fn:length(toBeDeleted)}"/></p>
 
-                <div style="overflow:auto; max-height:100px;">
-                    <ul>
-                        <c:forEach var="content" items="${toBeDeleted}">
-                            <li>${content.title}</li>
-                        </c:forEach>
-                    </ul>
-                </div>
+            <div style="overflow:auto; max-height:100px;">
+                <ul>
+                    <c:forEach var="content" items="${toBeDeleted}">
+                        <li>${content.title}</li>
+                    </c:forEach>
+                </ul>
+            </div>
 
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-            </fieldset>
-        </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </admin:box>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

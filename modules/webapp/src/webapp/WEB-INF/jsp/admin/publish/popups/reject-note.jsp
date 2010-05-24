@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -19,7 +20,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    
+
 </kantega:section>
 
 <kantega:section id="head">
@@ -44,22 +45,20 @@
 <kantega:section id="body">
     <div id="RejectNoteForm">
         <form name="myform" action="">
-            <div class="fieldset">
-                <fieldset>
-                    <div class="formElement">
-                        <div class="heading">
-                            <label for="Note"><kantega:label key="aksess.reject.note"/></label>
-                        </div>
-                        <div class="inputs">
-                            <textarea rows="4" cols="30" id="Note" class="fullWidth"></textarea>
-                        </div>
+            <admin:box>
+                <div class="formElement">
+                    <div class="heading">
+                        <label for="Note"><kantega:label key="aksess.reject.note"/></label>
                     </div>
-                    <div class="buttonGroup">
-                        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.reject"/>"></span>
-                        <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    <div class="inputs">
+                        <textarea rows="4" cols="30" id="Note" class="fullWidth"></textarea>
                     </div>
-                </fieldset>
-            </div>
+                </div>
+                <div class="buttonGroup">
+                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.reject"/>"></span>
+                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
+            </admin:box>
         </form>
     </div>
 </kantega:section>

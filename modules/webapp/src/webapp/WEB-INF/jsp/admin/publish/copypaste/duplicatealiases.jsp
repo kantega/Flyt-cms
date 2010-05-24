@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -34,26 +35,24 @@
         function buttonOkPressed() {
             getParent().stateHandler.setState("${currentPage.url}");
             return true;
-        }        
+        }
     </script>
 </kantega:section>
 <kantega:section id="body">
-    <div class="fieldset">
-        <fieldset>
-            <p>
-                <kantega:label key="aksess.copypaste.duplicatealias"/>
-            </p>
+    <admin:box>
+        <p>
+            <kantega:label key="aksess.copypaste.duplicatealias"/>
+        </p>
 
-            <ul>
-                <c:forEach items="${aliases}" var="alias">
-                    <li><c:out value="${alias}"/></li>
-                </c:forEach>
-            </ul>
+        <ul>
+            <c:forEach items="${aliases}" var="alias">
+                <li><c:out value="${alias}"/></li>
+            </c:forEach>
+        </ul>
 
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-            </div>
-        </fieldset>
-    </div>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+        </div>
+    </admin:box>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

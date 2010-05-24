@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -31,18 +32,17 @@
 
 <kantega:section id="body">
 
-    <div class="fieldset">
-        <fieldset>
-            <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-                <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-                    <li class="<c:if test="${linkType == 'external'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=external"><kantega:label key="aksess.insertlink.external"/></a></li>
-                    <li class="<c:if test="${linkType == 'internal'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=internal""><kantega:label key="aksess.insertlink.internal"/></a></li>
-                    <li class="<c:if test="${linkType == 'anchor'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=anchor""><kantega:label key="aksess.insertlink.anchor"/></a></li>
-                    <li class="<c:if test="${linkType == 'attachment'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=attachment""><kantega:label key="aksess.insertlink.attachment"/></a></li>
-                    <li class="<c:if test="${linkType == 'email'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=email"><kantega:label key="aksess.insertlink.email"/></a></li>
-                    <li class="<c:if test="${linkType == 'multimedia'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=multimedia""><kantega:label key="aksess.insertlink.multimedia"/></a></li>
-                </ul>
-                <div id="InsertLinkForm" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <admin:box>
+        <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+            <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+                <li class="<c:if test="${linkType == 'external'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=external"><kantega:label key="aksess.insertlink.external"/></a></li>
+                <li class="<c:if test="${linkType == 'internal'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=internal""><kantega:label key="aksess.insertlink.internal"/></a></li>
+                <li class="<c:if test="${linkType == 'anchor'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=anchor""><kantega:label key="aksess.insertlink.anchor"/></a></li>
+                <li class="<c:if test="${linkType == 'attachment'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=attachment""><kantega:label key="aksess.insertlink.attachment"/></a></li>
+                <li class="<c:if test="${linkType == 'email'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=email"><kantega:label key="aksess.insertlink.email"/></a></li>
+                <li class="<c:if test="${linkType == 'multimedia'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=multimedia""><kantega:label key="aksess.insertlink.multimedia"/></a></li>
+            </ul>
+            <div id="InsertLinkForm" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
                 <form action="" name="linkform">
 
                     <jsp:include page="insert-link/${linkType}.jsp"/>
@@ -51,11 +51,10 @@
                         <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                     </div>
                 </form>
-                </div>
-        
             </div>
-        </fieldset>
-    </div>
+
+        </div>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

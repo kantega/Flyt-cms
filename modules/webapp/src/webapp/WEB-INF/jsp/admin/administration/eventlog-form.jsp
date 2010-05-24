@@ -30,62 +30,60 @@
 
 <kantega:section id="content">
     <script type="text/javascript">
-    	$(function() {
-	    	$("#from_date").datepicker();
+        $(function() {
+            $("#from_date").datepicker();
             $("#end_date").datepicker();
-	    });
-    </script>    
+        });
+    </script>
     <form name="eventlog" action="SearchEventLog.action" method="post" class="inline">
 
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.eventlog.title"/></h1>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.eventlog.period"/>
-                    </div>
-                    <div class="inputs">
-                            <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
-                            <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${fromDate}"/>">
-                            <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
-                            <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="">
-                    </div>
+        <admin:box>
+            <h1><kantega:label key="aksess.eventlog.title"/></h1>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.eventlog.period"/>
                 </div>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.eventlog.userid"/>
-                    </div>
-                    <div class="inputs">
-                        <input type="text" name="userid" size="20" maxlength="20" value="">
-                    </div>
+                <div class="inputs">
+                    <label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label>
+                    <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${fromDate}"/>">
+                    <label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label>
+                    <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="">
                 </div>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.eventlog.object"/>
-                    </div>
-                    <div class="inputs">
-                        <input type="text" name="subject" size="20" maxlength="20" value="">
-                    </div>
+            </div>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.eventlog.userid"/>
                 </div>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.eventlog.event"/>
-                    </div>
-                    <div class="inputs">
-                        <select name="event">
-                            <option value=""></option>
-                            <%
-                                for (int i = 0; i < Event.ALL_EVENTS.length; i++) {
-                                    String key = "aksess.event." + Event.ALL_EVENTS[i];
-                            %>
-                                <option value="<%=Event.ALL_EVENTS[i]%>"><kantega:label key="<%=key%>"/></option>
-                            <%
-                                }
-                            %>
-                        </select>
-                    </div>
+                <div class="inputs">
+                    <input type="text" name="userid" size="20" maxlength="20" value="">
                 </div>
-            </fieldset>
+            </div>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.eventlog.object"/>
+                </div>
+                <div class="inputs">
+                    <input type="text" name="subject" size="20" maxlength="20" value="">
+                </div>
+            </div>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.eventlog.event"/>
+                </div>
+                <div class="inputs">
+                    <select name="event">
+                        <option value=""></option>
+                        <%
+                            for (int i = 0; i < Event.ALL_EVENTS.length; i++) {
+                                String key = "aksess.event." + Event.ALL_EVENTS[i];
+                        %>
+                        <option value="<%=Event.ALL_EVENTS[i]%>"><kantega:label key="<%=key%>"/></option>
+                        <%
+                            }
+                        %>
+                    </select>
+                </div>
+            </div>
 
             <div class="ui-state-highlight">
                 <kantega:label key="aksess.eventlog.help"/> <%=Aksess.getEventLogMaxAge()%> <kantega:label key="aksess.eventlog.help2"/>
@@ -95,8 +93,7 @@
                 <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
             </div>
 
-
-        </div>
+        </admin:box>
     </form>
 
 </kantega:section>

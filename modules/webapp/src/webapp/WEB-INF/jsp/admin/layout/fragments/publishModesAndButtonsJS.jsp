@@ -57,7 +57,7 @@
             });
 
             // Prevent user from clicking top menu
-            $("#TopMenu a").click(function (e) {
+            $("#TopMenu a").not(".help").click(function (e) {
                 openaksess.common.debug("publishModesAndButtonsJS: topmenu click");
                 if (!confirmCancel()) {
                     e.preventDefault();
@@ -93,7 +93,7 @@
         });
         $("#EditContentButtons input.cancel").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.cancel");
-            if (confirmCancel) {
+            if (confirmCancel()) {
                 window.location.href = 'CancelEdit.action';
             }
         });
@@ -102,16 +102,12 @@
 
     function confirmCancel() {
         var confirmCancel = true;
-        if (isPageModified()) {
-            confirmCancel = confirm("Cancel changes?"); //TODO: Use labels
+        if (openaksess.editcontext.isModified()) {
+            confirmCancel = confirm("<kantega:label key="aksess.editcontent.cancelchanges"/>");
         }
         return confirmCancel;
     }
     
-    function isPageModified() {
-        return "true" == $("#IsModified").val();
-    }
-
     function gotoMode(action) {
         openaksess.common.debug("publishModesAndButtonsJS.gotoMode(): action: "+action);
         action = action + ".action";

@@ -27,13 +27,7 @@
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.lazyload.mini.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $("div.fieldset").roundCorners();
-        });
-    </script>
 
     <kantega:getsection id="head"/>
 </head>

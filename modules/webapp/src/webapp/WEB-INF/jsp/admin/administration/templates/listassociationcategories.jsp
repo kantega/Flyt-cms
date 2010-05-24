@@ -22,29 +22,27 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.associationcategories.title"/></h1>
-            <c:if test="${!empty associationCategories}">
-                <table>
-                    <tr class="tableHeading">
-                        <th><kantega:label key="aksess.associationcategories.id"/></th>
-                        <th><kantega:label key="aksess.associationcategories.name"/></th>
-                        <th><kantega:label key="aksess.associationcategories.publicid"/></th>
-                        <th>&nbsp;</th>
+    <admin:box>
+        <h1><kantega:label key="aksess.associationcategories.title"/></h1>
+        <c:if test="${!empty associationCategories}">
+            <table>
+                <tr class="tableHeading">
+                    <th><kantega:label key="aksess.associationcategories.id"/></th>
+                    <th><kantega:label key="aksess.associationcategories.name"/></th>
+                    <th><kantega:label key="aksess.associationcategories.publicid"/></th>
+                    <th>&nbsp;</th>
+                </tr>
+                <c:forEach var="associationCategory" items="${associationCategories}" varStatus="status">
+                    <tr class="tableRow${status.index mod 2}">
+                        <td>${associationCategory.id}</td>
+                        <td>${associationCategory.name}</td>
+                        <td>${associationCategory.publicId}</td>
                     </tr>
-                    <c:forEach var="associationCategory" items="${associationCategories}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td>${associationCategory.id}</td>
-                            <td>${associationCategory.name}</td>
-                            <td>${associationCategory.publicId}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:if>
+                </c:forEach>
+            </table>
+        </c:if>
 
-        </fieldset>
-    </div>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

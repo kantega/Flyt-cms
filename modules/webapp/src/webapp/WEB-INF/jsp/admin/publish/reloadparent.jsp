@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -42,13 +43,11 @@
             return true;
         }
     </script>
-    <div class="fieldset">
-        <fieldset>
+    <admin:box>
             <kantega:label key="${message}"/>
             <div class="buttonGroup">
                 <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
             </div>
-        </fieldset>
-    </div>
+    </admin:box>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>

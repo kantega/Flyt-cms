@@ -33,11 +33,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>    
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-            $("div.fieldset").roundCorners();
-        });
         $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
         $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
     </script>

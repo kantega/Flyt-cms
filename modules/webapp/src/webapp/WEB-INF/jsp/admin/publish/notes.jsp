@@ -43,31 +43,28 @@
                 event.preventDefault();
                 openaksess.notes.deleteNote($(this).attr("href"));
             });
-        });        
+        });
     </script>
 </kantega:section>
 
 <kantega:section id="content">
     <div id="MainPaneContent">
-        <div class="fieldset">
-            <fieldset>
-                <h1><kantega:label key="aksess.notes.title"/></h1>
+        <admin:box>
+            <h1><kantega:label key="aksess.notes.title"/></h1>
 
-                <div id="NoteArea">
-                    <form name="myform" action="SaveNote.action" method="post">
-                        <textarea name="note" id="NoteText" cols="40" rows="6"></textarea>
-                        <div class="buttonGroup">
-                            <span class="button"><input type="submit" class="ok" id="NoteSubmit" value="<kantega:label key="aksess.notes.submit"/>"></span>
-                        </div>
-                    </form>
-
-                    <div id="Notes">
-                        <%-- The content is loaded with ajax by the ListNotes.action --%>
+            <div id="NoteArea">
+                <form name="myform" action="SaveNote.action" method="post">
+                    <textarea name="note" id="NoteText" cols="40" rows="6"></textarea>
+                    <div class="buttonGroup">
+                        <span class="button"><input type="submit" class="ok" id="NoteSubmit" value="<kantega:label key="aksess.notes.submit"/>"></span>
                     </div>
-                </div>
-            </fieldset>
-        </div>
+                </form>
 
+                <div id="Notes">
+                        <%-- The content is loaded with ajax by the ListNotes.action --%>
+                </div>
+            </div>
+        </admin:box>
     </div>
 </kantega:section>
 

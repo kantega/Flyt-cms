@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -26,9 +27,7 @@
     <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
     <form action="edit" name="myform" method="post">
         <input type="hidden" name="save" value="true">
-        <div class="fieldset">
-
-        <fieldset>
+        <admin:box>
             <h1>
                 <kantega:label key="useradmin.role.title"/>            
             </h1>
@@ -68,8 +67,7 @@
                 <span class="button"><input type="button" class="cancel" onclick="location='search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
             <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
-        </fieldset>
-        </div>            
+        </admin:box>
     </form>
     
 </kantega:section>

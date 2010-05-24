@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -55,115 +56,113 @@
 
     <div id="EditPermissionsForm">
         <form action="SavePermissions.action" method="post">
-            <div class="fieldset">
-                <fieldset>
-                    <h1>${title}</h1>
+            <admin:box>
+                <h1>${title}</h1>
 
-                    <div class="padded">
-                        <table border="0" width="580" cellspacing="0" cellpadding="0">
-                            <!-- Rettigheter -->
+                <div class="padded">
+                    <table border="0" width="580" cellspacing="0" cellpadding="0">
+                        <!-- Rettigheter -->
+                        <tr>
+                            <th width="200"><kantega:label key="aksess.editpermissions.grouporuser"/></th>
+                            <th width="100" align="center" class="tableHeading"><kantega:label key="aksess.editpermissions.privilege"/></th>
+                            <th width="80">&nbsp;</th>
+                            <th width="220" align="center" class="tableHeading"><kantega:label key="aksess.editpermissions.notification"/></th>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+                                <form name="permissionsForm" action="SavePermissions.action" method="post">
+                                    <div style="height: 250px; overflow-y:auto">
+                                        <table border="0" cellspacing="0" cellpadding="0" width="580">
+                                            <!-- Permissions -->
+                                            <c:forEach var="p" items="${permissionsList}" varStatus="status">
+                                                <tr class="tableRow${status.index mod 2}">
+                                                    <input type="hidden" name="roletype_${p.securityIdentifier.id}" value="${p.securityIdentifier.type}">
+                                                    <td width="200">${p.securityIdentifier.name}</td>
+                                                    <td width="100">
+                                                        <c:choose>
+                                                            <c:when test="${canModifyPermissions}">
+                                                                <select name="role_${p.securityIdentifier.id}" id="role_${status.index}" onchange="changePermission('${status.index}')">
+                                                                    <c:forEach var="privilege" items="${privileges}">
+                                                                        <option value="${privilege}" <c:if test="${privilege == p.privilege}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.priv${privilege}"/></option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <kantega:label key="aksess.editpermissions.priv${p.privilege}"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td width="80">
+                                                        <c:choose>
+                                                            <c:when test="${canModifyPermissions}">
+                                                                <a href="RemovePermission.action?removeId=${status.index}" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
+                                                            </c:when>
+                                                            <c:otherwise>&nbsp;</c:otherwise>
+                                                        </c:choose>
+
+                                                    </td>
+                                                    <td width="200">
+                                                        <c:if test="${! empty priorities}">
+                                                            <div id="notificationDiv_${status.index}" <c:if test="${p.privilege < minNotificationPrivilege}">style="display:none;"</c:if>>
+                                                                <c:choose>
+                                                                    <c:when test="${canModifyPermissions}">
+                                                                        <select name="notification_${p.securityIdentifier.id}">
+                                                                            <c:forEach var="priority" items="${priorities}">
+                                                                                <option value="${priority.notificationPriorityAsInt}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority}"/></option>
+                                                                            </c:forEach>
+                                                                        </select>
+                                                                    </c:when>
+                                                                    <c:otherwise>
+                                                                        <c:if test="${p.notificationPriority != null}">
+                                                                            <kantega:label key="aksess.editpermissions.notification${p.notificationPriority}"/>
+                                                                        </c:if>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                            </div>
+                                                        </c:if>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
+                                    </div>
+                                </form>
+
+                            </td>
+                        </tr>
+                        <c:if test="${canModifyPermissions}">
                             <tr>
-                                <th width="200"><kantega:label key="aksess.editpermissions.grouporuser"/></th>
-                                <th width="100" align="center" class="tableHeading"><kantega:label key="aksess.editpermissions.privilege"/></th>
-                                <th width="80">&nbsp;</th>
-                                <th width="220" align="center" class="tableHeading"><kantega:label key="aksess.editpermissions.notification"/></th>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <form name="permissionsForm" action="SavePermissions.action" method="post">
-                                        <div style="height: 250px; overflow-y:auto">
-                                            <table border="0" cellspacing="0" cellpadding="0" width="580">
-                                                <!-- Permissions -->
-                                                <c:forEach var="p" items="${permissionsList}" varStatus="status">
-                                                    <tr class="tableRow${status.index mod 2}">
-                                                        <input type="hidden" name="roletype_${p.securityIdentifier.id}" value="${p.securityIdentifier.type}">
-                                                        <td width="200">${p.securityIdentifier.name}</td>
-                                                        <td width="100">
-                                                            <c:choose>
-                                                                <c:when test="${canModifyPermissions}">
-                                                                    <select name="role_${p.securityIdentifier.id}" id="role_${status.index}" onchange="changePermission('${status.index}')">
-                                                                        <c:forEach var="privilege" items="${privileges}">
-                                                                            <option value="${privilege}" <c:if test="${privilege == p.privilege}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.priv${privilege}"/></option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <kantega:label key="aksess.editpermissions.priv${p.privilege}"/>
-                                                                </c:otherwise>
-                                                            </c:choose>
-                                                        </td>
-                                                        <td width="80">
-                                                            <c:choose>
-                                                                <c:when test="${canModifyPermissions}">
-                                                                    <a href="RemovePermission.action?removeId=${status.index}" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
-                                                                </c:when>
-                                                                <c:otherwise>&nbsp;</c:otherwise>
-                                                            </c:choose>
-
-                                                        </td>
-                                                        <td width="200">
-                                                            <c:if test="${! empty priorities}">
-                                                                <div id="notificationDiv_${status.index}" <c:if test="${p.privilege < minNotificationPrivilege}">style="display:none;"</c:if>>
-                                                                    <c:choose>
-                                                                        <c:when test="${canModifyPermissions}">
-                                                                            <select name="notification_${p.securityIdentifier.id}">
-                                                                                <c:forEach var="priority" items="${priorities}">
-                                                                                    <option value="${priority.notificationPriorityAsInt}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority}"/></option>
-                                                                                </c:forEach>
-                                                                            </select>
-                                                                        </c:when>
-                                                                        <c:otherwise>
-                                                                            <c:if test="${p.notificationPriority != null}">
-                                                                                <kantega:label key="aksess.editpermissions.notification${p.notificationPriority}"/>
-                                                                            </c:if>
-                                                                        </c:otherwise>
-                                                                    </c:choose>
-                                                                </div>
-                                                            </c:if>
-                                                        </td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
-                                    </form>
-
+                                <td colspan="4" align="right">
+                                    <a href="Javascript:addRole('<%=new Role().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.addrole"/></a><br>
+                                    <a href="Javascript:addUser('<%=new User().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.adduser"/></a>
                                 </td>
                             </tr>
-                            <c:if test="${canModifyPermissions}">
-                                <tr>
-                                    <td colspan="4" align="right">
-                                        <a href="Javascript:addRole('<%=new Role().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.addrole"/></a><br>
-                                        <a href="Javascript:addUser('<%=new User().getType()%>')" class="button add"><kantega:label key="aksess.editpermissions.adduser"/></a>
-                                    </td>
-                                </tr>
-                            </c:if>
-                        </table>
-                        <c:if test="${canModifyPermissions}">
-                            <c:if test="${objSecurityId == objectId}">
-                                <div class="ui-state-highlight">
-                                            <kantega:label key="aksess.editpermissions.editpermissionsfor"/> <strong>${title}</strong><br>
-                                            <kantega:label key="aksess.editpermissions.willbeupdated"/>
-                                </div>
-                            </c:if>
-                            <c:if test="${objSecurityId != objectId && inheritedTitle != ''}">
-                                <div class="ui-state-highlight">
-                                            <strong>${title}</strong> <kantega:label key="aksess.editpermissions.inheritfrom"/> <a href="EditPermissins.action?id=${objectId}&type=${permissionsObject.objectType}">${inheritedTitle}</a>.<br><br>
-                                            <kantega:label key="aksess.editpermissions.inheritfrom2"/>
-                                </div>
-                            </c:if>
                         </c:if>
-                        <c:if test="${!canModifyPermissions}">
+                    </table>
+                    <c:if test="${canModifyPermissions}">
+                        <c:if test="${objSecurityId == objectId}">
                             <div class="ui-state-highlight">
-                                <kantega:label key="aksess.editpermissions.readonly"/>
+                                <kantega:label key="aksess.editpermissions.editpermissionsfor"/> <strong>${title}</strong><br>
+                                <kantega:label key="aksess.editpermissions.willbeupdated"/>
                             </div>
                         </c:if>
-                    </div>
-                    <div class="buttonGroup">
-                        <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                        <span class="button"><input type="button" onclick="window.close()" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                    </div>
-                </fieldset>
-            </div>
+                        <c:if test="${objSecurityId != objectId && inheritedTitle != ''}">
+                            <div class="ui-state-highlight">
+                                <strong>${title}</strong> <kantega:label key="aksess.editpermissions.inheritfrom"/> <a href="EditPermissins.action?id=${objectId}&type=${permissionsObject.objectType}">${inheritedTitle}</a>.<br><br>
+                                <kantega:label key="aksess.editpermissions.inheritfrom2"/>
+                            </div>
+                        </c:if>
+                    </c:if>
+                    <c:if test="${!canModifyPermissions}">
+                        <div class="ui-state-highlight">
+                            <kantega:label key="aksess.editpermissions.readonly"/>
+                        </div>
+                    </c:if>
+                </div>
+                <div class="buttonGroup">
+                    <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                    <span class="button"><input type="button" onclick="window.close()" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
+            </admin:box>
         </form>
 
     </div>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -46,18 +47,16 @@
         <input type="hidden" name="mmId" value="<c:out value="${multimedia.id}"/>">
         <input type="hidden" name="newParentId" value="<c:out value="${newParent.id}"/>">
 
-        <div class="fieldset">
-            <fieldset>
-                <p>
-                    <kantega:label key="aksess.copypaste.move"/> <b><c:out value="${multimedia.name}"/></b> <kantega:label key="aksess.copypaste.under"/> <b><c:out value="${newParent.name}"/></b> ?
-                </p>
+        <admin:box>
+            <p>
+                <kantega:label key="aksess.copypaste.move"/> <b><c:out value="${multimedia.name}"/></b> <kantega:label key="aksess.copypaste.under"/> <b><c:out value="${newParent.name}"/></b> ?
+            </p>
 
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-            </fieldset>
-        </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+        </admin:box>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

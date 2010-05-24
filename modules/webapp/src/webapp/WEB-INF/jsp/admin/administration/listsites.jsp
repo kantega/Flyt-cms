@@ -24,8 +24,7 @@
 
 <kantega:section id="content">
 
-    <div class="fieldset">
-        <fieldset>
+    <admin:box>
             <h1><kantega:label key="aksess.sites.title"/></h1>
 
             <table class="fullWidth">
@@ -52,9 +51,7 @@
                     </tr>
                 </c:forEach>
             </table>
-        </fieldset>
-
-    </div>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

@@ -31,8 +31,7 @@
     </script>
 
     <form name="myform" action="ListContentExpiration.action" method="post">
-        <div class="fieldset">
-            <fieldset>
+        <admin:box>
                 <h1><kantega:label key="aksess.contentexpire.title"/></h1>
 
                 <div class="formElement">
@@ -71,8 +70,7 @@
                 <div class="ui-state-highlight">
                     <kantega:label key="aksess.contentexpire.help"/>
                 </div>
-            </fieldset>
-        </div>
+        </admin:box>
     </form>
 
 </kantega:section>

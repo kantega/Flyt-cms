@@ -28,83 +28,81 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.eventlog.title"/></h1>
-            <table class="fullWidth dataTable">
-                <thead>
-                <tr>
-                    <th><kantega:label key="aksess.eventlog.datetime"/></th>
-                    <th><kantega:label key="aksess.eventlog.event"/></th>
-                    <th><kantega:label key="aksess.eventlog.object"/></th>
-                    <th><kantega:label key="aksess.eventlog.userid"/></th>
-                    <th><kantega:label key="aksess.eventlog.remoteaddr"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <%
-                    List events = (List)request.getAttribute("events");
-                    DateFormat df = new SimpleDateFormat(Aksess.getDefaultDateFormat());
-                    DateFormat tf = new SimpleDateFormat(Aksess.getDefaultTimeFormat());
-                    for (int i = 0; i < events.size(); i++) {
-                        EventLogEntry event = (EventLogEntry)events.get(i);
-                        String date = df.format(event.getTime()) + "-" + tf.format(event.getTime());
-                        String link = null;
-                        int subjectId = event.getSubjectId();
-                        int subjectType = event.getSubjectType();
-                        if (subjectId > 0) {
-                            if (subjectType == ObjectType.CONTENT) {
-                                link = Aksess.getContextPath() + "/content.ap?contentId=" + subjectId;
-                            } else if (subjectType == ObjectType.MULTIMEDIA) {
-                                link = Aksess.getContextPath() + "/multimedia.ap?id=" + subjectId;
-                            }
+    <admin:box>
+        <h1><kantega:label key="aksess.eventlog.title"/></h1>
+        <table class="fullWidth dataTable">
+            <thead>
+            <tr>
+                <th><kantega:label key="aksess.eventlog.datetime"/></th>
+                <th><kantega:label key="aksess.eventlog.event"/></th>
+                <th><kantega:label key="aksess.eventlog.object"/></th>
+                <th><kantega:label key="aksess.eventlog.userid"/></th>
+                <th><kantega:label key="aksess.eventlog.remoteaddr"/></th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                List events = (List)request.getAttribute("events");
+                DateFormat df = new SimpleDateFormat(Aksess.getDefaultDateFormat());
+                DateFormat tf = new SimpleDateFormat(Aksess.getDefaultTimeFormat());
+                for (int i = 0; i < events.size(); i++) {
+                    EventLogEntry event = (EventLogEntry)events.get(i);
+                    String date = df.format(event.getTime()) + "-" + tf.format(event.getTime());
+                    String link = null;
+                    int subjectId = event.getSubjectId();
+                    int subjectType = event.getSubjectType();
+                    if (subjectId > 0) {
+                        if (subjectType == ObjectType.CONTENT) {
+                            link = Aksess.getContextPath() + "/content.ap?contentId=" + subjectId;
+                        } else if (subjectType == ObjectType.MULTIMEDIA) {
+                            link = Aksess.getContextPath() + "/multimedia.ap?id=" + subjectId;
                         }
+                    }
 
-                        String eventInfo = "";
-                        String eventName = event.getEventName();
-                        if (eventName.indexOf(":") != -1) {
-                            // If eventname contains :, the text after : is additional info
-                            eventInfo = ": " + eventName.substring(eventName.indexOf(":"), eventName.length());
-                            eventName = eventName.substring(0, eventName.indexOf(":"));
-                        }
-                        eventName = "aksess.event." + eventName;
-                %>
-                <tr class="tableRow<%=(i%2)%>">
-                    <td><%=date%></td>
-                    <td><kantega:label key="<%=eventName%>"/><%=eventInfo%></td>
-                    <td>
+                    String eventInfo = "";
+                    String eventName = event.getEventName();
+                    if (eventName.indexOf(":") != -1) {
+                        // If eventname contains :, the text after : is additional info
+                        eventInfo = ": " + eventName.substring(eventName.indexOf(":"), eventName.length());
+                        eventName = eventName.substring(0, eventName.indexOf(":"));
+                    }
+                    eventName = "aksess.event." + eventName;
+            %>
+            <tr class="tableRow<%=(i%2)%>">
+                <td><%=date%></td>
+                <td><kantega:label key="<%=eventName%>"/><%=eventInfo%></td>
+                <td>
+                    <%
+                        if (link != null) {
+                    %>
+                    <a href="<%=link%>" target="contentinfo">
+                        <%
+                            }
+                        %>
+                        <%=event.getSubjectName()%>
                         <%
                             if (link != null) {
                         %>
-                        <a href="<%=link%>" target="contentinfo">
-                            <%
-                                }
-                            %>
-                            <%=event.getSubjectName()%>
-                            <%
-                                if (link != null) {
-                            %>
-                        </a>
-                        <%
-                            }
-                        %>
-                    </td>
-                    <td><%=event.getUserId()%></td>
-                    <td><a href="http://www.ratite.com/whois/whois.cgi?domain=<%=event.getRemoteAddress()%>" target="ipinfo"><%=event.getRemoteAddress()%></a></td>
-                </tr>
-                <%
-                    }
-                %>
-                </tbody>
-            </table>
-            <%
-                if (events.size() == 0) {
-            %>
-            <div class="ui-state-highlight"><kantega:label key="aksess.eventlog.nohits"/></div>
+                    </a>
+                    <%
+                        }
+                    %>
+                </td>
+                <td><%=event.getUserId()%></td>
+                <td><a href="http://www.ratite.com/whois/whois.cgi?domain=<%=event.getRemoteAddress()%>" target="ipinfo"><%=event.getRemoteAddress()%></a></td>
+            </tr>
             <%
                 }
             %>
-        </fieldset>
-    </div>
+            </tbody>
+        </table>
+        <%
+            if (events.size() == 0) {
+        %>
+        <div class="ui-state-highlight"><kantega:label key="aksess.eventlog.nohits"/></div>
+        <%
+            }
+        %>
+    </admin:box>
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

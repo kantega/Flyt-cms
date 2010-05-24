@@ -30,38 +30,36 @@
             }
         }
     </script>
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.topicmaps.title"/></h1>
-            <table>
-                <tr class="tableHeading">
-                    <td><strong><kantega:label key="aksess.topicmaps.admin.topicmap"/></strong></td>
-                    <td><strong><kantega:label key="aksess.topicmaps.admin.editable"/></strong></td>
-                    <td>&nbsp;</td>
+    <admin:box>
+        <h1><kantega:label key="aksess.topicmaps.title"/></h1>
+        <table>
+            <tr class="tableHeading">
+                <td><strong><kantega:label key="aksess.topicmaps.admin.topicmap"/></strong></td>
+                <td><strong><kantega:label key="aksess.topicmaps.admin.editable"/></strong></td>
+                <td>&nbsp;</td>
+            </tr>
+            <c:forEach var="topicMap" items="${topicMaps}" varStatus="status">
+                <tr class="tableRow${status.index mod 2}">
+                    <td>${topicMap.name}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${topicMap.editable}"><kantega:label key="aksess.text.ja"/></c:when>
+                            <c:otherwise><kantega:label key="aksess.text.nei"/></c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>
+                        <a href="EditTopicMap.action?id=${topicMap.id}" class="button edit"><kantega:label key="aksess.button.edit"/></a>
+                        <a href="Javascript:deleteTopicMap(${topicMap.id}, '${topicMap.name}')" class="button delete"><kantega:label key="aksess.button.delete"/>
+                    </td>
                 </tr>
-                <c:forEach var="topicMap" items="${topicMaps}" varStatus="status">
-                    <tr class="tableRow${status.index mod 2}">
-                        <td>${topicMap.name}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${topicMap.editable}"><kantega:label key="aksess.text.ja"/></c:when>
-                                <c:otherwise><kantega:label key="aksess.text.nei"/></c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <a href="EditTopicMap.action?id=${topicMap.id}" class="button edit"><kantega:label key="aksess.button.edit"/></a>
-                            <a href="Javascript:deleteTopicMap(${topicMap.id}, '${topicMap.name}')" class="button delete"><kantega:label key="aksess.button.delete"/>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </table>
+            </c:forEach>
+        </table>
 
-            <div class="buttonGroup">
-                <a href="EditTopicMap.action" class="button"><span class="add"><kantega:label key="aksess.topicmaps.admin.newmap"/></span></a>
-            </div>            
+        <div class="buttonGroup">
+            <a href="EditTopicMap.action" class="button"><span class="add"><kantega:label key="aksess.topicmaps.admin.newmap"/></span></a>
+        </div>
 
-        </fieldset>
-    </div>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

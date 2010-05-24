@@ -36,7 +36,6 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.1.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.roundcorners.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.ba-bbq-1.0.3.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
@@ -49,7 +48,6 @@
     <kantega:getsection id="head"/>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("div.fieldset").roundCorners();
             $("#MainPane table.dataTable").dataTable({
                 "sPaginationType": "two_button",
                 "iDisplayLength":25,

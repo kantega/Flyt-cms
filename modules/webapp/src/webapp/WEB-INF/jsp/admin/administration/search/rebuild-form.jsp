@@ -23,8 +23,7 @@
 
 <kantega:section id="content">
     <form action="RebuildIndex.action" name="searchindex" method="POST">
-    <div class="fieldset">
-        <fieldset>
+        <admin:box>
             <h1><kantega:label key="aksess.search.title"/></h1>
 
             <div class="row">
@@ -42,8 +41,7 @@
             <div class="buttonGroup">
                 <a href="#" onclick="document.searchindex.submit()" class="button"><span class="ok"><kantega:label key="aksess.button.start"/></span></a>
             </div>
-        </fieldset>
-    </div>
+        </admin:box>
     </form>
 
 </kantega:section>

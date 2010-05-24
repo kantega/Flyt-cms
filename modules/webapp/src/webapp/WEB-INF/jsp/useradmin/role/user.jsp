@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -32,59 +33,55 @@
         }
     </script>
 
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="useradmin.userroles.title"/></h1>
-
-            <form action="removeuserrole" name="removerole" method="post">
-                <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-                <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
-                <input type="hidden" name="roleId" value="">
-                <input type="hidden" name="roleDomain" value="">
-                <input type="hidden" name="context" value="user">
-            </form>
-            <table border="0" cellspacing="0" cellpadding="0" width="400">
-                <c:forEach items="${roleSets}" var="roleSet">
-                    <tr class="tableHeading">
-                        <td><c:out value="${roleSet.description}"/></td>
-                        <td></td>
-                    </tr>
-                    <c:forEach items="${roleSet.userRoles}" var="role" varStatus="status">
-                        <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                            <td><c:out value="${role.name}"/></td>
-                            <td align="right">
-                                <c:if test="${roleSet.isEditable}">
-                                    <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')"><kantega:label key="useradmin.userroles.remove"/></a>
-                                </c:if>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                    <c:if test="${roleSet.isEditable}">
-                        <tr>
-                            <td colspan="2" align="right">
-                                <kantega:label key="useradmin.userroles.add"/>:<br>
-                                <form action="adduserrole" method="post">
-                                    <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-                                    <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
-                                    <input type="hidden" name="roleDomain" value="<c:out value="${roleSet.domain}"/>">
-                                    <select name="roleId">
-                                        <c:forEach items="${roleSet.availableRoles}" var="role">
-                                            <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
-                                        </c:forEach>
-                                    </select>
-                                    <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.add"/>"></span>
-                                </form>
-                            </td>
-                        </tr>
-                    </c:if>
-                    <tr>
-                        <td colspan="2">&nbsp;</td>
+    <admin:box>
+        <h1><kantega:label key="useradmin.userroles.title"/></h1>
+        <form action="removeuserrole" name="removerole" method="post">
+            <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+            <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
+            <input type="hidden" name="roleId" value="">
+            <input type="hidden" name="roleDomain" value="">
+            <input type="hidden" name="context" value="user">
+        </form>
+        <table border="0" cellspacing="0" cellpadding="0" width="400">
+            <c:forEach items="${roleSets}" var="roleSet">
+                <tr class="tableHeading">
+                    <td><c:out value="${roleSet.description}"/></td>
+                    <td></td>
+                </tr>
+                <c:forEach items="${roleSet.userRoles}" var="role" varStatus="status">
+                    <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                        <td><c:out value="${role.name}"/></td>
+                        <td align="right">
+                            <c:if test="${roleSet.isEditable}">
+                                <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')"><kantega:label key="useradmin.userroles.remove"/></a>
+                            </c:if>
+                        </td>
                     </tr>
                 </c:forEach>
-            </table>
-
-        </fieldset>
-    </div>
+                <c:if test="${roleSet.isEditable}">
+                    <tr>
+                        <td colspan="2" align="right">
+                            <kantega:label key="useradmin.userroles.add"/>:<br>
+                            <form action="adduserrole" method="post">
+                                <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+                                <input type="hidden" name="userDomain" value="<c:out value="${userDomain}"/>">
+                                <input type="hidden" name="roleDomain" value="<c:out value="${roleSet.domain}"/>">
+                                <select name="roleId">
+                                    <c:forEach items="${roleSet.availableRoles}" var="role">
+                                        <option value="<c:out value="${role.id}"/>"><c:out value="${role.name}"/></option>
+                                    </c:forEach>
+                                </select>
+                                <span class="button"><input type="submit" class="add" value="<kantega:label key="aksess.button.add"/>"></span>
+                            </form>
+                        </td>
+                    </tr>
+                </c:if>
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+            </c:forEach>
+        </table>
+    </admin:box>
 
 </kantega:section>
 

@@ -48,10 +48,10 @@
             return false;
         }
 
-    	$(function() {
-	    	$("#from_date").datepicker();
+        $(function() {
+            $("#from_date").datepicker();
             $("#end_date").datepicker();
-	    });               
+        });
 
         function validatePublishProperties() {
             if (openaksess.dateutils.isDateNotEmpty($("#from_date").val()) && openaksess.dateutils.checkDate($("#from_date").val()) == -1) {
@@ -77,45 +77,43 @@
 </kantega:section>
 
 <kantega:section id="body">
-        <div class="fieldset">
-            <fieldset>
-                <table class="noborder" style="margin-top:20px; margin-bottom:20px">
-                    <tr>
-                        <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
-                        <td>
-                            <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${content.publishDate}"/>">
-                        </td>
-                        <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
-                        <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${content.publishDate}"/>"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
-                        <td>
-                            <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${content.expireDate}"/>">
-                        </td>
-                        <td>
-                            <label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
-                        </td>
-                        <td>
-                            <input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${content.expireDate}"/>">
-                        </td>
-                    </tr>
+    <admin:box>
+        <table class="noborder" style="margin-top:20px; margin-bottom:20px">
+            <tr>
+                <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
+                <td>
+                    <input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${content.publishDate}"/>">
+                </td>
+                <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
+                <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${content.publishDate}"/>"></td>
+            </tr>
+            <tr>
+                <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
+                <td>
+                    <input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${content.expireDate}"/>">
+                </td>
+                <td>
+                    <label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label>
+                </td>
+                <td>
+                    <input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${content.expireDate}"/>">
+                </td>
+            </tr>
 
-                </table>
-                <div id="UpdateChildren">
-                    <div class="row">
-                        <input type="checkbox" name="updateChildren" value="true" id="update_Children" class="radio">
-                        <label for="update_Children" class="radio"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
-                        <div class="clearing"></div>
-                    </div>
+        </table>
+        <div id="UpdateChildren">
+            <div class="row">
+                <input type="checkbox" name="updateChildren" value="true" id="update_Children" class="radio">
+                <label for="update_Children" class="radio"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
+                <div class="clearing"></div>
+            </div>
 
-                </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-
-            </fieldset>
         </div>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
+
+    </admin:box>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

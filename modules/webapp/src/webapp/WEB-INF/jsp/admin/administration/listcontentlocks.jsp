@@ -33,8 +33,7 @@
 <kantega:section id="content">
 
 
-    <div class="fieldset">
-        <fieldset>
+    <admin:box>
             <h1><kantega:label key="aksess.locks.title"/></h1>
 
             <%
@@ -87,10 +86,7 @@
             <%
                 }
             %>
-
-        </fieldset>
-
-    </div>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

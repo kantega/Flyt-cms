@@ -22,33 +22,29 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.contenttemplates.title"/></h1>
-            <c:if test="${!empty templates}">
-                <table border="0" cellspacing="0" cellpadding="0" width="600">
-                    <tr class="tableHeading">
-                        <td><kantega:label key="aksess.templates.id"/></td>
-                        <td><kantega:label key="aksess.templates.template"/></td>
-                        <td><kantega:label key="aksess.templates.templatefile"/></td>
-                        <td><kantega:label key="aksess.templates.publicid"/></td>
+    <admin:box>
+        <h1><kantega:label key="aksess.contenttemplates.title"/></h1>
+        <c:if test="${!empty templates}">
+            <table border="0" cellspacing="0" cellpadding="0" width="600">
+                <tr class="tableHeading">
+                    <td><kantega:label key="aksess.templates.id"/></td>
+                    <td><kantega:label key="aksess.templates.template"/></td>
+                    <td><kantega:label key="aksess.templates.templatefile"/></td>
+                    <td><kantega:label key="aksess.templates.publicid"/></td>
+                </tr>
+                <c:forEach var="template" items="${templates}" varStatus="status">
+                    <tr class="tableRow${status.index mod 2}">
+                        <td>${template.id}</td>
+                        <td>${template.name}</td>
+                        <td>${template.templateFile}</td>
+                        <td>${template.publicId}</td>
                     </tr>
-                    <c:forEach var="template" items="${templates}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td>${template.id}</td>
-                            <td>${template.name}</td>
-                            <td>${template.templateFile}</td>
-                            <td>${template.publicId}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:if>
-            <c:if test="${empty templates}">
-                <kantega:label key="aksess.templates.notemplates"/>
-            </c:if>
-
-        </fieldset>
-    </div>
-
+                </c:forEach>
+            </table>
+        </c:if>
+        <c:if test="${empty templates}">
+            <kantega:label key="aksess.templates.notemplates"/>
+        </c:if>
+    </admin:box>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

@@ -23,28 +23,26 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.aliases.title"/></h1>
-            <table class="fullWidth dataTable">
-                <thead>
-                <tr>
-                    <th><kantega:label key="aksess.aliases.alias"/></th>
-                    <th><kantega:label key="aksess.aliases.page"/></th>
+    <admin:box>
+        <h1><kantega:label key="aksess.aliases.title"/></h1>
+        <table class="fullWidth dataTable">
+            <thead>
+            <tr>
+                <th><kantega:label key="aksess.aliases.alias"/></th>
+                <th><kantega:label key="aksess.aliases.page"/></th>
+            </tr>
+            </thead>
+            <tbody>
+            <aksess:getcollection name="aliases" contentquery="${query}" skipattributes="true" varStatus="status">
+                <tr class="tableRow${status.index mod 2}">
+                    <td><aksess:getattribute name="alias" collection="aliases"/></td>
+                    <td><aksess:link collection="aliases" target="_new"><aksess:getattribute name="title" collection="aliases"/></aksess:link></td>
                 </tr>
-                </thead>
-                <tbody>
-                <aksess:getcollection name="aliases" contentquery="${query}" skipattributes="true" varStatus="status">
-                    <tr class="tableRow${status.index mod 2}">
-                        <td><aksess:getattribute name="alias" collection="aliases"/></td>
-                        <td><aksess:link collection="aliases" target="_new"><aksess:getattribute name="title" collection="aliases"/></aksess:link></td>
-                    </tr>
-                </aksess:getcollection>
-                </tbody>
-            </table>
+            </aksess:getcollection>
+            </tbody>
+        </table>
 
-            <div class="ui-state-highlight"><kantega:label key="aksess.aliases.help"/></div>
-        </fieldset>
-    </div>
+        <div class="ui-state-highlight"><kantega:label key="aksess.aliases.help"/></div>
+    </admin:box>
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

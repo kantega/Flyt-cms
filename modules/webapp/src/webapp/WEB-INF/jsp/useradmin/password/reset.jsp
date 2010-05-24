@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -55,8 +56,7 @@
         <form action="reset" name="myform" method="post" id="mailform" style="<c:if test="${!maildefault}">display: none;</c:if>">
             <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
             <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-            <div class="fieldset">
-            <fieldset>
+            <admin:box>
                 <p>
                     <label>Fra:</label>
                     <input type="text" name="from" class="textInput" value="<c:out value="${mailfrom}"/>" maxlength="64">
@@ -82,8 +82,7 @@
                     <span class="button"><input type="submit" name="mailsubmit" class="button ok" value="<kantega:label key="aksess.button.send"/>"></span>
                     <span class="button"><input type="submit" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
-            </fieldset>
-            </div>
+            </admin:box>
         </form>
 
     </c:if>
@@ -91,8 +90,7 @@
     <form action="reset" name="myform" method="post" id="passwordform" style="<c:if test="${maildefault}">display: none;</c:if>">
         <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
         <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
-        <div class="fieldset">
-        <fieldset>
+        <admin:box>
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.password.password1"/></label></div>
                 <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
@@ -107,8 +105,7 @@
                 <span class="button"><input type="submit" name="passwordsubmit" class="ok" value="<kantega:label key="aksess.button.save"/>"></span>
                 <span class="button"><input type="button" class="cancel" onclick="location='../profile/search'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
-        </fieldset>
-        </div>
+        </admin:box>
     </form>
 
 

@@ -31,8 +31,7 @@
 
 <kantega:section id="content">
 
-    <div class="fieldset">
-        <fieldset>
+    <admin:box>
             <h1><kantega:label key="aksess.systeminfo.title"/></h1>
 
             <div class="formElement">
@@ -79,12 +78,9 @@
                     <kantega:label key="aksess.systeminfo.memory.max"/>: ${maxMemory} MB
                 </div>
             </div>
-        </fieldset>
-    </div>
-
+    </admin:box>
     <c:if test="${fn:length(xmlCache) > 1}">
-        <div class="fieldset">
-            <fieldset>
+        <admin:box>
                 <h1><kantega:label key="aksess.systeminfo.xmlcache"/></h1>
 
                 <table>
@@ -103,12 +99,10 @@
                     </c:forEach>
                     </tbody>
                 </table>
-            </fieldset>
-        </div>
+        </admin:box>
     </c:if>
 
-    <div class="fieldset">
-        <fieldset>
+    <admin:box>
             <h1><kantega:label key="aksess.systeminfo.config"/></h1>
 
             <table id="PropertiesTable">
@@ -150,8 +144,6 @@
                     </div>
                 </c:if>
             </form>
-        </fieldset>
-    </div>
-
+    </admin:box>
 </kantega:section>
 <%@ include file="../layout/administrationLayout.jsp" %>

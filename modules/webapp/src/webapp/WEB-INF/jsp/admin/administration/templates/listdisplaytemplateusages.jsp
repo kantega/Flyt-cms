@@ -22,24 +22,22 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.displaytemplates.usages.title"/></h1>
-            <div class="ui-state-highlight"><kantega:label key="aksess.displaytemplates.usages.help"/></div>
-            <table border="0" cellspacing="0" cellpadding="0" width="600">
-                <tr>
-                    <th><kantega:label key="aksess.displaytemplates.usages.title"/></th>
-                    <th><kantega:label key="aksess.displaytemplates.usages.lastmodified"/></th>
+    <admin:box>
+        <h1><kantega:label key="aksess.displaytemplates.usages.title"/></h1>
+        <div class="ui-state-highlight"><kantega:label key="aksess.displaytemplates.usages.help"/></div>
+        <table border="0" cellspacing="0" cellpadding="0" width="600">
+            <tr>
+                <th><kantega:label key="aksess.displaytemplates.usages.title"/></th>
+                <th><kantega:label key="aksess.displaytemplates.usages.lastmodified"/></th>
+            </tr>
+            <aksess:getcollection name="pages" contentquery="${query}" skipattributes="true" max="50" varStatus="status">
+                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                    <td><aksess:link collection="pages" target="_blank"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
+                    <td><aksess:getattribute name="lastmodified" collection="pages"/></td>
                 </tr>
-                <aksess:getcollection name="pages" contentquery="${query}" skipattributes="true" max="50" varStatus="status">
-                    <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                        <td><aksess:link collection="pages" target="_blank"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
-                        <td><aksess:getattribute name="lastmodified" collection="pages"/></td>
-                    </tr>
-                </aksess:getcollection>
-            </table>
-        </fieldset>
-    </div>
+            </aksess:getcollection>
+        </table>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

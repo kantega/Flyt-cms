@@ -22,36 +22,34 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <div class="fieldset">
-        <fieldset>
-            <h1><kantega:label key="aksess.displaytemplates.title"/></h1>
-            <c:if test="${!empty templates}">
-                <table>
-                    <tr>
-                        <th><kantega:label key="aksess.templates.id"/></th>
-                        <th><kantega:label key="aksess.templates.template"/></th>
-                        <th><kantega:label key="aksess.templates.view"/></th>
-                        <th><kantega:label key="aksess.templates.publicid"/></th>
-                        <th>&nbsp;</th>
+    <admin:box>
+        <h1><kantega:label key="aksess.displaytemplates.title"/></h1>
+        <c:if test="${!empty templates}">
+            <table>
+                <tr>
+                    <th><kantega:label key="aksess.templates.id"/></th>
+                    <th><kantega:label key="aksess.templates.template"/></th>
+                    <th><kantega:label key="aksess.templates.view"/></th>
+                    <th><kantega:label key="aksess.templates.publicid"/></th>
+                    <th>&nbsp;</th>
+                </tr>
+                <c:forEach var="template" items="${templates}" varStatus="status">
+                    <tr class="tableRow${status.index mod 2}">
+                        <td>${template.id}</td>
+                        <td>${template.name}</td>
+                        <td>${template.view}</td>
+                        <td>${template.publicId}</td>
+                        <td class="buttonGroup">
+                            <a href="ListDisplayTemplateUsages.action?templateId=${template.id}" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>
+                        </td>
                     </tr>
-                    <c:forEach var="template" items="${templates}" varStatus="status">
-                        <tr class="tableRow${status.index mod 2}">
-                            <td>${template.id}</td>
-                            <td>${template.name}</td>
-                            <td>${template.view}</td>
-                            <td>${template.publicId}</td>
-                            <td class="buttonGroup">
-                                <a href="ListDisplayTemplateUsages.action?templateId=${template.id}" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:if>
-            <c:if test="${empty templates}">
-                <kantega:label key="aksess.templates.notemplates"/>
-            </c:if>
-        </fieldset>
-    </div>
+                </c:forEach>
+            </table>
+        </c:if>
+        <c:if test="${empty templates}">
+            <kantega:label key="aksess.templates.notemplates"/>
+        </c:if>
+    </admin:box>
 
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -41,19 +42,17 @@
 <kantega:section id="body">
     <div id="AddAttachmentForm">
         <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
-            <div class="fieldset">
-                <fieldset>
-                    <div class="formElement">
-                        <div class="inputs">
-                            <input type="file" size="20" name="attachment" value="" style="width:300px;">
-                        </div>
+            <admin:box>
+                <div class="formElement">
+                    <div class="inputs">
+                        <input type="file" size="20" name="attachment" value="" style="width:300px;">
                     </div>
-                    <div class="buttonGroup">
-                        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                        <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                    </div>
-                </fieldset>
-            </div>
+                </div>
+                <div class="buttonGroup">
+                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                </div>
+            </admin:box>
         </form>
     </div>
 </kantega:section>
