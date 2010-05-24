@@ -25,12 +25,14 @@ $(document).ready(function(){
     openaksess.multimedia.bindMultimediaupdateEvents();
     openaksess.multimedia.bindToolButtons();
     stateHandler.init("multimediaupdate");
-    var url = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder);
-    if (!url) {
+    var currentFolder = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder);
+    if (!currentFolder) {
         openaksess.common.debug("multimedia.$(document).ready(): No state found in user preferences. Opening root element.");
-        url = currentItemIdentifier;
+        currentFolder = currentItemIdentifier;
+    } else {
+        currentItemIdentifier = currentFolder;
     }
-    openaksess.multimedia.triggerMultimediaupdateEvent(url);//Must be fired at startup in order to load the navigator
+    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);//Must be fired at startup in order to load the navigator
 });
 
 
@@ -188,7 +190,7 @@ openaksess.multimedia = {
                 } else {
                     var idAttr = $media.attr("id");
                     currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
+                    openaksess.multimedia.triggerMultimediaupdateEvent();
                 }
             }
 

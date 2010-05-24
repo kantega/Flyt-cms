@@ -78,7 +78,9 @@ public class UploadMultimediaAction extends AdminController {
                     m.setSecurityId(0);
                 }
                 if (multimedia.size() == 1) {
-                    m.setName(name);
+                    if (name != null && name.length() > 0) {
+                        m.setName(name);
+                    }                    
                     m.setAltname(altName);
                     m.setAuthor(author);
                 }

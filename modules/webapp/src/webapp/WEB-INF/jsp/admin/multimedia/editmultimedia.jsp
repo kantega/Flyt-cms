@@ -24,7 +24,7 @@
 
 <kantega:section id="editbuttons">
     <span class="barButton hidden"><input type="submit" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
-    <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.savemetadata"/>"></span>
+    <span class="barButton"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
     <span class="barButton"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
 </kantega:section>
 
@@ -68,11 +68,6 @@
             }
 
 
-            // Disable save button until something is changed
-            $("#EditMultimediaButtons .save").addClass("disabled");
-            $("#EditMultimediaButtons .save").attr("disabled", "disabled");
-            $("#EditMultimediaButtons .save").attr("title", "<kantega:label key="aksess.multimedia.nochanges"/>");
-
             <c:if test="${isPropertyPaneEditable}">
             $("#EditMultimediaButtons .save").click(function () {
                 document.editmediaform.insert.value = false;
@@ -84,15 +79,6 @@
 
             $("#EditMultimediaButtons .cancel").click(function (){
                 location.href = "Navigate.action";
-            });
-
-            // Active button when something is changed
-            $(".sidebarFieldset input").keypress(function(e) {
-                openaksess.common.debug("Element changed, enable save button");
-                document.editmediaform.changed.value = true;
-                $("#EditMultimediaButtons .save").removeClass("disabled");
-                $("#EditMultimediaButtons .save").removeAttr("disabled");
-                $("#EditMultimediaButtons .save").removeAttr("title");
             });
         });
     </script>

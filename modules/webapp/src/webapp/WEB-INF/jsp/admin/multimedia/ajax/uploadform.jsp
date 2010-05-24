@@ -1,6 +1,3 @@
-<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
-<%@ page import="no.kantega.publishing.common.util.MultimediaHelper" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -42,9 +39,10 @@
         return true;
     }
 </script>
-<div id="Content">
+<div id="MultimediaUploadForm">
     <form action="UploadMultimedia.action" name="uploadForm" method="post" enctype="multipart/form-data" onsubmit="return validateUpload()">
         <c:if test="${id == -1}">
+            <input type="hidden" name="parentId" value="${parentId}">
             <div class="formElement">
                 <div class="heading">
                     <label><kantega:label key="aksess.multimedia.medianame"/></label>

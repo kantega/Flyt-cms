@@ -766,17 +766,20 @@ public class AssociationAO  {
     }
 
     /**
-     * Gjenoppretter kopling fra søppelkurv
-     * @param deletedItemsId
+     * Restore delete associations (pages)
+     * @param deletedItemsId - id from deleteditems (trash can)
+     * @return - id of top page restored
      * @throws SystemException
      */
-    public static void restoreAssociations(int deletedItemsId) throws SystemException {
+    public static int restoreAssociations(int deletedItemsId) throws SystemException {
         Connection c = null;
+
+        int parentId = -1;
 
         try {
             c = dbConnectionFactory.getConnection();
 
-            PreparedStatement st = c.prepareStatement("SELECT * FROM associations WHERE IsDeleted = 1 AND DeletedItemsId = ?");
+            PreparedStatement st = c.prepareStatement("SELECT * FROM associations WHERE IsDeleted = 1 AND DeletedItemsId = ? ORDER BY Depth");
 
             PreparedStatement countSt = c.prepareStatement("SELECT Count(*) AS Cnt FROM associations WHERE IsDeleted = 0 AND ContentId = ? AND SiteId = ?");
             PreparedStatement updateSt = c.prepareStatement("UPDATE associations SET IsDeleted = 0, DeletedItemsId = null, Type = ? WHERE UniqueId = ?");
@@ -788,6 +791,10 @@ public class AssociationAO  {
 
                 int type;
 
+                if (parentId == -1) {
+                    parentId = a.getId();
+                }
+
                 if (a.getAssociationtype() != AssociationType.SHORTCUT) {
 
                     type = AssociationType.DEFAULT_POSTING_FOR_SITE;
@@ -798,7 +805,7 @@ public class AssociationAO  {
                     if (cntRs.next()) {
                         int cnt = cntRs.getInt("Cnt");
                         if (cnt > 0) {
-                            // Siden er allerede publisert flere steder
+                            // Page is already published another place e.g cross posted
                             type = AssociationType.CROSS_POSTING;
                         }
                     }
@@ -806,7 +813,6 @@ public class AssociationAO  {
                     type = AssociationType.SHORTCUT;
                 }
 
-                // Finn typen den skal ha først
                 updateSt.setInt(1, type);
                 updateSt.setInt(2, a.getId());
                 updateSt.executeUpdate();
@@ -823,6 +829,7 @@ public class AssociationAO  {
 
             }
         }
+        return parentId;
     }
 
     public static List findDuplicateAliases(Association parent) throws SystemException {

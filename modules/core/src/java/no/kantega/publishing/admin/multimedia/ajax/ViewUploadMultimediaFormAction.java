@@ -45,7 +45,7 @@ public class ViewUploadMultimediaFormAction implements Controller {
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("folderId", folderId);
+        model.put("parentId", folderId);
         model.put("id", id);
         model.put("altNameRequired", Aksess.getConfiguration().getBoolean("multimedia.altname.required", false));
         model.put("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));

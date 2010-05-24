@@ -975,13 +975,15 @@ public class ContentManagementService {
     }
 
     /**
-     * @param id - id til objekt som skal restores
-     *
+     * Restore a deleted item from deleted items
+     * @param id from trashcan
+     * @return id of restored item (not trashcan id)
      * @throws SystemException
      */
-    public void restoreDeletedItem(int id) throws SystemException {
-        AssociationAO.restoreAssociations(id);
+    public int restoreDeletedItem(int id) throws SystemException {
+        int parentId = AssociationAO.restoreAssociations(id);
         DeletedItemsAO.purgeDeletedItem(id);
+        return parentId;
     }
 
     /**

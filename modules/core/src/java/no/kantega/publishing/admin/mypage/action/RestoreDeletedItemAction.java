@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.admin.mypage.action;
 
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -26,15 +29,29 @@ import javax.servlet.http.HttpServletResponse;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.service.ContentManagementService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RestoreDeletedItemAction  implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
         int id = param.getInt("id");
+
+        ContentManagementService service = new ContentManagementService(request);
+
+        int associationId = -1;
         if (id != -1) {
-            ContentManagementService service = new ContentManagementService(request);
-            service.restoreDeletedItem(id);
+            associationId = service.restoreDeletedItem(id);
         }
 
-        return new ModelAndView(new RedirectView("ViewMyPage.action"));
+        if (associationId != -1) {
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setAssociationId(associationId);
+            Content content = service.getContent(cid);            
+            request.getSession().setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
+            return new ModelAndView(new RedirectView("../publish/Navigate.action"));
+        } else {
+            return new ModelAndView(new RedirectView("ViewMyPage.action"));
+        }
     }
 }
