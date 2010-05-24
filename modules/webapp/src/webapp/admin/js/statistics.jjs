@@ -59,7 +59,6 @@ openaksess.statistics = {
         openaksess.common.debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
         $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
             openaksess.common.debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
-            $("#MainPaneContent div.fieldset").roundCorners();
             openaksess.statistics.pageLoaded();
         });
     },

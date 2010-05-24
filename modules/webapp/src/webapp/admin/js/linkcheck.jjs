@@ -36,7 +36,6 @@ openaksess.linkcheck = {
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
         $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: openaksess.linkcheck.currentUrl, sort:sort}, function(success){
             openaksess.common.debug("openaksess.linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
-            $("#MainPaneContent div.fieldset").roundCorners();
         });
     }
 };

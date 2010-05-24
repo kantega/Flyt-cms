@@ -34,7 +34,6 @@ openaksess.notes = {
         openaksess.common.debug("openaksess.notes.listNotes(): Calling ListBrokenLinks.action");
         $("#Notes").load("${pageContext.request.contextPath}/admin/publish/ListNotes.action", {itemIdentifier: openaksess.notes.currentUrl}, function(success){
             openaksess.common.debug("openaksess.notes.listNotes(): response from ListNotes.action received");
-            $("#Notes div.fieldset").roundCorners();
         });
     },
 
@@ -43,7 +42,6 @@ openaksess.notes = {
         if (note != "") {
             $("#Notes").load("${pageContext.request.contextPath}/admin/publish/AddNote.action", {itemIdentifier: openaksess.notes.currentUrl, note : note}, function(success){
                 openaksess.common.debug("openaksess.notes.addNote(): response from AddNotes.action received");
-                $("#Notes div.fieldset").roundCorners();
             });
         }
     },

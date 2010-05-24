@@ -214,6 +214,11 @@ openaksess.admin = {
                 openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
             }
 
+            $(window).ready(function() {
+                $("body").addClass("fuckIE7");
+                $("body").removeClass("fuckIE7");
+            });
+            
         });
     },
 
