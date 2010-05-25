@@ -51,7 +51,7 @@ function saveForm() {
 </head>
 
 <body class="bodyWithMargin">
-<%@ include file="../../../../../admin/include/infobox.jsf" %>
+<%@ include file="../../../../../admin/include/infobox.jsp" %>
 <form name="myform" action="EditTopicMap.action" method="post">
     <input type="hidden" name="id" value="${topicMap.id}">
 

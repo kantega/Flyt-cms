@@ -171,5 +171,24 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Creates a form tag for submitting input to MiniAksess. Should contain a &lt;mini:inputscreen/&gt;-tag</description>
+        <name>form</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.FormTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>The form submit action. Default action will be used if not specified.</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Renders the input screen for MiniAksess. Must be used within a &lt;mini:form/&gt;-tag</description>
+        <name>inputscreen</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.InputScreenTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    
 </taglib>
 

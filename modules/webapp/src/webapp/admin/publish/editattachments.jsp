@@ -53,7 +53,7 @@
 </script>
 
 <body class="bodyWithMargin">
-<%@ include file="../include/infobox.jsf" %>
+<%@ include file="../include/infobox.jsp" %>
 <form name="myform" action="SaveAttachments.action" target="content" method="post">
     <input type="hidden" name="status" value="">
     <input type="hidden" name="action" value="">

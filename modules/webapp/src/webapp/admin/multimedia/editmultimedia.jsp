@@ -72,7 +72,7 @@ function initialize() {
 }
 </script>
 <body class="bodyWithMargin" onLoad="initialize()">
-<%@ include file="../include/infobox.jsf" %>
+<%@ include file="../include/infobox.jsp" %>
 <form name="myform" action="SaveMultimedia.action" method="post" target="content" enctype="multipart/form-data">
     <table border="0" cellspacing="0" cellpadding="0" width="500">
     <%

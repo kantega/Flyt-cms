@@ -63,7 +63,7 @@
 
 </script>
 <body class="bodyWithMargin">
-<%@ include file="../include/infobox.jsf" %>
+<%@ include file="../include/infobox.jsp" %>
 <form name="myform" action="SaveMetadata.action" target="content" method="post" accept-charset="utf-8">
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <%

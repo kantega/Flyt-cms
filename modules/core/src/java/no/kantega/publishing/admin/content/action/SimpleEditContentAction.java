@@ -17,7 +17,11 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.common.exception.ObjectLockedException;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -35,8 +39,12 @@ import no.kantega.publishing.security.SecuritySession;
 
 import java.util.List;
 
-public class SimpleEditContentAction implements Controller {
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+public class SimpleEditContentAction extends AbstractSimpleEditContentAction {
+    protected SecuritySession getSecuritySession(HttpServletRequest request) {
+        return SecuritySession.getInstance(request);
+    }
+
+    protected Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException {
         RequestParameters param = new RequestParameters(request);
 
         ContentManagementService cms = new ContentManagementService(request);
@@ -45,15 +53,12 @@ public class SimpleEditContentAction implements Controller {
         int parentId = param.getInt("parentId");
 
         Content content = null;
-        HttpSession session = request.getSession();
-
         ContentIdentifier cid = new ContentIdentifier();
 
         if (thisId != -1) {
             // Edit existing page
             cid.setAssociationId(thisId);
-
-            content = cms.checkOutContent(cid);
+            content = cms.getContent(cid, false);
         } else if (parentId != -1) {
             // Create new page
             ContentCreateParameters createParam = new ContentCreateParameters(request);
@@ -62,19 +67,6 @@ public class SimpleEditContentAction implements Controller {
             throw new InvalidParameterException("", "");
         }
 
-        RequestHelper.setRequestAttributes(request, content);
-
-        String redirectUrl = param.getString("redirectUrl");
-        if(redirectUrl != null && redirectUrl.length() > 0) {
-            request.setAttribute("redirectUrl", redirectUrl);
-        }
-        request.setAttribute("currentContent", content);
-        session.setAttribute("currentContent", content);
-
-        Configuration config = Aksess.getConfiguration();
-        Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
-        request.setAttribute("miniAksessMediaArchive", allowArchive);
-
-        return new ModelAndView("/admin/publish/simpleeditcontent.jsp", null);
+        return content;
     }
 }

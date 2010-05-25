@@ -84,7 +84,7 @@ function initialize() {
         <tr>
             <td align="center">
                 <br>
-                <%@ include file="../include/infobox.jsf" %>
+                <%@ include file="../include/infobox.jsp" %>
                 <%
                     if (!securitySession.isAuthorized(currentContent, Privilege.APPROVE_CONTENT)) {
                 %>
@@ -103,7 +103,7 @@ function initialize() {
                      </tr>
                      <tr>
                         <td class="box">
-                            <form name="myform" action="SimpleEditSaveContent.action" method="post" enctype="multipart/form-data">
+                            <form name="myform" action="SimpleEditContent.action" method="post" enctype="multipart/form-data">
                             <table border="0" cellspacing="0" cellpadding="0" width="600" align="center">
                             <%
                                 screen.generateInputScreen();
@@ -121,7 +121,7 @@ function initialize() {
                     </tr>
                     <tr>
                         <td colspan="4"><br>
-                            <a href="Javascript:saveContent()"><img src="../bitmaps/<%=skin%>/buttons/publiser.gif" alt="Publiser" border="0"></a>&nbsp;&nbsp;&nbsp;<a href="SimpleEditCancel.action<% if(request.getAttribute("redirectUrl") != null) out.print("?redirectUrl="+request.getAttribute("redirectUrl"));%>"><img src="../bitmaps/<%=skin%>/buttons/avbryt.gif" alt="Avbryt" border="0"></a>
+                            <a href="Javascript:saveContent()"><img src="../bitmaps/<%=skin%>/buttons/publiser.gif" alt="Publiser" border="0"></a>&nbsp;&nbsp;&nbsp;<a href="../../SimpleEditCancel.action<% if(request.getAttribute("redirectUrl") != null) out.print("?redirectUrl="+request.getAttribute("redirectUrl"));%>"><img src="../bitmaps/<%=skin%>/buttons/avbryt.gif" alt="Avbryt" border="0"></a>
                         </td>
                     </tr>
                 </table>

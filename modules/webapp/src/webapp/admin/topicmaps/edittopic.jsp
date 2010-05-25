@@ -72,7 +72,7 @@ function saveForm() {
 </head>
 
 <body class="bodyWithMargin">
-<%@ include file="../include/infobox.jsf" %>
+<%@ include file="../include/infobox.jsp" %>
 <form name="myform" action="UpdateTopic.action" target="content" method="post">
     <input type="hidden" name="task" value="<%=task%>">
     <table border="0" cellspacing="0" cellpadding="0" width="500">

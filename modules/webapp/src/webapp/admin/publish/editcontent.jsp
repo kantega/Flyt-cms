@@ -70,7 +70,7 @@ function saveContent(status) {
 </script>
 <body onLoad="initialize()" class="bodyWithMargin">
 <div style="width: 600px">
-<%@ include file="../include/infobox.jsf" %>  
+<%@ include file="../include/infobox.jsp" %>
 <form name="myform" action="SaveContent.action" target="content" method="post" enctype="multipart/form-data">
     <table border="0" cellspacing="0" cellpadding="0" width="600">
     <%

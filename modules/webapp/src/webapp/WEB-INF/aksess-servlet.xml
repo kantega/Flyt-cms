@@ -84,8 +84,7 @@
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
-                <prop key="/admin/publish/SimpleEditCancel.action">SimpleEditCancelAction</prop>
-                <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
+                <prop key="SimpleEditCancel.action">SimpleEditCancelAction</prop>
                 <prop key="/admin/topicmaps/UpdateTopic.action">UpdateTopicAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
@@ -335,8 +334,9 @@
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.PreviewContentAction" id="PreviewContentAction"/>
     <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction"/>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction">
+        <property name="view" value="/admin/publish/simpleditcontent.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
     <bean class="no.kantega.publishing.admin.content.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
 

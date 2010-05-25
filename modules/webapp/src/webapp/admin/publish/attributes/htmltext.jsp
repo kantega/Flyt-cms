@@ -63,6 +63,10 @@
 </tr>
 <tr>
     <td class="inpHeading">
+    <%
+        Boolean miniAksessWysiwyg = (Boolean)request.getAttribute("miniAksessWysiwyg");
+        if (miniAksessWysiwyg == null || miniAksessWysiwyg) {
+    %>
         <table cellpadding="0" cellspacing="0" border="0">
             <tr valign="top">
                 <td width="165">
@@ -316,6 +320,13 @@
         if (conf.getBoolean(confPrefix + "htmlmode", true) || hasHtmlEditorRole) {
     %>
     <INPUT type="checkbox" onClick="rtToggleHTMLMode('editor_<%=fieldName%>')">HTML
+    <%
+        }
+    %>
+    <%
+        } else {
+    %>
+        <textarea rows="10" cols=72 class="inp htmlText" style="width:600px;" wrap="soft" onFocus="setFocusField(this)" onBlur="blurField()" name="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
     <%
         }
     %>

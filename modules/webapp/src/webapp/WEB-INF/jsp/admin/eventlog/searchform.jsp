@@ -62,7 +62,7 @@
 
 
 <body onload="initialize()" class="bodyWithMargin">
-<%@ include file="../../../../admin/include/infobox.jsf" %>
+<%@ include file="../../../../admin/include/infobox.jsp" %>
 <form name="myform" action="SearchEventLog.action" method="post">
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr>

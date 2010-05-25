@@ -137,7 +137,7 @@ public class InputScreenRenderer {
                 request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
 
                 try {
-                    pageContext.include("attributes/" + attr.getRenderer() +".jsp");
+                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
                     String helptext = attr.getHelpText();
                     if (helptext != null && helptext.length() > 0) {
                         out.print("<tr><td><div class=helpText>" + helptext + "</div></td></tr>\n");
