@@ -595,4 +595,31 @@ public class TopicAO {
         return getTopicsBySQLStatement(sql);
     }
 
+    /**
+     * Deletes all topic associations for a given content.
+     *
+     * @param contentId
+     */
+    public static void deleteTopicAssociationsForContent(int contentId) {
+       Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            PreparedStatement st = c.prepareStatement("DELETE FROM ct2topic WHERE ContentId = ?");
+            st.setInt(1, contentId);
+            st.execute();
+
+        } catch (SQLException e) {
+            throw new SystemException("SQL feil", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+
+    }
 }

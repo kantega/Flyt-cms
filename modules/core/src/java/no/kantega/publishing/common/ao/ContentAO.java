@@ -887,6 +887,9 @@ public class ContentAO {
                 }
             }
 
+            //Delete all existing topic associations before insertion.
+            TopicAO.deleteTopicAssociationsForContent(content.getId());
+
             // Insert topics
             List<Topic> topics = content.getTopics();
             if (topics != null) {
