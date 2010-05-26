@@ -39,20 +39,18 @@
     </script>
 </kantega:section>
 <kantega:section id="body">
-    <admin:box>
-        <p>
-            <kantega:label key="aksess.copypaste.duplicatealias"/>
-        </p>
+    <p>
+        <kantega:label key="aksess.copypaste.duplicatealias"/>
+    </p>
 
-        <ul>
-            <c:forEach items="${aliases}" var="alias">
-                <li><c:out value="${alias}"/></li>
-            </c:forEach>
-        </ul>
+    <ul>
+        <c:forEach items="${aliases}" var="alias">
+            <li><c:out value="${alias}"/></li>
+        </c:forEach>
+    </ul>
 
-        <div class="buttonGroup">
-            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-        </div>
-    </admin:box>
+    <div class="buttonGroup">
+        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+    </div>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

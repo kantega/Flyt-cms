@@ -49,29 +49,27 @@
 
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteAssociation.action">
-        <admin:box>
-            <input type="hidden" name="confirmMultipleDelete" value="true">
-            <c:forEach var="a" items="${associationIds}">
-                <input type="hidden" name="id" value="${a}">
-            </c:forEach>
+        <input type="hidden" name="confirmMultipleDelete" value="true">
+        <c:forEach var="a" items="${associationIds}">
+            <input type="hidden" name="id" value="${a}">
+        </c:forEach>
 
-            <p><kantega:label key="aksess.confirmdelete.multiple.sikker"/></p>
+        <p><kantega:label key="aksess.confirmdelete.multiple.sikker"/></p>
 
-            <p><kantega:label key="aksess.confirmdelete.multiple.tekst" subpages="${fn:length(toBeDeleted)}"/></p>
+        <p><kantega:label key="aksess.confirmdelete.multiple.tekst" subpages="${fn:length(toBeDeleted)}"/></p>
 
-            <div style="overflow:auto; max-height:100px;">
-                <ul>
-                    <c:forEach var="content" items="${toBeDeleted}">
-                        <li>${content.title}</li>
-                    </c:forEach>
-                </ul>
-            </div>
+        <div style="overflow:auto; max-height:100px;">
+            <ul>
+                <c:forEach var="content" items="${toBeDeleted}">
+                    <li>${content.title}</li>
+                </c:forEach>
+            </ul>
+        </div>
 
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
-                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-            </div>
-        </admin:box>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

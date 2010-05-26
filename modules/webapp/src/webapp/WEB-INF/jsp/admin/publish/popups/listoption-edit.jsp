@@ -50,22 +50,20 @@
 <kantega:section id="body">
     <div id="EditListOptionForm">
         <form name="myform" action="">
-            <admin:box>
-                <div class="formElement">
-                    <div class="heading">
-                        <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>
-                    </div>
-                    <div class="inputs">
-                        <input type="text" id="optionValue" name="optionValue" maxlength="255"><br>
-                        <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
-                        <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
-                    </div>
+            <div class="formElement">
+                <div class="heading">
+                    <label for="optionValue"><kantega:label key="aksess.editablelist.value"/></label>
                 </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <div class="inputs">
+                    <input type="text" id="optionValue" name="optionValue" maxlength="255"><br>
+                    <input type="checkbox" id="defaultSelected" name="defaultSelected" value="true">
+                    <label for="defaultSelected"><kantega:label key="aksess.editablelist.defaultSelected"/></label>
                 </div>
-            </admin:box>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
         </form>
     </div>
 </kantega:section>

@@ -136,54 +136,52 @@
 <kantega:section id="body">
     <form action="" name="myform">
         <div id="InsertTableForm">
-            <admin:box>
-                <h1><kantega:label key="aksess.inserttable.title"/></h1>
-                <c:if test="${!modifyExisting}">
-                    <div class="formElement">
-                        <div class="heading">
-                            <kantega:label key="aksess.inserttable.size"/>
-                        </div>
-                        <div class="inputs">
-                            <label for="TableCols"><kantega:label key="aksess.inserttable.cols"/></label>
-                            <input type="text" id="TableCols" size="2" maxlength="2" name="cols" value="2">
-                            <label for="TableRows"><kantega:label key="aksess.inserttable.rows"/></label>
-                            <input type="text" id="TableRows" size="2" maxlength="2" name="rows" value="5"><br>
-                            <input type="checkbox" name="firstrowisheading" checked="checked"><kantega:label key="aksess.inserttable.firstrowisheading"/>
-                        </div>
-                    </div>
-                </c:if>
+            <h1><kantega:label key="aksess.inserttable.title"/></h1>
+            <c:if test="${!modifyExisting}">
                 <div class="formElement">
                     <div class="heading">
-                        <kantega:label key="aksess.inserttable.summary"/>
+                        <kantega:label key="aksess.inserttable.size"/>
                     </div>
                     <div class="inputs">
-                        <textarea rows="3" cols="20" class="fullWidth" wrap="soft" name="summary" value=""></textarea>
+                        <label for="TableCols"><kantega:label key="aksess.inserttable.cols"/></label>
+                        <input type="text" id="TableCols" size="2" maxlength="2" name="cols" value="2">
+                        <label for="TableRows"><kantega:label key="aksess.inserttable.rows"/></label>
+                        <input type="text" id="TableRows" size="2" maxlength="2" name="rows" value="5"><br>
+                        <input type="checkbox" name="firstrowisheading" checked="checked"><kantega:label key="aksess.inserttable.firstrowisheading"/>
                     </div>
                 </div>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.inserttable.border"/>
-                    </div>
-                    <div class="inputs">
-                        <input type="radio" id="TableBorder" name="border" value="1">
-                        <label for="TableBorder"><kantega:label key="aksess.text.ja"/></label>
-                        <input type="radio" id="TableNoBorder" name="border" value="0">
-                        <label for="TableNoBorder"><kantega:label key="aksess.text.nei"/></label>
-                    </div>
+            </c:if>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.inserttable.summary"/>
                 </div>
-                <div class="formElement">
-                    <div class="heading">
-                        <kantega:label key="aksess.inserttable.spacing"/>
-                    </div>
-                    <div class="inputs">
-                        <input type="text" size="2" maxlength="2" name="cellpadding" value=""> (<kantega:label key="aksess.inserttable.pixels"/>)
-                    </div>
+                <div class="inputs">
+                    <textarea rows="3" cols="20" class="fullWidth" wrap="soft" name="summary" value=""></textarea>
                 </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.inserttable.border"/>
                 </div>
-            </admin:box>
+                <div class="inputs">
+                    <input type="radio" id="TableBorder" name="border" value="1">
+                    <label for="TableBorder"><kantega:label key="aksess.text.ja"/></label>
+                    <input type="radio" id="TableNoBorder" name="border" value="0">
+                    <label for="TableNoBorder"><kantega:label key="aksess.text.nei"/></label>
+                </div>
+            </div>
+            <div class="formElement">
+                <div class="heading">
+                    <kantega:label key="aksess.inserttable.spacing"/>
+                </div>
+                <div class="inputs">
+                    <input type="text" size="2" maxlength="2" name="cellpadding" value=""> (<kantega:label key="aksess.inserttable.pixels"/>)
+                </div>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
         </div>
     </form>
 </kantega:section>

@@ -52,7 +52,7 @@ public class FormTag extends BodyTagSupport {
         int contentStatus = (canApprove)? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
 
         if (action == null) {
-            action = request.getContextPath()+"/admin/publish/SimpleEditSaveContent.action";
+            action = request.getContextPath()+"/admin/publish/SimpleEditContent.action";
         }
 
         try {
@@ -75,7 +75,7 @@ public class FormTag extends BodyTagSupport {
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
             out.write("    <input class=\"editContentButton submit\" type=\"submit\" value=\""+submitButtonLabel+"\">");
-            String cancelAction = request.getContextPath()+"/admin/publish/SimpleEditCancel.action";
+            String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             String redirectUrl = request.getParameter("redirectUrl");
             if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
                 cancelAction = cancelAction+"?redirectUrl="+redirectUrl;

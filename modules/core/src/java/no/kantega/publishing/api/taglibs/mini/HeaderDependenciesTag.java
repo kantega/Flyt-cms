@@ -23,11 +23,6 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
-/**
- * User: Kristian Selnæs
- * Date: 23.mar.2010
- * Time: 13:16:17
- */
 public class HeaderDependenciesTag extends SimpleTagSupport {
 
     @Override
@@ -41,6 +36,6 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/miniaksess.css\">");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/common.jjs\"></script>");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/editcontext.jjs\"></script>");
-        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce.js\"></script>");
+        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce_3_3_6/tiny_mce.js\"></script>");
     }
 }

@@ -1,6 +1,10 @@
-html, body {
+html {
     height: 100%;
     min-height: 100%;
+}
+
+html#Popup {
+    height: auto;
 }
 
 body {
@@ -8,6 +12,12 @@ body {
     font-size: 11px;
     color: #000000;
     background-color: #f7f7f7;
+    height: 100%;
+    min-height: 100%;
+}
+
+body.popup {
+    height: auto;
 }
 
 /************** General styles **************/
@@ -477,31 +487,32 @@ table.fullWidth {
 
 /************** Buttons **************/
 #Content .buttonBar {
-    padding-top: 5px;
-    height: 41px;
-    line-height: 41px;
+    height: 50px;
+    line-height: 50px;
     background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
 }
 
-/*
-TODO: What is this?
 #Content .buttonBar .barButton {
+    padding-right: 10px;
     margin-right: 10px;
-    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") no-repeat;
+    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") right top no-repeat;
 }
-*/
+
 #Content .buttonBar .barButton > .disabled {
     cursor: default;
 }
 
 #Content .barButton {
+    display: inline-block;
+    height: 50px;
     margin-right: 20px;
 }
 
 #Content .buttonBar input {
-    padding-left: 24px;
-    line-height: 26px;
-    height: 26px;
+    font-size: 1.1em;
+    padding-left: 34px;
+    line-height: 50px;
+    height: 50px;
     border: 0;
     cursor: pointer;
 }
@@ -520,6 +531,7 @@ TODO: What is this?
     padding-left: 5px;
 }
 
+
 #Content .button:hover {
     border: 1px solid #3ed7fd;
 }
@@ -534,6 +546,7 @@ TODO: What is this?
     height: 20px;
     border: 0;
 }
+
 
 #Content .button input[class] {
     display: inline-block;
@@ -1062,6 +1075,11 @@ div.dataTables_paginate {
 }
 
 /******** Popup windows ***********/
+body.popup {
+    background-color: #fff;
+    margin: 10px;
+}
+
 iframe#externalSite {
     padding: 0;
 }

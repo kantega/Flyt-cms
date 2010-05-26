@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.file.application-octet-stream {
-    background-image: url("../aksess/bitmaps/mimetype/default.gif");
-}
 
 .file.application-pdf {
-    background-image: url("../aksess/bitmaps/mimetype/application/pdf.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/pdf.png");
 }
 
 .file.application-msword, file.application-vnd-openxmlformats-officedocument-wordprocessingml-document {
-    background-image: url("../aksess/bitmaps/mimetype/application/msword.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/msword.png");
 }
 
 .file.application-vnd-ms-excel, file.application-vnd-openxmlformats-officedocument-spreadsheetml-sheet {
-    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.png");
 }
 
 .file.application-vnd-ms-powerpoint, file.application-vnd-openxmlformats-officedocument-presentationml-presentation {
-    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.gif");
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.png");
+}
+
+.file.application-vnd-oasis-opendocument-text, .file.application-vnd-oasis-opendocument-text-template {
+    background-image: url("../aksess/bitmaps/mimetype/application/oo-writer.png");
+}
+
+.file.application-vnd-oasis-opendocument-spreadsheet, .file-application-vnd.oasis-opendocument-spreadsheet-template {
+    background-image: url("../aksess/bitmaps/mimetype/application/oo-calc.png");
 }

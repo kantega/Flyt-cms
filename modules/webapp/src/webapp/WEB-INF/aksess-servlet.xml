@@ -116,8 +116,7 @@
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
-                <prop key="/admin/publish/SimpleEditCancel.action">SimpleEditCancelAction</prop>
-                <prop key="/admin/publish/SimpleEditSaveContent.action">SimpleEditSaveContentAction</prop>
+                <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
@@ -605,7 +604,6 @@
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction">
         <property name="view" value="${miniaksess.view}"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.action.SimpleEditSaveContentAction" id="SimpleEditSaveContentAction"/>
     <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
 
     <!-- Administrator controllers -->

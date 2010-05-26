@@ -44,94 +44,92 @@
 <kantega:section id="body">
 
     <form name="myform" method="post" action="CopyPasteContent.action">
-        <admin:box>
-            <input type="hidden" name="isCopy" value="<c:out value="${isCopy}"/>">
-            <input type="hidden" name="pasteShortCut" value="<c:out value="${pasteShortCut}"/>">
-            <input type="hidden" name="uniqueId" value="<c:out value="${uniqueId}"/>">
-            <input type="hidden" name="newParentId" value="<c:out value="${newParentId}"/>">
+        <input type="hidden" name="isCopy" value="<c:out value="${isCopy}"/>">
+        <input type="hidden" name="pasteShortCut" value="<c:out value="${pasteShortCut}"/>">
+        <input type="hidden" name="uniqueId" value="<c:out value="${uniqueId}"/>">
+        <input type="hidden" name="newParentId" value="<c:out value="${newParentId}"/>">
 
-            <c:choose>
-                <c:when test="${isCopy && !pasteShortCut}">
-                    <c:if test="${allowDuplicate && allowCrossPublish}">
-                        <p>
-                            <strong><kantega:label key="aksess.copypaste.copy.choose"/></strong>
-                        </p>
+        <c:choose>
+            <c:when test="${isCopy && !pasteShortCut}">
+                <c:if test="${allowDuplicate && allowCrossPublish}">
+                    <p>
+                        <strong><kantega:label key="aksess.copypaste.copy.choose"/></strong>
+                    </p>
+                </c:if>
+                <table>
+                    <c:if test="${allowDuplicate}">
+                        <tr valign="top">
+                            <c:choose>
+                                <c:when test="${allowCrossPublish}">
+                                    <td><input type="radio" name="isTextCopy" value="true" checked="checked"></td>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="hidden" name="isTextCopy" value="true">
+                                </c:otherwise>
+                            </c:choose>
+                            <td>
+                                <strong><kantega:label key="aksess.copypaste.copy.textcopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i></strong><br>
+                                <kantega:label key="aksess.copypaste.copy.textcopy2"/>
+                            </td>
+                        </tr>
                     </c:if>
-                    <table>
-                        <c:if test="${allowDuplicate}">
-                            <tr valign="top">
-                                <c:choose>
-                                    <c:when test="${allowCrossPublish}">
-                                        <td><input type="radio" name="isTextCopy" value="true" checked="checked"></td>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input type="hidden" name="isTextCopy" value="true">
-                                    </c:otherwise>
-                                </c:choose>
-                                <td>
-                                    <strong><kantega:label key="aksess.copypaste.copy.textcopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i></strong><br>
-                                    <kantega:label key="aksess.copypaste.copy.textcopy2"/>
-                                </td>
-                            </tr>
-                        </c:if>
-                        <c:if test="${allowCrossPublish}">
-                            <tr valign="top">
-                                <c:choose>
-                                    <c:when test="${allowDuplicate}">
-                                        <td><input type="radio" name="isTextCopy" value="false"></td>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input type="hidden" name="isTextCopy" value="false">
-                                    </c:otherwise>
-                                </c:choose>
-                                <td>
-                                    <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i><c:out value="${parentTitle}"/></i></strong><br>
-                                    <kantega:label key="aksess.copypaste.copy.treecopy3"/>
-                                </td>
-                            </tr>
-                        </c:if>
-                    </table>
-                </c:when>
+                    <c:if test="${allowCrossPublish}">
+                        <tr valign="top">
+                            <c:choose>
+                                <c:when test="${allowDuplicate}">
+                                    <td><input type="radio" name="isTextCopy" value="false"></td>
+                                </c:when>
+                                <c:otherwise>
+                                    <input type="hidden" name="isTextCopy" value="false">
+                                </c:otherwise>
+                            </c:choose>
+                            <td>
+                                <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i><c:out value="${parentTitle}"/></i></strong><br>
+                                <kantega:label key="aksess.copypaste.copy.treecopy3"/>
+                            </td>
+                        </tr>
+                    </c:if>
+                </table>
+            </c:when>
 
-                <c:when test="${isCopy && pasteShortCut}">
-                    <p><kantega:label key="aksess.copypaste.copyshortcut"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.fra"/> <i><c:out value="${parentTitle}"/></i> ? </p>
-                </c:when>
+            <c:when test="${isCopy && pasteShortCut}">
+                <p><kantega:label key="aksess.copypaste.copyshortcut"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.fra"/> <i><c:out value="${parentTitle}"/></i> ? </p>
+            </c:when>
 
-                <c:otherwise>
-                    <p><kantega:label key="aksess.copypaste.move"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i> ? </p>
-                </c:otherwise>
+            <c:otherwise>
+                <p><kantega:label key="aksess.copypaste.move"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i> ? </p>
+            </c:otherwise>
 
-            </c:choose>
+        </c:choose>
+        <%
+            List allowedAssociations = (List)request.getAttribute("allowedAssociations");
+            if (allowedAssociations.size() == 1) {
+                AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
+                out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
+            } else {
+        %>
+        <strong><kantega:label key="aksess.copypaste.kategori"/>:</strong>&nbsp;
+        <select name="associationCategory">
             <%
-                List allowedAssociations = (List)request.getAttribute("allowedAssociations");
-                if (allowedAssociations.size() == 1) {
-                    AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
-                    out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
-                } else {
-            %>
-            <strong><kantega:label key="aksess.copypaste.kategori"/>:</strong>&nbsp;
-            <select name="associationCategory">
-                <%
-                    Content selectedContent = (Content)request.getAttribute("selectedContent");
-                    int prevAssociationCategory = selectedContent.getAssociation().getCategory().getId();
-                    for (int i = 0; i < allowedAssociations.size(); i++) {
-                        AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
-                        out.write("<option value=\"" + tmp.getId() + "\"");
-                        if (tmp.getId() == prevAssociationCategory) {
-                            out.write(" checked");
-                        }
-                        out.write(">" + tmp.getName() + "</option>");
+                Content selectedContent = (Content)request.getAttribute("selectedContent");
+                int prevAssociationCategory = selectedContent.getAssociation().getCategory().getId();
+                for (int i = 0; i < allowedAssociations.size(); i++) {
+                    AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
+                    out.write("<option value=\"" + tmp.getId() + "\"");
+                    if (tmp.getId() == prevAssociationCategory) {
+                        out.write(" checked");
                     }
-                %>
-            </select>
-            <%
+                    out.write(">" + tmp.getName() + "</option>");
                 }
             %>
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-            </div>
-        </admin:box>
+        </select>
+        <%
+            }
+        %>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

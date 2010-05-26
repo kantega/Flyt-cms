@@ -42,17 +42,15 @@
 <kantega:section id="body">
     <div id="AddAttachmentForm">
         <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
-            <admin:box>
-                <div class="formElement">
-                    <div class="inputs">
-                        <input type="file" size="20" name="attachment" value="" style="width:300px;">
-                    </div>
+            <div class="formElement">
+                <div class="inputs">
+                    <input type="file" size="20" name="attachment" value="" style="width:300px;">
                 </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-            </admin:box>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
         </form>
     </div>
 </kantega:section>

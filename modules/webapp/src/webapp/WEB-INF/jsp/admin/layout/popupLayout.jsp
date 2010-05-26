@@ -17,7 +17,7 @@
   ~ limitations under the License.
   --%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<html id="Popup">
 <head>
     <title><kantega:getsection id="title"/></title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/reset.css">

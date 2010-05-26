@@ -41,6 +41,8 @@ public class AdminFilter implements Filter {
     private ServletContext servletContext;
     private Logger  log = Logger.getLogger(getClass());
 
+    private static String[] excludedStaticResources = {".png", ".jpg", ".gif", ".jjs", ".js", ".css"};
+
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }
@@ -55,35 +57,38 @@ public class AdminFilter implements Filter {
             ContentManagementService aksessService = new ContentManagementService(request);
             SecuritySession securitySession = aksessService.getSecuritySession();
 
-            // Sjekk at bruker er logget inn
-            if (!securitySession.isLoggedIn()) {
-                if("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
-                    // Requested with ajax
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
-                    return;
-                } else {
-                    securitySession.initiateLogin(request, response);
+            if (!isStaticResource(request)) {
+                // Sjekk at bruker er logget inn
+                if (!securitySession.isLoggedIn()) {
+                    if("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+                        // Requested with ajax
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+                        return;
+                    } else {
+                        securitySession.initiateLogin(request, response);
+                        return;
+                    }
+                }
+
+                // Sjekk at bruker er autorisert
+                if (!securitySession.isUserInRole(Aksess.getAdminRole()) && !securitySession.isUserInRole(Aksess.getAuthorRoles())) {
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     return;
                 }
+                request.getSession(true).setAttribute("adminMode", "true");
+
+                // Check for cross site request forgery
+                if(isForgedPost(request)) {
+                    log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
+                    if (Aksess.isCsrfCheckEnabled()) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
+                        return;
+                    } else {
+                        log.info("... but CSRF-checking is disabled for this site");
+                    }
+                }                
             }
 
-            // Sjekk at bruker er autorisert
-            if (!securitySession.isUserInRole(Aksess.getAdminRole()) && !securitySession.isUserInRole(Aksess.getAuthorRoles())) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
-            request.getSession(true).setAttribute("adminMode", "true");
-
-            // Check for cross site request forgery
-            if(isForgedPost(request)) {
-                log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
-                if (Aksess.isCsrfCheckEnabled()) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
-                    return;
-                } else {
-                    log.info("... but CSRF-checking is disabled for this site");
-                }
-            }
             response.setDateHeader("Expires", 0);
 
             filterChain.doFilter(request,  response);
@@ -123,6 +128,17 @@ public class AdminFilter implements Filter {
         }
     }
 
+    private boolean isStaticResource(HttpServletRequest request) {
+        String path = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
+        for (String fileext : excludedStaticResources) {
+            if (path.endsWith(fileext)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean isForgedPost(HttpServletRequest request) {
 
         // We only care about POST
@@ -145,7 +161,6 @@ public class AdminFilter implements Filter {
         if(map.size() == 0) {
             return false;
         }
-
 
         CrossSiteRequestForgeryContentRewriter rewriter = (CrossSiteRequestForgeryContentRewriter) map.values().iterator().next();
 

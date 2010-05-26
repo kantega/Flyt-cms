@@ -45,20 +45,18 @@
 <kantega:section id="body">
     <div id="RejectNoteForm">
         <form name="myform" action="">
-            <admin:box>
-                <div class="formElement">
-                    <div class="heading">
-                        <label for="Note"><kantega:label key="aksess.reject.note"/></label>
-                    </div>
-                    <div class="inputs">
-                        <textarea rows="4" cols="30" id="Note" class="fullWidth"></textarea>
-                    </div>
+            <div class="formElement">
+                <div class="heading">
+                    <label for="Note"><kantega:label key="aksess.reject.note"/></label>
                 </div>
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.reject"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <div class="inputs">
+                    <textarea rows="4" cols="30" id="Note" class="fullWidth"></textarea>
                 </div>
-            </admin:box>
+            </div>
+            <div class="buttonGroup">
+                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.reject"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+            </div>
         </form>
     </div>
 </kantega:section>

@@ -61,13 +61,13 @@ public class MimeTypes {
         mimetypes.add(new MimeType("flv", "video/x-flv", "Flash video"));
 
         // Flash
-        mimetypes.add(new MimeType("swf", "application/x-shockwave-flash", "Flash fil"));
-        mimetypes.add(new MimeType("swt", "application/x-shockwave-flash", "Flash fil"));
+        mimetypes.add(new MimeType("swf", "application/x-shockwave-flash", "Flash"));
+        mimetypes.add(new MimeType("swt", "application/x-shockwave-flash", "Flash"));
 
         // Office
-        mimetypes.add(new MimeType("doc", "application/msword", "MS Word dokument"));
-        mimetypes.add(new MimeType("ppt", "application/vnd.ms-powerpoint", "MS Powerpoint presentasjon"));
-        mimetypes.add(new MimeType("xls", "application/vnd.ms-excel" ,"MS Excel regneark"));
+        mimetypes.add(new MimeType("doc", "application/msword", "MS Word"));
+        mimetypes.add(new MimeType("ppt", "application/vnd.ms-powerpoint", "MS Powerpoint"));
+        mimetypes.add(new MimeType("xls", "application/vnd.ms-excel" ,"MS Excel"));
         mimetypes.add(new MimeType("mpp", "vnd.ms-project", "MS Project"));
         mimetypes.add(new MimeType("mpc", "vnd.ms-project", "MS Project"));
         mimetypes.add(new MimeType("mpt", "vnd.ms-project", "MS Project"));
@@ -79,6 +79,11 @@ public class MimeTypes {
         mimetypes.add(new MimeType("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "MS Excel regneark openxml format"));
         mimetypes.add(new MimeType("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "MS Powerpoint presentasjon openxml format"));
 
+        // Open Office
+        mimetypes.add(new MimeType("odt ", "application/vnd.oasis.opendocument.text", "Open Office"));
+        mimetypes.add(new MimeType("ott ", "application/vnd.oasis.opendocument.text-template", "Open Office"));
+        mimetypes.add(new MimeType("ods ", "application/vnd.oasis.opendocument.spreadsheet", "Open Office"));
+        mimetypes.add(new MimeType("ots ", "application/vnd.oasis.opendocument.spreadsheet-template", "Open Office"));
     }
 
 

@@ -59,74 +59,71 @@
 
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteAssociation.action">
-        <admin:box>
-            <c:choose>
-                <c:when test="${isCrossPublished}">
-                    <kantega:label key="aksess.confirmdelete.xptext" contentTitle="${contentTitle}"/>
-                    <table class="fullWidth">
-                        <thead>
-                        <tr class="tableHeading">
-                            <th colspan="2"><kantega:label key="aksess.confirmdelete.xpinstance"/></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr class="tableRow1">
-                            <td><input type="checkbox" name="dummy" value="-1" onclick="selectAll(this)"></td>
-                            <td><kantega:label key="aksess.confirmdelete.xpall"/></td>
-                        </tr>
-                        <%
-                            Content content = (Content)request.getAttribute("content");
-                            Integer associationId = (Integer)request.getAttribute("associationId");
-                            ContentManagementService aksessService = new ContentManagementService(request);
-                            List associations = content.getAssociations();
-                            if (associations != null) {
-                                List path = null;
-                                for (int i = 0; i < associations.size(); i++) {
-                                    Association association = (Association)associations.get(i);
-                                    path = aksessService.getPathByAssociation(association);
-                                    out.write("<tr class=\"tableRow" + (i%2) + "\">");
-                                    String sel = "";
-                                    if (associationId == association.getId()) sel = " checked";
-                                    out.write("<td><input type=\"checkbox\" name=\"id\" value=\"" + association.getId() + "\"" + sel + "></td>");
-                                    out.write("<td>");
-                                    for (int j = 0; j < path.size(); j++) {
-                                        PathEntry entry = (PathEntry)path.get(j);
-                                        String title = entry.getTitle();
-                                        if (j > 0) {
-                                            out.write("&nbsp;&gt;&nbsp;");
-                                        }
-                                        out.write(title);
+        <c:choose>
+            <c:when test="${isCrossPublished}">
+                <kantega:label key="aksess.confirmdelete.xptext" contentTitle="${contentTitle}"/>
+                <table class="fullWidth">
+                    <thead>
+                    <tr class="tableHeading">
+                        <th colspan="2"><kantega:label key="aksess.confirmdelete.xpinstance"/></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="tableRow1">
+                        <td><input type="checkbox" name="dummy" value="-1" onclick="selectAll(this)"></td>
+                        <td><kantega:label key="aksess.confirmdelete.xpall"/></td>
+                    </tr>
+                    <%
+                        Content content = (Content)request.getAttribute("content");
+                        Integer associationId = (Integer)request.getAttribute("associationId");
+                        ContentManagementService aksessService = new ContentManagementService(request);
+                        List associations = content.getAssociations();
+                        if (associations != null) {
+                            List path = null;
+                            for (int i = 0; i < associations.size(); i++) {
+                                Association association = (Association)associations.get(i);
+                                path = aksessService.getPathByAssociation(association);
+                                out.write("<tr class=\"tableRow" + (i%2) + "\">");
+                                String sel = "";
+                                if (associationId == association.getId()) sel = " checked";
+                                out.write("<td><input type=\"checkbox\" name=\"id\" value=\"" + association.getId() + "\"" + sel + "></td>");
+                                out.write("<td>");
+                                for (int j = 0; j < path.size(); j++) {
+                                    PathEntry entry = (PathEntry)path.get(j);
+                                    String title = entry.getTitle();
+                                    if (j > 0) {
+                                        out.write("&nbsp;&gt;&nbsp;");
                                     }
-                                    if (association.getAssociationtype() == AssociationType.SHORTCUT) {
-                        %>
-                        (<kantega:label key="aksess.confirmdelete.shortcut"/>)
-                        <%
-                                    }
-                                    out.write("</td></tr>");
+                                    out.write(title);
                                 }
+                                if (association.getAssociationtype() == AssociationType.SHORTCUT) {
+                    %>
+                    (<kantega:label key="aksess.confirmdelete.shortcut"/>)
+                    <%
+                                }
+                                out.write("</td></tr>");
                             }
-                        %>
-                        <tr>
-                            <td colspan="2"><br>
-                                <div class="ui-state-highlight"><kantega:label key="aksess.confirmdelete.xpinfo"/></div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        }
+                    %>
+                    <tr>
+                        <td colspan="2"><br>
+                            <div class="ui-state-highlight"><kantega:label key="aksess.confirmdelete.xpinfo"/></div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
 
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="id" value="${associationId}">
-                    <kantega:label key="aksess.confirmdelete.text" title="${contentTitle}"/>
-                </c:otherwise>
-            </c:choose>
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="id" value="${associationId}">
+                <kantega:label key="aksess.confirmdelete.text" title="${contentTitle}"/>
+            </c:otherwise>
+        </c:choose>
 
-
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
-                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-            </div>
-        </admin:box>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>
