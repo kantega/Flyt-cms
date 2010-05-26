@@ -71,8 +71,16 @@ public class Log {
         Logger.getLogger(category).debug(LogData.create(description, context, identity));
     }
 
+    public static void debug(String category, String description) {
+        Logger.getLogger(category).debug(LogData.create(description, null, null));
+    }
+
     public static void info(String category, String description, Object context, Object identity) {
         Logger.getLogger(category).info(LogData.create(description, context, identity));
+    }
+
+    public static void info(String category, String description) {
+        Logger.getLogger(category).info(LogData.create(description, null, null));
     }
 
 }

@@ -40,18 +40,18 @@
     </filter>
 
     <filter>
-      <filter-name>ParamEncodingFilter</filter-name>
-      <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
     </filter>
 
     <filter>
-      <filter-name>AksessRequestFilter</filter-name>
-      <filter-class>no.kantega.commons.filter.AksessRequestFilter</filter-class>
+        <filter-name>AksessRequestFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.AksessRequestFilter</filter-class>
     </filter>
 
     <filter>
-      <filter-name>SetupFilter</filter-name>
-      <filter-class>no.kantega.publishing.setup.SetupFilter</filter-class>
+        <filter-name>SetupFilter</filter-name>
+        <filter-class>no.kantega.publishing.setup.SetupFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -59,7 +59,7 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    
+
     <filter-mapping>
         <filter-name>ParamEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -126,6 +126,34 @@
         </init-param>
     </servlet>
 
+    <servlet>
+        <servlet-name>webdav</servlet-name>
+        <servlet-class>com.bradmcevoy.http.MiltonServlet</servlet-class>
+        <init-param>
+            <param-name>resource.factory.factory.class</param-name>
+            <param-value>no.kantega.publishing.webdav.AksessFactoryFactory</param-value>
+        </init-param>
+        <!--
+        To disable digest authentication uncomment the following. To completely disable
+        all authentication provide an empty value. If this init-param is missing milton
+        will default to basic and digest authentication.
+        -->
+        <init-param>
+            <param-name>authentication.handler.classes</param-name>
+            <param-value>com.bradmcevoy.http.http11.auth.BasicAuthHandler</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>not.found.url</param-name>
+            <param-value>/404.jsp</param-value>
+        </init-param>
+        <init-param>
+            <param-name>filter_0</param-name>
+            <param-value>com.bradmcevoy.http.DebugFilter</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>SetupServlet</servlet-name>
         <url-pattern>/Setup.initialAction</url-pattern>
@@ -178,7 +206,7 @@
         <servlet-name>dwr</servlet-name>
         <url-pattern>/admin/dwr/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/oap/*</url-pattern>
@@ -202,6 +230,11 @@
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/robots.txt</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>webdav</servlet-name>
+        <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
