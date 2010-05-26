@@ -1,4 +1,4 @@
-tinyMCE.addI18n('nb.aksess_inserttable',{
+tinyMCE.addI18n('no.aksess_inserttable',{
 desc: "Sett inn tabell",
 popup_title: "Sett inn tabell"
 });
