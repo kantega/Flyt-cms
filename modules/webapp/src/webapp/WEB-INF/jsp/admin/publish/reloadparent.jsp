@@ -26,6 +26,13 @@
 <kantega:section id="body">
     <script type="text/javascript">
         $(document).ready(function() {
+            <c:if test="${currentPage != null}">
+                var iframe = getParent().document.getElementById("Contentmain");
+                if (iframe) {
+                    iframe.src = '${currentPage.url}';
+                }
+            </c:if>
+
             setTimeout('closePopup()', 3000);
         });
 
@@ -35,19 +42,12 @@
         }
 
         function buttonOkPressed() {
-            <c:choose>
-                <c:when test="${currentPage != null}">
-                    getParent().openaksess.content.triggerContentUpdateEvent("${currentPage.url}");
-                </c:when>
-            </c:choose>
             return true;
         }
     </script>
-    <admin:box>
-            <kantega:label key="${message}"/>
-            <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
-            </div>
-    </admin:box>
+    <kantega:label key="${message}"/>
+    <div class="buttonGroup">
+        <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
+    </div>
 </kantega:section>
 <%@ include file="../layout/popupLayout.jsp" %>
