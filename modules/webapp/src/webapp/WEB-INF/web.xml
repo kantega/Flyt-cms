@@ -125,6 +125,7 @@
             <param-value>false</param-value>
         </init-param>
     </servlet>
+    <!--
 
     <servlet>
         <servlet-name>webdav</servlet-name>
@@ -133,11 +134,11 @@
             <param-name>resource.factory.factory.class</param-name>
             <param-value>no.kantega.publishing.webdav.AksessFactoryFactory</param-value>
         </init-param>
-        <!--
+
         To disable digest authentication uncomment the following. To completely disable
         all authentication provide an empty value. If this init-param is missing milton
         will default to basic and digest authentication.
-        -->
+
         <init-param>
             <param-name>authentication.handler.classes</param-name>
             <param-value>com.bradmcevoy.http.http11.auth.BasicAuthHandler</param-value>
@@ -153,6 +154,7 @@
         </init-param>
         <load-on-startup>0</load-on-startup>
     </servlet>
+        -->
 
     <servlet-mapping>
         <servlet-name>SetupServlet</servlet-name>
@@ -231,12 +233,12 @@
         <servlet-name>aksess</servlet-name>
         <url-pattern>/robots.txt</url-pattern>
     </servlet-mapping>
-
+   <!--
     <servlet-mapping>
         <servlet-name>webdav</servlet-name>
         <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
-
+    -->
     <welcome-file-list>
         <welcome-file>content.ap</welcome-file>
         <welcome-file>index.jsp</welcome-file>
