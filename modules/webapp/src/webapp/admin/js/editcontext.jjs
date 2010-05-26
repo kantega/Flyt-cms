@@ -157,6 +157,7 @@ openaksess.editcontext = function()  {
             params.topicMapId = topicMapId;
             params.remove = true;
             openaksess.editcontext.updateTopics(params);
+            $.event.trigger("topicRemoved", {topicId: topicId, topicMapId: topicMapId});
         },
 
 
@@ -186,6 +187,7 @@ openaksess.editcontext = function()  {
                 // Topic should be inserted into a input field
                 openaksess.editcontext.insertIdAndValueIntoForm(topicMapId + ":" + topicId, topicName);
             }
+            $.event.trigger("topicAdded", {topicId: topicId, topicMapId: topicMapId, topicName: topicName});
         },
 
         /*
