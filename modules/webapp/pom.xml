@@ -67,6 +67,13 @@
         </dependency>
 
         <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-webdav</artifactId>
+            <version>${pom.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>ognl</groupId>
             <artifactId>ognl</artifactId>
             <version>2.7</version>

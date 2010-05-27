@@ -127,4 +127,14 @@
         </property>
     </bean>
 
+    <!--
+    <bean id="aksessWebDavMultimediaResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavMultimediaResourceHandler"/>
+    <bean id="aksessWebDavRootResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavRootResourceHandler">
+        <property name="resourceHandlers">
+            <list>
+                <ref bean="aksessWebDavMultimediaResourceHandler"/>
+            </list>
+        </property>
+    </bean>
+    -->
 </beans>

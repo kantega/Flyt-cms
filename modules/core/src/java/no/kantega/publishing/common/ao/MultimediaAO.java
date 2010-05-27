@@ -128,8 +128,43 @@ public class MultimediaAO {
         try {
             c = dbConnectionFactory.getConnection();
 
-            // Hent content og contentversion
             ResultSet rs = SQLHelper.getResultSet(c, query);
+            if (!rs.next()) {
+                return null;
+            }
+            Multimedia mm = getMultimediaFromRS(rs);
+            rs.close();
+            return mm;
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+    }
+
+    /**
+     * Henter multimedia objekt fra basen (unntatt data)
+     * @param parentId - parentId til objekt som skal hentes
+     * @param name - navn på objekt til som skal hentes
+     * @return
+     * @throws SystemException
+     */
+    public static Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException {
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            PreparedStatement st = c.prepareStatement("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND Name = ?");
+            st.setInt(1, parentId);
+            st.setString(2, name);
+            ResultSet rs = st.executeQuery();
             if (!rs.next()) {
                 return null;
             }

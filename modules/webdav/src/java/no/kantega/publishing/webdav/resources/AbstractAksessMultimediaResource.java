@@ -1,9 +1,7 @@
-package no.kantega.publishing.webdav;
+package no.kantega.publishing.webdav.resources;
 
 import com.bradmcevoy.http.Auth;
 import com.bradmcevoy.http.Request;
-import com.bradmcevoy.http.Resource;
-import com.bradmcevoy.http.PropFindableResource;
 
 import java.util.Date;
 
@@ -12,7 +10,7 @@ import no.kantega.publishing.common.data.Multimedia;
 /**
  *
  */
-public class AbstractAksessMultimediaResource implements Resource, PropFindableResource {
+public abstract class AbstractAksessMultimediaResource extends AbstractAksessResource {
     Multimedia media;
 
     public AbstractAksessMultimediaResource(Multimedia media) {

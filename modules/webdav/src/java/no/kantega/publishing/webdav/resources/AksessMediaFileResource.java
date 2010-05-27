@@ -1,4 +1,4 @@
-package no.kantega.publishing.webdav;
+package no.kantega.publishing.webdav.resources;
 
 import com.bradmcevoy.http.*;
 import com.bradmcevoy.http.exceptions.NotAuthorizedException;
@@ -15,16 +15,25 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 /**
  *
  */
-public class AksessMediaFileResource extends AbstractAksessMultimediaResource implements GetableResource, PropFindableResource {
-    private Multimedia file;
-
+public class AksessMediaFileResource extends AbstractAksessMultimediaResource implements GetableResource {
     public AksessMediaFileResource(Multimedia media) {
         super(media);
     }
 
     @Override
+    public String getName() {
+        String filename = media.getFilename();
+        if (filename.contains(".")) {
+            String fileext = filename.substring(filename.lastIndexOf(".") + 1, filename.length());
+            return media.getName() + "." + fileext;
+        } else {
+            return media.getName();
+        }
+    }
+
+    @Override
     public void sendContent(OutputStream outputStream, Range range, Map<String, String> stringStringMap, String s) throws IOException, NotAuthorizedException, BadRequestException {
-        MultimediaAO.streamMultimediaData(file.getId(), new InputStreamHandler(outputStream));
+        MultimediaAO.streamMultimediaData(media.getId(), new InputStreamHandler(outputStream));
     }
 
     @Override
@@ -34,11 +43,11 @@ public class AksessMediaFileResource extends AbstractAksessMultimediaResource im
 
     @Override
     public String getContentType(String s) {
-        return file.getMimeType().getType();
+        return media.getMimeType().getType();
     }
 
     @Override
     public Long getContentLength() {
-        return new Long(file.getSize());
+        return new Long(media.getSize());
     }
 }
