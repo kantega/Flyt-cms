@@ -127,7 +127,6 @@
         </property>
     </bean>
 
-    <!--
     <bean id="aksessWebDavMultimediaResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavMultimediaResourceHandler"/>
     <bean id="aksessWebDavRootResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavRootResourceHandler">
         <property name="resourceHandlers">
@@ -136,5 +135,5 @@
             </list>
         </property>
     </bean>
-    -->
+
 </beans>
