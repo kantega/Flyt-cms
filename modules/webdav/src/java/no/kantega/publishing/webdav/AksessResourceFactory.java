@@ -16,8 +16,6 @@ import java.util.Collection;
  */
 public class AksessResourceFactory implements ResourceFactory {
     private final static String ROOT = "/webdav";
-    private final static String CONTENT = "/content";
-    private final static String MULTIMEDIA = "/multimedia";
 
     private Collection<AksessWebDavResourceHandler> resourceHandlers = null;
 
