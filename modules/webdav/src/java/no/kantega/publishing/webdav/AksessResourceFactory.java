@@ -23,9 +23,22 @@ public class AksessResourceFactory implements ResourceFactory {
         try {
             Configuration config = Aksess.getConfiguration();
             if (config.getBoolean("webdav.enabled", false)) {
+                if (path.indexOf(ROOT) == -1) {
+                    return null;
+                }
+                if (path.contains(".")) {
+                    // Ignore files starting with .
+                    String[] elm = path.split("/");
+                    if (elm != null && elm.length > 0) {
+                        if (elm[elm.length - 1].startsWith(".")) {
+                            return null;
+                        }
+                    }
+                }
                 Log.debug(this.getClass().getName(), "Get resource: " + path);
 
                 path = path.substring(path.indexOf(ROOT) +  + ROOT.length(), path.length());
+
 
                 if (resourceHandlers == null) {
                     resourceHandlers = RootContext.getInstance().getBeansOfType(AksessWebDavResourceHandler.class).values();

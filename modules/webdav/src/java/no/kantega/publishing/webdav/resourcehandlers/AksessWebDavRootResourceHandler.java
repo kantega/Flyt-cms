@@ -25,7 +25,7 @@ public class AksessWebDavRootResourceHandler implements AksessWebDavResourceHand
     }
 
     public boolean canHandlePath(String path) {
-        return path.equals("/");
+        return path.equals("/") || path.equals("");
     }
 
     public void setResourceHandlers(List<AksessWebDavResourceHandler> resourceHandlers) {

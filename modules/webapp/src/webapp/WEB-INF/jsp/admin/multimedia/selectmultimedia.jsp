@@ -15,7 +15,7 @@
   ~ limitations under the License.
   --%>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
-                 no.kantega.publishing.common.util.MultimediaHelper"%>
+                 no.kantega.publishing.common.util.MultimediaTagCreator"%>
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ page import="no.kantega.commons.util.URLHelper" %>
 
@@ -73,7 +73,7 @@
 </script>
 <body onLoad="insertMMObject()">
 <form name="mediaform" style="display:none;">
-    <textarea name="tag" rows="2" cols="30"><%=MultimediaHelper.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
+    <textarea name="tag" rows="2" cols="30"><%=MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
 </form>
 </body>
 </html>

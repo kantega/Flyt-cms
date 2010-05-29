@@ -80,37 +80,17 @@ public class UploadMultimediaAction extends AdminController {
                 if (multimedia.size() == 1) {
                     if (name != null && name.length() > 0) {
                         m.setName(name);
-                    }                    
+                    }
                     m.setAltname(altName);
                     m.setAuthor(author);
                 }
             }
 
-            String filename = m.getFilename();
-            MimeType mimeType = MimeTypes.getMimeType(filename);
-
-            if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-                // For images and Flash we can find the dimensions
-                ImageInfo ii = new ImageInfo();
-                ii.setInput(new ByteArrayInputStream(m.getData()));
-                if (ii.check()) {
-                    m.setWidth(ii.getWidth());
-                    m.setHeight(ii.getHeight());
-                }
-                boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
-                if (!preserveImageSize) {
-                    m = resizeMultimedia(m);
-                }
-            } else if (mimeType.isDimensionRequired() && (m.getWidth() <= 0 || m.getHeight() <= 0)) {
-                m.setWidth(Aksess.getDefaultMediaWidth());
-                m.setHeight(Aksess.getDefaultMediaHeight());
+            MultimediaHelper.updateMediaDimensions(m);
+            boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
+            if (!preserveImageSize) {
+                m = resizeMultimedia(m);
             }
-
-            if (filename.length() > 255) {
-                filename = filename.substring(filename.length() - 255, filename.length());
-            }
-
-            m.setFilename(filename);            
 
             // Save object
             int newId = mediaService.setMultimedia(m);
@@ -276,16 +256,16 @@ public class UploadMultimediaAction extends AdminController {
 
     public Multimedia resizeMultimedia(Multimedia multimedia) {
         if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
-                if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-                    if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                        try {
-                            multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                        } catch (IOException e) {
-                            throw new SystemException(this.getClass().getName(), "IOException", e);
-                        }
+            if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
+                    try {
+                        multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                    } catch (IOException e) {
+                        throw new SystemException(this.getClass().getName(), "IOException", e);
                     }
                 }
             }
+        }
         return multimedia;
     }
 

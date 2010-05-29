@@ -500,6 +500,10 @@ public class MultimediaAO {
     public static int setMultimedia(Multimedia mm) throws SystemException {
         Connection c = null;
 
+        // Name must be unique in folder for webdav support
+        String name = getUniqueName(mm);
+        mm.setName(name);
+
         try {
             c = dbConnectionFactory.getConnection();
             PreparedStatement st = null;
@@ -590,6 +594,23 @@ public class MultimediaAO {
         }
 
         return mm.getId();
+    }
+
+    private static String getUniqueName(Multimedia newMedia) {
+        String name = newMedia.getName();
+        int cnt = 2;
+
+        Multimedia existing;
+        do {
+            existing = getMultimediaByParentIdAndName(newMedia.getParentId(), name);
+            if (existing != null && existing.getId() != newMedia.getId()) {
+                name = newMedia.getName() + cnt;
+            } else {
+                return name;
+            }
+            cnt++;
+
+        } while (true);
     }
 
 

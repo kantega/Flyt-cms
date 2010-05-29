@@ -18,15 +18,12 @@ package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.multimedia.ImageEditor;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.tools.zip.ZipFile;
@@ -132,7 +129,7 @@ public class SaveMultimediaAction implements Controller {
                 if (file != null) {
                     // Lastet opp en vanlig fil
                     byte[] data = file.getBytes();
-                    MultimediaHelper.updateMultimediaFromData(mm, data, filename);
+                    MultimediaTagCreator.updateMultimediaFromData(mm, data, filename);
                 }
 
                 if (!preserveImageSize) {
@@ -228,7 +225,7 @@ public class SaveMultimediaAction implements Controller {
                                 }
                                 mm.setName(name);
 
-                                MultimediaHelper.updateMultimediaFromData(mm, data, entryfilename);
+                                MultimediaTagCreator.updateMultimediaFromData(mm, data, entryfilename);
 
                                 boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
                                 if (!preserveImageSize) {

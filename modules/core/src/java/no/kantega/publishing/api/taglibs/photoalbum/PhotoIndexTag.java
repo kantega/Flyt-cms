@@ -19,7 +19,7 @@ package no.kantega.publishing.api.taglibs.photoalbum;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.RequestParameters;
 
@@ -138,7 +138,7 @@ public class PhotoIndexTag extends TagSupport {
                             out.write(" class=\"" + css + "\"");
                         }
                         out.write("><a href=\"" + url + "&amp;offset=" + i + "\">");
-                        out.write(MultimediaHelper.mm2HtmlTag(mm, null, width, height));
+                        out.write(MultimediaTagCreator.mm2HtmlTag(mm, null, width, height));
                         out.write("</a></td>\n");
                         colNo++;
                     }

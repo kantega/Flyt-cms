@@ -17,10 +17,9 @@
 package no.kantega.publishing.api.taglibs.photoalbum;
 
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
@@ -149,9 +148,9 @@ public class PhotoImageTag extends TagSupport {
                         out.write("<a onclick=\"window.open(this.href); return false\" href=\"" + Aksess.getContextPath() + url + "\">");
                     }
                     if (width != -1 && mm.getWidth() > width || height != -1 && mm.getHeight() > height) {
-                        out.write(MultimediaHelper.mm2HtmlTag(mm, null, width, height, cssClass));
+                        out.write(MultimediaTagCreator.mm2HtmlTag(mm, null, width, height, cssClass));
                     } else {
-                        out.write(MultimediaHelper.mm2HtmlTag(mm, cssClass));
+                        out.write(MultimediaTagCreator.mm2HtmlTag(mm, cssClass));
                     }
                     if (url != null) {
                         out.write("</a>");

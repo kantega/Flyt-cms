@@ -1,4 +1,4 @@
-<%@ page import="no.kantega.publishing.common.util.MultimediaHelper" %>
+<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>

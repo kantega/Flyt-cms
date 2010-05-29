@@ -6,15 +6,19 @@ import com.bradmcevoy.http.Request;
 import java.util.Date;
 
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
 
 /**
  *
  */
 public abstract class AbstractAksessMultimediaResource extends AbstractAksessResource {
-    Multimedia media;
+    protected Multimedia media;
+    protected WebDavMultimediaHelper webDavMultimediaHelper;
 
-    public AbstractAksessMultimediaResource(Multimedia media) {
+
+    public AbstractAksessMultimediaResource(Multimedia media, WebDavMultimediaHelper webDavMultimediaHelper) {
         this.media = media;
+        this.webDavMultimediaHelper = webDavMultimediaHelper;
     }
 
     @Override

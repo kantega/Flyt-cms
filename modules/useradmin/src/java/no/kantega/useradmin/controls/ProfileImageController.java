@@ -4,11 +4,10 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.profile.Profile;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -64,7 +63,7 @@ public class ProfileImageController extends AbstractUserAdminController {
                 MultipartFile file = params.getFile("profileImage");
                 if (file != null) {
                     profileImage = new Multimedia();
-                    MultimediaHelper.updateMultimediaFromData(profileImage, file.getBytes(), file.getOriginalFilename());
+                    MultimediaTagCreator.updateMultimediaFromData(profileImage, file.getBytes(), file.getOriginalFilename());
                     if (profileImage.getMimeType().getType().startsWith("image")) {
 
                         profileImage.setName(name);
