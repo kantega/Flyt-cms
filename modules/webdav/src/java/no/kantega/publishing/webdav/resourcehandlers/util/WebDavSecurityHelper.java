@@ -14,8 +14,11 @@ public class WebDavSecurityHelper {
         String userId = user;
         String domain = Aksess.getDefaultSecurityDomain();
         if (user.contains("\\")) {
-            userId = user.substring(0, user.indexOf("."));
-            domain = user.substring(user.indexOf(".") + 1, user.length() - 1);
+            userId = user.substring(0, user.indexOf("\\"));
+            domain = user.substring(user.indexOf("\\") + 1, user.length() - 1);
+        } else if (user.contains("@")) {
+            userId = user.substring(0, user.indexOf("@"));
+            domain = user.substring(user.indexOf("@") + 1, user.length() - 1);            
         }
 
         DefaultIdentity identity = new DefaultIdentity();

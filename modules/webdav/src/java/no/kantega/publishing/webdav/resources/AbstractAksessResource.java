@@ -33,7 +33,6 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
     }
 
     public Object authenticate(String user, String password) {
-        Log.debug(this.getClass().getName(), "Authenticate: user:" + user);
         securitySession = webDavSecurityHelper.authenticate(user, password);
         return securitySession; 
     }
@@ -43,7 +42,7 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
     }
 
     public String getRealm() {
-        return "aksess";
+        return "OpenAksess";
     }
 
     public Date getModifiedDate() {
