@@ -7,12 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 
 /**
  *
  */
 public abstract class AbstractAksessResource implements Resource, PropFindableResource, LockableResource {
     private static Map<String, LockToken> locks = new HashMap<String, LockToken>();
+
+    WebDavSecurityHelper webDavSecurityHelper;
+    SecuritySession securitySession;
+
+    protected AbstractAksessResource(WebDavSecurityHelper webDavSecurityHelper) {
+        this.webDavSecurityHelper = webDavSecurityHelper;
+    }
 
     public String getUniqueId() {
         return null;
@@ -23,11 +33,13 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
     }
 
     public Object authenticate(String user, String password) {
-        return user;
+        Log.debug(this.getClass().getName(), "Authenticate: user:" + user);
+        securitySession = webDavSecurityHelper.authenticate(user, password);
+        return securitySession; 
     }
 
     public boolean authorise(Request request, Request.Method method, Auth auth) {
-        return true;
+        return securitySession == null;
     }
 
     public String getRealm() {
@@ -76,5 +88,6 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
         Log.debug(this.getClass().getName(), "getCurrentLock on" + getName());
         return locks.get(getUniqueId());
     }
+
 
 }

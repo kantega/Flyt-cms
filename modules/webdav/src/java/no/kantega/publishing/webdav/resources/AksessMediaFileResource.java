@@ -12,16 +12,16 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 
 /**
  *
  */
 public class AksessMediaFileResource extends AbstractAksessMultimediaResource implements GetableResource {
-    public AksessMediaFileResource(Multimedia media, WebDavMultimediaHelper webDavMultimediaHelper) {
-        super(media, webDavMultimediaHelper);
+    public AksessMediaFileResource(Multimedia media, WebDavSecurityHelper webDavSecurityHelper, WebDavMultimediaHelper webDavMultimediaHelper) {
+        super(media, webDavSecurityHelper, webDavMultimediaHelper);
     }
-    
-    @Override
+
     public String getName() {
         String filename = media.getFilename();
         if (filename.contains(".")) {

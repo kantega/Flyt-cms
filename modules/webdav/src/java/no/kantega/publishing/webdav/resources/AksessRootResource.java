@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 
 /**
  *
@@ -14,7 +15,8 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 public class AksessRootResource extends AbstractAksessResource implements CollectionResource {
     List<Resource> children;
 
-    public AksessRootResource(List<Resource> children) {
+    public AksessRootResource(WebDavSecurityHelper webDavSecurityHelper, List<Resource> children) {
+        super(webDavSecurityHelper);
         this.children = children;
     }
 
@@ -30,7 +32,6 @@ public class AksessRootResource extends AbstractAksessResource implements Collec
         return null;
     }
 
-    @Override
     public List<? extends Resource> getChildren() {        
         return children;
     }

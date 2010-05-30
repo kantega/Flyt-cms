@@ -14,16 +14,15 @@ import com.bradmcevoy.http.exceptions.ConflictException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 
 /**
  *
  */
 public class AksessMediaFolderResource extends AbstractAksessMultimediaResource implements LockingCollectionResource, FolderResource {
-    public AksessMediaFolderResource(Multimedia media, WebDavMultimediaHelper webDavMultimediaHelper) {
-        super(media, webDavMultimediaHelper);
+    public AksessMediaFolderResource(Multimedia media, WebDavSecurityHelper webDavSecurityHelper, WebDavMultimediaHelper webDavMultimediaHelper) {
+        super(media, webDavSecurityHelper, webDavMultimediaHelper);
     }
 
     public Resource child(String name) {
@@ -38,9 +37,9 @@ public class AksessMediaFolderResource extends AbstractAksessMultimediaResource 
         List<Multimedia> multimedia = webDavMultimediaHelper.getMultimediaList(media.getId());
         for (Multimedia m : multimedia) {
             if (m.getType() == MultimediaType.FOLDER) {
-                children.add(new AksessMediaFolderResource(m, webDavMultimediaHelper));
+                children.add(new AksessMediaFolderResource(m, webDavSecurityHelper, webDavMultimediaHelper));
             } else {
-                children.add(new AksessMediaFileResource(m, webDavMultimediaHelper));
+                children.add(new AksessMediaFileResource(m, webDavSecurityHelper, webDavMultimediaHelper));
             }
 
         }

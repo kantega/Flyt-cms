@@ -5,15 +5,16 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.webdav.resources.AksessMediaFileResource;
 import no.kantega.publishing.webdav.resources.AksessMediaFolderResource;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.ao.MultimediaAO;
 
 /**
  *
  */
 public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResourceHandler {
     private final String MULTIMEDIA_PATH = "/multimedia";
+    protected WebDavSecurityHelper webDavSecurityHelper;
     protected WebDavMultimediaHelper webDavMultimediaHelper;
 
     public Resource getRootFolder() {
@@ -32,9 +33,9 @@ public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResour
             if (media != null) {
                 Log.debug(this.getClass().getName(), "Found media object:" + media.getId() + " for path:" + path);
                 if (media.getType() == MultimediaType.FOLDER) {
-                    return new AksessMediaFolderResource(media, webDavMultimediaHelper);
+                    return new AksessMediaFolderResource(media, webDavSecurityHelper, webDavMultimediaHelper);
                 } else {
-                    return new AksessMediaFileResource(media, webDavMultimediaHelper);
+                    return new AksessMediaFileResource(media, webDavSecurityHelper, webDavMultimediaHelper);
                 }
             } else {
                 Log.debug(this.getClass().getName(), "No media object found for path:" + path);
@@ -49,5 +50,9 @@ public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResour
 
     public void setWebDavMultimediaHelper(WebDavMultimediaHelper webDavMultimediaHelper) {
         this.webDavMultimediaHelper = webDavMultimediaHelper;
+    }
+
+    public void setWebDavSecurityHelper(WebDavSecurityHelper webDavSecurityHelper) {
+        this.webDavSecurityHelper = webDavSecurityHelper;
     }
 }

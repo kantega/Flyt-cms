@@ -21,13 +21,15 @@ import java.util.List;
  *
  */
 public class WebDavMultimediaHelper {
+    private WebDavSecurityHelper webDavSecurityHelper;
     private ImageEditor imageEditor;
+
 
     public Resource getRootFolder() {
         Multimedia media = new Multimedia();
         media.setId(0);
         media.setName("multimedia");
-        return  new AksessMediaFolderResource(media, this);
+        return  new AksessMediaFolderResource(media, webDavSecurityHelper, this);
     }
 
     public void setImageEditor(ImageEditor imageEditor) {
@@ -75,7 +77,7 @@ public class WebDavMultimediaHelper {
         int id = MultimediaAO.setMultimedia(file);
         file = MultimediaAO.getMultimedia(id);
 
-        return new AksessMediaFileResource(file, this);
+        return new AksessMediaFileResource(file, webDavSecurityHelper, this);
     }
 
     public CollectionResource createNewFolder(Multimedia parent, String folderName) {
@@ -88,7 +90,7 @@ public class WebDavMultimediaHelper {
         int id = MultimediaAO.setMultimedia(folder);
         folder = MultimediaAO.getMultimedia(id);
 
-        return new AksessMediaFolderResource(folder, this);
+        return new AksessMediaFolderResource(folder, webDavSecurityHelper, this);
     }
 
     public Multimedia getMultimediaByPath(String path) {
@@ -134,5 +136,9 @@ public class WebDavMultimediaHelper {
             return null;
         }
         return data;
+    }
+
+    public void setWebDavSecurityHelper(WebDavSecurityHelper webDavSecurityHelper) {
+        this.webDavSecurityHelper = webDavSecurityHelper;
     }
 }

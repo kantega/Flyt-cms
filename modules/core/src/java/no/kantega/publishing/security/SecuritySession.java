@@ -40,6 +40,7 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.security.api.identity.*;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.password.PasswordManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,44 +87,20 @@ public class SecuritySession {
         }
         Identity currentIdentity = session.identity;
 
-        // Dersom bruker nå er pålogget eller innlogging er endret må vi hente profil på nytt
+        // If your is now logged in or has changed identity, must create new session
         if (identity != null && (currentIdentity == null || !identity.getUserId().equals(currentIdentity.getUserId()) || !identity.getDomain().equals(currentIdentity.getDomain()))) {
-            // Opprett ny sesjon
-            session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
-
-            ProfileManager manager = session.realm.getProfileManager();
-            Profile p = null;
-            try {
-                p = manager.getProfileForUser(identity);
-            } catch (no.kantega.security.api.common.SystemException e) {
-                throw new SystemException(SOURCE, "Feil ved henting av profil", e);
-            }
-
-            User user = new User();
-            if (p != null) {
-                user = SecurityHelper.createAksessUser(p);
-            } else {
-                user.setId(identity.getDomain() + ":" + identity.getUserId());
-                user.setGivenName(identity.getUserId());
-            }
-
-            session.user = user;
-            session.identity = identity;
-
-            // Reset cachet verdi, bruker har logget inn, andre privilegier
-            session.prevObject = null;
-
-            // Innloggede brukere har lengre sesjonstimeout
-            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
-                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
-            }
-
+            session = createNewUserInstance(identity);
             try {
                 session.handlePostLogin(request);
             } catch (ConfigurationException e) {
                 throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
             }
+            // Innloggede brukere har lengre sesjonstimeout
+            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
+                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
+            }
+            request.getSession(true).setAttribute("aksess.securitySession", session);
+
         } else if (identity == null && currentIdentity != null) {
             // Bruker er utlogget via ekstern tjeneste - lag blank sesjon           
             session = createNewInstance();
@@ -132,6 +109,54 @@ public class SecuritySession {
         }
 
         return session;
+    }
+
+    /**
+     * Create a SecuritySession for a given identity
+     * @param identity
+     * @return
+     */
+    public static SecuritySession createNewUserInstance(Identity identity) {
+        SecuritySession session = createNewInstance();
+
+        ProfileManager manager = session.realm.getProfileManager();
+        Profile p = null;
+        try {
+            p = manager.getProfileForUser(identity);
+        } catch (no.kantega.security.api.common.SystemException e) {
+            throw new SystemException(SOURCE, "Feil ved henting av profil", e);
+        }
+
+        User user = new User();
+        if (p != null) {
+            user = SecurityHelper.createAksessUser(p);
+        } else {
+            user.setId(identity.getDomain() + ":" + identity.getUserId());
+            user.setGivenName(identity.getUserId());
+        }
+
+        session.user = user;
+        session.identity = identity;
+        return session;
+    }
+
+    /**
+     * Create a SecuritySession for a given identity, checking password
+     * @param identity
+     * @param password
+     * @return SecuritySession if password is correct, else null
+     * @throws no.kantega.security.api.common.SystemException
+     */
+    public static SecuritySession createNewUserInstance(Identity identity, String password) throws no.kantega.security.api.common.SystemException {
+        SecuritySession session = createNewUserInstance(identity);
+        PasswordManager passwordManager = session.getRealm().getPasswordManager();
+
+        boolean isVerified = passwordManager.verifyPassword(identity, password);
+        if (isVerified) {
+            return session;
+        } else {
+            return null;
+        }
     }
 
     public static SecuritySession createNewAdminInstance() throws SystemException {
@@ -150,7 +175,6 @@ public class SecuritySession {
         session.user = admin;
 
         return session;
-
     }
 
     /**

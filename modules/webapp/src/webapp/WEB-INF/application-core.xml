@@ -128,14 +128,21 @@
     </bean>
 
     <!-- Webdav support -->
+    <bean id="aksessWebDavSecurityHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper"/>
+
     <bean id="aksessWebDavMultimediaHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper">
         <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
     </bean>
+
 
     <bean id="aksessWebDavMultimediaResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavMultimediaResourceHandler">
         <property name="webDavMultimediaHelper" ref="aksessWebDavMultimediaHelper"/>
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
     </bean>
+    
     <bean id="aksessWebDavRootResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavRootResourceHandler">
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
         <property name="resourceHandlers">
             <list>
                 <ref bean="aksessWebDavMultimediaResourceHandler"/>
