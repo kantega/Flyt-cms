@@ -90,6 +90,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Url to the controller responsible for rendering MiniAksess</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Lager en link til for å redigere en side med MiniAksess.</description>
