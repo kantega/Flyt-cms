@@ -84,7 +84,7 @@
         </div>
 
         <div id="UploadFormButtons" class="buttonGroup">
-            <span class="button"><input type="submit" class="upload" value="<kantega:label key="aksess.button.upload"/>"></span>
+            <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.upload"/>"></span>
         </div>
 
         <div id="UploadStatus" class="ui-state-highlight">

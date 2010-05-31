@@ -12,10 +12,6 @@
             return;
         }
 
-        if (url.charAt(0) == '/') {
-            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
-        }
-
         var attribs = {'href': url};
         var editor = getParent().tinymce.EditorManager.activeEditor;
         editor.execCommand("mceBeginUndoLevel");
@@ -33,9 +29,9 @@
     function addAnchors() {
         var editor = getParent().tinymce.EditorManager.activeEditor;
         var elements = getParent().tinymce.grep(
-                editor.dom.select("img"),
+                editor.dom.select("a"),
                 function(n) {
-                    return editor.dom.getAttrib(n, 'src').indexOf('placeholder/anchor.gif') != -1;
+                    return editor.dom.getAttrib(n, 'class').indexOf('mceItemAnchor') != -1;
                 });
 
         for (var i = 0; i < elements.length; i++) {

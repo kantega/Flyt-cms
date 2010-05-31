@@ -77,7 +77,7 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
 
         if (currentItem.getNumberOfNotes() > 0) {
             String notesTxt = LocaleLabels.getLabel("aksess.navigator.notes", Aksess.getDefaultAdminLocale());
-            out.write("<span class=\"notes\"><a href=\"" + href + "\" title=\"" + + currentItem.getNumberOfNotes() + " " + notesTxt + "\"></span>");
+            out.write("<span class=\"notes\"><a href=\"" + href + "\" title=\"" + + currentItem.getNumberOfNotes() + " " + notesTxt + "\"></a></span>");
         }
     }
 

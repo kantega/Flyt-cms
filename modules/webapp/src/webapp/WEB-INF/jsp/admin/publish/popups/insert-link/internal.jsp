@@ -35,13 +35,9 @@
 
         var url;
         if (frm.smartlink.checked) {
-            url =  "/content.ap?thisId="+ id;
+            url =  "<%=URLHelper.getRootURL(request)%>content.ap?thisId="+ id;
         } else {
-            url = "/content.ap?contentId=" + id + "&amp;contextId=$contextId$";
-        }
-
-        if (url.charAt(0) == '/') {
-            url = "<%=URLHelper.getRootURL(request)%>" + url.substring(1, url.length);
+            url = "<%=URLHelper.getRootURL(request)%>content.ap?contentId=" + id + "&amp;contextId=$contextId$";
         }
 
         var anchor = frm.anchor.value;

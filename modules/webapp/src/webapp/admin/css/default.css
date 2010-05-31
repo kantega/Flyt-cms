@@ -308,11 +308,12 @@ table.fullWidth {
 #ModesMenu .search input[type=text]{
     width: 200px;
     height: 26px;
+    line-height: 26px;
     border: none;
     color: #dddddd;
     font-size: 14px;
-    margin-top:3px;
-    padding:0 5px 5px 25px;
+    margin-top:6px;
+    padding:0 0 0 25px;
     background: url("../bitmaps/default/framework/search_inputfield.png") center left no-repeat;
     float: left;
     font-family:verdana, sans-serif;
@@ -517,12 +518,12 @@ table.fullWidth {
     cursor: pointer;
 }
 
-#Content .buttonGroup {
+#Content .buttonGroup, .ui-dialog-content .buttonGroup{
     clear: left;
     padding-top: 10px;
 }
 
-#Content .button {
+#Content .button, .ui-dialog-content .button {
     display: inline-block;
     cursor: pointer;
     border: 1px solid #bbbbbb;
@@ -532,12 +533,12 @@ table.fullWidth {
 }
 
 
-#Content .button:hover {
+#Content .button:hover, .ui-dialog-content .button:hover {
     border: 1px solid #3ed7fd;
 }
 
 
-#Content .button input {
+#Content .button input, .ui-dialog-content .button input {
     background-color: transparent;
     display: inline-block;
     padding-left: 5px;
@@ -548,7 +549,7 @@ table.fullWidth {
 }
 
 
-#Content .button input[class] {
+#Content .button input[class], .ui-dialog-content .button input[class] {
     display: inline-block;
     padding-left: 30px;
     padding-right:5px;
@@ -558,7 +559,7 @@ table.fullWidth {
 }
 
 
-#Content .button span {
+#Content .button span,  .ui-dialog-content .button span {
     background-color: transparent;
     display: inline-block;
     padding-left: 30px;
@@ -932,6 +933,8 @@ div.sidebarFieldset fieldset legend {
     display: inline-block;
     width: 18%;
     line-height: 17px;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 #SubPages li .name {
@@ -1097,8 +1100,7 @@ iframe#externalSite {
 #Notes .noteButtons .delete {
     background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
     display: inline-block;
-    margin: 5px 5px 5px 20px;
-    padding: 5px 5px 5px 20px;
+    padding: 5px 0 5px 20px;
 }
 
 #Notes .noteButtons {
@@ -1112,5 +1114,6 @@ iframe#externalSite {
 
 #Notes .note h2 {
     text-align: left;
+    padding-bottom: 10px;
 }
 

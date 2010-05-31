@@ -19,8 +19,7 @@
   --%>
 <c:forEach var="note" items="${notes}">
     <div class="note">
-        <h2><admin:formatdate date="${note.date}"/> - ${note.author}</h2>
-        <span class="noteButtons"><a href="${note.noteId}" class="delete"><kantega:label key="aksess.button.delete"/></a></span>
+        <h2><admin:formatdate date="${note.date}"/> - ${note.author}<span class="noteButtons"><a href="${note.noteId}" class="delete"><kantega:label key="aksess.button.delete"/></a></span></h2>        
         <c:set var="noteText" value="${note.text}" scope="request"/>
         <%=((String)request.getAttribute("noteText")).replaceAll("\n", "<br>")%>
     </div>

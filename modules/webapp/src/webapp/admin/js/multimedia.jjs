@@ -33,6 +33,7 @@ $(document).ready(function(){
         currentItemIdentifier = currentFolder;
     }
     openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);//Must be fired at startup in order to load the navigator
+    openaksess.multimedia.addMediaitemClickListeners();
 });
 
 
@@ -173,34 +174,30 @@ openaksess.multimedia = {
      * Adds click listeners to the different media types and decides actions on these clicks.
      */
     addMediaitemClickListeners : function() {
-
-        $("#MultimediaFolders div[id^=Media]").click(function(event){
-            $media = $(this);
-
+        $("#MultimediaFolders").click(function(event){
+            var $media = $(event.target).closest("div[id^=Media]");
             if ($(event.target).hasClass("name")) {
                 event.stopPropagation();
                 openaksess.multimedia.editMediaName(this);
-            }
-
-            else if ($media.hasClass("folder")) {
-                openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): folder click recieved");
-                if (openaksess.multimedia.isNameEditInProgress(this)) {
-                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
-                    openaksess.multimedia.updateMediaName(this);
-                } else {
-                    var idAttr = $media.attr("id");
-                    currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
-                }
-            }
-
-            else if ($media.hasClass("media")) {
-                openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
-                if (openaksess.multimedia.isNameEditInProgress(this)) {
-                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
-                    openaksess.multimedia.updateMediaName(this);
-                } else {
-                    window.location.href = $media.find(".icon a").attr("href");
+            } else if ($media.size() > 0) {
+                if ($media.hasClass("folder")) {
+                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): folder click recieved");
+                    if (openaksess.multimedia.isNameEditInProgress(this)) {
+                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
+                        openaksess.multimedia.updateMediaName(this);
+                    } else {
+                        var idAttr = $media.attr("id");
+                        currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
+                        openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
+                    }
+                } else if ($media.hasClass("media")) {
+                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
+                    if (openaksess.multimedia.isNameEditInProgress(this)) {
+                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
+                        openaksess.multimedia.updateMediaName(this);
+                    } else {
+                        window.location.href = $media.find(".icon a").attr("href");
+                    }
                 }
             }
         });
@@ -307,8 +304,7 @@ openaksess.navigate.updateMainPane = function(itemIdentifier, suppressNavigatorU
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
-    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
-        openaksess.multimedia.addMediaitemClickListeners();
+    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){        
         $("#MultimediaFolders img.thumbnail").lazyload({
             placeholder : "../bitmaps/blank.gif",
             container: $("#MultimediaFolders")

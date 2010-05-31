@@ -128,7 +128,6 @@ if(jQuery)( function() {
                                     $(document).unbind('click').unbind('keypress');
                                     $(".contextMenu").hide();
                                     // Callback
-                                    alert("cb");
                                     if( callback ) callback( $(this).attr('href').substr(1), activeElement, {x: x - offset.left, y: y - offset.top, docX: x, docY: y} );
                                     return false;
                                 });

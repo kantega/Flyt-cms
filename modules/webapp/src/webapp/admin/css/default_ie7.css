@@ -4,9 +4,19 @@
 /* Fix because ie7 can't handle floats properly */
 #TopMenu a.menuitem.logout, #TopMenu a.menuitem.help { position:relative; top:-29px }
 
+
 .navigator .icon a {
-    top: 0;
+    top:0 !important;
 }
+
+.navigator .openState a {
+    top:0 !important;
+}
+
+div.row label {
+    margin-top: 3px;
+}
+
 #PropertiesTable .property {
     word-wrap: break-word;
 }

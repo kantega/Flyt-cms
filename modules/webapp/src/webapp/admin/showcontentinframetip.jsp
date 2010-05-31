@@ -32,20 +32,16 @@
 
 <html>
 <head>
-	<title>Untitled</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/<%=skin%>.css">
+    <title>Untitled</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.8.1.custom.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
 </head>
 
-<body class="bodyWithMargin">
-    <div>
-        <table border="0" cellspacing="0" cellpadding="0" class="ui-state-highlight">
-            <tr>
-                <td>
-                    <kantega:label key="<%=key%>"/>
-                </td>
-            </tr>
-        </table>
-    </div>
+<body style="margin: 10px">
+<div class="ui-state-highlight">
+    <kantega:label key="<%=key%>"/>
+</div>
 </body>
 </html>
 <%@ include file="include/jsp_footer.jsf" %>

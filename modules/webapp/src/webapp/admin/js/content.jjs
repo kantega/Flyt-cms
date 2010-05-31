@@ -196,8 +196,7 @@ openaksess.content = {
         },
 
         openInNewWindow : function(url) {
-            openaksess.common.debug("openaksess.content.publish.openInNewWindow(): url: " + url);
-            window.open(url);
+            window.open("${pageContext.request.contextPath}/content.ap" + url);
         },
 
         newSubpage : function(url) {

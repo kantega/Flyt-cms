@@ -10,7 +10,7 @@
             return;
         }
 
-        url = "<%=URLHelper.getRootURL(request)%>/multimedia.ap?id=" + url;
+        url = "<%=URLHelper.getRootURL(request)%>multimedia.ap?id=" + url;
 
         var attribs = {'href': url};
         var editor = getParent().tinymce.EditorManager.activeEditor;

@@ -102,7 +102,7 @@
 
     function confirmCancel() {
         var confirmCancel = true;
-        if (openaksess.editcontext.isModified()) {
+        if (!openaksess.editcontext || openaksess.editcontext.isModified()) {
             confirmCancel = confirm("<kantega:label key="aksess.editcontent.cancelchanges"/>");
         }
         return confirmCancel;

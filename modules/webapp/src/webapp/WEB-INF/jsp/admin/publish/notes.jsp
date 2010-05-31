@@ -21,7 +21,7 @@
 
 <c:set var="notesActive" value="true"/>
 <kantega:section id="title">
-    <kantega:label key="aksess.statistics.title"/>
+    <kantega:label key="aksess.notes.title"/>
 </kantega:section>
 
 <kantega:section id="contentclass">statistics</kantega:section>
@@ -53,7 +53,7 @@
             <h1><kantega:label key="aksess.notes.title"/></h1>
 
             <div id="NoteArea">
-                <form name="myform" action="SaveNote.action" method="post">
+                <form name="noteform" action="SaveNote.action" method="post">
                     <textarea name="note" id="NoteText" cols="40" rows="6"></textarea>
                     <div class="buttonGroup">
                         <span class="button"><input type="submit" class="ok" id="NoteSubmit" value="<kantega:label key="aksess.notes.submit"/>"></span>
