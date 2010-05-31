@@ -17,8 +17,8 @@
   ~ limitations under the License.
   --%>
 
-<div class="floatLeft">
-    <table>
+<div>
+    <table class="fullWidth">
         <tr>
             <td><kantega:label key="aksess.userinformation.name"/></td>
             <td><c:out value="${currentUser.name}"/></td>
@@ -75,4 +75,3 @@
         </c:if>
     </table>
 </div>
-<div class="floatRight"><img src="${currentUserImageUrl}" alt="Bilde" align="right"></div>

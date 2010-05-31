@@ -33,7 +33,7 @@
 
 <kantega:section id="modesMenu">
 <div class="buttonGroup search">
-    <form action="" method="get">
+    <form action="" method="get" id="SearchForm">
         <input type="text" id="SearchQuery" class="query multimedia" name="query multimedia">
         <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
     </form>

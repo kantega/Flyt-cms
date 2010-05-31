@@ -42,11 +42,12 @@
 </kantega:section>
 
 <kantega:section id="modesMenu">
+    <!--
     <div class="buttonGroup">
         <a href="#" class="button first disabled" id="SettingsButton"><span class="settings"><kantega:label key="aksess.tools.settings"/></span></a>
         <span class="buttonSeparator"></span>
         <a href="#" class="button last disabled" id="ResetMyPageButton"><span class="reset"><kantega:label key="aksess.tools.reset"/></span></a>
-    </div>
+    </div>-->
 </kantega:section>
 
 <kantega:section id="toolsMenu">
@@ -173,14 +174,6 @@
                 <div id="UserInfo"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
-        <div class="widget">
-            <div class="widget-header">
-                <h2><kantega:label key="aksess.contentstatistics.title"/></h2>
-            </div>
-            <div class="widget-content">
-                <div id="ContentStatistics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
-            </div>
-        </div>
     </div>
 
     <div class="widgetcolumn">
@@ -188,6 +181,14 @@
             <div class="widget-header"><h2><kantega:label key="aksess.propertysearch.title"/></h2></div>
             <div class="widget-content">
                 <div id="PropertySearch"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
+            </div>
+        </div>
+        <div class="widget">
+            <div class="widget-header">
+                <h2><kantega:label key="aksess.contentstatistics.title"/></h2>
+            </div>
+            <div class="widget-content">
+                <div id="ContentStatistics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
             </div>
         </div>
     </div>

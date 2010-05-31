@@ -70,6 +70,7 @@ openaksess.content = {
                     openaksess.content.contentstatus.enableButtons(data.enabledButtons);
                     openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
                     openaksess.content.contentstatus.updateFilters(data.sites, data.userPreferences);
+                    openaksess.content.contentstatus.lockedBy = data.lockedBy;
                 }
             }, "json");
         });
@@ -266,6 +267,8 @@ openaksess.content = {
      * Functions for updating the content status, i.e. the breadcrumbs, is it cross published, etc.
      */
     contentstatus : {
+        lockedBy : "",
+
 
         init : function() {
             $("#Statusbar .statusDetails").remove();

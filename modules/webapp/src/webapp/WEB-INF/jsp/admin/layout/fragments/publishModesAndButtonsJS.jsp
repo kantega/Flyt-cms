@@ -56,18 +56,15 @@
                 gotoMode("Notes");
             });
 
-            // Prevent user from clicking top menu
-            $("#TopMenu a").not(".help").click(function (e) {
-                openaksess.common.debug("publishModesAndButtonsJS: topmenu click");
-                if (!confirmCancel()) {
-                    e.preventDefault();
-                }
-            });
-
             </c:when>
             <c:when test="${!hasUnsavedChanges && !isEditing}">
                 // No unsaved changes and user is not editing
-                $("#ModesMenu .button .edit").click(function(){
+                $("#ModesMenu .button .edit").click(function(e){
+                    e.preventDefault();
+                    if (openaksess.content.contentstatus && openaksess.content.contentstatus.lockedBy && openaksess.content.contentstatus.lockedBy != "") {
+                        alert("<kantega:label key="aksess.editcontent.lockedby"/>: " + openaksess.content.contentstatus.lockedBy);
+                        return;
+                    }
                     openaksess.content.publish.edit(stateHandler.getState());
                 });
             </c:when>

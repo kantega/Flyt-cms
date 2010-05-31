@@ -295,7 +295,7 @@ openaksess.navigate = {
 openaksess.search = {
 
     bindSearchInput : function() {
-        $("#SearchButton").click(function(e){
+        $("#SearchForm").submit(function(e){
                 e.preventDefault(); //Preventing the form from being subitted the ordinary way.
                 var textInput = $("#SearchQuery");
                 var query = textInput.val();            

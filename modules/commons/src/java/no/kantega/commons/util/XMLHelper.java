@@ -40,7 +40,6 @@ import no.kantega.commons.exception.InvalidFileException;
  */
 public class XMLHelper {
 
-    //TODO: Replace norwegian error messages
     private static final String SOURCE = "commons.XMLHelper";
 
     public static Document getDocument(String input) throws SystemException {
@@ -50,7 +49,7 @@ public class XMLHelper {
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(input)));
         } catch (Exception e) {
-            throw new SystemException("Feil ved konvertering av String til Document", SOURCE, e);
+            throw new SystemException("Error converting String to Document", SOURCE, e);
         }
 
         return doc;
@@ -64,7 +63,7 @@ public class XMLHelper {
             serial.asDOMSerializer();
             serial.serialize(element);
         } catch (IOException e) {
-            throw new SystemException("Feil ved konvertering av Document til String", SOURCE, e);
+            throw new SystemException("Error converting Document to String", SOURCE, e);
         }
 
         return stringOut.toString();
@@ -79,7 +78,7 @@ public class XMLHelper {
             serial.asDOMSerializer();
             serial.serialize(doc.getDocumentElement());
         } catch (IOException e) {
-            throw new SystemException("Feil ved konvertering av Document til String", SOURCE, e);
+            throw new SystemException("Error converting String to Document", SOURCE, e);
         }
 
         return stringOut.toString();
@@ -93,7 +92,7 @@ public class XMLHelper {
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             doc = builder.newDocument();
         } catch (Exception e) {
-            throw new SystemException("Feil ved oppretting av nytt XML document", SOURCE, e);
+            throw new SystemException("Error creating new XML document", SOURCE, e);
         }
 
         return doc;
@@ -113,7 +112,7 @@ public class XMLHelper {
 
             }
         } catch (Exception e) {
-            throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
+            throw new SystemException("Error opening XML document from URL", SOURCE, e);
         }
 
         return doc;
@@ -123,7 +122,7 @@ public class XMLHelper {
         try {
             return openDocument(resource.getInputStream());
         } catch (IOException e) {
-            throw new InvalidFileException("Feil ved åpning av XML document", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from Resource", SOURCE, e);
         }
     }
 
@@ -131,7 +130,7 @@ public class XMLHelper {
         try {
             return openDocument(resource.getInputStream(), er);
         } catch (IOException e) {
-            throw new InvalidFileException("Feil ved åpning av XML document", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from Resource", SOURCE, e);
         }
     }
 
@@ -139,7 +138,7 @@ public class XMLHelper {
         try {
             return openDocument(is, null);
         } catch (Exception e) {
-            throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
+            throw new SystemException("Error opening XML document from InputStream", SOURCE, e);
         }
     }
 
@@ -153,7 +152,7 @@ public class XMLHelper {
             }
             doc = builder.parse(is);
         } catch (Exception e) {
-            throw new SystemException("Feil ved åpning av XML document", SOURCE, e);
+            throw new SystemException("Error opening XML document from InputStream", SOURCE, e);
         }
 
         return doc;
@@ -164,7 +163,7 @@ public class XMLHelper {
         try {
             return  openDocument(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            throw new InvalidFileException("Feil ved åpning av XML document", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from File", SOURCE, e);
         }
     }
 
@@ -178,11 +177,11 @@ public class XMLHelper {
                 serial.asDOMSerializer();
                 serial.serialize(doc);
             } catch (IOException e) {
-                throw new SystemException("Feil ved konvertering av Document til String", SOURCE, e);
+                throw new SystemException("Error saving Document to File", SOURCE, e);
             }
 
         } catch (Exception e) {
-            throw new SystemException("Feil ved lagring av XML document", SOURCE, e);
+            throw new SystemException("Error saving Document to File", SOURCE, e);
         }
     }
 
@@ -255,7 +254,6 @@ public class XMLHelper {
         return child;
     }
     public static AttributesImpl getAttributesImpl(Attributes attributes) {
-        System.out.println("getting " + attributes.getLength() +" attributes");
         AttributesImpl impl = new AttributesImpl();
 
         for(int i = 0; i < attributes.getLength(); i++) {

@@ -24,7 +24,7 @@ $(document).ready(function() {
     }
     openaksess.admin.setWindowSize();
     openaksess.admin.ajaxSetup();
-    openaksess.admin.widgetmanager.init({context: '#Content'});
+    //openaksess.admin.widgetmanager.init({context: '#Content'});
     openaksess.admin.bindGlobalButtons();
 });
 

@@ -114,7 +114,6 @@ ul.breadcrumbs li {
     padding-right: 3px;
 }
 ul.breadcrumbs li:first-child {
-    /*TODO: Change bitmap*/
     background: url("../bitmaps/common/icons/small/site.png") left center no-repeat;
     padding-left: 18px;
 }

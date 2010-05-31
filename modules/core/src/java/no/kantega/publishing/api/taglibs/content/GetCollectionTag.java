@@ -77,7 +77,6 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
                 pageContext.setAttribute(var, status.getCurrent());
             }
 
-            //TODO: Erstatt med EVAL_BODY_AGAIN (?)
             return EVAL_BODY_TAG;
         } else {
             return SKIP_BODY;
