@@ -71,11 +71,14 @@
             <c:if test="${isPropertyPaneEditable}">
             $("#EditMultimediaButtons .save").click(function () {
                 document.editmediaform.insert.value = false;
+                document.editmediaform.changed.value = true;
                 saveForm();
             });
             </c:if>
 
-
+            $(".sidebarFieldset input").keypress(function(e) {
+                document.editmediaform.changed.value = true;
+            });
 
             $("#EditMultimediaButtons .cancel").click(function (){
                 location.href = "Navigate.action";
