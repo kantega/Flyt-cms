@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #000000;
+    background-color: #f7f7f7;
+    height: 100%;
+    min-height: 100%;
+}
+
+#TopMenu .logo {
+    background: transparent url("../../admin/bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;
+    line-height: 28px;
+    padding-left: 31px;
+}
+
+#TopMenu {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 17px;
+    background: #3B3C3D url("../../admin/bitmaps/default/framework/top_nav_background.png") center left repeat-x;
+}
+
+input.empty {
+    background-color: transparent;
+}
+

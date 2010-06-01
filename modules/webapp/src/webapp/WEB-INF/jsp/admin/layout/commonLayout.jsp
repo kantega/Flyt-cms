@@ -22,8 +22,8 @@
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/admin/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/base.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">

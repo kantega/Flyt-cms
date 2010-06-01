@@ -20,8 +20,8 @@
 <html id="Popup">
 <head>
     <title><kantega:getsection id="title"/></title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/base.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.8.1.custom.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
