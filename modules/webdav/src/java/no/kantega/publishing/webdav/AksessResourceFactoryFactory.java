@@ -15,17 +15,14 @@ public class AksessResourceFactoryFactory implements ResourceFactoryFactory {
     private static AuthenticationService authenticationService;
     private static AksessResourceFactory resourceFactory;
 
-    @Override
     public ResourceFactory createResourceFactory() {
         return resourceFactory;
     }
 
-    @Override
     public WebDavResponseHandler createResponseHandler() {
         return new DefaultWebDavResponseHandler(authenticationService);
     }
 
-    @Override
     public void init() {
         Log.debug(this.getClass().getName(), "init");
         if( authenticationService == null ) {
