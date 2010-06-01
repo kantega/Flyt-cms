@@ -101,7 +101,7 @@ openaksess.content = {
         $filterOptions.find(".filtersToggle").bind('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked");
             $filters.show();
-            filterInfoSlider.toggle($filters);
+            filterInfoSlider.toggle($filters.html());
         });
 
         $("#FilteroptionSort input[name=sort]").bind('change', function(){
@@ -111,7 +111,6 @@ openaksess.content = {
                 openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sort, $this.val(), false, function() {
                     openaksess.navigate.updateNavigator(openaksess.navigate.getCurrentItemIdentifier(), true);
                 });
-
             }
         });
 
@@ -666,7 +665,7 @@ openaksess.navigate.getCurrentLocation = function() {
 };
 
 /**
- * Return id (int) of page from navigator
+ * Return id (int)
  *
  * @param href Navigator href value
  */
