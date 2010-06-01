@@ -178,7 +178,7 @@ openaksess.multimedia = {
             var $media = $(event.target).closest("div[id^=Media]");
             if ($(event.target).hasClass("name")) {
                 event.stopPropagation();
-                openaksess.multimedia.editMediaName(this);
+                openaksess.multimedia.editMediaName($media);
             } else if ($media.size() > 0) {
                 if ($media.hasClass("folder")) {
                     openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): folder click recieved");

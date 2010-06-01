@@ -8,7 +8,7 @@
 
 #MultimediaFolders {
     background: #767676;
-    padding: 20px;/*Important: Must be a px value.*/
+    padding: 10px;/*Important: Must be a px value.*/
     overflow: auto;
 }
 
@@ -25,7 +25,6 @@
     padding: 10px;
     width: 240px;
     float: left;
-    margin-right: 10px;
     cursor: pointer;
     overflow:hidden;
 }
