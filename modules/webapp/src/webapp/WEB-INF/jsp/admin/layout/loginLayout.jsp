@@ -24,6 +24,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/default.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4.2.min.js"></script>
     <kantega:getsection id="head"/>
 </head>
 <body>

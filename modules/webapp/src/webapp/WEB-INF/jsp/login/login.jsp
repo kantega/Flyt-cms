@@ -24,38 +24,34 @@
 
 <kantega:section id="head">
     <script type="text/javascript" language="JavaScript">
+        $(document).ready(function(){
+            var $usernameField = $("#j_username");
+            var $passwordField = $("#j_password");
+            if ($usernameField.val()){
+                $usernameField.prev().hide();
+            }
+            if ($passwordField.val()){
+                $passwordField.prev().hide();
+            }
+            $("#j_username, #j_password").focusin(function(){
+                var $activeElement = $(this);
+                $activeElement.prev().hide();
+            })
+            $("#j_username, #j_password").focusout(function(){
+                var $activeElement = $(this);
+                if (!$activeElement.val()){
+                    $activeElement.prev().show();
+                }
+            })
+        })
+
         window.onload = function() {
             if (window.self != window.top) {
                 window.open(".", "_top");
             }
             document.loginForm.j_username.focus();
 
-            showHideUsernameBG();
-            showHidePasswordBG();
         };
-
-        function showHideUsernameBG() {
-            if (document.loginForm.j_username.value != '') {
-                // Hide background
-                document.loginForm.j_username.className = '';
-            } else {
-                // Show background
-                document.loginForm.j_username.className = 'empty';
-            }
-            return true;
-        }
-
-        function showHidePasswordBG() {
-            if (document.loginForm.j_password.value != '') {
-                // Hide background
-                document.loginForm.j_password.className = '';
-            } else {
-                // Show background
-                document.loginForm.j_password.className = 'empty';
-            }
-            return true;
-        }
-
 
         function checkPassword() {
             if (document.loginForm.j_username.value.length < 1) {
@@ -74,41 +70,72 @@
 </kantega:section>
 
 <kantega:section id="body">
-    <div id="LoginForm">
-    <form method="post" action="<%=response.encodeURL(Aksess.getContextPath() + "/Login.action")%>" name="loginForm" onsubmit="return checkPassword()">
-        <input type="hidden" name="j_domain" value="<%=Aksess.getDefaultSecurityDomain()%>">
-        <input type="hidden" name="redirect" value="<c:out value="${redirect}"/>">
+    <div id="contentWrapper">
+        <div class="body">
+            <div id="version">
+                <img src="<aksess:geturl url="/admin/bitmaps/default/framework/openaksess.png"/>" alt="">
+                Versjon 7.0
+            </div>
+            <div id="LoginForm">
+                <form method="post" action="<%=response.encodeURL(Aksess.getContextPath() + "/Login.action")%>" name="loginForm" onsubmit="return checkPassword()">
+                    <input type="hidden" name="j_domain" value="<%=Aksess.getDefaultSecurityDomain()%>">
+                    <input type="hidden" name="redirect" value="<c:out value="${redirect}"/>">
 
-        <div id="UserName">
-            <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" onkeyup="showHideUsernameBG()" size="25" maxlength="60">
-        </div>
-        <div id="Password">
-            <input type="password" id="j_password" name="j_password"  onfocus="showHidePasswordBG()" onkeyup="showHidePasswordBG()" size="25" maxlength="60">
-        </div>
-        <div id="Submit">
-            <input type="submit" value="<kantega:label key="aksess.login.login"/>">
-        </div>
-    </form>
-    </div>
+                    <div id="UserName">
+                        <label>Brukernavn...</label>
+                        <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" size="25" maxlength="60">
+                    </div>
+                    <div id="Password">
+                        <label>Passord...</label>
+                        <input type="password" id="j_password" name="j_password" size="25" maxlength="60">
+                    </div>
+                    <div id="Submit">
+                        <input type="submit" value="<kantega:label key="aksess.login.login"/>">
+                    </div>
+                </form>
+            </div>
 
-    <div id="LoginMessages">
-        <c:if test="${loginfailed}">
-            <div id="LoginFailed"><kantega:label key="aksess.login.loginfailed"/></div>
-        </c:if>
-        <c:if test="${blockedUser}">
-            <div id="BlockedUser"><kantega:label key="aksess.login.blockeduser"/></div>
-        </c:if>
-        <c:if test="${blockedIP}">
-            <div id="BlockedIp"><kantega:label key="aksess.login.blockedip"/></div>
-        </c:if>
+            <div id="LoginMessages">
+                <c:if test="${loginfailed}">
+                    <div id="LoginFailed"><kantega:label key="aksess.login.loginfailed"/></div>
+                </c:if>
+                <c:if test="${blockedUser}">
+                    <div id="BlockedUser"><kantega:label key="aksess.login.blockeduser"/></div>
+                </c:if>
+                <c:if test="${blockedIP}">
+                    <div id="BlockedIp"><kantega:label key="aksess.login.blockedip"/></div>
+                </c:if>
 
-        <div id="CapsLock" style="display:none">
-            <kantega:label key="aksess.login.caps"/>
+                <div id="CapsLock" style="display:none">
+                    <kantega:label key="aksess.login.caps"/>
+                </div>
+
+                <noscript>
+                    <div id="NoScript">Javascript must be enabled to login</div>
+                </noscript>
+            </div>
+
+            <%--
+            TODO: Add when data is ready
+            <div id="dagensTips" class="section">
+                <h2>
+                    Dagens tips
+                </h2>
+                <div class="body">
+                    Lorem ipsum dolor sit amet...
+                </div>
+            </div>
+
+            <div id="sisteFraBloggen" class="section">
+                <h2>
+                    Siste fra bloggen
+                </h2>
+                <div class="body">
+                    Lorem ipsum dolro sit amet
+                </div>
+            </div>
+            --%>
         </div>
-
-        <noscript>
-            <div id="NoScript">Javascript must be enabled to login</div>
-        </noscript>
     </div>
 </kantega:section>
 <%@ include file="../admin/layout/loginLayout.jsp" %>

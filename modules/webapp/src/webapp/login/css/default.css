@@ -1,10 +1,14 @@
+html, body{
+    height:100%;
+    min-height:100%;
+}
 body {
     font-family: Arial, sans-serif;
-    font-size: 11px;
+    font-size: 14px;
     color: #000000;
-    background-color: #f7f7f7;
     height: 100%;
     min-height: 100%;
+    background:#fff url("../../admin/bitmaps/default/framework/login-bg.png") no-repeat left top;
 }
 
 #TopMenu .logo {
@@ -23,4 +27,84 @@ body {
 input.empty {
     background-color: transparent;
 }
+#contentWrapper{
+    margin-left:660px;
+    padding-top:20px;
+    background:url("../../admin/bitmaps/default/framework/login-bg-repeat.png") repeat-x left top;
+}
+#contentWrapper .body{
+    width:300px;
+}
+.section{
+    border-bottom:1px solid #ccc;
+    padding-bottom:15px;
+    margin-left:30px;
+}
+.section h2{
+    color:#999;
+    font-weight:bold;
+    font-size:1.1em;
+    margin-bottom:5px;
+}
+.section .body{
+    line-height:1.4;
+    font-size:.9em;
+}
+#dagensTips{
+    margin-top:80px;
+}
+#version{
+    font-size:.8em;
+    margin-top:57px;
+    margin-bottom:40px;
+    color:#666;
+}
+#LoginMessages{
+    margin-top:20px;
+    color:#ff0000;
+}
+
+/******************
+Form elements
+******************/
+#UserName, #Password{
+    background:url("../../admin/bitmaps/default/framework/brukernavn.png") no-repeat left top;
+    height:27px;
+    padding: 0 0 0 35px;
+    margin-bottom:15px;
+    position:relative;
+}
+label{
+    color:#666666;
+    font-size:14px;
+    font-style:italic;
+    left:35px;
+    position:absolute;
+    top:6px;
+}
+#Password{
+    background:url("../../admin/bitmaps/default/framework/passord.png") no-repeat left top;
+}
+#Submit{
+    background:url("../../admin/bitmaps/default/framework/login_btn.png") no-repeat right top;
+    text-align:center;
+    width:105px;
+}
+input[type=text], input[type=password]{
+    border:none;
+    font-size:14px;
+    line-height:1.2;
+    margin:5px 0 0 0;
+    position:absolute;
+    background:transparent;
+    width:220px;
+}
+input[type=submit]{
+    background:transparent;
+    border:none;
+    height:27px;
+    font-weight:bold;
+    padding-bottom:4px;
+}
+
 
