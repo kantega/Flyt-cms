@@ -37,6 +37,18 @@ body {
     margin-left: 1em;
 }
 
+.navigator .title a {
+    padding:2px;
+    text-decoration:none;
+}
+
+.navigator .title a.selected {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
+}
+
 table th.date {
     width: 100px;
 }

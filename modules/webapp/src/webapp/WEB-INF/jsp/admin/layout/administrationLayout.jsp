@@ -20,6 +20,17 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/administration.css">
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var title = document.title
+            $("#Navigator span.title a").each(function() {
+                var linkTitle = $(this).html();
+                if (title.indexOf(linkTitle) != -1) {
+                    $(this).addClass("selected");
+                }
+            });            
+        });
+    </script>
 </kantega:section>
 
 <kantega:section id="topMenu">

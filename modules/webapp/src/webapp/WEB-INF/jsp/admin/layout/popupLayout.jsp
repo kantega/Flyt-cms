@@ -41,7 +41,11 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $("#Content .button .ok").click(function(){
-                if (buttonOkPressed()) {
+                var close = true;
+                if (typeof buttonOkPressed == 'function') {
+                    close = buttonOkPressed();                    
+                }
+                if (close) {
                     closeWindow();
                 }
             });

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -25,4 +26,4 @@
 <a href="${pageContext.request.contextPath}/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
 
 <a href="${pageContext.request.contextPath}/Logout.action" class="menuitem logout"><kantega:label key="aksess.menu.logout"/></a>
-<a href="#" class="menuitem help"><kantega:label key="aksess.menu.help"/></a>
+<a href="http://opensource.kantega.no/aksess/help/?locale=<%=Aksess.getDefaultAdminLocale().toString()%>" class="menuitem help" onclick="window.open(this.href); return false;"><kantega:label key="aksess.menu.help"/></a>

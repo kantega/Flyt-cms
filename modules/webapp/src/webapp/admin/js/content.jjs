@@ -98,13 +98,13 @@ openaksess.content = {
         var $filters = $filterOptions.find(".filters");
         var filterInfoSlider = new openaksess.admin.InfoSlider("#Navigation", {additionalCssClasses: 'filters'});
 
-        $filterOptions.find(".filtersToggle").bind('click', function(){
+        $filterOptions.find(".filtersToggle").live('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked");
             $filters.show();
-            filterInfoSlider.toggle($filters.html());
+            filterInfoSlider.toggle($filters);
         });
 
-        $("#FilteroptionSort input[name=sort]").bind('change', function(){
+        $("#FilteroptionSort input[name=sort]").live('change', function(){
             var $this = $(this);
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
             if ($this.is(":checked")) {

@@ -19,8 +19,8 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
-    <kantega:label key="useradmin.searchprofiles.title"/>
+<kantega:section id="title">
+    <kantega:label key="aksess.useradmin.profile.title"/>
 </kantega:section>
 
 <kantega:section id="content">
