@@ -666,7 +666,7 @@ openaksess.navigate.getCurrentLocation = function() {
 };
 
 /**
- * Returns a uri for updating the location.href in contentmain, based on the special href-format used in the navigator.
+ * Return id (int) of page from navigator
  *
  * @param href Navigator href value
  */
@@ -676,8 +676,11 @@ openaksess.navigate.getItemIdentifierFromNavigatorHref = function (href) {
     return thisId;
 };
 
+/**
+ * Method returns a URL
+ */
 openaksess.navigate.getCurrentItemIdentifier = function() {
-    return openaksess.navigate.getItemIdentifierFromNavigatorHref(stateHandler.getState());
+    return stateHandler.getState();
 };
 
 openaksess.navigate.getNavigatorParams = function() {
