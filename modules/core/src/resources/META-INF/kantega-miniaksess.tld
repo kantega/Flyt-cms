@@ -113,7 +113,7 @@
             <name>cssclass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>
+        </attribute>             
         <attribute>
             <description>Id of generated link</description>
             <name>linkid</name>
@@ -136,6 +136,12 @@
         <attribute>
             <description>Name of collection, use with aksess:getcollectiontag</description>
             <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Url to the controller responsible for rendering MiniAksess</description>
+            <name>action</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

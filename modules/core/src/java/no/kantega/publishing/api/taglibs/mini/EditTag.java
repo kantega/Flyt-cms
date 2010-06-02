@@ -31,7 +31,7 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:05
  */
@@ -39,6 +39,7 @@ public class EditTag extends AbstractSimpleEditTag {
 
     private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
     private String associationId = null;
+    private String action;
 
     public int doAfterBody() throws JspException {
         try {
@@ -61,8 +62,16 @@ public class EditTag extends AbstractSimpleEditTag {
                     link.append(" id=\"").append(linkId).append("\"");
                 }
                 link.append(" href=\"");
-                link.append(URLHelper.getRootURL(request));
-                link.append("admin/publish/SimpleEditContent.action?thisId=");
+                link.append(URLHelper.getRootURL(request));                
+                if (action != null) {                	
+                    link.append(action);
+                    if (!action.endsWith("?")) {
+                        link.append("?");
+                    }                    
+                } else {                	
+                	link.append("admin/publish/SimpleEditContent.action?");
+                }
+                link.append("thisId=");                	
                 link.append(associationId);
                 if (redirectUrl != null) {
                     link.append("&amp;redirectUrl=");
@@ -72,7 +81,7 @@ public class EditTag extends AbstractSimpleEditTag {
                 link.append(body);
                 link.append("</a>");
 
-                out.print(link.toString());
+                out.print(link.toString());                
             }
         } catch (IOException e) {
             Log.error(SOURCE, e, null, null);
@@ -94,5 +103,9 @@ public class EditTag extends AbstractSimpleEditTag {
 
     public void setAssociationid(String associationid) {
         this.associationId = associationid;
+    }
+    
+   public void setAction(String action) {
+        this.action = action;
     }
 }
