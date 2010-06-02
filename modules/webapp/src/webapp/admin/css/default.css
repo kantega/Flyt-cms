@@ -114,7 +114,7 @@ table.noborder td, table.noborder th {
     height: 28px;
     line-height: 28px;
     padding: 0 17px;
-    background: #3B3C3D url("../bitmaps/default/framework/top_nav_background.png") center left repeat-x;
+    background: #3B3C3D url("../../login/bitmaps/top_nav_background.png") center left repeat-x;
 }
 #ModesMenu {
     padding: 0 5px;
@@ -284,7 +284,7 @@ table.fullWidth {
 
 /************** Top menu **************/
 #TopMenu .logo {
-    background: transparent url("../bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;
+    background: transparent url("../../login/bitmaps/top_nav_aksess_logo.png") center center no-repeat;
     line-height: 28px;
     padding-left: 31px;
 }

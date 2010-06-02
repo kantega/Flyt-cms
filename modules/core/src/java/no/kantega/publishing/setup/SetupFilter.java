@@ -29,6 +29,8 @@ public class SetupFilter implements Filter {
     public static final String FILTER_ATTR = SetupFilter.class.getName() +".this";
     private OpenAksessContextLoaderListener contextLoader;
 
+    private static String[] excludedStaticResources = {".png", ".jpg", ".gif", ".jjs", ".js", ".css"};
+
     public void init(FilterConfig filterConfig) throws ServletException {
         filterConfig.getServletContext().setAttribute(FILTER_ATTR, this);
         contextLoader = (OpenAksessContextLoaderListener) filterConfig.getServletContext().getAttribute(OpenAksessContextLoaderListener.LISTENER_ATTR);
@@ -39,7 +41,7 @@ public class SetupFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
-        if(contextLoader.isSetupNeeded()) {
+        if(contextLoader.isSetupNeeded() && !isStaticResource(req)) {
             if(isSetupRequest(req)) {
                 if(!isLocalhost(req)) {
                     res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Inital no.kantega.publishing.setup is only allowed from localhost");
@@ -63,6 +65,17 @@ public class SetupFilter implements Filter {
         return false;
     }
 
+    private boolean isStaticResource(HttpServletRequest request) {
+        String path = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
+        for (String fileext : excludedStaticResources) {
+            if (path.endsWith(fileext)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean isSetupRequest(HttpServletRequest req) {
         return req.getServletPath().equals("/Setup.initialAction");
     }
@@ -70,4 +83,6 @@ public class SetupFilter implements Filter {
     public void destroy() {
 
     }
+
+
 }

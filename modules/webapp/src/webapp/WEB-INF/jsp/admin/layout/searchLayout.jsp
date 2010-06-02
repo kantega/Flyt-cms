@@ -24,7 +24,7 @@
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/default.css">
     <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/search.css">
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="<%=request.getContextPath()%>/aksess/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
     <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.lazyload.mini.js"></script>

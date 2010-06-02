@@ -13,7 +13,7 @@ body {
 Common elements
 *************************/
 #TopMenu .logo {
-    background: transparent url("../../admin/bitmaps/default/framework/top_nav_aksess_logo.png") center center no-repeat;
+    background: transparent url("../bitmaps/top_nav_aksess_logo.png") center center no-repeat;
     line-height: 28px;
     padding-left: 31px;
 }
@@ -22,19 +22,19 @@ Common elements
     height: 28px;
     line-height: 28px;
     padding: 0 17px;
-    background: #3B3C3D url("../../admin/bitmaps/default/framework/top_nav_background.png") center left repeat-x;
+    background: #3B3C3D url("../bitmaps/top_nav_background.png") center left repeat-x;
 }
 a, a:visited{
     color:#1780B9;
     text-decoration:none;
 }
 body{
-    background:#fff url("../../admin/bitmaps/default/framework/bg_splash.jpg") no-repeat left top;
+    background:#fff url("../../login/bitmaps/bg_splash.jpg") no-repeat left top;
 }
 #contentWrapper{
     margin-left:660px;
     padding-top:32px;
-    background:url("../../admin/bitmaps/default/framework/gradient.png") repeat-x 0 -28px;
+    background:url("../bitmaps/gradient.png") repeat-x 0 -28px;
 }
 #contentWrapper .body{
     width:300px;
@@ -76,14 +76,27 @@ body{
 Form elements, common
 ***********************/
 form .text, form .password{
-    background:url("../../admin/bitmaps/default/framework/brukernavn.png") no-repeat left top;
+    background:url("../bitmaps/brukernavn.png") no-repeat left top;
     height:27px;
     padding: 0 0 0 35px;
     margin-top:15px;
     position:relative;
 }
+form .password{
+    background:url("../bitmaps/passord.png") no-repeat left top;
+}
+form .text-basic{
+    background:none;
+    height:27px;
+    border:1px solid #ccc;
+    margin-top:15px;
+    position:relative;
+}
+form .text-basic input[type=text]{
+    width:290px;
+}
 form .submit{
-    background:url("../../admin/bitmaps/default/framework/login_btn.png") no-repeat right top;
+    background:url("../bitmaps/login_btn.png") no-repeat right top;
     text-align:center;
     width:105px;
     margin-top:15px;
@@ -100,6 +113,11 @@ form label{
     left:35px;
     position:absolute;
     top:6px;
+}
+form .radio label{
+    position:static;
+    color:#000;
+    font-style:normal;
 }
 form input[type=text], form input[type=password]{
     position:absolute;
@@ -124,7 +142,7 @@ form input[type=submit]{
 Form elements, login page
 ******************/
 #UserName, #Password{
-    background:url("../../admin/bitmaps/default/framework/brukernavn.png") no-repeat left top;
+    background:url("../bitmaps/brukernavn.png") no-repeat left top;
     height:27px;
     padding: 0 0 0 35px;
     margin-bottom:15px;
@@ -139,10 +157,10 @@ body.login label{
     top:6px;
 }
 #Password{
-    background:url("../../admin/bitmaps/default/framework/passord.png") no-repeat left top;
+    background:url("../bitmaps/passord.png") no-repeat left top;
 }
 #Submit{
-    background:url("../../admin/bitmaps/default/framework/login_btn.png") no-repeat right top;
+    background:url("../bitmaps/login_btn.png") no-repeat right top;
     text-align:center;
     width:105px;
 }
@@ -167,7 +185,7 @@ body.login input[type=submit]{
 Error page
 ***********************************/
 body.error{
-    background:url("../../admin/bitmaps/default/framework/gradient.png") repeat-x 0 -28px;
+    background:url("../bitmaps/gradient.png") repeat-x 0 -28px;
 }
 body.error #contentWrapper{
     margin:0 auto;
@@ -219,7 +237,7 @@ body.error #errorWrapper .dialogBox .body{
 }
 #errorWrapper .dialogBoxArrow{
     position:absolute;
-    background:url("../../admin/bitmaps/default/framework/pil.png") no-repeat 0 0;
+    background:url("../bitmaps/pil.png") no-repeat 0 0;
     right:301px;
     top:40px;
     width:40px;
@@ -233,7 +251,7 @@ body.error form{
     text-align:center;
 }
 body.error input[type=submit]{
-    background:url("../../admin/bitmaps/default/framework/error_btn_bg.png") repeat-x 0 0;
+    background:url("../bitmaps/error_btn_bg.png") repeat-x 0 0;
     border:1px solid #CCCCCC;
     font-size:0.9em;
     height:28px;

@@ -47,8 +47,10 @@
             }
         </script>
 
-        <div class="text">
-            <label for="username">Database driver</label>
+        <div class="radio">
+            <p>
+                <label>Database driver</label>
+            </p>
             <c:forEach var="driver" items="${drivers}">
                 <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onclick="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label>
                 <c:if test="${driver.value.helpText != null}">
@@ -57,7 +59,7 @@
             </c:forEach>
         </div>
 
-        <div class="text">
+        <div class="text-basic">
             <label for="username">Database url</label>
             <input type="text" name="url" id="jdbcurl" size="100" maxlength="100" value="${url}">
         </div>
