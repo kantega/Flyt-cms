@@ -16,7 +16,7 @@
 ~ See the License for the specific language governing permissions and
 ~ limitations under the License.
 --%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
@@ -25,6 +25,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/default.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
     <kantega:getsection id="head"/>
 </head>
 <body class="<kantega:getsection id="bodyclass"/>">
@@ -33,7 +34,18 @@
     <a class="logo" href="http://opensource.kantega.no/aksess/" id="OpenAksessInfoButton" title="<kantega:label key="aksess.title"/>">&nbsp;</a>
 </div>
 
-<kantega:getsection id="body"/>
+<div id="contentWrapper">
+    <div class="body">
+        <div id="version">
+            <img src="<aksess:geturl url="/admin/bitmaps/default/framework/openaksess.png"/>" alt="">
+            Versjon <% Aksess.getVersion(); %>
+        </div>
+
+        <kantega:getsection id="body"/>
+
+    </div>
+
+</div>
 
 </body>
 </html>

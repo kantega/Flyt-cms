@@ -19,49 +19,30 @@
   ~ limitations under the License.
   --%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title>Initial user create</title>
-    <link rel="stylesheet" type="text/css" href="<aksess:geturl/>/login/login.css">
-<body>
-<form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/" method="POST">
-    <input type="hidden" name="j_domain" value="dbuser">
-    <input type="hidden" name="j_username" value="${username}">
-    <input type="hidden" name="j_password" value="${password}">
-    
-    <table border="0" cellspacing="0" cellpadding="0" width="400" align="center">
-        <tr>
-            <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-            <td width="396" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-            <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
-            <td width="2" rowspan="3" class="shadow" valign="top"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
-         </tr>
-         <tr>
-            <td class="box">
 
-                <h1>User account setup complete</h1>
-                <p>
-                    The account <b>${username}</b> has been given administration privileges.
-                </p>
+<kantega:section id="title">Confirm creation of initial user</kantega:section>
 
-                <p>
-                    Press Continue to proceed to login page.
-                </p>
+<kantega:section id="body">
+    <h1>User account setup complete</h1>
+    <form name="myform" action="<%=Aksess.getLoginUrl()%>?redirect=<aksess:geturl/>/admin/" method="POST">
+        <input type="hidden" name="j_domain" value="dbuser">
+        <input type="hidden" name="j_username" value="${username}">
+        <input type="hidden" name="j_password" value="${password}">
 
-                <p>
-                    <input type="submit" value="Continue to admin page">
-                </p>
+        <p>
+            The account <b>${username}</b> has been given administration privileges.
+        </p>
 
-            </td>
-         </tr>
-        <tr>
-            <td class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-         </tr>
-         <tr>
-            <td colspan="4" class="shadow"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" height="2"></td>
-        </tr>
-    </table>
-</form>
-</body>
-</html>
+        <p>
+            Press Continue to proceed to login and admin page.
+        </p>
+
+        <div class="submit">
+            <input type="submit" value="Continue">
+        </div>
+
+    </form>
+    </div>
+    </div>
+</kantega:section>
+<%@ include file="../../admin/layout/loginLayout.jsp" %>

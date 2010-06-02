@@ -19,102 +19,78 @@
   ~ limitations under the License.
   --%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title>Create initial user and role</title>
-    <link rel="stylesheet" type="text/css" href="<aksess:geturl/>/login/login.css">
-<body>
-<form name="myform" action="CreateInitialUser.action" method="post" autocomplete="off">
-    <table border="0" cellspacing="0" cellpadding="0" width="400" align="center">
-        <tr>
-            <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-            <td width="396" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-            <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
-            <td width="2" rowspan="3" class="shadow" valign="top"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
-         </tr>
-         <tr>
-            <td class="box">
-                <h1>Initial setup</h1>
 
-                <c:choose>
-                    <c:when test="${createUserAccount}">
-                        <p>
-                            Before you can use OpenAksess we must create an administrator account that you will need to access the administration interface.
-                        </p>
+<kantega:section id="title">Create initial user and role</kantega:section>
 
-                        <p>
-                            Please enter a desired userid and password (minimum 6 chars) below to create a new account:
-                        </p>
+<kantega:section id="head">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
+</kantega:section>
 
-                        <p>
-                            <label for="username">Username:</label><br>
-                            <input type="text" name="username" id="username" size="20" maxlength="20" value="${username}">
-                        </p>
+<kantega:section id="body">
 
-                        <c:if test="${errorUsername}">
-                            <p>Please enter a username, minimum 3 characters</p>
-                        </c:if>
-
-                        <p>
-                            <label for="password">Password:</label><br>
-                            <input type="password" name="password" id="password" size="20" maxlength="20">
-                        </p>
-                        <p>
-                            <label for="password2">Repeat password:</label><br>
-                            <input type="password" name="password2" id="password2" size="20" maxlength="20">
-                        </p>
-
-                        <c:if test="${errorPassword}">
-                            <p>Please enter a password, minimum 6 characters</p>
-                        </c:if>
-
-                    </c:when>
-                    <c:otherwise>
-                        <p>
-                            Before you can use OpenAksess we must add the role "<%=Aksess.getAdminRole()%>" to a user account
-                        </p>
-
-                        <p>
-                            Please enter a userid which should receive the role "<%=Aksess.getAdminRole()%>":
-                        </p>
-
-                        <p>
-                            <label for="username">Username:</label>
-                            <input type="text" name="username" id="username" size="20" maxlength="20">
-                        </p>
-
-                        <c:if test="${errorUsername}">
-                            <p>Please enter a username, minimum 3 characters</p>
-                        </c:if>
-
-                    </c:otherwise>
-                </c:choose>
-
-                <c:if test="${needsToken}">
-                    <p>
-                        <label for="token">Security token: </label> <br/>(from security/initialusertoken.txt)
-                        <input type="text" name="token" id="token" size="40" value="<c:out value="${token}"/>">
-                        <c:if test="${errorToken}">
-                            <p>Please enter a token matching the token on the server</p>
-                        </c:if>
-                    </p>
-                </c:if>
+    <h1>Initial setup</h1>
+    <form name="myform" action="CreateInitialUser.action" method="post" autocomplete="off">
+        <c:choose>
+            <c:when test="${createUserAccount}">
                 <p>
-                    <input type="submit" value="Continue">
+                    Before you can use OpenAksess we must create an administrator account that you will need to access the administration interface.
+                </p>
+                <p>
+                    Please enter a desired userid and password (minimum 6 chars) below to create a new account:
+                </p>
+                <div class="text">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" size="20" maxlength="20" value="${username}">
+                </div>
+                <c:if test="${errorUsername}">
+                    <div class="error">Please enter a username, minimum 3 characters</div>
+                </c:if>
+                <div class="password">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" size="20" maxlength="20">
+                </div>
+                <div class="password">
+                    <label for="password2">Repeat password:</label>
+                    <input type="password" name="password2" id="password2" size="20" maxlength="20">
+                </div>
+                <c:if test="${errorPassword}">
+                    <div class="error">Please enter a password, minimum 6 characters</div>
+                </c:if>
+            </c:when>
+            <c:otherwise>
+                <p>
+                    Before you can use OpenAksess we must add the role "<%=Aksess.getAdminRole()%>" to a user account
                 </p>
 
-            </td>
-         </tr>
-        <tr>
-            <td class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-         </tr>
-         <tr>
-            <td colspan="4" class="shadow"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" height="2"></td>
-        </tr>
-    </table>
+                <p>
+                    Please enter a userid which should receive the role "<%=Aksess.getAdminRole()%>":
+                </p>
 
+                <div class="text">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" size="20" maxlength="20">
+                </div>
+                <c:if test="${errorUsername}">
+                    <div>Please enter a username, minimum 3 characters</div>
+                </c:if>
 
-</form>
-</body>
-</html>
+            </c:otherwise>
+        </c:choose>
+
+        <c:if test="${needsToken}">
+            <div class="text">
+                <label for="token">Security token: </label> <br/>(from security/initialusertoken.txt)
+                <input type="text" name="token" id="token" size="40" value="<c:out value="${token}"/>">
+            </div>
+            <c:if test="${errorToken}">
+                <div class="error">Please enter a token matching the token on the server</div>
+            </c:if>
+        </c:if>
+        <div class="submit">
+            <input type="submit" value="Continue">
+        </div>
+
+    </form>
+
+</kantega:section>
+<%@ include file="../../admin/layout/loginLayout.jsp" %>

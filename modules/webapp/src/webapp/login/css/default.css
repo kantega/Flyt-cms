@@ -28,22 +28,21 @@ a, a:visited{
     color:#1780B9;
     text-decoration:none;
 }
-
-
-/*************************
- Login page
- ************************/
-body.login{
+body{
     background:#fff url("../../admin/bitmaps/default/framework/bg_splash.jpg") no-repeat left top;
 }
 #contentWrapper{
     margin-left:660px;
-    padding-top:20px;
+    padding-top:32px;
     background:url("../../admin/bitmaps/default/framework/gradient.png") repeat-x 0 -28px;
 }
 #contentWrapper .body{
     width:300px;
 }
+
+/*************************
+ Login page
+ ************************/
 .section{
     border-bottom:1px solid #ccc;
     padding-bottom:15px;
@@ -73,6 +72,54 @@ body.login{
     color:#ff0000;
 }
 
+/***********************
+Form elements, common
+***********************/
+form .text, form .password{
+    background:url("../../admin/bitmaps/default/framework/brukernavn.png") no-repeat left top;
+    height:27px;
+    padding: 0 0 0 35px;
+    margin-top:15px;
+    position:relative;
+}
+form .submit{
+    background:url("../../admin/bitmaps/default/framework/login_btn.png") no-repeat right top;
+    text-align:center;
+    width:105px;
+    margin-top:15px;
+}
+form .error{
+    margin:5px 0 0 0;
+    color:#ff0000;
+    font-size:.9em;
+}
+form label{
+    color:#666666;
+    font-size:14px;
+    font-style:italic;
+    left:35px;
+    position:absolute;
+    top:6px;
+}
+form input[type=text], form input[type=password]{
+    position:absolute;
+    background:transparent;
+    border:none;
+    font-size:14px;
+    line-height:1.2;
+    margin:5px 0 0 0;
+    width:220px;
+}
+form input[type=submit]{
+    background:transparent;
+    border:none;
+    height:27px;
+    font-weight:bold;
+    padding-bottom:4px;
+}
+
+
+
 /******************
 Form elements, login page
 ******************/
@@ -83,7 +130,7 @@ Form elements, login page
     margin-bottom:15px;
     position:relative;
 }
-label{
+body.login label{
     color:#666666;
     font-size:14px;
     font-style:italic;
@@ -99,14 +146,14 @@ label{
     text-align:center;
     width:105px;
 }
-input[type=text], input[type=password]{
+body.login input[type=text], body.login input[type=password]{
+    position:absolute;
+    background:transparent;
     border:none;
     font-size:14px;
     line-height:1.2;
     margin:5px 0 0 0;
-    position:absolute;
-    background:transparent;
-    width:220px;
+    width:220px;    
 }
 body.login input[type=submit]{
     background:transparent;
@@ -121,6 +168,18 @@ Error page
 ***********************************/
 body.error{
     background:url("../../admin/bitmaps/default/framework/gradient.png") repeat-x 0 -28px;
+}
+body.error #contentWrapper{
+    margin:0 auto;
+    padding:0;
+    width:610px;
+    background:none;
+}
+body.error #contentWrapper .body{
+    width:610px;
+}
+body.error #version{
+    display:none;
 }
 #errorWrapper{
     margin:0 auto;
@@ -149,9 +208,10 @@ body.error{
     color:#fff;
     font-weight:bold;
 }
-#errorWrapper .dialogBox .body{
+body.error #errorWrapper .dialogBox .body{
     color:#555;
     font-size:.95em;
+    width:auto;
 }
 #errorWrapper .dialogBox .label{
     font-weight:bold;

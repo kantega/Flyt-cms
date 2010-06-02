@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1"%>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -18,40 +19,23 @@
   ~ limitations under the License.
   --%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-	<title>Can't create role</title>
-    <link rel="stylesheet" type="text/css" href="<aksess:geturl/>/login/login.css">
-<body>
-<table border="0" cellspacing="0" cellpadding="0" width="400" align="center">
-    <tr>
-        <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-        <td width="396" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-        <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
-        <td width="2" rowspan="3" class="shadow" valign="top"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
-     </tr>
-     <tr>
-        <td class="box">
 
-            <h1>Can't create role</h1>
-            <p>
-                The system has been setup so that roles are managed outside OpenAksess, eg LDAP or Active Directory.
-            </p>
+<kantega:section id="title">Can't create role</kantega:section>
 
-            <p>
-                Setup your LDAP configuration correctly.
-            </p>
+<kantega:section id="head">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
+</kantega:section>
 
-        </td>
-     </tr>
-    <tr>
-        <td class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-     </tr>
-     <tr>
-        <td colspan="4" class="shadow"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" height="2"></td>
-    </tr>
-</table>
+<kantega:section id="body">
+    <h1>Can't create role</h1>
+    <p>
+        The system has been setup so that roles are managed outside OpenAksess, eg LDAP or Active Directory.
+    </p>
 
-</body>
-</html>
+    <p>
+        Setup your LDAP configuration correctly.
+    </p>
+</kantega:section>
+
+<%@ include file="../../admin/layout/loginLayout.jsp" %>
+

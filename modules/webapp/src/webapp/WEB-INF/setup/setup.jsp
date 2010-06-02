@@ -1,131 +1,83 @@
-<%@ page import="org.apache.commons.io.IOUtils" %>
-<%--
-~ Copyright 2009 Kantega AS
-~
-~ Licensed under the Apache License, Version 2.0 (the "License");
-~ you may not use this file except in compliance with the License.
-~ You may obtain a copy of the License at
-~
-~    http://www.apache.org/licenses/LICENSE-2.0
-~
-~ Unless required by applicable law or agreed to in writing, software
-~ distributed under the License is distributed on an "AS IS" BASIS,
-~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-~ See the License for the specific language governing permissions and
-~ limitations under the License.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1"%>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --%>
 
-<html>
-<head>
-    <title>OpenAksess setup</title>
-    <style type="text/css">
-        <%
-        IOUtils.copy(pageContext.getServletContext().getResourceAsStream("/admin/css/default.css"), out);
-        %>
-        label {
-            display:inline;
-        }
 
-        <%
-        IOUtils.copy(pageContext.getServletContext().getResourceAsStream("/login/login.css"), out);
-        %>
-        input {
-            width: auto;
-        }
-    </style>
-</head>
+<kantega:section id="title">OpenAksess Setup</kantega:section>
 
-<body>
+<kantega:section id="head">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
+</kantega:section>
+
+<kantega:section id="body">
+    <h1>OpenAksess initial database setup</h1>
     <form action="<%=request.getContextPath()%>/Setup.initialAction" method="POST">
-        <table border="0" cellspacing="0" cellpadding="0" width="800" align="center">
-            <tr>
-                <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-                <td width="796" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-                <td width="1" rowspan="3" class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" heigth="1"></td>
-                <td width="2" rowspan="3" class="shadow" valign="top"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" heigth="2"></td>
-             </tr>
-             <tr>
-                <td class="box">
-                    <h1>OpenAksess initial database setup</h1>
 
-                    <c:if test="${not empty errors}">
-                        <ul>
-                            <c:forEach var="error" items="${errors}">
-                                <li>
-                                    <c:out value="${error}"/>
-                                </li>
-                            </c:forEach>
-                        </ul>
-                    </c:if>
+        <c:if test="${not empty errors}">
+            <ul>
+                <c:forEach var="error" items="${errors}">
+                    <li>
+                        <c:out value="${error}"/>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:if>
 
-                    <script type="text/javascript">
-                        function setDefaultUrl(defaultUrl) {
-                            var url = document.getElementById("jdbcurl");
-                            url.value = defaultUrl;
-                        }
-                    </script>
-                    <table>
-                        <tr>
-                            <td style="vertical-align:top;">
-                                Database driver:
-                            </td>
-                            <td>
-                                <c:forEach var="driver" items="${drivers}">
-                                    <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onclick="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label>
-                                    <c:if test="${driver.value.helpText != null}">
-                                        (${driver.value.helpText})
-                                    </c:if><br />
-                                </c:forEach>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                Database url:
-                            </td>
-                            <td>
-                                <input name="url" size="100" id="jdbcurl" value="<c:out value="${url}"/>">
-                            </td>
-                        </tr>
+        <script type="text/javascript">
+            function setDefaultUrl(defaultUrl) {
+                var url = document.getElementById("jdbcurl");
+                url.value = defaultUrl;
+            }
+        </script>
 
-                        <tr>
-                            <td>
-                                Username:
-                            </td>
-                            <td>
-                                <input name="username" value="<c:out value="${username}"/>">
-                            </td>
-                        </tr>
+        <div class="text">
+            <label for="username">Database driver</label>
+            <c:forEach var="driver" items="${drivers}">
+                <input name="driver" value="<c:out value="${driver.value.id}"/>" id="driver_<c:out value="${driver.value.id}"/>" type="radio" onclick="setDefaultUrl('<c:out value="${driver.value.defaultUrl}"/>')" <c:if test="${driverName == driver.value.id}">checked="checked"</c:if>> <label for="driver_<c:out value="${driver.value.id}"/>"><c:out value="${driver.value.name}"/></label>
+                <c:if test="${driver.value.helpText != null}">
+                    (${driver.value.helpText})
+                </c:if><br />
+            </c:forEach>
+        </div>
 
-                        <tr>
-                            <td>
-                                Password:
-                            </td>
-                            <td>
-                                <input name="password" type="password">
-                            </td>
-                        </tr>
+        <div class="text">
+            <label for="username">Database url</label>
+            <input type="text" name="url" id="jdbcurl" size="100" maxlength="100" value="${url}">
+        </div>
 
-                        <tr>
-                            <td>
+        <div class="text">
+            <label for="username">Username</label>
+            <input type="text" name="username" id="username" size="20" maxlength="20" value="${username}">
+        </div>
 
-                            </td>
-                            <td>
-                                <input type="submit" value="Save" onclick="this.disabled=true; this.value='Creating database...'; this.form.submit()">
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-             </tr>
-            <tr>
-                <td class="frame"><img src="<aksess:geturl/>/login/bitmaps/blank.gif" width="1" height="1"></td>
-             </tr>
-             <tr>
-                <td colspan="4" class="shadow"><img src="<aksess:geturl/>/login/bitmaps/corner.gif" width="2" height="2"></td>
-            </tr>
-        </table>
+        <div class="password">
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" size="20" maxlength="20">
+        </div>
+
+        <div class="submit">
+            <input type="submit" value="Save" onclick="this.disabled=true; this.value='Creating database...'; this.form.submit()">
+        </div>
+
     </form>
-</body>
-</html>
+</kantega:section>
+
+<%@ include file="../jsp/admin/layout/loginLayout.jsp" %>
+
