@@ -69,6 +69,8 @@
     </script>
 </kantega:section>
 
+<kantega:section id="bodyclass">login</kantega:section>
+
 <kantega:section id="body">
     <div id="contentWrapper">
         <div class="body">

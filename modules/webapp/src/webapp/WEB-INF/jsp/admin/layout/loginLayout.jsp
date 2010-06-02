@@ -27,7 +27,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-1.4.2.min.js"></script>
     <kantega:getsection id="head"/>
 </head>
-<body>
+<body class="<kantega:getsection id="bodyclass"/>">
 
 <div id="TopMenu">
     <a class="logo" href="http://opensource.kantega.no/aksess/" id="OpenAksessInfoButton" title="<kantega:label key="aksess.title"/>">&nbsp;</a>

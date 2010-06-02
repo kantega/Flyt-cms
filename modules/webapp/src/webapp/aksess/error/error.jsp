@@ -27,10 +27,13 @@
 
 <%
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-    
+
+
     response.setDateHeader("Expires", 0);
     ExceptionHandler handler = (ExceptionHandler)request.getSession(false).getAttribute("handler");
+
     String error = handler.getMessage();
+
     String details = handler.getDetails();
 
     DateFormat df = new SimpleDateFormat("yyyy.MM.dd.MM - HH:mm");
@@ -57,15 +60,48 @@
         Log.info("info/index.jsp", "aksess-webapp-version.properties not found", null, null);
     }
 %>
-<html>
-<head>
-<title>Feil</title>
-<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/login.css">
-</head>
-<body>
+
+<kantega:section id="bodyclass">error</kantega:section>
+
+<kantega:section id="body">
+    <div id="errorWrapper">
+        <img src="${pageContext.request.contextPath}/admin/bitmaps/default/framework/error.png" alt="">
+        <div class="dialogBox">
+            <h1>
+                <kantega:label key="aksess.error.error"/>
+            </h1>
+            <div class="body">
+                <span class="label"><kantega:label key="aksess.error.label"/></span> <%=error%>
+                <% if (error.startsWith("System")) { %>
+
+                <form action="http://opensource.kantega.no/aksess/feedback/error" target="_new" method="post" name="errorreport">
+                    <input type="hidden" name="product" value="Aksess">
+                    <input type="hidden" name="timestamp" value="<%=df.format(new Date())%>">
+                    <input type="hidden" name="error" value="<%=error%>">
+                    <input type="hidden" name="details" value="<%=details%>">
+                    <input type="hidden" name="ident" value="<%=ident%>">
+                    <input type="hidden" name="email" value="<%=email%>">
+                    <input type="hidden" name="applicationUrl" value="<%=Aksess.getApplicationUrl()%>">
+                    <input type="hidden" name="site" value="<%=request.getServerName()%>">
+                    <input type="hidden" name="version" value="<%=Aksess.getVersion()%>">
+                    <input type="hidden" name="release" value="<%= versionInfo.get("revision") != null ? versionInfo.get("revision") : "?"%>/<%= webappVersionInfo.get("revision") != null ? webappVersionInfo.get("revision") : "?"%>">
+                    <input type="submit" value="<kantega:label key="aksess.error.sendreport"/>">
+                </form>
+                <% } else { %>
+                <p class="goBack">
+                    <a class="goBack" href="Javascript:history.back()"><kantega:label key="aksess.error.back"/></a>
+                </p>
+                <% } %>
+            </div>
+        </div>
+        <div class="dialogBoxArrow"></div>
+
+    </div>
+</kantega:section>
+<%--
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
         <tr>
-            <td align="center">
+            <td align="center">                                                                         s
                 <table border="0" cellspacing="0" cellpadding="0" width="315">
                     <tr>
                         <td width="1" rowspan="3" class="frame"><img src="${pageContext.request.contextPath}/login/bitmaps/blank.gif" width="1" height="1"></td>
@@ -123,5 +159,6 @@
             </td>
         </tr>
     </table>
-</body>
-</html>
+    --%>
+
+<%@ include file="../../WEB-INF/jsp/admin/layout/loginLayout.jsp" %>
