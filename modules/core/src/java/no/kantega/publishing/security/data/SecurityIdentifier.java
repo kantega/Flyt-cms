@@ -24,7 +24,7 @@ public abstract class SecurityIdentifier {
 
     public SecurityIdentifier() {
     }
-
+    
     public String getId() {
         if (id != null && id.length() > 0) {
             return id;

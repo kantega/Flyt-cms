@@ -36,6 +36,11 @@ public class User extends SecurityIdentifier {
     private List<Topic> topics = null;
     private List orgUnits = new ArrayList();
     private Properties attributes;
+    
+    public boolean matchesId(String id) {
+        return getId().trim().equalsIgnoreCase(id); 
+    }
+    
 
     public String getType() {
         return RoleType.USER;
