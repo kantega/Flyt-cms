@@ -243,6 +243,7 @@ table.fullWidth {
     -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
     margin-bottom: 15px;
+    background:#fff;
 }
 #Content.mypage .widget-header {
     -moz-border-radius-topright: 5px;
