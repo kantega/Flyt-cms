@@ -56,7 +56,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     private ModelAndView loadContentModelAndView(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException, ServletException, ConfigurationException, IOException {
         Content content = getContentForEdit(request);
-        if (allowedToEdit(request, content)) {
+        if (isNewContent(content) || allowedToEdit(request, content)) {
             return editModelAndView(request, response, content);
         } else {
             return notAllowedToEditModelAndView(request, response);
@@ -95,6 +95,10 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         RequestHelper.setRequestAttributes(request, null);
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         request.getRequestDispatcher("/403.jsp").forward(request, response);
+    }
+    
+    private boolean isNewContent(Content content) {
+        return !contentExists(content);
     }
 
     private boolean contentExists(Content content) {
