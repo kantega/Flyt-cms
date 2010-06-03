@@ -38,7 +38,7 @@ public class TopicsAction extends AdminController {
         TopicMapService topicMapService = new TopicMapService(request);
         List<TopicMap> topicMaps = topicMapService.getTopicMaps();
         model.put("topicMaps", topicMaps);
-        model.put("topicMapsSelected", Boolean.TRUE);
+        model.put("topicMapsSelected", "selected");
 
         return new ModelAndView(view, model);
     }
