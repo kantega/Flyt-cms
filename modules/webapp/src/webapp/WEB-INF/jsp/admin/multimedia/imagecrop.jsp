@@ -42,7 +42,9 @@
                 $('#CropInfo').html('<kantega:label key="aksess.multimedia.crop.info"/>');
                 enableSaveButton(false);
             } else {
-                $('#CropInfo').html('<kantega:label key="aksess.multimedia.crop.size"/>: <strong>' + c.w + "</strong> x <strong>" + c.h + "</strong>");
+                var aspectRatio = c.w / c.h;                
+                var aspectRatioRounded = Math.round(aspectRatio * Math.pow(10,2)) / Math.pow(10,2);
+                $('#CropInfo').html('<kantega:label key="aksess.multimedia.crop.size"/>: <strong>' + aspectRatioRounded + "</strong> &nbsp; | &nbsp; " + c.w + " x " + c.h);
                 enableSaveButton(true);
             }
         };
