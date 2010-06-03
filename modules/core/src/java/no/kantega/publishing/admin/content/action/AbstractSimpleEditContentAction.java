@@ -10,6 +10,7 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.common.Aksess;
@@ -36,7 +37,11 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     private String view;
 
-    protected abstract boolean allowedToEdit(HttpServletRequest request, Content content);
+    protected abstract boolean isAllowedToEdit(HttpServletRequest request, Content content);
+    
+    protected boolean isNewContent(Content content) {
+        return !contentExists(content);        
+    }
     
     protected SecuritySession getSecuritySession(HttpServletRequest request) {
         return SecuritySession.getInstance(request);        
@@ -56,14 +61,14 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     private ModelAndView loadContentModelAndView(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException, ServletException, ConfigurationException, IOException {
         Content content = getContentForEdit(request);
-        if (isNewContent(content) || allowedToEdit(request, content)) {
+        if (isAllowedToEdit(request, content)) {
             return editModelAndView(request, response, content);
         } else {
-            return notAllowedToEditModelAndView(request, response);
+            throw new NotAuthorizedException("Har ikke tilgang", this.getClass().getName());
         }
     }
 
-    protected Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException {
+    private Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException {
         if (isExistingContentId(requestedId(request))) {
             return existingPage(request);
         } else if (isExistingContentId(parentId(request))) {
@@ -79,27 +84,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             return showEditForm(request, response, cms.checkOutContent(content.getContentIdentifier()));
         }
         return showEditForm(request, response, content);
-    }
-
-    private ModelAndView notAllowedToEditModelAndView(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        SecuritySession secSession = getSecuritySession(request);
-        if (secSession.isLoggedIn()) {
-            triggerForbiddenResponse(request, response);
-        } else {
-            secSession.initiateLogin(request, response);
-        }
-        return null;
     }   
-
-    private void triggerForbiddenResponse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestHelper.setRequestAttributes(request, null);
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        request.getRequestDispatcher("/403.jsp").forward(request, response);
-    }
-    
-    private boolean isNewContent(Content content) {
-        return !contentExists(content);
-    }
 
     private boolean contentExists(Content content) {
         return isExistingContentId(content.getId());
@@ -123,7 +108,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         return new ContentManagementService(request).createNewContent(createParam);
     }
 
-    private Content existingPage(HttpServletRequest request) throws NotAuthorizedException {
+    private Content existingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
         ContentIdentifier cid = new ContentIdentifier();
         cid.setAssociationId(requestedId(request));
         return new ContentManagementService(request).getContent(cid, false);

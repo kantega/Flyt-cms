@@ -24,7 +24,7 @@ import no.kantega.publishing.common.data.Content;
 
 public class SimpleEditContentAction extends AbstractSimpleEditContentAction {
 
-    protected boolean allowedToEdit(HttpServletRequest request, Content content) {
+    protected boolean isAllowedToEdit(HttpServletRequest request, Content content) {
         return true;
     }
 }
