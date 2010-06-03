@@ -179,7 +179,7 @@
                 </div>
             </div>
             <div class="buttonGroup">
-                <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.insert"/>"></span>
+                <span class="button"><input type="button" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
                 <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </div>

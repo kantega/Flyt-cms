@@ -130,13 +130,13 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.usage"/></legend>
-                        <textarea name="usage" id="MultimediaUsage" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.usage}"/></textarea>
+                        <textarea name="usage" id="MultimediaUsage" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.usage}"/></textarea>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.description"/></legend>
-                        <textarea name="description" id="MultimediaDescription" rows="4" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.description}"/></textarea>
+                        <textarea name="description" id="MultimediaDescription" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.description}"/></textarea>
                     </fieldset>
                 </div>
 

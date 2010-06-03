@@ -119,10 +119,11 @@ a.file {
 
 #EditMultimediaButtons input.insert {
     margin-left: 10px;
-    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+    background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
 }
 
 #EditMultimediaButtons input.cancel {
+    margin-left: 10px;
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
 }
 

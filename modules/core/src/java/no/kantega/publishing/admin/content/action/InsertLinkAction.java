@@ -55,8 +55,6 @@ public class InsertLinkAction extends AdminController {
 
         RequestParameters param = new RequestParameters(request);
         String url = param.getString("url");
-        String anchor = param.getString("anchor");
-
         if (url != null) {
             if (url.indexOf("@") != -1) {
                 linkType = LINKTYPE_EMAIL;
@@ -68,12 +66,8 @@ public class InsertLinkAction extends AdminController {
                 url = "http://";
             }
         }
-        if (anchor == null) {
-            anchor = "";
-        }
 
         model.put("url", url);
-        model.put("anchor", anchor);
 
         boolean openInNewWindow = param.getBoolean("isOpenInNewWindow", false);
         if (openInNewWindow || Aksess.doOpenLinksInNewWindow()) {

@@ -40,7 +40,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $("#Content .button .ok").click(function(){
+            $("#Content .button .ok, #Content .button .insert").click(function(){
                 var close = true;
                 if (typeof buttonOkPressed == 'function') {
                     close = buttonOkPressed();                    

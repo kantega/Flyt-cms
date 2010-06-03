@@ -43,11 +43,6 @@
             elm = this.editor.dom.getParent(elm, "A");
             if (elm != null && elm.nodeName == "A") {
                 href = this.editor.dom.getAttrib(elm, 'href');
-                if (href.indexOf("#") != -1) {
-                    var hrefSplit = href.split("#");
-                    href = hrefSplit[0];
-                    anchor = hrefSplit[1];
-                }
                 var onclick = this.editor.dom.getAttrib(elm, 'onclick');
                 if (onclick.indexOf('window.open') != -1) {
                     newWindow = true;
@@ -57,7 +52,7 @@
             openaksess.common.modalWindow.open({
                 title:"Sett inn lenke",
                 iframe:true,
-                href: "popups/InsertLink.action?url=" + encodeURI(href) + "&anchor=" + encodeURI(anchor) + "&isOpenInNewWindow=" + encodeURI(newWindow),
+                href: "popups/InsertLink.action?url=" + encodeURI(href) + "&isOpenInNewWindow=" + encodeURI(newWindow),
                 width: 600,
                 height:300});
         }

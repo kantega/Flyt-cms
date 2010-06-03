@@ -467,6 +467,10 @@ table.fullWidth {
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
 }
 
+#EditContentButtons input.insert {
+    background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
+}
+
 #EditContentButtons input.save {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
@@ -478,7 +482,6 @@ table.fullWidth {
 }
 
 #EditContentButtons input.reject {
-    margin-left: 10px;
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
 }
 
@@ -509,6 +512,11 @@ table.fullWidth {
     height: 50px;
     margin-right: 20px;
 }
+
+#Content .barButton.hidden {
+    display: none;
+}
+
 
 #Content .buttonBar input {
     font-size: 1.1em;
@@ -552,7 +560,7 @@ table.fullWidth {
 
 #Content .button input[class], .ui-dialog-content .button input[class] {
     display: inline-block;
-    padding-left: 30px;
+    padding-left: 25px;
     padding-right:5px;
     background-position: 5px 50%;
     background-repeat: no-repeat;
@@ -604,6 +612,10 @@ table.fullWidth {
 .button .imagemap {
     background-image: url("../bitmaps/common/icons/small/imagemap.png");
 }
+.button .insert {
+    background-image: url("../bitmaps/common/icons/small/insert.png");
+}
+
 .button .linkcheck {
     background: url("../bitmaps/common/icons/small/linkcheck.png");
 }

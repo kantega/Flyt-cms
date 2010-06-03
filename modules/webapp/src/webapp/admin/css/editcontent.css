@@ -80,12 +80,17 @@ html, body {
 }
 
 #TopicInputContainer {
-    float: left;    
+    float: left;
+}
+
+#TopicInput {
+    width: 120px;
 }
 
 
+
 #ChooseTopicButton {
-    padding-left: 4px;
+    margin-left: 4px;
     float: left;
 }
 
