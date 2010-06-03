@@ -29,6 +29,7 @@
 
     String value = attribute.getValue();
     String mmname = "";
+    String mmFileName = "";
 
     if (value != null && value.length() > 0) {
         try {
@@ -36,6 +37,8 @@
             Multimedia mm = mms.getMultimedia(Integer.parseInt(value));
             if (mm != null) {
                 mmname = mm.getName();
+                mmFileName = mm.getFilename();
+
             } else {
                 value = "";
             }
@@ -59,6 +62,10 @@
                     <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
                     <td><a href="Javascript:selectMultimedia(document.myform.<%=fieldName%>, '')" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.velg"/></a></td>
                     <td><img src="../bitmaps/common/textseparator.gif"></td>
+                </c:if>
+                <c:if test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">
+                    <td><%=mmFileName%></td>
+                    <td><img src="../bitmaps/common/textseparator.gif"></td>    
                 </c:if>
                 <td><a class="mini_remove" href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>

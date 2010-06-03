@@ -31,10 +31,12 @@
                 <td><b><%=attribute.getTitle()%></b></td>
                 <% if (value != null && value.length() > 0) {%>
                 <td><img src="../bitmaps/common/textseparator.gif"></td>
+                <td><%=value%></td>
+                <td><img src="../bitmaps/common/textseparator.gif"></td>
                 <td><a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new"><img src="../bitmaps/common/buttons/mini_vis.gif" border="0"></a></td>
                 <td><a href="<%=attribute.getProperty(AttributeProperty.HTML)%>" target="_new"><kantega:label key="aksess.button.visfil"/></a></td>
                 <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
+                <td><a class="mini_remove" href="Javascript:removeAttachment(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeAttachment(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.slett"/></a></td>
                 <%}%>
             </tr>
