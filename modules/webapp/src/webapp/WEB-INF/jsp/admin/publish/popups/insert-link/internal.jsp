@@ -50,6 +50,10 @@
 
         var attribs = {'href': url};
         var editor = getParent().tinymce.EditorManager.activeEditor;
+
+        // IE 7 & 8 looses selection. Must be restored manually.
+        tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
+
         editor.execCommand("mceBeginUndoLevel");
         var elements = getSelectedElements(editor);
         for (var i = 0, n = elements.length; i < n; i++) {
