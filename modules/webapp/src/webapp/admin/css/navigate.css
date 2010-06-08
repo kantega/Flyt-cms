@@ -272,7 +272,7 @@ ul.breadcrumbs li:first-child {
     padding: 1px 5px;
 }
 
-.contextMenu li.hover a {
+.contextMenu li:hover a {
     color: #ffffff;
     background-color: #3399ff;
 }
@@ -282,7 +282,7 @@ ul.breadcrumbs li:first-child {
     cursor: default;
 }
 
-.contextMenu li.hover.disabled a {
+.contextMenu li.disabled:hover a {
     background-color: transparent;
 }
 
