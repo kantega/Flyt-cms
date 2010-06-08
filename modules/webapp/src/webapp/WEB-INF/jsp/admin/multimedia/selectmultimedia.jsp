@@ -35,6 +35,7 @@
 <html>
 <head>
     <title>...</title>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce_3_3_6/tiny_mce_popup.js"></script>
 </head>
 <script language="Javascript">
     function insertMMObject() {
@@ -50,6 +51,8 @@
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;
                 var editor = p.tinymce.EditorManager.activeEditor;
+                // IE 7 & 8 looses selection. Must be restored manually.
+                tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
                 insertHtml(editor, str);
             } else {
                 // Insert id and name
