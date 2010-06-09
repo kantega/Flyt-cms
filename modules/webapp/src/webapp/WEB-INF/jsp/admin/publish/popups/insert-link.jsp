@@ -32,6 +32,48 @@
 </kantega:section>
 
 <kantega:section id="body">
+    <script type="text/javascript">
+        function buttonOkPressed() {
+
+            var attribs = getUrlAttributes();
+            var editor = getParent().tinymce.EditorManager.activeEditor;
+
+            // IE 7 & 8 looses selection. Must be restored manually.
+            tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
+
+            editor.execCommand("mceBeginUndoLevel");
+            var elements = getSelectedElements(editor);
+            for (var i = 0, n = elements.length; i < n; i++) {
+                setAttributes(editor, elements[i], attribs);
+            }
+            editor.execCommand("mceEndUndoLevel");
+            getParent().openaksess.common.modalWindow.close();
+        }
+
+        function getSelectedElements(editor) {
+            var elements = [];
+            var element = editor.selection.getNode();
+            element = editor.dom.getParent(element, "A");
+            if (element == null) {
+                editor.getDoc().execCommand("unlink", false, null);
+                editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
+                elements = getParent().tinymce.grep(
+                        editor.dom.select("a"),
+                        function(n) {
+                            return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                        });
+            } else {
+                elements.push(element);
+            }
+            return elements;
+        }
+
+        function setAttributes(editor, element, attributes) {
+            for (var key in attributes) {
+                editor.dom.setAttrib(element, key, attributes[key]);
+            }
+        }
+    </script>
     <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
         <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
             <li class="<c:if test="${linkType == 'external'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top"><a href="?linkType=external"><kantega:label key="aksess.insertlink.external"/></a></li>
