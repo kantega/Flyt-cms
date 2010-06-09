@@ -1,3 +1,4 @@
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -14,11 +15,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
-<html>
-<head>
-    <title>...</title>
+<kantega:section id="body">
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -28,12 +26,16 @@
             });
         })
     </script>
-</head>
-<body>
- 
-                <div class="content">
-                        <a class="linkexternal" href="http://opensource.kantega.no/aksess">OpenAksess</a> ${aksessVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
-                <pre>
+    <script type="text/javascript" src="http://konami-js.googlecode.com/svn/trunk/konami.js"></script>
+    <script type="text/javascript">
+        konami = new Konami()
+        konami.load("http://www.youtube.com/watch?v=ZWByXDB0IKw");
+    </script>
+
+    <h1>
+        <a class="linkexternal" href="http://opensource.kantega.no/aksess">OpenAksess</a> ${aksessVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
+    </h1>
+                <pre id="Licence">
   ~ Copyright 2005-2010 <a class="linkexternal" href="http://www.kantega.no">Kantega AS</a>
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,11 +50,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
                 </pre>
-                </div>
-    
+</kantega:section>
 
-
-</body>
-</html>
-
-
+<%@ include file="../layout/popupLayout.jsp" %>

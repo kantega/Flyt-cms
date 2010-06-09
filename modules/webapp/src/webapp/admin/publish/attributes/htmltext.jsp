@@ -91,7 +91,7 @@
 
         var options = {
             // General options
-            language : 'en', // en / no
+            language : '<%=Aksess.getDefaultAdminLocale().getLanguage().toLowerCase()%>', // en / no
             mode : "exact",
             elements : "<%=fieldName%>",
             theme : "advanced",
