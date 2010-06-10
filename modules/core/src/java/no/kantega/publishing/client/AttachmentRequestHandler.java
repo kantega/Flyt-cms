@@ -80,6 +80,7 @@ public class AttachmentRequestHandler extends HttpServlet {
             Attachment attachment = cs.getAttachment(attachmentId, siteId);
             if (attachment == null) {
                 // Attachment not found
+                Log.error(SOURCE, "Attachment not found. Attachment id requested: " + attachmentId + " on siteId: " + siteId, null, null);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
