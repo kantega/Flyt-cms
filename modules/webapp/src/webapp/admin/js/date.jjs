@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 //<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+//<%@ page contentType="text/javascript;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 //<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 //<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
 
@@ -151,7 +151,7 @@ openaksess.dateutils = {
 
         min = parseInt("" + time.substring(endInx + 1, time.length));
         if (isNaN(min)) {
-            alert("Oppgi et korrekt tidspunkt i formatet TT:MM.");
+            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>");
             return -1;
         }
 
