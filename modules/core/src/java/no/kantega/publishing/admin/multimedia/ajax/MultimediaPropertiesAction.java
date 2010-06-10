@@ -92,7 +92,9 @@ public class MultimediaPropertiesAction implements Controller {
                 if (canChange) {
                     enabledButtons.add("UploadButton");
                     enabledButtons.add("NewFolderButton");
-                    enabledButtons.add("DeleteFolderButton");
+                    if (folder.getNoFiles() == 0 && folder.getNoSubFolders() == 0) {
+                        enabledButtons.add("DeleteFolderButton");                        
+                    }
                 }
             }
         } else {
