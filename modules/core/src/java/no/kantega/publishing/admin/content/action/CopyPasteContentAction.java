@@ -105,6 +105,7 @@ public class CopyPasteContentAction implements Controller {
         // Check for duplicate pages
         List aliases = aksessService.findDuplicateAliases(parent);
         if (aliases.size() == 0) {
+            model.put("updateNavigator", Boolean.TRUE);
             return new ModelAndView(confirmCopyPasteView, model);
         } else {
             model.put("aliases", aliases);

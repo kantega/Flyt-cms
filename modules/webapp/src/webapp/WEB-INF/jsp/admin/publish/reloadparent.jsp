@@ -32,6 +32,9 @@
                     iframe.src = '${currentPage.url}';
                 }
             </c:if>
+            <c:if test="${updateNavigator}">
+                getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
+            </c:if>
 
             setTimeout('closePopup()', 3000);
         });
