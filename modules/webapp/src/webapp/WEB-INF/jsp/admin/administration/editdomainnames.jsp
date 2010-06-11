@@ -71,7 +71,7 @@
                         %>
                     </table>
                     <br>
-                    <div class="ui-state-highlight"><kantega:label key="aksess.site.domain.tip"/></div>
+                    <div class="ui-state-highlight"><kantega:label key="aksess.site.domains.tip"/></div>
                 </div>
             </div>
             <div class="buttonGroup">
