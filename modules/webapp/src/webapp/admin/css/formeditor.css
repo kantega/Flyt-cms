@@ -108,3 +108,6 @@ a.formOptionDelete {
     width: 15px;
 }
 
+#form_FormElements .hidden {
+    display: block;
+}
