@@ -135,8 +135,8 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="right">
-                            <input type="button" id="form_SaveFormText" value="<kantega:label key="aksess.button.lagre"/>">
-                            <input type="button" id="form_CancelFormText" value="<kantega:label key="aksess.button.avbryt"/>">
+                            <input type="button" id="form_SaveFormText" value="<kantega:label key="aksess.button.save"/>">
+                            <input type="button" id="form_CancelFormText" value="<kantega:label key="aksess.button.cancel"/>">
                         </td>
                     </tr>
                 </table>
