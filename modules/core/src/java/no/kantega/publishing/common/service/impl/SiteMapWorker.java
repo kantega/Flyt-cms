@@ -39,7 +39,7 @@ public class SiteMapWorker {
     private static SiteMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {
             SiteMapEntry e = (SiteMapEntry)entries.get(i);
-            // Snarveier kan aldri være parents
+            // Snarveier kan aldri vï¿½re parents
             if (e.parentId == parentId) {
                 entries.remove(e);
                 return e;
@@ -53,7 +53,7 @@ public class SiteMapWorker {
             int parentId = parent.currentId;
             SiteMapEntry entry = getFirst(parentId, entries);
             while (entry != null) {
-                // Legger kun til hovedknytninger, ellers kan ting gå i evig løkke...
+                // Legger kun til hovedknytninger, ellers kan ting gï¿½ i evig lï¿½kke...
                 addToSiteMap(entry, entries);
                 parent.addChild(entry);
                 entry = getFirst(parentId, entries);
@@ -139,7 +139,7 @@ public class SiteMapWorker {
                     entry.setOwnerPerson(ownerPerson);
                     entry.setSecurityId(aSecId);
                     if (type == ContentType.LINK) {
-                        // Enten har bruker angitt at lenke skal åpnes i eget vindu eller så skal dette skje automatisk
+                        // Enten har bruker angitt at lenke skal ï¿½pnes i eget vindu eller sï¿½ skal dette skje automatisk
                         if (openInNewWindow || (location != null && location.length() > 0 && location.charAt(0) != '/')) {
                             entry.setOpenInNewWindow(true);
                         }
@@ -162,7 +162,7 @@ public class SiteMapWorker {
         }
 
         if (sitemap != null) {
-            // Vi har funnet starten på sitemap'en, legg til underelementer
+            // Vi har funnet starten pï¿½ sitemap'en, legg til underelementer
             addToSiteMap(sitemap, tmpentries);
         }
 
@@ -214,10 +214,14 @@ public class SiteMapWorker {
 
         // Determine if element has children
         SiteMapEntry sitemap = getSiteMapBySQL(query, -1, true, sort);
-        List<SiteMapEntry> leafNodes = new ArrayList<SiteMapEntry>();
-        getLeafNodes(leafNodes, sitemap);
 
-        updateStatusForLeafNodes(leafNodes);
+        if (sitemap != null) {
+            // Site map can be null if no pages are created yet
+            List<SiteMapEntry> leafNodes = new ArrayList<SiteMapEntry>();
+            getLeafNodes(leafNodes, sitemap);
+
+            updateStatusForLeafNodes(leafNodes);
+        }
 
         return sitemap;
     }
@@ -291,7 +295,7 @@ public class SiteMapWorker {
             }
         }
 
-        // Kan ha mulighet for å bruke lokalmeny
+        // Kan ha mulighet for ï¿½ bruke lokalmeny
         int rootId = -1;
         int pathStartOffset = 0;
 
