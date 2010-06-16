@@ -45,9 +45,6 @@
                 <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
                 <prop key="/robots.txt">RobotsController</prop>
 
-                <!-- Sites -->
-                <prop key="/admin/sites/CreateRoot.action">createRootAction</prop>
-
                 <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
                 <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
@@ -232,6 +229,10 @@
                 <prop key="/admin/administration/ReloadTemplateConfiguration.action">reloadTemplateConfigurationAction</prop>
                 <!-- Security -->
                 <prop key="/admin/administration/ViewAllPermissions.action">ViewAllPermissionsAction</prop>
+
+                <!-- Sites -->
+                <prop key="/admin/administration/CreateRoot.action">createRootAction</prop>
+
             </props>
         </property>
     </bean>
