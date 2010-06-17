@@ -54,7 +54,7 @@ public class DeleteAssociationAction implements Controller {
 
             // Get association
             String url = request.getParameter("url");
-            ContentIdentifier cid = new ContentIdentifier(url);
+            ContentIdentifier cid = new ContentIdentifier(request, url);
 
             // Get content (page) that association points to
             Content content = aksessService.getContent(cid);

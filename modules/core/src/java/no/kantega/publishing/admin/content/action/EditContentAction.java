@@ -46,7 +46,7 @@ public class EditContentAction implements Controller {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cid = new ContentIdentifier(url);
+        ContentIdentifier cid = new ContentIdentifier(request, url);
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 

@@ -73,7 +73,7 @@ public class ContentPropertiesAction implements Controller {
         ContentManagementService cms = new ContentManagementService(request);
 
         try {
-            ContentIdentifier cid = new ContentIdentifier(url);
+            ContentIdentifier cid = new ContentIdentifier(request, url);
             Content content = cms.getContent(cid, false);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 

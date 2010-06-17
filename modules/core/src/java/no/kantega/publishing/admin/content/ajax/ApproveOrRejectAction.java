@@ -44,7 +44,7 @@ public class ApproveOrRejectAction implements Controller {
 
         HttpSession session = request.getSession(true);
 
-        ContentIdentifier cid = new ContentIdentifier(request.getParameter("url"));
+        ContentIdentifier cid = new ContentIdentifier(request, request.getParameter("url"));
 
         ContentManagementService aksessService = new ContentManagementService(request);
 

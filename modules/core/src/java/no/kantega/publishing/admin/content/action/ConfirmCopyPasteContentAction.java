@@ -59,7 +59,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         Map<String, Object> model = new HashMap<String, Object>();
 
         String url = request.getParameter("newParentUrl");
-        ContentIdentifier newParentCid = new ContentIdentifier(url);
+        ContentIdentifier newParentCid = new ContentIdentifier(request, url);
 
         boolean pasteShortCut  = param.getBoolean("pasteShortCut");
         boolean forbidMoveCrossSite = false;

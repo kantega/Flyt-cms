@@ -20,7 +20,7 @@ public class ContentClipboardHandler extends AbstractClipboardHandler {
         ContentManagementService cms = new ContentManagementService(getRequest());
         Content content = null;
         try {
-            ContentIdentifier cid = new ContentIdentifier(id);
+            ContentIdentifier cid = new ContentIdentifier(getRequest(), id);
             content = cms.getContent(cid);
         } catch (NotAuthorizedException e) {
             // Do nothing

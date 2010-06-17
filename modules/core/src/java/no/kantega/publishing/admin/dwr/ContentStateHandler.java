@@ -55,7 +55,7 @@ public class ContentStateHandler extends AbstractDwrController {
         if (session != null) {
             try {
                 ContentManagementService cms = new ContentManagementService(getRequest());
-                ContentIdentifier cid = new ContentIdentifier(url);
+                ContentIdentifier cid = new ContentIdentifier(getRequest(), url);
                 Content current = cms.getContent(cid);
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {

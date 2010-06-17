@@ -57,7 +57,7 @@ public class EditPermissionsAction extends AbstractController {
         int objectType = param.getInt("type");
         String url = param.getString("url");
         if (objectId == -1 && url != null) {
-            ContentIdentifier cid = new ContentIdentifier(url);
+            ContentIdentifier cid = new ContentIdentifier(request, url);
             objectId = cid.getAssociationId();
         }
 
@@ -100,7 +100,7 @@ public class EditPermissionsAction extends AbstractController {
 
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
-                ContentIdentifier cid = new ContentIdentifier(url);
+                ContentIdentifier cid = new ContentIdentifier(request, url);
                 Content content = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();

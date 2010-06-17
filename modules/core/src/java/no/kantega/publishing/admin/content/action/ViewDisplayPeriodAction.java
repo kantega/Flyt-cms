@@ -39,7 +39,7 @@ public class ViewDisplayPeriodAction extends AdminController {
         Map<String, Object> model = new HashMap<String, Object>();
         ContentManagementService cms = new ContentManagementService(request);
         String url = request.getParameter("url");
-        ContentIdentifier cid = new ContentIdentifier(url);
+        ContentIdentifier cid = new ContentIdentifier(request, url);
         Content content = cms.getContent(cid, false);
         if (content != null) {
             model.put("content", content);
