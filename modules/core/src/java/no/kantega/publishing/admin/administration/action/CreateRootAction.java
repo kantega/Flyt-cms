@@ -99,12 +99,7 @@ public class CreateRootAction  extends AbstractController {
             }
 
             // Find homepage
-            String url = site.getAlias();
-            url = url.substring(0, url.length() - 1);
-            url = url + Aksess.getStartPage();
-
-            String newIndex = "/WEB-INF/jsp" + site.getAlias() +"index.jsp";
-            String oldIndex = site.getAlias() +"index.jsp";
+            String frontpageUrl = "/WEB-INF/jsp" + site.getAlias() +"index.jsp";
 
             DisplayTemplate displayTemplate = null;
 
@@ -120,7 +115,7 @@ public class CreateRootAction  extends AbstractController {
             // No template specified or found, try to look a template in the folder specified by the alias
             if (displayTemplate == null) {
                 for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
-                    if(newIndex.equals(template.getView()) || oldIndex.equals(template.getView())) {
+                    if(frontpageUrl.equals(template.getView())) {
                         displayTemplate = template;
                         break;
                     }
