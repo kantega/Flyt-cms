@@ -34,4 +34,6 @@ public interface Site {
     List<String> getHostnames();
 
     String getScheme();
+
+    String getDisplayTemplateId();
 }

@@ -29,6 +29,7 @@ public class Site implements PublicIdObject, no.kantega.publishing.api.model.Sit
     private boolean disabled = false;
     private String scheme;
     private String publicId = "";
+    private String displayTemplateId;
 
     private List<String> hostnames = null;
 
@@ -98,5 +99,13 @@ public class Site implements PublicIdObject, no.kantega.publishing.api.model.Sit
         }
 
         return baseurl;
+    }
+
+    public String getDisplayTemplateId() {
+        return displayTemplateId;
+    }
+
+    public void setDisplayTemplateId(String displayTemplateId) {
+        this.displayTemplateId = displayTemplateId;
     }
 }

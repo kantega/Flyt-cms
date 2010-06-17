@@ -108,10 +108,22 @@ public class CreateRootAction  extends AbstractController {
 
             DisplayTemplate displayTemplate = null;
 
-            for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
-                if(newIndex.equals(template.getView()) || oldIndex.equals(template.getView())) {
-                    displayTemplate = template;
-                    break;
+            // If a site has specified a display template id, try to look this template
+            if (site.getPublicId() != null && site.getPublicId().length() > 0) {
+                for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
+                    if(template.getPublicId().equalsIgnoreCase(site.getDisplayTemplateId())) {
+                        displayTemplate = template;
+                        break;
+                    }
+                }                            
+            }
+            // No template specified or found, try to look a template in the folder specified by the alias
+            if (displayTemplate == null) {
+                for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
+                    if(newIndex.equals(template.getView()) || oldIndex.equals(template.getView())) {
+                        displayTemplate = template;
+                        break;
+                    }
                 }
             }
             if (displayTemplate == null) {

@@ -58,6 +58,7 @@
             <xs:attribute name="alias" use="required" type="xs:string"/>
             <xs:attribute name="databaseId" use="required" type="xs:integer"/>
             <xs:attribute name="id" use="required" type="xs:string"/>
+            <xs:attribute name="displayTemplateId" use="required" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 
