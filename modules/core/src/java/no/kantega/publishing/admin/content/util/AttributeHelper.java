@@ -22,9 +22,9 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 public class AttributeHelper {
     public static String getInputFieldName(String name) {
         try {
-            return "attr_" + RegExp.replace("[^a-zA-Z0-9]", name, "_");
+            return "attributeValue_" + RegExp.replace("[^a-zA-Z0-9]", name, "_");
         } catch (RegExpSyntaxException e) {
-            return "attr_" + name;
+            return "attributeValue_" + name;
         }
     }
 
