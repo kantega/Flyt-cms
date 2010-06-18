@@ -46,18 +46,19 @@ import java.util.*;
 public abstract class Attribute {
     private final String FILE_TOKEN = "file:";
 
-    protected String name = null;  // Navn på attributt, lagres i databasen, og refereres med getattribute
+    protected String name = null;  // Navn pï¿½ attributt, lagres i databasen, og refereres med getattribute
     protected String title = null; // Tittel, vises for brukeren i skjermbilder, valgfritt
     protected String field = null; // Mapping til content felt, f.eks title, description, image etc
 
     protected String helpText = null; // Hjelpetekst som vises for brukeren i skjermbilder
+    protected String script = null; // Hook for script in editpage
 
     protected int type = AttributeDataType.CONTENT_DATA;
 
     protected String value = null;
     protected String regexp = null;
 
-    protected boolean mandatory = false; // Angir om attributten må fylles ut
+    protected boolean mandatory = false; // Angir om attributten mï¿½ fylles ut
     protected boolean isCData   = false;
 
     protected int maxLength = 128;
@@ -169,6 +170,7 @@ public abstract class Attribute {
             }
 
             helpText = XPathHelper.getString(config, "helptext");
+            script= XPathHelper.getString(config, "script");
         }
     }
 
@@ -189,6 +191,10 @@ public abstract class Attribute {
 
     public String getHelpText() {
         return helpText;
+    }
+    
+    public String getScript(){
+    	return script;
     }
 
     public boolean inheritsFromAncestors() {
@@ -229,7 +235,7 @@ public abstract class Attribute {
 
     public void setField(String field) {
         if (ContentProperty.TITLE.equalsIgnoreCase(field)) {
-            // Attributten er mappet til tittel, må alltid fylles ut
+            // Attributten er mappet til tittel, mï¿½ alltid fylles ut
             mandatory = true;
         }
         this.field = field;
@@ -292,7 +298,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Returnerer behaviour for å oppdatere attributt basert på request
+     * Returnerer behaviour for ï¿½ oppdatere attributt basert pï¿½ request
      * @return - behaviour
      */
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
@@ -300,7 +306,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Returnerer behaviour for mapping av attributt verdi til spesialfelt i content objekt, f.eks utløpsdato
+     * Returnerer behaviour for mapping av attributt verdi til spesialfelt i content objekt, f.eks utlï¿½psdato
      * @return - behaviour
      */
     public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
@@ -308,7 +314,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Brukes for å sjekke om en attributt skal vises eller skjules for content objekt
+     * Brukes for ï¿½ sjekke om en attributt skal vises eller skjules for content objekt
      * @param content - content objekt som attributten ligger i
      * @return true/false
      */

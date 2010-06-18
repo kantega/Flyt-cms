@@ -132,6 +132,10 @@ public class InputScreenRenderer {
                     if (helptext != null && helptext.length() > 0) {
                         out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
                     }
+                    String script = attr.getScript();
+                    if (script != null && script.length() > 0) {
+                        out.print("<script type=\"text/javascript\">\n" + script+ "\n</script>\n");
+                    }
                     if (attr.inheritsFromAncestors()) {
                         String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
                         out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
