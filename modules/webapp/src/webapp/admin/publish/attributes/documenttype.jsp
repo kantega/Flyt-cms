@@ -29,6 +29,7 @@
     String value = attribute.getValue();
     int ids[] = StringHelper.getInts(value, ",");
     out.write("<select class=\"fullWidth\"");
+    out.write(" id=\"" + fieldName + "\"");
     out.write(" name=\"" + fieldName + "\"");
     out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
     if (attribute.getMultiple()) {

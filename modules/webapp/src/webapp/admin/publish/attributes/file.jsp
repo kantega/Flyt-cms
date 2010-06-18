@@ -22,7 +22,7 @@
     String value = attribute.getValue();
 %>
 <div class="inputs">
-    <input type="file" class="fullWidth" name="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}">
+    <input type="file" class="fullWidth" name="${fieldName}" id="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}">
     <input type="hidden" name="delete_${fieldName}" value="0">
 </div>
 <% if (value != null && value.length() > 0) {%>

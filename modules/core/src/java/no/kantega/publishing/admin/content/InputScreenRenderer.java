@@ -62,7 +62,7 @@ public class InputScreenRenderer {
 
 
     /**
-     * Lager inputskjermbilde ved å gå gjennom alle attributter
+     * Lager inputskjermbilde ved ï¿½ gï¿½ gjennom alle attributter
      */
     public void generateInputScreen() throws IOException, SystemException, ServletException {
         JspWriter out = pageContext.getOut();
@@ -99,7 +99,7 @@ public class InputScreenRenderer {
             out.print("<div id=\"TemplateGlobalHelpText\" class=\"ui-state-highlight\">" + globalHelpText + "</div>");
         }
 
-        int tabIndex = 100; // Angir tabindex for å få cursor til å hoppe til rette felter
+        int tabIndex = 100; // Tab index for attribute
         List attrlist = content.getAttributes(attributeType);
         for (int i = 0; i < attrlist.size(); i++) {
             Attribute attr = (Attribute)attrlist.get(i);
@@ -109,7 +109,7 @@ public class InputScreenRenderer {
                     attr.setValue("");
                 }
 
-                // Skriver ut felt ved å inkludere JSP for hver attributt
+                // Print field by including JSP for attribute
                 attr.setTabIndex(tabIndex);
                 tabIndex += 10;
 
@@ -119,9 +119,9 @@ public class InputScreenRenderer {
 
                 try {
                     if (fieldErrors.get(attr.getName()) != null) {
-                        out.print("\n<div class=\"contentAttribute error\">\n");
+                        out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
                     } else {
-                        out.print("\n<div class=\"contentAttribute\">\n");
+                        out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
                     }
                     out.print("<div class=\"heading\">" + attr.getTitle());
                     if (attr.isMandatory()) {

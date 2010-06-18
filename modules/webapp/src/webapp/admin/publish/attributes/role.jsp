@@ -33,8 +33,8 @@
     }
 %>
 <div class="inputs">
-    <input type="hidden" name="<%=fieldName%>" value="<%=roleId%>">
-    <input type="text" name="<%=fieldName%>text" value="<%=roleName%>" onFocus="this.select()" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=roleId%>">
+    <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=roleName%>" onFocus="this.select()" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
 </div>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectRole(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>

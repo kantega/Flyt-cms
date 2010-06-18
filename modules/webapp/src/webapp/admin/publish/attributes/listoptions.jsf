@@ -81,6 +81,7 @@
         } else {
             out.write("<select class=\"fullWidth\"");
             out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
+            out.write(" id=\"" + fieldName + "\"");
             out.write(" name=\"" + fieldName + "\">");
             if (options != null) {
                 for (int i = 0; i < options.size(); i++) {

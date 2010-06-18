@@ -27,4 +27,13 @@ public class AttributeHelper {
             return "attr_" + name;
         }
     }
+
+    public static String getInputContainerName(String name) {
+        try {
+            return "contentAttribute_" + RegExp.replace("[^a-zA-Z0-9]", name, "_");
+        } catch (RegExpSyntaxException e) {
+            return "contentAttribute_" + name;
+        }
+    }
+
 }

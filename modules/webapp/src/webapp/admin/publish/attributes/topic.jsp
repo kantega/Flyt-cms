@@ -36,8 +36,8 @@
     }
 %>
 <div class="inputs">
-    <input type="hidden" name="${fieldName}" value="<%=value%>">
-    <input type="text" class="disabled fullWidth" name="${fieldName}text" value="<%=topicname%>" readonly onFocus="this.blur()">
+    <input type="hidden" name="${fieldName}" value="<%=value%>" id="${fieldName}">
+    <input type="text" class="disabled fullWidth" name="${fieldName}text" id="${fieldName}text" value="<%=topicname%>" readonly onFocus="this.blur()">
 </div>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectTopic(document.myform.${fieldName}, false)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>

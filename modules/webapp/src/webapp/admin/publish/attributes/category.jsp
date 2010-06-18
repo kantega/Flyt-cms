@@ -69,8 +69,8 @@
     }    
 %>
 <div class="inputs">
-    <input type="hidden" name="<%=fieldName%>" value="<%=categoryId%>">
-    <input type="text" class="disabled fullWidth" readonly onFocus="this.blur()"  name="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=categoryId%>">
+    <input type="text" class="disabled fullWidth" readonly onFocus="this.blur()"  name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
 </div>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectCategory(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>

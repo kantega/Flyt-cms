@@ -44,8 +44,8 @@
     }
 %>
 <div class="inputs">
-    <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <input type="text" class="fullWidth disabled" name="<%=fieldName%>text" value="<%=mmname%>" readonly onFocus="this.blur()">
+    <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
+    <input type="text" class="fullWidth disabled" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" readonly onFocus="this.blur()">
 </div>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectMediaFolder(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
