@@ -20,6 +20,7 @@
             <xs:all minOccurs="0">
                 <xs:element ref="helptext" maxOccurs="1"/>
                 <xs:element ref="options" maxOccurs="1"/>
+                <xs:element ref="script" maxOccurs="1"/>
             </xs:all>
             <xs:attribute name="contenttemplate" type="xs:string"/>
             <xs:attribute name="documenttype" type="xs:string"/>
@@ -105,6 +106,7 @@
         </xs:complexType>
     </xs:element>
     <xs:element name="helptext" type="xs:string"/>
+    <xs:element name="script" type="xs:string"/>
     <xs:element name="options">
         <xs:complexType>
             <xs:sequence>
