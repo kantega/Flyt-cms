@@ -2331,6 +2331,11 @@
         <name>isadminmode</name>
         <tag-class>no.kantega.publishing.api.taglibs.security.IsAdminModeTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>Negate</description>
+            <name>negate</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Used to register and display votes in poll</description>
