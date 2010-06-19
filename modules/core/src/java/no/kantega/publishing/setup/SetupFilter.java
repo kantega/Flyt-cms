@@ -58,7 +58,7 @@ public class SetupFilter implements Filter {
     }
 
     private boolean isLocalhost(HttpServletRequest request) {
-        if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
+        if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") || request.getRemoteAddr() == null) {
             return true;
         }
 
