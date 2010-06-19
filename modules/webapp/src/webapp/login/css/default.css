@@ -37,7 +37,7 @@ body{
     background:url("../bitmaps/gradient.png") repeat-x 0 -28px;
 }
 #contentWrapper .body{
-    width:300px;
+    padding-right:20px;
 }
 
 /*************************
@@ -82,7 +82,14 @@ form .text, form .password{
     margin-top:15px;
     position:relative;
 }
-form .password{
+form .securitytoken{
+    height:50px;
+}
+form .securitytoken .helptext{
+    color:#666;
+    padding-top:35px;
+}
+form .password, form .text.securitytoken{
     background:url("../bitmaps/passord.png") no-repeat left top;
 }
 form .text-basic{
@@ -93,7 +100,7 @@ form .text-basic{
     position:relative;
 }
 form .text-basic input[type=text]{
-    width:290px;
+    width:99%;
 }
 form .submit{
     background:url("../bitmaps/login_btn.png") no-repeat right top;
@@ -134,6 +141,9 @@ form input[type=submit]{
     height:27px;
     font-weight:bold;
     padding-bottom:4px;
+}
+input:focus{
+    outline:none;
 }
 
 

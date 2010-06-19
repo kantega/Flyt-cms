@@ -38,6 +38,7 @@
     <div class="body">
         <div id="version">
             <img src="${pageContext.request.contextPath}/login/bitmaps/openaksess.png" alt="">
+            <br>
             Versjon <%=Aksess.getVersion()%>
         </div>
 

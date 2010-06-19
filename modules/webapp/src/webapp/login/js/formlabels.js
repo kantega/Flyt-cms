@@ -1,19 +1,33 @@
 $(document).ready(function(){
-    var $inputFields = $("input[type='text'], input[type='password']");
-    $inputFields.each(function(index){
-        var $element = $(this); 
-        if ( $element.val() ) {
-            $element.prev().hide();    
-        }
+    var $inputFields = $("input[type='text'], input[type='password']")
+
+    // Check on page load if any fields has values and remove label if they do
+    checkAllInputsForValues($inputFields);
+
+    // Whenever a field changes all other fields must be searched for a change in value to fix browserbased autofill.
+    $inputFields.change(function(){
+        checkAllInputsForValues( $inputFields );
     })
-    $("input[type='text'], input[type='password']").focusin(function(){
-        var $activeElement = $(this);
-        $activeElement.prev().hide();
+
+    $inputFields.focusin(function(){
+        hideLabel( $(this) );
     })
-    $("input[type='text'], input[type='password']").focusout(function(){
+    $inputFields.focusout(function(){
+        checkAllInputsForValues($inputFields)
         var $activeElement = $(this);
         if (!$activeElement.val()){
-            $activeElement.prev().show();
+            $activeElement.siblings("label").show();
         }
     })
 })
+function checkAllInputsForValues(inputElements){
+    inputElements.each(function(){
+        var inputElement = $(this);
+        if(inputElement.val()){
+            hideLabel(inputElement);
+        }
+    })
+}
+function hideLabel(inputElement) {
+    inputElement.siblings("label").hide();
+}

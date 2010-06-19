@@ -22,10 +22,6 @@
 
 <kantega:section id="title">Create initial user and role</kantega:section>
 
-<kantega:section id="head">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
-</kantega:section>
-
 <kantega:section id="body">
 
     <h1>Initial setup</h1>
@@ -78,9 +74,10 @@
         </c:choose>
 
         <c:if test="${needsToken}">
-            <div class="text">
-                <label for="token">Security token: </label> <br/>(from security/initialusertoken.txt)
+            <div class="text securitytoken">
+                <label for="token">Security token: </label>
                 <input type="text" name="token" id="token" size="40" value="<c:out value="${token}"/>">
+                <div class="helptext">(from security/initialusertoken.txt)</div>
             </div>
             <c:if test="${errorToken}">
                 <div class="error">Please enter a token matching the token on the server</div>
