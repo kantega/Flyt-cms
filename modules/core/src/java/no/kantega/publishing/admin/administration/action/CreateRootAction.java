@@ -50,8 +50,6 @@ public class CreateRootAction  extends AbstractController {
 
     private SiteCache siteCache;
 
-    private DefaultContentCreator defaultContentCreator;
-
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
         int siteId = param.getInt("siteId");
@@ -131,12 +129,8 @@ public class CreateRootAction  extends AbstractController {
                 content.setMetaDataTemplateId(displayTemplate.getMetaDataTemplate().getId());
             }
 
-            Content contentRoot = aksessService.checkInContent(content, ContentStatus.PUBLISHED);
+            aksessService.checkInContent(content, ContentStatus.PUBLISHED);
 
-            // Fill the database with additional default content if such a bean exists
-            if (defaultContentCreator != null) {
-                defaultContentCreator.createDefaultContent(aksessService, contentRoot);
-            }
         } finally {
             if (c != null) {
                 c.close();
@@ -146,10 +140,5 @@ public class CreateRootAction  extends AbstractController {
 
     public void setSiteCache(SiteCache siteCache) {
         this.siteCache = siteCache;
-    }
-
-    @Autowired(required = false)
-    public void setDefaultContentCreator(DefaultContentCreator defaultContentCreator) {
-        this.defaultContentCreator = defaultContentCreator;
     }
 }
