@@ -44,6 +44,7 @@ public class XStreamTemplateHelper {
         xstream.aliasField("databaseId", Site.class, "id");
         xstream.useAttributeFor(Site.class, "publicId");
         xstream.aliasField("id", Site.class, "publicId");
+        xstream.useAttributeFor(Site.class, "displayTemplateId");
 
         xstream.useAttributeFor(AssociationCategory.class, "id");
         xstream.aliasField("databaseId", AssociationCategory.class, "id");
