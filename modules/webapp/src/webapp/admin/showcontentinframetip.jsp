@@ -1,6 +1,7 @@
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ include file="include/jsp_header.jsf" %>
+<%@ page import="no.kantega.publishing.common.data.enums.ContentType" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -44,4 +45,3 @@
 </div>
 </body>
 </html>
-<%@ include file="include/jsp_footer.jsf" %>

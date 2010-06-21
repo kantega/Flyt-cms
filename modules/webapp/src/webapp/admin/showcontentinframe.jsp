@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
-<%@ include file="include/jsp_header.jsf" %>
+<%@ page import="no.kantega.publishing.common.data.enums.ContentType" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -66,4 +67,3 @@
    %>
 </frameset>
 </html>
-<%@ include file="include/jsp_footer.jsf" %>

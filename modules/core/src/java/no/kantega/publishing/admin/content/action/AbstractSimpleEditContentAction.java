@@ -1,7 +1,5 @@
 package no.kantega.publishing.admin.content.action;
 
-import java.io.IOException;
-
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
@@ -19,6 +17,7 @@ import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -28,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,84 +35,75 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     private String view;
 
+    /**
+     * Implement this method to decide if user is allowed to edit this page.
+     * @param request - HttpServletRequest
+     * @param content - Content which is about to be edited
+     * @return
+     */
     protected abstract boolean isAllowedToEdit(HttpServletRequest request, Content content);
-    
-    protected boolean isNewContent(Content content) {
-        return !contentExists(content);        
-    }
-    
+
+    /**
+     * Get the securitysession to use when editing page.  Override to allow anonymous users to edit page etc.
+     * @param request - HttpServletRequest
+     * @return - SecuritySession
+     */
     protected SecuritySession getSecuritySession(HttpServletRequest request) {
         return SecuritySession.getInstance(request);        
     }
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if (isRequestToSaveContent(request)) {
-            return saveContentModelAndView(request, response);
-        } else {
-            return loadContentModelAndView(request, response);
-        }
-    }
-
-    private boolean isRequestToSaveContent(HttpServletRequest request) {
-        return request.getMethod().equalsIgnoreCase("POST");
-    }
-
-    private ModelAndView loadContentModelAndView(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException, ServletException, ConfigurationException, IOException {
-        Content content = getContentForEdit(request);
-        if (isAllowedToEdit(request, content)) {
-            return editModelAndView(request, response, content);
-        } else {
-            throw new NotAuthorizedException("Har ikke tilgang", this.getClass().getName());
-        }
-    }
-
-    private Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException {
-        if (isExistingContentId(requestedId(request))) {
-            return existingPage(request);
-        } else if (isExistingContentId(parentId(request))) {
-            return newPage(request);
+    /**
+     * Returns a content object to edit based on parameters from request
+     * @param request - HttpServletRequest
+     * @return
+     * @throws InvalidFileException
+     * @throws ObjectLockedException
+     * @throws NotAuthorizedException
+     * @throws InvalidTemplateException
+     * @throws ContentNotFoundException
+     */
+    protected Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException, ContentNotFoundException {
+        RequestParameters param = new RequestParameters(request);
+        if (param.getInt("thisId") != -1) {
+            return getExistingPage(request);
+        } else if (param.getInt("parentId") != -1) {
+            return createNewPage(request);
         } else {
             throw new InvalidParameterException("", "");
         }
     }
 
-    private ModelAndView editModelAndView(HttpServletRequest request, HttpServletResponse response, Content content) throws NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ConfigurationException {
-        ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
-        if (contentExists(content)) {
-            return showEditForm(request, response, cms.checkOutContent(content.getContentIdentifier()));
+    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (request.getMethod().equalsIgnoreCase("POST")) {
+            // Save page
+            return saveContent(request, response);
+        } else {
+            // Edit page
+            Content content = getContentForEdit(request);
+            if (isAllowedToEdit(request, content)) {
+                ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
+                if (content.getId() != -1) {
+                    // Existing content must be checked out before edit
+                    content = cms.checkOutContent(content.getContentIdentifier());
+                }
+                return showEditForm(request, content);
+            } else {
+                throw new NotAuthorizedException("Not authorized", this.getClass().getName());
+            }
         }
-        return showEditForm(request, response, content);
-    }   
-
-    private boolean contentExists(Content content) {
-        return isExistingContentId(content.getId());
-    }    
-    
-    private boolean isExistingContentId(int thisId) {
-        return thisId != -1;
-    }    
-    
-    private int requestedId(HttpServletRequest request) {
-        return new RequestParameters(request).getInt("thisId");
     }
 
-
-    private int parentId(HttpServletRequest request) {
-        return new RequestParameters(request).getInt("parentId");
-    }
-
-    private Content newPage(HttpServletRequest request) throws InvalidFileException, InvalidTemplateException, NotAuthorizedException {
+    private Content createNewPage(HttpServletRequest request) throws InvalidFileException, InvalidTemplateException, NotAuthorizedException {
         ContentCreateParameters createParam = new ContentCreateParameters(request);
         return new ContentManagementService(request).createNewContent(createParam);
     }
 
-    private Content existingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(requestedId(request));
+    private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
+        ContentIdentifier cid = new ContentIdentifier(request);
         return new ContentManagementService(request).getContent(cid, false);
     }
 
-    private ModelAndView showEditForm(HttpServletRequest request, HttpServletResponse response, Content content) throws ConfigurationException, InvalidFileException, ObjectLockedException, InvalidTemplateException, NotAuthorizedException {
+    private ModelAndView showEditForm(HttpServletRequest request, Content content) throws ConfigurationException, InvalidFileException, ObjectLockedException, InvalidTemplateException, NotAuthorizedException {
         HttpSession session = request.getSession(true);
 
         RequestHelper.setRequestAttributes(request, content);
@@ -133,7 +122,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         return new ModelAndView(getView(), null);
     }
 
-    private ModelAndView saveContentModelAndView(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
+    private ModelAndView saveContent(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
 
@@ -167,7 +156,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
                 return new ModelAndView(new RedirectView(url));
             } else {
-                return showEditForm(request, response, content);
+                return showEditForm(request, content);
             }
         }
 
