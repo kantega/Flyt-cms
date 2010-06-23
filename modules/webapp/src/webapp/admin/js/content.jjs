@@ -361,7 +361,7 @@ openaksess.content = {
                 var associationsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'associations'});
                 $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                    var details = '<h3>Associations</h3>';
+                    var details = '<h3><kantega:label key="aksess.infoslider.associations"/></h3>';
                     for (var i = 0; i < associations.length; i++) {
                         details += '<ul class="breadcrumbs">';
                         for (var j = 0; j<associations[i].length; j++) {
