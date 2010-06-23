@@ -51,7 +51,7 @@ openaksess.editcontext = function()  {
         focusFieldDefaultMaxWidth: 600,
         editIsModified : false,
         doInsertTag : false,
-        doInsertUrl : true,
+        doInsertUrl : false,
 
         setIsModified : function() {
             openaksess.editcontext.editIsModified = true;
