@@ -55,7 +55,7 @@
                     p.openaksess.editcontext.insertValueIntoForm("/multimedia.ap?id=" + currentItemIdentifier);
                 } else {
                     // Insert as id and value
-                    p.openaksess.editcontext.insertIdAndValueIntoForm(currentItemIdentifier, title);
+                    p.openaksess.editcontext.insertValueAndNameIntoForm(currentItemIdentifier, title);
                 }
             }
             closeWindow();

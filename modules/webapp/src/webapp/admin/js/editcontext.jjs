@@ -51,6 +51,7 @@ openaksess.editcontext = function()  {
         focusFieldDefaultMaxWidth: 600,
         editIsModified : false,
         doInsertTag : false,
+        doInsertUrl : true,
 
         setIsModified : function() {
             openaksess.editcontext.editIsModified = true;
@@ -185,7 +186,7 @@ openaksess.editcontext = function()  {
                 openaksess.editcontext.updateTopics(params);
             } else {
                 // Topic should be inserted into a input field
-                openaksess.editcontext.insertIdAndValueIntoForm(topicMapId + ":" + topicId, topicName);
+                openaksess.editcontext.insertValueAndNameIntoForm(topicMapId + ":" + topicId, topicName);
             }
             $.event.trigger("topicAdded", {topicId: topicId, topicMapId: topicMapId, topicName: topicName});
         },
@@ -347,7 +348,7 @@ openaksess.editcontext = function()  {
         /*
          * Insert id and value into form field
          */
-        insertIdAndValueIntoForm : function insertIdAndValueIntoForm(id, text) {
+        insertValueAndNameIntoForm : function (id, text) {
             openaksess.editcontext.setIsModified();
 
             if (openaksess.editcontext.focusField != null) {
@@ -384,7 +385,7 @@ openaksess.editcontext = function()  {
         /*
          * Remove id and value from form
          */
-        removeIdAndValueFromForm : function removeIdAndValueFromForm(field) {
+        removeValueAndNameFromForm : function removeValueAndNameFromForm(field) {
             var frm = field.form;
             var text = frm.elements[field.name + 'text'];
             var list = frm.elements[field.name + 'list'];

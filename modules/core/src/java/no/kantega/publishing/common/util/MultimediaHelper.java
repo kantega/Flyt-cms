@@ -73,4 +73,27 @@ public class MultimediaHelper {
 
         return ids;
     }
+
+    public static void updateMultimediaFromData(Multimedia mm, byte[] data, String filename) {
+        mm.setData(data);
+
+        MimeType mimeType = MimeTypes.getMimeType(filename);
+        if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
+            // Dette er et bilde eller Flash fil, finn st�rrelse
+            ImageInfo ii = new ImageInfo();
+            ii.setInput(new ByteArrayInputStream(mm.getData()));
+            if (ii.check()) {
+                mm.setWidth(ii.getWidth());
+                mm.setHeight(ii.getHeight());
+            }
+        } else if (mimeType.isDimensionRequired() && (mm.getWidth() <= 0 || mm.getHeight() <= 0)) {
+            mm.setWidth(Aksess.getDefaultMediaWidth());
+            mm.setHeight(Aksess.getDefaultMediaHeight());
+        }
+
+        if (filename.length() > 255) {
+            filename = filename.substring(filename.length() - 255, filename.length());
+        }
+        mm.setFilename(filename);
+    }
 }

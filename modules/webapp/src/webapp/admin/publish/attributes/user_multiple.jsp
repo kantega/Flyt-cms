@@ -29,7 +29,7 @@
 %>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectUser(document.myform.<%=fieldName%>)" class="button add" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.add"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
+    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button delete" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.delete"/></span></a>
     <c:if test="${attribute.moveable}">
         <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, -1)" class="button moveUp" tabindex="<%=attribute.getTabIndex()%>"><span><kantega:label key="aksess.button.moveup"/></span></a>
         <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, 1)" class="button moveDown" tabindex="<%=(attribute.getTabIndex()+1)%>"><span><kantega:label key="aksess.button.movedown"/></span></a>

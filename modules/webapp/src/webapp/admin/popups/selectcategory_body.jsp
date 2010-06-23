@@ -66,7 +66,7 @@ public void printCategory(Content base, ContentCategory category, JspWriter out,
                 if (w.doInsertTag) {
                     w.openaksess.editcontext.insertValueIntoForm(category);
                 } else {
-                    w.openaksess.editcontext.insertIdAndValueIntoForm(category, title);
+                    w.openaksess.editcontext.insertValueAndNameIntoForm(category, title);
                 }
                 window.parent.close();
             }

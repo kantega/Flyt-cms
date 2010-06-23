@@ -158,7 +158,7 @@
 
         }
 
-        // Åpner navigator for å velge url til innhold i aksess
+        // ï¿½pner navigator for ï¿½ velge url til innhold i aksess
         function selectPage(row){
             currentRow = row;
             var target = window.open("../popups/selectcontent.jsp" , "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
@@ -168,7 +168,7 @@
 
         // Callback fra navigator.jsp som setter inn riktig url
         // TODO: Fix this
-        function insertIdAndValueIntoForm(id, text) {
+        function insertValueAndNameIntoForm(id, text) {
             $("#url" + currentRow).val('/content.ap?thisId=' + id);
             $("#altTitle" + currentRow).val(text);
         }

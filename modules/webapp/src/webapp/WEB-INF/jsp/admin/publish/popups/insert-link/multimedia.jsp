@@ -10,26 +10,24 @@
             return;
         }
 
-        url = "<%=URLHelper.getRootURL(request)%>multimedia.ap?id=" + url;
-
-
         return {'href': url};
     }
 
     function selectMultimedia() {
         openaksess.editcontext.doInsertTag = false;
-        var mmwin = window.open("${pageContext.request.contextPath}/admin/multimedia/Navigate.action", "mmWindow", "toolbar=no,width=800,height=500,resizable=yes,scrollbars=yes");
+        openaksess.editcontext.doInsertUrl = true;
+        var mmwin = window.open("${pageContext.request.contextPath}/admin/multimedia/Navigate.action", "openAksessPopup", "toolbar=no,width=800,height=500,resizable=yes,scrollbars=yes");
         mmwin.focus();
     }
 
     /**
      * Callback from popup where user select an image
-     * @param id
+     * @param url
      * @param text
      */
-    openaksess.editcontext.insertIdAndValueIntoForm = function insertIdAndValueIntoForm(id, text) {
+    openaksess.editcontext.insertValueAndNameIntoForm = function (url, text) {
         var frm = document.linkform;
-        frm.url.value = id;
+        frm.url.value = url;
         frm.urltext.value = text;
     }
 

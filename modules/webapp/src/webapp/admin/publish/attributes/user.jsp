@@ -54,5 +54,5 @@
 </div>
 <div class="buttonGroup">
     <a href="Javascript:openaksess.editcontext.selectUser(document.myform.${fieldName})" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeIdAndValueFromForm(document.myform.${fieldName})" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

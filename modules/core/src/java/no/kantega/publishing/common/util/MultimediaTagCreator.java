@@ -120,7 +120,7 @@ public class MultimediaTagCreator {
                     url += "&amp;height=" + maxH;
                 }
             } else {
-                // Bildet skal ikke krympes, angi størrelse i tag'en
+                // Bildet skal ikke krympes, angi stï¿½rrelse i tag'en
                 if (width > 0) {
                     tag.append(" width=" + width);
                 }
@@ -171,7 +171,7 @@ public class MultimediaTagCreator {
                     Log.error(SOURCE, e, null, null);
                 }
             }
-            // Legg til > på slutten hvis ikke avsluttet
+            // Legg til > pï¿½ slutten hvis ikke avsluttet
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }
@@ -209,7 +209,7 @@ public class MultimediaTagCreator {
                 height = maxH;
             }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();
-            String movieUrl = baseUrl + "/multimedia/" + mm.getId() + "." + mm.getMimeType().getFileExtension();
+            String movieUrl = baseUrl + "/multimedia/" + mm.getUrl();
             String playerStr = baseUrl + playerUrl + "?movieAutoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
             if (Aksess.isFlashUseJavascript()) {
                 String id = "swf" + mm.getId();
@@ -240,39 +240,5 @@ public class MultimediaTagCreator {
         return tag.toString();
     }
 
-
-    public static byte[] convertImageFormat(byte[] source) {
-        try {
-            BufferedImage image = ImageIO.read(new ByteArrayInputStream(source));
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write(image, Aksess.getOutputImageFormat(), out);
-            return out.toByteArray();
-        } catch (Exception e) {
-            return source;
-        }
-    }
-
-    public static void updateMultimediaFromData(Multimedia mm, byte[] data, String filename) {
-        mm.setData(data);
-
-        MimeType mimeType = MimeTypes.getMimeType(filename);
-        if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-            // Dette er et bilde eller Flash fil, finn størrelse
-            ImageInfo ii = new ImageInfo();
-            ii.setInput(new ByteArrayInputStream(mm.getData()));
-            if (ii.check()) {
-                mm.setWidth(ii.getWidth());
-                mm.setHeight(ii.getHeight());
-            }
-        } else if (mimeType.isDimensionRequired() && (mm.getWidth() <= 0 || mm.getHeight() <= 0)) {
-            mm.setWidth(Aksess.getDefaultMediaWidth());
-            mm.setHeight(Aksess.getDefaultMediaHeight());
-        }
-
-        if (filename.length() > 255) {
-            filename = filename.substring(filename.length() - 255, filename.length());
-        }
-        mm.setFilename(filename);
-    }
 
 }

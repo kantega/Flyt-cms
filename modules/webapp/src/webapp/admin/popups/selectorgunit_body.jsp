@@ -70,7 +70,7 @@ public void printUnit(OrgUnit unit, JspWriter out, OrganizationManager manager, 
                 if (w.doInsertTag) {
                     w.openaksess.editcontext.insertValueIntoForm(unit);
                 } else {
-                    w.openaksess.editcontext.insertIdAndValueIntoForm(unit, title);
+                    w.openaksess.editcontext.insertValueAndNameIntoForm(unit, title);
                 }
                 window.parent.close();
             }

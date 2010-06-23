@@ -33,11 +33,11 @@
 <kantega:section id="body">
     <script language="Javascript" type="text/javascript">
         function addRole() {
-            var rolewin = window.open("SelectRoles.action", "rolewin", "toolbar=no,width=450,height=400,resizable=yes,scrollbars=no");
+            var rolewin = window.open("SelectRoles.action", "openAksessPopup", "toolbar=no,width=450,height=400,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
         function addUser() {
-            var rolewin = window.open("SelectUsers.action", "rolewin", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
+            var rolewin = window.open("SelectUsers.action", "openAksessPopup", "toolbar=no,width=450,height=450,resizable=yes,scrollbars=no");
             rolewin.focus();
         }
 

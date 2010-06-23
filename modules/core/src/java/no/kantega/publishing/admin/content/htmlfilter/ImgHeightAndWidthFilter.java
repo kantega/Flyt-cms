@@ -55,7 +55,7 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
                             int multimediaId = ids.get(0);
                             Multimedia image = MultimediaAO.getMultimedia(multimediaId);
                             if (imageWidth != image.getWidth() || imageHeight != image.getHeight() ) {
-                                ImageEditor imageEditor = (ImageEditor) RootContext.getInstance().getBean("aksesImageEditor");
+                                ImageEditor imageEditor = (ImageEditor) RootContext.getInstance().getBean("aksessImageEditor");
 
                                 MultimediaDimensions d = imageEditor.getResizedImageDimensions(image.getWidth(), image.getHeight(), imageWidth, imageHeight);
                                 attributes = HtmlFilterHelper.setAttribute("height", "" + d.getHeight(), attributes);

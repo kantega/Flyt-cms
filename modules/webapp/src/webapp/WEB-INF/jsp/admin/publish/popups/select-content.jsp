@@ -60,7 +60,7 @@
                 if (w.openaksess.editcontext.doInsertTag) {
                     w.openaksess.editcontext.insertValueIntoForm(url);
                 } else {
-                    w.openaksess.editcontext.insertIdAndValueIntoForm(id, title);
+                    w.openaksess.editcontext.insertValueAndNameIntoForm(id, title);
                 }
             }
 

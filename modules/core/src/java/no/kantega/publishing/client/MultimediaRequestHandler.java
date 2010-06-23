@@ -53,7 +53,17 @@ public class MultimediaRequestHandler implements Controller {
             if(mmId == -1) {
                 try {
                     String info = request.getPathInfo();
-                    mmId = Integer.parseInt(info.substring(1, info.indexOf(".", 1)));
+                    // URL can be specified in the following formats:
+                    // http://localhost/multimedia/1.jpg
+                    // http://localhost/multimedia/1/filename.jpg
+                    int dotIndex = info.indexOf(".", 1);
+                    int slashIndex = info.indexOf("/", 1);
+                    if (slashIndex != -1) {
+                        mmId = Integer.parseInt(info.substring(1, slashIndex));
+                    } else if (dotIndex != -1) {
+                        mmId = Integer.parseInt(info.substring(1, dotIndex));
+                    }
+
                 } catch (Exception e) {
                 }
             }
@@ -144,7 +154,7 @@ public class MultimediaRequestHandler implements Controller {
                 // Send directly
                 response.setContentType(mimetype);
                 if (mm.getSize() != 0) {
-  	                response.addHeader("Content-Length", "" + mm.getSize());
+                    response.addHeader("Content-Length", "" + mm.getSize());
                 }
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=" + mm.getFilename());
                 mediaService.streamMultimediaData(mmId, new InputStreamHandler(out));

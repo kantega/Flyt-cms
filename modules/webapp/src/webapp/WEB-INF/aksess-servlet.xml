@@ -38,7 +38,7 @@
                 <prop key="/attachment.ap">AttachmentRequestHandler</prop>
                 <prop key="/attachments/*">AttachmentRequestHandler</prop>
                 <prop key="/multimedia.ap">MultimediaRequestHandler</prop>
-                <prop key="/multimedia/*">MultimediaRequestHandler</prop>
+                <prop key="/multimedia/**">MultimediaRequestHandler</prop>
                 <prop key="/rss.ap">RssRequestHandler</prop>
                 <prop key="/Login.action">LoginAction</prop>
                 <prop key="/Logout.action">LogoutAction</prop>

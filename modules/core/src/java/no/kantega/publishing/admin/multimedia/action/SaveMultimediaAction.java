@@ -23,7 +23,7 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.util.MultimediaTagCreator;
+import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.tools.zip.ZipFile;
@@ -129,7 +129,7 @@ public class SaveMultimediaAction implements Controller {
                 if (file != null) {
                     // Lastet opp en vanlig fil
                     byte[] data = file.getBytes();
-                    MultimediaTagCreator.updateMultimediaFromData(mm, data, filename);
+                    MultimediaHelper.updateMultimediaFromData(mm, data, filename);
                 }
 
                 if (!preserveImageSize) {
@@ -173,7 +173,7 @@ public class SaveMultimediaAction implements Controller {
                                     // See http://en.wikipedia.org/wiki/Code_page_437
                                     String ibm = new String(bytes, defaultCharset.name());
                                     if(ibm.contains("\u00a2") ||ibm.contains("\u00d5")) {
-                                        // Fix norwegian ø and Ø
+                                        // Fix norwegian ï¿½ and ï¿½
                                         return ibm.replaceAll("\u00a2", "\u00f8").replaceAll("\u00d5", "\u00d8");
                                     }
 
@@ -225,7 +225,7 @@ public class SaveMultimediaAction implements Controller {
                                 }
                                 mm.setName(name);
 
-                                MultimediaTagCreator.updateMultimediaFromData(mm, data, entryfilename);
+                                MultimediaHelper.updateMultimediaFromData(mm, data, entryfilename);
 
                                 boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
                                 if (!preserveImageSize) {

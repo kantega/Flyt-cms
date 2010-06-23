@@ -188,7 +188,11 @@ public class Multimedia extends BaseObject {
     }
 
     public String getUrl() {
-        return Aksess.getContextPath() + "/multimedia.ap?id=" + id;
+        if (filename == null) {
+            return Aksess.getContextPath() + "/multimedia.ap?id=" + id;
+        } else {
+            return Aksess.getContextPath() + "/multimedia/" + id + "/" + filename;
+        }
     }
 
     public String getOwner() {

@@ -6,7 +6,7 @@
     
     openaksess.editcontext.doInsertTag = false;
 
-    openaksess.editcontext.insertIdAndValueIntoForm = function (id, text) {
+    openaksess.editcontext.insertValueAndNameIntoForm = function (id, text) {
         var frm = document.linkform;
         if (frm.smartlink.checked) {
             frm.url_contentId.value = id;
@@ -58,7 +58,7 @@
         if (frm.smartlink.checked) {
             url += "?useContentId=true";
         }
-        var contentwin = window.open(url, "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
         contentwin.focus();
     }
 

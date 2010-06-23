@@ -54,9 +54,12 @@
                 // IE 7 & 8 looses selection. Must be restored manually.
                 tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
                 insertHtml(editor, str);
+            } else if (p.openaksess.editcontext.doInsertUrl) {
+                // Insert url and name
+                p.openaksess.editcontext.insertValueAndNameIntoForm('<%=mm.getUrl()%>', '<%=mm.getName()%>');
             } else {
                 // Insert id and name
-                p.openaksess.editcontext.insertIdAndValueIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
+                p.openaksess.editcontext.insertValueAndNameIntoForm(<%=mm.getId()%>, '<%=mm.getName()%>');
             }
 
         }

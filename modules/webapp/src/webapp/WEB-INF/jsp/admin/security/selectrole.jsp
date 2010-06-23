@@ -33,7 +33,7 @@
 <kantega:section id="body">
     <script type="text/javascript">
         function selectRole(role, name) {
-            getParent().openaksess.editcontext.insertIdAndValueIntoForm(role, name);
+            getParent().openaksess.editcontext.insertValueAndNameIntoForm(role, name);
             closeWindow();
         }
 
