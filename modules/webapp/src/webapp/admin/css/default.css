@@ -346,6 +346,8 @@ table.fullWidth {
     background: url("../bitmaps/default/framework/modus_btn_center.png") center center repeat-x;
 }
 
+
+
 #ModesMenu .buttonGroup .button.active {
     background: url("../bitmaps/default/framework/modus_btn_center_active.png") center center repeat-x;
 }
@@ -386,6 +388,10 @@ table.fullWidth {
     cursor: pointer;
 }
 
+#ModesMenu #NotesCount {
+    padding-left: 0;
+    display: inline;    
+}
 
 /************** Tools menu **************/
 #ToolsMenu .buttonGroup {
