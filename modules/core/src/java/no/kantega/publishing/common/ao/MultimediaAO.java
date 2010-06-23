@@ -53,7 +53,7 @@ public class MultimediaAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            // Først sjekk om det finnes underlementer
+            // Fï¿½rst sjekk om det finnes underlementer
             ResultSet rs = SQLHelper.getResultSet(c, "select * from multimedia where ParentId = " + id);
             if (rs.next()) {
                 rs.close();
@@ -151,7 +151,7 @@ public class MultimediaAO {
     /**
      * Henter multimedia objekt fra basen (unntatt data)
      * @param parentId - parentId til objekt som skal hentes
-     * @param name - navn på objekt til som skal hentes
+     * @param name - navn pï¿½ objekt til som skal hentes
      * @return
      * @throws SystemException
      */
@@ -227,8 +227,8 @@ public class MultimediaAO {
 
     /**
      * Sender multimedia til klienten
-     * @param id - Id på objekt som skal streames
-     * @param ish - Inputhandler som håndterer stream
+     * @param id - Id pï¿½ objekt som skal streames
+     * @param ish - Inputhandler som hï¿½ndterer stream
      * @throws SystemException
      */
     public static void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {
@@ -543,7 +543,7 @@ public class MultimediaAO {
                 try {
                     MultimediaRequestHandler.thumbnailCache.flushGroup(Integer.toString(mm.getId()));
                 } catch (NullPointerException e) {
-                    // Får nullpeker dersom group ikke finnes
+                    // Fï¿½r nullpeker dersom group ikke finnes
                 }
             }
             st.setTimestamp(p++, new java.sql.Timestamp(new java.util.Date().getTime()));
@@ -633,6 +633,8 @@ public class MultimediaAO {
         mm.setAltname(rs.getString("AltName"));
         mm.setUsage(rs.getString("UsageInfo"));
         mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
+        mm.setNoFiles(rs.getInt("NoFiles"));
+        mm.setNoSubFolders(rs.getInt("NoSubFolders"));
 
         return mm;
     }
