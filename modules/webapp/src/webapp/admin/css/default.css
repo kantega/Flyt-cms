@@ -187,6 +187,7 @@ table.fullWidth {
     height: 100%;
     background: #A0A0A0;
     margin: 0;
+    overflow: hidden;
 }
 #Content.organizeSubpages #MainPane {
     background: #ffffff;
