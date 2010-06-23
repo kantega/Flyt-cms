@@ -104,7 +104,7 @@ public class AssociationAO  {
         }
 
         if (a.getAssociationtype() != AssociationType.SHORTCUT) {
-            // Avgjør om dette er en krysspublisering eller ikke
+            // Avgjï¿½r om dette er en krysspublisering eller ikke
             ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ContentId = " + a.getContentId() + " and SiteId = " + a.getSiteId());
             if (rs.next()) {
                 a.setAssociationtype(AssociationType.CROSS_POSTING);
@@ -133,7 +133,7 @@ public class AssociationAO  {
         if (rs.next()) {
             a.setId(rs.getInt(1));
         } else {
-            Log.error(SOURCE, "Feilet ved uthenting av nøkkel - id", null, null);
+            Log.error(SOURCE, "Feilet ved uthenting av nï¿½kkel - id", null, null);
         }
         rs.close();
         st.close();
@@ -148,7 +148,7 @@ public class AssociationAO  {
             st.close();
         }
 
-        // Sett defaultrettigheter på startside, alle kan gjøre alt
+        // Sett defaultrettigheter pï¿½ startside, alle kan gjï¿½re alt
         if (a.getSecurityId() == -1 && a.getParentAssociationId() == 0) {
             PermissionsAO.setPermissions(a, null);
             a.setSecurityId(a.getId());
@@ -163,7 +163,7 @@ public class AssociationAO  {
     public static void addAssociation(Association association) throws SystemException {
 
         if (association.getAssociationtype() == AssociationType.SHORTCUT && association.getAssociationId() == -1) {
-            // Kan ikke opprette en snarvei uten å ha en knytningsid
+            // Kan ikke opprette en snarvei uten ï¿½ ha en knytningsid
             return;
         }
 
@@ -315,15 +315,15 @@ public class AssociationAO  {
     /**
      * Flytter en struktur
      * @param newAssociation - oppdatert kopling
-     * @param updateCopies - dersom siden er kopiert (krysspublisert), angi om krysspubliserte sider også skal flyttes
+     * @param updateCopies - dersom siden er kopiert (krysspublisert), angi om krysspubliserte sider ogsï¿½ skal flyttes
      * @throws SystemException - Systemfeil
      */
     public static void modifyAssociation(Association newAssociation, boolean updateCopies, boolean updateGroup) throws SystemException {
         if (updateCopies) {
-            // Hent fra basen kopling i nåværende form og parent
+            // Hent fra basen kopling i nï¿½vï¿½rende form og parent
             Association oldAssociation = getAssociationById(newAssociation.getId());
             if (oldAssociation.getParentAssociationId() > 0) {
-                // Siden som skal flyttes kan være krysspublisert
+                // Siden som skal flyttes kan vï¿½re krysspublisert
 
                 int contentId = newAssociation.getContentId();
 
@@ -628,7 +628,7 @@ public class AssociationAO  {
 
             titleQuery.append(") AND contentversion.IsActive = 1");
 
-            // Å hente ut tittel er splittet opp i to operasjoner, fordi det går så sinnsykt tregt på MySQL enkelte ganger
+            // ï¿½ hente ut tittel er splittet opp i to operasjoner, fordi det gï¿½r sï¿½ sinnsykt tregt pï¿½ MySQL enkelte ganger
             if (a > 0) {
                 PreparedStatement titleSt = c.prepareStatement(titleQuery.toString());
                 ResultSet titleRs = titleSt.executeQuery();
@@ -704,12 +704,13 @@ public class AssociationAO  {
 
             try {
                 c = dbConnectionFactory.getConnection();
-                PreparedStatement st = c.prepareStatement("update associations set Priority = ? where UniqueId = ?");
+                PreparedStatement st = c.prepareStatement("update associations set Priority = ?, Category=? where UniqueId = ?");
                 for (int i = 0; i < associations.size(); i++) {
                     Association a = (Association)associations.get(i);
 
                     st.setInt(1, a.getPriority());
-                    st.setInt(2, a.getId());
+                    st.setInt(2, a.getCategory().getId());
+                    st.setInt(3, a.getId());
 
                     st.execute();
                 }
