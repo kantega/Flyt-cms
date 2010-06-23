@@ -114,13 +114,15 @@ public class MultimediaTagCreator {
 
             if ((maxW != -1 && maxW < width) || (maxH != -1 && maxH < height)) {
                 if (maxW != -1) {
-                    url += "&amp;width=" + maxW;
+                    url += url.indexOf("?") == -1 ? "?" : "&amp;";
+                    url += "width=" + maxW;
                 }
                 if (maxH != -1) {
-                    url += "&amp;height=" + maxH;
+                    url += url.indexOf("?") == -1 ? "?" : "&amp;";
+                    url += "height=" + maxH;
                 }
             } else {
-                // Bildet skal ikke krympes, angi st�rrelse i tag'en
+                // Image will not be resised, specify dimensions in tag
                 if (width > 0) {
                     tag.append(" width=" + width);
                 }
