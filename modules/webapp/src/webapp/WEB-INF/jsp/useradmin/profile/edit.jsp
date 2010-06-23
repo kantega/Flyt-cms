@@ -22,7 +22,7 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="/admin/include/infobox.jsp" %>
     <form action="edit" name="myform" method="post">
         <input type="hidden" name="isNew" value="<c:out value="${isNew}"/>">
         <input type="hidden" name="save" value="true">

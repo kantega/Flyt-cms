@@ -22,7 +22,7 @@
 </kantega:section>
 
 <kantega:section id="innhold">
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="/admin/include/infobox.jsp" %>
 
     <c:if test="${noemail != null}">
         <p>

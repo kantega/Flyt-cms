@@ -24,7 +24,7 @@
 
 <kantega:section id="innhold">
 
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="/admin/include/infobox.jsp" %>
 
     <form action="profileimage" method="post" enctype="multipart/form-data">
         <fieldset>

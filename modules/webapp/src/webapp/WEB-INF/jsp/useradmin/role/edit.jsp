@@ -45,7 +45,7 @@
             </p>
         </fieldset>
     </form>
-    <%@ include file="/admin/include/infobox.jsf" %>
+    <%@ include file="/admin/include/infobox.jsp" %>
 </kantega:section>
 
 <%@ include file="../include/design/standard.jsp" %>
