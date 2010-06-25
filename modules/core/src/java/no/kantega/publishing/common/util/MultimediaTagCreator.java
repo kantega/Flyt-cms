@@ -211,7 +211,7 @@ public class MultimediaTagCreator {
                 height = maxH;
             }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();
-            String movieUrl = baseUrl + "/multimedia/" + mm.getUrl();
+            String movieUrl = mm.getUrl();
             String playerStr = baseUrl + playerUrl + "?movieAutoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
             if (Aksess.isFlashUseJavascript()) {
                 String id = "swf" + mm.getId();
