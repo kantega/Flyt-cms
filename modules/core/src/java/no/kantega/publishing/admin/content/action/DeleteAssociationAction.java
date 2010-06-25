@@ -119,6 +119,8 @@ public class DeleteAssociationAction implements Controller {
                                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
                                 model.put("currentPage", current);
                             }
+                        } else {
+                            model.put("updateNavigator", Boolean.TRUE);
                         }
                     }
                 }
