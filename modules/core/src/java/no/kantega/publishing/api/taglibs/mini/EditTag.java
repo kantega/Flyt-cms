@@ -72,7 +72,7 @@ public class EditTag extends AbstractSimpleEditTag {
                 	link.append("admin/publish/SimpleEditContent.action?");
                 }
                 link.append("thisId=");                	
-                link.append(associationId);
+                link.append(content.getAssociation().getId());
                 if (redirectUrl != null) {
                     link.append("&amp;redirectUrl=");
                     link.append(redirectUrl);
