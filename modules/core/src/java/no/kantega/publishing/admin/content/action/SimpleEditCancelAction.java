@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.common.data.enums.ContentType;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -50,8 +51,8 @@ public class SimpleEditCancelAction implements Controller {
         LockManager.releaseLock(content.getId());
 
         ContentIdentifier cid = new ContentIdentifier();
-        if (content.isNew()) {
-            // New content, show parent
+        if (content.isNew() || content.getType() == ContentType.FILE || content.getType() == ContentType.LINK) {
+            // For new content, files and links must show parent
             Association a = content.getAssociation();
             cid.setAssociationId(a.getParentAssociationId());
             cid.setLanguage(content.getLanguage());
