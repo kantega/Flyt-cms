@@ -35,7 +35,7 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:05
  */
@@ -81,10 +81,10 @@ public class CreateTag extends AbstractSimpleEditTag {
                 } else {
                     link.append("admin/publish/SimpleEditContent.action?");
                 }
-                if (displayTemplateId != 0) {
+                if (displayTemplateId > 0) {
                     link.append("templateId=");
                     link.append(displayTemplateId);
-                } else if (contentTemplateId != 0) {
+                } else if (contentTemplateId > 0) {
                     link.append("contentTemplateId=");
                     link.append(contentTemplateId);
                 }
