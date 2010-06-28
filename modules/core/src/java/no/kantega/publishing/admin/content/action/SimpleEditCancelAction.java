@@ -50,7 +50,7 @@ public class SimpleEditCancelAction implements Controller {
         LockManager.releaseLock(content.getId());
 
         ContentIdentifier cid = new ContentIdentifier();
-        if (content.getId() == -1) {
+        if (content.isNew()) {
             // New content, show parent
             Association a = content.getAssociation();
             cid.setAssociationId(a.getParentAssociationId());

@@ -31,7 +31,7 @@
     int maxLength = attribute.getMaxLength();
     int rows = (maxLength / 72) + 1;
 
-    if (ContentProperty.TITLE.equalsIgnoreCase(attribute.getField()) && content.getId() != -1) {
+    if (ContentProperty.TITLE.equalsIgnoreCase(attribute.getField()) && !content.isNew()) {
         value = content.getTitle();
     }
 %>

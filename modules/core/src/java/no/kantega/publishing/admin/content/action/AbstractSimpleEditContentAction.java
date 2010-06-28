@@ -82,7 +82,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             Content content = getContentForEdit(request);
             if (isAllowedToEdit(request, content)) {
                 ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
-                if (content.getId() != -1) {
+                if (!content.isNew()) {
                     // Existing content must be checked out before edit
                     content = cms.checkOutContent(content.getContentIdentifier());
                 }

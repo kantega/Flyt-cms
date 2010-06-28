@@ -38,7 +38,7 @@ public class SaveAttachmentsAction extends AbstractSaveContentAction {
         ContentManagementService cms = new ContentManagementService(request);
 
         List<Attachment> attachments;
-        if (content.getId() > 0) {
+        if (!content.isNew()) {
             ContentIdentifier cid = new ContentIdentifier();
             cid.setContentId(content.getId());
             cid.setLanguage(content.getLanguage());

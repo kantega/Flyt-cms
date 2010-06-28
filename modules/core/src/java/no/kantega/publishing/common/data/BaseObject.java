@@ -28,6 +28,10 @@ public abstract class BaseObject {
         this.id = id;
     }
 
+    public boolean isNew() {
+        return id == -1;
+    }
+
     public int getSecurityId() {
         return securityId;
     }

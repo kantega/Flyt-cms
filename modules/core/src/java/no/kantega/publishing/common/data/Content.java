@@ -31,9 +31,9 @@ import java.util.*;
 public class Content extends BaseObject {
     // Information not versionable
     private ContentType type = ContentType.PAGE;
-    private int contentTemplateId = 0;  // Id til mal for innhold (må settes)
+    private int contentTemplateId = 0;  // Id til mal for innhold (mï¿½ settes)
     private int metaDataTemplateId = 0; // Id til mal metadata
-    private int displayTemplateId = 0;  // Id til visningsmal (må settes)
+    private int displayTemplateId = 0;  // Id til visningsmal (mï¿½ settes)
     private int documentTypeId = 0;
     private int documentTypeIdForChildren = 0; //Dokumenttype for undersider til denne.
 
@@ -286,7 +286,7 @@ public class Content extends BaseObject {
         Association a = getAssociation();
 
         if (alias != null && alias.startsWith("/") && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
-            // Alias brukes når angitt og man har en hovedknytning og man ikke er i adminmodus
+            // Alias brukes nï¿½r angitt og man har en hovedknytning og man ikke er i adminmodus
             if (HttpHelper.isAdminMode(request)) {
                 return Aksess.getContextPath() + alias + "?thisId=" + a.getAssociationId();
             } else {

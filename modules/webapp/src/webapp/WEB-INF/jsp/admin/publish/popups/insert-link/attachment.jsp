@@ -40,8 +40,8 @@
             <%
                 Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
                 if (current != null) {
-                    List attachments;
-                    if (current.getId() > 0) {
+                    List<Attachment> attachments;
+                    if (!current.isNew()) {
                         // Existing page
                         ContentIdentifier cid = new ContentIdentifier();
                         cid.setContentId(current.getId());
@@ -52,8 +52,7 @@
                         attachments = current.getAttachments();
                     }
                     if (attachments != null) {
-                        for (int i=0; i < attachments.size(); i++) {
-                            Attachment a = (Attachment)attachments.get(i);
+                        for (Attachment a : attachments) {
                             String filename = a.getFilename();
                             if (filename.length() > 40) {
                                 filename = filename.substring(0, 37) + "...";
@@ -62,7 +61,6 @@
                         }
                     }
                 }
-
             %>
         </select>
     </div>

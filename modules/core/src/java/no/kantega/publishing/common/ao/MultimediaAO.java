@@ -508,7 +508,7 @@ public class MultimediaAO {
             c = dbConnectionFactory.getConnection();
             PreparedStatement st = null;
             byte[] data = mm.getData();
-            if (mm.getId() == -1) {
+            if (mm.isNew()) {
                 // Ny
                 if (data == null) {
                     st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
@@ -525,7 +525,7 @@ public class MultimediaAO {
             }
 
             int p = 1;
-            if (mm.getId() == -1) {
+            if (mm.isNew()) {
                 st.setInt(p++, mm.getParentId());
                 st.setInt(p++, mm.getSecurityId());
                 st.setInt(p++, mm.getType().getTypeAsInt());
@@ -551,7 +551,7 @@ public class MultimediaAO {
             st.setString(p++, mm.getAltname());
             st.setString(p++, mm.getUsage());
 
-            if (mm.getId() != -1) {
+            if (!mm.isNew()) {
                 st.setInt(p++, mm.getId());
             } else {
                 st.setString(p++, mm.getProfileImageUserId());
@@ -563,7 +563,7 @@ public class MultimediaAO {
                 data = null;
             }
 
-            if (mm.getId() == -1) {
+            if (mm.isNew()) {
                 // Finn id til det nye objektet
                 ResultSet rs = st.getGeneratedKeys();
                 if (rs.next()) {

@@ -266,7 +266,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     } else {
                         content.setMetaDataTemplateId(-1);
                     }
-                    if (content.getId() > 0) {
+                    if (!content.isNew()) {
                         // Update group id
                         if (template.isNewGroup()) {
                             content.setGroupId(content.getId());

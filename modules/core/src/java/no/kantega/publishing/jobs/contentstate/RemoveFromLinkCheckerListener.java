@@ -35,7 +35,7 @@ public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
     }
 
     public void contentSaved(ContentEvent event) {
-        if (event.getContent().getId() != -1) {
+        if (!event.getContent().isNew()) {
             linkDao.deleteLinksForContentId(event.getContent().getId());
         }
     }

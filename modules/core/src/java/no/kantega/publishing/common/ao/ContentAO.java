@@ -73,7 +73,7 @@ public class ContentAO {
             st.execute();
             st.close();
 
-            // Slett høring
+            // Slett hï¿½ring
             try {
                 st = c.prepareStatement("delete from hearing where ContentVersionId in (select ContentVersionId from contentversion where ContentId = ?)");
                 st.setInt(1, id);
@@ -88,7 +88,7 @@ public class ContentAO {
                 st.execute();
                 st.close();
             } catch (Exception e) {
-                // Kunden bruker ikke høring, har ikke tabeller for høring
+                // Kunden bruker ikke hï¿½ring, har ikke tabeller for hï¿½ring
             }
 
             // Slett vedlegg
@@ -322,7 +322,7 @@ public class ContentAO {
             rs.close();
 
             if (!foundCurrentAssociation) {
-                // Knytningsid er ikke angitt, og heller ikke site, bruk den første
+                // Knytningsid er ikke angitt, og heller ikke site, bruk den fï¿½rste
                 List associations = content.getAssociations();
                 for (int i = 0; i < associations.size(); i++) {
                     Association a = (Association)associations.get(i);
@@ -697,7 +697,7 @@ public class ContentAO {
 
         Connection c = null;
         Content oldContent = null ;
-        if(content.getId() != -1) {
+        if (!content.isNew()) {
             ContentIdentifier oldCid = new ContentIdentifier();
             oldCid.setAssociationId(content.getAssociation().getAssociationId());
             oldContent = getContent(oldCid, true);
@@ -706,14 +706,13 @@ public class ContentAO {
         try {
             c = dbConnectionFactory.getConnection();
             // Insert base information, no history
-            boolean isNew = false;
+            boolean isNew = content.isNew();
             int isActiveVersion = 0;
 
             PreparedStatement st = null;
 
-            if (content.getId() == -1) {
+            if (content.isNew()) {
                 // New page, always active
-                isNew = true;
                 isActiveVersion = 1;
             }
 
@@ -745,7 +744,7 @@ public class ContentAO {
             st.setInt(p++, content.getDocumentTypeIdForChildren());
             st.setInt(p++, content.isLocked() ? 1:0);
             st.setInt(p++, content.isSearchable() ? 1:0);
-            if (content.getId() != -1) {
+            if (!content.isNew()) {
                 st.setInt(p++, content.getId());
             }
 
@@ -762,7 +761,7 @@ public class ContentAO {
             st.close();
 
             if (isNew) {
-                // GroupId benyttes for å angi at en side arver egenskaper, f.eks meny, design fra en annen side
+                // GroupId benyttes for ï¿½ angi at en side arver egenskaper, f.eks meny, design fra en annen side
                 if (content.getGroupId() <= 0) {
                     st = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
                     st.setInt(1, content.getId());
@@ -796,7 +795,7 @@ public class ContentAO {
                 }
             }
 
-            if (content.getId() == -1 || newStatus == ContentStatus.PUBLISHED) {
+            if (content.isNew() || newStatus == ContentStatus.PUBLISHED) {
                 isActiveVersion = 1;
             }
 
@@ -1022,7 +1021,7 @@ public class ContentAO {
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
-                    // Sett status = arkivert på aktiv versjon
+                    // Sett status = arkivert pï¿½ aktiv versjon
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
                     tmp.setInt(1, ContentStatus.ARCHIVED);
                     tmp.setInt(2, cid.getContentId());

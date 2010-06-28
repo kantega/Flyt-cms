@@ -46,7 +46,7 @@
             p = window.parent;
         }
 
-        if (p && <%=mm.getId()%> != -1) {
+        if (p && <%=(!mm.isNew())%>) {
             if (p.openaksess.editcontext.doInsertTag) {
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;

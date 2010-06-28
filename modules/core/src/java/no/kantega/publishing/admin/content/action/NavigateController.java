@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 01.jul.2009
  * Time: 15:04:08
  */
@@ -100,7 +100,7 @@ public class NavigateController extends AbstractContentAction {
         if (editedContent != null && editedContent.isModified()) {
             // User is editing a page and has modified it, show preview 
             currentUrl = request.getContextPath() + "/admin/publish/ViewContentPreviewFrame.action?thisId=";
-            if (editedContent.getId() == -1) {
+            if (editedContent.isNew()) {
                 // New page
                 currentUrl += editedContent.getAssociation().getParentAssociationId();
             } else {

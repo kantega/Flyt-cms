@@ -149,7 +149,7 @@
 </div>
 <div class="buttonGroup">
     <%
-        if (content.getId() != -1) {
+        if (!content.isNew()) {
     %>
     <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
     <%

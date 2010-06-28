@@ -81,7 +81,7 @@ public class AddAttachmentAction implements Controller {
                 attachmentId = aksessService.setAttachment(attachment);
 
                 attachment.setId(attachmentId);
-                if (content.getId() <= 0) {
+                if (content.isNew()) {
                     // Add attachments to list, these are updated with a correct contentid when saved in datadata
                     // Or deleted if user cancels
                     attachment.setData(null);

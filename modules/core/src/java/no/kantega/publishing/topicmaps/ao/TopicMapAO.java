@@ -111,7 +111,7 @@ public class TopicMapAO {
         try {
             c = dbConnectionFactory.getConnection();
             PreparedStatement st = null;
-            if (topicMap.getId() == -1) {
+            if (topicMap.isNew()) {
                 // Ny
                 st = c.prepareStatement("insert into tmmaps (Name, IsEditable, WSOperation, WSSoapAction, WSEndPoint) values(?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             } else {
@@ -131,7 +131,7 @@ public class TopicMapAO {
 
             st.execute();
 
-            if (topicMap.getId() == -1) {
+            if (topicMap.isNew()) {
                 // Finn id til nytt objekt
                 ResultSet rs = st.getGeneratedKeys();
                 if (rs.next()) {
@@ -161,7 +161,7 @@ public class TopicMapAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            // Først sjekk om det finnes underlementer
+            // Fï¿½rst sjekk om det finnes underlementer
             ResultSet rs = SQLHelper.getResultSet(c, "select * from tmtopic where TopicMapId = " + id);
             if (rs.next()) {
                 rs.close();
