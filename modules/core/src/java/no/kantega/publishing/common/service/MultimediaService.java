@@ -48,6 +48,10 @@ public class MultimediaService {
         this.securitySession = SecuritySession.getInstance(request);
     }
 
+    public MultimediaService(SecuritySession securitySession){
+        this.securitySession = securitySession;
+    }
+
     public Multimedia getMultimedia(int id) throws SystemException {
         return MultimediaAO.getMultimedia(id);
     }
