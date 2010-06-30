@@ -35,7 +35,7 @@
         var currentRow = -1;
 
         function startNewBox(x, y) {
-            openaksess.common.debug("start box:" + x + "," + y);
+            openaksess.common.debug("ImageMapAction: start box:" + x + "," + y);
             if (detectCollision(x, y, x + 10, y + 10)) {
                 currentMapArea = -1;
             } else {
@@ -45,12 +45,13 @@
             }
         }
 
-        function endNewBox(x, y, ref) {
+        function endNewBox(x, y) {
             if (currentMapArea != -1) {
                 var current = $("#map" + currentMapArea);
                 var pos = current.position();
-                var startX = pos.left - ref.offsetLeft;
-                var startY = pos.top - ref.offsetTop;
+
+                var startX = pos.left;
+                var startY = pos.top;
 
                 var endX = startX + current.width();
                 var endY = startY + current.height();
@@ -64,7 +65,9 @@
         function updateBox(x, y) {
             if (currentMapArea != -1) {
                 var current = $("#map" + currentMapArea);
-                var pos = current.position();
+
+                var pos = $('#map' + currentMapArea).position();
+
                 var startX = pos.left;
                 var startY = pos.top;
                 if (x < startX + 10) {
@@ -78,13 +81,13 @@
                 var ref = $("#MediaObject img");
                 var maxX = ref.position().left + ref.width();
                 if (x > maxX) {
-                    x = maxX;
+                    //x = maxX;
                 }
 
                 if (!detectCollision(startX, startY, x, y)) {
-                    current.width(x - startX);
-                    current.height(y - startY);
-                }                
+                    current.width(Math.round(x - startX));
+                    current.height(Math.round(y - startY));
+                }
             }
         }
 
@@ -99,9 +102,9 @@
                     var boxStopX = boxStartX + $(this).width();
                     var boxStopY = boxStartY + $(this).height();
                     if ((startX < boxStopX && stopX > boxStartX) && (startY < boxStopY && stopY > boxStartY)) {
-                        openaksess.common.debug("overlap with:" + id);
+                        openaksess.common.debug("ImageMapAction: overlap with:" + id);
                         overlap = true;
-                    }                    
+                    }
                 }
             });
 
@@ -127,10 +130,10 @@
             html += "</tr>";
             $("#ImageMapTable").append(html);
 
-            $("#" + id + " span.add").click(function() {
+            $("#" + id + " span.add").click(function(event) {
                 selectPage(no);
             });
-            $("#" + id + " span.delete").click(function() {
+            $("#" + id + " span.delete").click(function(event) {
                 // Delete div
                 $("#map" + no).remove();
                 // Empty all input fields
@@ -142,10 +145,13 @@
         }
 
         function addBox(no, x, y, endX, endY) {
-            var w = endX - x;
-            var h = endY - y;
+            var w = Math.round(endX - x);
+            var h = Math.round(endY - y);
             var ie = document.all;
-            var css = "position:absolute; left:" + x + "px;top:" + y + "px;width:" + w + "px; height:" + h +"px;";
+
+            var pos = $('#MediaObject img').position();
+
+            var css = "position:absolute; left:" + Math.round(x) + "px;top:" + Math.round(y) + "px;width:" + w + "px; height:" + h +"px;";
             css += ie ? 'filter: alpha(opacity=50);' : 'opacity:0.50;';
             var id = "map" + no;
             $('#MediaObject').append('<div id="' + id + '" style="' + css + '"></div>');
@@ -158,21 +164,6 @@
 
         }
 
-        // �pner navigator for � velge url til innhold i aksess
-        function selectPage(row){
-            currentRow = row;
-            var target = window.open("../popups/selectcontent.jsp" , "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
-            target.focus();
-        }
-
-
-        // Callback fra navigator.jsp som setter inn riktig url
-        // TODO: Fix this
-        function insertValueAndNameIntoForm(id, text) {
-            $("#url" + currentRow).val('/content.ap?thisId=' + id);
-            $("#altTitle" + currentRow).val(text);
-        }
-
         function saveForm() {
             if (!hasSubmitted) {
                 hasSubmitted = true;
@@ -180,43 +171,57 @@
             }
         }
 
+        // Open navigator to select content
+        function selectPage(row){
+            currentRow = row;
+            openaksess.editcontext.doInsertTag = false;
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action",width: 280, height:450});
+        }
+
+        // Callback from navigator        
+        openaksess.editcontext.insertValueAndNameIntoForm = function (id, text) {
+            $("#url" + currentRow).val('/content.ap?thisId=' + id);
+            $("#altTitle" + currentRow).val(text);
+        };
 
         $(document).ready(function() {
             // Cancel button goes back to displaying image
-            $("#EditMultimediaButtons .cancel").click(function (){
+            $("#EditMultimediaButtons .cancel").click(function (event){
                 location.href = "EditMultimedia.action?id=${media.id}";
             });
 
             // Disable save button until something is changed
-            $("#EditMultimediaButtons .save").click(function () {
+            $("#EditMultimediaButtons .save").click(function (event) {
                 saveForm();
             });
 
 
             $('#MediaObject').mousedown(function(event) {
-                var x = event.pageX;
-                var y = event.pageY;
+                var offset = $("#MediaObject").position();
+                var x = event.pageX - offset.left;
+                var y = event.pageY - offset.top - $("#Top").height();
                 startNewBox(x, y);
                 event.preventDefault();
             });
 
             $('#MediaObject').mouseup(function(event) {
-                var x = event.pageX;
-                var y = event.pageY;
-                endNewBox(x, y, this);
+                var offset = $("#MediaObject").position();
+                var x = event.pageX - offset.left;
+                var y = event.pageY - offset.top - $("#Top").height();
+                endNewBox(x, y);
                 event.preventDefault();
             });
 
             $('#MediaObject').mousemove(function(event) {
-                var x = event.pageX;
-                var y = event.pageY;
+                var offset = $("#MediaObject").position();
+                var x = event.pageX - offset.left;
+                var y = event.pageY - offset.top - $("#Top").height();
                 updateBox(x, y);
                 event.preventDefault();
             });
 
-            var refPos = $('#MediaObject').position();
             <c:forEach var="c" items="${coordinates}" varStatus="status">
-                addBox(${status.index}, refPos.left + ${c.startX}, refPos.top + ${c.startY}, refPos.left + ${c.stopX}, refPos.top + ${c.stopY});
+                addBox(${status.index}, ${c.startX}, ${c.startY}, ${c.stopX}, ${c.stopY});
                 addRow(${status.index}, ${c.startX}, ${c.startY}, ${c.stopX}, ${c.stopY}, '${c.url}', '${c.altName}', ${c.openInNewWindow});
             </c:forEach>
 
@@ -228,7 +233,7 @@
         <kantega:label key="aksess.multimedia.imagemap.info"/>
     </div>
 
-    <div id="MediaObject">
+    <div id="MediaObject" style="position:relative">
         <img id="Image" src="${media.url}" width="${media.width}" height="${media.height}">
     </div>
 
