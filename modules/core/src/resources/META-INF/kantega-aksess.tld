@@ -1817,6 +1817,17 @@
         <body-content>JSP</body-content>
     </tag>
     <tag>
+        <description>Print body if has role</description>
+        <name>hasrole</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.HasRoleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Roles</description>
+            <name>roles</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Include JSP mini view for display of object (for portlet like view)</description>
         <name>miniview</name>
         <tag-class>no.kantega.publishing.api.taglibs.content.MiniViewTag</tag-class>
