@@ -21,17 +21,22 @@ import javax.servlet.jsp.JspTagException;
 
 
 public class IsAdminModeTag extends ConditionalTagSupport {
-    private String negate = null;
+    private boolean negate = false;
 
     protected boolean condition() throws JspTagException {
-        if (negate != null) {
-            return pageContext.getSession().getAttribute("adminMode") == null;
+        boolean ret = false;
+        if (negate) {
+            ret = pageContext.getSession().getAttribute("adminMode") == null;
         } else {
-            return pageContext.getSession().getAttribute("adminMode") != null;
+            ret = pageContext.getSession().getAttribute("adminMode") != null;
         }
+        negate = false;
+        return ret;
     }
 
     public void setNegate(String negate) {
-        this.negate = negate;
+        this.negate = Boolean.valueOf(negate);
     }
+
+
 }

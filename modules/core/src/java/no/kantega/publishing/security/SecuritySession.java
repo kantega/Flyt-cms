@@ -65,7 +65,7 @@ public class SecuritySession {
 
 
     /**
-     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i såfall User og Identity objektet
+     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i sï¿½fall User og Identity objektet
      * @param request
      * @return
      * @throws SystemException
@@ -179,7 +179,7 @@ public class SecuritySession {
 
     /**
      * Creates a new SecuritySession pre set with an unauthenticated user.
-     *  
+     *
      * @return SecuritySession
      */
     public static SecuritySession createNewUnauthenticatedInstance() {
@@ -207,7 +207,7 @@ public class SecuritySession {
     }
 
     /**
-     * Håndterer når en ny bruker har blitt logget inn, henter roller, emner, orgenheter osv
+     * Hï¿½ndterer nï¿½r en ny bruker har blitt logget inn, henter roller, emner, orgenheter osv
      * @param request
      * @throws SystemException
      * @throws ConfigurationException
@@ -292,7 +292,7 @@ public class SecuritySession {
         String redirect = request.getParameter("redirect");
         if (redirect == null || redirect.length() == 0) {
             redirect = Aksess.getContextPath();
-        }        
+        }
 
         IdentityResolver resolver = realm.getIdentityResolver();
         DefaultLogoutContext logoutContext = new DefaultLogoutContext();
@@ -307,7 +307,7 @@ public class SecuritySession {
         try {
             resolver.initiateLogout(logoutContext);
         } catch (Exception e) {
-            // Ikke alle IdentityResolvers håndterer utlogging, f.eks NTLM
+            // Ikke alle IdentityResolvers hï¿½ndterer utlogging, f.eks NTLM
         }
 
         // Nullstill
@@ -327,10 +327,11 @@ public class SecuritySession {
     }
 
     public boolean isUserInRole(String[] roles) {
-        for (int i = 0; i < roles.length; i++) {
-            String role = roles[i].trim();
-            if (SecurityService.isUserInRole(user, role)) {
-                return true;
+        if (roles != null) {
+            for (String role : roles) {
+                if (SecurityService.isUserInRole(user, role.trim())) {
+                    return true;
+                }
             }
         }
 
@@ -338,7 +339,7 @@ public class SecuritySession {
     }
 
     public boolean isUserInRole(String role) {
-        return SecurityService.isUserInRole(user, role);
+        return SecurityService.isUserInRole(user, role.trim());
     }
 
     public boolean isAuthorized(BaseObject object, int privilege) throws SystemException {
@@ -377,7 +378,7 @@ public class SecuritySession {
      * @throws SystemException
      */
     public List getUsersWithRole(String role) throws SystemException {
-        return realm.lookupUsersWithRole(role); 
+        return realm.lookupUsersWithRole(role);
     }
 
     public List searchUsers(String name) throws SystemException {
