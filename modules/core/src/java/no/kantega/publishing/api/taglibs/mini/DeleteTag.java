@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:25
  */
@@ -51,7 +51,6 @@ public class DeleteTag extends AbstractSimpleEditTag {
             }
             SecuritySession securitySession = SecuritySession.getInstance(request);
             if (content != null && securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
-
                 StringBuffer link = new StringBuffer();
                 link.append("<a");
                 if (cssclass != null) {
@@ -71,7 +70,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
                 link.append(" href=\"Javascript:if (confirm('" + txt + "')) location.href='");
                 link.append(URLHelper.getRootURL(request));
                 link.append("admin/publish/SimpleDeleteContent.action?associationId=");
-                link.append(associationId);
+                link.append(content.getAssociation().getId());
                 if (redirectUrl != null) {
                     link.append("&amp;redirectUrl=");
                     link.append(redirectUrl);
