@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.data.Content;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
@@ -29,6 +31,7 @@ import no.kantega.publishing.common.Aksess;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
@@ -58,6 +61,19 @@ public class UpdateDisplayPeriodAction implements Controller {
 
                 if (publishDate != null) {
                     cms.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
+
+                    // Update content objects stored in session so user is not confused
+                    HttpSession session = request.getSession();
+                    Content editedContent = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+                    if (editedContent != null && editedContent.getId() == cid.getContentId()) {
+                        editedContent.setPublishDate(publishDate);
+                        editedContent.setExpireDate(expireDate);
+                    }
+                    Content displayedContent = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
+                    if (displayedContent != null && displayedContent.getId() == cid.getContentId()) {
+                        displayedContent.setPublishDate(publishDate);
+                        displayedContent.setExpireDate(expireDate);
+                    }
                 }
             }
 
