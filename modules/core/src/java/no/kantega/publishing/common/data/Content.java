@@ -214,7 +214,7 @@ public class Content extends BaseObject {
     }
 
     public boolean hasDisplayTemplate() {
-        return displayTemplateId <= 0;
+        return displayTemplateId > 0;
     }
 
     public int getDocumentTypeId() {
