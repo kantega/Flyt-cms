@@ -122,7 +122,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     }
                     model.put("message", message);
 
-                    if (content.getType() == ContentType.FILE) {
+                    if (!content.hasDisplayTemplate()) {
                         // Go to parent page when finished for files, annoying to get a file download dialogue
                         ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
                         Content parent = aksessService.getContent(parentCid, false);

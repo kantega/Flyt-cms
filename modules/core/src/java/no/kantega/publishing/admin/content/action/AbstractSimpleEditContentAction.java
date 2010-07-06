@@ -17,6 +17,7 @@ import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
@@ -125,6 +126,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     private ModelAndView saveContent(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
+        ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
 
         Content content = (Content) session.getAttribute("currentContent");
 
@@ -139,7 +141,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                 // No errors, save
                 session.removeAttribute("errors");
                 if (errors.getLength() == 0) {
-                    ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
+
                     content = cms.checkInContent(content, ContentStatus.PUBLISHED);
                 }
                 session.removeAttribute("currentContent");
@@ -149,7 +151,14 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                 if (redirectUrl != null && redirectUrl.length() > 0) {
                     url = redirectUrl;
                 } else {
-                    url = content.getUrl();
+                    if (!content.hasDisplayTemplate()) {
+                        // Has no display template, show parent
+                        ContentIdentifier parentCid = cms.getParent(content.getContentIdentifier());
+                        Content parent = cms.getContent(parentCid, false);
+                        url = parent.getUrl();
+                    } else {
+                        url = content.getUrl();
+                    }
                 }
 
                 session.removeAttribute("adminMode");

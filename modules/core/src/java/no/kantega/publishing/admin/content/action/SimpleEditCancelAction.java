@@ -51,8 +51,8 @@ public class SimpleEditCancelAction implements Controller {
         LockManager.releaseLock(content.getId());
 
         ContentIdentifier cid = new ContentIdentifier();
-        if (content.isNew() || content.getType() == ContentType.FILE || content.getType() == ContentType.LINK) {
-            // For new content, files and links must show parent
+        if (content.isNew() || !content.hasDisplayTemplate()) {
+            // For new content and content without display template
             Association a = content.getAssociation();
             cid.setAssociationId(a.getParentAssociationId());
             cid.setLanguage(content.getLanguage());

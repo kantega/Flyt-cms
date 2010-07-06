@@ -213,6 +213,10 @@ public class Content extends BaseObject {
         this.displayTemplateId = displayTemplateId;
     }
 
+    public boolean hasDisplayTemplate() {
+        return displayTemplateId <= 0;
+    }
+
     public int getDocumentTypeId() {
         return documentTypeId;
     }
