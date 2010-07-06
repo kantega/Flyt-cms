@@ -36,7 +36,7 @@ import no.kantega.commons.log.Log;
  * Used by DWR to maintain the state of the user's currentContent session attribute,
  * i.e. the last content viewed by the user.
  *
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 03.jul.2009
  * Time: 09:20:13
  */
@@ -59,7 +59,7 @@ public class ContentStateHandler extends AbstractDwrController {
                 Content current = cms.getContent(cid);
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {
-                Log.error(this.getClass().getName(), e, null, null);
+                // Do nothing
             } catch (NotAuthorizedException e) {
                 Log.error(this.getClass().getName(), e, null, null);
             }

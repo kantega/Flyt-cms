@@ -140,7 +140,6 @@ public class ContentPropertiesAction implements Controller {
                 ContentLock lock = LockManager.peekAtLock(content.getId());
                 if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
                     String lockedBy = lock.getOwner();
-                    // TODO: Do something with this
                     model.put(AdminRequestParameters.PERMISSONS_LOCKED_BY, lockedBy);
                 }
 
@@ -159,7 +158,7 @@ public class ContentPropertiesAction implements Controller {
 
 
         } catch (ContentNotFoundException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            // Do nothing
             return null;
         } catch (SystemException e) {
             Log.error(this.getClass().getName(), e, null, null);
