@@ -34,6 +34,7 @@
                 </xs:simpleType>
             </xs:attribute>
             <xs:attribute name="editableby" type="xs:string"/>
+	    <xs:attribute name="enumclass" type="xs:string"/>
             <xs:attribute name="featureset" type="xs:string"/>
             <xs:attribute name="height" type="xs:integer"/>
             <xs:attribute name="width" type="xs:integer"/>
@@ -85,6 +86,7 @@
                         <xs:enumeration value="editableform"/>
                         <xs:enumeration value="editablelist"/>
                         <xs:enumeration value="email"/>
+                        <xs:enumeration value="enumlist"/>
                         <xs:enumeration value="file"/>
                         <xs:enumeration value="form"/>
                         <xs:enumeration value="htmltext"/>

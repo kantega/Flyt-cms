@@ -28,6 +28,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ import java.util.Map;
  */
 public class ListAttribute extends Attribute {
     protected boolean multiple = false;
-    protected List options = null;
+    protected List<ListOption> options = null;
 
     public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
@@ -47,7 +48,7 @@ public class ListAttribute extends Attribute {
                 this.multiple = true;
             }
 
-            options = new ArrayList();
+            options = new ArrayList<ListOption>();
 
             try {
                 NodeList nodes = XPathAPI.selectNodeList(config, "options/option");
@@ -79,18 +80,22 @@ public class ListAttribute extends Attribute {
         return multiple;
     }
 
-    public List getListOptions() {
+    public List<ListOption> getListOptions() {
         return getListOptions(Language.NORWEGIAN_BO);
     }
 
-    public List getListOptions(int language) {
-        if (options == null) {
-            options = new ArrayList();
+    public List<ListOption> getListOptions(int language) {
+        if (getOptions() == null) {
+            return Collections.emptyList();
         }
-        return options;
+        return getOptions();
     }
 
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
         return new UpdateListAttributeFromRequestBehaviour();
+    }
+    
+    protected List<ListOption> getOptions(){
+    	return options;
     }
 }
