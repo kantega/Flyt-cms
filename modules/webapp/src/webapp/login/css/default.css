@@ -172,7 +172,12 @@ body.login label{
 #Submit{
     background:url("../bitmaps/login_btn.png") no-repeat right top;
     text-align:center;
-    width:105px;
+    width:115px;
+    height:35px;
+    padding-top:5px;
+}
+#Submit:hover{
+    background:url("../bitmaps/login_btn_hover.png") no-repeat right top;
 }
 body.login input[type=text], body.login input[type=password]{
     position:absolute;
