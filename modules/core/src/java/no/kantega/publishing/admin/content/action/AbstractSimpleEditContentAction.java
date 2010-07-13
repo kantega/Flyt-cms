@@ -139,9 +139,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
             if (errors.getLength() == 0) {
                 // No errors, save
-                session.removeAttribute("errors");
                 if (errors.getLength() == 0) {
-
                     content = cms.checkInContent(content, ContentStatus.PUBLISHED);
                 }
                 session.removeAttribute("currentContent");
@@ -165,6 +163,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
                 return new ModelAndView(new RedirectView(url));
             } else {
+                request.setAttribute("errors", errors);
                 return showEditForm(request, content);
             }
         }
