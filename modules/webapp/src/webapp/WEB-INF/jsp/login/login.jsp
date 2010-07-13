@@ -61,7 +61,7 @@
 
             <div id="UserName">
                 <label>Brukernavn...</label>
-                <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" size="25" maxlength="60">
+                <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" size="25" maxlength="60" autocomplete="off">
             </div>
             <div id="Password">
                 <label>Passord...</label>

@@ -55,16 +55,15 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
         role.setId(id);
         role.setDomain(domain);
 
-        List profileSets = new ArrayList();
+        List<ProfileSet> profileSets = new ArrayList<ProfileSet>();
 
-        List roleConfigs = getRoleConfiguration();
+        List<RoleManagementConfiguration> roleConfigs = getRoleConfiguration();
 
         /**
          * Hent alle rollesett brukeren har og legg dem inn lista
          * Dersom et rollesett har en UpdateRoleManager, sett flagg at disse er redigerbare
          */
-        for (int i = 0; i < roleConfigs.size(); i++) {
-            RoleManagementConfiguration roleConfig =  (RoleManagementConfiguration)roleConfigs.get(i);
+        for (RoleManagementConfiguration roleConfig : roleConfigs) {
             ProfileManagementConfiguration profileConfig = getProfileConfiguration(domain);
 
             RoleManager roleManager = roleConfig.getRoleManager();
@@ -73,12 +72,16 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
             profileSet.setDomain(profileConfig.getDomain());
             profileSet.setDescription(profileConfig.getDescription());
 
-            List profiles = new ArrayList();
+            if (roleConfig.getRoleUpdateManager() != null) {
+                profileSet.setIsEditable(true);
+            }
+
+            List<Profile> profiles = new ArrayList<Profile>();
             Iterator identities = roleManager.getUsersWithRole(role);
             while (identities.hasNext()) {
-                Identity identity = (Identity)identities.next();
+                Identity identity = (Identity) identities.next();
 
-                // Ønsker å vise fullt navn for de som har brukerprofil
+                // ï¿½nsker ï¿½ vise fullt navn for de som har brukerprofil
                 ProfileManager profileManager = profileConfig.getProfileManager();
                 Profile p = profileManager.getProfileForUser(identity);
 

@@ -37,8 +37,8 @@ import java.util.List;
 public abstract class AbstractUserAdminController extends AdminController {
     private final static String SOURCE = "AbstractUserAdminController";
 
-    protected List profileConfiguration;
-    protected List roleConfiguration;
+    protected List<ProfileManagementConfiguration> profileConfiguration;
+    protected List<RoleManagementConfiguration> roleConfiguration;
 
     public abstract ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
@@ -47,14 +47,13 @@ public abstract class AbstractUserAdminController extends AdminController {
             return null;
         }
 
-        for (int i = 0; i < profileConfiguration.size(); i++) {
-            ProfileManagementConfiguration pmc = (ProfileManagementConfiguration) profileConfiguration.get(i);
+        for (ProfileManagementConfiguration pmc : profileConfiguration) {
             if (pmc.getDomain().equalsIgnoreCase(domain)) {
                 return pmc;
             }
         }
 
-        return (ProfileManagementConfiguration)profileConfiguration.get(0);
+        return profileConfiguration.get(0);
     }
 
     public RoleManagementConfiguration getRoleConfiguration(String domain) {
@@ -62,21 +61,20 @@ public abstract class AbstractUserAdminController extends AdminController {
             return null;
         }
 
-        for (int i = 0; i < roleConfiguration.size(); i++) {
-            RoleManagementConfiguration rmc = (RoleManagementConfiguration) roleConfiguration.get(i);
+        for (RoleManagementConfiguration rmc : roleConfiguration) {
             if (rmc.getDomain().equalsIgnoreCase(domain)) {
                 return rmc;
             }
         }
 
-        return (RoleManagementConfiguration)roleConfiguration.get(0);
+        return roleConfiguration.get(0);
     }
 
     public List getProfileConfiguration() {
         return profileConfiguration;
     }
 
-    public void setProfileConfiguration(List profileConfigurations) {
+    public void setProfileConfiguration(List<ProfileManagementConfiguration> profileConfigurations) {
         this.profileConfiguration = profileConfigurations;
     }
 
@@ -84,7 +82,7 @@ public abstract class AbstractUserAdminController extends AdminController {
         return roleConfiguration;
     }
 
-    public void setRoleConfiguration(List roleConfiguration) {
+    public void setRoleConfiguration(List<RoleManagementConfiguration> roleConfiguration) {
         this.roleConfiguration = roleConfiguration;
     }
 

@@ -34,7 +34,7 @@
     </script>
 
     <admin:box>
-        <h1><kantega:label key="useradmin.userroles.title"/></h1>
+        <h1><kantega:label key="useradmin.roleusers.title"/></h1>
 
         <form action="removeuserrole" name="removerole" method="post">
             <input type="hidden" name="roleId" value="<c:out value="${roleId}"/>">
