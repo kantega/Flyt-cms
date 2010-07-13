@@ -30,6 +30,7 @@ public class AbstractSimpleEditTag extends BodyTagSupport {
     protected String linkId = null;
     protected String cssclass = null;
     protected String redirectUrl = null;
+    protected String cancelUrl = null;
     protected String collection = null;
     protected Content content = null;
 
@@ -43,6 +44,10 @@ public class AbstractSimpleEditTag extends BodyTagSupport {
 
     public void setRedirecturl(String redirecturl) {
         this.redirectUrl = redirecturl;
+    }
+
+    public void setCancelurl(String cancelurl) {
+        this.cancelUrl = cancelurl;
     }
 
     public void setCollection(String collection) {

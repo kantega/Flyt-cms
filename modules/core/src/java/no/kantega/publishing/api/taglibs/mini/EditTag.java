@@ -77,6 +77,10 @@ public class EditTag extends AbstractSimpleEditTag {
                     link.append("&amp;redirectUrl=");
                     link.append(redirectUrl);
                 }
+                if (cancelUrl != null) {
+                    link.append("&amp;redirectUrl=");
+                    link.append(cancelUrl);
+                }                
                 link.append("\">");
                 link.append(body);
                 link.append("</a>");

@@ -85,6 +85,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>URL to redirect when cancelling</description>
+            <name>cancelurl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
             <description>Additional query parameters, eg: queryParms="param1=some&amp;param2=thing"</description>
             <name>queryParams</name>
             <required>false</required>
@@ -123,6 +129,12 @@
         <attribute>
             <description>URL to redirect to after editing</description>
             <name>redirecturl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to redirect when cancelling</description>
+            <name>cancelurl</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

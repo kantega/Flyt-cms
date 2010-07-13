@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
- * User: Kristian Selnæs
+ * User: Kristian Selnï¿½s
  * Date: 23.mar.2010
  * Time: 09:22:16
  */
@@ -45,7 +45,6 @@ public class FormTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         Content currentEditContent = (Content) request.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
-        //TODO: Handle content == null
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
         boolean canApprove = securitySession.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
@@ -53,6 +52,12 @@ public class FormTag extends BodyTagSupport {
 
         if (action == null) {
             action = request.getContextPath()+"/admin/publish/SimpleEditContent.action";
+        }
+
+        String redirectUrl = request.getParameter("redirectUrl");
+        String cancelUrl = request.getParameter("cancelUrl");
+        if (cancelUrl == null) {
+            cancelUrl = redirectUrl;
         }
 
         try {
@@ -63,22 +68,27 @@ public class FormTag extends BodyTagSupport {
             Locale locale = Aksess.getDefaultAdminLocale();
 
             if (!canApprove) {
-
                 out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
             }
-            out.write("<form name=\"myform\" id=\"EditContentForm\" action=\""+action+"\" method=\"post\" enctype=\"multipart/form-data\">");
-            out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\""+contentStatus+"\">");
-            out.write("    <input type=\"hidden\" name=\"currentId\" value=\""+currentEditContent.getId()+"\">");
+            out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">");
+            out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
+            out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
             out.write("    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">");
+            if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
+                out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
+            }
+            if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
+                out.write("    <input type=\"hidden\" name=\"cancelUrl\" value=\"" + cancelUrl + "\">");
+            }
 
             out.write(body);
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
             out.write("    <input class=\"editContentButton submit\" type=\"submit\" value=\""+submitButtonLabel+"\">");
+
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
-            String redirectUrl = request.getParameter("redirectUrl");
-            if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
-                cancelAction = cancelAction+"?redirectUrl="+redirectUrl;
+            if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
+                cancelAction = cancelAction+"?redirectUrl="+cancelUrl;
             }
             out.write("    <input class=\"editContentButton cancel\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.cancel", locale)+"\" onclick=\"window.location.href ='"+cancelAction+"'\">");
             out.write("</form>");

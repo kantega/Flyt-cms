@@ -96,6 +96,10 @@ public class CreateTag extends AbstractSimpleEditTag {
                     link.append("&amp;redirectUrl=");
                     link.append(redirectUrl);
                 }
+                if (cancelUrl != null) {
+                    link.append("&amp;redirectUrl=");
+                    link.append(cancelUrl);
+                }
                 if (queryParams != null && queryParams.trim().length() > 0) {
                     if (queryParams.startsWith("?")) {
                         queryParams = queryParams.replaceFirst("\\?", "");
