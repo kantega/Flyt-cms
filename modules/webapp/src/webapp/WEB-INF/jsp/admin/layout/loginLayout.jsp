@@ -20,7 +20,7 @@
 <html>
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/default.css">
