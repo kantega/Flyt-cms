@@ -134,6 +134,9 @@
         <column name="ChangeDescription" required="false" type="CLOB" size="2147483647"/>
         <column name="ApprovedBy" required="false" type="VARCHAR" size="64"/>
         <column name="ChangeFrom" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="IsMinorChange" required="true" type="INTEGER" size="10" default="0"/>
+        <column name="LastMajorChange" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="LastMajorChangeBy" required="false" type="VARCHAR" size="64"/>
         <index name="idx_contentversion">
             <index-column name="ContentId"/>
             <index-column name="Version"/>

@@ -35,6 +35,7 @@ public class SortOrder {
 
         if (sort1.equalsIgnoreCase(ContentProperty.RATING_SCORE) ||
             sort1.equalsIgnoreCase(ContentProperty.LAST_MODIFIED) ||
+            sort1.equalsIgnoreCase(ContentProperty.LAST_MAJOR_CHANGE) ||
             sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
             sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_COMMENTS) ||
             sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_RATINGS)) {
@@ -60,6 +61,7 @@ public class SortOrder {
         if (sort1.equalsIgnoreCase(ContentProperty.TITLE) ||
             sort1.equalsIgnoreCase(ContentProperty.ALT_TITLE) ||
             sort1.equalsIgnoreCase(ContentProperty.LAST_MODIFIED) ||
+            sort1.equalsIgnoreCase(ContentProperty.LAST_MAJOR_CHANGE) ||
             sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
             sort1.equalsIgnoreCase(ContentProperty.EXPIRE_DATE) ||
             sort1.equalsIgnoreCase(ContentProperty.DEPTH) ||

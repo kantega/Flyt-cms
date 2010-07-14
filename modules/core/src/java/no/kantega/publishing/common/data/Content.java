@@ -95,7 +95,10 @@ public class Content extends BaseObject {
     boolean isLocked = false;
 
     boolean isSearchable = true;
-    boolean isMinorChange = false;    
+    boolean isMinorChange = false;
+
+    private Date lastMajorChange;
+    private String lastMajorChangeBy;
     
     // Rating
     private float ratingScore = 0f;
@@ -733,5 +736,24 @@ public class Content extends BaseObject {
 
     public void setNumberOfComments(int numberOfComments) {
         this.numberOfComments = numberOfComments;
+    }
+
+    public Date getLastMajorChange() {
+        return lastMajorChange;
+    }
+
+    public void setLastMajorChange(Date lastMajorChange) {
+        this.lastMajorChange = lastMajorChange;
+    }
+
+    public String getLastMajorChangeBy() {
+        return lastMajorChangeBy;
+    }
+
+    public void setLastMajorChangeBy(String lastMajorChangeBy) {
+        if (lastMajorChangeBy != null && lastMajorChangeBy.length() > 64) {
+            lastMajorChangeBy = lastMajorChangeBy.substring(0, 63);
+        }
+        this.lastMajorChangeBy = lastMajorChangeBy;
     }
 }

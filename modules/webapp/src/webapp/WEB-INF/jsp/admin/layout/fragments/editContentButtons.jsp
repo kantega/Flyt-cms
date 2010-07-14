@@ -31,3 +31,10 @@
     <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
 </c:if>
 <span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+
+<c:if test="${!currentContent.new}">
+    <span>
+        <input type="checkbox" class="checkbox" name="minorchange" id="MinorChange" value="true"<c:if test="${currentContent.minorChange}"> checked="checked"</c:if>><label class="checkbox" id="LabelMinorChange" for="MinorChange"><kantega:label key="aksess.publishinfo.minorchange"/></label>
+    </span>
+</c:if>
+

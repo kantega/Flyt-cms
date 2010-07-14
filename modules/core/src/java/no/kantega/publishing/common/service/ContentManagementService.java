@@ -99,6 +99,10 @@ public class ContentManagementService {
         if (request != null) {
             Log.debug(SOURCE, "Locking contentid: " + c.getId() + " for user: " + securitySession.getUser().getId() + " with IP: " + request.getRemoteAddr(), null, null);
         }
+
+        // Reset minor change field
+        c.setMinorChange(false);
+
         LockManager.lockContent(securitySession.getUser().getId(), c.getId());
 
         EditContentHelper.updateAttributesFromTemplate(c);
@@ -213,6 +217,12 @@ public class ContentManagementService {
         }
 
         content.setModifiedBy(securitySession.getUser().getId());
+        content.setLastModified(new Date());
+
+        if (content.isNew() || !content.isMinorChange()) {
+            content.setLastMajorChangeBy(securitySession.getUser().getId());
+            content.setLastMajorChange(new Date());
+        }
 
         // Check if user is authorized to publish directly
         if (newStatus == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {

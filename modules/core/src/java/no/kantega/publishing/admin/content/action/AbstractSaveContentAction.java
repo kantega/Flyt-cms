@@ -251,7 +251,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         }
 
         content.setSearchable(param.getBoolean("searchable"));
-        content.setMinorChange(param.getBoolean("minorchange"));
+        content.setMinorChange(param.getBoolean("minorchange", false));
 
         int templateId = param.getInt("displaytemplate");
         if (templateId != -1) {

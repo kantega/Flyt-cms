@@ -115,7 +115,7 @@ public final class AttributeTagHelper {
             } else {
                 if (contentId.length() > 0) {
                     try {
-                        // Det er angitt en contentid som må slås opp
+                        // Det er angitt en contentid som mï¿½ slï¿½s opp
                         ContentIdentifier cid = new ContentIdentifier();
                         try {
                             if (contentId.indexOf(",") != -1) {
@@ -159,9 +159,9 @@ public final class AttributeTagHelper {
     }
 
     /**
-     * Henter en attributt for angitt objekt, både faste attributter som f.eks publishdate og vanlige attributter.
-     * Kutter lengde på innhold hvis nødvendig etc.
-     * Leter etter attributt på alle nivåene overfor hvis inheritFromAncestors = true
+     * Henter en attributt for angitt objekt, bï¿½de faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde pï¿½ innhold hvis nï¿½dvendig etc.
+     * Leter etter attributt pï¿½ alle nivï¿½ene overfor hvis inheritFromAncestors = true
      * @param content
      * @param cmd
      * @return
@@ -171,7 +171,7 @@ public final class AttributeTagHelper {
     public static String getAttribute(Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
         String value = getAttribute(content, cmd);
         if ((value == null || value.length() == 0) && (content != null && inheritFromAncestors)) {
-            // Fant ikke verdi på dette nivået, prøver å lete lengre opp
+            // Fant ikke verdi pï¿½ dette nivï¿½et, prï¿½ver ï¿½ lete lengre opp
             Association a = content.getAssociation();
             if (a != null && a.getPath().length() > 2) {
                 String contentList = a.getPath().substring(1, a.getPath().length() - 1);
@@ -195,8 +195,8 @@ public final class AttributeTagHelper {
 
 
     /**
-     * Henter en attributt for angitt objekt, både faste attributter som f.eks publishdate og vanlige attributter.
-     * Kutter lengde på innhold hvis nødvendig etc.
+     * Henter en attributt for angitt objekt, bï¿½de faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde pï¿½ innhold hvis nï¿½dvendig etc.
      * @param content
      * @param cmd
      * @return
@@ -296,6 +296,8 @@ public final class AttributeTagHelper {
                         date = content.getExpireDate();
                     } else if (name.equals(ContentProperty.LAST_MODIFIED)) {
                         date = content.getLastModified();
+                    } else if (name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
+                        date = content.getLastMajorChange();
                     }  else if (name.equals(ContentProperty.REVISION_DATE)) {
                         date = content.getRevisionDate();
                     }
@@ -306,6 +308,8 @@ public final class AttributeTagHelper {
                     }
                 } else if(name.equals(ContentProperty.MODIFIED_BY)) {
                     result = content.getModifiedBy();
+                } else if(name.equals(ContentProperty.LAST_MAJOR_CHANGE_BY)) {
+                    result = content.getLastMajorChangeBy();
                 } else if(name.equals(ContentProperty.PUBLISHER)) {
                     result = content.getPublisher();
                 } else if(name.equals(ContentProperty.OWNER)) {

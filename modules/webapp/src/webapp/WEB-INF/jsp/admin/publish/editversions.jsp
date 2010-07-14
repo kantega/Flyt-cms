@@ -52,6 +52,7 @@
                 <th colspan="2"><kantega:label key="aksess.versions.version"/></th>
                 <th><kantega:label key="aksess.versions.lastmodified"/></th>
                 <th><kantega:label key="aksess.versions.modifiedby"/></th>
+                <th><kantega:label key="aksess.versions.minorchange"/></th>
                 <th><kantega:label key="aksess.versions.status"/></th>
                 <th>&nbsp;</th>
             </tr>
@@ -84,6 +85,7 @@
                 <td><%=title%></td>
                 <td><%=modifiedDate%></td>
                 <td><%=c.getModifiedBy()%></td>
+                <td><input type="checkbox" name="cb<%=i%>" disabled="true" <%if (c.isMinorChange()) out.write("checked");%>></td>
                 <td><kantega:label key="<%=statusKey%>"/></td>
                 <td>
                     <a href="<%=current.getUrl()%>&version=<%=c.getVersion()%>" target="_new" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>

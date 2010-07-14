@@ -97,7 +97,11 @@ public class ContentAOHelper {
         content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
         content.setSearchable(rs.getInt("IsSearchable") == 1);
         content.setNumberOfComments(rs.getInt("NumberOfComments"));
-        content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));        
+        content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));
+
+        content.setMinorChange(rs.getInt("IsMinorChange") == 1);
+        content.setLastMajorChange(rs.getTimestamp("LastMajorChange"));
+        content.setLastMajorChangeBy(rs.getString("LastMajorChangeBy"));
 
         // Info som avhenger av i hvilken kontekst dette er publisert
         if (getAssociationInfo) {

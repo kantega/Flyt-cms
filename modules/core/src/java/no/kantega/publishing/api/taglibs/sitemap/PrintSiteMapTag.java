@@ -67,7 +67,7 @@ public class PrintSiteMapTag extends TagSupport {
 
     private void printSiteMap(SiteMapEntry sitemap, int level, JspWriter out) throws IOException {
         if (sitemap != null) {
-			if(level > 0){
+            if(level > 0){
                 String url = sitemap.getUrl();
                 String title = sitemap.getTitle();
 
@@ -98,9 +98,9 @@ public class PrintSiteMapTag extends TagSupport {
                 out.write("    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd\">\n\n");
             } else if (level > 0) {
                 String absUrl;
-                if(sitemap.getAlias() != null){
+                if (sitemap.getAlias() != null) {
                     absUrl = URLHelper.getServerURL((HttpServletRequest)pageContext.getRequest()) + Aksess.getContextPath() + sitemap.getAlias();
-                }else{
+                } else {
                     absUrl = URLHelper.getServerURL((HttpServletRequest)pageContext.getRequest()) + sitemap.getUrl();
                 }
                 Date lastModified = sitemap.getLastModified();
@@ -120,7 +120,10 @@ public class PrintSiteMapTag extends TagSupport {
             List children = sitemap.getChildren();
             if (children != null) {
                 for (int i = 0; i < children.size(); i++) {
-                    printCrawlerSiteMap((SiteMapEntry)children.get(i), level+1, out);
+                    SiteMapEntry entry = (SiteMapEntry)children.get(i);
+                    if (entry.isSearchable()) {
+                        printCrawlerSiteMap(entry, level+1, out);
+                    }                    
                 }
             }
             if (level == 0) {
@@ -131,7 +134,7 @@ public class PrintSiteMapTag extends TagSupport {
 
 
     public int doEndTag() throws JspException {
-         return EVAL_PAGE;
+        return EVAL_PAGE;
     }
 
 

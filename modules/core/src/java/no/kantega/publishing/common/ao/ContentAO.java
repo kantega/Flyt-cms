@@ -822,7 +822,7 @@ public class ContentAO {
             }
 
             // Insert new version
-            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
             st.setInt(1, content.getId());
             st.setInt(2, content.getVersion());
             st.setInt(3, newStatus);
@@ -839,6 +839,9 @@ public class ContentAO {
             st.setString(14, content.getChangeDescription());
             st.setString(15, content.getApprovedBy());
             st.setTimestamp(16, content.getChangeFromDate() == null ? null : new java.sql.Timestamp(content.getChangeFromDate().getTime()));
+            st.setInt(17, content.isMinorChange() ? 1 : 0);
+            st.setTimestamp(18, content.getLastMajorChange() == null ? new java.sql.Timestamp(new Date().getTime()) : new java.sql.Timestamp(content.getLastMajorChange().getTime()));
+            st.setString(19, content.getLastMajorChangeBy());
 
             st.execute();
 

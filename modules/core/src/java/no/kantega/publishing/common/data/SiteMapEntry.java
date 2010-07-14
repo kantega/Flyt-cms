@@ -37,6 +37,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     private String owner = null;
     private String ownerPerson = null;
     public ContentType type = ContentType.PAGE;
+    private boolean isSearchable = true;
 
     public SiteMapEntry() {
     }
@@ -191,5 +192,13 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public ContentType getType() {
         return type;
-    }        
+    }
+
+    public boolean isSearchable() {
+        return isSearchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        isSearchable = searchable;
+    }
 }

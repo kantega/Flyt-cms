@@ -181,6 +181,10 @@ public class ContentQuery {
                 }
             }
         } else if (sql != null) {
+            String s = sql.trim();
+            if (!s.startsWith("and") && !s.startsWith("or")) {
+                query.append(" and ");
+            }
             query.append(sql);
         } else if (attributes == null) {
             query.append(" and associations.Type = ?");
@@ -422,7 +426,7 @@ public class ContentQuery {
 
         if (attributes != null) {
             try {
-                // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
+                // Mï¿½ gjï¿½res tungvint siden MySQL 4.0 ikke stï¿½tter subqueryes
                 PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
                 for (int i = 0; i < attributes.size(); i++) {
                     Attribute a = (Attribute)attributes.get(i);

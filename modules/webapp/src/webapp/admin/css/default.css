@@ -681,6 +681,15 @@ table.fullWidth {
     background: url("../bitmaps/common/icons/small/navigate.png");
 }
 
+#Content .buttonBar input#MinorChange {
+    height: auto;
+    float: none;
+}
+
+#LabelMinorChange {
+    float: none;
+}
+
 /************** Form elements and content attributes **************/
 
 .contentAttribute, .formElement {

@@ -116,8 +116,8 @@
             <c:choose>
                 <c:when test="${hasUnsavedChanges}">
                     <div id="EditContentButtons" class="buttonBar">
-                        <%@include file="fragments/editContentButtons.jsp"%>
                         <form name="myform" style="display:none" action="${pageContext.request.contextPath}/admin/publish/SaveContentPreview.action" method="post">
+                            <%@include file="fragments/editContentButtons.jsp"%>
                             <input type="hidden" name="status" value="">
                             <input type="hidden" name="action" value="">
                             <input type="hidden" name="currentId" value="${currentContent.id}">

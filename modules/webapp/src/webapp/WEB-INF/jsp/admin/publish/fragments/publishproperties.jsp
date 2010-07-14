@@ -144,7 +144,7 @@
         </fieldset>
     </div>
 </c:if>
-<c:if test="${currentContent.id > 0 && canPublish}">
+<c:if test="${!currentContent.new  && canPublish}">
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
@@ -215,10 +215,6 @@
         <legend><kantega:label key="aksess.publishinfo.otherproperties"/></legend>
         <div class="row">
             <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
-            <div class="clearing"></div>
-        </div>
-        <div class="row">
-            <input type="checkbox" class="checkbox" name="minorchange" id="MinorChange" value="true"<c:if test="${currentContent.minorChange}"> checked="checked"</c:if> tabindex="521"><label class="checkbox"><kantega:label key="aksess.publishinfo.minorchange"/></label>
             <div class="clearing"></div>
         </div>
         <c:if test="${isDeveloper}">

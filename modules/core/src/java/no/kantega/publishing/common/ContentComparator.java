@@ -131,6 +131,8 @@ public class ContentComparator implements Comparator {
                 return compareDates(c1.getPublishDate(), c2.getPublishDate());
             } else if (fieldName.equalsIgnoreCase(ContentProperty.LAST_MODIFIED)) {
                 return compareDates(c1.getLastModified(), c2.getLastModified());
+            } else if (fieldName.equalsIgnoreCase(ContentProperty.LAST_MAJOR_CHANGE)) {
+                return compareDates(c1.getLastModified(), c2.getLastMajorChange());
             } else if (fieldName.equalsIgnoreCase(ContentProperty.REVISION_DATE)) {
                 return compareDates(c1.getRevisionDate(), c2.getRevisionDate());
             } else {

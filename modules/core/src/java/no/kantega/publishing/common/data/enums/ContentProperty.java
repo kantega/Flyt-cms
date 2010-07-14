@@ -48,4 +48,6 @@ public class ContentProperty {
     public static final String RATING_SCORE = "ratingscore";
     public static final String NUMBER_OF_RATINGS = "numberofratings";
     public static final String NUMBER_OF_COMMENTS = "numberofcomments";
+    public static final String LAST_MAJOR_CHANGE = "lastmajorchange";
+    public static final String LAST_MAJOR_CHANGE_BY = "lastmajorchangeby";
 }
