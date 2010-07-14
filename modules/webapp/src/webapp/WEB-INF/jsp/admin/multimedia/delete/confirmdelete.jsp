@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
@@ -49,14 +48,12 @@
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteMultimedia.action">
         <input type="hidden" name="id" value="${multimedia.id}">
-        <admin:box>
-                <kantega:label key="aksess.confirmdelete.text" title="${multimedia.name}"/>
+        <kantega:label key="aksess.confirmdelete.text" title="${multimedia.name}"/>
 
-                <div class="buttonGroup">
-                    <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
-                </div>
-        </admin:box>
+        <div class="buttonGroup">
+            <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.delete"/>"></span>
+            <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+        </div>
     </form>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

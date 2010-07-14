@@ -19,19 +19,26 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
 <script type="text/javascript">
+    $(document).ready(function() {
+        $("#File").change(function() {
+            $("#UploadMetadata").show();
+            $("#UploadFormButtons").show();
+        });
+    });
+
     function validateUpload() {
         if (document.uploadForm.elements['file'].value == "") {
             alert('<kantega:label key="aksess.multimedia.uploadfile.missing"/>');
             return false;
         }
-        <c:if test="${id == -1}">
-            <c:if test="${altNameRequired}">
-                if (document.uploadForm.elements['altname'].value == "") {
-                    alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
-                    return false;
-                }
-            </c:if>
-        </c:if>
+    <c:if test="${id == -1}">
+    <c:if test="${altNameRequired}">
+        if (document.uploadForm.elements['altname'].value == "") {
+            alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
+            return false;
+        }
+    </c:if>
+    </c:if>
 
         $("#UploadFormButtons").hide();
         $("#UploadStatus").show();
@@ -41,49 +48,55 @@
 </script>
 <div id="MultimediaUploadForm">
     <form action="UploadMultimedia.action" name="uploadForm" method="post" enctype="multipart/form-data" onsubmit="return validateUpload()">
-        <c:if test="${id == -1}">
-            <input type="hidden" name="parentId" value="${parentId}">
-            <div class="formElement">
-                <div class="heading">
-                    <label><kantega:label key="aksess.multimedia.medianame"/></label>
-                </div>
-                <div class="inputs">
-                    <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
-                </div>
-            </div>
-            <div class="formElement">
-                <div class="heading">
-                    <label><kantega:label key="aksess.multimedia.altname"/></label>
-                </div>
-                <div class="inputs">
-                    <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
-                    <div class="ui-state-highlight">
-                        <kantega:label key="aksess.multimedia.altinfo"/>
-                    </div>
-                </div>
-            </div>
-            <div class="formElement">
-                <div class="heading">
-                    <label><kantega:label key="aksess.multimedia.author"/></label>
-                </div>
-                <div class="inputs">
-                    <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
-                </div>
-            </div>
-        </c:if>
         <div class="formElement">
             <div class="heading">
                 <label><kantega:label key="aksess.multimedia.uploadfile"/></label>
             </div>
             <div class="inputs">
-                <input type="file" class="fullWidth" name="file" value="" size="45">
+                <input type="file" class="fullWidth" id="File" name="file" value="" size="45">
                 <c:if test="${allowPreserveImageSize}"><br>
                     <input type="checkbox" id="PreserveImageSize" name="preserveImageSize" value="true"><label for="PreserveImageSize"><kantega:label key="aksess.multimedia.preserveimagesize"/></label>
                 </c:if>
             </div>
         </div>
+        
+        <c:if test="${id != -1}">
+            <input type="hidden" name="id" value="${id}">
+        </c:if>
 
-        <div id="UploadFormButtons" class="buttonGroup">
+        <c:if test="${id == -1}">
+            <input type="hidden" name="parentId" value="${parentId}">
+            <div id="UploadMetadata" style="display:none">
+                <div class="formElement">
+                    <div class="heading">
+                        <label><kantega:label key="aksess.multimedia.medianame"/></label>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
+                    </div>
+                </div>
+                <div class="formElement">
+                    <div class="heading">
+                        <label><kantega:label key="aksess.multimedia.altname"/></label>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
+                        <div class="ui-state-highlight">
+                            <kantega:label key="aksess.multimedia.altinfo"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="formElement">
+                    <div class="heading">
+                        <label><kantega:label key="aksess.multimedia.author"/></label>
+                    </div>
+                    <div class="inputs">
+                        <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
+                    </div>
+                </div>
+            </div>
+        </c:if>
+        <div id="UploadFormButtons" class="buttonGroup" style="display:none">
             <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.upload"/>"></span>
         </div>
 

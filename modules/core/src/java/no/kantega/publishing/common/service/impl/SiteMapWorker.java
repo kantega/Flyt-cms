@@ -66,7 +66,7 @@ public class SiteMapWorker {
         List tmpentries = new ArrayList();
 
         StringBuilder query = new StringBuilder();
-        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, contentversion.Status, contentversion.Title, contentversion.LastModified, contentversion.IsSearchable, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
+        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, contentversion.Status, contentversion.Title, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = " + ContentStatus.PUBLISHED);
@@ -100,10 +100,10 @@ public class SiteMapWorker {
                 boolean openInNewWindow = rs.getInt(p++) == 1;
                 String owner = rs.getString(p++);
                 String ownerPerson = rs.getString(p++);
+                boolean isSearchable = rs.getInt(p++) == 1;
                 int status  = rs.getInt(p++);
                 String title = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);
-                boolean isSearchable = rs.getInt("IsSearchable") == 1;
 
                 int uniqueId = rs.getInt(p++);
                 int currentId = rs.getInt(p++);

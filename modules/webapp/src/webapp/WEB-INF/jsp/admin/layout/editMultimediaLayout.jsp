@@ -48,6 +48,11 @@
                     openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
                 });
             </c:if>
+            <c:if test="${canEdit}">
+                $("#ToolsMenu .button .newfile").click(function(){
+                    openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.replacefile"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?id=${media.id}", width: 450, height:200});
+                });
+            </c:if>
         }
     </script>
 
@@ -67,6 +72,7 @@
     <div class="buttonGroup">
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="imagemap"><kantega:label key="aksess.tools.imagemap"/></span></a>
+        <a href="#" class="button"><span class="newfile"><kantega:label key="aksess.tools.replacefile"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
     </div>
 </kantega:section>
