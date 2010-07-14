@@ -20,6 +20,7 @@
 <html id="Popup">
 <head>
     <title><kantega:getsection id="title"/></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
