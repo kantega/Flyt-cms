@@ -1,3 +1,4 @@
+<%@ page import="java.util.Date" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -19,13 +20,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
 <script type="text/javascript">
-    $(document).ready(function() {
-        $("#File").change(function() {
-            $("#UploadMetadata").show();
-            $("#UploadFormButtons").show();
-        });
-    });
-
     function validateUpload() {
         if (document.uploadForm.elements['file'].value == "") {
             alert('<kantega:label key="aksess.multimedia.uploadfile.missing"/>');
@@ -45,28 +39,34 @@
 
         return true;
     }
+
+    function displayMetadata() {
+        $("#UploadMetadata").show();
+        $("#UploadFormButtons").show();
+    }
 </script>
 <div id="MultimediaUploadForm">
     <form action="UploadMultimedia.action" name="uploadForm" method="post" enctype="multipart/form-data" onsubmit="return validateUpload()">
+        <c:if test="${id != -1}">
+            <input type="hidden" name="id" value="${id}">
+        </c:if>
+
         <div class="formElement">
             <div class="heading">
                 <label><kantega:label key="aksess.multimedia.uploadfile"/></label>
             </div>
             <div class="inputs">
-                <input type="file" class="fullWidth" id="File" name="file" value="" size="45">
+                <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()">
                 <c:if test="${allowPreserveImageSize}"><br>
                     <input type="checkbox" id="PreserveImageSize" name="preserveImageSize" value="true"><label for="PreserveImageSize"><kantega:label key="aksess.multimedia.preserveimagesize"/></label>
                 </c:if>
             </div>
         </div>
-        
-        <c:if test="${id != -1}">
-            <input type="hidden" name="id" value="${id}">
-        </c:if>
+
 
         <c:if test="${id == -1}">
             <input type="hidden" name="parentId" value="${parentId}">
-            <div id="UploadMetadata" style="display:none">
+            <div id="UploadMetadata" class="hidden">
                 <div class="formElement">
                     <div class="heading">
                         <label><kantega:label key="aksess.multimedia.medianame"/></label>
@@ -96,7 +96,8 @@
                 </div>
             </div>
         </c:if>
-        <div id="UploadFormButtons" class="buttonGroup" style="display:none">
+
+        <div id="UploadFormButtons" class="buttonGroup hidden">
             <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.upload"/>"></span>
         </div>
 

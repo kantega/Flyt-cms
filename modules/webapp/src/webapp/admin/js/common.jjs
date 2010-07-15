@@ -127,6 +127,10 @@ openaksess.common = {
             },
             autoResize: true,
             autoOpen: true,
+            close: function() {
+                openaksess.common.debug("openaksess.common.modalWindow.close()");
+                $(this).remove();
+            },
             overlay: {
                 opacity: 0.2,
                 background: "black"
@@ -205,7 +209,6 @@ openaksess.common = {
              * Closes the current modal.
              */
             close : function(){
-                openaksess.common.debug("openaksess.common.modalWindow.close()");
                 $content.dialog('close');
             }
         };

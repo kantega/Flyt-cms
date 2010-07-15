@@ -276,7 +276,7 @@ openaksess.multimedia = {
 
     showUploadForm : function() {
         openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + currentItemIdentifier);
-        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.upload"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier, width: 450, height:350});
+        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.upload"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
     }
 };
 
@@ -304,7 +304,7 @@ openaksess.navigate.updateMainPane = function(itemIdentifier, suppressNavigatorU
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
-    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){        
+    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
         $("#MultimediaFolders img.thumbnail").lazyload({
             placeholder : "../bitmaps/blank.gif",
             container: $("#MultimediaFolders")

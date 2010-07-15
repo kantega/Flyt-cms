@@ -33,26 +33,26 @@
          * Registers click event actions to each tool
          */
         function bindToolButtons() {
-            <c:if test="${canEdit && isImage}">
-                $("#ToolsMenu .button .crop").click(function(){
-                    location.href = "ImageCrop.action?id=${media.id}";
-                });
-            </c:if>
-            <c:if test="${canEdit && isImage}">
-                $("#ToolsMenu .button .imagemap").click(function(){
-                    location.href = "ImageMap.action?id=${media.id}";
-                });
-            </c:if>
-            <c:if test="${canEdit}">
-                $("#ToolsMenu .button .delete").click(function(){
-                    openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
-                });
-            </c:if>
-            <c:if test="${canEdit}">
-                $("#ToolsMenu .button .newfile").click(function(){
-                    openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.replacefile"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?id=${media.id}", width: 450, height:200});
-                });
-            </c:if>
+        <c:if test="${canEdit && isImage}">
+            $("#ToolsMenu .button .crop").click(function(){
+                location.href = "ImageCrop.action?id=${media.id}";
+            });
+        </c:if>
+        <c:if test="${canEdit && isImage}">
+            $("#ToolsMenu .button .imagemap").click(function(){
+                location.href = "ImageMap.action?id=${media.id}";
+            });
+        </c:if>
+        <c:if test="${canEdit}">
+            $("#ToolsMenu .button .delete").click(function(){
+                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
+            });
+        </c:if>
+        <c:if test="${canEdit}">
+            $("#ToolsMenu .button .newfile").click(function(){
+                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.replacefile"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?id=${media.id}", width: 450, height:200});
+            });
+        </c:if>
         }
     </script>
 
