@@ -35,7 +35,7 @@ public class AbstractSimpleEditTag extends BodyTagSupport {
     protected Content content = null;
 
     public void setLinkid(String linkid) {
-        this.id = linkid;
+        this.linkId = linkid;
     }
 
     public void setCssclass(String cssclass) {
