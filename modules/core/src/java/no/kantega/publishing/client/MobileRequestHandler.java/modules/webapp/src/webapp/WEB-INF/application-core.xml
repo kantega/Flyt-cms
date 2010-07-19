@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
+        <property name="resource" value="${templateconfig.location}"/>
+    </bean>
+
+    <bean id="aksessTemplateConfigurationFactory" class="no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory">
+        <property name="inputStreamSource" ref="aksessTemplateConfigInputSource"/>
+    </bean>
+
+    <bean id="aksessTemplateConfigurationValidator" class="no.kantega.publishing.common.util.templates.TemplateConfigurationValidator"/>
+
+    <bean id="aksessContentTemplateReader" class="no.kantega.publishing.common.util.templates.ContentTemplateReader">
+        <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
+    </bean>
+
+    <bean id="aksessTemplateValidator" class="no.kantega.publishing.common.util.templates.ContentTemplateValidator">
+        <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
+    </bean>
+
+    <bean id="aksessTemplateConfigurationCache" class="no.kantega.publishing.common.cache.TemplateConfigurationCache">
+        <property name="configurationFactory" ref="aksessTemplateConfigurationFactory"/>
+        <property name="configurationValidator" ref="aksessTemplateConfigurationValidator"/>
+        <property name="contentTemplateReader" ref="aksessContentTemplateReader"/>
+    </bean>
+
+    <bean id="aksessSiteCache" class="no.kantega.publishing.common.cache.DefaultSiteCache">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="hostnamesDao" ref="aksessHostnamesDao"/>
+    </bean>
+
+    <bean id="pluginManager" class="no.kantega.publishing.spring.PluginManagerFactory">
+        <property name="servicesClass" value="no.kantega.publishing.api.plugin.OpenAksessServices"/>
+        <property name="pluginClass" value="no.kantega.publishing.api.plugin.OpenAksessPlugin"/>
+        <property name="postProcessors">
+            <list>
+                <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
+                    <property name="exposedBeanNames">
+                        <list>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean name="aksessJsonWriter"  class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
+        <property name="keepValueTypesMode" value="ALL"/>
+    </bean>
+
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.JsonView">
+        <property name="jsonWriter" ref="aksessJsonWriter"/>
+    </bean>
+
+    <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
+        <constructor-arg>
+            <list>
+                <bean class="no.kantega.publishing.common.data.ServletResourceLoader">
+                    <property name="prefix" value="/WEB-INF/templates/content/"/>
+                </bean>
+                <bean class="no.kantega.publishing.common.data.RelativeFileSystemResourceLoader">
+                    <constructor-arg value="${appDir}/templates"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="emailTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
+        <constructor-arg>
+            <list>
+                <bean class="no.kantega.publishing.common.data.ServletResourceLoader">
+                    <property name="prefix" value="/WEB-INF/templates/mail/"/>
+                </bean>
+                <bean class="no.kantega.publishing.common.data.RelativeFileSystemResourceLoader">
+                    <constructor-arg value="${appDir}/mail"/>
+                </bean>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="userPreferencesManager" class="no.kantega.publishing.admin.preferences.DefaultUserPreferencesManager"/>
+
+    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckerServiceImpl" id="aksessSpellCheckerService"/>
+
+    <bean id="contentRatingNotificationListener" class="no.kantega.publishing.rating.ContentRatingNotificationListener"/>
+    <bean id="ratingScoreCalculator" class="no.kantega.publishing.api.rating.AverageRatingScoreCalculator"/>
+
+    <bean id="ratingDao" class="no.kantega.publishing.rating.dao.JdbcRatingDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="ratingService" class="no.kantega.publishing.rating.service.RatingServiceImpl">
+        <constructor-arg ref="ratingDao"/>
+        <property name="scoreCalculator" ref="ratingScoreCalculator"/>
+    </bean>
+
+    <bean id="ratingServletContextAttributeExporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
+        <property name="attributes">
+            <map>
+                <entry key="ratingService" value-ref="ratingService"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="aksessImageEditor" class="no.kantega.publishing.multimedia.DefaultImageEditor">
+        <property name="imageResizeAlgorithm">
+            <bean class="no.kantega.publishing.multimedia.resizers.LanczosImageResizeAlgorithm"/>
+        </property>
+    </bean>
+
+    <!-- Webdav support -->
+    <bean id="aksessWebDavSecurityHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper"/>
+
+    <bean id="aksessWebDavMultimediaHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
+    </bean>
+
+
+    <bean id="aksessWebDavMultimediaResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavMultimediaResourceHandler">
+        <property name="webDavMultimediaHelper" ref="aksessWebDavMultimediaHelper"/>
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
+    </bean>
+    
+    <bean id="aksessWebDavRootResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavRootResourceHandler">
+        <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
+        <property name="resourceHandlers">
+            <list>
+                <ref bean="aksessWebDavMultimediaResourceHandler"/>
+            </list>
+        </property>
+    </bean>
+
+</beans>

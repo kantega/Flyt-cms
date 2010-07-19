@@ -1,0 +1,19 @@
+<html>
+<body>
+Det er kommet et nytt innlegg i diskusjonsforum som krever godkjenning:<br>
+
+<p>
+    <strong>$post.subject</strong><br>
+    $post.body
+</p>
+
+<p>
+<a href="$baseurl/forum/viewpost?postId=$post.id">Vis innlegg</a>
+</p>
+
+<p>
+Vennligst ikke svar på denne eposten, da den er automatisk generert av Aksess Publisering.
+ </p>
+</table>
+</body>
+</html>

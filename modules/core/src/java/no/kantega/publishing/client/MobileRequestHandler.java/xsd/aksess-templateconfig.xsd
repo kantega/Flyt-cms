@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kantega.no" xmlns="http://www.kantega.no" elementFormDefault="qualified">
+    <xs:element name="templateConfiguration">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="sites">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="site" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="associationCategories">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element minOccurs="0" maxOccurs="unbounded" ref="associationCategory"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="documentTypes" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="documentType" maxOccurs="unbounded" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="contentTemplates">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="contentTemplate" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="metadataTemplates" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="contentTemplate" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="displayTemplates">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" ref="displayTemplate"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="site">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="disabled" type="xs:boolean" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="alias" use="required" type="xs:string"/>
+            <xs:attribute name="databaseId" use="required" type="xs:integer"/>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+            <xs:attribute name="displayTemplateId" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="documentType">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" type="xs:string"/>
+            </xs:all>
+            <xs:attribute name="databaseId" use="required" type="xs:integer"/>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="displayTemplate">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="contentTemplate">
+                    <xs:complexType>
+                        <xs:attribute name="id" use="required" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
+                <xs:element name="view" type="xs:string"/>
+                <xs:element name="miniView" type="xs:string" minOccurs="0"/>
+                <xs:element name="controllers" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="controller" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="sites" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="site" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="id" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute name="allowMultipleUsages" type="xs:boolean"/>
+            <xs:attribute name="databaseId" use="required" type="xs:integer"/>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+            <xs:attribute name="isNewGroup" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="associationCategory">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" type="xs:string" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="databaseId" type="xs:integer"/>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="contentTemplate">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="templateFile" type="xs:string"/>
+                <xs:element name="allowedParentTemplates" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="contentTemplate" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="id" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="associationCategories" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="associationCategory" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="id" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="defaultAssociationCategory" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attribute name="id" use="required" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="documentType" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attribute name="id" use="required" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="documentTypeForChildren" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attribute name="id" use="required" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:all>
+            <xs:attribute name="contentType">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="PAGE"/>
+                        <xs:enumeration value="LINK"/>
+                        <xs:enumeration value="FILE"/>
+                        <xs:enumeration value="FORM"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute name="databaseId" use="required" type="xs:integer"/>
+            <xs:attribute name="id" use="required" type="xs:string"/>
+            <xs:attribute name="isHearingEnabled" type="xs:boolean"/>
+            <xs:attribute name="keepVersions" type="xs:integer"/>
+            <xs:attribute name="expireAction" type="xs:integer"/>
+            <xs:attribute name="expireMonths" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

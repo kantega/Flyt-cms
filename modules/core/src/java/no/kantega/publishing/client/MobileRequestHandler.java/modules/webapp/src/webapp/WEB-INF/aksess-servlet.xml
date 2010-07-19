@@ -1,0 +1,746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
+
+        <property name="alwaysUseFullPath">
+            <value>true</value>
+        </property>
+
+        <property name="mappings">
+            <props>
+                <!-- Base controllers -->
+                <prop key="/">ContentRequestHandler</prop>
+                <prop key="/oap/static/**">PluginStaticContentController</prop>
+                <prop key="/content.ap">ContentRequestHandler</prop>
+                <prop key="/attachment.ap">AttachmentRequestHandler</prop>
+                <prop key="/attachments/*">AttachmentRequestHandler</prop>
+                <prop key="/multimedia.ap">MultimediaRequestHandler</prop>
+                <prop key="/multimedia/**">MultimediaRequestHandler</prop>
+                <prop key="/rss.ap">RssRequestHandler</prop>
+                <prop key="/Login.action">LoginAction</prop>
+                <prop key="/Logout.action">LogoutAction</prop>
+                <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
+                <prop key="/robots.txt">RobotsController</prop>
+
+                <!-- Security -->
+                <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
+                <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
+                <prop key="/admin/security/AddUserRolePermission.action">AddUserRolePermissionAction</prop>
+                <prop key="/admin/security/EditPermissions.action">EditPermissionsAction</prop>
+                <prop key="/admin/security/RemovePermission.action">RemovePermissionAction</prop>
+                <prop key="/admin/security/SavePermissions.action">SavePermissionsAction</prop>
+                <prop key="/admin/security/SelectRoles.action">SelectRolesAction</prop>
+                <prop key="/admin/security/SelectUsers.action">SelectUsersAction</prop>
+
+                <!-- My page -->
+                <prop key="/admin/mypage/ViewMyPage.action">ViewMyPageAction</prop>
+                <prop key="/admin/mypage/MyPageSettings.action">MyPageSettingsAction</prop>
+                <prop key="/admin/mypage/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
+                <prop key="/admin/mypage/plugins/PropertySearch.action">propertySearchAction</prop>
+                <prop key="/admin/mypage/plugins/GoogleAnalytics.action">googleAnalyticsAction</prop>
+                <prop key="/admin/mypage/plugins/ContentStatistics.action">contentStatisticsAction</prop>
+                <prop key="/admin/mypage/plugins/UserInfo.action">userInfoAction</prop>
+
+                <!-- Publish navigator -->
+                <prop key="/admin/publish/Navigate.action">contentNavigateAction</prop>
+                <prop key="/admin/publish/ContentNavigator.action">contentNavigatorAjaxAction</prop>
+                <prop key="/admin/publish/popups/SelectMediaFolder.action">SelectMediaFolderAction</prop>
+
+                <prop key="/admin/publish/Search.action">adminContentSearchController</prop>
+
+                <!-- Organize subpages -->
+                <prop key="/admin/publish/Organize.action">OrganizeSubPagesAction</prop>
+                <prop key="/admin/publish/ListSubPages.action">ListSubPagesAction</prop>
+                <prop key="/admin/publish/ReorderSubPages.action">ReorderSubPagesAction</prop>
+
+                <!-- Link checker -->
+                <prop key="/admin/publish/LinkCheck.action">LinkCheckAction</prop>
+                <prop key="/admin/publish/ListBrokenLinks.action">ListBrokenLinksAction</prop>
+
+                <!-- Statistics -->
+                <prop key="/admin/publish/Statistics.action">StatisticsAction</prop>
+                <prop key="/admin/publish/PageStatistics.action">PageStatisticsAction</prop>
+                <prop key="/admin/publish/TotalStatistics.action">TotalStatisticsAction</prop>
+
+                <!-- Notes -->
+                <prop key="/admin/publish/Notes.action">NotesAction</prop>
+                <prop key="/admin/publish/ListNotes.action">ListNotesAction</prop>
+                <prop key="/admin/publish/AddNote.action">AddNoteAction</prop>
+                <prop key="/admin/publish/DeleteNote.action">DeleteNoteAction</prop>
+
+                <!-- Publish -->
+                <prop key="/admin/publish/AddContent.action">AddContentAction</prop>
+                <prop key="/admin/publish/ApproveOrReject.action">ApproveOrRejectAction</prop>
+                <prop key="/admin/publish/popups/RejectNote.action">RejectNoteAction</prop>
+                <prop key="/admin/publish/CancelEdit.action">CancelEditAction</prop>
+                <prop key="/admin/publish/ConfirmCopyPaste.action">ConfirmCopyPasteContentAction</prop>
+                <prop key="/admin/publish/CopyPasteContent.action">CopyPasteContentAction</prop>
+                <prop key="/admin/publish/DeleteAttachment.action">DeleteAttachmentAction</prop>
+                <prop key="/admin/publish/SaveHearing.action">SaveHearingAction</prop>
+                <prop key="/admin/publish/DeleteAssociation.action">DeleteAssociationAction</prop>
+                <prop key="/admin/publish/DeleteVersion.action">DeleteVersionAction</prop>
+                <prop key="/admin/publish/EditContent.action">EditContentAction</prop>
+                <prop key="/admin/EndAdminMode.action">EndAdminModeAction</prop>
+                <prop key="/admin/publish/SaveContentPreview.action">SaveContentPreviewAction</prop>
+                <prop key="/admin/publish/ViewContentPreviewFrame.action">ViewContentPreviewFrameAction</prop>
+                <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
+                <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
+                <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
+                <prop key="/admin/publish/SaveVersion.action">SaveVersionAction</prop>
+                <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
+                <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
+                <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
+                <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
+                <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
+                <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
+                <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
+                <prop key="/admin/publish/ViewDisplayPeriod.action">viewDisplayPeriodAction</prop>
+                <prop key="/admin/publish/UpdateDisplayPeriod.action">updateDisplayPeriodAction</prop>
+                <prop key="/admin/publish/Spellcheck.action">spellcheckAction</prop>
+
+                <!-- Popups for publishing -->
+                <prop key="/admin/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
+                <prop key="/admin/publish/popups/InsertLink.action">InsertLinkAction</prop>
+                <prop key="/admin/publish/popups/InsertTable.action">InsertTableAction</prop>
+                <prop key="/admin/publish/popups/InsertCharacter.action">InsertCharacterAction</prop>
+                <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
+                <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
+
+                <!-- Multimedia naviagator -->
+                <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
+                <prop key="/admin/multimedia/MultimediaNavigator.action">multimediaNavigatorAjaxAction</prop>
+                <prop key="/admin/multimedia/ViewFolder.action">viewFolderAjaxAction</prop>
+                <prop key="/admin/multimedia/Search.action">adminMultimediaSearchController</prop>
+
+                <!-- Multimedia -->
+                <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
+                <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
+                <prop key="/admin/multimedia/CreateMediaFolder.action">CreateMediaFolderAction</prop>
+                <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
+                <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
+                <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
+                <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
+                <prop key="/admin/multimedia/ViewUploadMultimediaForm.action">ViewUploadMultimediaFormAction</prop>
+                <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
+                <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
+                <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
+
+                <!-- Topic maps -->
+                <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
+                <prop key="/admin/topicmaps/SearchTopics.action">SearchTopicsAction</prop>
+                <prop key="/admin/topicmaps/EditTopic.action">EditTopicAction</prop>
+                <prop key="/admin/topicmaps/ViewTopic.action">ViewTopicAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedContent.action">ListAssociatedContentAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedRoles.action">ListAssociatedRolesAction</prop>
+                <prop key="/admin/topicmaps/ListAssociatedTopics.action">ListAssociatedTopicsAction</prop>
+                <prop key="/admin/topicmaps/DeleteTopic.action">DeleteTopicAction</prop>
+                <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
+                <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
+
+
+                <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
+
+                <!-- Search for autocomplete -->
+                <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
+                <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
+                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
+                <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
+                <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
+
+                <!-- List options -->
+                <prop key="/admin/publish/EditListOption.action">EditListOptionAction</prop>
+                <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
+                <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
+
+                <!-- Forms -->
+                <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop> 	
+                <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>
+
+                <prop key="/Rating.action">RatingController</prop>
+
+                <!-- Information -->
+                <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
+
+    <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath">
+            <value>true</value>
+        </property>
+        <property name="interceptors">
+            <list>
+                <ref bean="adminRoleInterceptor"/>
+            </list>
+        </property>
+        <property name="mappings">
+            <props>
+                <!-- Administrator controllers -->
+                <prop key="/admin/administration/ViewSystemInformation.action">ViewSystemInformationAction</prop>
+                <prop key="/admin/administration/ListContentLocks.action">listContentLocksAction</prop>
+                <prop key="/admin/administration/RemoveContentLock.action">removeContentLockAction</prop>
+                <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
+                <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
+                <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
+                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
+                <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
+                <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
+                <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
+                <prop key="/admin/administration/topicmaps/DeleteTopicMap.action">deleteTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/EditTopicMap.action">editTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/ListTopicMaps.action">listTopicMapsAction</prop>
+                <!-- Site config controllers -->
+                <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
+                <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
+                <!-- Display templateconfig controllers -->
+                <prop key="/admin/administration/ListAssociationCategories.action">listAssociationCategoriesAction</prop>
+                <prop key="/admin/administration/ListContentTemplates.action">listContentTemplatesAction</prop>
+                <prop key="/admin/administration/ListDisplayTemplates.action">listDisplayTemplatesAction</prop>
+                <prop key="/admin/administration/ListDisplayTemplateUsages.action">listDisplayTemplateUsagesAction</prop>
+                <prop key="/admin/administration/ReloadTemplateConfiguration.action">reloadTemplateConfigurationAction</prop>
+                <!-- Security -->
+                <prop key="/admin/administration/ViewAllPermissions.action">ViewAllPermissionsAction</prop>
+
+                <!-- Sites -->
+                <prop key="/admin/administration/CreateRoot.action">createRootAction</prop>
+
+            </props>
+        </property>
+    </bean>
+
+
+    <!-- Base controllers -->
+    <bean id="ContentRequestDispatcher" class="no.kantega.publishing.client.ContentRequestDispatcher">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler">
+        <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+    </bean>
+    
+    <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
+
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AttachmentRequestHandler">
+        <property name="servletClass">
+            <value>no.kantega.publishing.client.AttachmentRequestHandler</value>
+        </property>
+        <property name="servletName">
+            <value>AttachmentRequestHandler</value>
+        </property>
+    </bean>
+    <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
+        <property name="loginView">
+            <value>${security.login.view}</value>
+        </property>
+        <property name="userLoginRestrictor">
+            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+                <property name="maxAttempts" value="5"/>
+                <property name="timeoutInSeconds" value="900"/>
+            </bean>
+        </property>
+        <property name="ipLoginRestrictor">
+            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+                <property name="maxAttempts" value="50"/>
+                <property name="timeoutInSeconds" value="3600"/>
+            </bean>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="LogoutAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.security.action.LogoutAction</value>
+        </property>
+        <property name="servletName">
+            <value>LogoutAction</value>
+        </property>
+    </bean>
+    <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
+    <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
+
+    <!-- Sites -->
+    <bean class="no.kantega.publishing.admin.administration.action.CreateRootAction" id="createRootAction">
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+
+    <!-- Security -->
+    <bean class="no.kantega.publishing.admin.security.action.AddUserRolePermissionAction" id="AddUserRolePermissionAction">
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.AddTopicRoleAction" id="AddTopicRoleAction">
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
+    </bean>
+    <bean class="no.kantega.useradmin.controls.CreateInitialUserController" id="CreateInitialUserAction">
+        <property name="defaultDomain">
+            <value>${security.defaultdomain}</value>
+        </property>
+        <property name="profileConfiguration" ref="profileConfigurations"/>
+        <property name="roleConfiguration" ref="roleConfigurations"/>
+        <property name="tokenFile" value="${appDir}/security/initialusertoken.txt"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.EditPermissionsAction" id="EditPermissionsAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.RemovePermissionAction" id="RemovePermissionAction"/>
+    <bean class="no.kantega.publishing.admin.security.action.SavePermissionsAction" id="SavePermissionsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.SelectUsersAction" id="SelectUsersAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/selectuser.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.SelectRolesAction" id="SelectRolesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/selectrole.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.security.action.ViewAllPermissionsAction" id="ViewAllPermissionsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/security/viewallpermissions.jsp"/>
+    </bean>
+
+    <!-- My page-->
+    <bean class="no.kantega.publishing.admin.mypage.action.ViewMyPageAction" id="ViewMyPageAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/mypage.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.action.MyPageSettingsAction" id="MyPageSettingsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/settings.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.action.RestoreDeletedItemAction" id="RestoreDeletedItemAction"/>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.PropertySearchAction" id="propertySearchAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-form.jsp"/>
+        <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-result.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.GoogleAnalyticsAction" id="googleAnalyticsAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics-form.jsp"/>
+        <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics-result.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.ContentStatisticsAction" id="contentStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/contentstatistics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.UserInfoAction" id="userInfoAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/userinfo.jsp"/>
+        <property name="gravatarUrl" value="http://www.gravatar.com/avatar/"/>
+        <property name="defaultIconUrl" value="identicon"/>
+    </bean>
+
+    <!-- Navigate content -->
+    <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
+        <property name="createRootAction" ref="createRootAction"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+    <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
+    </bean>
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
+    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction">
+        <property name="aksessJsonView" ref="aksessJsonView"/>
+    </bean>
+    <!-- Search content -->
+    <bean id="adminContentSearchController" class="no.kantega.publishing.search.control.AdminContentSearchController">
+        <property name="searchService" ref="adminSearchService"/>
+        <property name="view" value="/WEB-INF/jsp/admin/publish/search.jsp"/>
+    </bean>
+    <!-- Organize subpages -->
+    <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/organizesubpages.jsp"/>
+    </bean>
+    <bean id="ListSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ListSubPagesAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listsubpages.jsp"/>
+    </bean>
+    <bean id="ReorderSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ReorderSubpagesAction"/>
+
+    <!-- Link check -->
+    <bean id="LinkCheckAction" class="no.kantega.publishing.admin.content.action.LinkCheckAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/linkcheck.jsp"/>
+    </bean>
+    <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listbrokenlinks.jsp"/>
+    </bean>
+
+    <!-- Statistics -->
+    <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/statistics.jsp"/>
+    </bean>
+    <bean id="PageStatisticsAction" class="no.kantega.publishing.admin.content.ajax.PageStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/pagestatistics.jsp"/>
+    </bean>
+    <bean id="TotalStatisticsAction" class="no.kantega.publishing.admin.content.ajax.TotalStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/totalstatistics.jsp"/>
+    </bean>
+
+    <!-- Notes -->
+    <bean id="NotesAction" class="no.kantega.publishing.admin.content.action.NotesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/notes.jsp"/>
+    </bean>
+    <bean id="ListNotesAction" class="no.kantega.publishing.admin.content.ajax.ListNotesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/listnotes.jsp"/>
+    </bean>
+    <bean id="AddNoteAction" class="no.kantega.publishing.admin.content.ajax.AddNoteAction"/>
+    <bean id="DeleteNoteAction" class="no.kantega.publishing.admin.content.ajax.DeleteNoteAction"/>
+
+    <!-- Copy, Paste, Delete -->
+    <bean class="no.kantega.publishing.admin.content.action.ConfirmCopyPasteContentAction" id="ConfirmCopyPasteContentAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/publish/copypaste/confirmcopypaste.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.CopyPasteContentAction" id="CopyPasteContentAction">
+        <property name="confirmCopyPasteView" value="/WEB-INF/jsp/admin/publish/reloadparent.jsp"/>
+        <property name="duplicateAliasesView" value="/WEB-INF/jsp/admin/publish/copypaste/duplicatealiases.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteAssociationAction" id="DeleteAssociationAction">
+        <property name="confirmDeleteSubPagesView" value="/WEB-INF/jsp/admin/publish/delete/confirmdeletesubpages.jsp"/>
+        <property name="selectAssociationView" value="/WEB-INF/jsp/admin/publish/delete/selectassociation.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
+        <property name="confirmDeleteView" value="/WEB-INF/jsp/admin/publish/reloadparent.jsp"/>
+    </bean>
+    <!-- Edit content -->
+    <bean class="no.kantega.publishing.admin.content.action.AddContentAction" id="AddContentAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/publish/selecttemplate.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.ajax.ApproveOrRejectAction" id="ApproveOrRejectAction"/>
+    <bean class="no.kantega.publishing.admin.content.ajax.RejectNoteAction" id="RejectNoteAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/reject-note.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.CancelEditAction" id="CancelEditAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteAttachmentAction" id="DeleteAttachmentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.EditContentAction" id="EditContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SelectTemplateAction" id="SelectTemplateAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SaveAttachmentsAction" id="SaveAttachmentsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/editattachments.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SaveContentAction" id="SaveContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/editcontent.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SaveMetadataAction" id="SaveMetadataAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/editmetadata.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SaveVersionAction" id="SaveVersionAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/editversions.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.UseVersionAction" id="UseVersionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.DeleteVersionAction" id="DeleteVersionAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
+
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.SaveHearingAction</value>
+        </property>
+        <property name="servletName">
+            <value>SaveHearingAction</value>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingCommentAction">
+        <property name="servletClass">
+            <value>no.kantega.publishing.admin.content.action.SaveHearingCommentAction</value>
+        </property>
+        <property name="servletName">
+            <value>SaveHearingAction</value>
+        </property>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction">
+        <property name="aksessJsonView" ref="aksessJsonView"/>
+    </bean>
+
+    <!-- Preview  -->
+    <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveContentPreviewAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/showpreview.jsp"/>
+        <property name="updatePublishProperties" value="false"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.ViewContentPreviewFrameAction" id="ViewContentPreviewFrameAction"/>
+
+    <!-- Edit content - popups -->
+    <bean class="no.kantega.publishing.admin.content.action.AddAttachmentAction" id="AddAttachmentAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
+        <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="ReplaceTextAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/replacetext.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.InsertTableAction" id="InsertTableAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="InsertCharacterAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-char.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="EditListOptionAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/listoption-edit.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="SelectMediaFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-mediafolder.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.ViewDisplayPeriodAction" id="viewDisplayPeriodAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/view-displayperiod.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction">
+        <property name="aksessJsonView" ref="aksessJsonView"/>
+    </bean>
+
+    <!-- Navigate multimedia -->
+    <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigate.jsp"/>
+    </bean>
+    <bean id="multimediaNavigatorAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.NavigatorAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/navigator.jsp"/>
+    </bean>
+    <bean id="viewFolderAjaxAction" class="no.kantega.publishing.admin.multimedia.ajax.ViewFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/viewfolder.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ConfirmCopyPasteMultimediaAction" id="ConfirmCopyPasteMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/copypaste/confirmcopypaste.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/generic/popup-error.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/reloadparent.jsp"/>
+    </bean>
+    <!-- Search multimedia -->
+    <bean id="adminMultimediaSearchController" class="no.kantega.publishing.admin.multimedia.action.SearchMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/search.jsp"/>
+    </bean>   
+    <!-- Multimedia -->
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction" id="DeleteMultimediaAction">
+        <property name="beforeDeleteView" value="/WEB-INF/jsp/admin/multimedia/delete/confirmdelete.jsp"/>
+        <property name="confirmDeleteView" value="/WEB-INF/jsp/admin/multimedia/reloadparent.jsp"/>
+        <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageCropAction" id="ImageCropAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagecrop.jsp"/>
+        <property name="imageEditor" ref="aksessImageEditor"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageMapAction" id="ImageMapAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagemap.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.action.EditMultimediaAction" id="EditMultimediaAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>
+        <property name="selectMediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/uploadform.jsp"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
+    </bean>
+    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction">
+        <property name="aksessJsonView" ref="aksessJsonView"/>
+    </bean>                   
+    <!-- Topic maps -->
+    <bean class="no.kantega.publishing.admin.topicmaps.action.TopicsAction" id="TopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/topics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.SearchTopicsAction" id="SearchTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/searchtopics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicAction" id="EditTopicAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/edittopic.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ViewTopicAction" id="ViewTopicAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/viewtopic.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedContentAction" id="ListAssociatedContentAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedcontent.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedRolesAction" id="ListAssociatedRolesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedroles.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.ListAssociatedTopicsAction" id="ListAssociatedTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/listassociatedtopics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.ajax.HandleContentTopicsAction" id="HandleContentTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/contenttopics.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.SelectTopicsAction" id="SelectTopicsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/select-topic.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicAction" id="DeleteTopicAction"/>
+
+    <!-- Mini Aksess -->
+    <bean class="no.kantega.publishing.admin.content.action.SimpleDeleteContentAction" id="SimpleDeleteContentAction"/>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditContentAction" id="SimpleEditContentAction">
+        <property name="view" value="${miniaksess.view}"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SimpleEditCancelAction" id="SimpleEditCancelAction"/>
+
+    <!-- Administrator controllers -->
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSystemInformationAction" id="ViewSystemInformationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/systeminformation.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListContentLocksAction" id="listContentLocksAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentlocks.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListAliasesAction" id="listAliasesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listaliases.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.RemoveContentLockAction" id="removeContentLockAction"/>
+    <bean class="no.kantega.publishing.admin.administration.action.SearchEventLogAction" id="searchEventLogAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/administration/eventlog-form.jsp"/>
+        <property name="resultsView" value="/WEB-INF/jsp/admin/administration/eventlog-result.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
+    </bean>
+    <bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
+        <property name="indexManager">
+            <ref bean="indexManager"/>
+        </property>
+        <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
+        <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
+        <property name="siteCache" ref="aksessSiteCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListUserChangesAction" id="listUserChangesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/userchanges.jsp"/>
+        <property name="viewDocuments" value="/WEB-INF/jsp/admin/administration/userchanges-documents.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.ListContentExpirationAction" id="listContentExpirationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentexpiration.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction" id="deleteTopicMapAction"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopicmap.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopicmaps.jsp"/>
+    </bean>
+    <!-- Site config -->
+    <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.administration.action.EditDomainNamesAction" id="EditDomainNamesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/editdomainnames.jsp"/>
+    </bean>
+    <!-- Template config -->
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListAssociationCategoriesAction" id="listAssociationCategoriesAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listassociationcategories.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListContentTemplatesAction" id="listContentTemplatesAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listcontenttemplates.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplatesAction" id="listDisplayTemplatesAction">
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listdisplaytemplates.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ListDisplayTemplateUsagesAction" id="listDisplayTemplateUsagesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/listdisplaytemplateusages.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.templateconfiguration.action.ReloadTemplateConfigurationAction" id="reloadTemplateConfigurationAction">
+        <property name="templateConfigurationFactory" ref="aksessTemplateConfigurationFactory"/>
+        <property name="templateConfigurationValidator" ref="aksessTemplateConfigurationValidator"/>
+        <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+        <property name="templateValidator" ref="aksessTemplateValidator"/>
+        <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
+    </bean>
+
+    <!-- Forms -->
+    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelController" id="FormSubmissionsExportExcelAction"/>
+    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelView" id="FormSubmissionsExportExcelView">
+        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
+    </bean>
+    <bean class="no.kantega.publishing.modules.forms.control.DeleteFormSubmissionsAction" id="DeleteFormSubmissionsAction">
+        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
+    </bean>
+
+
+    <!-- Various -->
+    <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteMultimediaAction" id="AutocompleteMultimediaAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteUsersAction" id="AutocompleteUsersAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.SearchOrgUnitsAsXMLAction" id="SearchOrgUnitsAsXMLAction"/>
+
+    <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
+    <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>
+    
+    <bean class="no.kantega.publishing.admin.administration.action.ViewSystemInformationAction" id="OpenAksessInformationAction">
+        <property name="view" value="/WEB-INF/jsp/admin/administration/openaksessinformation.jsp"/>        
+    </bean>
+          
+    <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
+        <property name="pluginManager" ref="pluginManager"/>
+    </bean>
+
+    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="classpath:"/>
+        <property name="velocityProperties">
+            <value>
+                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective
+            </value>
+        </property>
+    </bean>
+
+    <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
+        <property name="cache" value="true"/>
+        <property name="prefix" value=""/>
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=utf-8"/>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+    </bean>
+
+    <bean id="viewResolverExcel" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order">
+            <value>0</value>
+        </property>
+    </bean>
+
+    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
+
+    <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+
+</beans>

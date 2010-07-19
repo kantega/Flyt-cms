@@ -1,0 +1,269 @@
+//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
+//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
+//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+//<%
+request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
+//%>
+
+/*
+ * Copyright 2009 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/********************************************************************************
+ * Common OpenAksess functions. Declares the global namespace for all objects.
+ *
+ * Used both in standard admin context and by MiniAksess.
+ ********************************************************************************/
+
+var openaksess =  {
+    // All Javascript objects should use this namespace
+};
+
+openaksess.common = {
+    columnize : function() {
+        var columnized = $(".columnized");
+        openaksess.common.debug("openaksess.common(): Number of elements found to columnize: " + columnized.size());
+        if (columnized.size() > 0) {
+            var columncount = 1;
+            var classes = columnized.attr("class").split(" ");
+            for (var i in classes) {
+                var c = classes[i];
+                if (c.indexOf("columnCount") > -1) {
+                    columncount = parseInt(c.substring("columnCount".length, c.length));
+                }
+            }
+            openaksess.common.debug("openaksess.common(): Column count: " + columncount);
+            columnized.makeacolumnlists({cols:columncount,colWidth:0,equalHeight:false,startN:1});
+        }
+    },
+
+    /**
+     * Returns the value of a query string parameter
+     *
+     * @param paramName Query parameter name
+     * @param queryString The total query string
+     */
+    getQueryParam : function(paramName, queryString) {
+        var val = null;
+        var inx = queryString.indexOf(paramName + "=");
+        if (inx != -1) {
+            val = queryString.substring(inx + paramName.length + 1, queryString.length);
+            if (val.indexOf("&") != -1) {
+                val = val.substring(0, val.indexOf("&"));
+            }
+        }
+        return val;
+    },
+
+    /**
+     * Returns the uri for a content with a given associationId
+     *
+     * @param associationId
+     */
+    getContentUrlFromAssociationId : function(associationId) {
+        var url = " ${pageContext.request.contextPath}<%="/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
+        openaksess.common.debug("openaksess.common.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
+        return url;
+    },
+
+    /**
+     * Prints a debug message to Firebug's debug console.
+     *
+     * @param msg Debug message. Convention: 'functionName(): value'
+     */
+    debug : function (msg) {
+        var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
+        if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
+            var now = new Date();
+            console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
+        }
+    },
+
+    isPopup : function() {
+        return window.parent != window || window.name == 'openAksessPopup';
+    },
+
+
+    /**
+     * Responsible for drawing pop-ups and modals.
+     */
+    modalWindow : function() {
+
+        var $content = '';
+        var $overlay = $("<div/>").css({
+                position : 'absolute',
+                background : '#ffffff',
+                opacity: '0'
+            })
+            .attr("id", "Contentoverlay");
+        var $iframe = $('<iframe id="externalSite" frameborder="0" src="" />');
+
+        var config = {
+            title: 'OpenAksess',
+            titlebar: true,
+            resizable: true,
+            modal: true,
+            iframe: false,
+            closeOnEscape: true,
+            height: 400,
+            width: 600,
+            horizontalPadding: 0,
+            verticalPadding: 0,
+            open: function(){
+                $.event.trigger("resize");
+            },
+            autoResize: true,
+            autoOpen: true,
+            close: function() {
+                openaksess.common.debug("openaksess.common.modalWindow.close()");
+                $(this).remove();
+            },
+            overlay: {
+                opacity: 0.2,
+                background: "black"
+            }
+        };
+
+        config.resizeStart = function(){
+            openaksess.common.debug("openaksess.common.modalWindow.resizeStart()");
+            if (config.iframe) {
+                openaksess.common.debug("openaksess.common.modalWindow.resizeStart(): Has iframe. Adding overlay");
+                var height = $iframe.height();
+                var width = $iframe.width();
+                $overlay.css({height : height + "px", width : width + "px"});
+                $iframe.before($overlay);
+            }
+        };
+        config.resize = function() {
+            if (config.iframe) {
+                var height = $iframe.height();
+                var width = $iframe.width();
+                $overlay.css({height : height + "px", width : width + "px"});
+            }
+        };
+
+        config.resizeStop = function(){
+            if (config.iframe) {
+                $overlay.remove();
+            }
+        };
+
+        return {
+            /**
+             * Opens a modal with the desired properties.
+             *
+             * @param additionalConfig
+             */
+            open : function(additionalConfig){
+                openaksess.common.debug("openaksess.common.modalWindow.open(): additionalConfig: " + additionalConfig);
+
+                if (additionalConfig && typeof(additionalConfig) == 'object') {
+                    openaksess.common.debug("openaksess.common.modalWindow.open(): Extending default config with user supplied config.");
+                    $.extend(config, additionalConfig);
+                }
+
+                if (!config.position) {
+                    config.position = [(($(window).width()-config.width)/2),(($(window).height()-config.height)/2)];
+                }
+
+
+                if (config.iframe) {
+                    var href = config.href;
+                    if (config.href.indexOf("?") == -1) {
+                        href = href + "?";
+                    } else {
+                        href = href + "&";
+                    }
+                    href = href + "dummy=" + new Date().getTime();
+                    $content = $iframe.attr("src", href);
+                } else {
+                    $content = $("<div/>").load(config.href);
+                }
+
+                openaksess.common.debug("openaksess.common.modalWindow.open(): Opening modal window.");
+
+                $content.dialog(config);
+
+                if (config.iframe) {
+                    $content.width(config.width - config.horizontalPadding).height(config.height - config.verticalPadding);
+                }
+
+                openaksess.common.debug("openaksess.common.modalWindow.open(): Modal window opened.");
+
+            },
+
+            /**
+             * Closes the current modal.
+             */
+            close : function(){
+                $content.dialog('close');
+            }
+        };
+
+    }(),
+
+    /**
+     * Functionality for dealing with browser cookies.
+     */
+    cookies : {
+        /**
+         * Creates a cookie
+         * @param name - cookie name
+         * @param value - Cookie data
+         * @param days - Time to live in days. If omitted, the cookie is killed when the browser session ends.
+         */
+        create : function (name,value,days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime()+(days*24*60*60*1000));
+                expires = "; expires="+date.toGMTString();
+            }
+
+            document.cookie = name+"="+value+expires+"; path=/";
+        },
+
+        /**
+         * Returns the value of a cookie
+         * @param name - cookie name.
+         */
+        read : function(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        },
+
+        /**
+         * Deletes a cookie.
+         * @param name
+         */
+        erase : function (name) {
+            openaksess.common.cookies.create(name,"",-1);
+        }
+    }
+};
+
+
+
+
+
+
+

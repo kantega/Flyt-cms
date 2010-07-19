@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="aksessFormElementValidatorFactory" class="no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory">
+        <property name="formElementValidators">
+            <list>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementRegExValidator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="aksessDatabaseFormSubmissionDao" class="no.kantega.publishing.modules.forms.dao.DatabaseFormSubmissionDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+    <bean id="aksessEmailFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.EmailFormDeliveryService">
+        <property name="mailTemplate" value="formsubmission.vm"/>
+    </bean>
+    <bean id="aksessDatabaseFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.DatabaseFormDeliveryService">
+        <property name="formSubmissionDao" ref="aksessDatabaseFormSubmissionDao"/>
+    </bean>
+    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder">
+        <property name="formElementValidatorFactory" ref="aksessFormElementValidatorFactory"/>
+    </bean>
+    
+    <bean id="aksessFilledFormBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFilledFormBuilder"/>
+
+    <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
+        <property name="description" value="Saves form in database and sends to email"/>
+        <property name="formDeliveryServices">
+            <list>
+                <ref bean="aksessDatabaseFormDeliveryService"/>
+                <ref bean="aksessEmailFormDeliveryService"/>
+            </list>
+        </property>
+
+        <property name="filledFormBuilder" ref="aksessFilledFormBuilder"/>
+        <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
+    </bean>
+</beans>

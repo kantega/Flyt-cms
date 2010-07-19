@@ -1,0 +1,277 @@
+html, body{
+    height:100%;
+    min-height:100%;
+}
+body {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: #000000;
+    height: 100%;
+    min-height: 100%;
+}
+/*************************
+Common elements
+*************************/
+#TopMenu .logo {
+    background: transparent url("../bitmaps/top_nav_aksess_logo.png") center center no-repeat;
+    line-height: 28px;
+    padding-left: 31px;
+}
+
+#TopMenu {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 17px;
+    background: #3B3C3D url("../bitmaps/top_nav_background.png") center left repeat-x;
+}
+a, a:visited{
+    color:#1780B9;
+    text-decoration:none;
+}
+body{
+    background:#fff url("../../login/bitmaps/bg_splash.jpg") no-repeat left top;
+}
+#contentWrapper{
+    margin-left:660px;
+    padding-top:32px;
+    background:url("../bitmaps/gradient.png") repeat-x 0 -28px;
+}
+#contentWrapper .body{
+    padding-right:20px;
+}
+
+/*************************
+ Login page
+ ************************/
+.section{
+    border-bottom:1px solid #ccc;
+    padding-bottom:15px;
+    margin-left:30px;
+}
+.section h2{
+    color:#999;
+    font-weight:bold;
+    font-size:1.1em;
+    margin-bottom:5px;
+}
+.section .body{
+    line-height:1.4;
+    font-size:.9em;
+}
+#dagensTips{
+    margin-top:80px;
+}
+#version{
+    font-size:.8em;
+    margin-top:57px;
+    margin-bottom:40px;
+    color:#666;
+}
+#LoginMessages{
+    margin-top:20px;
+    color:#ff0000;
+}
+
+/***********************
+Form elements, common
+***********************/
+form .text, form .password{
+    background:url("../bitmaps/brukernavn.png") no-repeat left top;
+    height:27px;
+    padding: 0 0 0 35px;
+    margin-top:15px;
+    position:relative;
+}
+form .securitytoken{
+    height:50px;
+}
+form .securitytoken .helptext{
+    color:#666;
+    padding-top:35px;
+}
+form .password, form .text.securitytoken{
+    background:url("../bitmaps/passord.png") no-repeat left top;
+}
+form .text-basic{
+    background:none;
+    height:27px;
+    border:1px solid #ccc;
+    margin-top:15px;
+    position:relative;
+}
+form .text-basic input[type=text]{
+    width:99%;
+}
+form .submit{
+    background:url("../bitmaps/login_btn.png") no-repeat right top;
+    text-align:center;
+    width:105px;
+    margin-top:15px;
+}
+form .error{
+    margin:5px 0 0 0;
+    color:#ff0000;
+    font-size:.9em;
+}
+form label{
+    color:#666666;
+    font-size:14px;
+    font-style:italic;
+    left:35px;
+    position:absolute;
+    top:6px;
+}
+form .radio label{
+    position:static;
+    color:#000;
+    font-style:normal;
+}
+form input[type=text], form input[type=password]{
+    position:absolute;
+    background:transparent;
+    border:none;
+    font-size:14px;
+    line-height:1.2;
+    margin:5px 0 0 0;
+    width:220px;
+}
+form input[type=submit]{
+    background:transparent;
+    border:none;
+    height:27px;
+    font-weight:bold;
+    padding-bottom:4px;
+}
+input:focus{
+    outline:none;
+}
+
+
+
+/******************
+Form elements, login page
+******************/
+#UserName, #Password{
+    background:url("../bitmaps/brukernavn.png") no-repeat left top;
+    height:27px;
+    padding: 0 0 0 35px;
+    margin-bottom:15px;
+    position:relative;
+}
+body.login label{
+    color:#666666;
+    font-size:14px;
+    font-style:italic;
+    left:35px;
+    position:absolute;
+    top:6px;
+}
+#Password{
+    background:url("../bitmaps/passord.png") no-repeat left top;
+}
+#Submit{
+    background:url("../bitmaps/login_btn.png") no-repeat right top;
+    text-align:center;
+    width:115px;
+    height:35px;
+    padding-top:5px;
+}
+#Submit:hover{
+    background:url("../bitmaps/login_btn_hover.png") no-repeat right top;
+}
+body.login input[type=text], body.login input[type=password]{
+    position:absolute;
+    background:transparent;
+    border:none;
+    font-size:14px;
+    line-height:1.2;
+    margin:5px 0 0 0;
+    width:220px;    
+}
+body.login input[type=submit]{
+    background:transparent;
+    border:none;
+    height:27px;
+    font-weight:bold;
+    padding-bottom:4px;
+}
+
+/**********************************
+Error page
+***********************************/
+body.error{
+    background:url("../bitmaps/gradient.png") repeat-x 0 -28px;
+}
+body.error #contentWrapper{
+    margin:0 auto;
+    padding:0;
+    width:610px;
+    background:none;
+}
+body.error #contentWrapper .body{
+    width:610px;
+}
+body.error #version{
+    display:none;
+}
+#errorWrapper{
+    margin:0 auto;
+    width:600px;
+    margin-top:110px;
+    position:relative;
+}
+#errorWrapper .dialogBox{
+    border: 1px solid #ccc;
+    padding:10px;
+    width:300px;
+    position:absolute;
+    right:0;
+    top:0;
+    background:#fff;
+    -moz-box-shadow:5px 5px 5px #ccc;
+    -webkit-box-shadow:5px 5px 5px #ccc;
+    -o-box-shadow:5px 5px 5px #ccc;
+    box-shadow:5px 5px 5px #ccc;
+}
+#errorWrapper .dialogBox h1{
+    font-size:1.2em;
+    margin:0 0 5px 0;
+    padding:4px;
+    background-color:#1780B9;
+    color:#fff;
+    font-weight:bold;
+}
+body.error #errorWrapper .dialogBox .body{
+    color:#555;
+    font-size:.95em;
+    width:auto;
+}
+#errorWrapper .dialogBox .label{
+    font-weight:bold;
+    color:#000;
+}
+#errorWrapper .dialogBoxArrow{
+    position:absolute;
+    background:url("../bitmaps/pil.png") no-repeat 0 0;
+    right:301px;
+    top:40px;
+    width:40px;
+    height:30px;
+}
+#errorWrapper .dialogBox .goBack{
+    margin-top:15px;
+}
+body.error form{
+    margin-top:20px;
+    text-align:center;
+}
+body.error input[type=submit]{
+    background:url("../bitmaps/error_btn_bg.png") repeat-x 0 0;
+    border:1px solid #CCCCCC;
+    font-size:0.9em;
+    height:28px;
+    padding:2px 10px 5px;
+}
+
+
+

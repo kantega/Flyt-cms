@@ -1,0 +1,39 @@
+/*
+ * Copyright 2010 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.file.application-pdf {
+    background-image: url("../aksess/bitmaps/mimetype/application/pdf.png");
+}
+
+.file.application-msword, file.application-vnd-openxmlformats-officedocument-wordprocessingml-document {
+    background-image: url("../aksess/bitmaps/mimetype/application/msword.png");
+}
+
+.file.application-vnd-ms-excel, file.application-vnd-openxmlformats-officedocument-spreadsheetml-sheet {
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.png");
+}
+
+.file.application-vnd-ms-powerpoint, file.application-vnd-openxmlformats-officedocument-presentationml-presentation {
+    background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.png");
+}
+
+.file.application-vnd-oasis-opendocument-text, .file.application-vnd-oasis-opendocument-text-template {
+    background-image: url("../aksess/bitmaps/mimetype/application/oo-writer.png");
+}
+
+.file.application-vnd-oasis-opendocument-spreadsheet, .file-application-vnd.oasis-opendocument-spreadsheet-template {
+    background-image: url("../aksess/bitmaps/mimetype/application/oo-calc.png");
+}

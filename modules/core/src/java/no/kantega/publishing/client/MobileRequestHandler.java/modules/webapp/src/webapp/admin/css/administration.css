@@ -1,0 +1,54 @@
+body {
+    background: url(../bitmaps/default/framework/fullwidth_background.png) repeat-y #F7F7F7;
+}
+
+#Navigation {
+    position: relative;
+    float: left;
+    width: 190px;
+    padding-left: 10px;
+    padding-top: 30px;
+}
+
+#PropertiesTable .property {
+    width: 400px;
+    max-width: 400px;
+    overflow:hidden;
+}
+#PropertiesTable .parameter {
+    width: 200px;
+    max-width: 200px;
+    overflow:hidden;
+}
+
+#MainPane {
+    overflow: auto;
+}
+
+.navigator {
+    margin: 0 0 0 0.25em;
+}
+.navigator li{
+    list-style: none;
+    margin-top: 0.25em;
+    white-space: nowrap;
+}
+.navigator li li {
+    margin-left: 1em;
+}
+
+.navigator .title a {
+    padding:2px;
+    text-decoration:none;
+}
+
+.navigator .title a.selected {
+    color: #ffffff;
+    font-weight: bold;
+    text-decoration: none;
+    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
+}
+
+table th.date {
+    width: 100px;
+}
