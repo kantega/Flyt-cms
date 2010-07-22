@@ -137,6 +137,14 @@ public class SearchServiceImpl implements SearchService {
         this.indexManager = indexManager;
     }
 
+    public void setMinNumberOfHits(int minNumberOfHits) {
+        this.minNumberOfHits = minNumberOfHits;
+    }
+
+    public void setMinScore(float minScore) {
+        this.minScore = minScore;
+    }
+
     private SearchQuery createSearchQuery(SearchServiceQuery searchServiceQuery) {
         SearchQuery searchQuery;
         if (searchServiceQuery.getHitCountQueries().size() > 0) {
