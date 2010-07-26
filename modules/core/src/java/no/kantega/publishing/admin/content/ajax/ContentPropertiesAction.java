@@ -26,6 +26,8 @@ import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -150,6 +152,7 @@ public class ContentPropertiesAction implements Controller {
             model.put("enabledButtons", enabledButtons);
 
             model.put("content", content);
+            model.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
             model.put("sites",  aksessSiteCache.getSites());
             model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
