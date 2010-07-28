@@ -1,4 +1,5 @@
 <%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%--
@@ -29,14 +30,19 @@
     <![endif]-->
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
 
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         var properties = {
             title : '<kantega:label key="aksess.title"/>',
             contextPath : '${pageContext.request.contextPath}',
-            loadingText : '<kantega:label key="aksess.ajax.loading"/>'
+            loadingText : '<kantega:label key="aksess.ajax.loading"/>',
+            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
+            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
+            thisId : '<%=AdminRequestParameters.THIS_ID %>'
         }
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
+
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.js"></script>
 
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.js"></script>
 

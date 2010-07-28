@@ -1,11 +1,3 @@
-//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
-//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
-//<%
-request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
-
 /*
  * Copyright 2009 Kantega AS
  *
@@ -20,6 +12,14 @@ request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/*
+ * This script expects the following properties to be set:
+ * * debug
+ * * contextPath
+ * * contentRequestHandler
+ * * thisId
  */
 
 /********************************************************************************
@@ -74,7 +74,7 @@ openaksess.common = {
      * @param associationId
      */
     getContentUrlFromAssociationId : function(associationId) {
-        var url = " ${pageContext.request.contextPath}<%="/" + Aksess.CONTENT_REQUEST_HANDLER + "?" + AdminRequestParameters.THIS_ID + "=" %>" + associationId;
+        var url = " " + properties.contextPath + "/" + properties.contentRequestHandler + "?" + properties.thisId + "=" + associationId;
         openaksess.common.debug("openaksess.common.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
         return url;
     },
@@ -85,7 +85,7 @@ openaksess.common = {
      * @param msg Debug message. Convention: 'functionName(): value'
      */
     debug : function (msg) {
-        var debugEnabled = <aksess:getconfig key="javascript.debug" default="false"/>;
+        var debugEnabled = properties.debug;
         if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
             var now = new Date();
             console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);

@@ -1,5 +1,8 @@
+<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 <%@ taglib prefix="miniaksess" uri="http://www.kantega.no/aksess/tags/miniaksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -36,6 +39,16 @@
             padding-bottom: 2em;
         }
     </style>
+
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        var properties = {
+            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
+            contextPath : '${pageContext.request.contextPath}',
+            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
+            thisId : '<%=AdminRequestParameters.THIS_ID %>'
+        }
+    </script>
     <miniaksess:headerdependencies/>
 </head>
 <body class="miniedit">

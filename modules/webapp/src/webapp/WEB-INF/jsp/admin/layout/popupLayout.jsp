@@ -1,5 +1,8 @@
+<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -27,8 +30,18 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.2.custom.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>    
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
+
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        var properties = {
+            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
+            contextPath : '${pageContext.request.contextPath}',
+            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
+            thisId : '<%=AdminRequestParameters.THIS_ID %>'
+        }
+    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.js"></script>
     <script type="text/javascript">
         $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
         $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
