@@ -22,8 +22,10 @@
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
-        var properties = {
-            labels : {
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties['labels'] = {
                 confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
                 copyPaste : '<kantega:label key="aksess.copypaste.title"/>',
                 publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period"/>',
@@ -45,9 +47,8 @@
                 contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson"/>',
                 contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate"/>',
                 associations : '<kantega:label key="aksess.infoslider.associations"/>'
-            },
-            objectTypeAssociation : '<%=ObjectType.ASSOCIATION%>'
-        };
+            };
+        properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>

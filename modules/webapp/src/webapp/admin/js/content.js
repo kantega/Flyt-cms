@@ -14,6 +14,33 @@
  * limitations under the License.
  */
 
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ * * objectTypeAssociation
+ * * labels.confirmDelete
+ * * labels.copyPaste
+ * * labels.publishinfoPeriod
+ * * labels.editPermissions
+ * * labels.reject
+ * * labels.linkcheckField
+ * * labels.linkcheckUrl
+ * * labels.linkcheckStatus
+ * * labels.linkcheckLastchecked
+ * * labels.linkcheckTimeschecked
+ * * labels.details
+ * * labels.publishinfoAlias
+ * * labels.contentTitle
+ * * labels.contentLastModified
+ * * labels.contentModifiedBy
+ * * labels.contentApprovedBy
+ * * labels.contentChangeFrom
+ * * labels.contentExpireDate
+ * * labels.contentOwnerPerson
+ * * labels.contentDisplayTemplate
+ * * labels.associations
+ *
+ */
 
 $(document).ready(function(){
     openaksess.common.debug("content.$(document).ready()");
@@ -52,7 +79,7 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
             openaksess.content.contentstatus.init();
             openaksess.content.contentstatus.disableButtons();
-            $.post("${pageContext.request.contextPath}/admin/publish/ContentProperties.action", {url: url}, function(data){
+            $.post(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
                 if (data) {
                     openaksess.content.contentstatus.breadcrumbs(data.path);
                     openaksess.content.contentstatus.brokenLinks(data.links);
@@ -187,22 +214,22 @@ openaksess.content = {
         },
 
         openInNewWindow : function(url) {
-            window.open("${pageContext.request.contextPath}/content.ap" + url);
+            window.open(properties.contextPath + "/content.ap" + url);
         },
 
         newSubpage : function(url) {
             openaksess.common.debug("openaksess.content.publish.newSubpage(): url: " + url);
-            window.location.href = "${pageContext.request.contextPath}/admin/publish/AddContent.action?url="+url;
+            window.location.href = properties.contextPath + "/admin/publish/AddContent.action?url="+url;
         },
 
         edit: function(url) {
             openaksess.common.debug("openaksess.content.publish.editItem(): url: " + url);
-            window.location.href = "${pageContext.request.contextPath}/admin/publish/EditContent.action?url="+url;
+            window.location.href = properties.contextPath + "/admin/publish/EditContent.action?url="+url;
         },
 
         deleteItem: function(url) {
             openaksess.common.debug("openaksess.content.publish.deleteItem(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.confirmDelete, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
         },
 
         cut: function(url) {
@@ -223,33 +250,33 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.publish.paste(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
         },
 
         pasteAsShortcut: function(url) {
             openaksess.common.debug("openaksess.content.publish.pasteAsShortcut(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
         },
 
         displayPeriod: function(url) {
             openaksess.common.debug("openaksess.content.publish.displayPeriod(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.publishinfoPeriod, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
+            openaksess.common.modalWindow.open({title:properties.labels.publishinfoPeriod, iframe:true, href: properties.contextPath + "/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
         },
 
         managePrivileges: function(url) {
             openaksess.common.debug("openaksess.content.publish.managePrivileges(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.editPermissions, iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=" + properties.objectTypeAssociation,width: 650, height:560});
+            openaksess.common.modalWindow.open({title:properties.labels.editPermissions, iframe:true, href: properties.contextPath + "/admin/security/EditPermissions.action?url=" + url + "&type=" + properties.objectTypeAssociation,width: 650, height:560});
         },
 
         approve: function(url) {
-            $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {approve:true, url:url});
+            $.post(properties.contextPath + "/admin/publish/ApproveOrReject.action", {approve:true, url:url});
             openaksess.content.contentstatus.showApproveOrReject(false);
         },
 
         reject: function(url) {
-            openaksess.common.modalWindow.open({title:properties.labels.reject, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
+            openaksess.common.modalWindow.open({title:properties.labels.reject, iframe:true, href: properties.contextPath + "/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
         }
     },
 
@@ -580,7 +607,7 @@ openaksess.navigate.setContextMenus = function(clipboardEmpty) {
 };
 
 openaksess.navigate.getNavigatorAction = function() {
-    return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
+    return properties.contextPath + "/admin/publish/ContentNavigator.action";
 };
 
 /**
@@ -695,5 +722,5 @@ openaksess.navigate.getNavigatorParams = function() {
  * Return URL to search action
  */
 openaksess.search.getSearchAction = function() {
-    return "${pageContext.request.contextPath}/admin/publish/Search.action";
+    return properties.contextPath + "/admin/publish/Search.action";
 };
