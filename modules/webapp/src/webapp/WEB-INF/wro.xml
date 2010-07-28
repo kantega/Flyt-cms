@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+
+    <group name="login">
+        <css>/login/css/reset.css</css>
+        <css>/login/css/base.css</css>
+        <css>/login/css/default.css</css>
+        <group-ref>jquery-core</group-ref>
+        <js>/login/js/formlabels.js</js>
+    </group>
+
+    <group name="admin-common">
+        <group-ref>admin-core-css</group-ref>
+        <group-ref>jquery-all</group-ref>
+        <group-ref>admin-common-dwr</group-ref>
+    </group>
+
+    <group name="admin-popup-css">
+        <group-ref>admin-core-css</group-ref>
+        <group-ref>jquery-all</group-ref>
+    </group>
+
+    <group name="admin-search-css">
+        <group-ref>admin-core-css</group-ref>
+        <css>/admin/css/search.css</css>
+    </group>
+
+
+    <!-- ************************************************** -->
+
+    <group name="jquery-core">
+        <js>/aksess/js/jquery-1.4.2.min.js</js>
+    </group>
+
+    <group name="jquery-all">
+        <group-ref>jquery-core</group-ref>
+        <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
+        <css>/admin/css/jquery-ui-additions.css</css>
+        <css>/admin/css/jquery.autocomplete.css</css>
+        <js>/admin/js/jquery.dimensions.pack.js</js>
+        <js>/admin/js/jquery-ui-1.8.2.custom.min.js</js>
+        <js>/admin/js/jquery-ui-i18n.min.js</js>
+        <js>/admin/js/jquery.contextMenu.js</js>
+        <js>/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
+        <js>/admin/js/jquery.dataTables.min.js</js>
+        <js>/admin/js/jquery.autocomplete.min.js</js>
+    </group>
+
+    <group name="admin-common-dwr">
+        <js>/admin/dwr/interface/ContentStateHandler.js</js>
+        <js>/admin/dwr/interface/UserPreferencesHandler.js</js>
+        <js>/admin/dwr/interface/ContentClipboardHandler.js</js>
+        <js>/admin/dwr/engine.js</js>
+    </group>
+
+    <group name="admin-core-css">
+        <css>/login/css/reset.css</css>
+        <css>/login/css/base.css</css>
+        <css>/admin/css/default.css</css>
+    </group>
+
+</groups>

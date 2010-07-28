@@ -23,27 +23,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/admin/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-common.css">
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.8.1.custom.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.autocomplete.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.2.custom.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.contextMenu.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.ba-bbq-1.0.3.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferencesHandler.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
+
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.jjs"></script>
     <kantega:getsection id="head"/>

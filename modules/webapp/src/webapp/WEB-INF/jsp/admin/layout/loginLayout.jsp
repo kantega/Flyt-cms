@@ -21,11 +21,8 @@
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/reset.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/base.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/login/css/default.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/login/js/formlabels.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/login.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/wro/login.js"></script>
     <kantega:getsection id="head"/>
 </head>
 <body class="<kantega:getsection id="bodyclass"/>">
