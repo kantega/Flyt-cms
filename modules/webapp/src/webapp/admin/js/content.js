@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page import="no.kantega.publishing.common.data.Content" %>
-//<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
-//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
-//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-//<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
-
 
 $(document).ready(function(){
     openaksess.common.debug("content.$(document).ready()");
@@ -211,7 +202,7 @@ openaksess.content = {
 
         deleteItem: function(url) {
             openaksess.common.debug("openaksess.content.publish.deleteItem(): url: " + url);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.confirmDelete, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
         },
 
         cut: function(url) {
@@ -232,24 +223,24 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.publish.paste(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
         },
 
         pasteAsShortcut: function(url) {
             openaksess.common.debug("openaksess.content.publish.pasteAsShortcut(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
         },
 
         displayPeriod: function(url) {
             openaksess.common.debug("openaksess.content.publish.displayPeriod(): url: " + url);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.publishinfo.period"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
+            openaksess.common.modalWindow.open({title:properties.labels.publishinfoPeriod, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
         },
 
         managePrivileges: function(url) {
             openaksess.common.debug("openaksess.content.publish.managePrivileges(): url: " + url);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=<%=ObjectType.ASSOCIATION%>",width: 650, height:560});
+            openaksess.common.modalWindow.open({title:properties.labels.editPermissions, iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?url=" + url + "&type=" + properties.objectTypeAssociation,width: 650, height:560});
         },
 
         approve: function(url) {
@@ -258,7 +249,7 @@ openaksess.content = {
         },
 
         reject: function(url) {
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.reject.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
+            openaksess.common.modalWindow.open({title:properties.labels.reject, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
         }
     },
 
@@ -295,11 +286,11 @@ openaksess.content = {
                     var details = '<table>' +
                                 '   <thead>' +
                                 '       <tr>' +
-                                '           <th class="field"><kantega:label key="aksess.linkcheck.field"/></th>' +
-                                '           <th class="url"><kantega:label key="aksess.linkcheck.url"/></th>' +
-                                '           <th class="status"><kantega:label key="aksess.linkcheck.status"/></th>' +
-                                '           <th class="lastChecked"><kantega:label key="aksess.linkcheck.lastchecked"/></th>' +
-                                '           <th class="timesChecked"><kantega:label key="aksess.linkcheck.timeschecked"/></th>' +
+                                '           <th class="field">' + properties.labels.linkcheckField + '</th>' +
+                                '           <th class="url">' + properties.labels.linkcheckUrl + '</th>' +
+                                '           <th class="status">' + properties.labels.linkcheckStatus + '</th>' +
+                                '           <th class="lastChecked">' + properties.labels.linkcheckLastchecked + '</th>' +
+                                '           <th class="timesChecked">' + properties.labels.linkcheckTimeschecked + '</th>' +
                                 '       </tr>' +
                                 '</thead>' +
                                 '<tbody>';
@@ -323,35 +314,35 @@ openaksess.content = {
 
         details: function(data) {
             var content = data.content;
-            var details = "<h3><kantega:label key="aksess.infoslider.details"/></h3><ul>";
+            var details = "<h3>" + properties.labels.details + "</h3><ul>";
 
             if (content) {
                 openaksess.common.debug("openaksess.content.contentstatus.details(): binding details icon to click");
 
-                details += '<li><span class="label"><kantega:label key="aksess.contentproperty.title"/>:</span>&nbsp;'+content.title+'</li>';
+                details += '<li><span class="label">' + properties.labels.contentTitle + ':</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
-                    details += '<li><span class="label"><kantega:label key="aksess.publishinfo.alias"/>:</span>&nbsp;'+content.alias+'</li>';
+                    details += '<li><span class="label">' + properties.labels.publishinfoAlias + ':</span>&nbsp;'+content.alias+'</li>';
                 }
                 if (content.lastModified) {
-                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.lastmodified"/>:</span>&nbsp;'+content.lastModified + ' <kantega:label key="aksess.contentproperty.modifiedby"/> ' + content.modifiedBy + '</li>';
+                    details += '<li><span class="label">' + properties.labels.contentLastModified + ':</span>&nbsp;'+content.lastModified + ' ' + properties.labels.contentModifiedBy + ' ' + content.modifiedBy + '</li>';
                 }
                 if (content.modifiedBy != content.approvedBy) {
-                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.approvedby"/>:</span>&nbsp;'+content.approvedBy + '</li>';
+                    details += '<li><span class="label">' + properties.labels.contentApprovedBy + ':</span>&nbsp;'+content.approvedBy + '</li>';
                 }
                 if (content.changeFromDate) {
-                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.changefrom"/>:</span>&nbsp;'+content.changeFromDate+'</li>';
+                    details += '<li><span class="label">' + properties.labels.contentChangeFrom + ':</span>&nbsp;'+content.changeFromDate+'</li>';
                 }
                 if (content.expireDate) {
-                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.expiredate"/>:</span>&nbsp;'+content.expireDate+'</li>';
+                    details += '<li><span class="label">' + properties.labels.contentExpireDate + ':</span>&nbsp;'+content.expireDate+'</li>';
                 }
                 if (content.ownerperson) {
-                    details += '<li><span class="label"><kantega:label key="aksess.contentproperty.ownerperson"/>:</span>&nbsp;'+content.ownerperson+'</li>';
+                    details += '<li><span class="label">' + properties.labels.contentOwnerPerson + ':</span>&nbsp;'+content.ownerperson+'</li>';
                 }
             }
 
             var displayTemplate = data.displayTemplate;
             if (displayTemplate) {
-                details += '<li><span class="label"><kantega:label key="aksess.contentproperty.displayTemplate"/>:</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
+                details += '<li><span class="label">' + properties.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
             }
             
             details +="</ul>";
@@ -370,7 +361,7 @@ openaksess.content = {
                 var associationsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'associations'});
                 $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                    var details = '<h3><kantega:label key="aksess.infoslider.associations"/></h3>';
+                    var details = '<h3>' + properties.labels.associations + '</h3>';
                     for (var i = 0; i < associations.length; i++) {
                         details += '<ul class="breadcrumbs">';
                         for (var j = 0; j<associations[i].length; j++) {

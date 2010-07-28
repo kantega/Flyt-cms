@@ -14,10 +14,42 @@
 ~ limitations under the License.
 --%>
 
+<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
+
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.jjs"></script>
+
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        var properties = {
+            labels : {
+                confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
+                copyPaste : '<kantega:label key="aksess.copypaste.title"/>',
+                publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period"/>',
+                editPermissions : '<kantega:label key="aksess.editpermissions.title"/>',
+                reject : '<kantega:label key="aksess.reject.title"/>',
+                linkcheckField : '<kantega:label key="aksess.linkcheck.field"/>',
+                linkcheckUrl : '<kantega:label key="aksess.linkcheck.url"/>',
+                linkcheckStatus : '<kantega:label key="aksess.linkcheck.status"/>',
+                linkcheckLastchecked : '<kantega:label key="aksess.linkcheck.lastchecked"/>',
+                linkcheckTimeschecked : '<kantega:label key="aksess.linkcheck.timeschecked"/>',
+                details : '<kantega:label key="aksess.infoslider.details"/>',
+                publishinfoAlias : '<kantega:label key="aksess.publishinfo.alias"/>',
+                contentTitle : '<kantega:label key="aksess.contentproperty.title"/>',
+                contentLastModified : '<kantega:label key="aksess.contentproperty.lastmodified"/>',
+                contentModifiedBy : '<kantega:label key="aksess.contentproperty.modifiedby"/>',
+                contentApprovedBy : '<kantega:label key="aksess.contentproperty.approvedby"/>',
+                contentChangeFrom : '<kantega:label key="aksess.contentproperty.changefrom"/>',
+                contentExpireDate : '<kantega:label key="aksess.contentproperty.expiredate"/>',
+                contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson"/>',
+                contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate"/>',
+                associations : '<kantega:label key="aksess.infoslider.associations"/>'
+            },
+            objectTypeAssociation : '<%=ObjectType.ASSOCIATION%>'
+        };
+    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
