@@ -29,8 +29,17 @@
     <![endif]-->
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
 
+    <script type="text/javascript">
+        var properties = {
+            title : '<kantega:label key="aksess.title"/>',
+            contextPath : '${pageContext.request.contextPath}',
+            loadingText : '<kantega:label key="aksess.ajax.loading"/>'
+        }
+    </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.jjs"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.jjs"></script>
+
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.js"></script>
+
     <kantega:getsection id="head"/>
     <script type="text/javascript">
         $(document).ready(function(){

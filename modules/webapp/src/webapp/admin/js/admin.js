@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+
+/*
+ * This script expects the following properties to be set:
+ * * title
+ * * contextPath
+ * * loadingText
+ *
+ */
+
 var stateHandler;
 
 $(document).ready(function() {
@@ -41,8 +50,8 @@ openaksess.admin = {
             var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
             var topicMapId = $(".topicMapId", container).val();
 
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.title"/>', width: 660, height:550, iframe: true,
-            href:'${pageContext.request.contextPath}/OpenAksessInformation.action'});
+            openaksess.common.modalWindow.open({title:properties.title, width: 660, height:550, iframe: true,
+            href: properties.contextPath + '/OpenAksessInformation.action'});
         });
     },
 
@@ -235,7 +244,7 @@ openaksess.admin = {
 
 
     ajaxSetup :function () {
-        var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div>');
+        var $ajaxloading = $('<div id="AjaxLoadingIllustration" class="ajaxloading">' + properties.loadingText + '</div>');
         $("body").append($ajaxloading);
         $ajaxloading.ajaxStart(function(){
             $(this).show();
@@ -249,7 +258,7 @@ openaksess.admin = {
             cache: false,
             error: function(xhr, textStatus, errorThrown) {
                 if (xhr.status == 401) {
-                    window.location.href = '${pageContext.request.contextPath}/admin/?dummy=' + new Date().getTime();
+                    window.location.href = properties.contextPath + '/admin/?dummy=' + new Date().getTime();
                 }
             }
         });        
