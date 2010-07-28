@@ -491,7 +491,7 @@ openaksess.content = {
 /********************************************************************************
  *
  * Content layout specific implementation of the openaksess.admin.setLayoutSpecificSizes.
- * Overrides the default implementation. See admin.jjs for further details.
+ * Overrides the default implementation. See admin.js for further details.
  *
  ********************************************************************************/
 
