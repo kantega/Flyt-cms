@@ -3,7 +3,18 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
 
-    <group name="login">
+<!--
+    Configuration file for Web Resource Optimizer (wro).
+
+    The groups admin-* (roughly) corresponds to the scripts that
+    were included by the various
+    *layout.jsp-files (loginLayout.jsp, commonLayout.jsp, ...).
+
+    The groups below the line are just logical groupings of related
+    scripts to enhance readability and maintainability.
+-->
+
+    <group name="admin-login">
         <css>/login/css/reset.css</css>
         <css>/login/css/base.css</css>
         <css>/login/css/default.css</css>
@@ -12,23 +23,40 @@
     </group>
 
     <group name="admin-common">
-        <group-ref>admin-core-css</group-ref>
+        <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
-        <group-ref>admin-common-dwr</group-ref>
+        <js>/admin/dwr/interface/ContentStateHandler.js</js>
+        <js>/admin/dwr/interface/UserPreferencesHandler.js</js>
+        <js>/admin/dwr/interface/ContentClipboardHandler.js</js>
+        <group-ref>dwr-core</group-ref>
+        <js>/admin/js/common.js</js>
+        <js>/admin/js/admin.js</js>
     </group>
 
-    <group name="admin-popup-css">
-        <group-ref>admin-core-css</group-ref>
+    <group name="admin-popup">
+        <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
+        <group-ref>dwr-core</group-ref>
+        <js>/admin/js/common.js</js>
     </group>
 
-    <group name="admin-search-css">
-        <group-ref>admin-core-css</group-ref>
+    <group name="admin-search">
+        <group-ref>admin-core</group-ref>
         <css>/admin/css/search.css</css>
+        <group-ref>jquery-all</group-ref>
     </group>
 
+    <group name="admin-administration">
+        <css>/admin/css/administration.css</css>
+    </group>
 
     <!-- ************************************************** -->
+
+    <group name="admin-core">
+        <css>/login/css/reset.css</css>
+        <css>/login/css/base.css</css>
+        <css>/admin/css/default.css</css>
+    </group>
 
     <group name="jquery-core">
         <js>/aksess/js/jquery-1.4.2.min.js</js>
@@ -46,19 +74,12 @@
         <js>/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
         <js>/admin/js/jquery.dataTables.min.js</js>
         <js>/admin/js/jquery.autocomplete.min.js</js>
+        <js>/admin/js/jquery.interface.js</js>
+        <js>/admin/js/jquery.lazyload.mini.js</js>
     </group>
 
-    <group name="admin-common-dwr">
-        <js>/admin/dwr/interface/ContentStateHandler.js</js>
-        <js>/admin/dwr/interface/UserPreferencesHandler.js</js>
-        <js>/admin/dwr/interface/ContentClipboardHandler.js</js>
+    <group name="dwr-core">
         <js>/admin/dwr/engine.js</js>
-    </group>
-
-    <group name="admin-core-css">
-        <css>/login/css/reset.css</css>
-        <css>/login/css/base.css</css>
-        <css>/admin/css/default.css</css>
     </group>
 
 </groups>

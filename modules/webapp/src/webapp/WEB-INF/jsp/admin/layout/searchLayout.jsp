@@ -20,11 +20,8 @@
 <html>
 <head>
     <title><kantega:getsection id="title"/></title>
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/wro/admin-search-css.css">
-    <script type="text/javascript" src="<%=request.getContextPath()%>/aksess/js/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.dimensions.pack.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.interface.js"></script>
-    <script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/jquery.lazyload.mini.js"></script>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/wro/admin-search.css">
+    <script type="text/javascript" src="<%=request.getContextPath()%>/wro/admin-search.js"></script>
 
     <kantega:getsection id="head"/>
 </head>

@@ -28,7 +28,6 @@
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
-    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
@@ -41,10 +40,7 @@
             thisId : '<%=AdminRequestParameters.THIS_ID %>'
         }
     </script>
-
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/common.js"></script>
-
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/admin.js"></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
 
     <kantega:getsection id="head"/>
     <script type="text/javascript">

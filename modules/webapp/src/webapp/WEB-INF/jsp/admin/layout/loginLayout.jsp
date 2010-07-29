@@ -21,8 +21,8 @@
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/login.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/wro/login.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-login.css">
+    <script type="text/javascript" src="${pageContext.request.contextPath}/wro/admin-login.js"></script>
     <kantega:getsection id="head"/>
 </head>
 <body class="<kantega:getsection id="bodyclass"/>">
