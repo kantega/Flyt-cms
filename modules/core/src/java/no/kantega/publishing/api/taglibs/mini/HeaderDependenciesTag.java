@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.common.Aksess;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -34,6 +37,14 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/jquery-ui-1.8.1.custom.css\">");
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/jquery-ui-additions.css\">");
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/miniaksess.css\">");
+        out.write("<script type=\"text/javascript\">\n" +
+                "        var properties = {\n" +
+                "            contextPath : '"+((HttpServletRequest) pageContext.getRequest()).getContextPath()+"',\n" +
+                "            debug : "+Aksess.isJavascriptDebugEnabled()+",\n" +
+                "            contentRequestHandler : '"+ Aksess.CONTENT_REQUEST_HANDLER+"',\n" +
+                "            thisId : '"+ AdminRequestParameters.THIS_ID+"'\n" +
+                "        }\n" +
+                "    </script>");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/common.js\"></script>");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/editcontext.jjs\"></script>");
         out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce_3_3_6/tiny_mce.js\"></script>");
