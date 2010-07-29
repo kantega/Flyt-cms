@@ -383,7 +383,6 @@ table.fullWidth {
     line-height: 37px;
     display: block;
     height: 37px;
-    background-position: left center;
     background-repeat: no-repeat;
     cursor: pointer;
 }
@@ -408,7 +407,6 @@ table.fullWidth {
     padding-left: 30px;
     padding-right:10px;
     line-height: 25px;
-    background-position: 10px 50%;
     background-repeat: no-repeat;
     cursor: pointer;
 }
@@ -569,7 +567,6 @@ table.fullWidth {
     display: inline-block;
     padding-left: 25px;
     padding-right:5px;
-    background-position: 5px 50%;
     background-repeat: no-repeat;
     border: 0;
 }
@@ -587,98 +584,108 @@ table.fullWidth {
 
 
 .button .add {
-    background-image: url("../bitmaps/common/icons/small/add.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -49px;
 }
 .button .back {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/back.png");
 }
 .button .cancel {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/cancel.png");
 }
 .button .choose {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/select.png");
 }
 .button .copy {
-    background-image: url("../bitmaps/common/icons/small/copy.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -611px;
 }
 .button .crop {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/crop.png");
 }
 .button .cut {
-    background-image: url("../bitmaps/common/icons/small/cut.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -749px;
 }
 .button .delete{
-    background-image: url("../bitmaps/common/icons/small/delete.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -795px;
 }
 .button .displayPeriod {
-    background-image: url("../bitmaps/common/icons/small/calendar.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -235px;
 }
 .button .edit{
-    background-image: url("../bitmaps/common/icons/small/edit.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -936px;
 }
 .button .imagemap {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/imagemap.png");
 }
 .button .insert {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/insert.png");
 }
 
 .button .linkcheck {
-    background: url("../bitmaps/common/icons/small/linkcheck.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -1485px;
 }
 .button .moveUp {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/moveup.png");
 }
 .button .moveDown {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/movedown.png");
 }
 .button .newfile {
-    background-image: url("../bitmaps/common/icons/small/newfile.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -165px;
 }
 .button .newfolder {
-    background-image: url("../bitmaps/common/icons/small/newfolder.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -211px;
 }
 .button .newSubpage {
-    background-image: url("../bitmaps/common/icons/small/newsubpage.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -256px;
 }
 .button .ok{
-    background-image: url("../bitmaps/common/icons/small/ok.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -391px;
 }
-
 .button .notes {
-    background: url("../bitmaps/common/icons/small/notes.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -336px;
 }
-
 .button .organize {
-    background: url("../bitmaps/common/icons/small/organize.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -428px;
 }
 .button .paste {
-    background-image: url("../bitmaps/common/icons/small/paste.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -569px;
 }
 .button .privileges {
-    background-image: url("../bitmaps/common/icons/small/privileges.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -615px;
 }
 .button .remove{
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/remove.png");
 }
 .button .reset{
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/reset.png");
 }
 .button .search {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/search.png");
 }
 .button .select{
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/select.png");
 }
 .button .settings {
+    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/settings.png");
 }
 .button .statistics {
-    background: url("../bitmaps/common/icons/small/statistics.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -1529px;
 }
-
 .button .view {
-    background: url("../bitmaps/common/icons/small/navigate.png");
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -113px;
 }
 
 #Content .buttonBar input#MinorChange {
