@@ -26,28 +26,28 @@
             var properties = { };
         }
         properties['labels'] = {
-                confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
-                copyPaste : '<kantega:label key="aksess.copypaste.title"/>',
-                publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period"/>',
-                editPermissions : '<kantega:label key="aksess.editpermissions.title"/>',
-                reject : '<kantega:label key="aksess.reject.title"/>',
-                linkcheckField : '<kantega:label key="aksess.linkcheck.field"/>',
-                linkcheckUrl : '<kantega:label key="aksess.linkcheck.url"/>',
-                linkcheckStatus : '<kantega:label key="aksess.linkcheck.status"/>',
-                linkcheckLastchecked : '<kantega:label key="aksess.linkcheck.lastchecked"/>',
-                linkcheckTimeschecked : '<kantega:label key="aksess.linkcheck.timeschecked"/>',
-                details : '<kantega:label key="aksess.infoslider.details"/>',
-                publishinfoAlias : '<kantega:label key="aksess.publishinfo.alias"/>',
-                contentTitle : '<kantega:label key="aksess.contentproperty.title"/>',
-                contentLastModified : '<kantega:label key="aksess.contentproperty.lastmodified"/>',
-                contentModifiedBy : '<kantega:label key="aksess.contentproperty.modifiedby"/>',
-                contentApprovedBy : '<kantega:label key="aksess.contentproperty.approvedby"/>',
-                contentChangeFrom : '<kantega:label key="aksess.contentproperty.changefrom"/>',
-                contentExpireDate : '<kantega:label key="aksess.contentproperty.expiredate"/>',
-                contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson"/>',
-                contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate"/>',
-                associations : '<kantega:label key="aksess.infoslider.associations"/>'
-            };
+            confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
+            copyPaste : '<kantega:label key="aksess.copypaste.title"/>',
+            publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period"/>',
+            editPermissions : '<kantega:label key="aksess.editpermissions.title"/>',
+            reject : '<kantega:label key="aksess.reject.title"/>',
+            linkcheckField : '<kantega:label key="aksess.linkcheck.field"/>',
+            linkcheckUrl : '<kantega:label key="aksess.linkcheck.url"/>',
+            linkcheckStatus : '<kantega:label key="aksess.linkcheck.status"/>',
+            linkcheckLastchecked : '<kantega:label key="aksess.linkcheck.lastchecked"/>',
+            linkcheckTimeschecked : '<kantega:label key="aksess.linkcheck.timeschecked"/>',
+            details : '<kantega:label key="aksess.infoslider.details"/>',
+            publishinfoAlias : '<kantega:label key="aksess.publishinfo.alias"/>',
+            contentTitle : '<kantega:label key="aksess.contentproperty.title"/>',
+            contentLastModified : '<kantega:label key="aksess.contentproperty.lastmodified"/>',
+            contentModifiedBy : '<kantega:label key="aksess.contentproperty.modifiedby"/>',
+            contentApprovedBy : '<kantega:label key="aksess.contentproperty.approvedby"/>',
+            contentChangeFrom : '<kantega:label key="aksess.contentproperty.changefrom"/>',
+            contentExpireDate : '<kantega:label key="aksess.contentproperty.expiredate"/>',
+            contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson"/>',
+            contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate"/>',
+            associations : '<kantega:label key="aksess.infoslider.associations"/>'
+        };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.js"></script>
