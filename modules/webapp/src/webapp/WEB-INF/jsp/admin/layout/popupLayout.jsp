@@ -27,7 +27,10 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-popup.css">
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
-        var properties = {
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties = {
             debug : <aksess:getconfig key="javascript.debug" default="false"/>,
             contextPath : '${pageContext.request.contextPath}',
             contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',

@@ -31,7 +31,10 @@
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
-        var properties = {
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties = {
             title : '<kantega:label key="aksess.title"/>',
             contextPath : '${pageContext.request.contextPath}',
             loadingText : '<kantega:label key="aksess.ajax.loading"/>',
