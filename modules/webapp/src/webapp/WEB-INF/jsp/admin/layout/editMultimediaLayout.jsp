@@ -21,7 +21,7 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.jjs"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
