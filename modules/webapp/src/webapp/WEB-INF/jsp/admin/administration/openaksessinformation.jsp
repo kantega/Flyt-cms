@@ -17,7 +17,6 @@
   --%>
 
 <kantega:section id="body">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('a.linkexternal').click(function() {
