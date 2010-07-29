@@ -24,7 +24,7 @@
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/editcontent.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/formeditor.css">
-    <script type="text/javascript" src="../js/editcontent.jjs"></script>
+    <script type="text/javascript" src="../js/editcontent.js"></script>
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
