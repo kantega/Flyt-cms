@@ -33,6 +33,7 @@ import java.util.Map;
 public class HtmltextAttribute extends TextAttribute {
     protected boolean isCData = true;
     private String featureSet = "default";
+    private String miniFeatureSet = null;
     private String css = "editor.css";
 
     protected int height  = 350;
@@ -54,6 +55,10 @@ public class HtmltextAttribute extends TextAttribute {
         return featureSet;
     }
 
+    public String getMiniFeatureSet() {
+        return miniFeatureSet;
+    }
+
     public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
         String h  = config.getAttribute("height");
@@ -68,6 +73,10 @@ public class HtmltextAttribute extends TextAttribute {
         featureSet = config.getAttribute("featureset");
         if (featureSet == null || featureSet.length() == 0) {
             featureSet = "default";
+        }
+        miniFeatureSet = config.getAttribute("minifeatureset");
+        if (miniFeatureSet != null && miniFeatureSet.trim().length() == 0) {
+            miniFeatureSet = null;
         }
         css = config.getAttribute("css");
         if (css == null || css.length() == 0) {

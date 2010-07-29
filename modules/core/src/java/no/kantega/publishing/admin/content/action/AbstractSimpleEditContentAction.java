@@ -9,6 +9,7 @@ import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.common.Aksess;
@@ -87,6 +88,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                     // Existing content must be checked out before edit
                     content = cms.checkOutContent(content.getContentIdentifier());
                 }
+                request.setAttribute(AdminRequestParameters.MINI_ADMIN_MODE, true);
                 return showEditForm(request, content);
             } else {
                 throw new NotAuthorizedException("Not authorized", this.getClass().getName());

@@ -45,4 +45,6 @@ public class AdminRequestParameters {
     public static final String MULTIMEDIA_ITEMS_LIST = "mediaList";
     public static final String MULTIMEDIA_CURRENT_FOLDER = "currentFolder";
 
+    public static final String MINI_ADMIN_MODE = "currentFolder";
+
 }

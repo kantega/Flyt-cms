@@ -2,19 +2,20 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.configuration.Configuration,
-                 no.kantega.publishing.admin.content.spellcheck.SpellcheckerService,
-                 no.kantega.publishing.admin.content.util.HTMLEditorHelper"%>
+                 no.kantega.commons.log.Log,
+                 no.kantega.commons.util.URLHelper"%>
+<%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
+<%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
+<%@ page import="no.kantega.publishing.admin.content.util.HTMLEditorHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>
-<%@ page import="no.kantega.publishing.common.data.Site"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute"%>
-<%@ page import="no.kantega.publishing.common.service.ContentManagementService"%>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.commons.util.URLHelper" %>
-<%@ page import="no.kantega.commons.log.Log" %>
-<%@ page import="no.kantega.publishing.spring.RootContext" %>
+<%@ page import="no.kantega.publishing.common.data.Site" %>
+<%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.enums.Language" %>
+<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -43,7 +44,14 @@
 
     Configuration conf = Aksess.getConfiguration();
 
-    String confPrefix = "editor." + attribute.getFeatureSet() + ".";
+    boolean isMiniAdminMode = (request.getAttribute(AdminRequestParameters.MINI_ADMIN_MODE) != null);
+    String confPrefix = "editor.";
+    if (isMiniAdminMode) {
+        confPrefix += attribute.getMiniFeatureSet();
+    } else {
+        confPrefix += attribute.getFeatureSet();
+    }
+    confPrefix += ".";
 
     Site site = SiteCache.getSiteById(content.getAssociation().getSiteId());
 

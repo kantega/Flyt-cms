@@ -36,6 +36,7 @@
             <xs:attribute name="editableby" type="xs:string"/>
 	    <xs:attribute name="enumclass" type="xs:string"/>
             <xs:attribute name="featureset" type="xs:string"/>
+            <xs:attribute name="minifeatureset" type="xs:string"/>
             <xs:attribute name="height" type="xs:integer"/>
             <xs:attribute name="width" type="xs:integer"/>
             <xs:attribute name="mediafolder" type="xs:string"/>            
