@@ -23,9 +23,11 @@
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
-            var properties = { };
+            var properties = { content : {} };
+        } else if (typeof properties.content == 'undefined') {
+            properties.content = {};
         }
-        properties['labels'] = {
+        properties.content['labels'] = {
             confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
             copyPaste : '<kantega:label key="aksess.copypaste.title"/>',
             publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period"/>',

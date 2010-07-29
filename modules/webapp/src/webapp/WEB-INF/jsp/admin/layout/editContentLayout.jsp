@@ -28,7 +28,9 @@
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
-            var properties = { };
+            var properties = { date : {} };
+        } else if (typeof properties.date == 'undefined') {
+            properties.date = {};
         }
         properties.date['labels'] = {
             feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
