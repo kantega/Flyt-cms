@@ -1,7 +1,7 @@
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="java.util.Locale" %>
 <%--
@@ -22,7 +22,30 @@
 <kantega:section id="title"><kantega:label key="aksess.publishinfo.period"/></kantega:section>
 
 <kantega:section id="head">
-    <script type="text/javascript" language="Javascript" src="../js/date.jjs"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties.date['labels'] = {
+            feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
+            skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>",
+            feildag : "<kantega:label key="aksess.js.advarsel.dato.feildag"/>",
+            feilmaned : "<kantega:label key="aksess.js.advarsel.dato.feilmaned"/>",
+            feilar : "<kantega:label key="aksess.js.advarsel.dato.feilar"/>",
+            feildagtall : "<kantega:label key="aksess.js.advarsel.dato.feildagtall"/>",
+            feilmanedtall : "<kantega:label key="aksess.js.advarsel.dato.feilmanedtall"/>",
+            feilartall : "<kantega:label key="aksess.js.advarsel.dato.feilartall"/>",
+            feilskuddarmaned : "<kantega:label key="aksess.js.advarsel.dato.feilskuddarmaned"/>",
+            feiltidsformatKolon : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.kolon"/>",
+            feiltidsformat : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>",
+            feiltidsformatMinuttermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minuttermindre"/>",
+            feiltidsformatMinutterstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minutterstorre"/>",
+            feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>",
+            feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
+        };
+    </script>
+    <script type="text/javascript" language="Javascript" src="../js/date.js"></script>
     <script type="text/javascript">
         var hasSubmitted = false;
         function buttonOkPressed() {

@@ -25,7 +25,30 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/editcontent.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/formeditor.css">
     <script type="text/javascript" src="../js/editcontent.jjs"></script>
-    <script type="text/javascript" src="../js/date.jjs"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties.date['labels'] = {
+            feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
+            skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>",
+            feildag : "<kantega:label key="aksess.js.advarsel.dato.feildag"/>",
+            feilmaned : "<kantega:label key="aksess.js.advarsel.dato.feilmaned"/>",
+            feilar : "<kantega:label key="aksess.js.advarsel.dato.feilar"/>",
+            feildagtall : "<kantega:label key="aksess.js.advarsel.dato.feildagtall"/>",
+            feilmanedtall : "<kantega:label key="aksess.js.advarsel.dato.feilmanedtall"/>",
+            feilartall : "<kantega:label key="aksess.js.advarsel.dato.feilartall"/>",
+            feilskuddarmaned : "<kantega:label key="aksess.js.advarsel.dato.feilskuddarmaned"/>",
+            feiltidsformatKolon : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.kolon"/>",
+            feiltidsformat : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>",
+            feiltidsformatMinuttermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minuttermindre"/>",
+            feiltidsformatMinutterstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minutterstorre"/>",
+            feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>",
+            feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
+        };
+    </script>
+    <script type="text/javascript" src="../js/date.js"></script>
     <script type="text/javascript" src="../js/editcontext.jjs"></script>
     <script type="text/javascript" src="../js/formeditor.jjs"></script>
     <script type="text/javascript" src="../../aksess/tiny_mce_3_3_6/tiny_mce.js"></script>

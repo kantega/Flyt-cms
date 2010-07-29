@@ -13,10 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page contentType="text/javascript;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-//<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-//<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
+
+/*
+ * This script expects the following properties to be set:
+ * * date.labels.feilformat
+ * * date.labels.skilletegn
+ * * date.labels.feildag
+ * * date.labels.feilmaned
+ * * date.labels.feilar
+ * * date.labels.feildagtall
+ * * date.labels.feilmanedtall
+ * * date.labels.feilartall
+ * * date.labels.feilskuddarmaned
+ * * date.labels.feiltidsformatKolon
+ * * date.labels.feiltidsformat
+ * * date.labels.feiltidsformatMinuttermindre
+ * * date.labels.feiltidsformatMinutterstorre
+ * * date.labels.feiltidsformatTimermindre
+ * * date.labels.feiltidsformatTimerstorre
+ */
 
 openaksess.dateutils = {
 
@@ -42,7 +57,7 @@ openaksess.dateutils = {
         var newDate = "";
 
         if (date.length < 8) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilformat"/>");
+            alert(properties.date.labels.feilformat);
         return -1;
         }
 
@@ -60,7 +75,7 @@ openaksess.dateutils = {
         startInx = 0;
         endInx = date.indexOf('.', 0);
         if (endInx == -1) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>");
+            alert(properties.date.labels.skilletegn);
             return -1;
         }
 
@@ -70,14 +85,14 @@ openaksess.dateutils = {
 
         day = parseInt(date.substring(startInx, endInx));
         if (isNaN(day)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feildag"/>");
+            alert(properties.date.labels.feildag);
             return -1;
         }
 
         startInx = endInx + 1;
         endInx = date.indexOf('.', startInx);
         if (endInx == -1) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilformat"/>");
+            alert(properties.date.labels.feilformat);
             return -1;
         }
 
@@ -87,28 +102,28 @@ openaksess.dateutils = {
 
         month = parseInt(date.substring(startInx, endInx));
         if (isNaN(month)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilmaned"/>");
+            alert(properties.date.labels.feilmaned);
             return -1;
         } // month improperly specified
 
         year = parseInt(date.substring(endInx + 1, date.length));
         if (isNaN(year)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilar"/>");
+            alert(properties.date.labels.feilar);
             return -1;
         } // year improperly specified
 
         if ((day < 1) || (day > 31)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feildagtall"/>");
+            alert(properties.date.labels.feildagtall);
             return -1;
         }
 
         if ((month < 1) || (month > 12)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilmanedtall"/>");
+            alert(properties.date.labels.feilmanedtall);
             return -1;
         }
 
         if (year < 1000 ) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilartall"/>");
+            alert(properties.date.labels.feilartall);
             return -1;
         }
 
@@ -116,7 +131,7 @@ openaksess.dateutils = {
         var chkDays = chkDt.getDate();
 
         if (day != chkDays) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feilskuddarmaned"/>");
+            alert(properties.date.labels.feilskuddarmaned);
             return -1;
         }
 
@@ -134,7 +149,7 @@ openaksess.dateutils = {
         startInx = 0;
         endInx = time.indexOf(':', 0);
         if (endInx == -1) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.kolon"/>");
+            alert(properties.date.labels.feiltidsformatKolon);
             return -1;
         }
 
@@ -142,7 +157,7 @@ openaksess.dateutils = {
 
         hours = parseInt("" + time.substring(startInx, endInx));
         if (isNaN(hours)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>");
+            alert(properties.date.labels.feiltidsformat);
             return -1;
         }
 
@@ -151,27 +166,27 @@ openaksess.dateutils = {
 
         min = parseInt("" + time.substring(endInx + 1, time.length));
         if (isNaN(min)) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>");
+            alert(properties.date.labels.feiltidsformat);
             return -1;
         }
 
         if (min < 0) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minuttermindre"/>");
+            alert(properties.date.labels.feiltidsformatMinuttermindre);
             return -1;
         }
 
         if (min > 59) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minutterstorre"/>");
+            alert(properties.date.labels.feiltidsformatMinutterstorre);
             return -1;
         }
 
         if (hours < 0) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>");
+            alert(properties.date.labels.feiltidsformatTimermindre);
             return -1;
         }
 
         if (hours > 23) {
-            alert("<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>");
+            alert(properties.date.labels.feiltidsformatTimerstorre);
             return -1;
         }
 
