@@ -28,10 +28,12 @@
 
     function updateStats() {
         var tableId = $("#profile_selector option:selected").val();
-        $.post("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", { tableId: tableId }, function(html) {
-            $("#googleAnalyticsResult").html(html);
-            drawPerMonthStatsChart();
-        }, "html");
+        if (tableId != undefined) {
+            $.post("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", { tableId: tableId }, function(html) {
+                $("#googleAnalyticsResult").html(html);
+                drawPerMonthStatsChart();
+            }, "html");
+        }
     }
 
     var monthNames = [
