@@ -38,6 +38,7 @@
         }
     </script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-popup.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
         $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);

@@ -25,10 +25,6 @@
     <group name="admin-common">
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
-        <js>/admin/dwr/interface/ContentStateHandler.js</js>
-        <js>/admin/dwr/interface/UserPreferencesHandler.js</js>
-        <js>/admin/dwr/interface/ContentClipboardHandler.js</js>
-        <group-ref>dwr-core</group-ref>
         <js>/admin/js/common.js</js>
         <js>/admin/js/admin.js</js>
     </group>
@@ -36,7 +32,6 @@
     <group name="admin-popup">
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
-        <group-ref>dwr-core</group-ref>
         <js>/admin/js/common.js</js>
     </group>
 
@@ -76,10 +71,6 @@
         <js>/admin/js/jquery.autocomplete.min.js</js>
         <js>/admin/js/jquery.interface.js</js>
         <js>/admin/js/jquery.lazyload.mini.js</js>
-    </group>
-
-    <group name="dwr-core">
-        <js>/admin/dwr/engine.js</js>
     </group>
 
 </groups>

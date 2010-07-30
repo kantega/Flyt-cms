@@ -44,6 +44,10 @@
         }
     </script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferencesHandler.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
 
     <kantega:getsection id="head"/>
     <script type="text/javascript">
