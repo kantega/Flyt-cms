@@ -18,27 +18,27 @@
  * This script expects the following properties to be set:
  * * contextPath
  * * objectTypeAssociation
- * * labels.confirmDelete
- * * labels.copyPaste
- * * labels.publishinfoPeriod
- * * labels.editPermissions
- * * labels.reject
- * * labels.linkcheckField
- * * labels.linkcheckUrl
- * * labels.linkcheckStatus
- * * labels.linkcheckLastchecked
- * * labels.linkcheckTimeschecked
- * * labels.details
- * * labels.publishinfoAlias
- * * labels.contentTitle
- * * labels.contentLastModified
- * * labels.contentModifiedBy
- * * labels.contentApprovedBy
- * * labels.contentChangeFrom
- * * labels.contentExpireDate
- * * labels.contentOwnerPerson
- * * labels.contentDisplayTemplate
- * * labels.associations
+ * * content.labels.confirmDelete
+ * * content.labels.copyPaste
+ * * content.labels.publishinfoPeriod
+ * * content.labels.editPermissions
+ * * content.labels.reject
+ * * content.labels.linkcheckField
+ * * content.labels.linkcheckUrl
+ * * content.labels.linkcheckStatus
+ * * content.labels.linkcheckLastchecked
+ * * content.labels.linkcheckTimeschecked
+ * * content.labels.details
+ * * content.labels.publishinfoAlias
+ * * content.labels.contentTitle
+ * * content.labels.contentLastModified
+ * * content.labels.contentModifiedBy
+ * * content.labels.contentApprovedBy
+ * * content.labels.contentChangeFrom
+ * * content.labels.contentExpireDate
+ * * content.labels.contentOwnerPerson
+ * * content.labels.contentDisplayTemplate
+ * * content.labels.associations
  *
  */
 
@@ -229,7 +229,7 @@ openaksess.content = {
 
         deleteItem: function(url) {
             openaksess.common.debug("openaksess.content.publish.deleteItem(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:properties.content.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/publish/DeleteAssociation.action?url=" + url,width: 450, height:250});
         },
 
         cut: function(url) {
@@ -250,24 +250,24 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.publish.paste(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.content.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?newParentUrl=" + url,width: 390, height:250});
         },
 
         pasteAsShortcut: function(url) {
             openaksess.common.debug("openaksess.content.publish.pasteAsShortcut(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:properties.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.content.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
         },
 
         displayPeriod: function(url) {
             openaksess.common.debug("openaksess.content.publish.displayPeriod(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.publishinfoPeriod, iframe:true, href: properties.contextPath + "/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
+            openaksess.common.modalWindow.open({title:properties.content.labels.publishinfoPeriod, iframe:true, href: properties.contextPath + "/admin/publish/ViewDisplayPeriod.action?url=" + url,width: 350, height:220});
         },
 
         managePrivileges: function(url) {
             openaksess.common.debug("openaksess.content.publish.managePrivileges(): url: " + url);
-            openaksess.common.modalWindow.open({title:properties.labels.editPermissions, iframe:true, href: properties.contextPath + "/admin/security/EditPermissions.action?url=" + url + "&type=" + properties.objectTypeAssociation,width: 650, height:560});
+            openaksess.common.modalWindow.open({title:properties.content.labels.editPermissions, iframe:true, href: properties.contextPath + "/admin/security/EditPermissions.action?url=" + url + "&type=" + properties.objectTypeAssociation,width: 650, height:560});
         },
 
         approve: function(url) {
@@ -276,7 +276,7 @@ openaksess.content = {
         },
 
         reject: function(url) {
-            openaksess.common.modalWindow.open({title:properties.labels.reject, iframe:true, href: properties.contextPath + "/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
+            openaksess.common.modalWindow.open({title:properties.content.labels.reject, iframe:true, href: properties.contextPath + "/admin/publish/popups/RejectNote.action?url=" + url,width: 350, height:200});
         }
     },
 
@@ -313,11 +313,11 @@ openaksess.content = {
                     var details = '<table>' +
                                 '   <thead>' +
                                 '       <tr>' +
-                                '           <th class="field">' + properties.labels.linkcheckField + '</th>' +
-                                '           <th class="url">' + properties.labels.linkcheckUrl + '</th>' +
-                                '           <th class="status">' + properties.labels.linkcheckStatus + '</th>' +
-                                '           <th class="lastChecked">' + properties.labels.linkcheckLastchecked + '</th>' +
-                                '           <th class="timesChecked">' + properties.labels.linkcheckTimeschecked + '</th>' +
+                                '           <th class="field">' + properties.content.labels.linkcheckField + '</th>' +
+                                '           <th class="url">' + properties.content.labels.linkcheckUrl + '</th>' +
+                                '           <th class="status">' + properties.content.labels.linkcheckStatus + '</th>' +
+                                '           <th class="lastChecked">' + properties.content.labels.linkcheckLastchecked + '</th>' +
+                                '           <th class="timesChecked">' + properties.content.labels.linkcheckTimeschecked + '</th>' +
                                 '       </tr>' +
                                 '</thead>' +
                                 '<tbody>';
@@ -341,35 +341,35 @@ openaksess.content = {
 
         details: function(data) {
             var content = data.content;
-            var details = "<h3>" + properties.labels.details + "</h3><ul>";
+            var details = "<h3>" + properties.content.labels.details + "</h3><ul>";
 
             if (content) {
                 openaksess.common.debug("openaksess.content.contentstatus.details(): binding details icon to click");
 
-                details += '<li><span class="label">' + properties.labels.contentTitle + ':</span>&nbsp;'+content.title+'</li>';
+                details += '<li><span class="label">' + properties.content.labels.contentTitle + ':</span>&nbsp;'+content.title+'</li>';
                 if (content.alias) {
-                    details += '<li><span class="label">' + properties.labels.publishinfoAlias + ':</span>&nbsp;'+content.alias+'</li>';
+                    details += '<li><span class="label">' + properties.content.labels.publishinfoAlias + ':</span>&nbsp;'+content.alias+'</li>';
                 }
                 if (content.lastModified) {
-                    details += '<li><span class="label">' + properties.labels.contentLastModified + ':</span>&nbsp;'+content.lastModified + ' ' + properties.labels.contentModifiedBy + ' ' + content.modifiedBy + '</li>';
+                    details += '<li><span class="label">' + properties.content.labels.contentLastModified + ':</span>&nbsp;'+content.lastModified + ' ' + properties.content.labels.contentModifiedBy + ' ' + content.modifiedBy + '</li>';
                 }
                 if (content.modifiedBy != content.approvedBy) {
-                    details += '<li><span class="label">' + properties.labels.contentApprovedBy + ':</span>&nbsp;'+content.approvedBy + '</li>';
+                    details += '<li><span class="label">' + properties.content.labels.contentApprovedBy + ':</span>&nbsp;'+content.approvedBy + '</li>';
                 }
                 if (content.changeFromDate) {
-                    details += '<li><span class="label">' + properties.labels.contentChangeFrom + ':</span>&nbsp;'+content.changeFromDate+'</li>';
+                    details += '<li><span class="label">' + properties.content.labels.contentChangeFrom + ':</span>&nbsp;'+content.changeFromDate+'</li>';
                 }
                 if (content.expireDate) {
-                    details += '<li><span class="label">' + properties.labels.contentExpireDate + ':</span>&nbsp;'+content.expireDate+'</li>';
+                    details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+content.expireDate+'</li>';
                 }
                 if (content.ownerperson) {
-                    details += '<li><span class="label">' + properties.labels.contentOwnerPerson + ':</span>&nbsp;'+content.ownerperson+'</li>';
+                    details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+content.ownerperson+'</li>';
                 }
             }
 
             var displayTemplate = data.displayTemplate;
             if (displayTemplate) {
-                details += '<li><span class="label">' + properties.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
+                details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
             }
             
             details +="</ul>";
@@ -388,7 +388,7 @@ openaksess.content = {
                 var associationsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'associations'});
                 $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                    var details = '<h3>' + properties.labels.associations + '</h3>';
+                    var details = '<h3>' + properties.content.labels.associations + '</h3>';
                     for (var i = 0; i < associations.length; i++) {
                         details += '<ul class="breadcrumbs">';
                         for (var j = 0; j<associations[i].length; j++) {
