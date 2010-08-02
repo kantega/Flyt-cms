@@ -1,5 +1,11 @@
 body {
-    background: #ffffff url("../bitmaps/common/icons/large/search.png") 10px 10px no-repeat;
+    background-color: #ffffff;
+}
+div.search .searchicon {
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -1069px;
+    position: absolute;
+    height: 35px;
+    width: 35px;
 }
 #SearchResult {
     float: left;

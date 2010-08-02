@@ -71,7 +71,7 @@ body.popup #Navigator{
     background: url("../bitmaps/common/icons/small/crosspublish.png") left center no-repeat;
 }
 #MainPane .supportMenu a.details {
-    background: url("../bitmaps/common/icons/small/details.png") left center no-repeat;
+    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -897px;
 }
 
 

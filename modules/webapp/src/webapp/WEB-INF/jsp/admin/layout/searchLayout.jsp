@@ -28,6 +28,7 @@
 
 <body>
     <div id="Content" class="search">
+        <div class="searchicon"></div>
         <kantega:getsection id="body"/>
     </div>
 </body>
