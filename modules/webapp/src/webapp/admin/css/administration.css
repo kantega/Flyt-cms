@@ -46,7 +46,7 @@ body {
     color: #ffffff;
     font-weight: bold;
     text-decoration: none;
-    background: #5cb6e1 url("../bitmaps/common/navigator/selected.png") center left repeat-x;
+    background: #5cb6e1 url("../bitmaps/default/framework/selected.png") center left repeat-x;
 }
 
 table th.date {
