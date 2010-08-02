@@ -285,7 +285,7 @@ table.fullWidth {
 
 /************** Top menu **************/
 #TopMenu .logo {
-    background: transparent url("../../login/bitmaps/top_nav_aksess_logo.png") center center no-repeat;
+    background: transparent url("../bitmaps/sprite-common.png") no-repeat -157px -1818px;
     line-height: 28px;
     padding-left: 31px;
 }
@@ -299,8 +299,8 @@ table.fullWidth {
 #TopMenu a.menuitem.selected { color: #ffffff; font-weight: bold; }
 
 /* Extra dfinitions for .logout and .help in default_ie7.css */
-#TopMenu a.menuitem.logout { background: url("../bitmaps/default/framework/top_nav_icon_logout.png") left center no-repeat; padding-left: 20px; float: right;}
-#TopMenu a.menuitem.help { background: url("../bitmaps/default/framework/top_nav_icon_help.png") left center no-repeat; padding-left: 20px; float: right;}
+#TopMenu a.menuitem.logout { background: url("../bitmaps/sprite-common.png") no-repeat -159px -1716px; padding-left: 20px; float: right;}
+#TopMenu a.menuitem.help { background: url("../bitmaps/sprite-common.png") no-repeat -159px -1764px; padding-left: 20px; float: right;}
 
 /************** Modes menu **************/
 #ModesMenu {
@@ -353,29 +353,29 @@ table.fullWidth {
 }
 
 #ModesMenu .buttonGroup .button.first {
-    background: url("../bitmaps/default/framework/modus_btn_left.png") left center no-repeat
+    background: url("../bitmaps/sprite-buttons.png") no-repeat 0 5px;
 }
 
 #ModesMenu .buttonGroup .button.first.active {
-    background: url("../bitmaps/default/framework/modus_btn_left_active.png") left center no-repeat
+    background: url("../bitmaps/sprite-buttons.png") no-repeat 0 -54px;
 }
 #ModesMenu .buttonGroup .button.last {
-    background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -112px;
 }
 
 #ModesMenu .buttonGroup span.singlebutton {
-    background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -112px;
     padding-right: 4px;
     margin-left: 4px;
     display: block;
 }
 
 #ModesMenu .buttonGroup .button.last.active {
-    background: url("../bitmaps/default/framework/modus_btn_right_active.png") right center no-repeat
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -170px;
 }
 #ModesMenu .buttonGroup .buttonSeparator {
     padding-left: 1px;
-    background: url("../bitmaps/default/framework/modus_btn_separator.png") left center no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1862px;
 }
 
 #ModesMenu .button span {
