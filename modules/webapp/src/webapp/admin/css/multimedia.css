@@ -124,12 +124,12 @@ a.file {
 
 #EditMultimediaButtons input.cancel {
     margin-left: 10px;
-    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -277px;
 }
 
 #EditMultimediaButtons input.save {
     margin-left: 10px;
-    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -900px;
 }
 
 #UploadStatus {

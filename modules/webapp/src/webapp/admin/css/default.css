@@ -326,7 +326,7 @@ table.fullWidth {
     border: none;
     color: #dddddd;
     font-size: 1em;
-    background: url("../bitmaps/default/framework/search_btnicon.png") center left no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1915px;
     float: left;
 }
 
@@ -346,7 +346,9 @@ table.fullWidth {
     background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -245px;
 }
 
-
+#ModesMenu .buttonGroup .button .edit {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -936px;
+}
 
 #ModesMenu .buttonGroup .button.active {
     background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -303px;
@@ -402,6 +404,9 @@ table.fullWidth {
     height: 25px;
     background: url("../bitmaps/default/framework/tools_btn_separator.png") right center no-repeat;
 }
+#ToolsMenu .button .delete {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
+}
 #ToolsMenu .button span {
     display: inline-block;
     padding-left: 30px;
@@ -450,48 +455,52 @@ table.fullWidth {
 }
 
 #TabToolsMenu .tab .content {
-    background-image: url("../bitmaps/common/icons/small/content.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -388px;
 }
 #TabToolsMenu .tab .metadata{
-    background-image: url("../bitmaps/common/icons/small/metadata.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -1628px;
 }
 #TabToolsMenu .tab .versions{
-    background-image: url("../bitmaps/common/icons/small/delete.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -795px;
 }
 #TabToolsMenu .tab .attachments {
-    background-image: url("../bitmaps/common/icons/small/copy.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -611px;
 }
 
 /************** Buttons ************/
 #EditContentButtons input.publish {
     margin-left: 10px;
-    background: url("../bitmaps/common/icons/large/publish.png") no-repeat center left;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -657px;
 }
 
 #EditContentButtons input.cancel {
-    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -277px;
 }
 
 #EditContentButtons input.insert {
     background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
 #EditContentButtons input.save {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
 #EditContentButtons input.approve {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
 #EditContentButtons input.reject {
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
 #EditContentButtons input.savedraft {
-    background: url("../bitmaps/common/icons/large/savedraft.png") no-repeat center left;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
 }
 
 
@@ -607,13 +616,13 @@ table.fullWidth {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -749px;
 }
 .button .delete{
-    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -798px; /*10px -795px;*/
 }
 .button .displayPeriod {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -235px;
 }
 .button .edit{
-    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -936px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -945px; /*0 -936px;*/
 }
 .button .imagemap {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -1249px;
@@ -625,12 +634,10 @@ table.fullWidth {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1485px;
 }
 .button .moveUp {
-    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
-    background-image: url("../bitmaps/common/icons/small/moveup.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px 2px;
 }
 .button .moveDown {
-    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
-    background-image: url("../bitmaps/common/icons/small/movedown.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -1952px;
 }
 .button .newfile {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -165px;
@@ -660,12 +667,10 @@ table.fullWidth {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -726px;
 }
 .button .reset{
-    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/reset.png");
 }
 .button .search {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1131px;
-    /*background-image: url("../bitmaps/common/icons/small/search.png");*/
 }
 .button .select{
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1177px;
@@ -1048,21 +1053,21 @@ div.dataTables_paginate {
 }
 
 .paginate_disabled_previous {
-    background-image: url("../bitmaps/common/icons/small/moveup.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px 0;
 }
 
 
 .paginate_enabled_previous {
-    background-image: url("../bitmaps/common/icons/small/moveup.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px 0;
 }
 
 .paginate_disabled_next {
-    background-image: url("../bitmaps/common/icons/small/movedown.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1954px;
 
 }
 
 .paginate_enabled_next {
-    background-image: url("../bitmaps/common/icons/small/movedown.png");
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1954px;
 }
 
 
