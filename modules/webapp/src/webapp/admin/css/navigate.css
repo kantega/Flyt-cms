@@ -39,7 +39,7 @@ body.popup #Navigator{
     right: 0;
     top: 50%;
     cursor: e-resize;
-    background: transparent url("../bitmaps/default/framework/framesplit_drag.png") center left no-repeat;
+    background: transparent url("../bitmaps/sprite-common.png") no-repeat -250px 0;
 }
 
 
@@ -95,7 +95,7 @@ body.popup #Navigator{
     cursor: pointer;
 }
 #Filteroptions .filtersToggle {
-    background: url("../bitmaps/default/framework/filteroptions_icon_filtering.png") left center no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1225px;
     padding-left: 15px;
     margin: 0 5px;
 }
@@ -109,12 +109,12 @@ ul.breadcrumbs {
 }
 ul.breadcrumbs li {
     display: inline;
-    background: url("../bitmaps/default/framework/contentstatus_breadcrumbs_separator.png") left center no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1539px;
     padding-left: 10px;
     padding-right: 3px;
 }
 ul.breadcrumbs li:first-child {
-    background: url("../bitmaps/common/icons/small/site.png") left center no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1460px;
     padding-left: 18px;
 }
 
@@ -149,10 +149,10 @@ ul.breadcrumbs li:first-child {
     background-repeat: no-repeat;
 }
 .navigator .openState a.open {
-    background-image: url("../bitmaps/common/navigator/nav_open.png");;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -85px;
 }
 .navigator .openState a.closed {
-    background-image: url("../bitmaps/common/navigator/nav_closed.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -46px;
 }
 .navigator .openState span.noChildren {
     background-image: none;
@@ -171,47 +171,45 @@ ul.breadcrumbs li:first-child {
 }
 
 .navigator .icon .expired {
-    background-image: url("../bitmaps/common/navigator/expired.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1033px;
 }
 .navigator .icon .file {
-    background-image: url("../bitmaps/common/navigator/file.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px;
 }
 .navigator .icon .file-draft {
-    background-image: url("../bitmaps/common/navigator/file.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1123px;
 }
 .navigator .icon .folder {
-    background-image: url("../bitmaps/common/navigator/folder.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 1px -1167px;
 }
 .navigator .icon .media {
-    background-image: url("../bitmaps/common/navigator/image.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1210px;
 }
 .navigator .icon .link {
-    background-image: url("../bitmaps/common/navigator/link.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1406px;
 }
 .navigator .icon .link-draft {
-    background-image: url("../bitmaps/common/navigator/link_draft.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1451px;
 }
-.navigator .icon .shortcut {
-    background-image: url("../bitmaps/common/navigator/shortcut.png");
-}
-
 .navigator .icon .page {
-    background-image: url("../bitmaps/common/navigator/page.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -484px;
 }
 .navigator .icon .page-draft {
-    background-image: url("../bitmaps/common/navigator/page_draft.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -529px;
 }
 .navigator .icon .root{
     width: 14px;
     height: 14px;
     top: 3px;
-    background-image: url("../bitmaps/common/navigator/root.png");
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -865px;
 }
 .navigator .icon .shortcut {
     background-image: url("../bitmaps/common/navigator/shortcut.png");
+/*    background: url("../bitmaps/sprite-common.png") no-repeat 0 0;*/
 }
 .navigator .icon .waiting{
     background-image: url("../bitmaps/common/navigator/waiting.png");
+/*    background: url("../bitmaps/sprite-common.png") no-repeat 0 0;*/
 }
 
 .navigator .notes a {

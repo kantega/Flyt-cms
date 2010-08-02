@@ -316,7 +316,7 @@ table.fullWidth {
     font-size: 14px;
     margin-top:6px;
     padding:0 0 0 25px;
-    background: url("../bitmaps/default/framework/search_inputfield.png") center left no-repeat;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat left -234px;
     float: left;
     font-family:verdana, sans-serif;
 }
