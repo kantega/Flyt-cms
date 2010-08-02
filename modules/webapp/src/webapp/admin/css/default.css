@@ -583,102 +583,102 @@ table.fullWidth {
 
 
 .button .add {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 5px -52px
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -52px
 }
 #ToolsMenu .button .add {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -49px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -49px;
 }
 .button .back {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -135px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -135px;
 }
 .button .cancel {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 5px -346px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -346px;
 }
 .button .choose {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -1177px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1177px;
 }
 .button .copy {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -611px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -611px;
 }
 .button .crop {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -658px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -658px;
 }
 .button .cut {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -749px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -749px;
 }
 .button .delete{
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -795px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
 }
 .button .displayPeriod {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -235px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -235px;
 }
 .button .edit{
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -936px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -936px;
 }
 .button .imagemap {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 10px -1249px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -1249px;
 }
 .button .insert {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 5px -1358px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -1358px;
 }
 .button .linkcheck {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0 -1485px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1485px;
 }
 .button .moveUp {
-    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
+    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/moveup.png");
 }
 .button .moveDown {
-    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
+    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/movedown.png");
 }
 .button .newfile {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -165px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -165px;
 }
 .button .newfolder {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -211px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -211px;
 }
 .button .newSubpage {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -256px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -256px;
 }
 .button .ok{
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -391px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -391px;
 }
 .button .notes {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -336px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -336px;
 }
 .button .organize {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -428px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -428px;
 }
 .button .paste {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -569px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -569px;
 }
 .button .privileges {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -615px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -615px;
 }
 .button .remove {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -726px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -726px;
 }
 .button .reset{
-    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
+    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/reset.png");
 }
 .button .search {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -1131px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1131px;
     /*background-image: url("../bitmaps/common/icons/small/search.png");*/
 }
 .button .select{
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -154px -1177px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1177px;
 }
 .button .settings {
-    /*background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll 0px 0px;*/
+    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
     background-image: url("../bitmaps/common/icons/small/settings.png");
 }
 .button .statistics {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -1529px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -1529px;
 }
 .button .view {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -159px -113px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -113px;
 }
 
 #Content .buttonBar input#MinorChange {

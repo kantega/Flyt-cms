@@ -2,7 +2,7 @@ body {
     background-color: #ffffff;
 }
 div.search .searchicon {
-    background: transparent url(../bitmaps/common/sprite-common.png) no-repeat scroll -149px -1069px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -1069px;
     position: absolute;
     height: 35px;
     width: 35px;
