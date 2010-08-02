@@ -1,5 +1,5 @@
 body {
-    background: url(../bitmaps/default/framework/fullwidth_background.png) repeat-y #F7F7F7;
+    background: #F7F7F7 url(../bitmaps/sprite-repeat-y.png) repeat-y scroll -80px 0;
 }
 
 #Navigation {
@@ -46,7 +46,7 @@ body {
     color: #ffffff;
     font-weight: bold;
     text-decoration: none;
-    background: #5cb6e1 url("../bitmaps/default/framework/selected.png") center left repeat-x;
+    background: #5cb6e1 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -504px;
 }
 
 table th.date {

@@ -114,24 +114,24 @@ table.noborder td, table.noborder th {
     height: 28px;
     line-height: 28px;
     padding: 0 17px;
-    background: #3B3C3D url("../../login/bitmaps/top_nav_background.png") center left repeat-x;
+    background: #3B3C3D url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -664px;
 }
 #ModesMenu {
     padding: 0 5px;
     height: 37px;
-    background: #333333 url("../bitmaps/default/framework/modus_background.png") center left repeat-x;
+    background: #333333 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -183px;
 }
 
 #ToolsMenu {
     height: 25px;
     padding: 0 5px;
-    background: #E3E3E3 url("../bitmaps/default/framework/tools_background.png") center left repeat-x;
+    background: #E3E3E3 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -553px;
 }
 
 #TabToolsMenu {
     height: 26px;
     padding: 0 5px;
-    background: #E3E3E3 url("../bitmaps/default/framework/toolstab_background.png") center left repeat-x;
+    background: #E3E3E3 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -608px;
 }
 
 #SideBar {
@@ -178,7 +178,7 @@ table.fullWidth {
     width: 10px;
     height: 100%;
     border-right: 1px solid #8F8F8F;
-    background: url(../bitmaps/default/framework/framesplit_right.png) top center repeat-y;
+    background: url(../bitmaps/sprite-repeat-y.png) repeat-y -40px 0;
 }
 
 #Content.navigateContent #MainPane, #Content.navigateMultimedia #MainPane {
@@ -343,13 +343,13 @@ table.fullWidth {
     height: 37px;
     line-height: 37px;
     padding: 0 10px;
-    background: url("../bitmaps/default/framework/modus_btn_center.png") center center repeat-x;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -245px;
 }
 
 
 
 #ModesMenu .buttonGroup .button.active {
-    background: url("../bitmaps/default/framework/modus_btn_center_active.png") center center repeat-x;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -303px;
 }
 
 #ModesMenu .buttonGroup .button.first {
@@ -499,7 +499,7 @@ table.fullWidth {
 #Content .buttonBar {
     height: 50px;
     line-height: 50px;
-    background: url("../bitmaps/default/framework/buttonbar_background.png") repeat-x;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 0;
 }
 
 #Content .buttonBar .barButton {
@@ -811,7 +811,7 @@ div.sidebarFieldset fieldset legend {
 .infoslider {
     display: none;
     width: 100%;
-    background: #ffffff url("../bitmaps/default/framework/infoslider_bottom.png") bottom left repeat-x;
+    background: #ffffff url("../bitmaps/default/framework/infoslider_bottom.png") repeat-x bottom left;
     position: absolute;
     z-index: 100;
     left: 0;
@@ -949,7 +949,7 @@ div.sidebarFieldset fieldset legend {
     cursor: pointer;
 }
 #SubPages li.page.selected {
-    background: url("../bitmaps/default/framework/organizesubpages_selected.png") repeat-x center left;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -366px;
     color: #ffffff;
     cursor: n-resize;
 }

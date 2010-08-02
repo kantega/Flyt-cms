@@ -28,7 +28,7 @@ body.popup #Navigator{
     right: 0;
     width: 10px;
     height: 100%;
-    background: #A0A0A0 url("../bitmaps/default/framework/framesplit.png") top left repeat-y;
+    background: #A0A0A0 url("../bitmaps/sprite-repeat-y.png") repeat-y 0 0;
 }
 
 /* Frame resize handle */
@@ -51,7 +51,7 @@ body.popup #Navigator{
 #MainPane #Statusbar {
     height: 2em;
     line-height: 2em;
-    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    background: #ffffff url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -80px;
     border-bottom: 1px solid #cccccc;
     padding: 0 10px;
     position: relative;
@@ -77,7 +77,7 @@ body.popup #Navigator{
 
 /************** Navigation (left column) **************/
 #Filteroptions {
-    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") left top repeat-x;
+    background: #ffffff url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -80px;
     border-bottom: 1px solid #cccccc;
     height: 2em;
     position: relative;
@@ -242,7 +242,7 @@ ul.breadcrumbs li:first-child {
     color: #ffffff;
     font-weight: bold;
     text-decoration: none;
-    background: #5cb6e1 url("../bitmaps/default/framework/selected.png") center left repeat-x;
+    background: #5cb6e1 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -504px;
 }
 
 /* Generic context menu styles */
