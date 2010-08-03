@@ -49,7 +49,7 @@
          * Changes the content of the contentmain iframe.
          * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
          *
-         * Overrides the default implementation. See navigate.jjs
+         * Overrides the default implementation. See navigate.js
          *
          * @param id
          * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
