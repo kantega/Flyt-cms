@@ -45,6 +45,13 @@
         <css>/admin/css/administration.css</css>
     </group>
 
+    <group name="miniaksess">
+        <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
+        <css>/admin/css/jquery-ui-additions.css</css>
+        <css>/admin/css/miniaksess.css</css>
+        <js>/admin/js/common.js</js>
+    </group>
+
     <!-- ************************************************** -->
 
     <group name="admin-core">

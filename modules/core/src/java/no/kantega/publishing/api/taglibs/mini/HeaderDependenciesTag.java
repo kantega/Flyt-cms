@@ -34,9 +34,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
-        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/jquery-ui-1.8.1.custom.css\">");
-        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/jquery-ui-additions.css\">");
-        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/admin/css/miniaksess.css\">");
+        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro/miniaksess.css\">\n");
         out.write("<script type=\"text/javascript\">\n" +
                 "        var properties = {\n" +
                 "            contextPath : '"+((HttpServletRequest) pageContext.getRequest()).getContextPath()+"',\n" +
@@ -45,8 +43,8 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "            thisId : '"+ AdminRequestParameters.THIS_ID+"'\n" +
                 "        }\n" +
                 "    </script>");
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/common.js\"></script>");
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/editcontext.jjs\"></script>");
-        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce_3_3_6/tiny_mce.js\"></script>");
+        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro/miniaksess.js\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/admin/js/editcontext.jjs\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce_3_3_6/tiny_mce.js\"></script>\n");
     }
 }
