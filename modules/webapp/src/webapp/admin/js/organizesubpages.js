@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%
-request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
 
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ *
+ */
 
 /********************************************************************************
  * Namespace for organize subpages
@@ -60,14 +61,14 @@ openaksess.organizesubpages = function()  {
             openaksess.content.triggerContentUpdateEvent(this.currentUrl);
 
             openaksess.common.debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
-            $("#SubPages").load("${pageContext.request.contextPath}/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
+            $("#SubPages").load(properties.contextPath + "/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
                 openaksess.common.debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
                 $("#SubPages ul").sortable({
                     connectWith: '.associationCategory',
                     items: 'li:not(.menu)',
                     axis: 'y',
                     stop: function(e, ui){
-                        $.post("${pageContext.request.contextPath}/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
+                        $.post(properties.contextPath + "/admin/publish/ReorderSubPages.action", getAssociationIdsAsParam(), function(){
                             openaksess.navigate.updateNavigator(ths.currentUrl, true);
                         });
                     }
