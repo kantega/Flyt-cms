@@ -1,3 +1,4 @@
+<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
@@ -23,7 +24,24 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.lazyload.mini.js"></script>
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        if (typeof properties.multimedia == 'undefined') {
+            properties.multimedia = {};
+        }
+        properties.multimedia['labels'] = {
+            confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
+            copypaste : '<kantega:label key="aksess.copypaste.title"/>',
+            editpermissions : '<kantega:label key="aksess.editpermissions.title"/>',
+            foldername : '<kantega:label key="aksess.multimedia.foldername"/>',
+            aksessToolsUpload : '<kantega:label key="aksess.tools.upload"/>'
+        };
+        properties.contextPath = "${pageContext.request.contextPath}";
+        properties.objectTypeMultimedia = <%=ObjectType.MULTIMEDIA%>;
+    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/interface/MultimediaClipboardHandler.js"></script>
 
 </kantega:section>

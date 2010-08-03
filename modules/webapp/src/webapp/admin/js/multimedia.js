@@ -1,8 +1,3 @@
-//<%@ page contentType="text/javascript;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
-//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
-//<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 /*
  * Copyright 2009 Kantega AS
  *
@@ -17,6 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ * * objectTypeMultimedia
+ * * multimedia.labels.confirmDelete
+ * * multimedia.labels.copypaste
+ * * multimedia.labels.editpermissions
+ * * multimedia.labels.foldername
+ * * multimedia.labels.aksessToolsUpload
+ *
  */
 
 var currentItemIdentifier = 0;
@@ -65,7 +72,7 @@ openaksess.multimedia = {
         $("#Statusbar").bind("multimediaupdate", function(e, itemIdentifier){
             openaksess.common.debug("openaksess.multimedia.bindMultimediaupdateEvents(): #Statusbar has received multimediaupdate event. itemIdentifier: " + itemIdentifier);
             openaksess.multimedia.multimediastatus.disableButtons();
-            $.post("${pageContext.request.contextPath}/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
+            $.post(properties.contextPath + "/admin/multimedia/MultimediaProperties.action", {itemIdentifier: itemIdentifier}, function(data){
                 openaksess.common.debug("openaksess.multimedia.update breadcrumbs");
                 openaksess.multimedia.multimediastatus.breadcrumbs(data.path);
                 openaksess.multimedia.multimediastatus.enableButtons(data.enabledButtons);
@@ -112,7 +119,7 @@ openaksess.multimedia = {
 
         deleteItem: function(id) {
             openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:properties.multimedia.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
         },
 
         cut: function(id) {
@@ -133,12 +140,12 @@ openaksess.multimedia = {
             openaksess.common.debug("Multimedia.paste(): id: " + id);
             $(".contextMenu").disableContextMenuItems("#paste");
             //openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.copypaste.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.multimedia.labels.copypaste, iframe:true, href: properties.contextPath + "/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
         },
 
         managePrivileges: function(id) {
             openaksess.common.debug("Multimedia.managePrivileges(): id: " + id);
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editpermissions.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/EditPermissions.action?id=" + id + "&type=<%=ObjectType.MULTIMEDIA%>",width: 650, height:560});
+            openaksess.common.modalWindow.open({title:properties.multimedia.labels.editpermissions, iframe:true, href: properties.contextPath + "/admin/security/EditPermissions.action?id=" + id + "&type=" + properties.objectTypeMultimedia,width: 650, height:560});
         }
     },
 
@@ -207,11 +214,11 @@ openaksess.multimedia = {
 
 
     getViewFolderAction : function() {
-        return "${pageContext.request.contextPath}/admin/multimedia/ViewFolder.action";
+        return properties.contextPath + "/admin/multimedia/ViewFolder.action";
     },
 
     getEditAction : function() {
-        return "${pageContext.request.contextPath}/admin/multimedia/EditMultimedia.action";
+        return properties.contextPath + "/admin/multimedia/EditMultimedia.action";
     },
 
 
@@ -255,7 +262,7 @@ openaksess.multimedia = {
 
         if (oldName != newName) {
             openaksess.common.debug("openaksess.multimedia.updateMediaName(): id: " + id + ", name: " + newName);
-            $.post("${pageContext.request.contextPath}/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
+            $.post(properties.contextPath + "/admin/multimedia/UpdateMediaName.action", {itemIdentifier: id, name : newName }, function(success) {
                 // Update navigation menu
                 openaksess.navigate.updateNavigator(currentItemIdentifier, true);
             });
@@ -265,10 +272,10 @@ openaksess.multimedia = {
 
 
     createMediaFolder : function() {
-        var folderName = prompt('<kantega:label key="aksess.multimedia.foldername"/>', '');
+        var folderName = prompt(properties.multimedia.labels.foldername, '');
         if (folderName != null && folderName != "") {
             openaksess.common.debug("openaksess.multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
-            $.post("${pageContext.request.contextPath}/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
+            $.post(properties.contextPath + "/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
                 openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
             });
         }
@@ -276,7 +283,7 @@ openaksess.multimedia = {
 
     showUploadForm : function() {
         openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + currentItemIdentifier);
-        openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.upload"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
+        openaksess.common.modalWindow.open({title:properties.multimedia.labels.aksessToolsUpload, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
     }
 };
 
@@ -357,7 +364,7 @@ openaksess.navigate.handleContextMenuClick_media = function(action, href) {
 
 
 openaksess.navigate.getNavigatorAction = function() {
-    return "${pageContext.request.contextPath}/admin/multimedia/MultimediaNavigator.action";
+    return properties.contextPath + "/admin/multimedia/MultimediaNavigator.action";
 };
 
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
@@ -390,7 +397,7 @@ openaksess.navigate.navigatorResizeOnResize = function() {
 };
 
 openaksess.search.getSearchAction = function() {
-    return "${pageContext.request.contextPath}/admin/multimedia/Search.action";
+    return properties.contextPath + "/admin/multimedia/Search.action";
 };
 
 
