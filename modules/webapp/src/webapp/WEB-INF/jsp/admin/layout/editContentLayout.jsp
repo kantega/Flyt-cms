@@ -22,9 +22,7 @@
 
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/editcontent.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/formeditor.css">
-    <script type="text/javascript" src="../js/editcontent.js"></script>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-editcontentlayout.css">
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -79,10 +77,8 @@
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="../js/date.js"></script>
-    <script type="text/javascript" src="../js/editcontext.js"></script>
-    <script type="text/javascript" src="../js/formeditor.js"></script>
-    <script type="text/javascript" src="../../aksess/tiny_mce_3_3_6/tiny_mce.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/wro/admin-editcontentlayout.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce_3_3_6/tiny_mce.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 

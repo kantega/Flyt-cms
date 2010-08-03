@@ -10,7 +10,7 @@
     were included by the individual .jsp-files (admin-loginlayout for
     loginLayout.jsp, admin-common for commonLayout.jsp, ...).
 
-    The groups below the line are just logical groupings of related
+    The other groups are just single files or logical groupings of related
     scripts to enhance readability and maintainability.
 -->
 
@@ -45,14 +45,80 @@
         <css>/admin/css/administration.css</css>
     </group>
 
+    <group name="admin-editcontentlayout">
+        <css>/admin/css/editcontent.css</css>
+        <css>/admin/css/formeditor.css</css>
+        <js>/admin/js/editcontent.js</js>
+        <js>/admin/js/date.js</js>
+        <js>/admin/js/editcontext.js</js>
+        <js>/admin/js/formeditor.js</js>
+    </group>
+
+    <group name="admin-contentnavigatelayout">
+        <css>/admin/css/navigate.css</css>
+        <js>/admin/js/navigate.js</js>
+        <js>/admin/js/content.js</js>
+    </group>
+
     <group name="miniaksess">
         <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
         <css>/admin/css/jquery-ui-additions.css</css>
         <css>/admin/css/miniaksess.css</css>
         <js>/admin/js/common.js</js>
+        <js>/admin/js/editcontext.js</js>
     </group>
 
-    <!-- ************************************************** -->
+    <!-- Single-file groups -->
+
+    <group name="editcontext">
+        <js>/admin/js/editcontext.js</js>
+    </group>
+
+    <group name="navigate">
+        <js>/admin/js/navigate.js</js>
+    </group>
+
+    <group name="content">
+        <js>/admin/js/content.js</js>
+    </group>
+
+    <group name="editcontent">
+        <js>/admin/js/editcontent.js</js>
+    </group>
+
+    <group name="date">
+        <js>/admin/js/date.js</js>
+    </group>
+
+    <group name="editmultimedia">
+        <js>/admin/js/editmultimedia.js</js>
+    </group>
+
+    <group name="multimedia">
+        <js>/admin/js/multimedia.js</js>
+    </group>
+
+    <group name="autocomplete">
+        <js>/admin/js/autocomplete.js</js>
+    </group>
+
+    <group name="linkcheck">
+        <js>/admin/js/linkcheck.js</js>
+    </group>
+
+    <group name="notes">
+        <js>/admin/js/notes.js</js>
+    </group>
+
+    <group name="organizesubpages">
+        <js>/admin/js/organizesubpages.js</js>
+    </group>
+
+    <group name="statistics">
+        <js>/admin/js/statistics.js</js>
+    </group>
+
+    <!-- Logical groupings of related files -->
 
     <group name="admin-core">
         <css>/login/css/reset.css</css>
