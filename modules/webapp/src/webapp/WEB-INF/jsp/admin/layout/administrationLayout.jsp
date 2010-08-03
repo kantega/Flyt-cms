@@ -19,7 +19,7 @@
   --%>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-administration.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-administrationlayout.css">
     <script type="text/javascript">
         $(document).ready(function() {
             var title = document.title

@@ -7,14 +7,14 @@
     Configuration file for Web Resource Optimizer (wro).
 
     The groups admin-* (roughly) corresponds to the scripts that
-    were included by the various
-    *layout.jsp-files (loginLayout.jsp, commonLayout.jsp, ...).
+    were included by the individual .jsp-files (admin-loginlayout for
+    loginLayout.jsp, admin-common for commonLayout.jsp, ...).
 
     The groups below the line are just logical groupings of related
     scripts to enhance readability and maintainability.
 -->
 
-    <group name="admin-login">
+    <group name="admin-loginlayout">
         <css>/login/css/reset.css</css>
         <css>/login/css/base.css</css>
         <css>/login/css/default.css</css>
@@ -22,26 +22,26 @@
         <js>/login/js/formlabels.js</js>
     </group>
 
-    <group name="admin-common">
+    <group name="admin-commonlayout">
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
         <js>/admin/js/common.js</js>
         <js>/admin/js/admin.js</js>
     </group>
 
-    <group name="admin-popup">
+    <group name="admin-popuplayout">
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
         <js>/admin/js/common.js</js>
     </group>
 
-    <group name="admin-search">
+    <group name="admin-searchlayout">
         <group-ref>admin-core</group-ref>
         <css>/admin/css/search.css</css>
         <group-ref>jquery-all</group-ref>
     </group>
 
-    <group name="admin-administration">
+    <group name="admin-administrationlayout">
         <css>/admin/css/administration.css</css>
     </group>
 
