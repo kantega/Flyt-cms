@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
 
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ *
+ */
 
 /********************************************************************************
  * Namespace for linkcheck
@@ -34,7 +35,7 @@ openaksess.linkcheck = {
         openaksess.content.triggerContentUpdateEvent(openaksess.linkcheck.currentUrl);
 
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
-        $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/ListBrokenLinks.action", {itemIdentifier: openaksess.linkcheck.currentUrl, sort:sort}, function(success){
+        $("#MainPaneContent").load(properties.contextPath + "/admin/publish/ListBrokenLinks.action", {itemIdentifier: openaksess.linkcheck.currentUrl, sort:sort}, function(success){
             openaksess.common.debug("openaksess.linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
         });
     }
