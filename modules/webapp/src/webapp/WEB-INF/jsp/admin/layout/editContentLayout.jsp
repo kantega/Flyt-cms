@@ -28,15 +28,18 @@
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
-            var properties = { date : {} };
+            var properties = { };
         }
         if (typeof properties.date == 'undefined') {
-            properties.date = {};
+            properties.date = { };
         }
         if (typeof properties.editcontext == 'undefined') {
-            properties.editcontext = {};
+            properties.editcontext = { };
         }
-        properties.date['labels'] = {
+        if (typeof properties.formeditor == 'undefined') {
+            properties.formeditor = { };
+        }
+        properties.date.labels = {
             feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
             skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>",
             feildag : "<kantega:label key="aksess.js.advarsel.dato.feildag"/>",
@@ -53,7 +56,7 @@
             feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>",
             feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
         };
-        properties.editcontext['labels'] = {
+        properties.editcontext.labels = {
             selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
             selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
             warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
@@ -63,11 +66,22 @@
             addrole : '<kantega:label key="aksess.addrole.title"/>',
             editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
         };
+        properties.formeditor.labels = {
+            buttonEdit : '<kantega:label key="aksess.button.edit"/>',
+            buttonDelete : '<kantega:label key="aksess.button.delete"/>',
+            deleteformdataConfirm : '<kantega:label key="aksess.formeditor.deleteformdata.confirm"/>',
+            typeText : '<kantega:label key="aksess.formeditor.type.text"/>',
+            typeTextarea : '<kantega:label key="aksess.formeditor.type.textarea"/>',
+            typeCheckbox : '<kantega:label key="aksess.formeditor.type.checkbox"/>',
+            typeRadio : '<kantega:label key="aksess.formeditor.type.radio"/>',
+            typeSelect : '<kantega:label key="aksess.formeditor.type.select"/>',
+            typeHidden : '<kantega:label key="aksess.formeditor.type.hidden"/>'
+        };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
     <script type="text/javascript" src="../js/date.js"></script>
     <script type="text/javascript" src="../js/editcontext.js"></script>
-    <script type="text/javascript" src="../js/formeditor.jjs"></script>
+    <script type="text/javascript" src="../js/formeditor.js"></script>
     <script type="text/javascript" src="../../aksess/tiny_mce_3_3_6/tiny_mce.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>

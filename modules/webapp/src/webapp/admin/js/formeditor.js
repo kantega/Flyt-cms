@@ -1,5 +1,3 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 /*
  * Copyright 2009 Kantega AS
  *
@@ -14,6 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+/*
+ * This script expects the following properties to be set:
+ * * formeditor.labels.buttonEdit
+ * * formeditor.labels.buttonDelete
+ * * formeditor.labels.deleteformdataConfirm
+ * * formeditor.labels.typeText
+ * * formeditor.labels.typeTextarea
+ * * formeditor.labels.typeCheckbox
+ * * formeditor.labels.typeRadio
+ * * formeditor.labels.typeSelect
+ * * formeditor.labels.typeHidden
+ *
+ *
  */
 
 var formEditedElement = null;
@@ -344,7 +357,7 @@ function formBindHover() {
     $("#form_FormElements .formElement, #form_FormElements .formText").hover(
             function () {
                 if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit"><kantega:label key="aksess.button.edit"/></span><span class="delete"><kantega:label key="aksess.button.delete"/></span></span>');
+                    $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span><span class="delete">' + properties.formeditor.labels.buttonDelete + '</span></span>');
                     $("#form_FormElements .formElementButtons .edit").unbind("click");
                     $("#form_FormElements .formElement .formElementButtons .edit").click(function() {
                         formEditElement($(this).parent().parent());
@@ -377,7 +390,7 @@ function formGetUniqueId(prefix) {
 }
 
 function formDeleteSubmissions(formId) {
-    if (confirm('<kantega:label key="aksess.formeditor.deleteformdata.confirm"/>')) {
+    if (confirm(properties.formeditor.labels.deleteformdataConfirm)) {
         $.post("DeleteFormSubmissions.action", { formId: formId });
     }
 }
@@ -428,7 +441,7 @@ function FormElementType(name, type) {
 var formElementTypes = new Array();
 
 // Text type
-var formElementText = new FormElementType("<kantega:label key="aksess.formeditor.type.text"/>", "text");
+var formElementText = new FormElementType(properties.formeditor.labels.typeText, "text");
 formElementText.onEdit = function(element) {
     var size = $("div.inputs input", element).attr("size");
     if (size != 0) {
@@ -502,7 +515,7 @@ formElementText.onActive = function (isSelected) {
 formElementTypes[formElementTypes.length] = formElementText;
 
 // Textarea
-var formElementTextArea = new FormElementType("<kantega:label key="aksess.formeditor.type.textarea"/>", "textarea");
+var formElementTextArea = new FormElementType(properties.formeditor.labels.typeTextarea, "textarea");
 formElementTextArea.onEdit = function(element) {
     var rows_size = $("div.inputs textarea", element).attr("rows");
     if (rows_size != 0) {
@@ -549,7 +562,7 @@ formElementTextArea.onActive = function (isSelected) {
 formElementTypes[formElementTypes.length] = formElementTextArea;
 
 // Checkbox
-var formElementCheckbox = new FormElementType("<kantega:label key="aksess.formeditor.type.checkbox"/>", "checkbox");
+var formElementCheckbox = new FormElementType(properties.formeditor.labels.typeCheckbox, "checkbox");
 formElementCheckbox.onEdit = function(element) {
     $("#form_Values").html("");
     $("div.inputs input", element).each(function() {
@@ -592,7 +605,7 @@ formElementCheckbox.onActive = function (isSelected) {
 formElementTypes[formElementTypes.length] = formElementCheckbox;
 
 // Radio button
-var formElementRadio = new FormElementType("<kantega:label key="aksess.formeditor.type.radio"/>", "radio");
+var formElementRadio = new FormElementType(properties.formeditor.labels.typeRadio, "radio");
 formElementRadio.onEdit = function(element) {
     $("#form_Values").html("");
     $("div.inputs input", element).each(function() {
@@ -635,7 +648,7 @@ formElementRadio.onActive = function (isSelected) {
 formElementTypes[formElementTypes.length] = formElementRadio;
 
 // Select
-var formElementSelect = new FormElementType("<kantega:label key="aksess.formeditor.type.select"/>", "select");
+var formElementSelect = new FormElementType(properties.formeditor.labels.typeSelect, "select");
 formElementSelect.onEdit = function(element) {
     $("#form_Values").html("");
     $("div.inputs input", element).each(function() {
@@ -679,7 +692,7 @@ formElementSelect.onActive = function (isSelected) {
 formElementTypes[formElementTypes.length] = formElementSelect;
 
 // Hidden
-var formElementHidden = new FormElementType("<kantega:label key="aksess.formeditor.type.hidden"/>", "hidden");
+var formElementHidden = new FormElementType(properties.formeditor.labels.typeHidden, "hidden");
 formElementHidden.onEdit = function(element) {
     var val = $("div.inputs input", element).attr("value");
     $("#form_HiddenValue").val(val);
