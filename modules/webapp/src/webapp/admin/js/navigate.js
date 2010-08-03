@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
-//<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
-
 /********************************************************************************
  * Navigator
  *

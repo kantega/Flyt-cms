@@ -64,7 +64,7 @@ openaksess.notes = {
  * Determines what should happen inside the main pane when an action that requires a reload of this occurs,
  * e.g. a navigator click.
  *
- * Overrides the default implementation. See navigate.jjs
+ * Overrides the default implementation. See navigate.js
  *
  * @param id - Current item id.
  * @param suppressNavigatorUpdate

@@ -556,7 +556,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
 /********************************************************************************
  *
  * Content layout specific implementations of various navigate functions.
- * See navigate.jjs for further details.
+ * See navigate.js for further details.
  *
  ********************************************************************************/
 

@@ -383,7 +383,7 @@ openaksess.navigate.onNavigatorTitleClick = function(elm) {
 
 /**
  * Navigation layout specific implementation of the navigatorResizeOnResize-function.
- * See navigate.jjs
+ * See navigate.js
  */
 openaksess.navigate.navigatorResizeOnResize = function() {
     $.event.trigger("resize");

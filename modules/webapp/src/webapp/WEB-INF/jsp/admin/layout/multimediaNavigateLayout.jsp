@@ -21,7 +21,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.lazyload.mini.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.jjs"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/interface/MultimediaClipboardHandler.js"></script>
 

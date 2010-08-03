@@ -18,7 +18,6 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.jjs"></script>
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
@@ -52,6 +51,7 @@
         };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/content.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
