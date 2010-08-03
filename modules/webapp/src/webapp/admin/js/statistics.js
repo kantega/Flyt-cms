@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
-//%>
 
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ *
+ */
 
 $(document).ready(function(){
     openaksess.common.debug("statistics.$(document).ready()");
@@ -54,7 +55,7 @@ openaksess.statistics = {
         openaksess.content.triggerContentUpdateEvent(url);
 
         openaksess.common.debug("statistics.updatePageStatistics(): Calling " + view + "Statistics.action");
-        $("#MainPaneContent").load("${pageContext.request.contextPath}/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
+        $("#MainPaneContent").load(properties.contextPath + "/admin/publish/" + view + "Statistics.action", {itemIdentifier: url}, function(success){
             openaksess.common.debug("statistics.updatePageStatistics(): response from PageStatistics.action received");
             openaksess.statistics.pageLoaded();
         });

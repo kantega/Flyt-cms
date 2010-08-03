@@ -26,7 +26,14 @@
 <kantega:section id="contentclass">statistics</kantega:section>
 
 <kantega:section id="head extras">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/statistics.jjs"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { };
+        }
+        properties.contextPath = '${pageContext.request.contextPath}';
+    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/statistics.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             openaksess.common.debug("organizesubpages.$(document).ready()");
