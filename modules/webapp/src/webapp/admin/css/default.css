@@ -402,7 +402,7 @@ table.fullWidth {
     line-height: 25px;
     display: inline-block;
     height: 25px;
-    background: url("../bitmaps/default/framework/tools_btn_separator.png") right center no-repeat;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -291px;
 }
 #ToolsMenu .button .delete {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
@@ -426,11 +426,11 @@ table.fullWidth {
 
 #TabToolsMenu .active {
     margin-right: 3px;
-    background-image: url("../bitmaps/default/framework/toolstab_active.png");
+    background: url("../bitmaps/sprite-buttons.png") no-repeat -100px -430px;
 }
 
 #TabToolsMenu .active span {
-    background: url("../bitmaps/default/framework/toolstab_active_right.png") no-repeat right;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -486px;
 }
 
 #TabToolsMenu .tab span {
@@ -825,7 +825,7 @@ div.sidebarFieldset fieldset legend {
 .infoslider .ui-resizable-s {
     height: 11px;
     bottom: 0;
-    background: url("../bitmaps/default/framework/infoslider_drag.png") center center no-repeat;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat center -345px;
 }
 .infoslider .close {
     position: absolute;
@@ -834,13 +834,13 @@ div.sidebarFieldset fieldset legend {
     right: 0;
     cursor: pointer;
     padding: 0 5px;
-    background: url("../bitmaps/default/framework/infoslider_close.png") left bottom no-repeat;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat left -386px;
 }
 .infoslider .close span {
     font-size: 10px;
     line-height: 15px;
     padding-right: 10px;
-    background: url("../bitmaps/default/framework/infoslider_close_icon.png") right center no-repeat;
+    background: url("../bitmaps/sprite-common.png") no-repeat -244px -44px;
 }
 .infoslider .label {
     font-weight: bold;
