@@ -178,7 +178,7 @@ openaksess.admin = {
                             openaksess.common.debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
                             var height = $infoslider.height();
                             var width = $infoslider.width();
-                            var overlay = $("<div/>").css("position", "absolute").css("height", height + "px").css("width", width + "px").css("background", "#ffffff").css("opacity", "0").attr("id", "InforSlider_overlay");
+                            var overlay = $("<div/>").css({"position": "absolute", "height": height + "px", "width": width + "px", "background": "#ffffff", "opacity": "0"}).attr("id", "InforSlider_overlay");
                             $iframe.before(overlay);
                         }
                         openaksess.navigate.navigatorResizeOnStart();
