@@ -34,14 +34,12 @@
         if (typeof properties == 'undefined') {
             var properties = { };
         }
-        properties = {
-            title : '<kantega:label key="aksess.title"/>',
-            contextPath : '${pageContext.request.contextPath}',
-            loadingText : '<kantega:label key="aksess.ajax.loading"/>',
-            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
-            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
-            thisId : '<%=AdminRequestParameters.THIS_ID %>'
-        }
+        properties.title = '<kantega:label key="aksess.title"/>';
+        properties.contextPath = '${pageContext.request.contextPath}';
+        properties.loadingText = '<kantega:label key="aksess.ajax.loading"/>';
+        properties.debug = <aksess:getconfig key="javascript.debug" default="false"/>;
+        properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
+        properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-common.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>

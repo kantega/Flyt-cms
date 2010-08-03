@@ -30,12 +30,10 @@
         if (typeof properties == 'undefined') {
             var properties = { };
         }
-        properties = {
-            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
-            contextPath : '${pageContext.request.contextPath}',
-            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
-            thisId : '<%=AdminRequestParameters.THIS_ID %>'
-        }
+        properties.contextPath = '${pageContext.request.contextPath}';
+        properties.debug = <aksess:getconfig key="javascript.debug" default="false"/>;
+        properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
+        properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-popup.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>

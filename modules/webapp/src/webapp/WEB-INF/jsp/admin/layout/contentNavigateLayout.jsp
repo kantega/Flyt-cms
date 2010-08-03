@@ -23,7 +23,8 @@
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { content : {} };
-        } else if (typeof properties.content == 'undefined') {
+        }
+        if (typeof properties.content == 'undefined') {
             properties.content = {};
         }
         properties.content['labels'] = {
