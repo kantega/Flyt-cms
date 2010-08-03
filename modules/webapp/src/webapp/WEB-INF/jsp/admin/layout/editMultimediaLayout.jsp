@@ -22,7 +22,27 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.jjs"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { content : {} };
+        }
+        if (typeof properties.editcontext == 'undefined') {
+            properties.editcontext = {};
+        }
+        properties.editcontext['labels'] = {
+            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
+            adduser : '<kantega:label key="aksess.adduser.title"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
+            addrole : '<kantega:label key="aksess.addrole.title"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+        };
+        properties.contextPath = '${pageContext.request.contextPath}';
+    </script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function(){

@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-//<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-//<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-//<%request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());%>
+/*
+ * This script expects the following properties to be set:
+ * * contextPath
+ * * editcontext.labels.selecttopic
+ * * editcontext.labels.selectcontent
+ * * editcontext.labels.warningMaxchoose
+ * * editcontext.labels.warningElements
+ * * editcontext.labels.adduser
+ * * editcontext.labels.multimedia
+ * * editcontext.labels.addrole
+ * * editcontext.labels.editablelistValue
+ *
+ */
 
 openaksess.editcontext = function()  {
     /*
@@ -120,7 +129,7 @@ openaksess.editcontext = function()  {
             });
 
             var ths = this;
-            $input.autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
+            $input.autocomplete(properties.contextPath + "/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
                 var topicName = data[0];
                 var topicId = data[1].split(":");
                 openaksess.editcontext.focusField = null;
@@ -168,7 +177,7 @@ openaksess.editcontext = function()  {
          */
         selectTopic : function (formElement, multiple) {
             openaksess.editcontext.focusField = formElement;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.selecttopic.title"/>', iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selecttopic, iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
         },
 
         /**
@@ -197,7 +206,7 @@ openaksess.editcontext = function()  {
         selectContentUrl : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = true;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
         },
 
 
@@ -217,11 +226,11 @@ openaksess.editcontext = function()  {
             }
 
             if (items >= maxItems) {
-                alert('<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ' + maxItems + ' <kantega:label key="aksess.js.advarsel.elementer"/>');
+                alert(properties.editcontext.labels.warningMaxchoose + ' ' + maxItems + ' ' + properties.editcontext.labels.warningElements);
             } else {
                 openaksess.editcontext.focusField = formElement;
                 openaksess.editcontext.doInsertTag = false;
-                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
             }
         },
 
@@ -232,7 +241,7 @@ openaksess.editcontext = function()  {
         selectUser : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.adduser.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectUsers.action?multiple=false&refresh=" + getRefresh(),width: 380, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.adduser, iframe:true, href: properties.contextPath + "/admin/security/SelectUsers.action?multiple=false&refresh=" + getRefresh(),width: 380, height:450});
         },
 
         /*
@@ -266,7 +275,7 @@ openaksess.editcontext = function()  {
             }
 
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.multimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
         },
 
 
@@ -276,7 +285,7 @@ openaksess.editcontext = function()  {
         selectMediaFolder : function (formElement) {
             openaksess.editcontext.focusField = eval(formElement);
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.multimedia.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.multimedia, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectMediaFolder.action?refresh=" + getRefresh() ,width: 280, height:450});
         },
 
 
@@ -285,7 +294,7 @@ openaksess.editcontext = function()  {
          */
         selectRole : function (formElement) {
             openaksess.editcontext.focusField = formElement;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.addrole.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/security/SelectRoles.action?multiple=false&refresh=" + getRefresh() ,width: 280, height:340});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.addrole, iframe:true, href: properties.contextPath + "/admin/security/SelectRoles.action?multiple=false&refresh=" + getRefresh() ,width: 280, height:340});
         },
 
 
@@ -294,7 +303,7 @@ openaksess.editcontext = function()  {
          */
         addListOption : function (formElement, attributeKey, language) {
             openaksess.editcontext.focusField = formElement;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.editablelist.value"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.editablelistValue, iframe:true, href: properties.contextPath + "/admin/publish/EditListOption.action?attributeKey=" + escape(attributeKey) + "&language=" + language + "&refresh=" + getRefresh() ,width: 280, height:140});
         },
 
 

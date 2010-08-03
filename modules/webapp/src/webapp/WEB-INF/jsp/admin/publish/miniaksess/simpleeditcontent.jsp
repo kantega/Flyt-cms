@@ -45,12 +45,23 @@
         if (typeof properties == 'undefined') {
             var properties = { };
         }
-        properties = {
-            debug : <aksess:getconfig key="javascript.debug" default="false"/>,
-            contextPath : '${pageContext.request.contextPath}',
-            contentRequestHandler : '<%=Aksess.CONTENT_REQUEST_HANDLER%>',
-            thisId : '<%=AdminRequestParameters.THIS_ID %>'
+        if (typeof properties.editcontext == 'undefined') {
+            properties.editcontext = {};
         }
+        properties.debug = <aksess:getconfig key="javascript.debug" default="false"/>;
+        properties.contextPath = '${pageContext.request.contextPath}';
+        properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
+        properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
+        properties.editcontext['labels'] = {
+            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
+            adduser : '<kantega:label key="aksess.adduser.title"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
+            addrole : '<kantega:label key="aksess.addrole.title"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+        };
     </script>
     <miniaksess:headerdependencies/>
 </head>

@@ -29,8 +29,12 @@
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { date : {} };
-        } else if (typeof properties.date == 'undefined') {
+        }
+        if (typeof properties.date == 'undefined') {
             properties.date = {};
+        }
+        if (typeof properties.editcontext == 'undefined') {
+            properties.editcontext = {};
         }
         properties.date['labels'] = {
             feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
@@ -49,9 +53,20 @@
             feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>",
             feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
         };
+        properties.editcontext['labels'] = {
+            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
+            adduser : '<kantega:label key="aksess.adduser.title"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
+            addrole : '<kantega:label key="aksess.addrole.title"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+        };
+        properties.contextPath = '${pageContext.request.contextPath}';
     </script>
     <script type="text/javascript" src="../js/date.js"></script>
-    <script type="text/javascript" src="../js/editcontext.jjs"></script>
+    <script type="text/javascript" src="../js/editcontext.js"></script>
     <script type="text/javascript" src="../js/formeditor.jjs"></script>
     <script type="text/javascript" src="../../aksess/tiny_mce_3_3_6/tiny_mce.js"></script>
 

@@ -34,7 +34,27 @@
 </kantega:section>
 
 <kantega:section id="head extras">
-    <script src="${pageContext.request.contextPath}/admin/js/editcontext.jjs" type="text/javascript"></script>
+    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { content : {} };
+        }
+        if (typeof properties.editcontext == 'undefined') {
+            properties.editcontext = {};
+        }
+        properties.editcontext['labels'] = {
+            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
+            adduser : '<kantega:label key="aksess.adduser.title"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
+            addrole : '<kantega:label key="aksess.addrole.title"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+        };
+        properties.contextPath = '${pageContext.request.contextPath}';
+    </script>
+    <script src="${pageContext.request.contextPath}/admin/js/editcontext.js" type="text/javascript"></script>
     <script type="text/javascript">
         openaksess.editcontext.insertValueAndNameIntoForm = function(id, title) {
             if (addedParents != "") {
