@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.security.service.SecurityService" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -23,7 +25,9 @@
 <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="menuitem ${publishSelected}"><kantega:label key="aksess.menu.publish"/></a>
 <a href="${pageContext.request.contextPath}/admin/multimedia/Navigate.action" class="menuitem ${multimediaSelected}"><kantega:label key="aksess.menu.multimedia"/></a>
 <a href="${pageContext.request.contextPath}/admin/topicmaps/Topics.action" class="menuitem ${topicMapsSelected}"><kantega:label key="aksess.menu.topicmaps"/></a>
+<% if (SecuritySession.getInstance(request).isUserInRole(Aksess.getAdminRole())) { %>
 <a href="${pageContext.request.contextPath}/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
+<%}%>
 
 <a href="${pageContext.request.contextPath}/Logout.action" class="menuitem logout"><kantega:label key="aksess.menu.logout"/></a>
 <a href="http://opensource.kantega.no/aksess/help/?locale=<%=Aksess.getDefaultAdminLocale().toString()%>" class="menuitem help" onclick="window.open(this.href); return false;"><kantega:label key="aksess.menu.help"/></a>
