@@ -92,9 +92,9 @@ public class SearchServiceImpl implements SearchService {
 
 
     /**
-     * Utfører et søk mot den underliggende Searcher-implementasjonen
+     * Utfï¿½rer et sï¿½k mot den underliggende Searcher-implementasjonen
      *
-     * @return en Map med ett SearchResultWrapper-objekt - med "searchResult" som nøkkel.
+     * @return en Map med ett SearchResultWrapper-objekt - med "searchResult" som nï¿½kkel.
      * {@inheritDoc}
      */
     public SearchServiceResultImpl search(SearchServiceQuery searchServiceQuery) {
@@ -102,7 +102,7 @@ public class SearchServiceImpl implements SearchService {
         List<Alternative> alternatives = new ArrayList<Alternative>();
 
         if (searchServiceQuery != null && searchServiceQuery.getSearchPhrase() != null) {
-            // Bare søk hvis det er gitt en søkestreng
+            // Bare sï¿½k hvis det er gitt en sï¿½kestreng
             SearchQuery searchQuery = createSearchQuery(searchServiceQuery);
             try{
                 searchResult = searcher.search(searchQuery);
@@ -110,7 +110,7 @@ public class SearchServiceImpl implements SearchService {
                 Log.error(SOURCE, "invalid query", null, null);
                 return null;
             }
-            // Registrer søk med antall treff
+            // Registrer sï¿½k med antall treff
             logSearch(searchServiceQuery, searchQuery, searchResult.getNumberOfHits());
 
             if (!isSufficient(searchResult)) {
@@ -209,7 +209,7 @@ public class SearchServiceImpl implements SearchService {
         if (q.getSearchPhrase() != null) {
             AlternativeQuery query = new AlternativeQuery();
             query.setText(q.getSearchPhrase());
-            query.setMax(1);
+            query.setMax(5);
             List<Suggestion> suggestions = searcher.suggest(query);
             for (Suggestion suggestion : suggestions) {
                 alternatives.add(new Alternative(suggestion, SearchServiceQuery.PARAM_SEARCH_PHRASE + "=" + suggestion.getTerm()));
@@ -226,11 +226,11 @@ public class SearchServiceImpl implements SearchService {
     protected List<Criterion> getDefaultFilters() {
         List<Criterion> criterions = new ArrayList<Criterion>();
 
-        // Bare søk i aktivt innhold
+        // Bare sï¿½k i aktivt innhold
         VisibilityStatusCriterion visibilityStatusCriterion = new VisibilityStatusCriterion(ContentVisibilityStatus.ACTIVE);
         criterions.add(visibilityStatusCriterion);
 
-        // Bare søk i publisert innhold
+        // Bare sï¿½k i publisert innhold
         ContentStatusCriterion contentStatusCriterion = new ContentStatusCriterion(ContentStatus.PUBLISHED);
         criterions.add(contentStatusCriterion);
 
@@ -238,16 +238,16 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * Lager en liste med Criterion-objekter som bør benyttes som Query.
+     * Lager en liste med Criterion-objekter som bï¿½r benyttes som Query.
      *
      * @param query et SearchServiceQuery-objekt
-     * @return en liste med Criterion-objekter som bør benyttes som Query
+     * @return en liste med Criterion-objekter som bï¿½r benyttes som Query
      */
     private List<Criterion> parseSearchParameters(SearchServiceQuery query) {
         List<Criterion> criterionList = new ArrayList<Criterion>();
 
         /*
-         * Query (søkefrasen)
+         * Query (sï¿½kefrasen)
          */
         Analyzer analyzer = indexManager.getAnalyzerFactory().createInstance();
 
@@ -278,10 +278,10 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * Lager en liste med Criterion-objekter som bør benyttes som Filter.
+     * Lager en liste med Criterion-objekter som bï¿½r benyttes som Filter.
      *
      * @param query et SearchServiceQuery-objekt
-     * @return en liste med Criterion-objekter som bør benyttes som Filter
+     * @return en liste med Criterion-objekter som bï¿½r benyttes som Filter
      */
     private List<Criterion> parseFilterParameters(SearchServiceQuery query) {
         List<Criterion> criterionList = new ArrayList<Criterion>();
