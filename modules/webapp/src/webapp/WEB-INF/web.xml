@@ -25,6 +25,34 @@
     </context-param>
 
     <filter>
+        <filter-name>ResponseHeaderFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ResponseHeaderFilter</filter-class>
+        <init-param>
+            <param-name>extensions</param-name>
+            <param-value>jpg,png,gif</param-value>
+        </init-param>
+        <init-param>
+            <param-name>expiresInDays</param-name>
+            <param-value>365</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>SetupFilter</filter-name>
+        <filter-class>no.kantega.publishing.setup.SetupFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>MultipartFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.NoSpringContextCapableMultipartFilter</filter-class>
+    </filter>
+
+    <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>no.kantega.publishing.security.filter.AdminFilter</filter-class>
     </filter>
@@ -35,23 +63,8 @@
     </filter>
 
     <filter>
-        <filter-name>MultipartFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.NoSpringContextCapableMultipartFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>ParamEncodingFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
-    </filter>
-
-    <filter>
         <filter-name>AksessRequestFilter</filter-name>
         <filter-class>no.kantega.commons.filter.AksessRequestFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>SetupFilter</filter-name>
-        <filter-class>no.kantega.publishing.setup.SetupFilter</filter-class>
     </filter>
 
     <filter>
@@ -62,6 +75,11 @@
             <param-value>ro.isdc.wro.http.WroFilter</param-value>
         </init-param>
     </filter>
+
+    <filter-mapping>
+        <filter-name>ResponseHeaderFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>SetupFilter</filter-name>
