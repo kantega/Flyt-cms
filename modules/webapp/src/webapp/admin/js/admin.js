@@ -168,6 +168,8 @@ openaksess.admin = {
             var $infoslider = $(infoslider);
             openaksess.common.debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
 
+            $infoslider.resizable("destroy");
+
             $infoslider.resizable({
                 handles: 's',
                 start: function(){

@@ -374,9 +374,9 @@ openaksess.content = {
             
             details +="</ul>";
 
+            var detailsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'details'});
             $("#Statusbar .details").unbind('click').bind('click', function(){
                 openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                var detailsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'details'});
                 detailsInfoSlider.toggle(details);
             }).show();
         },
@@ -387,7 +387,7 @@ openaksess.content = {
                 openaksess.common.debug("openaksess.content.contentstatus.associations(): Number of associations: "+associations.length);
                 var associationsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'associations'});
                 $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
-                    openaksess.common.debug("openaksess.content.contentstatus.details(): click");
+                    openaksess.common.debug("openaksess.content.contentstatus.associations(): click");
                     var details = '<h3>' + properties.content.labels.associations + '</h3>';
                     for (var i = 0; i < associations.length; i++) {
                         details += '<ul class="breadcrumbs">';
