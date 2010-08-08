@@ -73,6 +73,8 @@ public class ReloadTemplateConfigurationAction extends AdminController {
 
                 // Update database with updated values
                 ContentAO.updateContentFromTemplates(config);
+
+                model.put("updateSuccess", true);
             } else {
                 model.put("errors", errors);
             }

@@ -51,6 +51,9 @@
             </tr>
         </table>
 
+        <c:if test="${updateSuccess}">
+            <div class="ui-state-highlight"><kantega:label key="aksess.templateconfig.updateSuccess"/></div>
+        </c:if>
         <form action="ReloadTemplateConfiguration.action" method="post">
             <div class="buttonGroup">
                 <span class="button"><input type="submit" name="submit" value="<kantega:label key="aksess.templateconfig.reload"/>"></span>
