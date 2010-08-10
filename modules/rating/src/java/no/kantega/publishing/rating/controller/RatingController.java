@@ -1,7 +1,10 @@
 package no.kantega.publishing.rating.controller;
 
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.rating.Rating;
 import no.kantega.publishing.api.rating.RatingService;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.rating.util.RatingUtil;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +19,10 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 public class RatingController {
@@ -32,9 +37,44 @@ public class RatingController {
             @RequestParam(value = "context", required = true) String context,
             @RequestParam(value = "redirect", required = false) String redirect,
             @RequestParam(value = "responsetype", required = false) String responsetype,
+            @RequestParam(value = "securitycode", required = false) Integer secretNumber,
             ModelMap model,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response,
+            HttpSession session) {
+
+        boolean securityCodeEnabled = false;
+
+        // If the security code sent from the client matches the security code stored in the session, this will become true.
+        boolean securityCodeValid = false;
+
+        // Reads config to determine if the security code featrue should be turned on or not. Defaults to false
+        try {
+            securityCodeEnabled = Aksess.getConfiguration().getBoolean("rating.securitycode.enabled", false);
+            Log.debug(this.getClass().getName(), "rating security code ENABLED. Read config param: \"rating.securitycode.enabled\".", null, null);
+        } catch (ConfigurationException e) {
+            Log.debug(this.getClass().getName(), "rating security code disabled. Unable to read boolean config param: \"rating.securitycode.enabled\". \n" + e , null, null);
+        }
+
+        if (securityCodeEnabled) {
+            // Check if a security code exists
+            Integer ratingSecurityCode = (Integer) session.getAttribute("ratingSecurityCode");
+            if (ratingSecurityCode == null) {
+                // generate a new code and return to view as JSON
+                Random randomGenerator = new Random();
+                int generatedSecurityCode = randomGenerator.nextInt(1000);
+                session.setAttribute("ratingSecurityCode", new Integer(generatedSecurityCode));
+                model.put("secCode", generatedSecurityCode);
+                return jsonView;
+            } else {
+                if (secretNumber.equals(ratingSecurityCode)){
+                    // security codes match, allow rating
+                    securityCodeValid = true;
+                }
+                session.removeAttribute("ratingSecurityCode");
+            }
+        }
+
 
         Rating rating = new Rating();
         rating.setDate(new Date());
@@ -44,8 +84,10 @@ public class RatingController {
         rating.setUserid(RatingUtil.getUserId(request));
 
         if (!hasRated(request, objectId, context)) {
-            ratingService.saveOrUpdateRating(rating);
-            setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
+            if (!securityCodeEnabled || securityCodeValid) {
+                ratingService.saveOrUpdateRating(rating);
+                setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
+            }
         }
 
         if("json".equalsIgnoreCase(responsetype)) {
