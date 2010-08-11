@@ -39,16 +39,16 @@
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectUser(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
+                <td><a href="Javascript:selectUser(document.myform.<%=fieldName%>)"><img src="<%=request.getContextPath()%>/admin/bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
                 <td><a href="Javascript:selectUser(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.leggtil"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
+                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="<%=request.getContextPath()%>/admin/bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
                 <c:if test="${attribute.moveable}">
-                    <td><img src="../bitmaps/common/textseparator.gif"></td>
+                    <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                     <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.flyttopp"/></a></td>
-                    <td><img src="../bitmaps/common/textseparator.gif"></td>
+                    <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                     <td><a href="Javascript:moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.flyttned"/></a></td>
                 </c:if>
             </tr>
@@ -56,7 +56,7 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td class="inpHeadingSpacer"><img src="<%=request.getContextPath()%>/admin/bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>

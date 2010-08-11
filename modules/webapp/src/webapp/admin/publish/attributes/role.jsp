@@ -56,7 +56,7 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td class="inpHeadingSpacer"><img src="../bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>

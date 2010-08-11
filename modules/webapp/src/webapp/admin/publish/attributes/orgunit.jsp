@@ -56,11 +56,11 @@
                 <%
                     if (manager != null) {
                 %>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
+                <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)"><img src="<%=request.getContextPath()%>/admin/bitmaps/common/buttons/mini_velg.gif" border="0"></a></td>
                 <td><a href="Javascript:selectOrgunit(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.velg"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
-                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
+                <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)"><img src="<%=request.getContextPath()%>/admin/bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeIdAndValueFromForm(document.myform.<%=fieldName%>)" class="button"><kantega:label key="aksess.button.slett"/></a></td>
                 <%
                     }
@@ -70,7 +70,7 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td class="inpHeadingSpacer"><img src="<%=request.getContextPath()%>/admin/bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>
@@ -80,7 +80,7 @@
                 <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
                 <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" style="width:600px;" tabindex="<%=attribute.getTabIndex()%>">
                 <script type="text/javascript">
-                    Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
+                    Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'<%=request.getContextPath()%>/ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
                 </script>
         <%
             } else {

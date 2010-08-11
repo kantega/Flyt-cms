@@ -14,8 +14,8 @@
   ~ limitations under the License.
   --%>
 
-<link rel="stylesheet" type="text/css" href="../css/calendar-<%=skin%>.css">
-<script type="text/javascript" src="../js/calendar/calendar.js"></script>
-<script type="text/javascript" src="../js/calendar/calendar-en.js"></script>
-<script type="text/javascript" src="../js/calendar/calendar-no.js" charset="utf-8"></script>
-<script type="text/javascript" src="../js/calendar/calendar-setup.js"></script>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/admin/css/calendar-<%=skin%>.css">
+<script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/calendar/calendar.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/calendar/calendar-en.js"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/calendar/calendar-no.js" charset="utf-8"></script>
+<script type="text/javascript" src="<%=request.getContextPath()%>/admin/js/calendar/calendar-setup.js"></script>

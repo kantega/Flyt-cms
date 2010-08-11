@@ -48,7 +48,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         }
     }
 
-    private ModelAndView showEditForm(HttpServletRequest request, HttpServletResponse response, Content content) throws ConfigurationException, InvalidFileException, ObjectLockedException, InvalidTemplateException, NotAuthorizedException {
+    protected ModelAndView showEditForm(HttpServletRequest request, HttpServletResponse response, Content content) throws ConfigurationException, InvalidFileException, ObjectLockedException, InvalidTemplateException, NotAuthorizedException {
         HttpSession session = request.getSession(true);
 
         RequestHelper.setRequestAttributes(request, content);
@@ -66,11 +66,16 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         request.setAttribute("miniAksessMediaArchive", allowArchive);
         request.setAttribute("miniAksessWysiwyg", allowWysiwyg);
 
+        addCustomRequestAttributes(request, content);
 
         return new ModelAndView(getView(), null);
     }
 
-    private ModelAndView saveContent(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
+    protected void addCustomRequestAttributes(HttpServletRequest request, Content content) {
+
+    }
+    
+    protected ModelAndView saveContent(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
 
@@ -83,6 +88,8 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             ValidationErrors errors = new ValidationErrors();
             errors = helper.getHttpParameters(errors);
 
+            boolean isNew = content.getId() == -1;
+
             if (errors.getLength() == 0) {
                 // No errors, save
                 session.removeAttribute("errors");
@@ -91,18 +98,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                     content = cms.checkInContent(content, ContentStatus.PUBLISHED);
                 }
                 session.removeAttribute("currentContent");
-
-                String url;
-                String redirectUrl = param.getString("redirectUrl");
-                if(redirectUrl != null && redirectUrl.length() > 0) {
-                    url = redirectUrl;
-                } else {
-                    url = content.getUrl();
-                }
-
-                session.removeAttribute("adminMode");
-
-                return new ModelAndView(new RedirectView(url));
+                return postSaveContent(request, response, content, isNew);
             } else {
                 return showEditForm(request, response, content);
             }
@@ -111,6 +107,18 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         session.removeAttribute("adminMode");
 
         return new ModelAndView(new RedirectView(Aksess.getContextPath()));
+    }
+
+    protected ModelAndView postSaveContent(HttpServletRequest request, HttpServletResponse response, Content content, boolean isNew) {
+        String url;
+        String redirectUrl = request.getParameter("redirectUrl");
+        if(redirectUrl != null && redirectUrl.length() > 0) {
+            url = redirectUrl;
+        } else {
+            url = content.getUrl();
+        }
+
+        return new ModelAndView(new RedirectView(url));
     }
 
     public String getView() {

@@ -69,7 +69,7 @@ function getRefresh() {
 function editForm(formElement) {
     var id = formElement.value;
     if (id) {
-        var formwin = window.open("../forms/index.jsp?showform=" + id, "formWindow", "toolbar=no,width=800,height=450,resizable=yes,scrollbars=yes");
+        var formwin = window.open("<%=request.getContextPath()%>/admin/forms/index.jsp?showform=" + id, "formWindow", "toolbar=no,width=800,height=450,resizable=yes,scrollbars=yes");
     }
     formwin.focus();
 }
@@ -80,7 +80,7 @@ function editForm(formElement) {
 function selectContentUrl(formElement) {
    focusField = formElement;
    doInsertTag = true;
-   var contentwin = window.open("../popups/selectcontent.jsp?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+   var contentwin = window.open("<%=request.getContextPath()%>/admin/popups/selectcontent.jsp?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
    contentwin.focus();
 }
 
@@ -106,7 +106,7 @@ function selectContent(formElement, maxItems) {
     } else {
         focusField = formElement;
         doInsertTag = false;
-        var contentwin = window.open("../popups/selectcontent.jsp?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+        var contentwin = window.open("<%=request.getContextPath()%>/admin/popups/selectcontent.jsp?refresh=" + getRefresh(), "contentWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
         contentwin.focus();
     }
 }
@@ -118,7 +118,7 @@ function selectContent(formElement, maxItems) {
 function selectDate(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var calwin = window.open("../popups/calendar.jsp?refresh=" + getRefresh(), "calWindow", "toolbar=no,width=300,height=200,resizable=yes,scrollbars=yes");
+    var calwin = window.open("<%=request.getContextPath()%>/admin/popups/calendar.jsp?refresh=" + getRefresh(), "calWindow", "toolbar=no,width=300,height=200,resizable=yes,scrollbars=yes");
     calwin.focus();
 }
 
@@ -128,7 +128,7 @@ function selectDate(formElement) {
 function selectUser(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var userwin = window.open("../security/addroleoruser.jsp?select=true&roletype=user&refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+    var userwin = window.open("<%=request.getContextPath()%>/admin/security/addroleoruser.jsp?select=true&roletype=user&refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
     userwin.focus();
 }
 
@@ -138,7 +138,7 @@ function selectUser(formElement) {
 function selectOrgunit(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var orgwin = window.open("../popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
+    var orgwin = window.open("<%=request.getContextPath()%>/admin/popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
     orgwin.focus();
 }
 
@@ -148,7 +148,7 @@ function selectOrgunit(formElement) {
 function selectCategory(formElement) {
     focusField = formElement;
     doInsertTag = false;
-    var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
+    var catwin = window.open("<%=request.getContextPath()%>/admin/popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
     catwin.focus();
 }
 
@@ -163,7 +163,7 @@ function selectMultimedia(formElement, filter) {
     }
 
     doInsertTag = false;
-    var mmwin = window.open("../multimedia/?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=880,height=620,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("<%=request.getContextPath()%>/admin/multimedia/?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=880,height=620,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 
@@ -174,7 +174,7 @@ function selectMultimedia(formElement, filter) {
 function selectMediaFolder(formElement) {
     focusField = eval(formElement);
     doInsertTag = false;
-    var mmwin = window.open("../popups/selectmediafolder.jsp?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+    var mmwin = window.open("<%=request.getContextPath()%>/admin/popups/selectmediafolder.jsp?refresh=" + getRefresh(), "mmWindow", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
     mmwin.focus();
 }
 
@@ -184,7 +184,7 @@ function selectMediaFolder(formElement) {
 
 function selectTopic(formElement) {
    focusField = formElement;
-   var topicwin = window.open("../topicmaps/index.jsp?refresh=" + getRefresh(), "topicwin",  "toolbar=no,width=880,height=500,resizable=yes,scrollbars=yes");
+   var topicwin = window.open("<%=request.getContextPath()%>/admin/topicmaps/index.jsp?refresh=" + getRefresh(), "topicwin",  "toolbar=no,width=880,height=500,resizable=yes,scrollbars=yes");
    topicwin.focus();
 }
 
@@ -193,7 +193,7 @@ function selectTopic(formElement) {
  */
 function selectRole(formElement) {
     focusField = formElement;
-    var rolewin = window.open("../security/addroleoruser.jsp?select=true&roletype=Role&refresh=" + getRefresh(), "roleWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
+    var rolewin = window.open("<%=request.getContextPath()%>/admin/security/addroleoruser.jsp?select=true&roletype=Role&refresh=" + getRefresh(), "roleWindow", "toolbar=no,width=400,height=300,resizable=yes,scrollbars=no");
     rolewin.focus();
 }
 
@@ -205,7 +205,7 @@ function addTopic(topicMap, topicId, topicName) {
     setIsUpdated();
 
     if (focusField == null) {
-        window.parent.location = "../publish/AddContentTopic.action?topicMapId=" + topicMap + "&topicId=" + topicId;
+        window.parent.location = "<%=request.getContextPath()%>/admin/publish/AddContentTopic.action?topicMapId=" + topicMap + "&topicId=" + topicId;
     } else {
         // Topic should be inserted into a input field / list
         insertIdAndValueIntoForm(topicMap + ":" + topicId, topicName);
@@ -217,7 +217,7 @@ function addTopic(topicMap, topicId, topicName) {
  * Popup for adding a list option used for editablelists
  */
 function addListOption(formElement, attributeKey, language) {
-    var optionwin = window.open("../popups/addlistoption.jsp?attributeKey=" + escape(attributeKey) + "&language=" + language, "optionwin", "toolbar=no,width=280,height=120,resizable=no,scrollbars=no");
+    var optionwin = window.open("<%=request.getContextPath()%>/admin/popups/addlistoption.jsp?attributeKey=" + escape(attributeKey) + "&language=" + language, "optionwin", "toolbar=no,width=280,height=120,resizable=no,scrollbars=no");
     optionwin.focus();
     focusField = formElement;
 }
@@ -254,7 +254,7 @@ function insertOptionIntoList(value) {
  */
 function removeOptionFromList(formElement, attributeKey, language) {
     var xmlhttp = getXmlHttp();
-    xmlhttp.open("POST",  "../publish/RemoveListOption.action", true);
+    xmlhttp.open("POST",  "<%=request.getContextPath()%>/admin/publish/RemoveListOption.action", true);
     xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xmlhttp.onreadystatechange=function() {

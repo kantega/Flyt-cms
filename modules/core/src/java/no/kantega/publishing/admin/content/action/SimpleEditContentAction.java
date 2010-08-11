@@ -16,28 +16,19 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.security.SecuritySession;
 
-import java.util.List;
 
 public class SimpleEditContentAction extends AbstractSimpleEditContentAction {
     protected SecuritySession getSecuritySession(HttpServletRequest request) {

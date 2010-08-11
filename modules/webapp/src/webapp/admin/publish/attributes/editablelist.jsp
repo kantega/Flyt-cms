@@ -39,10 +39,10 @@
                 <%
                     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
                 %>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                 <td><a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)"><img src="../bitmaps/common/buttons/mini_legg_til.gif" border="0"></a></td>
                 <td><a href="Javascript:addListOption(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.button.leggtil"/></a></td>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                 <td><a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:removeOptionFromList(document.myform.<%=fieldName%>, '<%=attribute.getKey()%>', <%=content.getLanguage()%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><kantega:label key="aksess.button.slett"/></a></td>
                 <%
@@ -53,7 +53,7 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td class="inpHeadingSpacer"><img src="<%=request.getContextPath()%>/admin/bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>

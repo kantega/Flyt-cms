@@ -53,7 +53,7 @@ public class InputScreenRenderer {
 
 
     /**
-     * Genererer Javascript som kalles før redigering starter (ved lasting av siden)
+     * Genererer Javascript som kalles fï¿½r redigering starter (ved lasting av siden)
      */
     public void generatePreJavascript() throws IOException {
         JspWriter out = pageContext.getOut();
@@ -91,7 +91,7 @@ public class InputScreenRenderer {
 
 
     /**
-     * Genererer Javascript som kalles etter redigering er ferdig (før submit)
+     * Genererer Javascript som kalles etter redigering er ferdig (fï¿½r submit)
      */
     public void generatePostJavascript() throws IOException {
         JspWriter out = pageContext.getOut();
@@ -112,13 +112,13 @@ public class InputScreenRenderer {
 
 
     /**
-     * Lager inputskjermbilde ved å gå gjennom alle attributter
+     * Lager inputskjermbilde ved ï¿½ gï¿½ gjennom alle attributter
      */
     public void generateInputScreen() throws IOException, SystemException, ServletException {
         JspWriter out = pageContext.getOut();
         ServletRequest request = pageContext.getRequest();
 
-        int tabIndex = 100; // Angir tabindex for å få cursor til å hoppe til rette felter
+        int tabIndex = 100; // Angir tabindex for ï¿½ fï¿½ cursor til ï¿½ hoppe til rette felter
         List attrlist = content.getAttributes(attributeType);
         for (int i = 0; i < attrlist.size(); i++) {
             Attribute attr = (Attribute)attrlist.get(i);
@@ -128,7 +128,7 @@ public class InputScreenRenderer {
                     attr.setValue("");
                 }
 
-                // Skriver ut felt ved å inkludere JSP for hver attributt
+                // Skriver ut felt ved ï¿½ inkludere JSP for hver attributt
                 attr.setTabIndex(tabIndex);
                 tabIndex += 10;
 
@@ -153,7 +153,7 @@ public class InputScreenRenderer {
                     out.print("<tr><td><div class=errorText>" + errorMessage + ":" + attr.getTitle() + "</div></td></tr>\n");
                 }
 
-                out.print("<tr><td><img src=\"../bitmaps/blank.gif\" width=\"2\" height=\"8\"></td></tr>");
+                out.print("<tr><td class=\"inpSpacer\"><img src=\" " + Aksess.getContextPath() + "/admin/bitmaps/blank.gif\" width=\"2\" height=\"8\"></td></tr>");
             }
         }
     }

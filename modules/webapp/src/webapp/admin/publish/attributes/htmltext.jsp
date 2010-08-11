@@ -129,24 +129,24 @@
                         if (conf.getBoolean(confPrefix + "bold", true)) {
                             textformat = true;
                     %>
-                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'bold')" title="<kantega:label key="aksess.editor.bold"/>" alt="<kantega:label key="aksess.editor.bold"/>"><IMG src="../bitmaps/editor/editor_bold.gif" width="18" height="20" border="0"></A>
+                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'bold')" title="<kantega:label key="aksess.editor.bold"/>" alt="<kantega:label key="aksess.editor.bold"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_bold.gif" width="18" height="20" border="0"></A>
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "italic", true)) {
                             textformat = true;
                     %>
-                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'italic')" title="<kantega:label key="aksess.editor.italic"/>" alt="<kantega:label key="aksess.editor.italic"/>"><IMG src="../bitmaps/editor/editor_italic.gif" width="18" height="20" border="0"></A>
+                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'italic')" title="<kantega:label key="aksess.editor.italic"/>" alt="<kantega:label key="aksess.editor.italic"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_italic.gif" width="18" height="20" border="0"></A>
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "underline", false)) {
                             textformat = true;
                     %>
-                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'underline')" title="<kantega:label key="aksess.editor.underline"/>" alt="<kantega:label key="aksess.editor.underline"/>"><IMG src="../bitmaps/editor/editor_underline.gif" width="18" height="20" border="0"></A>
+                        <A href="Javascript:rtFormatText('editor_<%=fieldName%>', 'underline')" title="<kantega:label key="aksess.editor.underline"/>" alt="<kantega:label key="aksess.editor.underline"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_underline.gif" width="18" height="20" border="0"></A>
                     <%
                         }
                         if (textformat) {
                     %>
-                        <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                        <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "symbols", true)) {
@@ -156,7 +156,7 @@
                         <area shape="rect" coords="20,1,36,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'subscript')" title="<kantega:label key="aksess.editor.subscript"/>" alt="<kantega:label key="aksess.editor.subscript"/>" >
                         <area shape="rect" coords="1,1,17,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'superscript')" title="<kantega:label key="aksess.editor.superscript"/>" alt="<kantega:label key="aksess.editor.superscript"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_symbols.gif" width="58" height="20" border="0" usemap="#editor_<%=fieldName%>_symbols_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_symbols.gif" width="58" height="20" border="0" usemap="#editor_<%=fieldName%>_symbols_map">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "justify", true)) {
@@ -166,7 +166,7 @@
                         <area shape="rect" coords="24,1,44,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'justifycenter')" title="<kantega:label key="aksess.editor.justifycenter"/>" alt="<kantega:label key="aksess.editor.justifycenter"/>" >
                         <area shape="rect" coords="1,1,19,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'justifyleft')" title="<kantega:label key="aksess.editor.justifyleft"/>" alt="<kantega:label key="aksess.editor.justifyleft"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_justify.gif" width="74" height="20" border="0" usemap="#editor_<%=fieldName%>_justify_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_justify.gif" width="74" height="20" border="0" usemap="#editor_<%=fieldName%>_justify_map">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "list", true)) {
@@ -175,7 +175,7 @@
                         <area shape="rect" coords="26,3,44,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'insertunorderedlist')" title="<kantega:label key="aksess.editor.unorderedlist"/>" alt="<kantega:label key="aksess.editor.unorderedlist"/>" >
                         <area shape="rect" coords="3,3,21,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'insertorderedlist')" title="<kantega:label key="aksess.editor.orderedlist"/>" alt="<kantega:label key="aksess.editor.orderedlist"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_list.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_list_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_list.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_list_map">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "indent", true)) {
@@ -184,30 +184,30 @@
                         <area shape="rect" coords="26,3,44,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'indent')" title="<kantega:label key="aksess.editor.indent"/>" alt="<kantega:label key="aksess.editor.indent"/>" >
                         <area shape="rect" coords="3,3,21,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'outdent')" title="<kantega:label key="aksess.editor.outdent"/>" alt="<kantega:label key="aksess.editor.outdent"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_indent.gif" width="46" height="20" border="0" usemap="#editor_<%=fieldName%>_indent_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_indent.gif" width="46" height="20" border="0" usemap="#editor_<%=fieldName%>_indent_map">
                     <%
 
                         }
                         if (conf.getBoolean(confPrefix + "list", true) || conf.getBoolean(confPrefix + "indent", true)) {
                     %>
-                    <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "spellchecker", false)) {
                     %>
-                        <A href="Javascript:rtSpellCheck('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.spellcheck"/>" alt="<kantega:label key="aksess.editor.spellcheck"/>"><IMG src="../bitmaps/editor/editor_spellcheck.gif" width="24" height="20" border="0"></A>
-                        <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                        <A href="Javascript:rtSpellCheck('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.spellcheck"/>" alt="<kantega:label key="aksess.editor.spellcheck"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_spellcheck.gif" width="24" height="20" border="0"></A>
+                        <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "link", true)) {
                     %>
-                    <A href="Javascript:rtInsertLink('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.link"/>" alt="<kantega:label key="aksess.editor.link"/>"><IMG src="../bitmaps/editor/editor_link.gif" width="25" height="20" border="0"></A>
-                    <A href="Javascript:rtInsertAnchor('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.anchor"/>" alt="<kantega:label key="aksess.editor.anchor"/>"><IMG src="../bitmaps/editor/editor_anchor.gif" width="24" height="20" border="0"></A>
+                    <A href="Javascript:rtInsertLink('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.link"/>" alt="<kantega:label key="aksess.editor.link"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_link.gif" width="25" height="20" border="0"></A>
+                    <A href="Javascript:rtInsertAnchor('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.anchor"/>" alt="<kantega:label key="aksess.editor.anchor"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_anchor.gif" width="24" height="20" border="0"></A>
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "multimedia", true)) {
                     %>
-                    <A href="Javascript:rtInsertMedia('editor_<%=fieldName%>')"  title="<kantega:label key="aksess.editor.multimedia"/>" alt="<kantega:label key="aksess.editor.multimedia"/>"><IMG src="../bitmaps/editor/editor_multimedia.gif" width="24" height="20" border="0"></A>
+                    <A href="Javascript:rtInsertMedia('editor_<%=fieldName%>')"  title="<kantega:label key="aksess.editor.multimedia"/>" alt="<kantega:label key="aksess.editor.multimedia"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_multimedia.gif" width="24" height="20" border="0"></A>
                     <%
                         }
                     %>
@@ -266,8 +266,8 @@
                     <%
                         if (conf.getBoolean(confPrefix + "cleanuphtml", true)) {
                     %>
-                    <A href="Javascript:rtCleanupHTML('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.removeformatting"/>" alt="<kantega:label key="aksess.editor.removeformatting"/>"><IMG src="../bitmaps/editor/editor_removeformat.gif" width="24" height="20" border="0"></A>
-                    <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                    <A href="Javascript:rtCleanupHTML('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.removeformatting"/>" alt="<kantega:label key="aksess.editor.removeformatting"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_removeformat.gif" width="24" height="20" border="0"></A>
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <%
                         }
                     %>
@@ -275,17 +275,17 @@
                         <area shape="rect" coords="24,1,46,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'redo')" title="<kantega:label key="aksess.editor.redo"/>" alt="<kantega:label key="aksess.editor.redo"/>" >
                         <area shape="rect" coords="2,1,19,19" href="Javascript:rtFormatText('editor_<%=fieldName%>', 'undo')" title="<kantega:label key="aksess.editor.undo"/>" alt="<kantega:label key="aksess.editor.undo"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_undo.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_undo_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_undo.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_undo_map">
                     <%
                         if (conf.getBoolean(confPrefix + "table", true)) {
                     %>
-                    <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <MAP name="editor_<%=fieldName%>_table_map">
                         <area shape="rect" coords="26,1,45,20" href="Javascript:rtEditTable('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.edit"/>" alt="<kantega:label key="aksess.editor.table.edit"/>" >
                         <area shape="rect" coords="3,1,22,20" href="Javascript:rtInsertTable('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.insert"/>" alt="<kantega:label key="aksess.editor.table.insert"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_table.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_table_map">
-                    <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_table.gif" width="48" height="20" border="0" usemap="#editor_<%=fieldName%>_table_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
                     <MAP name="editor_<%=fieldName%>_tableedit_map">
                         <area shape="rect" coords="126,1,145,20" href="Javascript:rtSplitCell('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.split"/>" alt="<kantega:label key="aksess.editor.table.split"/>" >
                         <area shape="rect" coords="103,1,122,20" href="Javascript:rtMergeCells('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.merge"/>" alt="<kantega:label key="aksess.editor.table.merge"/>" >
@@ -294,13 +294,13 @@
                         <area shape="rect" coords="26,1,45,20" href="Javascript:rtInsertColumn('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.insertcol"/>" alt="<kantega:label key="aksess.editor.table.insertcol"/>" >
                         <area shape="rect" coords="3,1,22,20" href="Javascript:rtInsertRow('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.table.insertrow"/>" alt="<kantega:label key="aksess.editor.table.insertrow"/>" >
                     </MAP>
-                    <IMG src="../bitmaps/editor/editor_tableedit.gif" width="148" height="24" border="0" usemap="#editor_<%=fieldName%>_tableedit_map">
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_tableedit.gif" width="148" height="24" border="0" usemap="#editor_<%=fieldName%>_tableedit_map">
                     <%
                         }
                         if (conf.getBoolean(confPrefix + "replace", true)) {
                     %>
-                    <IMG src="../bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
-                    <A href="Javascript:rtReplace('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.replace"/>" alt="<kantega:label key="aksess.editor.replace"/>"><IMG src="../bitmaps/editor/editor_replace.gif" width="24" height="20" border="0"></A>
+                    <IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_seperator.gif" width="2" height="20" border="0">
+                    <A href="Javascript:rtReplace('editor_<%=fieldName%>')" title="<kantega:label key="aksess.editor.replace"/>" alt="<kantega:label key="aksess.editor.replace"/>"><IMG src="<%=request.getContextPath()%>/admin/bitmaps/editor/editor_replace.gif" width="24" height="20" border="0"></A>
                     <%
                         }
                     %>
@@ -310,11 +310,11 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td><img src="<%=request.getContextPath()%>/admin/bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>
-    <IFRAME name="editor_<%=fieldName%>" id="editor_<%=fieldName%>" width="<%=width%>" height="<%=height%>" src="htmlpage.jsp" tabindex="<%=attribute.getTabIndex()%>"></IFRAME>
+    <IFRAME name="editor_<%=fieldName%>" id="editor_<%=fieldName%>" width="<%=width%>" height="<%=height%>" src="<%=request.getContextPath()%>/admin/publish/htmlpage.jsp" tabindex="<%=attribute.getTabIndex()%>"></IFRAME>
     <TEXTAREA name="<%=fieldName%>" type="hidden" style="display:none;"><%=value%></TEXTAREA><BR>
     <%
         if (conf.getBoolean(confPrefix + "htmlmode", true) || hasHtmlEditorRole) {

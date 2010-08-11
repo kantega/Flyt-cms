@@ -34,13 +34,13 @@
                 <%
                     if (content.getId() != -1) {
                 %>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                 <td><a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" target="_new"><img src="../bitmaps/common/buttons/mini_vis.gif" border="0"></a></td>
                 <td><a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" target="_new" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.formeditor.exportformdata"/></a></td>
                 <%
                         if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.APPROVE_CONTENT)) {
                 %>
-                <td><img src="../bitmaps/common/textseparator.gif"></td>
+                <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif"></td>
                 <td><a href="Javascript:formDeleteSubmissions(<%=content.getId()%>)"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0"></a></td>
                 <td><a href="Javascript:formDeleteSubmissions(<%=content.getId()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><kantega:label key="aksess.formeditor.deleteformdata"/></a></td>
                 <%
@@ -53,7 +53,7 @@
     </td>
 </tr>
 <tr>
-    <td><img src="../bitmaps/blank.gif" width="2" height="2"></td>
+    <td class="inpHeadingSpacer"><img src="<%=request.getContextPath()%>/admin/bitmaps/blank.gif" width="2" height="2"></td>
 </tr>
 <tr>
     <td>
