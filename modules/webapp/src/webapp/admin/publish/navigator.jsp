@@ -46,7 +46,7 @@
     if (showContent != null) {
         selectedId = showContent.getAssociation().getId();
     }
-    
+
     String openFoldersList = param.getString("openFolders");
     if (openFoldersList == null || openFoldersList.length() == 0) {
         try {
@@ -228,120 +228,128 @@
 
 <html>
 <head>
-	<title>navigator.jsp</title>
+    <title>navigator.jsp</title>
     <link rel="stylesheet" type="text/css" href="../css/<%=skin%>.css">
 </head>
 <script language="Javascript" src="../js/tree.jsp">
 </script>
 <script language="Javascript">
-function checkModified() {
-    var ok = true;
+    function checkModified() {
+        var ok = true;
 
-    try {
-        if (window.parent.content.contenttop.isModified()) {
-            if (confirm('<kantega:label key="aksess.editcontent.contentnotsaved"/>')) {
-                ok = true;
-            } else {
-                ok = false;
+        try {
+            if (window.parent.content.contenttop.isModified()) {
+                if (confirm('<kantega:label key="aksess.editcontent.contentnotsaved"/>')) {
+                    ok = true;
+                } else {
+                    ok = false;
+                }
+            }
+        } catch (e) {
+        }
+
+        return ok;
+    }
+
+
+    function gotoObject(id, version) {
+        var ok = checkModified();
+
+        if (ok) {
+            var cid = "thisId=" + id;
+            if (version) {
+                cid += "&version=" + version;
+            }
+            window.parent.content.location = "content.jsp?activetab=previewcontent&" + cid;
+        }
+    }
+
+    function selectAssociationId(id, title) {
+        if (window.parent) {
+            var w = window.parent.opener;
+            if (w) {
+                if (w.doInsertTag) {
+                    w.insertValueIntoForm("/content.ap?thisId=" + id);
+                } else {
+                    w.insertIdAndValueIntoForm(id, title);
+                }
+                window.parent.close();
+            } else if (window.parent.selectAssociationId) {
+                window.parent.selectAssociationId(id, title);
             }
         }
-    } catch (e) {
     }
 
-    return ok;
-}
-
-
-function gotoObject(id, version) {
-    var ok = checkModified();
-
-    if (ok) {
-        var cid = "thisId=" + id;
-        if (version) {
-            cid += "&version=" + version;
+    function selectContentId(id, title) {
+        if (window.parent) {
+            var w = window.parent.opener;
+            if (w) {
+                if (w.doInsertTag) {
+                    w.insertValueIntoForm("/content.ap?contentId=" + id + "&amp;contextId=$contextId");
+                } else {
+                    w.insertIdAndValueIntoForm(id, title);
+                }
+                window.parent.close();
+            } else {
+                window.parent.selectContentId(id, title);
+            }
         }
-        window.parent.content.location = "content.jsp?activetab=previewcontent&" + cid;
     }
-}
 
-function selectAssociationId(id, title) {
-    var w = window.parent.opener;
-    if (w) {
-        if (w.doInsertTag) {
-            w.insertValueIntoForm("/content.ap?thisId=" + id);
-        } else {
-            w.insertIdAndValueIntoForm(id, title);
+    function newObject() {
+        hideContextMenu();
+
+        var ok = checkModified();
+
+        if (ok && activeId != null) {
+            window.parent.content.location = "EditContent.action?thisId=" + activeId.id + "&action=selecttemplate";
         }
-        window.parent.close();
     }
-}
 
-function selectContentId(id, title) {
-    var w = window.parent.opener;
-    if (w) {
-        if (w.doInsertTag) {
-            w.insertValueIntoForm("/content.ap?contentId=" + id + "&amp;contextId=$contextId");
-        } else {
-            w.insertIdAndValueIntoForm(id, title);
+
+    function deleteObject(deleteShortcut) {
+        hideContextMenu();
+
+        var ok = checkModified();
+
+        if (ok && activeId != null) {
+            var confirmwin = window.open("confirmdelete.jsp?target=parent.content&id=" + activeId.uniqueId, "confirmwin", "toolbar=no,width=350,height=285,resizable=yes,scrollbars=yes");
+            confirmwin.focus();
         }
-        window.parent.close();
     }
-}
-
-function newObject() {
-    hideContextMenu();
-
-    var ok = checkModified();
-
-    if (ok && activeId != null) {
-        window.parent.content.location = "EditContent.action?thisId=" + activeId.id + "&action=selecttemplate";
-    }
-}
 
 
-function deleteObject(deleteShortcut) {
-    hideContextMenu();
+    function restoreObject(id) {
+        hideContextMenu();
 
-    var ok = checkModified();
-
-    if (ok && activeId != null) {
-        var confirmwin = window.open("confirmdelete.jsp?target=parent.content&id=" + activeId.uniqueId, "confirmwin", "toolbar=no,width=350,height=285,resizable=yes,scrollbars=yes");
+        var confirmwin = window.open("restore.jsp?id=" + id, "confirmwin", "toolbar=no,width=350,height=85,resizable=yes,scrollbars=yes");
         confirmwin.focus();
     }
-}
 
 
-function restoreObject(id) {
-    hideContextMenu();
+    function viewObject(openInNewWindow) {
+        hideContextMenu();
 
-    var confirmwin = window.open("restore.jsp?id=" + id, "confirmwin", "toolbar=no,width=350,height=85,resizable=yes,scrollbars=yes");
-    confirmwin.focus();
-}
-
-
-function viewObject(openInNewWindow) {
-    hideContextMenu();
-
-    if (activeId != null) {
-        if (openInNewWindow) {
-            var newwin = window.open("../../content.ap?thisId=" + activeId.id);
-            newwin.focus();
-        } else {
-            gotoObject(activeId.id);
+        if (activeId != null) {
+            if (openInNewWindow) {
+                var newwin = window.open("../../content.ap?thisId=" + activeId.id);
+                newwin.focus();
+            } else {
+                gotoObject(activeId.id);
+            }
         }
     }
-}
 
 
-function editPermissions() {
-    hideContextMenu();
+    function editPermissions() {
+        hideContextMenu();
 
-    if (activeId != null) {
-        var permwin = window.open("../security/EditPermissions.action?&type=<%=ObjectType.ASSOCIATION%>&id=" + activeId.id,  "permwin", "toolbar=no,width=610,height=440,resizable=yes,scrollbars=no");
-        permwin.focus();
+        if (activeId != null) {
+            var permwin = window.open("../security/EditPermissions.action?&type=<%=ObjectType.ASSOCIATION%>&id=" + activeId.id,  "permwin", "toolbar=no,width=610,height=440,resizable=yes,scrollbars=no");
+            permwin.focus();
+        }
+
     }
-
-}
 </script>
 <body class="bodyWithMargin" onLoad="initTree()">
 
@@ -364,41 +372,41 @@ function editPermissions() {
         List myDeletedItems = aksess.getDeletedItems();
         if (myWorkList.size() > 0 || myDeletedItems.size() > 0) {
 %>
-        <tr>
-            <td width="11" valign="top"><img src="../bitmaps/common/navigator/my_nav_open.gif" width=7 height=7 hspace=0 vspace=2></td>
-            <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
-            <td width="100%" nobr><a href="#" class="navMyNormal"><kantega:label key="aksess.navigator.mycontent.title"/></a></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <table border="0">
-         <%
-            for (int i = 0; i < myWorkList.size(); i++) {
-                WorkList items = (WorkList)myWorkList.get(i);
+<tr>
+    <td width="11" valign="top"><img src="../bitmaps/common/navigator/my_nav_open.gif" width=7 height=7 hspace=0 vspace=2></td>
+    <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
+    <td width="100%" nobr><a href="#" class="navMyNormal"><kantega:label key="aksess.navigator.mycontent.title"/></a></td>
+</tr>
+<tr>
+    <td></td>
+    <td></td>
+    <td>
+        <table border="0">
+            <%
+                for (int i = 0; i < myWorkList.size(); i++) {
+                    WorkList items = (WorkList)myWorkList.get(i);
 
-                if (items.size() > 0) {
-                    int treeId = 100000 + i;
-                    String label = "aksess.navigator.mycontent." + items.getDescription();
-                    boolean isOpen = isFolderOpen(treeId, openFolders);
-                    String display = "none";
-                    String navIcon = "closed";
-                    if (isOpen) {
-                        display = "block";
-                        navIcon = "open";
-                    }
-         %>
-                    <tr id="item_<%=treeId%>">
-                        <td width="11" valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
-                        <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
-                        <td width="100%" nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="<%=label%>"/> (<%=items.size()%>)</a></td>
-                    </tr>
-                    <tr>
-                       <td></td>
-                       <td colspan="2">
-                           <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
-         <%
+                    if (items.size() > 0) {
+                        int treeId = 100000 + i;
+                        String label = "aksess.navigator.mycontent." + items.getDescription();
+                        boolean isOpen = isFolderOpen(treeId, openFolders);
+                        String display = "none";
+                        String navIcon = "closed";
+                        if (isOpen) {
+                            display = "block";
+                            navIcon = "open";
+                        }
+            %>
+            <tr id="item_<%=treeId%>">
+                <td width="11" valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
+                <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
+                <td width="100%" nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="<%=label%>"/> (<%=items.size()%>)</a></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
+                        <%
                             for (int j = 0; j < items.size(); j++) {
                                 Content c = (Content)items.get(j);
                                 String title = c.getTitle();
@@ -412,137 +420,137 @@ function editPermissions() {
                                 String icon = NavigatorUtil.getIcon(c.getType(), c.getVisibilityStatus(), c.getStatus());
                                 String iconText = NavigatorUtil.getIcon(c.getType(), c.getVisibilityStatus(), c.getStatus());
 
-         %>
-                               <tr>
-                                   <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
-                                   <td width="12" valign="top"><img src="../bitmaps/common/navigator/<%=icon%>" alt="<%=iconText%>" width=12 height=14></td>
-                                   <td width="100%" nobr><a href="Javascript:gotoObject(<%=c.getAssociation().getId()%>)" class="<%=cssClass%>"><%=title%></a>
-                                   <%
-                                        if(c.getNumberOfNotes() > 0) {
-                                            out.write("<img src=\"../bitmaps/common/navigator/note.gif\" width=\"12\" height=\"10\" alt=\"" + c.getNumberOfNotes() + " notat(er) \"");
-                                        }
-                                   %>
-                                   </td>
-                               </tr>
-         <%
-                            }
-         %>
-                           </table>
-                       </td>
-                    </tr>
-        <%
-                }
-            }
-
-            if (myDeletedItems.size() > 0) {
-                int treeId = 100099;
-                boolean isOpen = isFolderOpen(treeId, openFolders);
-                String display = "none";
-                String navIcon = "closed";
-                if (isOpen) {
-                    display = "block";
-                    navIcon = "open";
-                }
-        %>
-                    <tr id="item_<%=treeId%>">
-                        <td width="11" valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
-                        <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
-                        <td width="100%" nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="aksess.navigator.mycontent.deleted"/> (<%=myDeletedItems.size()%>)</a></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td colspan="2">
-                            <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
-         <%
-                            for (int j = 0; j < myDeletedItems.size(); j++) {
-                                DeletedItem item = (DeletedItem)myDeletedItems.get(j);
-
-                                 String title = item.getTitle();
-                                 if (title.length() > 32) {
-                                    title = title.substring(0, 29) + "...";
-                                }
-         %>
-                                <tr>
-                                    <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
-                                    <td width="12" valign="top"><img src="../bitmaps/common/navigator/deleted.gif" alt="Slettet" width=12 height=14></td>
-                                    <td width="100%" nobr><a href="Javascript:restoreObject(<%=item.getId()%>)" class="navMyNormal"><%=title%></a></td>
-                                </tr>
-         <%
-                            }
-         %>
-                            </table>
-                        </td>
-                    </tr>
-        <%
-            }
-        %>
-                </table>
-            </td>
-        </tr>
-
-        <%
-        }
-
-        List contentForApproval = aksess.getContentListForApproval();
-        if (contentForApproval != null && contentForApproval.size() > 0) {
-            int treeId = 2000000;
-            boolean isOpen = isFolderOpen(treeId, openFolders);
-            String display = "none";
-            String navIcon    = "closed";
-            if (isOpen) {
-                display = "block";
-                navIcon    = "open";
-            }
-
-%>
-        <tr id="item_<%=treeId%>">
-            <td valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
-            <td valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
-            <td nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="aksess.navigator.approval.title"/> (<%=contentForApproval.size()%>)</a></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td colspan="2">
-                <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
-                <%
-                    String cssClass = "navMyNormal";
-                    for (int i = 0; i < contentForApproval.size(); i++) {
-                        Content c = (Content)contentForApproval.get(i);
-                        String title = c.getTitle();
-                        if (title.length() > 32) {
-                            title = title.substring(0, 29) + "...";
-                        }
-                        if (c.getId() == selectedId) {
-                            cssClass = "navMySelected";
-                        }
-                        String icon = NavigatorUtil.getIcon(c.getType(), c.getVisibilityStatus(), c.getStatus());
-                        String iconText = NavigatorUtil.getIconText(c.getType(), c.getVisibilityStatus(), c.getStatus());
-                        String dateText = DateUtil.getAgeAsString(c.getLastModified(), Aksess.getDefaultAdminLocale());
-                %>
-                            <tr>
-                                <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
-                                <td width="12" valign="top"><img src="../bitmaps/common/navigator/<%=icon%>" title="<%=iconText%>" alt="<%=iconText%>" width=12 height=14></td>
-                                <td nobr><a href="Javascript:gotoObject(<%=c.getAssociation().getId()%>)" class="<%=cssClass%>"><%=title%> (<%=dateText%>)</a> 
+                        %>
+                        <tr>
+                            <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
+                            <td width="12" valign="top"><img src="../bitmaps/common/navigator/<%=icon%>" alt="<%=iconText%>" width=12 height=14></td>
+                            <td width="100%" nobr><a href="Javascript:gotoObject(<%=c.getAssociation().getId()%>)" class="<%=cssClass%>"><%=title%></a>
                                 <%
                                     if(c.getNumberOfNotes() > 0) {
                                         out.write("<img src=\"../bitmaps/common/navigator/note.gif\" width=\"12\" height=\"10\" alt=\"" + c.getNumberOfNotes() + " notat(er) \"");
                                     }
                                 %>
-                                </td>
-                            </tr>
-                <%
+                            </td>
+                        </tr>
+                        <%
+                            }
+                        %>
+                    </table>
+                </td>
+            </tr>
+            <%
                     }
-                %>
-                </table>
-            </td>
-        </tr>
+                }
+
+                if (myDeletedItems.size() > 0) {
+                    int treeId = 100099;
+                    boolean isOpen = isFolderOpen(treeId, openFolders);
+                    String display = "none";
+                    String navIcon = "closed";
+                    if (isOpen) {
+                        display = "block";
+                        navIcon = "open";
+                    }
+            %>
+            <tr id="item_<%=treeId%>">
+                <td width="11" valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
+                <td width="12" valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
+                <td width="100%" nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="aksess.navigator.mycontent.deleted"/> (<%=myDeletedItems.size()%>)</a></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">
+                    <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
+                        <%
+                            for (int j = 0; j < myDeletedItems.size(); j++) {
+                                DeletedItem item = (DeletedItem)myDeletedItems.get(j);
+
+                                String title = item.getTitle();
+                                if (title.length() > 32) {
+                                    title = title.substring(0, 29) + "...";
+                                }
+                        %>
+                        <tr>
+                            <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
+                            <td width="12" valign="top"><img src="../bitmaps/common/navigator/deleted.gif" alt="Slettet" width=12 height=14></td>
+                            <td width="100%" nobr><a href="Javascript:restoreObject(<%=item.getId()%>)" class="navMyNormal"><%=title%></a></td>
+                        </tr>
+                        <%
+                            }
+                        %>
+                    </table>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+    </td>
+</tr>
 
 <%
+    }
+
+    List contentForApproval = aksess.getContentListForApproval();
+    if (contentForApproval != null && contentForApproval.size() > 0) {
+        int treeId = 2000000;
+        boolean isOpen = isFolderOpen(treeId, openFolders);
+        String display = "none";
+        String navIcon    = "closed";
+        if (isOpen) {
+            display = "block";
+            navIcon    = "open";
         }
+
 %>
-    <tr>
-       <td colspan="3">&nbsp;</td>
-    </tr>
+<tr id="item_<%=treeId%>">
+    <td valign="top" onClick="toogleSubTree('<%=treeId%>')"><img src="../bitmaps/common/navigator/my_nav_<%=navIcon%>.gif" width=7 id="img_<%=treeId%>" height=7 hspace=0 vspace=2></td>
+    <td valign="top"><img src="../bitmaps/common/navigator/page.gif" width=12 height=14></td>
+    <td nobr><a href="Javascript:toogleSubTree('<%=treeId%>')" class="navMyNormal"><kantega:label key="aksess.navigator.approval.title"/> (<%=contentForApproval.size()%>)</a></td>
+</tr>
+<tr>
+    <td></td>
+    <td colspan="2">
+        <table border="0" id="tree_<%=treeId%>" style="display:<%=display%>;">
+            <%
+                String cssClass = "navMyNormal";
+                for (int i = 0; i < contentForApproval.size(); i++) {
+                    Content c = (Content)contentForApproval.get(i);
+                    String title = c.getTitle();
+                    if (title.length() > 32) {
+                        title = title.substring(0, 29) + "...";
+                    }
+                    if (c.getId() == selectedId) {
+                        cssClass = "navMySelected";
+                    }
+                    String icon = NavigatorUtil.getIcon(c.getType(), c.getVisibilityStatus(), c.getStatus());
+                    String iconText = NavigatorUtil.getIconText(c.getType(), c.getVisibilityStatus(), c.getStatus());
+                    String dateText = DateUtil.getAgeAsString(c.getLastModified(), Aksess.getDefaultAdminLocale());
+            %>
+            <tr>
+                <td width="11"><img src="../bitmaps/blank.gif" width=11 height=11></td>
+                <td width="12" valign="top"><img src="../bitmaps/common/navigator/<%=icon%>" title="<%=iconText%>" alt="<%=iconText%>" width=12 height=14></td>
+                <td nobr><a href="Javascript:gotoObject(<%=c.getAssociation().getId()%>)" class="<%=cssClass%>"><%=title%> (<%=dateText%>)</a>
+                    <%
+                        if(c.getNumberOfNotes() > 0) {
+                            out.write("<img src=\"../bitmaps/common/navigator/note.gif\" width=\"12\" height=\"10\" alt=\"" + c.getNumberOfNotes() + " notat(er) \"");
+                        }
+                    %>
+                </td>
+            </tr>
+            <%
+                }
+            %>
+        </table>
+    </td>
+</tr>
+
+<%
+    }
+%>
+<tr>
+    <td colspan="3">&nbsp;</td>
+</tr>
 <%
     }
 
@@ -578,162 +586,162 @@ function editPermissions() {
 %>
 <div id="contextMenu" style="position:absolute; left: 0px; top: 0px; visibility:hidden;">
     <div id="contextMenu_<%=ContentType.PAGE%>">
-    <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
-        <tr>
-            <td>
-                <table border="0" cellspacing="0" cellpadding="3" width="100%">
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
+        <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
+            <tr>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="3" width="100%">
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:newObject()"><kantega:label key="aksess.navigator.newpage"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteClass%>" id="cMenu_paste0" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut0" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:newObject()"><kantega:label key="aksess.navigator.newpage"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteClass%>" id="cMenu_paste0" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut0" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="contextMenu_<%=ContentType.SHORTCUT%>">
-    <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
-        <tr>
-            <td>
-                <table border="0" cellspacing="0" cellpadding="3" width="100%">
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.deleteshortcut"/></a></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+        <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
+            <tr>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="3" width="100%">
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.deleteshortcut"/></a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="contextMenu_<%=ContentType.FILE%>">
-    <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
-        <tr>
-            <td>
-                <table border="0" cellspacing="0" cellpadding="3" width="100%">
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
+        <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
+            <tr>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="3" width="100%">
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteClass%>" id="cMenu_paste1" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut1" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteClass%>" id="cMenu_paste1" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut1" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="contextMenu_<%=ContentType.LINK%>">
-    <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
-        <tr>
-            <td>
-                <table border="0" cellspacing="0" cellpadding="3" width="100%">
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
+        <table border="0" cellspacing="1" cellpadding="0" class="cMenuFrame" width="120">
+            <tr>
+                <td>
+                    <table border="0" cellspacing="0" cellpadding="3" width="100%">
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(false)"><kantega:label key="aksess.navigator.open"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:viewObject(true)"><kantega:label key="aksess.navigator.opennewwindow"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
 
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteClass%>" id="cMenu_paste2" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut2" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenuFrame" height="1"></td>
-                    </tr>
-                    <tr>
-                        <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:deleteObject()"><kantega:label key="aksess.navigator.delete"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(false)"><kantega:label key="aksess.navigator.cut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:copyCutObject(true)"><kantega:label key="aksess.navigator.copy"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteClass%>" id="cMenu_paste2" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject()"><kantega:label key="aksess.navigator.paste"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="<%=cssPasteShortCutClass%>" id="cMenu_pasteshortcut2" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:pasteObject(true)"><kantega:label key="aksess.navigator.pasteshortcut"/></a></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenuFrame" height="1"></td>
+                        </tr>
+                        <tr>
+                            <td class="cMenu" onMouseOver="menuItemOver(this)" onMouseOut="menuItemOut(this)"><a href="Javascript:editPermissions()"><kantega:label key="aksess.navigator.permissions"/></a></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </div>
 </div>
 </body>
