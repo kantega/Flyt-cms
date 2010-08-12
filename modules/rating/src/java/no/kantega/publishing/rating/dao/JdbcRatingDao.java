@@ -23,17 +23,17 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
 
     @SuppressWarnings("unchecked")
     public List<Rating> getRatingsForObject(String objectId, String context) {
-        return getJdbcTemplate().query("select * from ratings where ObjectId = ? and ContextId = ? order by RatingDate desc", new Object[] {objectId, context}, ratingRowMapper);
+        return getJdbcTemplate().query("select * from ratings where ObjectId = ? and Context = ? order by RatingDate desc", new Object[] {objectId, context}, ratingRowMapper);
     }
 
 
     public void deleteRatingsForObject(String objectId, String context) {
-        getJdbcTemplate().update("delete from ratings where ObjectId = ? and ContextId = ?", new Object[] {objectId, context});
+        getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ?", new Object[] {objectId, context});
     }
 
 
     public void saveOrUpdateRating(final Rating r) {
-        getJdbcTemplate().update("delete from ratings where ObjectId = ? and ContextId = ? and UserId = ?", new Object[] {r.getObjectId(), r.getContext(), r.getUserid()});
+        getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ? and UserId = ?", new Object[] {r.getObjectId(), r.getContext(), r.getUserid()});
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection c) throws SQLException {
@@ -60,7 +60,7 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
 
             r.setUserid(rs.getString("UserId"));
             r.setObjectId(rs.getString("ObjectId"));
-            r.setContext(rs.getString("ContextId"));
+            r.setContext(rs.getString("Context"));
             r.setRating(rs.getInt("Rating"));
             r.setDate(rs.getDate("Ratingdate"));
             return r;

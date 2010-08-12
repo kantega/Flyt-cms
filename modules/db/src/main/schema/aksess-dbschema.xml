@@ -305,7 +305,7 @@
     <table name="ratings">
         <column name="UserId" required="false" type="VARCHAR" size="64"/>
         <column name="ObjectId" required="true" type="VARCHAR" size="64"/>
-        <column name="ContextId" required="true" type="VARCHAR" size="64"/>
+        <column name="Context" required="true" type="VARCHAR" size="64"/>
         <column name="Rating" required="true" type="INTEGER" size="10"/>
         <column name="RatingDate" required="true" type="TIMESTAMP" size="23,3"/>
     </table>

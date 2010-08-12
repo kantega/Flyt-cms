@@ -1,7 +1,7 @@
 CREATE TABLE ratings (
   UserId VARCHAR(255),
   ObjectId VARCHAR(255) NOT NULL,
-  ContextId VARCHAR(255) NOT NULL,
+  Context VARCHAR(255) NOT NULL,
   Rating INT NOT NULL,
   RatingDate DATETIME NOT NULL
 );
