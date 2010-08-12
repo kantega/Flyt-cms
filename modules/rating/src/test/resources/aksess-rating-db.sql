@@ -1,9 +1,9 @@
 CREATE TABLE ratings (
-  userId VARCHAR(255),
-  objectId VARCHAR(255) NOT NULL,
-  context VARCHAR(255) NOT NULL,
-  rating INT NOT NULL,
-  ratingDate DATETIME NOT NULL
+  UserId VARCHAR(255),
+  ObjectId VARCHAR(255) NOT NULL,
+  ContextId VARCHAR(255) NOT NULL,
+  Rating INT NOT NULL,
+  RatingDate DATETIME NOT NULL
 );
 
 INSERT INTO ratings VALUES ('krisel', '1', 'content', 1, '2009-01-01');
