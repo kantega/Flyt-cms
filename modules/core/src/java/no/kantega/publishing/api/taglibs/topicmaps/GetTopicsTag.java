@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class GetTopicTags extends LoopTagSupport {
+public class GetTopicsTag extends LoopTagSupport {
     private String contentId;
 
     private String collection;

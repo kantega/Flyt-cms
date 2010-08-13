@@ -2177,7 +2177,7 @@
     <tag>
         <description>Iterate over the topics for the given content or associated to a given topic or with a specified topic id</description>
         <name>topics</name>
-        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.GetTopicTags</tag-class>
+        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.GetTopicsTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <description>Name of request attribute to use for topic</description>
