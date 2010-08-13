@@ -141,7 +141,7 @@ public class GetTopicTags extends LoopTagSupport {
         }
     }
 
-    public void setContentId(String contentId) {
+    public void setContentid(String contentId) {
         this.contentId = contentId;
     }
 
