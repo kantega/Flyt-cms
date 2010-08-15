@@ -68,6 +68,11 @@
         <js>/admin/js/editcontext.js</js>
     </group>
 
+    <group name="admin-mypage">
+        <group-ref>editcontext</group-ref>
+        <js>/aksess/js/autocomplete.js</js>
+    </group>
+
     <!-- Single-file groups -->
 
     <group name="editcontext">
@@ -112,6 +117,10 @@
 
     <group name="statistics">
         <js>/admin/js/statistics.js</js>
+    </group>
+
+    <group name="autocomplete">
+        <js>/aksess/js/autocomplete.js</js>
     </group>
 
     <!-- Logical groupings of related files -->

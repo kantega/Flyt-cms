@@ -46,8 +46,7 @@
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="../js/editcontext.js"></script>
-    <script type="text/javascript" src="../../aksess/js/autocomplete.js"></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-mypage.js'></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $("#SettingsButton").click(function(){
