@@ -1,6 +1,7 @@
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="java.util.List" %>
+<%@ page import="no.kantega.commons.client.util.RequestParameters" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%--
@@ -22,12 +23,24 @@
 <%
     ContentManagementService cms = new ContentManagementService(request);
     List<Content> forApproval = cms.getContentListForApproval();
-    if (forApproval.size() > 0) {
+
+    RequestParameters param = new RequestParameters(request);
+    int thisId = param.getInt("thisId");
+    int contentId = param.getInt("contentId");
+
+    if (forApproval.size() > 0 && thisId == -1 && contentId == -1) {
         // User has pages for approval, show my page
         request.getRequestDispatcher("/admin/mypage/ViewMyPage.action").forward(request,response);
     } else {
         // Goto navigate
-        request.getRequestDispatcher("/admin/publish/Navigate.action").forward(request,response);
+        String idUrl = "";
+        if (thisId != -1) {
+            idUrl = "?thisId=" + thisId;
+        } else if (contentId != -1) {
+            idUrl = "?contentId=" + contentId;
+        }
+
+        request.getRequestDispatcher("/admin/publish/Navigate.action" + idUrl).forward(request,response);
     }
 %>
 
