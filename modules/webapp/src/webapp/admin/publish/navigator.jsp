@@ -33,6 +33,8 @@
 
     int selectedId = -1;
 
+    int startId = param.getInt("startId");
+
     String sort = param.getString("sort");
     if (sort == null) {
         sort = (String)session.getAttribute("navigatorSortOrder");
@@ -52,6 +54,9 @@
         try {
             ContentIdentifier cid = new ContentIdentifier(request, "/");
             openFoldersList = "0," + cid.getAssociationId();
+            if (startId != -1) {
+                openFoldersList = openFoldersList + "," + startId;
+            }
 
             if (selectedId == -1) {
                 selectedId = cid.getAssociationId();
@@ -133,11 +138,14 @@
     }
 %>
 <%!
-    void printFolder(SiteMapEntry sitemap, int level, int selectedId, int[] openList, boolean doSelectAssociationId, boolean doSelectContentId, JspWriter out) throws java.io.IOException {
+    void printFolder(SiteMapEntry sitemap, int level, int selectedId, int[] openList, boolean doSelectAssociationId, boolean doSelectContentId, int startId, boolean doPrint, JspWriter out) throws java.io.IOException {
 
         if (sitemap != null) {
             int id = sitemap.getId();
             int parentId = sitemap.getParentId();
+            if (!doPrint && startId == id) {
+                doPrint = true;
+            }
             ContentType type = sitemap.getType();
             int contentId = sitemap.getContentId();
 
@@ -179,45 +187,47 @@
                 selectAction = "selectContentId(" + contentId + ",'" + title + "')";
             }
 
-            String icon = "";
-            String iconText = "";
-            int visibilityStatus = sitemap.getVisibilityStatus();
-            if (parentId == 0) {
-                icon = "root.gif";
-                iconText = "Hjemmeside - " + title;
-            } else {
-                icon = NavigatorUtil.getIcon(type, visibilityStatus, sitemap.getStatus());
-                iconText = NavigatorUtil.getIconText(type, visibilityStatus, sitemap.getStatus());
-            }
+            if (doPrint) {
+                String icon = "";
+                String iconText = "";
+                int visibilityStatus = sitemap.getVisibilityStatus();
+                if (parentId == 0) {
+                    icon = "root.gif";
+                    iconText = "Hjemmeside - " + title;
+                } else {
+                    icon = NavigatorUtil.getIcon(type, visibilityStatus, sitemap.getStatus());
+                    iconText = NavigatorUtil.getIconText(type, visibilityStatus, sitemap.getStatus());
+                }
 
-            out.write("<tr onMouseOver=\"enableMenu(" + id + "," + sitemap.getUniqueId() + ",'" + type + "')\" onMouseOut=\"disableMenu()\" id=\"item_" + id + "\">\n");
-            if ((isOpen && noChildren == 0) || (type == ContentType.SHORTCUT)) {
-                out.write("<td width=11><img src=\"../bitmaps/blank.gif\" width=11 height=11></td>");
-            } else {
-                out.write("<td width=11 valign=\"top\" onClick=\"" + action + "('" + id + "')\"><img src=\"../bitmaps/common/navigator/nav_" + img + ".gif\" id=\"img_" + id + "\" width=7 height=7 hspace=0 vspace=2></td>\n");
-            }
-            out.write("<td width=12 valign=\"top\"><img src=\"../bitmaps/common/navigator/" + icon + "\" width=12 height=14 alt=\"" + iconText + "\"></td>");
-            String clazz = "navNormal";
-            if (isSelected && (!doSelectAssociationId) && (!doSelectContentId)) {
-                clazz = "navSelected";
-            }
-            out.write("<td nobr width=\"100%\"><a href=\"Javascript:" + selectAction + "\" class=\"" +clazz +"\">" + title + "</a>");
-            if(sitemap.getNumberOfNotes() > 0) {
-                out.write("<img src=\"../bitmaps/common/navigator/note.gif\" width=\"12\" height=\"10\" alt=\"" + sitemap.getNumberOfNotes() + " notat(er) \"");
-            }
-            out.write("</td>\n");
+                out.write("<tr onMouseOver=\"enableMenu(" + id + "," + sitemap.getUniqueId() + ",'" + type + "')\" onMouseOut=\"disableMenu()\" id=\"item_" + id + "\">\n");
+                if ((isOpen && noChildren == 0) || (type == ContentType.SHORTCUT)) {
+                    out.write("<td width=11><img src=\"../bitmaps/blank.gif\" width=11 height=11></td>");
+                } else {
+                    out.write("<td width=11 valign=\"top\" onClick=\"" + action + "('" + id + "')\"><img src=\"../bitmaps/common/navigator/nav_" + img + ".gif\" id=\"img_" + id + "\" width=7 height=7 hspace=0 vspace=2></td>\n");
+                }
+                out.write("<td width=12 valign=\"top\"><img src=\"../bitmaps/common/navigator/" + icon + "\" width=12 height=14 alt=\"" + iconText + "\"></td>");
+                String clazz = "navNormal";
+                if (isSelected && (!doSelectAssociationId) && (!doSelectContentId)) {
+                    clazz = "navSelected";
+                }
+                out.write("<td nobr width=\"100%\"><a href=\"Javascript:" + selectAction + "\" class=\"" +clazz +"\">" + title + "</a>");
+                if(sitemap.getNumberOfNotes() > 0) {
+                    out.write("<img src=\"../bitmaps/common/navigator/note.gif\" width=\"12\" height=\"10\" alt=\"" + sitemap.getNumberOfNotes() + " notat(er) \"");
+                }
+                out.write("</td>\n");
 
-            out.write("</tr>\n");
-
+                out.write("</tr>\n");
+            }
             if (isOpen) {
-                if (noChildren > 0) {
+                if (noChildren > 0 && doPrint) {
                     out.write("<tr>\n<td></td><td colspan=\"2\">\n<table border=\"0\" id=\"tree_" + id + "\">\n");
                 }
                 for (int i = 0; i < noChildren; i++) {
                     SiteMapEntry child = (SiteMapEntry)children.get(i);
-                    printFolder(child, level+1, selectedId, openList, doSelectAssociationId, doSelectContentId, out);
+                    boolean print = startId == -1;
+                    printFolder(child, level+1, selectedId, openList, doSelectAssociationId, doSelectContentId, startId, doPrint, out);
                 }
-                if (noChildren > 0) {
+                if (noChildren > 0 && doPrint) {
                     out.write("</table>\n</td>\n</tr>");
                 }
             }
@@ -363,6 +373,7 @@
     <input type="hidden" name="sort" value="<%=sort%>">
     <input type="hidden" name="clipboard" value="<%=clipboard%>">
     <input type="hidden" name="isCopy" value="<%=isCopy%>">
+    <input type="hidden" name="startId" value="<%=startId%>">
 </form>
 
 <table border="0" cellspacing="0" cellpadding="0">
@@ -561,7 +572,8 @@
             SiteMapEntry sitemap = aksess.getNavigatorMenu(site.getId(), openFolders, -1, sort);
             if (sitemap != null) {
                 sitemap.setTitle(site.getName());
-                printFolder(sitemap, 0, selectedId, openFolders, selectAssociationId, selectContentId, out);
+                boolean print = startId == -1;
+                printFolder(sitemap, 0, selectedId, openFolders, selectAssociationId, selectContentId, startId, print, out);
                 out.write("<tr><td colspan=\"3\">&nbsp;</td></tr>");
             }
         }
