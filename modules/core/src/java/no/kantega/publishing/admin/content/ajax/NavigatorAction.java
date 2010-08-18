@@ -40,7 +40,7 @@ import no.kantega.commons.util.StringHelper;
 import java.util.*;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 03.jul.2009
  * Time: 14:13:45
  */
@@ -90,6 +90,8 @@ public class NavigatorAction implements Controller {
             }
         }
 
+        int startId = params.getInt("startId");
+
         String openFoldersList = params.getString(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS);
         boolean expand = params.getBoolean(AdminRequestParameters.EXPAND, true);
 
@@ -101,6 +103,9 @@ public class NavigatorAction implements Controller {
 
             } catch (ContentNotFoundException e) {
                 openFoldersList = "0";
+            }
+            if (startId != -1) {
+                openFoldersList += "," + startId;
             }
         }
 
@@ -125,6 +130,7 @@ public class NavigatorAction implements Controller {
         model.put(AdminRequestParameters.NAVIGATION_SORT_ORDER, sort);
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.THIS_ID, currentId);
+        model.put(AdminRequestParameters.START_ID, startId);
 
         return new ModelAndView(view, model);
     }
@@ -135,7 +141,7 @@ public class NavigatorAction implements Controller {
      * Determining the menu sort order
      *
      * @param request - The current HttpServletRequest
-     * @return - String representing the sort order, e.g. ContentProperty.PRÌORITY.
+     * @return - String representing the sort order, e.g. ContentProperty.PRï¿½ORITY.
      */
     private String getSort(HttpServletRequest request) {
         String sort = request.getParameter(AdminRequestParameters.NAVIGATION_SORT_ORDER);

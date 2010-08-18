@@ -83,6 +83,12 @@
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
+        <attribute>
+            <name>startId</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>        
     </tag>
     <tag>
         <description>Prints a navigator for multimedia</description>

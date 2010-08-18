@@ -42,6 +42,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
     private NavigationMapEntry site;
     private int currentId;
+    private int startId = -1;
 
     private List<NavigationMapEntry> menuitems = null;
     private int prevDepth = -1;
@@ -67,12 +68,19 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         return currentId;
     }
 
+    public int getStartId() {
+        return startId;
+    }
+
+    public void setStartId(int startId) {
+        this.startId = startId;
+    }
+
     public void setRoot(NavigationMapEntry site) {
         this.site = site;
     }
 
-
-    private void addToSiteMap(NavigationMapEntry sitemap, int currentDepth) {
+    private void addToSiteMap(NavigationMapEntry sitemap, int currentDepth, boolean doDisplay) {
 
         sitemap.setDepth(currentDepth);
 
@@ -80,14 +88,19 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             sitemap.setSelected(true);
         }
 
-        menuitems.add(sitemap);
+        if (sitemap.getId() == startId && !doDisplay) {
+            doDisplay = true;
+        }
 
+        if (doDisplay) {
+            menuitems.add(sitemap);
+        }
 
         List<NavigationMapEntry> children = sitemap.getChildren();
         if (children != null) {
             for (NavigationMapEntry child : children) {
                 sitemap.setOpen(true);
-                addToSiteMap(child, currentDepth + 1);
+                addToSiteMap(child, currentDepth + 1, doDisplay);
             }
         }
     }
@@ -98,10 +111,9 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         menuitems = new ArrayList<NavigationMapEntry>();
 
         try {
-            HttpServletRequest request = (HttpServletRequest)((PageContext)getJspContext()).getRequest();
-
             if (site != null) {
-                addToSiteMap(site, 0);
+                boolean doDisplay = startId == -1;
+                addToSiteMap(site, 0, doDisplay);
             }
             status = new CollectionLoopTagStatus(menuitems);
 
@@ -111,12 +123,12 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             }
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
 
         currentId = -1;
+        startId = -1;
         site = null;
         menuitems = null;
         prevDepth = -1;

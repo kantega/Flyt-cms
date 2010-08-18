@@ -17,6 +17,9 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
@@ -25,6 +28,7 @@ import java.util.Map;
 public class ContentidAttribute extends Attribute {
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
+    protected int startId = -1;
 
     public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
@@ -37,6 +41,19 @@ public class ContentidAttribute extends Attribute {
             String maxitemsS = config.getAttribute("maxitems");
             if(maxitemsS != null && maxitemsS.trim().length() > 0) {
                 maxitems = Integer.parseInt(maxitemsS);
+            }
+            String startIdS = config.getAttribute("startid");
+            if(startIdS != null && startIdS.trim().length() > 0) {
+                try {
+                    startId = Integer.parseInt(startIdS);
+                } catch (NumberFormatException e) {
+                    try {
+                        ContentIdentifier cid = new ContentIdentifier(startIdS);
+                        startId = cid.getAssociationId();
+                    } catch (ContentNotFoundException e1) {
+                        Log.error(this.getClass().getName(), e, null, null);
+                    }
+                }                
             }
         }
     }
@@ -53,5 +70,7 @@ public class ContentidAttribute extends Attribute {
         return maxitems;
     }
 
-
+    public int getStartId() {
+        return startId;
+    }
 }

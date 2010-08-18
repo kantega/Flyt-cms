@@ -106,7 +106,7 @@
 
             skin : "o2k7",
             skin_variant : "silver",
-
+            button_tile_map : true,
             plugins : plugins,
 
             // TODO: decide desired elements and attributes

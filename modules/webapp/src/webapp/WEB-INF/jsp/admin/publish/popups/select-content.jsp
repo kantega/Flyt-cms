@@ -37,7 +37,7 @@
         });
 
         openaksess.navigate.getNavigatorAction = function() {
-            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
+            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action?startId=${startId}";
         };
 
         openaksess.navigate.onNavigatorTitleClick = function(elm) {

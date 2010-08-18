@@ -23,6 +23,7 @@ public class AdminRequestParameters {
 
     public static final String THIS_ID = "thisId";
     public static final String CONTENT_ID = "contentId";
+    public static final String START_ID = "startId";
     public static final String URL = "url";
     public static final String ITEM_IDENTIFIER = "itemIdentifier";
     public static final String SHOW_EXPIRED = "showExpired";

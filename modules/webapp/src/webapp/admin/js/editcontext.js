@@ -213,7 +213,7 @@ openaksess.editcontext = function()  {
         /*
          *  Popup vindu for selecting a page id
          */
-        selectContent : function (formElement, maxItems) {
+        selectContent : function (formElement, maxItems, startId) {
             var items = 0;
 
             if (arguments.length < 2) {
@@ -224,13 +224,17 @@ openaksess.editcontext = function()  {
                     items = list.length;
                 }
             }
+            if (arguments.length < 3) {
+                startId = -1;
+            }
+
 
             if (items >= maxItems) {
                 alert(properties.editcontext.labels.warningMaxchoose + ' ' + maxItems + ' ' + properties.editcontext.labels.warningElements);
             } else {
                 openaksess.editcontext.focusField = formElement;
                 openaksess.editcontext.doInsertTag = false;
-                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId,width: 280, height:450});
             }
         },
 

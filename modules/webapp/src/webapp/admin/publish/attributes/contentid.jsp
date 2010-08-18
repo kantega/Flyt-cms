@@ -6,6 +6,7 @@
                  no.kantega.publishing.common.service.ContentManagementService"%>
 <%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
+<%@ page import="no.kantega.publishing.common.data.attributes.ContentidAttribute" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -23,7 +24,7 @@
   --%>
 
 <%
-    Attribute attribute = (Attribute)request.getAttribute("attribute");
+    ContentidAttribute attribute = (ContentidAttribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
 
     String value = attribute.getValue();
@@ -57,6 +58,6 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

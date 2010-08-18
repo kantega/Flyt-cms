@@ -38,6 +38,8 @@ public class SelectContentAction implements Controller {
             model.put("selectContentId", Boolean.TRUE);
         }
 
+        model.put("startId", param.getInt("startId"));
+
         return new ModelAndView(view, model);
     }
 
