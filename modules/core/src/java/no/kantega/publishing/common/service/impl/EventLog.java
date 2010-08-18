@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.service.impl;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
@@ -60,8 +61,8 @@ public class EventLog {
             subject = subject.substring(0, 254);
         }
 
-        if (username != null && username.length() > 255) {
-            username = username.substring(0, 254);
+        if (username != null && username.length() > 32) {
+            username = username.substring(0, 32);
         }
 
         int subjectType = -1;
@@ -85,7 +86,10 @@ public class EventLog {
             st.execute();
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil", SOURCE, e);
+            e.printStackTrace();
+            Log.error("Aksess.Eventlog.log", "Dump of SQL variables: username:" +  username +" remoteAddr: " + remoteAddr +" event: " + event +" subject: " + subject +" subjectType: " + subjectType +" subjectId: " + subjectId, null, null);
+            throw new SystemException("SQL Error. see variable dump above", SOURCE, e);
+
         } finally {
             try {
                 if (c != null) {
