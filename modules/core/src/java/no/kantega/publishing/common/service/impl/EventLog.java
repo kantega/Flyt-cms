@@ -61,8 +61,8 @@ public class EventLog {
             subject = subject.substring(0, 254);
         }
 
-        if (username != null && username.length() > 32) {
-            username = username.substring(0, 32);
+        if (username != null && username.length() > 255) {
+            username = username.substring(0, 254);
         }
 
         int subjectType = -1;
