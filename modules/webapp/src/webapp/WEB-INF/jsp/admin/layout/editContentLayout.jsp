@@ -78,7 +78,7 @@
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/wro/admin-editcontentlayout.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce_3_3_6/tiny_mce.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 

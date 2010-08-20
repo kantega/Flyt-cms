@@ -35,7 +35,7 @@
 <html>
 <head>
     <title>...</title>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce_3_3_6/tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_popup.js"></script>
 </head>
 <script language="Javascript">
     function insertMMObject() {
