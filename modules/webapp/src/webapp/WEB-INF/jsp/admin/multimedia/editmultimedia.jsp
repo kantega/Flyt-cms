@@ -64,9 +64,15 @@
                     saveForm();
                 }).parent().show();
 
+                var p;
+                if (window.opener) {
+                    p = window.opener;
+                } else {
+                    p = window.parent;
+                }
+
                 $("#MaxWidth").val(p.focusFieldMaxWidth);
             }
-
 
             <c:if test="${isPropertyPaneEditable}">
             $("#EditMultimediaButtons .save").click(function () {
