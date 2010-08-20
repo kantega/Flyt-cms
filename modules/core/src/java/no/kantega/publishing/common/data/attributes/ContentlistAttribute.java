@@ -116,4 +116,15 @@ public class ContentlistAttribute extends ListAttribute {
         }
         return options;
     }
+
+    public List<ContentIdentifier> getValueAsContentIdentifiers() {
+        List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
+        List<String> values = super.getValues();
+        for (String v : values) {
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setAssociationId(Integer.parseInt(v));
+            cids.add(cid);
+        }
+        return cids;
+    }    
 }
