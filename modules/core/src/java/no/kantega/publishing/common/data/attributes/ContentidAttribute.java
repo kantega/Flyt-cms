@@ -23,6 +23,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ContentidAttribute extends Attribute {
@@ -53,7 +55,7 @@ public class ContentidAttribute extends Attribute {
                     } catch (ContentNotFoundException e1) {
                         Log.error(this.getClass().getName(), e, null, null);
                     }
-                }                
+                }
             }
         }
     }
@@ -73,4 +75,19 @@ public class ContentidAttribute extends Attribute {
     public int getStartId() {
         return startId;
     }
+
+    public List<ContentIdentifier> getValueAsContentIdentifiers() {
+        List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
+        if (value != null) {
+            String[] values = value.split(",");
+            for (String v : values) {
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setAssociationId(Integer.parseInt(v));
+                cids.add(cid);
+            }
+        }
+
+        return cids;
+    }
+
 }
