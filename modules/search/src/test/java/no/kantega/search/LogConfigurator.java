@@ -21,7 +21,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: 25.jun.2008
  * Time: 15:40:21
  */
@@ -31,7 +31,7 @@ public class LogConfigurator {
     public static void configure() {
         BasicConfigurator.resetConfiguration();
         BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
+        Logger.getRootLogger().setLevel(Level.WARN);
     }
 
 }

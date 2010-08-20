@@ -105,8 +105,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[1] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms.length, hitCounts.size());
-        assertTrue("Totalt antall HitCounts for alle termer ("+ totalHitCounts[0] +") skal være større enn totalt antall HitCounts for et subsett av termene (" + totalHitCounts[1] + ").", totalHitCounts[0] > totalHitCounts[1]);
-        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
+        assertTrue("Totalt antall HitCounts for alle termer ("+ totalHitCounts[0] +") skal vï¿½re stï¿½rre enn totalt antall HitCounts for et subsett av termene (" + totalHitCounts[1] + ").", totalHitCounts[0] > totalHitCounts[1]);
+        assertEquals("Antall sï¿½ketreff skal vï¿½re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
 
         // Create search query
         searchQuery = new SearchQueryExtendedImpl();
@@ -127,8 +127,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[2] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms.length + 1, hitCounts.size());
-        assertEquals("Totalt antall HitCounts for alle termer skal være lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
-        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
+        assertEquals("Totalt antall HitCounts for alle termer skal vï¿½re lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
+        assertEquals("Antall sï¿½ketreff skal vï¿½re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
     }
 
     /**
@@ -197,7 +197,7 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[1] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms[0].length + hitCountTerms[1].length, hitCounts.size());
-        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
+        assertEquals("Antall sï¿½ketreff skal vï¿½re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
 
         // Create search query
         searchQuery = new SearchQueryExtendedImpl();
@@ -219,8 +219,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[2] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms[0].length + hitCountTerms[1].length + 2, hitCounts.size());
-        assertEquals("Totalt antall HitCounts for alle termer skal være lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
-        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
+        assertEquals("Totalt antall HitCounts for alle termer skal vï¿½re lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
+        assertEquals("Antall sï¿½ketreff skal vï¿½re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
     }
 
 
@@ -248,7 +248,6 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
         // Summere HitCount'ene
         totalHitCounts = 0;
         for (HitCount hitCount : hitCounts) {
-            System.out.println("hitCount = " + hitCount);
             totalHitCounts += hitCount.getHitCount();
         }
         // Sjekk at HitCount er regnet ut for alle termene i feltet
