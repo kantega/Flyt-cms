@@ -27,10 +27,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.transform.TransformerException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -98,4 +95,14 @@ public class ListAttribute extends Attribute {
     protected List<ListOption> getOptions(){
     	return options;
     }
+
+    public List<String> getValues() {
+        List<String> values = new ArrayList<String>();
+        if (value != null && value.length() > 0) {
+            String[] tmp = value.split(",");
+            values.addAll(Arrays.asList(tmp));
+        }
+
+        return values;
+    }    
 }
