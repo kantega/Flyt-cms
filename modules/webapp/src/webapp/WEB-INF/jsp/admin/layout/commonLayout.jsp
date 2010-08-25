@@ -61,6 +61,7 @@
                     "sSearch": "<kantega:label key="aksess.datatable.search"/>"
                 }
             });
+            $.datepicker.setDefaults($.datepicker.regional['']);
             $.datepicker.setDefaults($.datepicker.regional['${aksess_locale.language}']);
             $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});
         });
