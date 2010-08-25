@@ -128,6 +128,7 @@
                 <prop key="/admin/publish/popups/InsertCharacter.action">InsertCharacterAction</prop>
                 <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
+                <prop key="/admin/publish/popups/Lix.action">LixAction</prop>
 
                 <!-- Multimedia naviagator -->
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
@@ -507,6 +508,9 @@
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="LixAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/lix.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.ViewDisplayPeriodAction" id="viewDisplayPeriodAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/view-displayperiod.jsp"/>

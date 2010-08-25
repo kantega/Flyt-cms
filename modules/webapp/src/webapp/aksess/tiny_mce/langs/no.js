@@ -167,4 +167,8 @@ upper_roman:"Upper roman",
 circle:"Circle",
 disc:"Disc",
 square:"Square"
-}}});
+},
+lix:{
+desc:"Beregn LIX-tall"
+}
+}});
