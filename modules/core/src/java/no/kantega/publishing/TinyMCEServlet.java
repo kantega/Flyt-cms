@@ -235,14 +235,10 @@ public class TinyMCEServlet extends HttpServlet {
     }
 
     private String getCachePath(HttpServletRequest request, String s) {
-//        String tempdir = System.getProperty("java.io.tmpdir");
-//        if (!(tempdir.endsWith("/") || tempdir.endsWith("\\"))) {
-//            tempdir = tempdir + File.pathSeparator;
-//        }
-
-
-        String tempdir = "/var/place/with/no/permission/to/write/";
-
+        String tempdir = System.getProperty("java.io.tmpdir");
+        if (!(tempdir.endsWith("/") || tempdir.endsWith("\\"))) {
+            tempdir = tempdir + File.pathSeparator;
+        }
         return tempdir;
     }
 
