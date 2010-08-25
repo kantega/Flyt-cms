@@ -185,6 +185,11 @@
         <load-on-startup>0</load-on-startup>
     </servlet>
 
+    <servlet>
+        <servlet-name>TinyMCEServlet</servlet-name>
+        <servlet-class>no.kantega.publishing.TinyMCEServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>SetupServlet</servlet-name>
         <url-pattern>/Setup.initialAction</url-pattern>
@@ -266,6 +271,11 @@
     <servlet-mapping>
         <servlet-name>webdav</servlet-name>
         <url-pattern>/webdav/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>TinyMCEServlet</servlet-name>
+        <url-pattern>/aksess/tiny_mce/tiny_mce_gzip.jsp</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

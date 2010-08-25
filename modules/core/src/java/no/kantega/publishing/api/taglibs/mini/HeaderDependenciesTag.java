@@ -44,6 +44,6 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "        }\n" +
                 "    </script>");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro/miniaksess.js\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce.js\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce_gzip.js\"></script>\n");
     }
 }

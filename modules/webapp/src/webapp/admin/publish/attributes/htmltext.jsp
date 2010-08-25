@@ -90,7 +90,16 @@
     <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="30"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
+        tinyMCE_GZ.init({
+            plugins : '<%=plugins%>',
+            themes : 'simple,advanced',
+            languages : 'en,no',
+            disk_cache : true,
+            debug : false
+        });
+    </script>
 
+    <script type="text/javascript">
         var plugins = '<%=plugins%>';
         var buttonRows = [];
         <% for (String row : buttonRows) { %>
