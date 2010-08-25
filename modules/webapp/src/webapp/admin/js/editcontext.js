@@ -70,13 +70,13 @@ openaksess.editcontext = function()  {
             // Save forms
             formSave();
 
-            if (tinyMCE) {
+            if (typeof tinyMCE != "undefined") {
                 tinyMCE.triggerSave();
             }
         },
 
         isModified : function () {
-            return openaksess.editcontext.editIsModified || (tinyMCE && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
+            return openaksess.editcontext.editIsModified || (typeof tinyMCE != "undefined" && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
         },
 
 
