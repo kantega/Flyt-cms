@@ -17,7 +17,7 @@
 <%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-contentnavigatelayout.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro-oa/admin-contentnavigatelayout.css">
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
@@ -52,7 +52,7 @@
         };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/wro/admin-contentnavigatelayout.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/wro-oa/admin-contentnavigatelayout.js"></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>

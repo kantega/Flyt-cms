@@ -197,12 +197,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>ro.isdc.wro4j</groupId>
-            <artifactId>wro4j-core</artifactId>
-            <version>1.2.7</version>
-        </dependency>
-
     </dependencies>
 
     <build>

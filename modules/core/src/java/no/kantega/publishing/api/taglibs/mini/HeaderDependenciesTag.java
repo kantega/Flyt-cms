@@ -34,7 +34,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
-        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro/miniaksess.css\">\n");
+        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro-oa/miniaksess.css\">\n");
         out.write("<script type=\"text/javascript\">\n" +
                 "        var properties = {\n" +
                 "            contextPath : '"+((HttpServletRequest) pageContext.getRequest()).getContextPath()+"',\n" +
@@ -43,7 +43,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "            thisId : '"+ AdminRequestParameters.THIS_ID+"'\n" +
                 "        }\n" +
                 "    </script>");
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro/miniaksess.js\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro-oa/miniaksess.js\"></script>\n");
         out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce_gzip.js\"></script>\n");
     }
 }

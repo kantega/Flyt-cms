@@ -24,7 +24,7 @@
 <head>
     <title><kantega:getsection id="title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro/admin-popuplayout.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro-oa/admin-popuplayout.css">
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -35,7 +35,7 @@
         properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-popuplayout.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/wro-oa/admin-popuplayout.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">
         $.datepicker.setDefaults( {firstDay: 1, showOn: 'button', buttonImage: '${pageContext.request.contextPath}/admin/bitmaps/common/icons/small/calendar.png', buttonImageOnly: true, dateFormat:'dd.mm.yy'});

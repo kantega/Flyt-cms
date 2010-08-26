@@ -68,7 +68,7 @@
     </filter>
 
     <filter>
-        <filter-name>wro</filter-name>
+        <filter-name>aksesswro</filter-name>
         <filter-class>no.kantega.publishing.client.filter.OpenAksessConfiguredFilter</filter-class>
         <init-param>
             <param-name>wrappedFilterClass</param-name>
@@ -112,8 +112,8 @@
     </filter-mapping>
 
     <filter-mapping>
-        <filter-name>wro</filter-name>
-        <url-pattern>/wro/*</url-pattern>
+        <filter-name>aksesswro</filter-name>
+        <url-pattern>/wro-oa/*</url-pattern>
     </filter-mapping>
 
     <listener>

@@ -46,7 +46,7 @@
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/wro/admin-mypage.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/wro-oa/admin-mypage.js'></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $("#SettingsButton").click(function(){

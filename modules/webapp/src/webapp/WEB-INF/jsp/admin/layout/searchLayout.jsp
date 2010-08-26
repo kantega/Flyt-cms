@@ -20,8 +20,8 @@
 <html>
 <head>
     <title><kantega:getsection id="title"/></title>
-    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/wro/admin-searchlayout.css">
-    <script type="text/javascript" src="<%=request.getContextPath()%>/wro/admin-searchlayout.js"></script>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/wro-oa/admin-searchlayout.css">
+    <script type="text/javascript" src="<%=request.getContextPath()%>/wro-oa/admin-searchlayout.js"></script>
 
     <kantega:getsection id="head"/>
 </head>
