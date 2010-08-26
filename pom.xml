@@ -128,7 +128,7 @@
         <nekohtml.version>0.9.5</nekohtml.version>
         <!-- 3.1-FINAL bygger ikke -->
         <poi.version>3.0-FINAL</poi.version>
-        <springframework.version>2.5.6.SEC01</springframework.version>
+        <springframework.version>2.5.6.SEC02</springframework.version>
         <spring.binding.version>1.0ea</spring.binding.version>
         <spring.webflow.version>1.0ea</spring.webflow.version>
         <securityapi.version>1.10</securityapi.version>
