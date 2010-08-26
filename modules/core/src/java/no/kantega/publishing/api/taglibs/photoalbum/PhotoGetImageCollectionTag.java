@@ -26,12 +26,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
- *
+ * @author andska, jogri
  */
 public class PhotoGetImageCollectionTag extends LoopTagSupport {
+
     private int folder = -1;
+    private boolean shuffle;
+    private int shuffleMax = -1;
     private Iterator i;
 
     protected Object next() throws JspTagException {
@@ -51,11 +55,19 @@ public class PhotoGetImageCollectionTag extends LoopTagSupport {
     protected void prepare() throws JspTagException {
         if (folder != -1) {
             MultimediaService mediaService = new MultimediaService((HttpServletRequest)pageContext.getRequest());
+
+            List<Multimedia> multimediaObjects = mediaService.getMultimediaList(folder);
+            if(shuffle) {
+                Collections.shuffle(multimediaObjects);
+                if ((shuffleMax != -1) && (multimediaObjects.size() > shuffleMax)) {
+                    multimediaObjects = multimediaObjects.subList(0, shuffleMax);
+                }
+            }
+
             List<Multimedia> images = new ArrayList<Multimedia>();
-            List<Multimedia> objects = mediaService.getMultimediaList(folder);
-            for (Multimedia obj : objects) {
-                if (obj.getType() == MultimediaType.MEDIA && obj.getMimeType().getType().indexOf("image") != -1) {
-                    images.add(obj);
+            for (Multimedia multimedia : multimediaObjects) {
+                if ((multimedia.getType() == MultimediaType.MEDIA) && multimedia.getMimeType().getType().contains("image")) {
+                    images.add(multimedia);
                 }
             }
             i = images.iterator();
@@ -66,5 +78,13 @@ public class PhotoGetImageCollectionTag extends LoopTagSupport {
 
     public void setFolder(int folder) {
         this.folder = folder;
+    }
+
+    public void setShuffle(boolean shuffle) {
+        this.shuffle = shuffle;
+    }
+
+    public void setShuffleMax(int shuffleMax) {
+        this.shuffleMax = shuffleMax;
     }
 }

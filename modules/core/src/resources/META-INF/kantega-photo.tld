@@ -45,6 +45,16 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Shuffle (randomize) the image collection after it is fetched from the database</description>
+            <name>shuffle</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Return only shuffleMax items from the shuffled image collection</description>
+            <name>shuffleMax</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>    
     <tag>
         <description>Navigate between next/previous image</description>
