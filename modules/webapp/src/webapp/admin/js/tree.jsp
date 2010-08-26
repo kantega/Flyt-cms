@@ -75,6 +75,9 @@ function setFolderOpen(id) {
         newList = newList + "," + id;
     }
     document.tree.openFolders.value = newList;
+    if (window.parent && typeof window.parent.onFolderOpen == "function") {
+        window.parent.onFolderOpen(id, newList);
+    }
 }
 
 
@@ -91,6 +94,9 @@ function setFolderClosed(id) {
        }
     }
     document.tree.openFolders.value = newOpenList;
+    if (window.parent && typeof window.parent.onFolderClose == "function") {
+        window.parent.onFolderClose(id, newOpenList);
+    }
 }
 
 
