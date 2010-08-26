@@ -63,7 +63,7 @@ public class DefaultImageEditor implements ImageEditor {
 
                 // Determine output format
                 String imageFormat = getDefaultImageFormat();
-                if (multimedia.getMimeType().getType().contains("jpg")) {
+                if (multimedia.getMimeType().getType().contains("jpeg")) {
                     imageFormat = "jpg";
                 }
                 
