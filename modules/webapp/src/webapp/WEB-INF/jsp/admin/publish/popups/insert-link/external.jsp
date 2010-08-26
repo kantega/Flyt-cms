@@ -28,7 +28,7 @@
 <div class="formElement">
     <div class="heading"><label for="url"><kantega:label key="aksess.insertlink.external"/></label></div>
     <div class="inputs">
-        <input type="text" id="url" class="fullWidth" name="url" value="${url}" maxlength="1024"><br>
+        <input type="url" id="url" class="fullWidth" name="url" value="${url}" maxlength="1024"><br>
         <input type="checkbox" id="newwindow" name="newwindow" <c:if test="${isOpenInNewWindow}">checked</c:if>><label for="newwindow"><kantega:label key="aksess.insertlink.opennewwindow"/></label>
     </div>
 </div>

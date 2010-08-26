@@ -24,7 +24,7 @@
 
 <div class="formElement">
     <div class="heading"><label><kantega:label key="aksess.insertlink.email.recipient"/></label></div>
-    <div class="inputs"><input type="text" class="fullWidth" name="url" value="${url}" maxlength="128"></div>
+    <div class="inputs"><input type="email" class="fullWidth" name="url" value="${url}" maxlength="128"></div>
 </div>
 
 <div class="formElement">

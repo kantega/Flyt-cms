@@ -90,7 +90,7 @@
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.profile.email"/></label></div>
-                <div class="inputs"><input type="text" name="email" class="textInput" value="<c:out value="${profile.email}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
+                <div class="inputs"><input type="email" name="email" class="textInput" value="<c:out value="${profile.email}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
             </div>
 
             <div class="formElement">

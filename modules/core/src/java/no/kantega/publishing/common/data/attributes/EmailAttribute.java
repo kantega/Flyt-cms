@@ -49,5 +49,10 @@ public class EmailAttribute extends Attribute {
 
     public boolean isSearchable() {
         return true;
-    }    
+    }
+
+    @Override
+    public String getRenderer() {
+        return "email";
+    }
 }

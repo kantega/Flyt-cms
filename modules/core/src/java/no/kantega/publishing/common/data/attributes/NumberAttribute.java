@@ -43,5 +43,10 @@ public class NumberAttribute extends Attribute {
                 errors.add(name, "aksess.feil.invalidnumber", objects);
             }
         }
-    }    
+    }
+
+    @Override
+    public String getRenderer() {
+        return "number";
+    }
 }
