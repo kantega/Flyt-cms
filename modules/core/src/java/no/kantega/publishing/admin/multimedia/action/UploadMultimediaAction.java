@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
@@ -254,7 +255,7 @@ public class UploadMultimediaAction extends AdminController {
         return !entry.isDirectory() && !entry.getName().startsWith("__MACOSX");
     }
 
-    public Multimedia resizeMultimedia(Multimedia multimedia) {
+    public Multimedia resizeMultimedia(Multimedia multimedia) throws InvalidImageFormatException {
         if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
             if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
                 if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {

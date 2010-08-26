@@ -4,6 +4,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.resizers.ImageResizeAlgorithm;
 
 import javax.imageio.IIOImage;
@@ -28,16 +29,23 @@ public class DefaultImageEditor implements ImageEditor {
 
     private int jpgOutputQuality = 85;
 
-    public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException {
+    public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException {
         return resizeAndCropMultimedia(multimedia, targetWidth, targetHeight, -1, -1, -1, -1);
     }
-    public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropx, int cropy, int cropwidth, int cropheight) throws IOException {
+    public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropx, int cropy, int cropwidth, int cropheight) throws IOException, InvalidImageFormatException {
         if (multimedia.getType() == MultimediaType.MEDIA) {
             if (multimedia.getMimeType() != null && multimedia.getMimeType().getType().contains("image")) {
-                BufferedImage image = ImageIO.read(new ByteArrayInputStream(multimedia.getData()));
+                BufferedImage image;
+
+                try {
+                    image = ImageIO.read(new ByteArrayInputStream(multimedia.getData()));
+                } catch (IOException e) {
+                    Log.error(this.getClass().getName(), "Failed converting image, probably CMYK, install Java Advanced Imaging API on server");
+                    // CMYK image
+                    throw new InvalidImageFormatException(this.getClass().getName(), "", e);
+                }
 
                 // Make sure target-size is valid
-
                 int w = image.getWidth();
                 int h = image.getHeight();
 

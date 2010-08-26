@@ -1,5 +1,6 @@
 package no.kantega.publishing.webdav.resourcehandlers.util;
 
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.common.data.Multimedia;
@@ -67,7 +68,11 @@ public class WebDavMultimediaHelper {
         // Resize large images
         if (file.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
             if (file.getWidth() > Aksess.getMaxMediaWidth() ||  file.getHeight() > Aksess.getMaxMediaHeight()) {
-                file = imageEditor.resizeMultimedia(file, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                try {
+                    file = imageEditor.resizeMultimedia(file, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                } catch (InvalidImageFormatException e) {
+                    throw new IOException();
+                }
             }
         }
 

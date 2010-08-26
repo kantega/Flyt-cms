@@ -55,8 +55,16 @@ public class Log {
         }
     }
 
+    public static void error(String category, Throwable exception) {
+        Logger.getLogger(category).error(LogData.create(exception, null, null));
+    }
+
     public static void error(String category, Throwable exception, Object context, Object identity) {
         Logger.getLogger(category).error(LogData.create(exception, context, identity));
+    }
+
+    public static void error(String category, String message) {
+        Logger.getLogger(category).error(LogData.create(message, null, null));
     }
 
     public static void error(String category, String message, Object context, Object identity) {

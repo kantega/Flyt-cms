@@ -123,7 +123,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                                     try {
                                         ImageEditor editor = (ImageEditor)RootContext.getInstance().getBean("aksessImageEditor");
                                         multimedia = editor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                                    } catch (IOException e) {
+                                    } catch (Exception e) {
                                         Log.error(this.getClass().getName(), e, null, null);
                                     }
                                 }
