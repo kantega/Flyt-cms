@@ -70,6 +70,11 @@
         buttonRows = buttons.split("<>");
     }
 
+    String heading = conf.getString(confPrefix + "heading");
+    if (heading == null) {
+        heading = conf.getString("editor.default.heading");
+    }
+
     boolean hasHtmlEditorRole = false;
     String[] htmlEditorRole = Aksess.getHtmlEditorRoles();
     if (htmlEditorRole != null) {
@@ -149,6 +154,7 @@
             theme_advanced_toolbar_align : "left",
             theme_advanced_statusbar_location : "none",
             theme_advanced_resizing : false,
+            theme_advanced_blockformats : "p,address,pre,<%=heading%>",
 
             // Plugin options
             <%
