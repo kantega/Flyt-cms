@@ -359,11 +359,11 @@ public class MultimediaAO {
             if (id != -1) {
                 where = "Id = ?";
             } else {
-                where = "Name like ? or Author like ? or Description like ?";
+                where = "Name like ? or Author like ? or Description like ? or Filename like ?";
                 String driver = dbConnectionFactory.getDriverName();
                 if ((driver.indexOf("oracle") != -1) || (driver.indexOf("postgresql") != -1)) {
                     phrase = phrase.toLowerCase();
-                    where = "lower(Name) like ? or lower(Author) like ? or lower(Description) like ?";
+                    where = "lower(Name) like ? or lower(Author) like ? or lower(Description) like ? or lower(Filename) like ?";
                 }
             }
 
@@ -414,6 +414,7 @@ public class MultimediaAO {
                 st.setString(++paramIdx, phrase + "%");
                 st.setString(++paramIdx, phrase + "%");
                 st.setString(++paramIdx, "%" + phrase + "%");
+                st.setString(++paramIdx, phrase + "%");
             }
 
             if (site != -1 || parentId != -1) {
