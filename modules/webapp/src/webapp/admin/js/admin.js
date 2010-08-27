@@ -142,6 +142,11 @@ openaksess.admin = {
          *
          */
         var close = function() {
+            if ($infoslider.is(":hidden")) {
+                openaksess.common.debug("content.InfoSlider.close(): Infoslider is already closed. Returning");
+                return;
+            }
+            openaksess.common.debug("content.InfoSlider.close(): Closing infoslider " + id);
             $(location).find(".infoslider").html("").slideUp(sliderOptions.speed);
         };
 
