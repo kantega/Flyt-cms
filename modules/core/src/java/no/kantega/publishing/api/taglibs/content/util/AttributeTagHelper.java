@@ -219,7 +219,7 @@ public final class AttributeTagHelper {
 
         if (content != null) {
             Attribute attr = content.getAttribute(name, cmd.getAttributeType());
-            if (attr != null) {
+            if (attr != null && attr.getValue() != null && attr.getValue().length() > 0) {
                 if (attr instanceof DateAttribute) {
                     Locale locale = Language.getLanguageAsLocale(content.getLanguage());
                     DateAttribute date = (DateAttribute)attr;
