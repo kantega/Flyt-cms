@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 #MultimediaPane {
     margin: 10px;
 }
