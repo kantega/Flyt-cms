@@ -35,14 +35,14 @@
  */
 openaksess.admin.setLayoutSpecificSizes =  function(elementProperties) {
     openaksess.common.debug("editcontent.setLayoutSpecificSizes()");
-    
-    var $sidebar = $("#SideBar");
-    var $mainPane = $('#MainPane');
-    $mainPane
-            .height( (elementProperties.window.height-elementProperties.top.height) + 'px')
-            .width( (elementProperties.window.width-elementProperties.framesplit.width-$sidebar.outerWidth(true)) + 'px');
 
-    $('#EditContentMain')
-            .height( (parseInt($mainPane.height())-parseInt($("#EditContentButtons").outerHeight(true))) + 'px')
-            .width($mainPane.outerWidth());
+    var $sidebar = $("#SideBar"),
+    $mainPane = $('#MainPane'),
+    mainPaneHeight = elementProperties.window.height-elementProperties.top.height,
+    sidebarWidth = $sidebar.outerWidth(true),
+    mainPaneWidth = elementProperties.window.width-elementProperties.framesplit.width-sidebarWidth,
+    editContentButtonsHeight = parseInt($("#EditContentButtons").outerHeight(true));
+
+    $mainPane.height(mainPaneHeight).width( mainPaneWidth);
+    $('#EditContentMain').height( mainPaneHeight-editContentButtonsHeight).width(mainPaneWidth);
 };

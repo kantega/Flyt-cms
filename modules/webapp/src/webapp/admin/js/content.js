@@ -515,16 +515,31 @@ openaksess.content = {
 
 openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $("html, body").css("overflow", "hidden");
-    var filteroptionsHeight = $("#Filteroptions").height();
-    var statusbarHeight = $("#Statusbar").height();
+    var filteroptionsHeight = $("#Filteroptions").height(),
+    statusbarHeight = $("#Statusbar").height(),
+    navigationWidth = elementProperties.navigation.width,
+    $navigator = $("#Navigator"),
+    navigatorPaddingTop = $navigator.css("paddingTop"),
+    navigatorPaddingBottom = $navigator.css("paddingBottom"),
+    $buttons = $('#EditContentButtons'),
+    $mainPane = $('#MainPane'),
+    mainPaneHeight = (elementProperties.window.height-elementProperties.top.height),
+    mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width),
+    $content = $('#Content'),
+    $mainPaneContent = $("#MainPaneContent"),
+    mainPaneContentPaddingTop = 0,
+    mainPaneContentPaddingBottom = 0;
 
-    var $buttons = $('#EditContentButtons');
+    if ($mainPaneContent) {
+        mainPaneContentPaddingTop = $mainPaneContent.css("paddingTop");
+        mainPaneContentPaddingBottom = $mainPaneContent.css("paddingBottom");
+    }
+
     var buttonsHeight = 0;
     if ($buttons && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
 
-    var navigationWidth = elementProperties.navigation.width;
     var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
     if (preferredNavigationWidth) {
         var $navigation = $("#Navigation");
@@ -533,18 +548,14 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     }
 
     openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
-    $navigator = $("#Navigator");
-    $navigator.css('height', (elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt($navigator.css("paddingTop"))-parseInt($navigator.css("paddingBottom"))) + 'px');
-    $('#Content').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight) + 'px');
 
-    var $mainPane = $('#MainPane');
-    $mainPane.css('height', (elementProperties.window.height-elementProperties.top.height) + 'px').css('width', (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width) + 'px');
-    $mainPane.find('iframe[name=contentmain]').css('height', (elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight) + 'px');
+    $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
+    $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
+    $mainPane.height(mainPaneHeight).width(mainPaneWidth);
+    $mainPane.find('iframe[name=contentmain]').height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight).width(mainPaneWidth);
 
-    var $mainPaneContent = $("#MainPaneContent");
     if ($mainPaneContent) {
-        var subpagesHeight = $mainPane.height()-parseInt($mainPaneContent.css("paddingTop"))-parseInt($mainPaneContent.css("paddingBottom"))-statusbarHeight-buttonsHeight;
-        $mainPaneContent.css('height',  subpagesHeight + 'px');
+        $mainPaneContent.height(mainPaneHeight-parseInt(mainPaneContentPaddingTop)-parseInt(mainPaneContentPaddingBottom)-statusbarHeight-buttonsHeight);
     }
 
 };
