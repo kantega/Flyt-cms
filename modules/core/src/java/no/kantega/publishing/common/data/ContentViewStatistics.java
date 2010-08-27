@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 public class ContentViewStatistics extends NavigationMapEntry {
     private int noPageViews = 0;
@@ -28,7 +29,7 @@ public class ContentViewStatistics extends NavigationMapEntry {
     }
 
     public String getUrl() {
-        return Aksess.getContextPath() + "/content.ap?thisId=" + currentId;
+        return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(currentId, title);
     }
 
     public int getNoPageViews() {

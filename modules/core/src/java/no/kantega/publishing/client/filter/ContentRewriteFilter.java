@@ -16,11 +16,7 @@
 
 package no.kantega.publishing.client.filter;
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.URLRewriter;
 import no.kantega.publishing.common.util.CharResponseWrapper;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.commons.util.HttpHelper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;

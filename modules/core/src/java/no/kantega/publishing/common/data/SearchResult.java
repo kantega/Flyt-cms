@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import java.util.Date;
 
@@ -59,6 +60,6 @@ public class SearchResult {
     }
 
     public String getUrl() {
-        return Aksess.getContextPath() + "/content.ap?thisId=" + contentId;
+        return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(contentId, title);
     }
 }

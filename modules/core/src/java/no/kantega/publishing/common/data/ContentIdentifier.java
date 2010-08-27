@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.SiteCache;
@@ -31,8 +32,8 @@ public class ContentIdentifier {
 
     private int contentId = -1; // Peker til innhold - tilsvarer content.getId()
     private int associationId = -1; // Peker til menypunkt - tilsvarer association.getAssociationId()
-    private int siteId = -1;    // Brukes sammen contentId for å finne en associationId
-    private int contextId = -1; // Brukes sammen contentId for å finne en associationId
+    private int siteId = -1;    // Brukes sammen contentId for ï¿½ finne en associationId
+    private int contextId = -1; // Brukes sammen contentId for ï¿½ finne en associationId
     private int language = Language.NORWEGIAN_BO;
     private int version = -1;
     private int status = -1;
@@ -56,6 +57,8 @@ public class ContentIdentifier {
     }
 
     public ContentIdentifier(HttpServletRequest request) throws ContentNotFoundException, SystemException {
+        String url = request.getServletPath();
+        String path = request.getPathInfo();
         Content current = (Content)request.getAttribute("aksess_this");
         if (current != null) {
             this.associationId = current.getAssociation().getId();
@@ -94,7 +97,7 @@ public class ContentIdentifier {
                     this.language = Integer.parseInt(request.getParameter("language"));
                 }
             } catch (NumberFormatException e) {
-                // Bruk standard språk
+                // Bruk standard sprï¿½k
             }
 
             try {
@@ -105,8 +108,16 @@ public class ContentIdentifier {
             } catch (NumberFormatException e) {
                 // Bruk default versjon
             }
+        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf("/") == 0) {
+            try {
+                int slashIndex = path.indexOf("/", 1);
+                if (slashIndex != -1) {
+                    this.associationId = Integer.parseInt(path.substring(1, slashIndex));
+                }
+            } catch (NumberFormatException e) {
+                throw new ContentNotFoundException(path, SOURCE);
+            }
         } else {
-            String url = request.getServletPath();
             String queryString = request.getQueryString();
             if (queryString != null && queryString.length() > 0) {
                 url = url + "?" + queryString;
@@ -118,13 +129,12 @@ public class ContentIdentifier {
             this.contentId = cid.contentId;
             this.associationId = cid.associationId;
             this.language = cid.language;
-
         }
     }
 
 
     public ContentIdentifier(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
-        int siteId = ContentIdHelper.getSiteIdFromRequest(request);                 
+        int siteId = ContentIdHelper.getSiteIdFromRequest(request);
         ContentIdentifier cid = ContentIdHelper.findContentIdentifier(siteId, url);
         this.contentId = cid.contentId;
         this.associationId = cid.associationId;

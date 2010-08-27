@@ -24,9 +24,11 @@
         <property name="aksessConfiguration" ref="aksessConfiguration"/>
     </bean>
 
-    
+    <bean id="aksessContentURLCache" class="no.kantega.publishing.common.cache.ContentUrlCache"/>
 
-    <bean class="no.kantega.publishing.client.filter.UrlContentRewriter"/>
+    <bean class="no.kantega.publishing.client.filter.UrlContentRewriter">
+        <property name="contentUrlCache" ref="aksessContentURLCache"/>
+    </bean>
 
     <bean id="crossSiteRequestForgeryContentRewriter" class="no.kantega.publishing.client.filter.CrossSiteRequestForgeryContentRewriter"/>
 </beans>

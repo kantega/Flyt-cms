@@ -46,8 +46,10 @@ import java.sql.SQLException;
 
 public class LinkCheckerJob implements InitializingBean {
     private Logger log = Logger.getLogger(getClass());
+    public static final String CONTENT = Aksess.VAR_WEB + Aksess.CONTENT_URL_PREFIX + "/";
     public static final String CONTENT_AP = Aksess.VAR_WEB + "/content.ap?thisId=";
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
+    private static final String MULTIMEDIA = Aksess.VAR_WEB + "/" + Aksess.MULTIMEDIA_URL_PREFIX;
     private static final String ATTACHMENT_AP = Aksess.VAR_WEB +"/attachment.ap?id=";
 
     private String webroot = "http://localhost";
@@ -111,11 +113,19 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, HttpClient client) {
-        if (link.startsWith(CONTENT_AP)) {
+        if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
             // Side i AP
-            String idPart = link.substring(CONTENT_AP.length());
-            if (idPart.indexOf("&") != -1) {
-                idPart = idPart.substring(0, idPart.indexOf("&"));
+            String idPart;
+            if (link.startsWith(CONTENT_AP)) {
+                idPart = link.substring(CONTENT_AP.length());
+                if (idPart.indexOf("&") != -1) {
+                    idPart = idPart.substring(0, idPart.indexOf("&"));
+                }
+            } else {
+                idPart = link.substring(CONTENT.length());
+                if (idPart.indexOf("/") != -1) {
+                    idPart = idPart.substring(0, idPart.indexOf("/"));
+                }
             }
             try {
                 int i = Integer.parseInt(idPart);
@@ -134,11 +144,19 @@ public class LinkCheckerJob implements InitializingBean {
             } catch (NumberFormatException e) {
                 checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
             }
-        } else if (link.startsWith(MULTIMEDIA_AP)) {
+        } else if (link.startsWith(MULTIMEDIA_AP) || link.startsWith(MULTIMEDIA_AP)) {
             // Bilde / multimedia
-            String idPart = link.substring(MULTIMEDIA_AP.length());
-            if (idPart.indexOf("&") != -1) {
-                idPart = idPart.substring(0, idPart.indexOf("&"));
+            String idPart;
+            if (link.startsWith(MULTIMEDIA_AP)) {
+                idPart = link.substring(MULTIMEDIA_AP.length());
+                if (idPart.indexOf("&") != -1) {
+                    idPart = idPart.substring(0, idPart.indexOf("&"));
+                }
+            } else {
+                idPart = link.substring(MULTIMEDIA.length());
+                if (idPart.indexOf("/") != -1) {
+                    idPart = idPart.substring(0, idPart.indexOf("/"));
+                }
             }
             try {
                 int i = Integer.parseInt(idPart);
@@ -181,7 +199,7 @@ public class LinkCheckerJob implements InitializingBean {
                 checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
             }
         } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
-            // Kan være et alias, sjekk
+            // Kan vï¿½re et alias, sjekk
             String alias = link.substring(Aksess.VAR_WEB.length());
             try {
                 ContentIdentifier cid = new ContentIdentifier(alias);

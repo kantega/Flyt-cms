@@ -62,7 +62,7 @@ public class FormTag extends BodyTagSupport {
 
             html.append("<form method=\"post\" action=\"");
             if (action == null && content != null) {
-                action = root + "content.ap?thisId=" + content.getAssociation().getId();
+                action = content.getUrl();
             } else {
                 action = "";
             }

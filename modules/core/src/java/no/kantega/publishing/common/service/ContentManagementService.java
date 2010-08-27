@@ -302,9 +302,6 @@ public class ContentManagementService {
             EventLog.log(securitySession, request, event, c.getTitle(), c);
         }
 
-        // Reload cache
-        ContentIdentifierCache.reloadCache();
-
         return c;
     }
 

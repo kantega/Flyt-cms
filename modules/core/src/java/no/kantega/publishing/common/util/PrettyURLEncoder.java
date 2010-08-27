@@ -19,29 +19,25 @@ package no.kantega.publishing.common.util;
 import no.kantega.commons.util.RegExp;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
 
 import java.util.Date;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Feb 29, 2008
- * Time: 3:09:38 PM
- */
 public class PrettyURLEncoder {
     private static final String SOURCE = "aksess.PrettyURLEncoder";
 
     private static char[] space = {' ', '-'};
-    private static char[] aa = {'\u00E5', 'a'};     // å
-    private static char[] AA = {'\u00C5', 'A'};     // Å
-    private static char[] auml = {'\u00E4', 'a'};   // ä
-    private static char[] Auml = {'\u00C4', 'A'};   // Ä
-    private static char[] aelig = {'\u00E6', 'a'};  // æ
-    private static char[] Aelig = {'\u00C6', 'A'};  // Æ
+    private static char[] aa = {'\u00E5', 'a'};     // ï¿½
+    private static char[] AA = {'\u00C5', 'A'};     // ï¿½
+    private static char[] auml = {'\u00E4', 'a'};   // ï¿½
+    private static char[] Auml = {'\u00C4', 'A'};   // ï¿½
+    private static char[] aelig = {'\u00E6', 'a'};  // ï¿½
+    private static char[] Aelig = {'\u00C6', 'A'};  // ï¿½
 
-    private static char[] oslash = {'\u00F8', 'o'}; // ø
-    private static char[] Oslash = {'\u00D8', 'O'}; // Ø
-    private static char[] ouml = {'\u00F6', 'o'};   // ö
-    private static char[] Ouml = {'\u00D6', 'O'};   // Ö
+    private static char[] oslash = {'\u00F8', 'o'}; // ï¿½
+    private static char[] Oslash = {'\u00D8', 'O'}; // ï¿½
+    private static char[] ouml = {'\u00F6', 'o'};   // ï¿½
+    private static char[] Ouml = {'\u00D6', 'O'};   // ï¿½
 
     private static char[][] map = { space, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
 
@@ -52,11 +48,24 @@ public class PrettyURLEncoder {
             }
         }
         try {
-            url = RegExp.replace("^a-zA-Z_0-9-+()", url, "");
+            url = RegExp.replace("^a-zA-Z_0-9-+().:<", url, "");
         } catch (RegExpSyntaxException e) {
             Log.error(SOURCE, e, null, null);
         }
 
         return url;
+    }
+
+    public static String createContentUrl(int associationId, String title) {
+        return createContentUrl(associationId, title, null);
+    }    
+
+    public static String createContentUrl(int associationId, String title, String alias) {
+        if (alias != null && alias.length() > 0) {
+            return "/" + Aksess.CONTENT_REQUEST_HANDLER + "?thisId=" + associationId;
+        } else {
+            return Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
+        }
+
     }
 }

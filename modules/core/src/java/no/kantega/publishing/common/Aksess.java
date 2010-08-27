@@ -41,6 +41,9 @@ public class Aksess {
     public static final String ATTRIBUTE_CLASS_PATH = "no.kantega.publishing.common.data.attributes.";
     public static final String ERROR_URL = "/aksess/error/error.jsp";
 
+    public static final String CONTENT_URL_PREFIX = "/content";
+    public static final String MULTIMEDIA_URL_PREFIX = "/multimedia";
+
     public static final String CONTENT_REQUEST_HANDLER = "content.ap";
     public static final String ATTACHMENT_REQUEST_HANDLER = "attachment.ap";
     public static final String MULTIMEDIA_REQUEST_HANDLER = "multimedia.ap";

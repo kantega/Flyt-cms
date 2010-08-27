@@ -19,6 +19,7 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.commons.util.HttpHelper;
 
@@ -285,8 +286,7 @@ public class Content extends BaseObject {
     }
 
     public String getUrl() {
-        Association a = getAssociation();
-        return Aksess.getContextPath() + "/content.ap?thisId=" + a.getAssociationId();
+        return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(getAssociation().getAssociationId(), title, alias);
     }
 
     public String getUrl(HttpServletRequest request) {
@@ -300,7 +300,7 @@ public class Content extends BaseObject {
                 return Aksess.getContextPath() + alias;
             }
         }
-        return Aksess.getContextPath() + "/content.ap?thisId=" + a.getAssociationId();
+        return getUrl();
     }
 
     public String getAlias() {

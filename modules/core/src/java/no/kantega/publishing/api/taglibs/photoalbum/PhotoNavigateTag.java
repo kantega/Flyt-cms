@@ -60,7 +60,7 @@ public class PhotoNavigateTag extends BodyTagSupport {
                     curOffset = photos.size() - 1;
                 }
 
-                String url = Aksess.getContextPath() + "/content.ap?";
+                String url = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?";
                 try {
                     ContentIdentifier cid = new ContentIdentifier(request);
                     url = url + "thisId=" + cid.getAssociationId() + "&amp;language=" + cid.getLanguage();

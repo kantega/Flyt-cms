@@ -4,6 +4,7 @@
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="no.kantega.publishing.common.data.EventLogEntry" %>
 <%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
+<%@ page import="no.kantega.publishing.common.util.PrettyURLEncoder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -53,7 +54,7 @@
                     int subjectType = event.getSubjectType();
                     if (subjectId > 0) {
                         if (subjectType == ObjectType.CONTENT) {
-                            link = Aksess.getContextPath() + "/content.ap?contentId=" + subjectId;
+                            link = Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(subjectId, event.getSubjectName(), null);
                         } else if (subjectType == ObjectType.MULTIMEDIA) {
                             link = Aksess.getContextPath() + "/multimedia.ap?id=" + subjectId;
                         }

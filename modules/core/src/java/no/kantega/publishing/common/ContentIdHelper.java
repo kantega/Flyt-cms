@@ -53,7 +53,7 @@ public class ContentIdHelper {
         }
 
         if (expr.indexOf("..") != -1) {
-            // Hent fra N nivåer lengre opp
+            // Hent fra N nivï¿½er lengre opp
             if (expr.charAt(expr.length() - 1) != '/') {
                 expr += "/";
             }
@@ -90,7 +90,7 @@ public class ContentIdHelper {
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.startsWith("/+")) {
-            // Hent fra root + nivå n
+            // Hent fra root + nivï¿½ n
             int level = Integer.parseInt(expr.substring("/+".length(), expr.length()));
             String path = context.getAssociation().getPath() + context.getAssociation().getId() + "/";
             int[] pathElements = StringHelper.getInts(path, "/");
@@ -140,7 +140,7 @@ public class ContentIdHelper {
 
 
     /**
-     * Finner en identifikator til et innholdsobjekt basert på url/alias
+     * Finner en identifikator til et innholdsobjekt basert pï¿½ url/alias
      * @param siteId - Site
      * @param url    - Url/alias, f.eks /nyheter/
      * @return
@@ -177,6 +177,20 @@ public class ContentIdHelper {
             }
         }
 
+        int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
+        if (contentPos != -1) {
+            String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
+            int end = idStr.indexOf("/");
+            if (end != -1) {
+                idStr = idStr.substring(0, end);
+            }
+            try {
+                associationId = Integer.parseInt(idStr);
+            } catch (NumberFormatException e) {
+                // Do nothing
+            }            
+        }
+
         String aIdToken = "thisid=";
         int aIdPos = url.indexOf(aIdToken);
         if (aIdPos != -1) {
@@ -188,7 +202,7 @@ public class ContentIdHelper {
             try {
                 associationId = Integer.parseInt(idStr);
             } catch (NumberFormatException e) {
-                // Gjør ingenting
+                // Gjï¿½r ingenting
             }
         }
 
@@ -204,7 +218,7 @@ public class ContentIdHelper {
                 try {
                     contentId = Integer.parseInt(idStr);
                 } catch (NumberFormatException e) {
-                    // Gjør ingenting
+                    // Gjï¿½r ingenting
                 }
             }
         }
@@ -220,7 +234,7 @@ public class ContentIdHelper {
             try {
                 language = Integer.parseInt(languageStr);
             } catch (NumberFormatException e) {
-                // Standard språk
+                // Standard sprï¿½k
             }
         }
 
@@ -239,7 +253,7 @@ public class ContentIdHelper {
             }
         }
 
-        // Hvis contentId ikke finnes i URL, slå opp i basen
+        // Hvis contentId ikke finnes i URL, slï¿½ opp i basen
         if (contentId != -1 || associationId != -1) {
             ContentIdentifier cid = new ContentIdentifier();
             cid.setVersion(version);
@@ -295,7 +309,7 @@ public class ContentIdHelper {
             PreparedStatement st;
             ResultSet rs;
             if (contextId != -1) {
-                // Først prøver vi å finne siden under der lenka kom fra
+                // Fï¿½rst prï¿½ver vi ï¿½ finne siden under der lenka kom fra
                 st = c.prepareStatement("SELECT AssociationId FROM associations WHERE ContentId = ? AND Path like ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
                 st.setInt(1, contentId);
                 st.setString(2, "%/" + contextId + "/%");
@@ -307,7 +321,7 @@ public class ContentIdHelper {
                 rs.close();
                 st.close();
 
-                // Så i samme nettsted som lenka kom fra
+                // Sï¿½ i samme nettsted som lenka kom fra
                 if (associationId == -1) {
                     st = c.prepareStatement("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
                     st.setInt(1, contextId);

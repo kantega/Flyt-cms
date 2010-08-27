@@ -20,6 +20,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.client.filter.UrlContentRewriter;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -28,7 +29,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.util.CharResponseWrapper;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.common.util.URLRewriter;
 import no.kantega.commons.util.HttpHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.kantega.jexmec.PluginManager;
@@ -45,6 +45,7 @@ public class ContentRequestDispatcher {
     private PluginManager<OpenAksessPlugin> pluginManager;
 
     private SiteCache siteCache;
+    private UrlContentRewriter urlRewriter;
 
     public void dispatchContentRequest(Content content, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
@@ -70,7 +71,7 @@ public class ContentRequestDispatcher {
             if (template.indexOf("$SITE") != -1) {
                 template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
             }
-            response.addHeader("X-Powered-By", "Aksess Publisering " + Aksess.getVersion());
+            response.addHeader("X-Powered-By", "OpenAksess " + Aksess.getVersion());
 
             // Run template controllers
             RequestHelper.runTemplateControllers(dt, request, response, servletContext);
@@ -99,13 +100,12 @@ public class ContentRequestDispatcher {
             if(shouldFilterOutput(adminMode, originalUri)) {
                 // Write output
                 if (wrappedResponse.isWrapped()) {
-                    String result  = URLRewriter.rewriteURLs(request, wrappedResponse.toString());
+                    String result = urlRewriter.rewriteContent(request,wrappedResponse.toString());
                     PrintWriter out = originalResponse.getWriter();
                     out.write(result);
                     out.flush();
                 }
             }
-
         } else {
             if (adminMode) {
                 request.getRequestDispatcher("/admin/showcontentinframe.jsp").forward(request, response);
@@ -153,4 +153,8 @@ public class ContentRequestDispatcher {
         this.siteCache = siteCache;
     }
 
+    @Autowired
+    public void setUrlRewriter(UrlContentRewriter urlRewriter) {
+        this.urlRewriter = urlRewriter;
+    }
 }

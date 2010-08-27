@@ -92,7 +92,7 @@
     request.setAttribute("cssPath", cssPath);
 %>
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="30"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}; height: ${attribute.height}"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({

@@ -58,7 +58,7 @@
     </filter>
 
     <filter>
-        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-name>ContentRewriteFilter</filter-name>
         <filter-class>no.kantega.publishing.client.filter.ContentRewriteFilter</filter-class>
     </filter>
 
@@ -102,7 +102,7 @@
     </filter-mapping>
 
     <filter-mapping>
-        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-name>ContentRewriteFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
@@ -199,6 +199,10 @@
         <servlet-name>aksess</servlet-name>
         <url-pattern>/content.ap</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/content/*</url-pattern>
+    </servlet-mapping>    
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>*.asp</url-pattern>

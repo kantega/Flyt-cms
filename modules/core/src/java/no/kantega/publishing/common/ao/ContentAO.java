@@ -371,6 +371,37 @@ public class ContentAO {
     }
 
 
+    public static String getTitleByAssociationId(int associationId) {
+        String title = null;
+
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+            // Hent content og contentversion
+            PreparedStatement st = c.prepareStatement("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ");
+            st.setInt(1, associationId);
+            st.setInt(2, ContentStatus.PUBLISHED);
+            ResultSet rs = st.executeQuery();
+            int prevContentId = -1;
+            if (rs.next()) {
+                title = rs.getString("title");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+
+            }
+        }
+        return title;
+
+    }
+
     public static List getMyContentList(User user) throws SystemException {
         List workList = new ArrayList();
 

@@ -20,6 +20,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -56,7 +57,7 @@ public class SiteMapEntry extends NavigationMapEntry {
 
 
     public String getUrl() {
-        return Aksess.getContextPath() + "/content.ap?thisId=" + currentId;
+        return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(currentId, title, alias);
     }
 
     public String getAlias() {

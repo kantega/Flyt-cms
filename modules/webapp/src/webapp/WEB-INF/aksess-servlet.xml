@@ -34,6 +34,7 @@
                 <!-- Base controllers -->
                 <prop key="/">ContentRequestHandler</prop>
                 <prop key="/oap/static/**">PluginStaticContentController</prop>
+                <prop key="/content/**">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
                 <prop key="/attachment.ap">AttachmentRequestHandler</prop>
                 <prop key="/attachments/*">AttachmentRequestHandler</prop>
