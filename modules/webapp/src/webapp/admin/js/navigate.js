@@ -308,7 +308,7 @@ openaksess.search = {
         var searchAction = openaksess.search.getSearchAction();
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
-            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%;">';
+            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
             new openaksess.admin.InfoSlider("#MainPane", {resizable: true, additionalCssClasses: 'search'}).toggle(content);
         }
     },
@@ -319,9 +319,3 @@ openaksess.search = {
         return query.length >= 3;
     }
 };
-
-
-
-
-
-
