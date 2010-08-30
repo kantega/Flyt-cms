@@ -112,7 +112,7 @@ public class MultimediaHelper {
                     url += "&amp;height=" + maxH;
                 }
             } else {
-                // Bildet skal ikke krympes, angi størrelse i tag'en
+                // Bildet skal ikke krympes, angi stï¿½rrelse i tag'en
                 if (width > 0) {
                     tag.append(" width=" + width);
                 }
@@ -162,7 +162,7 @@ public class MultimediaHelper {
                 Log.error(SOURCE, e, null, null);
             }
 
-            // Legg til > på slutten hvis ikke avsluttet
+            // Legg til > pï¿½ slutten hvis ikke avsluttet
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }
@@ -189,6 +189,21 @@ public class MultimediaHelper {
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
+        } else if(mimeType.indexOf("x-ms-wmv") != -1 || mimeType.indexOf("x-msvideo") != -1) {
+            int width  = mm.getWidth();
+            int height = mm.getHeight();
+            tag.append("<OBJECT ID=\"MediaPlayer\"");
+            tag.append(" classid=\"CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95\"");
+            tag.append(" codebase=\"http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112\"");
+            tag.append(" type=\"application/x-oleobject\" width=\""+width+"\" height=\""+height+"\">");
+            tag.append("<PARAM name=\"filename\" value=\"" +url+ "\">");
+            tag.append("<EMBED type=\"application/x-mplayer2\"");
+            tag.append(" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/AllDownloads.aspx\"");
+            tag.append(" width=\""+width+"\"");
+            tag.append(" height=\""+height+"\"");
+            tag.append(" src=\""+url +"\">");
+            tag.append("</EMBED>");
+            tag.append("</OBJECT>");            
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
             int width  = Aksess.getDefaultMediaWidth();
             if (maxW != -1) {
@@ -250,7 +265,7 @@ public class MultimediaHelper {
 
         MimeType mimeType = MimeTypes.getMimeType(filename);
         if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-            // Dette er et bilde eller Flash fil, finn størrelse
+            // Dette er et bilde eller Flash fil, finn stï¿½rrelse
             ImageInfo ii = new ImageInfo();
             ii.setInput(new ByteArrayInputStream(mm.getData()));
             if (ii.check()) {
