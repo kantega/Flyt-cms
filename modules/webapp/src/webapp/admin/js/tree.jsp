@@ -240,7 +240,7 @@ function enableMenu(id, parent, type) {
         // Sjekk om menyen allerede vises
         var layer = document.getElementById("contextMenu");
 
-        if (layer.style.visibility == "hidden") {
+        if (layer != null && layer.style.visibility == "hidden") {
             activeId = new treeNodeId(id, parent, type);
 
             // Vis riktig kontekstmeny
