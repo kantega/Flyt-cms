@@ -114,7 +114,7 @@ ul.breadcrumbs li {
     padding-right: 3px;
 }
 ul.breadcrumbs li:first-child {
-    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1460px;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1459px;
     padding-left: 18px;
 }
 
