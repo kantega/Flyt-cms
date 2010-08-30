@@ -21,24 +21,47 @@ import no.kantega.commons.taglib.expires.ResourceKeyProvider;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RuntimeMode;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
  * Returns an MD5 hash of the build number (SCM revision) or current time stamp if in development mode.
  */
-public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, InitializingBean {
+public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, InitializingBean, ServletContextAware {
 
     private RuntimeMode runtimeMode;
     private String key;
+    private ServletContext servletContext;
 
     public String getUniqueKey(HttpServletRequest request, HttpServletResponse response, String url) {
         if (runtimeMode == RuntimeMode.DEVELOPMENT) {
-            return Long.toString(System.currentTimeMillis());
+            
+            
+            try {
+                // Try as servlet context resource first
+                URL resource = servletContext.getResource(url);
+                if(resource != null) {
+                    return Long.toString(resource.openConnection().getLastModified());
+                } else {
+                    return Long.toString(System.currentTimeMillis());
+                }
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         } else {
             return key;
         }
@@ -58,5 +81,9 @@ public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, Init
 
     public void setRuntimeMode(RuntimeMode runtimeMode) {
         this.runtimeMode = runtimeMode;
+    }
+
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }
