@@ -201,6 +201,21 @@ public class MultimediaTagCreator {
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
+        } else if(mimeType.indexOf("x-ms-wmv") != -1 || mimeType.indexOf("x-msvideo") != -1) {
+            int width  = mm.getWidth();
+            int height = mm.getHeight();
+            tag.append("<OBJECT ID=\"MediaPlayer\"");
+            tag.append(" classid=\"CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95\"");
+            tag.append(" codebase=\"http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112\"");
+            tag.append(" type=\"application/x-oleobject\" width=\""+width+"\" height=\""+height+"\">");
+            tag.append("<PARAM name=\"filename\" value=\"" +url+ "\">");
+            tag.append("<EMBED type=\"application/x-mplayer2\"");
+            tag.append(" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/AllDownloads.aspx\"");
+            tag.append(" width=\""+width+"\"");
+            tag.append(" height=\""+height+"\"");
+            tag.append(" src=\""+url +"\">");
+            tag.append("</EMBED>");
+            tag.append("</OBJECT>");
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
             int width  = Aksess.getDefaultMediaWidth();
             if (maxW != -1) {
