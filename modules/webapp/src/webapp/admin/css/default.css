@@ -680,7 +680,7 @@ table.fullWidth {
     background-image: url("../bitmaps/common/icons/small/settings.png");
 }
 .button .statistics {
-    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -1529px;
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1989px;
 }
 .button .view {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -113px;
