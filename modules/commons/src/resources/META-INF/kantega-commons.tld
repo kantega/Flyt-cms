@@ -127,5 +127,17 @@
             ]]>
         </example>
     </tag>
+
+    <tag>
+        <description>Generate a far future expiring url for a url</description>
+        <name>expireurl</name>
+        <tag-class>no.kantega.commons.taglib.expires.ExpiresResourceUrlTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>url</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>
 

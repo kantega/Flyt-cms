@@ -150,4 +150,9 @@
         </property>
     </bean>
 
+    <bean class="no.kantega.publishing.admin.taglib.expires.BuildNumberResourceKeyProvider">
+        <property name="runtimeMode" ref="runtimeMode"/>
+    </bean>
+
+    <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 </beans>

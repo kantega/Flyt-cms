@@ -306,6 +306,17 @@ public class Aksess {
     }
 
 
+    public static String getWebappRevision() {
+        try {
+            Properties webappVersionInfo = new Properties();
+            webappVersionInfo.load(Aksess.class.getResourceAsStream("/aksess-webapp-version.properties"));
+            return webappVersionInfo.getProperty("revision");
+        } catch (IOException e) {
+            throw new RuntimeException("/aksess-webapp-version.properties not found");
+        }
+
+    }
+
     /**
      *
      * @deprecated Bruk getApplicationUrl + getContextPath

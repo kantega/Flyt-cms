@@ -76,6 +76,18 @@
         </init-param>
     </filter>
 
+
+    <filter>
+        <filter-name>FakeDirectoryExpires</filter-name>
+        <filter-class>no.kantega.commons.filter.FarFutureExpiresDirectoryFilter</filter-class>
+    </filter>
+
+
+    <filter-mapping>
+        <filter-name>FakeDirectoryExpires</filter-name>
+        <url-pattern>/expires/*</url-pattern>
+    </filter-mapping>
+
     <filter-mapping>
         <filter-name>ResponseHeaderFilter</filter-name>
         <url-pattern>/admin/*</url-pattern>
@@ -114,6 +126,9 @@
     <filter-mapping>
         <filter-name>aksesswro</filter-name>
         <url-pattern>/wro-oa/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
 
     <listener>
