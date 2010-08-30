@@ -277,7 +277,7 @@
     function selectAssociationId(id, title) {
         if (window.parent) {
             var w = window.parent.opener;
-            if (w && (w.insertValueIntoForm || w.insertIdAndValueIntoForm)) {
+            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function')) {
                 if (w.doInsertTag) {
                     w.insertValueIntoForm("/content.ap?thisId=" + id);
                 } else {
