@@ -35,9 +35,9 @@
 
         var url;
         if (frm.smartlink.checked) {
-            url =  "<%=URLHelper.getRootURL(request)%>content.ap?thisId="+ id;
-        } else {
             url = "<%=URLHelper.getRootURL(request)%>content.ap?contentId=" + id + "&amp;contextId=$contextId$";
+        } else {
+            url =  "<%=URLHelper.getRootURL(request)%>content.ap?thisId="+ id;
         }
 
         var anchor = frm.anchor.value;

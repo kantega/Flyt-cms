@@ -48,7 +48,7 @@
             <c:choose>
                 <c:when test="${selectContentId}">
                 id = openaksess.common.getQueryParam("contentId", href);
-                url = "/content.ap?contentId=" + id + "&amp;contextId=$contextId";
+                url = "/content.ap?contentId=" + id + "&amp;contextId=$contextId$";
                 </c:when>
                 <c:otherwise>
                 id = openaksess.common.getQueryParam("thisId", href);
