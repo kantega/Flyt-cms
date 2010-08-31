@@ -57,6 +57,9 @@ public class EditContentHelper {
      * @throws InvalidTemplateException -
      */
     public static Content createContent(SecuritySession securitySession, ContentCreateParameters param) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException {
+        if (securitySession == null || !securitySession.isLoggedIn()) {
+            throw new NotAuthorizedException("Not logged in", SOURCE);
+        }
         ContentManagementService aksessService = new ContentManagementService(securitySession);
 
         boolean inheritGroup = true;

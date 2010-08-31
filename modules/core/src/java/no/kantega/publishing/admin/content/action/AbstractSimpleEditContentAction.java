@@ -76,6 +76,11 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        SecuritySession securitySession = getSecuritySession(request);
+        if (securitySession == null || !securitySession.isLoggedIn()) {
+            throw new NotAuthorizedException("Not logged in", this.getClass().getName());
+        }
+        
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Save page
             return saveContent(request, response);
@@ -83,7 +88,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             // Edit page
             Content content = getContentForEdit(request);
             if (isAllowedToEdit(request, content)) {
-                ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
+                ContentManagementService cms = new ContentManagementService(securitySession);
                 if (!content.isNew()) {
                     // Existing content must be checked out before edit
                     content = cms.checkOutContent(content.getContentIdentifier());
