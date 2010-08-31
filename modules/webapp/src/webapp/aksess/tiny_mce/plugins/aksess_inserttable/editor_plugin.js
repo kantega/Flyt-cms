@@ -6,6 +6,7 @@
 		init : function(ed, url) {
             this.editor = ed;
             this.url = url;
+            this.baseUrl = url.replace("aksess/tiny_mce/plugins/aksess_inserttable", "");
 
 			// Register command
             ed.addCommand('insertTableCmd', this._openPopup, this);
@@ -28,11 +29,17 @@
 		},
 
         _openPopup : function() {
-            var modifyExisting = true; // what is this?
+            var modifyExisting = false;
+            // TODO: fix
+//            var tblElm = this.editor.dom.getParent(this.editor.selection.getNode(), 'table');
+//            if (tblElm) {
+//                modifyExisting = true;
+//            }
+
             openaksess.common.modalWindow.open({
                 title: this.editor.getLang('aksess_inserttable.popup_title', 'Sett inn tabell'),
                 iframe:true,
-                href: "popups/InsertTable.action?edit=" + encodeURI(modifyExisting),
+                href: this.baseUrl + "publish/popups/InsertTable.action?edit=" + encodeURI(modifyExisting),
                 width: 600,
                 height:400});
         }

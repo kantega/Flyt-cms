@@ -18,6 +18,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+
+<%
+    RequestParameters param = new RequestParameters(request);
+    if (param.getBoolean("edit", false)) {
+        request.setAttribute("modifyExisting", Boolean.TRUE);
+    }
+%>
+
 <kantega:section id="title"><kantega:label key="aksess.inserttable.title"/></kantega:section>
 
 <kantega:section id="head">
