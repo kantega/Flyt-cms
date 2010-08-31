@@ -17,6 +17,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -73,7 +75,7 @@ public class TinyMCEServlet extends HttpServlet {
         core = getParam(request, "core", "true").equals("true");
         suffix = getParam(request, "suffix", "").equals("_src") ? "_src" : "";
         cachePath = getCachePath(request, "."); // Cache path, this is where the .gz files will be stored
-        expiresOffset = 3600 * 24 * 10; // Cache for 10 days in browser cache
+        expiresOffset = 3600 * 24; // Cache for 1 days in browser cache
 
         // Custom extra javascripts to pack
         String custom[] = {/*
@@ -119,58 +121,47 @@ public class TinyMCEServlet extends HttpServlet {
             enc = enc.indexOf("x-gzip") != -1 ? "x-gzip" : "gzip";
         }
 
+        URL coreUrl = null;
+        if (core) {
+            coreUrl = mapUrl(request, "tiny_mce" + suffix + ".js");
+        }
+        List<URL> urls = getUrlList(request, languages, themes, plugins, custom, suffix);
+
         // Use cached file disk cache
         if (diskCache && supportsGzip && new File(cacheFile).exists()) {
-            if (compress)
-                response.addHeader("Content-Encoding", enc);
+            if (!isOutdated(cacheFile, coreUrl, urls)) {
+                if (compress)
+                    response.addHeader("Content-Encoding", enc);
 
-            fin = new FileInputStream(cacheFile);
-            buff = new byte[1024];
+                fin = new FileInputStream(cacheFile);
+                buff = new byte[1024];
 
-            while ((bytes = fin.read(buff, 0, buff.length)) != -1) {
-                outputStream.write(buff, 0, bytes);
+                while ((bytes = fin.read(buff, 0, buff.length)) != -1) {
+                    outputStream.write(buff, 0, bytes);
+                }
+
+                fin.close();
+                outputStream.close();
+                return;
             }
-
-            fin.close();
-            outputStream.close();
-            return;
         }
 
         // Add core
         if (core) {
-            content += getFileContents(mapUrl(request, "tiny_mce" + suffix + ".js"));
+            content += getFileContents(coreUrl);
 
             // Patch loading functions
             content += "tinyMCE_GZ.start();";
         }
 
-        // Add core languages
-        for (x=0; x<languages.length; x++)
-            content += getFileContents(mapUrl(request, "langs/" + languages[x] + ".js"));
-
-        // Add themes
-        for (i=0; i<themes.length; i++) {
-            content += getFileContents(mapUrl(request, "themes/" + themes[i] + "/editor_template" + suffix + ".js"));
-
-            for (x=0; x<languages.length; x++)
-                content += getFileContents(mapUrl(request, "themes/" + themes[i] + "/langs/" + languages[x] + ".js"));
+        for (URL url : urls) {
+            content += getFileContents(url);
         }
-
-        // Add plugins
-        for (i=0; i<plugins.length; i++) {
-            content += getFileContents(mapUrl(request, "plugins/" + plugins[i] + "/editor_plugin" + suffix + ".js"));
-
-            for (x=0; x<languages.length; x++)
-                content += getFileContents(mapUrl(request, "plugins/" + plugins[i] + "/langs/" + languages[x] + ".js"));
-        }
-
-        // Add custom files
-        for (i=0; i<custom.length; i++)
-            content += getFileContents(mapUrl(request, custom[i]));
 
         // Restore loading functions
-        if (core)
+        if (core) {
             content += "tinyMCE_GZ.end();";
+        }
 
         // Generate GZIP'd content
         if (supportsGzip) {
@@ -211,6 +202,68 @@ public class TinyMCEServlet extends HttpServlet {
             }
         } else
             outputStream.write(content.getBytes());
+    }
+
+    private List<URL> getUrlList(HttpServletRequest request, String[] languages, String[] themes, String[] plugins, String[] custom, String suffix) {
+        List<URL> urls = new ArrayList<URL>();
+
+        // Add core languages
+        for (int x = 0; x < languages.length; x++) {
+            urls.add(mapUrl(request, "langs/" + languages[x] + ".js"));
+        }
+
+        // Add themes
+        for (int i = 0; i < themes.length; i++) {
+            urls.add(mapUrl(request, "themes/" + themes[i] + "/editor_template" + suffix + ".js"));
+
+            for (int x = 0; x < languages.length; x++) {
+                urls.add(mapUrl(request, "themes/" + themes[i] + "/langs/" + languages[x] + ".js"));
+            }
+        }
+
+        // Add plugins
+        for (int i = 0; i < plugins.length; i++) {
+            urls.add(mapUrl(request, "plugins/" + plugins[i] + "/editor_plugin" + suffix + ".js"));
+
+            for (int x = 0; x < languages.length; x++) {
+                urls.add(mapUrl(request, "plugins/" + plugins[i] + "/langs/" + languages[x] + ".js"));
+            }
+        }
+
+        // Add custom files
+        for (int i = 0; i < custom.length; i++) {
+            urls.add(mapUrl(request, custom[i]));
+        }
+        return urls;
+    }
+
+    private boolean isOutdated(String cacheFile, URL coreUrl, List<URL> urls) {
+        boolean outdated = false;
+        long cacheLastModified = new File(cacheFile).lastModified();
+        try {
+            if (coreUrl != null) {
+                if (cacheLastModified < coreUrl.openConnection().getLastModified()) {
+                    outdated = true;
+                }
+            }
+        } catch (Exception e) {
+            Log.debug(getClass().getSimpleName(), e.getMessage(), null, null);
+        }
+
+        if (!outdated) {
+            for (URL url : urls) {
+                try {
+                    if (cacheLastModified < url.openConnection().getLastModified()) {
+                        outdated = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    Log.debug(getClass().getSimpleName(), e.getMessage(), null, null);
+                }
+            }
+        }
+
+        return outdated;
     }
 
     private String getParam(HttpServletRequest request, String name, String def) {
