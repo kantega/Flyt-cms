@@ -42,6 +42,7 @@
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/wro-oa/admin-commonlayout.js'></script>
+    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferencesHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>

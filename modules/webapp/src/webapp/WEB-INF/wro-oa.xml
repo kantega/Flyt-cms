@@ -142,7 +142,6 @@
         <css>/admin/css/jquery.autocomplete.css</css>
         <js>/admin/js/jquery.dimensions.pack.js</js>
         <js>/admin/js/jquery-ui-1.8.2.custom.min.js</js>
-        <js>/admin/js/jquery-ui-i18n.min.js</js>
         <js>/admin/js/jquery.contextMenu.js</js>
         <js>/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
         <js>/admin/js/jquery.dataTables.min.js</js>
