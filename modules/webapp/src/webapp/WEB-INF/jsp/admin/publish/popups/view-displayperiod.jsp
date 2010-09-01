@@ -27,6 +27,9 @@
         if (typeof properties == 'undefined') {
             var properties = { };
         }
+        if (typeof properties.date == 'undefined') {
+            properties.date = { };
+        }
         properties.date['labels'] = {
             feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
             skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>",
