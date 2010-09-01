@@ -293,7 +293,7 @@
     function selectContentId(id, title) {
         if (window.parent) {
             var w = window.parent.opener;
-            if (w) {
+            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function')) {
                 if (w.doInsertTag) {
                     w.insertValueIntoForm("/content.ap?contentId=" + id + "&amp;contextId=$contextId");
                 } else {
