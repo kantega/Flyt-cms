@@ -6,6 +6,7 @@
 		init : function(ed, url) {
             this.editor = ed;
             this.url = url;
+            this.baseUrl = url.replace("aksess/tiny_mce/plugins/aksess_insertlink", "");
 
 			// Register command
             ed.addCommand('insertLinkCmd', this._openPopup, this);
@@ -56,7 +57,7 @@
             openaksess.common.modalWindow.open({
                 title:"Sett inn lenke",
                 iframe:true,
-                href: "popups/InsertLink.action?url=" + encodeURI(href) + "&isOpenInNewWindow=" + encodeURI(newWindow),
+                href: this.baseUrl + "publish/popups/InsertLink.action?url=" + encodeURI(href) + "&isOpenInNewWindow=" + encodeURI(newWindow) + "&isMiniAdminMode=" + encodeURI(miniAdminMode),
                 width: 600,
                 height:300});
         }

@@ -80,6 +80,11 @@ public class InsertLinkAction extends AdminController {
             model.put("smartLink", Boolean.TRUE);
         }
 
+        boolean miniAdminMode = param.getBoolean("isMiniAdminMode", false);
+        if (miniAdminMode) {
+            model.put("miniAdminMode", Boolean.TRUE);
+        }
+
         return new ModelAndView(view, model);
     }
 

@@ -91,6 +91,10 @@
     }
     request.setAttribute("cssPath", cssPath);
 %>
+<script type="text/javascript">
+    var miniAdminMode = <%=isMiniAdminMode%>;
+</script>
+
 <div class="inputs">
     <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}; height: ${attribute.height}"><%=value%></TEXTAREA><BR>
 
