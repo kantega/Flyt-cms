@@ -127,6 +127,9 @@ public class ContentRequestDispatcher {
                             if (url.charAt(0) == '/') {
                                 url = Aksess.getContextPath() + url;
                             }
+                            // Rewrite URL if necessary (may be in form /content.ap?xxx should change to alias
+                            url = urlRewriter.rewriteContent(request, url);
+
                             response.sendRedirect(url);
                         }
 

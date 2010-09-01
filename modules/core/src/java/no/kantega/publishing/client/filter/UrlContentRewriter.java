@@ -75,10 +75,12 @@ public class UrlContentRewriter implements ContentRewriter {
 
                 int endOfIdIndex = index + key.length();
                 char next = html.charAt(endOfIdIndex);
-                while (endOfIdIndex < html.length() - 1 && next >= '0' && next <= '9') {
+                while (endOfIdIndex < html.length() && next >= '0' && next <= '9') {
                     id += next;
                     endOfIdIndex++;
-                    next = html.charAt(endOfIdIndex);
+                    if (endOfIdIndex < html.length()) {
+                        next = html.charAt(endOfIdIndex);
+                    }
                 }
 
                 if (id.length() > 0) {
