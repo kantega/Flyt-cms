@@ -322,10 +322,25 @@ openaksess.content = {
                                 '</thead>' +
                                 '<tbody>';
                     for (var i = 0; i < links.length; i++) {
+                        var statustxt = "";
+                        if (links[i].status === 2) {
+                            if (links[i].httpStatus == 401) {
+                                statustxt = properties.content.labels.httpStatus401;
+                            } else if (links[i].httpStatus == 404) {
+                                statustxt = properties.content.labels.httpStatus404;
+                            } else if (links[i].httpStatus == 500) {
+                                statustxt = properties.content.labels.httpStatus500;
+                            } else {
+                                statustxt = "HTTP " + links[i].httpStatus;
+                            }
+                        } else {
+                            statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
+                        }
+
                         details += '<tr>' +
                                  '  <td>'+links[i].attributeName+'</td>' +
                                  '  <td>'+links[i].url+'</td>' +
-                                 '  <td>'+links[i].status+'</td>' +
+                                 '  <td>'+statustxt+'</td>' +
                                  '  <td>'+links[i].lastChecked+'</td>' +
                                  '  <td>'+links[i].timesChecked+'</td>' +
                                  '</tr>';
