@@ -21,7 +21,7 @@
     <thead>
         <tr>
             <th><kantega:label key="aksess.viewtopic.association"/></th>
-            <th><kantega:label key="aksess.contentproperty.topics"/></th>
+            <th><kantega:label key="aksess.viewtopic.title"/></th>
             <c:if test="${canDelete}">
                 <th>&nbsp;</th>
             </c:if>
