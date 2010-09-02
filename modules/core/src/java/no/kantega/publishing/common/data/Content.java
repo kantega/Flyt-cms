@@ -295,7 +295,7 @@ public class Content extends BaseObject {
         if (alias != null && alias.startsWith("/") && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
             // Alias brukes n�r angitt og man har en hovedknytning og man ikke er i adminmodus
             if (HttpHelper.isAdminMode(request)) {
-                return Aksess.getContextPath() + alias + "?thisId=" + a.getAssociationId();
+                return getUrl();
             } else {
                 return Aksess.getContextPath() + alias;
             }
