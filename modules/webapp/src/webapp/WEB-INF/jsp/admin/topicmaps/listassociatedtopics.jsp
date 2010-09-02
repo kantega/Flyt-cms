@@ -20,8 +20,8 @@
 <table id="AssociatedTopics">
     <thead>
         <tr>
-            <th>Knytning</th>
-            <th>Emne</th>
+            <th><kantega:label key="aksess.viewtopic.association"/></th>
+            <th><kantega:label key="aksess.contentproperty.topics"/></th>
             <c:if test="${canDelete}">
                 <th>&nbsp;</th>
             </c:if>
