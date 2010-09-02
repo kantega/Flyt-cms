@@ -1,4 +1,4 @@
-'<%--
+<%--
   Author: Kristian Lier Selnæs, Kantega AS
   Date: 27.jan.2010
   Time: 10:53:27
