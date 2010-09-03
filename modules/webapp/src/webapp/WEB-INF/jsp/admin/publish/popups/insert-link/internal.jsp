@@ -54,7 +54,7 @@
     function selectPage() {
         var frm = document.linkform;
 
-        var url = "SelectContent.action";
+        var url = "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action";
         if (frm.smartlink.checked) {
             url += "?useContentId=true";
         }
