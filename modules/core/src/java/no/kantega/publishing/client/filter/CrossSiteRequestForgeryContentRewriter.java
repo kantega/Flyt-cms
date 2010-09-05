@@ -22,12 +22,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.security.SecureRandom;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.io.UnsupportedEncodingException;
 
-/**
- */
 public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
     private Pattern pattern = Pattern.compile("<(form|FORM)[^>]*>");
 
@@ -44,7 +41,7 @@ public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
         int prev = 0;
         while(matcher.find()) {
             builder.append(content.substring(prev, matcher.end()));
-            builder.append("<div><input type=\"hidden\" name=\"" + CSRF_KEY +"\" value=\"" + generateKey(request) + "\"></div>");
+            builder.append("<div style=\"display: none\"><input type=\"hidden\" name=\"" + CSRF_KEY +"\" value=\"" + generateKey(request) + "\"></div>");
             prev = matcher.end();
         }
         if(prev < content.length()) {
