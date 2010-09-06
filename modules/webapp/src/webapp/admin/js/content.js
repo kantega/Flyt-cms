@@ -544,6 +544,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $mainPaneContent = $("#MainPaneContent"),
     mainPaneContentPaddingTop = 0,
     mainPaneContentPaddingBottom = 0;
+    var $mainContentIframe = $("#Maincontent")
 
     if ($mainPaneContent) {
         mainPaneContentPaddingTop = $mainPaneContent.css("paddingTop");
@@ -567,7 +568,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
     $mainPane.height(mainPaneHeight).width(mainPaneWidth);
-    $mainPane.find('iframe[name=contentmain]').height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight).width(mainPaneWidth);
+    $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight).width(mainPaneWidth);
 
     if ($mainPaneContent) {
         $mainPaneContent.height(mainPaneHeight-parseInt(mainPaneContentPaddingTop)-parseInt(mainPaneContentPaddingBottom)-statusbarHeight-buttonsHeight);
