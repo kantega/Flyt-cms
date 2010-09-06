@@ -24,7 +24,7 @@
 <head>
     <title><kantega:getsection id="title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro-oa/admin-popuplayout.css">
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-popuplayout.css"/>">
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -35,7 +35,7 @@
         properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/wro-oa/admin-popuplayout.js'></script>
+    <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-popuplayout.js"/>'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
     <script type="text/javascript">

@@ -22,7 +22,7 @@
 
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro-oa/admin-editcontentlayout.css">
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.css"/>">
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -77,7 +77,7 @@
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/wro-oa/admin-editcontentlayout.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.js"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_gzip.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>

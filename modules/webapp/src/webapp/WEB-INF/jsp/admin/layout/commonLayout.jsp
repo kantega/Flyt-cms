@@ -24,7 +24,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/admin/favicon.ico" type="image/x-icon">
 
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/wro-oa/admin-commonlayout.css">
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-commonlayout.css"/>">
     <!--[if lt IE 8]>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default_ie7.css">
     <![endif]-->
@@ -41,8 +41,8 @@
         properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/wro-oa/admin-commonlayout.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>
+    <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-commonlayout.js"/>'></script>
+    <script type="text/javascript" src='<kantega:expireurl url="/admin/js/jquery-ui-i18n.min.js"/>'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferencesHandler.js'></script>
     <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
