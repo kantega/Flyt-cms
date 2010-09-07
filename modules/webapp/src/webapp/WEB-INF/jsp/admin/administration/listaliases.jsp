@@ -1,4 +1,5 @@
 <%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -28,15 +29,26 @@
         <table class="fullWidth dataTable">
             <thead>
             <tr>
-                <th><kantega:label key="aksess.aliases.alias"/></th>
-                <th><kantega:label key="aksess.aliases.page"/></th>
+                <th>
+                    <kantega:label key="aksess.aliases.alias"/>
+                    <img src="<aksess:geturl url="/admin/bitmaps/common/icons/small/updown.png"/>">
+                </th>
+                <th>
+                    <kantega:label key="aksess.aliases.page"/>
+                    <img src="<aksess:geturl url="/admin/bitmaps/common/icons/small/updown.png"/>">
+                </th>
             </tr>
             </thead>
             <tbody>
-            <aksess:getcollection name="aliases" contentquery="${query}" skipattributes="true" varStatus="status">
+            <aksess:getcollection name="aliases" contentquery="${query}" skipattributes="true" varStatus="status" var="alias">
                 <tr class="tableRow${status.index mod 2}">
                     <td><aksess:getattribute name="alias" collection="aliases"/></td>
-                    <td><aksess:link collection="aliases" target="_new"><aksess:getattribute name="title" collection="aliases"/></aksess:link></td>
+                    <td>
+                        <div style="height: 0; width: 0; overflow: hidden;">
+                            <%=pageContext.getAttribute("alias") != null ? ((Content)pageContext.getAttribute("alias")).getTitle().trim() : ""%>
+                        </div>
+                        <aksess:link collection="aliases" target="_new"><aksess:getattribute name="title" collection="aliases"/></aksess:link>
+                    </td>
                 </tr>
             </aksess:getcollection>
             </tbody>

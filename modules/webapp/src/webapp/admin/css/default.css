@@ -1045,6 +1045,10 @@ div.dataTables_paginate {
     padding-right: 10px;
 }
 
+table.dataTable th.sorting, table.dataTable th.sorting_desc, table.dataTable th.sorting_asc {
+    cursor: pointer;
+}
+
 .paginate_disabled_previous,
 .paginate_enabled_previous,
 .paginate_disabled_next,
@@ -1123,6 +1127,10 @@ body.popup {
 
 iframe#externalSite {
     padding: 0;
+}
+iframe #AjaxLoadingIllustration {
+    top: 4px;
+    right: 317px;
 }
 
 
