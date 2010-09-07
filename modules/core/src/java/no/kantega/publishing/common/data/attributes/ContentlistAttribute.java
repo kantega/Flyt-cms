@@ -34,7 +34,7 @@ import java.util.Map;
 public class ContentlistAttribute extends ListAttribute {
     private static String SOURCE = "aksess.ContentlistAttribute";
 
-    protected int contentTemplateId = -1;
+    protected String contentTemplateId = "";
     protected int documentTypeId = -1;
     protected int siteId = -1;
 
@@ -43,13 +43,7 @@ public class ContentlistAttribute extends ListAttribute {
         super.setConfig(config, model);
 
         if (config != null) {
-            String template = config.getAttribute("contenttemplate");
-            if (template != null && template.length() > 0) {
-                ContentTemplate ct = ContentTemplateCache.getTemplateByPublicId(template);
-                if (ct != null) {
-                    contentTemplateId = ct.getId();
-                }
-            }
+        	contentTemplateId = config.getAttribute("contenttemplate");
             String docType = config.getAttribute("documenttype");
             if (docType != null && docType.length() > 0) {
                 DocumentType dt = DocumentTypeCache.getDocumentTypeByPublicId(docType);
@@ -70,11 +64,7 @@ public class ContentlistAttribute extends ListAttribute {
                 }
             }
         }
-    }
-
-    public int getContentTemplateId() {
-        return contentTemplateId;
-    }
+    }    
 
     public int getDocumentTypeId() {
         return documentTypeId;
@@ -85,10 +75,8 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     public List getListOptions(int language) {
-        ContentQuery query = new ContentQuery();
-        if (contentTemplateId != -1) {
-            query.setContentTemplate(contentTemplateId);
-        }
+        ContentQuery query = new ContentQuery();        
+        query.setContentTemplate(contentTemplateId);        
         if (documentTypeId != -1) {
             query.setDocumentType(documentTypeId);
         }
