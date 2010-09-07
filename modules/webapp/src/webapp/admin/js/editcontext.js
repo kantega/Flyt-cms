@@ -280,7 +280,7 @@ openaksess.editcontext = function()  {
             }
 
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.multimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:620});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.multimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:550});
         },
 
 
