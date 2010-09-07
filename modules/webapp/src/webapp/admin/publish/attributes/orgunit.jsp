@@ -47,15 +47,16 @@
     <%
         if (manager != null) {
     %>
-            <input type="hidden" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>">
-            <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
+            <input type="hidden" name="${fieldName}" id="${fieldName}" value="<%=value%>">
+            <input type="text" name="${fieldName}text" id="${fieldName}text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="${attribute.tabIndex}">
             <script type="text/javascript">
-                Autocomplete.setup({'inputField' :'<%=fieldName%>', url:'../../ajax/SearchOrgUnitsAsXML.action', 'minChars' :3 });
+                $("#${fieldName}text").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteOrgUnits.action").result(openaksess.editcontext.autocompleteInsertIntoFormCallback);
             </script>
+
     <%
         } else {
     %>
-            <input type="text" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
+            <input type="text" name="${fieldName}" id="${fieldName}" value="<%=value%>" maxlength="512" class="fullWidth" tabindex="${attribute.tabIndex}">
     <%
         }
     %>

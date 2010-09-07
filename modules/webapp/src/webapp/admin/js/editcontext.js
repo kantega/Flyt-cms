@@ -19,6 +19,7 @@
  * * contextPath
  * * editcontext.labels.selecttopic
  * * editcontext.labels.selectcontent
+ * * editcontext.labels.selectorgunit 
  * * editcontext.labels.warningMaxchoose
  * * editcontext.labels.warningElements
  * * editcontext.labels.adduser
@@ -251,11 +252,11 @@ openaksess.editcontext = function()  {
         /*
          *  Popup window for selecting a organizational unit
          */
+
         selectOrgunit : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = false;
-            var orgwin = window.open("../popups/selectorgunit.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
-            orgwin.focus();
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectorgunit, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectOrgUnit.action?refresh=" + getRefresh(),width: 280, height:450});
         },
 
         /*

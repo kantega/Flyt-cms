@@ -16,36 +16,37 @@
 
 package no.kantega.publishing.admin.ajax;
 
+import no.kantega.publishing.org.OrgUnit;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
+import java.util.*;
 
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.commons.client.util.RequestParameters;
 
-public class SearchOrgUnitsAsXMLAction implements Controller {
+public class AutocompleteOrgUnitsAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();
         RequestParameters param = new RequestParameters(request);
 
-        String name = param.getString("value");
+        List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
+
+        String name = param.getString("q");
         if (name != null && name.length() >= 3) {
             ApplicationContext context = RootContext.getInstance();
             Iterator i = context.getBeansOfType(OrganizationManager.class).values().iterator();
             if(i.hasNext()) {
                 OrganizationManager manager = (OrganizationManager) i.next();
-                model.put("organizations", manager.searchOrgUnits(name));
+                orgUnits = manager.searchOrgUnits(name);
             }
         }
+        model.put("organizations", orgUnits);
 
         return new ModelAndView("/WEB-INF/jsp/ajax/searchresult-organizations.jsp", model);
     }

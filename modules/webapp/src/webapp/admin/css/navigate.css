@@ -185,6 +185,9 @@ ul.breadcrumbs li:first-child {
 .navigator .icon .media {
     background: url("../bitmaps/sprite-common.png") no-repeat 0 -1210px;
 }
+.navigator .icon .orgunit {
+    background: url("../bitmaps/sprite-common.png") no-repeat 1px -1167px;
+}
 .navigator .icon .link {
     background: url("../bitmaps/sprite-common.png") no-repeat 0 -1406px;
 }

@@ -129,6 +129,8 @@
                 <prop key="/admin/publish/popups/InsertCharacter.action">InsertCharacterAction</prop>
                 <prop key="/admin/publish/popups/ReplaceText.action">ReplaceTextAction</prop>
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
+                <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
+                <prop key="/admin/publish/OrgUnitNavigator.action">orgUnitNavigatorAjaxAction</prop>
                 <prop key="/admin/publish/popups/Lix.action">LixAction</prop>
 
                 <!-- Multimedia naviagator -->
@@ -169,7 +171,7 @@
                 <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
                 <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
                 <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
-                <prop key="/ajax/SearchOrgUnitsAsXML.action">SearchOrgUnitsAsXMLAction</prop>
+                <prop key="/ajax/AutocompleteOrgUnits.action">AutocompleteOrgUnitsAction</prop>
                 <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
 
                 <!-- List options -->
@@ -510,6 +512,12 @@
     <bean class="no.kantega.publishing.admin.content.action.SelectContentAction" id="SelectContentAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-content.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.orgunit.ajax.NavigatorAction" id="orgUnitNavigatorAjaxAction" >
+        <property name="view" value="/WEB-INF/jsp/admin/orgunit/navigator.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SelectOrgUnitAction" id="SelectOrgUnitAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-orgunit.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="LixAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/lix.jsp"/>
     </bean>
@@ -705,7 +713,7 @@
     </bean>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteMultimediaAction" id="AutocompleteMultimediaAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteUsersAction" id="AutocompleteUsersAction"/>
-    <bean class="no.kantega.publishing.admin.ajax.SearchOrgUnitsAsXMLAction" id="SearchOrgUnitsAsXMLAction"/>
+    <bean class="no.kantega.publishing.admin.ajax.AutocompleteOrgUnitsAction" id="AutocompleteOrgUnitsAction"/>
 
     <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
     <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>

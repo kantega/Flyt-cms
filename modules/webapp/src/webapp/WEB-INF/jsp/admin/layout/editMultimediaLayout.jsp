@@ -33,6 +33,7 @@
         properties.editcontext['labels'] = {
             selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
             selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit"/>',
             warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
             warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
             adduser : '<kantega:label key="aksess.adduser.title"/>',

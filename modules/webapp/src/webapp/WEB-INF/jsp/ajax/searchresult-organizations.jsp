@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,8 +14,6 @@
   ~ limitations under the License.
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<values>
-    <c:forEach var="org" items="${organizations}" varStatus="status">
-    <value key="<c:out value="${org.id}"/>"><c:out value="${org.name}"/></value>
-    </c:forEach>
-</values>
+<c:forEach var="org" items="${organizations}" varStatus="status">
+<c:out value="${org.name}"/>|<c:out value="${org.id}"/>
+</c:forEach>

@@ -17,4 +17,3 @@
 <c:forEach var="user" items="${userlist}" varStatus="status">
 <c:out value="${user.name}"/><c:if test="${user.department != ''}"> (<c:out value="${user.department}"/>)</c:if>|<c:out value="${user.id}"/>
 </c:forEach>
-</values>
