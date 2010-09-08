@@ -43,7 +43,7 @@ public class ContentSearchController implements AksessController, InitializingBe
     private String description = "Performs search for Aksess content";
 
     private SearchService searchService;
-    private String queryStringEncoding = "iso-8859-1"; // Must be iso-8859-1 in Tomcat, utf-8 in Jetty
+    private String queryStringEncoding = "iso-8859-1"; // Must match setting in web server, default for tomcat is iso-8859-1, jetty is utf-8. Tomcat can be set to use utf-8 by setting URIEncoding="UTF-8" on the Connector element in server.xml
     private List<SearchField> customSearchFields;
 
     private boolean hitCountDocumentType = true;
@@ -316,6 +316,7 @@ public class ContentSearchController implements AksessController, InitializingBe
     public void afterPropertiesSet() throws Exception {
         try {
             queryStringEncoding = Aksess.getConfiguration().getString("querystring.encoding", queryStringEncoding);
+            Log.info(this.getClass().getName(), "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
             queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
         } catch (ConfigurationException e) {
             Log.error(this.getClass().getName(), e, null, null);
