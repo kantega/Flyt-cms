@@ -122,7 +122,7 @@ openaksess.content = {
             filterInfoSlider.toggle($filters);
         });
 
-        $("#FilteroptionSort input[name=sort]").live('change', function(){
+        $("#FilteroptionSort input[name=sort]").change(function(){
             var $this = $(this);
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
             if ($this.is(":checked")) {
@@ -471,7 +471,7 @@ openaksess.content = {
             }
 
             //Set sort order
-            $("#FilteroptionSort input[name=sort]").each(function(){
+            $("#FilteroptionSort input.sortnavigator").each(function(){
                 var $this = $(this);
                 if ($this.val() == sort) {
                     $this.attr("checked", "checked");
