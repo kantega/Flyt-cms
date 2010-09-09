@@ -114,12 +114,10 @@ openaksess.content = {
         });
 
         var $filters = $filterOptions.find(".filters");
-        var filterInfoSlider = new openaksess.admin.InfoSlider("#Navigation", {additionalCssClasses: 'filters'});
 
         $filterOptions.find(".filtersToggle").live('click', function(){
-            openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked");
-            $filters.show();
-            filterInfoSlider.toggle($filters);
+            openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked. Opening infoslider widget.");
+            $("#Navigation .infoslider").infoslider('option', 'floated', false).infoslider('toggle', this, $filters.html());
         });
 
         $("#FilteroptionSort input[name=sort]").change(function(){
@@ -307,7 +305,6 @@ openaksess.content = {
         brokenLinks: function (links) {
             if (links && links.length > 0) {
                 openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
-                var brokenLinksInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'brokenlinks'});
                 $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): click");
                     var details = '<table>' +
@@ -348,7 +345,7 @@ openaksess.content = {
                     details +='   </tbody>' +
                             '</table>';
 
-                    brokenLinksInfoSlider.toggle(details);
+                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'brokenlinks', floated: true, resizable: false}).infoslider('toggle', this, details);
                 }).show();
             }
         },
@@ -389,10 +386,9 @@ openaksess.content = {
             
             details +="</ul>";
 
-            var detailsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'details'});
             $("#Statusbar .details").unbind('click').bind('click', function(){
                 openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                detailsInfoSlider.toggle(details);
+                $("#MainPane .infoslider").infoslider('option', {cssClasses: 'details', floated: true, resizable: false}).infoslider('toggle', this, details);
             }).show();
         },
 
@@ -400,7 +396,6 @@ openaksess.content = {
         associations: function (associations) {
             if (associations && associations.length > 1) {
                 openaksess.common.debug("openaksess.content.contentstatus.associations(): Number of associations: "+associations.length);
-                var associationsInfoSlider = new openaksess.admin.InfoSlider("#MainPane", {additionalCssClasses: 'associations'});
                 $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
                     openaksess.common.debug("openaksess.content.contentstatus.associations(): click");
                     var details = '<h3>' + properties.content.labels.associations + '</h3>';
@@ -412,7 +407,7 @@ openaksess.content = {
                         details += '</ul><div class="clearing"></div>';
                     }
 
-                    associationsInfoSlider.toggle(details);
+                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'associations', floated: true, resizable: false}).infoslider('toggle', this, details);
                 }).show();
             }
         },

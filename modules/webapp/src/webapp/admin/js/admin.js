@@ -35,6 +35,7 @@ $(document).ready(function() {
     openaksess.admin.ajaxSetup();
     //openaksess.admin.widgetmanager.init({context: '#Content'});
     openaksess.admin.bindGlobalButtons();
+    openaksess.admin.createWidgets();
 });
 
 
@@ -62,162 +63,160 @@ openaksess.admin = {
      */
     setLayoutSpecificSizes : function (elementProperties){},
     
-    /**
-     * Handles opening and closing of the support information container,
-     * typically located below the status bar and the content filters.
-     *
-     * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
-     * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
-     * @param options - Additional options for the infoslider. See property sliderOptions for available options.*
-     * This slider has the css-class "infoslider".
-     */
-    InfoSlider : function(location, options) {
 
-        var sliderOptions = {
-            speed: 300,
-            resizable: false,
-            additionalCssClasses: ''
-        };
-
-        $.extend(sliderOptions, options);
-        var $infoslider = $(location).find(".infoslider");
-        var id = new Date().valueOf();                      
-
-        openaksess.common.debug("content.InfoSlider() Slider created: location: " + location + ", id: " + id);
-
-        $infoslider.bind('contentupdate', function(){
-            close();
-        });
-
-        /**
-         * Opens the infoslider if it's hidden.
-         * If the infoslider is open and toogle() is called by the same element as the one opening it, the slider is closed.
-         * If the infoslider is open and toogle() is called by a different element than the one opening it, the content is replaced
-         * and the slider is kept open.
-         *
-         * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
-         * @param content - The content to display in the info slider.
-         */
-        this.toggle = function(content) {
-
-            openaksess.common.debug("content.InfoSlider.toogle() Toggle slider with id " + id + ", location: " + location);
-
-            //The slider is physically closed. Set own content and open it.
-            if ($infoslider.is(":hidden")) {
-                openaksess.common.debug("content.InfoSlider.toggle(): Slider is closed. Opening.");
-                setContent($infoslider, content);
-                if (sliderOptions.resizable) {
-                    makeResizable($infoslider);
-                }
-                $infoslider.slideDown(sliderOptions.speed);
-            }
-
-            // The slider is physically open, check who opened it.
-            else {
-                //Opened by self. Closing the slider
-                if (isOpenedBySelf($infoslider)) {
-                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by self. Closing");
-                    close();
-                }
-                //Somone else has already opened it. Keep it open and replace the content.
-                else {
-                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by someone else. Replacing content and keeping it open.");
-                    setContent($infoslider, content);
-
-                    if (sliderOptions.resizable) {
-                        makeResizable($infoslider);
-                    }
-
-                }
-            }
-
-            //Apply closer
-            $('<div class="close"><span>&nbsp;</span></div>').appendTo($infoslider).click(function(){
-                close();
-            });
-        };
-
-        /**
-         * Closes the infoslider .
-         *
-         */
-        var close = function() {
-            if ($infoslider.is(":hidden")) {
-                openaksess.common.debug("content.InfoSlider.close(): Infoslider is already closed. Returning");
-                return;
-            }
-            openaksess.common.debug("content.InfoSlider.close(): Closing infoslider " + id);
-            $(location).find(".infoslider").html("").slideUp(sliderOptions.speed);
-        };
-
-
-        var setContent = function(infoslider, content) {
-            $(infoslider)
-                    .attr("id", id)
-                    .removeClass()
-                    .addClass("infoslider")
-                    .addClass(sliderOptions.additionalCssClasses)
-                    .css("height", "auto")
-                    .html("")
-                    .append(content)
-                    .wrapInner('<div class="slidercontent"/>');
-        };
-
-        /**
-         * Makes the given infoslider resizable.
-         *
-         * @param infoslider
-         */
-        var makeResizable = function(infoslider) {
-
-            var $infoslider = $(infoslider);
-            openaksess.common.debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
-
-            $infoslider.resizable("destroy");
-
-            $infoslider.resizable({
-                handles: 's',
-                start: function(){
-                    if (typeof openaksess.navigate.navigatorResizeOnStart == 'function') {
-                        var $iframe = $(this).find("iframe");
-                        //Apply an overlay to the infoslider if it contains an iframe. Iframes mess up the resizing...
-                        if ($iframe.size() > 0) {
-                            openaksess.common.debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
-                            var height = $infoslider.height();
-                            var width = $infoslider.width();
-                            var overlay = $("<div/>").css({"position": "absolute", "height": height + "px", "width": width + "px", "background": "#ffffff", "opacity": "0"}).attr("id", "InforSlider_overlay");
-                            $iframe.before(overlay);
-                        }
-                        openaksess.navigate.navigatorResizeOnStart();
-                    }
-                },
-                stop: function() {
-                    if (typeof openaksess.navigate.navigatorResizeOnStop == 'function') {
-                        $("#InforSlider_overlay").remove();
-                        openaksess.navigate.navigatorResizeOnStop();
-                    }
-                },
-                resize: function() {
-                    var $iframe = $(this).find("iframe");
-                    if ($iframe.size() > 0) {
-                        $iframe.height($infoslider.height());
-                    }
-                    if (typeof openaksess.navigate.navigatorResizeOnResize == 'function') {
-                        openaksess.navigate.navigatorResizeOnResize();
-                    }
-                }
-            });
-        };
-
-
-        /**
-         * Returns true if the infoslider is opened by the current opener.
-         * @param infoslider
-         */
-        var isOpenedBySelf = function(infoslider){
-            return $(infoslider).attr("id") == id;
-        };
-    },
+//     *
+//     * @param location - Which sider to open. This must be an element selector within with an infoslider is located.
+//     * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
+//     * @param options - Additional options for the infoslider. See property sliderOptions for available options.*
+//     * This slider has the css-class "infoslider".
+//     */
+//    InfoSlider : function(location, options) {
+//
+//        var sliderOptions = {
+//            speed: 300,
+//            resizable: false,
+//            additionalCssClasses: ''
+//        };
+//
+//        $.extend(sliderOptions, options);
+//        var $infoslider = $(location).find(".infoslider");
+//        var id = new Date().valueOf();
+//
+//        openaksess.common.debug("content.InfoSlider() Slider created: location: " + location + ", id: " + id);
+//
+//        $infoslider.bind('contentupdate', function(){
+//            close();
+//        });
+//
+//        /**
+//         * Opens the infoslider if it's hidden.
+//         * If the infoslider is open and toogle() is called by the same element as the one opening it, the slider is closed.
+//         * If the infoslider is open and toogle() is called by a different element than the one opening it, the content is replaced
+//         * and the slider is kept open.
+//         *
+//         * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
+//         * @param content - The content to display in the info slider.
+//         */
+//        this.toggle = function(content) {
+//
+//            openaksess.common.debug("content.InfoSlider.toogle() Toggle slider with id " + id + ", location: " + location);
+//
+//            //The slider is physically closed. Set own content and open it.
+//            if ($infoslider.is(":hidden")) {
+//                openaksess.common.debug("content.InfoSlider.toggle(): Slider is closed. Opening.");
+//                setContent($infoslider, content);
+//                if (sliderOptions.resizable) {
+//                    makeResizable($infoslider);
+//                }
+//                $infoslider.slideDown(sliderOptions.speed);
+//            }
+//
+//            // The slider is physically open, check who opened it.
+//            else {
+//                //Opened by self. Closing the slider
+//                if (isOpenedBySelf($infoslider)) {
+//                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by self. Closing");
+//                    close();
+//                }
+//                //Somone else has already opened it. Keep it open and replace the content.
+//                else {
+//                    openaksess.common.debug("content.InfoSlider.toggle(): Slider is opened by someone else. Replacing content and keeping it open.");
+//                    setContent($infoslider, content);
+//
+//                    if (sliderOptions.resizable) {
+//                        makeResizable($infoslider);
+//                    }
+//
+//                }
+//            }
+//
+//            //Apply closer
+//            $('<div class="close"><span>&nbsp;</span></div>').appendTo($infoslider).click(function(){
+//                close();
+//            });
+//        };
+//
+//        /**
+//         * Closes the infoslider .
+//         *
+//         */
+//        var close = function() {
+//            if ($infoslider.is(":hidden")) {
+//                openaksess.common.debug("content.InfoSlider.close(): Infoslider is already closed. Returning");
+//                return;
+//            }
+//            openaksess.common.debug("content.InfoSlider.close(): Closing infoslider " + id);
+//            $(location).find(".infoslider").html("").slideUp(sliderOptions.speed);
+//        };
+//
+//
+//        var setContent = function(infoslider, content) {
+//            $(infoslider)
+//                    .attr("id", id)
+//                    .removeClass()
+//                    .addClass("infoslider")
+//                    .addClass(sliderOptions.additionalCssClasses)
+//                    .css("height", "auto")
+//                    .html("")
+//                    .append(content)
+//                    .wrapInner('<div class="slidercontent"/>');
+//        };
+//
+//        /**
+//         * Makes the given infoslider resizable.
+//         *
+//         * @param infoslider
+//         */
+//        var makeResizable = function(infoslider) {
+//
+//            var $infoslider = $(infoslider);
+//            openaksess.common.debug("content.InfoSlider.makeResizable(): Making infoslider resizable. Id: " + $infoslider.attr("id"));
+//
+//            $infoslider.resizable("destroy");
+//
+//            $infoslider.resizable({
+//                handles: 's',
+//                start: function(){
+//                    if (typeof openaksess.navigate.navigatorResizeOnStart == 'function') {
+//                        var $iframe = $(this).find("iframe");
+//                        //Apply an overlay to the infoslider if it contains an iframe. Iframes mess up the resizing...
+//                        if ($iframe.size() > 0) {
+//                            openaksess.common.debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
+//                            var height = $infoslider.height();
+//                            var width = $infoslider.width();
+//                            var overlay = $("<div/>").css({"position": "absolute", "height": height + "px", "width": width + "px", "background": "#ffffff", "opacity": "0"}).attr("id", "InforSlider_overlay");
+//                            $iframe.before(overlay);
+//                        }
+//                        openaksess.navigate.navigatorResizeOnStart();
+//                    }
+//                },
+//                stop: function() {
+//                    if (typeof openaksess.navigate.navigatorResizeOnStop == 'function') {
+//                        $("#InforSlider_overlay").remove();
+//                        openaksess.navigate.navigatorResizeOnStop();
+//                    }
+//                },
+//                resize: function() {
+//                    var $iframe = $(this).find("iframe");
+//                    if ($iframe.size() > 0) {
+//                        $iframe.height($infoslider.height());
+//                    }
+//                    if (typeof openaksess.navigate.navigatorResizeOnResize == 'function') {
+//                        openaksess.navigate.navigatorResizeOnResize();
+//                    }
+//                }
+//            });
+//        };
+//
+//
+//        /**
+//         * Returns true if the infoslider is opened by the current opener.
+//         * @param infoslider
+//         */
+//        var isOpenedBySelf = function(infoslider){
+//            return $(infoslider).attr("id") == id;
+//        };
+//    },
 
 
     /**
@@ -484,9 +483,142 @@ openaksess.admin = {
 
 
 
-    }()
+    }(),
+
+    createWidgets: function(){
+        $(".infoslider").infoslider();
+    }
 
 };
+
+
+/**
+* Handles opening and closing of the support information container,
+* typically located below the status bar and the content filters.
+*/
+$.widget("ui.infoslider", {
+
+    options: {
+        sliderCssClass: "infoslider",
+        width : '100%',
+        open : false,
+        opener: undefined,
+        floated: true,
+        cssClasses : '',
+        resizable: false
+    },
+
+    _init: function(){
+        openaksess.common.debug("Widget.infoslider._init(): Slider created.");
+        this.element.width(this.options.width);
+    },
+
+    toggle: function(opener, content){
+        if (!this.options.open) {
+            this._openSlider(content);
+        } else {
+            if (opener == this.options.opener) {
+                this._closeSlider();
+            } else {
+                this._setContent(content);
+            }
+        }
+        this.options.opener = opener;
+    },
+
+    _openSlider: function(content){
+        openaksess.common.debug("Widget.infoslider._openSlider(): Opening");
+        this._setContent(content);
+        this.element.slideDown();
+        this.options.open = true;
+    },
+
+    _setContent: function(content){
+        openaksess.common.debug("Widget.infoslider._setContent(): Setting content");
+        this.element
+                .html(content)
+                .wrapInner('<div class="slidercontent"/>')
+                .removeClass()
+                .addClass(this.options.sliderCssClass + " " + this.options.cssClasses)
+                .css({height: 'auto', top: 'auto'});
+        this._applyCloser();
+        this._setFloat();
+        this._setResizability();
+    },
+
+    _closeSlider: function(){
+        openaksess.common.debug("Widget.infoslider._closeSlider(): Closing");
+        this.element.slideUp();
+        this._reset();
+    },
+
+    _setFloat: function() {
+        if (this.options.floated) {
+            openaksess.common.debug("Widget.infoslider._setFloat(): Setting slider to floated");
+            this.element.css('position', 'absolute');
+        } else {
+            openaksess.common.debug("Widget.infoslider._setFloat(): Setting slider to relative");
+            this.element.css('position', 'relative');
+        }
+    },
+
+    _setResizability: function(){
+        var slider = this.element;
+        slider.resizable("destroy");
+        if (this.options.resizable) {
+
+            slider.resizable({
+                handles: 's',
+                start: function(){
+                    if (typeof openaksess.navigate.navigatorResizeOnStart == 'function') {
+                        var $iframe = $(this).find("iframe");
+                        //Apply an overlay to the infoslider if it contains an iframe. Iframes mess up the resizing...
+                        if ($iframe.size() > 0) {
+                            openaksess.common.debug("InfoSlider.toggle(): Resize start. Iframe found. Adding overlay");
+                            var height = slider.height();
+                            var width = slider.width();
+                            var overlay = $("<div/>").css({"position": "absolute", "height": height + "px", "width": width + "px", "background": "#ffffff", "opacity": "0"}).attr("id", "InforSlider_overlay");
+                            $iframe.before(overlay);
+                        }
+                        openaksess.navigate.navigatorResizeOnStart();
+                    }
+                },
+                stop: function() {
+                    if (typeof openaksess.navigate.navigatorResizeOnStop == 'function') {
+                        $("#InforSlider_overlay").remove();
+                        openaksess.navigate.navigatorResizeOnStop();
+                    }
+                },
+                resize: function() {
+                    var $iframe = $(this).find("iframe");
+                    if ($iframe.size() > 0) {
+                        $iframe.height(slider.height());
+                    }
+                    if (typeof openaksess.navigate.navigatorResizeOnResize == 'function') {
+                        openaksess.navigate.navigatorResizeOnResize();
+                    }
+                }
+            });
+        }
+    },
+
+    _reset: function(){
+        openaksess.common.debug("Widget.infoslider._reset(): Resetting slider.");
+        this.element.html("").removeClass().addClass(this.options.sliderCssClass);
+        this.options.open = false;
+        this.options.floated = true;
+        this.element.resizable("destroy");
+    },
+
+    _applyCloser: function(){
+        var slider = this;
+        var closer = $('<div class="close"><span>&nbsp;</span></div>').click(function(){
+            slider._closeSlider();
+        });
+        this.element.append(closer);
+    }
+
+});
 
 
 
