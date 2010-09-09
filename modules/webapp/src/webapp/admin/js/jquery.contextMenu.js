@@ -80,8 +80,15 @@ if(jQuery)( function() {
                                     d.innerHeight = document.body.clientHeight;
                                     d.innerWidth = document.body.clientWidth;
                                 }
-                                (e.pageX) ? x = e.pageX : x = e.clientX + d.scrollLeft;
-                                (e.pageY) ? y = e.pageY : x = e.clientY + d.scrollTop;
+
+                                (e.pageX) ? x = e.pageX : x = e.clientX;
+                                (e.pageY) ? y = e.pageY : x = e.clientY;
+
+                                // Prevent menu from going outside view
+                                var menuHeight = $(menu).height();
+                                if (y + menuHeight > d.innerHeight) {
+                                    y = d.innerHeight - menuHeight;
+                                }
 
                                 // Show the menu
                                 $(document).unbind('click');
