@@ -513,6 +513,16 @@ $.widget("ui.infoslider", {
         this.element.width(this.options.width);
     },
 
+    /**
+     * Opens the infoslider if it's hidden.
+     * If the infoslider is open and toogle() is called by the same element as the one opening it, the slider is closed.
+     * If the infoslider is open and toogle() is called by a different element than the one opening it, the content is replaced
+     * and the slider is kept open.
+     *
+     * Example: If there exists an infoslider within a div with id "Navigator", this parameter will be "#Navigator".
+     * @param opener - The object which triggered toggle of slider
+     * @param content - The content to display in the info slider.
+     */
     toggle: function(opener, content){
         if (!this.options.open) {
             this._openSlider(content);
