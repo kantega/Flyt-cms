@@ -107,7 +107,6 @@ public class Aksess {
 
 
     private static boolean topicMapsEnabled = false;
-    private static boolean formsEnabled = false;
 
     private static String luceneIndexDir;
 
@@ -130,6 +129,8 @@ public class Aksess {
     private static String multimediaDefaultCopyright;
 
     private static ServerType serverType;
+
+    private static String queryStringEncoding;
 
     public static void loadConfiguration() {
 
@@ -174,10 +175,10 @@ public class Aksess {
             loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
 
             defaultSecurityDomain = c.getString("security.defaultdomain", "ldap");
-            Log.debug(SOURCE, "Bruker standard sikkerhetsdomene:" + defaultSecurityDomain, null, null);
+            Log.info(SOURCE, "Using default security domain:" + defaultSecurityDomain, null, null);
 
             securityRealm = c.getString("security.realm", defaultSecurityDomain + "Realm");
-            Log.debug(SOURCE, "Bruker sikkerhetsrealm:" + securityRealm, null, null);
+            Log.info(SOURCE, "Using security realm:" + securityRealm, null, null);
 
             securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
 
@@ -196,7 +197,7 @@ public class Aksess {
             // Tilleggsmoduler
             trafficLogEnabled = c.getBoolean("trafficlog.enabled", false);
             if (trafficLogEnabled) {
-                Log.debug(SOURCE, "Tillegsmodul: Trafikklogg", null, null);
+                Log.info(SOURCE, "Module enabled: Traffic log");
             }
             trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
 
@@ -204,25 +205,24 @@ public class Aksess {
 
             eventLogEnabled = c.getBoolean("eventlog.enabled", false);
             if (eventLogEnabled) {
-                Log.debug(SOURCE, "Tillegsmodul: Eventlogg", null, null);
+                Log.info(SOURCE, "Module enabled: Event log");
             }
             searchLogEnabled = c.getBoolean("searchlog.enabled", false);
             if (searchLogEnabled) {
-                Log.debug(SOURCE, "Tillegsmodul: searchlog", null, null);
+                Log.info(SOURCE, "Module enabled: searchlog", null, null);
             }
 
             eventLogMaxAge = c.getInt("eventlog.maxage", eventLogMaxAge);
 
             topicMapsEnabled = c.getBoolean("topicmaps.enabled", false);
             if (topicMapsEnabled) {
-                Log.debug(SOURCE, "Tillegsmodul: Emnekart", null, null);
+                Log.info(SOURCE, "Module enabled: Topic maps");
             }
 
-            formsEnabled = c.getBoolean("forms.enabled", false);
-            if (formsEnabled) {
-                Log.debug(SOURCE, "Tillegsmodul: Skjema", null, null);
-            }
             linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
+            if (linkCheckerEnabled) {
+                Log.info(SOURCE, "Module enabled: Link checker");
+            }
 
 
             // Location of search-index
@@ -256,9 +256,10 @@ public class Aksess {
 
             multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
 
-            csrfCheckEnabled = c.getBoolean("csrfcheck.enabled",true);
+            csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
 
             serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.toString()).toUpperCase());
+            Log.info(SOURCE, "Server type:" + serverType);
 
             if (serverType == ServerType.SLAVE) {
                 // Caching of database only lasts 15 minutes for slave servers
@@ -266,6 +267,9 @@ public class Aksess {
             }
             databaseCacheTimeout = c.getInt("database.cache.timeout", databaseCacheTimeout);
 
+
+            queryStringEncoding = c.getString("querystring.encoding", "iso-8859-1");
+            Log.info(SOURCE, "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
 
             // Load version from file in classpath
             {
@@ -298,7 +302,7 @@ public class Aksess {
             System.out.println("********* Couldn't read aksess.conf **********" + e);
         }
 
-        Log.debug(SOURCE, "location.contextpath=" + contextPath, null, null);
+        Log.info(SOURCE, "location.contextpath=" + contextPath);
     }
 
     public static String getVersion() {
@@ -454,10 +458,6 @@ public class Aksess {
         return topicMapsEnabled;
     }
 
-    public static boolean isFormsEnabled() {
-        return formsEnabled;
-    }
-
     public static Configuration getConfiguration() throws ConfigurationException {
         return c;
     }
@@ -585,5 +585,9 @@ public class Aksess {
 
     public static ServerType getServerType() {
         return serverType;
+    }
+
+    public static String getQueryStringEncoding() {
+        return queryStringEncoding;
     }
 }
