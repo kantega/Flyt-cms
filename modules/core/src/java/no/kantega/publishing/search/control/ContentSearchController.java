@@ -314,13 +314,8 @@ public class ContentSearchController implements AksessController, InitializingBe
     }
 
     public void afterPropertiesSet() throws Exception {
-        try {
-            queryStringEncoding = Aksess.getConfiguration().getString("querystring.encoding", queryStringEncoding);
-            Log.info(this.getClass().getName(), "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
-            queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
-        } catch (ConfigurationException e) {
-            Log.error(this.getClass().getName(), e, null, null);
-        }
+        queryStringEncoding = Aksess.getQueryStringEncoding();
+        queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
     }
 
     private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
@@ -334,7 +329,5 @@ public class ContentSearchController implements AksessController, InitializingBe
                 }
             }
         }
-
     }
-
 }
