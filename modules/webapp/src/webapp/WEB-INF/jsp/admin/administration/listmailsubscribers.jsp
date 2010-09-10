@@ -21,7 +21,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    <kantega:label key="aksess.userchanges.title"/>
+    <kantega:label key="aksess.mailsubscription.title"/>
 </kantega:section>
 
 <kantega:section id="content">
@@ -32,10 +32,13 @@
                 <td><strong><kantega:label key="aksess.mailsubscription.email"/></strong></td>
                 <td>&nbsp;</td>
             </tr>
-            <c:forEach var="email" items="${mailSubscriptions}" varStatus="status">
+            <%
+                String queryStringEncoding = Aksess.getQueryStringEncoding();
+            %>
+            <c:forEach var="email" items="${subscriptions}" varStatus="status">
                 <%
-                    String email = (String)request.getAttribute("email");
-                    String emailEnc = URLEncoder.encode(email, "iso-8859-1");
+                    String email = (String)pageContext.getAttribute("email");
+                    String emailEnc = URLEncoder.encode(email, queryStringEncoding);
                 %>
                 <tr class="tableRow${status.index mod 2}">
                     <td><a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a></td>
