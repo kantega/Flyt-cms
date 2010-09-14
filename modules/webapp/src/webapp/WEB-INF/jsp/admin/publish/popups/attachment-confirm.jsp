@@ -21,28 +21,51 @@
 <%
     RequestParameters param = new RequestParameters(request, "utf-8");
     int id = param.getInt("attachmentId");
-    boolean insertLink = param.getBoolean("insertLink");
+    boolean insertLink = param.getBoolean("insertlink");
 %>
 <kantega:section id="head">
-<script language="Javascript" type="text/javascript">
+    <script type="text/javascript">
+        if (typeof properties == 'undefined') {
+            var properties = { content : {} };
+        }
+        if (typeof properties.editcontext == 'undefined') {
+            properties.editcontext = {};
+        }
+        properties.editcontext['labels'] = {
+            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
+            adduser : '<kantega:label key="aksess.adduser.title"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
+            addrole : '<kantega:label key="aksess.addrole.title"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+        };
+        properties.contextPath = '${pageContext.request.contextPath}';
+    </script>
+    <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_popup.js"></script>
 
-    var p = getParent();
-    if (p) {
+    <script language="Javascript" type="text/javascript">
+
+        var p = getParent();
+        if (p) {
         <%
             if (insertLink) {
         %>
-                var url = "<%=URLHelper.getRootURL(request)%>attachment.ap?id=<%=id%>";
-                p.createLink(url);
-                closeWindow();
+            var url = "<%=URLHelper.getRootURL(request)%>attachment.ap?id=<%=id%>";
+            openaksess.editcontext.insertLink({'href': url});
+            closeWindow();
         <%
             } else {
         %>
-                p.location.reload();
+            p.location.reload();
         <%
             }
         %>
 
-    }
-</script>
+        }
+    </script>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

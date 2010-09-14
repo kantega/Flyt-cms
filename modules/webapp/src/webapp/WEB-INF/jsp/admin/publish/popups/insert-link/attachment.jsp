@@ -65,7 +65,7 @@
         </select>
     </div>
     <div class="buttonGroup">
-        <a href="AddAttachment.action?insertLink=true" class="button"><span class="add"><kantega:label key="aksess.button.newattachment"/></span></a>
+        <a href="${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action?insertLink=true" class="button"><span class="add"><kantega:label key="aksess.button.newattachment"/></span></a>
     </div>
 
 </div>

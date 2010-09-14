@@ -41,7 +41,8 @@
 
 <kantega:section id="body">
     <div id="AddAttachmentForm">
-        <form name="myform" action="AddAttachment.action" method="post" enctype="multipart/form-data">
+        <form name="myform" action="${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="insertlink" value="${insertlink}">
             <div class="formElement">
                 <div class="inputs">
                     <input type="file" size="20" name="attachment" value="" style="width:300px;">
