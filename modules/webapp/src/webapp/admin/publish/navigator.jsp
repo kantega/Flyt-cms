@@ -277,7 +277,7 @@
     function selectAssociationId(id, title) {
         if (window.parent) {
             var w = window.parent.opener;
-            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function')) {
+            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function' || typeof w.insertValueIntoForm == 'object' || typeof w.insertIdAndValueIntoForm == 'object')) {
                 if (w.doInsertTag) {
                     w.insertValueIntoForm("/content.ap?thisId=" + id);
                 } else {
@@ -293,7 +293,7 @@
     function selectContentId(id, title) {
         if (window.parent) {
             var w = window.parent.opener;
-            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function')) {
+            if (w && (typeof w.insertValueIntoForm == 'function' || typeof w.insertIdAndValueIntoForm == 'function' || typeof w.insertValueIntoForm == 'object' || typeof w.insertIdAndValueIntoForm == 'object')) {
                 if (w.doInsertTag) {
                     w.insertValueIntoForm("/content.ap?contentId=" + id + "&amp;contextId=$contextId");
                 } else {
