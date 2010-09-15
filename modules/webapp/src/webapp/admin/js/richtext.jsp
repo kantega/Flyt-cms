@@ -99,7 +99,7 @@ function rtCleanupHTML(editorId) {
 
     var xmlhttp = getXmlHttp();
 
-    xmlhttp.open("POST",  "CleanupHTML.action", true);
+    xmlhttp.open("POST",  "<%=request.getContextPath()%>/admin/publish/CleanupHTML.action", true);
     xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     xmlhttp.onreadystatechange=function() {
