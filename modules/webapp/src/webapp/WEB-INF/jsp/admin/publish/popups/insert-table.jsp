@@ -45,9 +45,11 @@
 
             var summary = document.myform.summary.value;
 
+            var editor = getParent().tinymce.EditorManager.activeEditor;
+
             if ("${modifyExisting}" == "true") {
-                if (window.opener.focusField && window.opener.focusField.tagName == "TABLE") {
-                    var table = window.opener.focusField;
+                var table = editor.dom.getParent(editor.selection.getNode(), 'table')
+                if (table) {
                     table.border = border;
                     table.cellPadding = cellpadding;
                     table.summary = summary;
@@ -97,7 +99,6 @@
                 }
                 html += '</TBODY></TABLE>';
 
-                var editor = getParent().tinymce.EditorManager.activeEditor;
                 insertHtml(editor, html);
             }
             return true;
@@ -114,11 +115,14 @@
             var cellpadding = 2;
             var summary = "";
             if ("${modifyExisting}" == "true") {
-                var table = getParent().focusField;
-                border = table.border;
-                cellpadding = table.cellPadding;
-                if (table.summary) {
-                    summary = table.summary;
+                var editor = getParent().tinymce.EditorManager.activeEditor;
+                var table = editor.dom.getParent(editor.selection.getNode(), 'table')
+                if (table) {
+                    border = table.border;
+                    cellpadding = table.cellPadding;
+                    if (table.summary) {
+                        summary = table.summary;
+                    }
                 }
             }
 
@@ -134,10 +138,6 @@
             }
         }
 
-
-        $(document).ready(function() {
-            initTable();
-        });
 
     </script>
 </kantega:section>
@@ -193,5 +193,9 @@
             </div>
         </div>
     </form>
+
+    <script type="text/javascript">
+        initTable();
+    </script>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>

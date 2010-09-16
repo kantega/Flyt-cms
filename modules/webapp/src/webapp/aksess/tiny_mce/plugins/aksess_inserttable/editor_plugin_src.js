@@ -30,11 +30,10 @@
 
         _openPopup : function() {
             var modifyExisting = false;
-            // TODO: fix
-//            var tblElm = this.editor.dom.getParent(this.editor.selection.getNode(), 'table');
-//            if (tblElm) {
-//                modifyExisting = true;
-//            }
+            var tblElm = this.editor.dom.getParent(this.editor.selection.getNode(), 'table');
+            if (tblElm) {
+                modifyExisting = true;
+            }
 
             openaksess.common.modalWindow.open({
                 title: this.editor.getLang('aksess_inserttable.popup_title', 'Sett inn tabell'),
