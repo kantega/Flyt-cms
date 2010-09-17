@@ -17,6 +17,7 @@ body.popup #Navigation{
     padding-top: 5px;
 }
 body.popup #Navigator{
+    position: relative;
     width:100%;
     height:380px;
     background:#fff;
