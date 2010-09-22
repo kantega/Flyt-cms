@@ -49,7 +49,8 @@ public class SetVariableTag extends TagSupport {
     private boolean inheritFromAncestors = false;
 
     public void setName(String name) {
-        this.name = name.toLowerCase();
+        //this.name = name.toLowerCase();
+    	this.name = name;
     }
 
     public void setCollection(String collection) {
