@@ -17,21 +17,87 @@
 package no.kantega.publishing.event;
 
 /**
- *
+ * @
  */
 public interface ContentEventListener {
 
+    /**
+     * Called when user adds new page (content), before selecting a template.
+     * @
+     * @param event - Replace objects in event.getModel() to override default parameters for the select template view
+     */
     public void beforeSelectTemplate(ContentEvent event);
+
+    /**
+     * Called before a page (content) is moved
+     * @param event - event.getAssociation contains association which will be updated
+     */
     public void beforeAssociationUpdate(ContentEvent event);
-    public void beforeConfirmCopyPasteContent(ContentEvent evnet);
+    /**
+     * Called when an user tries to copy and paste page (content)
+     * @param event - Replace objects in event.getModel() to override default parameters for the copy dialoguebox
+     */
+    public void beforeConfirmCopyPasteContent(ContentEvent event);
+    /**
+     * Called after a page (content) is moved
+     * @param event - event.getAssociation contains association which was updated
+     */
     public void associationUpdated(ContentEvent event);
+    /**
+     * Called when content is created before it is edited
+     * @param event - event.getContent contains newly created page (content)
+     */
     public void contentCreated(ContentEvent event);
+
+    /**
+     * Called before content is saved in database
+     * @param event - event.getContent contains page (content)
+     */
     public void beforeContentSave(ContentEvent event);
+    /**
+     * Called before content is deleted
+     * @param event - Use event.setCanDelete(false) to prevent user from deleting page (content)
+     */
     public void beforeContentDelete(ContentEvent event);
+
+    /**
+     * Called after content is saved in database
+     * @param event - event.getContent contains page (content)
+     */
     public void contentSaved(ContentEvent event);
+
+    /**
+     * Called after new content is saved the first time in database. Called regardless of the status of the page (draft or published)
+     * @param event - event.getContent contains page (content)
+     */
     public void newContentSaved(ContentEvent event);
+    /**
+     *
+     * @param event - event.getContent contains page (content)
+     */
+    public void newContentPublished(ContentEvent event);
+
+    /**
+     * Called when contents expire date is reached
+     * @param event - event.getContent contains page (content)
+     */
     public void contentExpired(ContentEvent event);
+
+    /**
+     * Called when content is activited, eg. when publish date is reached
+     * @param event - event.getContent contains page (content)
+     */
     public void contentActivated(ContentEvent event);
+
+    /**
+     * Called when content is deleted.
+     * @param event - event.getContent contains page (content)
+     */
     public void contentDeleted(ContentEvent event);
+
+    /**
+     * Called when attachment is updated
+     * @param event - event.getAttachment contains attachment
+     */
     public void attachmentUpdated(ContentEvent event);
 }

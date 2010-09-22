@@ -16,7 +16,12 @@
 
 package no.kantega.publishing.event;
 
+/**
+ * @see no.kantega.publishing.event.ContentEventListener
+ *  
+ */
 public  class ContentEventListenerAdapter implements ContentEventListener {
+
 
     public void contentExpired(ContentEvent event) {
 
@@ -30,7 +35,7 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
         
     }
 
-    public void beforeConfirmCopyPasteContent(ContentEvent evnet) {
+    public void beforeConfirmCopyPasteContent(ContentEvent event) {
 
     }
 
@@ -55,6 +60,10 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
 
     public void newContentSaved(ContentEvent event) {
 
+    }
+
+    public void newContentPublished(ContentEvent event) {
+        
     }
 
     public void beforeContentDelete(ContentEvent event) {

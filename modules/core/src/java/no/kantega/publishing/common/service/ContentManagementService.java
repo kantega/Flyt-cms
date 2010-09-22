@@ -211,6 +211,7 @@ public class ContentManagementService {
      */
     public Content checkInContent(Content content, int newStatus) throws SystemException, NotAuthorizedException {
         LockManager.releaseLock(content.getId());
+        boolean hasBeenPublished = ContentAO.hasBeenPublished(content.getId());
 
         if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
             throw new NotAuthorizedException("checkInContent", SOURCE);
@@ -285,6 +286,10 @@ public class ContentManagementService {
         // New content created
         if (isNewContent) {
             ContentListenerUtil.getContentNotifier().newContentSaved(new ContentEvent().setContent(c));    
+        }
+
+        if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
+            ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(c));
         }
 
         if (Aksess.isEventLogEnabled()) {
@@ -374,6 +379,7 @@ public class ContentManagementService {
      */
     public Content setContentStatus(ContentIdentifier cid, int newStatus, String note) throws NotAuthorizedException, SystemException {
         Content c = getContent(cid);
+        boolean hasBeenPublished = ContentAO.hasBeenPublished(c.getId());
         if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
             throw new NotAuthorizedException("setContentStatus", SOURCE);
         }
@@ -401,7 +407,7 @@ public class ContentManagementService {
 
             if (c.getPublishDate() == null) {
                 newPublishDate = currentTime;
-            } else if (!ContentAO.hasBeenPublished(cid.getContentId())) {
+            } else if (! hasBeenPublished) {
                 // If the content has not been published before and publish date has been set to be some time earlier than the publishing
                 // is performed, set the publish date to the exact time when the content is published.
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
@@ -412,8 +418,13 @@ public class ContentManagementService {
         }
 
         EventLog.log(securitySession, request, event, c.getTitle(), c);
+        Content content = ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
-        return ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
+        if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
+            ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(content));
+        }
+
+        return content;
     }
 
 

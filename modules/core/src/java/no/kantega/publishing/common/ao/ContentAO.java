@@ -1442,6 +1442,9 @@ public class ContentAO {
      * @return
      */
     public static boolean hasBeenPublished(int contentId) {
+        if (contentId == -1) {
+            return false;
+        }
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
         int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", new Object[] {contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED});
         return cnt > 0;

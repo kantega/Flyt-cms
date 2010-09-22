@@ -76,6 +76,9 @@ public class ContentStateChangeJob  {
                     }
                     if (activated) {
                         contentEventNotifier.contentActivated(new ContentEvent().setContent(content));
+                        if (!ContentAO.hasBeenPublished( content.getId())) {
+                            contentEventNotifier.newContentPublished(new ContentEvent().setContent(content));
+                        }
                     }
                 }
             }
