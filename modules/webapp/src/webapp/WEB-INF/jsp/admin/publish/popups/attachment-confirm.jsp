@@ -2,6 +2,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
                  no.kantega.commons.util.URLHelper"%>
+<%@ page import="java.text.ParseException" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -21,6 +22,11 @@
 <%
     RequestParameters param = new RequestParameters(request, "utf-8");
     int id = param.getInt("attachmentId");
+    if (request.getAttribute("attachmentId") != null){
+        int rid = (Integer) request.getAttribute("attachmentId");
+        if (id == -1 && rid > -1) id = rid;
+    }
+
     boolean insertLink = param.getBoolean("insertlink");
 %>
 <kantega:section id="head">
