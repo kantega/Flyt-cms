@@ -600,7 +600,7 @@
         <tag-class>no.kantega.publishing.api.taglibs.content.SetVariableTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
-            <description>Name of page (content/metadata) attribute save as request attribute</description>
+            <description>Name of page (content/metadata) attribute to save as request attribute</description>
             <name>attribute</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
