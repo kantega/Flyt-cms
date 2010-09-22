@@ -34,7 +34,7 @@ import java.util.Map;
 public class ContentlistAttribute extends ListAttribute {
     private static String SOURCE = "aksess.ContentlistAttribute";
 
-    protected String contentTemplateId = "";
+    protected String contentTemplateId = null;
     protected int documentTypeId = -1;
     protected int siteId = -1;
 
@@ -75,8 +75,10 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     public List getListOptions(int language) {
-        ContentQuery query = new ContentQuery();        
-        query.setContentTemplate(contentTemplateId);        
+        ContentQuery query = new ContentQuery();
+        if (contentTemplateId != null && contentTemplateId != ""){
+            query.setContentTemplate(contentTemplateId);        
+        }
         if (documentTypeId != -1) {
             query.setDocumentType(documentTypeId);
         }
