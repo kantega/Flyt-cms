@@ -79,9 +79,9 @@ public class NavigatorUtil {
         if (vStatus == ContentVisibilityStatus.WAITING) {
             return "Utsatt publisering";
         } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
-            return "Utgått på dato - skjult";
+            return "Utgï¿½tt pï¿½ dato - skjult";
         } else if (vStatus == ContentVisibilityStatus.ARCHIVED) {
-            return "Utgått på dato - arkivert";
+            return "Utgï¿½tt pï¿½ dato - arkivert";
         } else {
             if (type == ContentType.SHORTCUT) {
                 return "Snarvei";
@@ -151,25 +151,23 @@ public class NavigatorUtil {
         * @return - Comma separated list of open folders
      */
     public static String getOpenFolders(boolean expand, String openFoldersList, String path, int currentId) {
-
-        if (currentId != -1) {
-            if (openFoldersList != null) {
-                if (openFoldersList.endsWith(",")) {
-                    openFoldersList += currentId;
-                } else {
-                    openFoldersList += ","+currentId;
-                }
+        if (openFoldersList == null) {
+            openFoldersList = "";
+        }
+           
+        if (expand && currentId != -1) {
+            if (openFoldersList.endsWith(",")) {
+                openFoldersList += currentId;
             } else {
-                openFoldersList = ""+currentId;
+                openFoldersList += ","+currentId;
             }
         }
 
-        // Liste med åpne foldere
+        // List of open folders
         int[] openFolders = StringHelper.getInts(openFoldersList, ",");
 
         if (expand && path != null) {
-            // Vi må legge til id'er slik at treet åpnes og viser denne...
-
+            // Add all elements in path to expand tree
             if (path.length() > 1) {
                 int pathIds[] = StringHelper.getInts(path, "/");
                 if (pathIds != null) {

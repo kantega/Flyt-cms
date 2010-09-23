@@ -96,13 +96,15 @@ public class NavigatorAction implements Controller {
         boolean expand = params.getBoolean(AdminRequestParameters.EXPAND, true);
 
         if (openFoldersList == null || openFoldersList.length() == 0) {
-            // No folders open, set startpage as open
-            try {
-                ContentIdentifier cid = new ContentIdentifier(request, "/");
-                openFoldersList = "0," + cid.getAssociationId();
-
-            } catch (ContentNotFoundException e) {
-                openFoldersList = "0";
+            openFoldersList = "0";
+            if (currentContent == null) {
+                // No folders open and no page is current, set startpage as open                
+                try {
+                    ContentIdentifier cid = new ContentIdentifier(request, "/");
+                    currentId = cid.getAssociationId();
+                } catch (ContentNotFoundException e) {
+                    // Do nothing
+                }
             }
             if (startId != -1) {
                 openFoldersList += "," + startId;
