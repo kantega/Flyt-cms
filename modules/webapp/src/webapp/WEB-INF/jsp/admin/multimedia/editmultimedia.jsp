@@ -71,7 +71,12 @@
                     p = window.parent;
                 }
 
-                $("#MaxWidth").val(p.focusFieldMaxWidth);
+                // Get max width of editor field, image should be resized to fit
+                var editor = p.tinymce.EditorManager.activeEditor;
+                var editorwidth = editor.dom.getSize(editor.dom.getRoot()).w;
+
+                // Subtract 10 pixels to avoid scrolling
+                $("#MaxWidth").val(editorwidth - 10);
             }
 
             <c:if test="${isPropertyPaneEditable}">

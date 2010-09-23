@@ -26,9 +26,10 @@
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 
-    //TODO:
-    int maxWidth = 570;//param.getInt("maxWidth");
-
+    int maxWidth = param.getInt("maxWidth");
+    if (maxWidth == -1) {
+        maxWidth = 570;
+    }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
@@ -51,9 +52,8 @@
                 // Insert IMG or other tag
                 var str = document.mediaform.tag.value;
                 var editor = p.tinymce.EditorManager.activeEditor;
-                // IE 7 & 8 loses selection. Must be restored manually.
+                // IE 7 & 8 looses selection. Must be restored manually.
                 tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
-                str = changeMediaWidth(editor, str);
                 insertHtml(editor, str);
             } else if (p.openaksess.editcontext.doInsertUrl) {
                 // Insert url and name
@@ -76,22 +76,6 @@
         editor.execCommand("mceBeginUndoLevel");
         editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
         editor.execCommand("mceEndUndoLevel");
-    }
-    // Bytt ut width parameter til å være bredden på editorvinduet.
-    function changeMediaWidth(editor, html){
-        var elem = editor.dom.getRoot();
-        var size = editor.dom.getSize(elem);
-        
-        var editorwidth = size.w;
-        var widthpattern=/(width=\"*)(\d*)(\"*)/gi;
-        var match = widthpattern.exec(html);
-        var orgw = match[2];
-        if(orgw > editorwidth){
-           var replaceString = "$1" + editorwidth + "$3";
-           return html.replace(widthpattern, replaceString);
-        }else {
-           return html;
-        }
     }
 </script>
 <body onLoad="insertMMObject()">
