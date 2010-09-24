@@ -26,7 +26,6 @@
 <kantega:section id="contentclass">linkCheck</kantega:section>
 
 <kantega:section id="head extras">
-    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { };

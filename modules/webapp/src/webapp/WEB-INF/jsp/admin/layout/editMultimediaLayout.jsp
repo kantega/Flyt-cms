@@ -22,7 +22,6 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.js"></script>
-    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { content : {} };

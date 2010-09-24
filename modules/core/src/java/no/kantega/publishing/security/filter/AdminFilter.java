@@ -16,23 +16,22 @@
 
 package no.kantega.publishing.security.filter;
 
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.client.filter.CrossSiteRequestForgeryContentRewriter;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.client.filter.CrossSiteRequestForgeryContentRewriter;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.exception.ExceptionHandler;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.spring.RootContext;
+import org.apache.log4j.Logger;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Map;
 import java.math.BigInteger;
-
-import org.apache.log4j.Logger;
+import java.util.Map;
 
 /**
  *
@@ -52,6 +51,8 @@ public class AdminFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
         request.setAttribute(ServletContext.class.getName(), servletContext);
+
+        request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
         try {
             ContentManagementService aksessService = new ContentManagementService(request);

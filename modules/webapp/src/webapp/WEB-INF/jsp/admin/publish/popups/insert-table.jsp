@@ -20,7 +20,6 @@
   --%>
 
 <%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
     RequestParameters param = new RequestParameters(request);
     if (param.getBoolean("edit", false)) {
         request.setAttribute("modifyExisting", Boolean.TRUE);

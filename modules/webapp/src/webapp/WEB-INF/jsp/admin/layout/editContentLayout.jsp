@@ -23,7 +23,6 @@
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.css"/>">
-    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { };

@@ -36,7 +36,6 @@
 
     response.setDateHeader("Expires", 0);
 
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
     String skin =   "default";
 

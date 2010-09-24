@@ -26,7 +26,6 @@
   --%>
 
 <%
-    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
 
     response.setDateHeader("Expires", 0);

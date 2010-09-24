@@ -22,7 +22,6 @@
 <kantega:section id="title"><kantega:label key="aksess.publishinfo.period"/></kantega:section>
 
 <kantega:section id="head">
-    <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { };
