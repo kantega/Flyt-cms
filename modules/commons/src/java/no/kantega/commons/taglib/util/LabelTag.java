@@ -37,7 +37,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
     private String key = null;
     private String bundle = LocaleLabels.DEFAULT_BUNDLE;
     private String locale = null;
-    private boolean javaScriptEscape = false;
+    private boolean escapeJavascript = false;
     private Map<String, Object> params = null;
 
     public void setKey(String key) {
@@ -68,7 +68,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                 }
 
                 String textLabel = LocaleLabels.getLabel(key, bundle, locale, params);
-                if (javaScriptEscape) {
+                if (escapeJavascript) {
                     textLabel = JavaScriptUtils.javaScriptEscape(textLabel);
                 }
                 out.print(textLabel);
@@ -76,7 +76,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                 out.print("ERROR: LabelTag, missing key");
             }
             params = null;
-            javaScriptEscape = false;
+            escapeJavascript = false;
             key = null;
             bundle = LocaleLabels.DEFAULT_BUNDLE;
             locale = null;
@@ -99,7 +99,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
         params.put(localname, o);
     }
 
-    public void setJavaScriptEscape(boolean javaScriptEscape) {
-        this.javaScriptEscape = javaScriptEscape;
+    public void setEscapeJavascript(boolean escapeJavascript) {
+        this.escapeJavascript = escapeJavascript;
     }
 }

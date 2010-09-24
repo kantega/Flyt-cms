@@ -112,7 +112,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>javaScriptEscape</name>
+            <name>escapeJavascript</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
             <type>boolean</type>
