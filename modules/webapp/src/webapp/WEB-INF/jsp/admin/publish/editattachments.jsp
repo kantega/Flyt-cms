@@ -42,9 +42,9 @@
     function updateAttachment(id) {
         var title;
         if (id == -1) {
-            title = '<kantega:label key="aksess.attachment.add"/>';
+            title = '<kantega:label key="aksess.attachment.add" escapeJavascript="true"/>';
         } else {
-            title = '<kantega:label key="aksess.attachment.update"/>';
+            title = '<kantega:label key="aksess.attachment.update" escapeJavascript="true"/>';
         }
         openaksess.common.modalWindow.open({title:title, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action?attachmentId=" + id,width: 380, height:250});
     }

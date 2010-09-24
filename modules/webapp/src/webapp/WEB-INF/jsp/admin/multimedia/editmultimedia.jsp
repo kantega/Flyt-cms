@@ -34,17 +34,17 @@
 
         function saveForm() {
             if ("${media.id}" != "-1" && $("#MultimediaName").val() == "") {
-                alert('<kantega:label key="aksess.multimedia.name.missing"/>');
+                alert('<kantega:label key="aksess.multimedia.name.missing" escapeJavascript="true"/>');
                 return;
             }
 
             if (${altNameRequired} && $("#MultimediaAltName").val() == "") {
-                alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
+                alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
                 return;
             }
 
             if (${descriptionRequired} && $("#MultimediaDescription").val() == "") {
-                alert('<kantega:label key="aksess.multimedia.description.missing"/>');
+                alert('<kantega:label key="aksess.multimedia.description.missing" escapeJavascript="true"/>');
                 return;
             }
 

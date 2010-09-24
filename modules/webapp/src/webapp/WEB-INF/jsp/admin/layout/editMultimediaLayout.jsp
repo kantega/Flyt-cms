@@ -31,15 +31,15 @@
             properties.editcontext = {};
         }
         properties.editcontext['labels'] = {
-            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
-            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
-            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit"/>',
-            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
-            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
-            adduser : '<kantega:label key="aksess.adduser.title"/>',
-            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
-            addrole : '<kantega:label key="aksess.addrole.title"/>',
-            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+            selecttopic : '<kantega:label key="aksess.selecttopic.title" escapeJavascript="true"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>',
+            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit" escapeJavascript="true"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge" escapeJavascript="true"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer" escapeJavascript="true"/>',
+            adduser : '<kantega:label key="aksess.adduser.title" escapeJavascript="true"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title" escapeJavascript="true"/>',
+            addrole : '<kantega:label key="aksess.addrole.title" escapeJavascript="true"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value" escapeJavascript="true"/>'
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>

@@ -22,13 +22,13 @@
 <script type="text/javascript">
     function validateUpload() {
         if (document.uploadForm.elements['file'].value == "") {
-            alert('<kantega:label key="aksess.multimedia.uploadfile.missing"/>');
+            alert('<kantega:label key="aksess.multimedia.uploadfile.missing" escapeJavascript="true"/>');
             return false;
         }
     <c:if test="${id == -1}">
     <c:if test="${altNameRequired}">
         if (document.uploadForm.elements['altname'].value == "") {
-            alert('<kantega:label key="aksess.multimedia.altname.missing"/>');
+            alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
             return false;
         }
     </c:if>

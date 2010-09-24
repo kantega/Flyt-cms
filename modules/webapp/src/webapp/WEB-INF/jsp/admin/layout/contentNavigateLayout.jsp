@@ -15,9 +15,6 @@
 --%>
 
 <%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
-<%@ page import="java.util.LinkedHashMap" %>
-<%@ page import="java.util.Map" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-contentnavigatelayout.css"/>">
@@ -31,47 +28,39 @@
             properties.content = {};
         }
         properties.content['labels'] = {
-            <%
-            // Need to map the Javascript labels to OA text label names
-            // This is just so we can use <c:forEach below instead of repeating all the taglib code for each label
-            Map<String, String> labels = new LinkedHashMap<String, String>();
-            labels.put("confirmDelete", "aksess.confirmdelete.title");
-            labels.put("copyPaste", "aksess.copypaste.title");
-            labels.put("publishinfoPeriod", "aksess.publishinfo.period");
-            labels.put("editPermissions", "aksess.editpermissions.title");
-            labels.put("reject", "aksess.reject.title");
-            labels.put("linkcheckField", "aksess.linkcheck.field");
-            labels.put("linkcheckUrl", "aksess.linkcheck.url");
-            labels.put("linkcheckStatus", "aksess.linkcheck.status");
-            labels.put("linkcheckLastchecked", "aksess.linkcheck.lastchecked");
-            labels.put("linkcheckTimeschecked", "aksess.linkcheck.timeschecked");
-            labels.put("linkcheckStatus10", "aksess.linkcheck.statuses.10");
-            labels.put("linkcheckStatus11", "aksess.linkcheck.statuses.11");
-            labels.put("linkcheckStatus2", "aksess.linkcheck.statuses.2");
-            labels.put("linkcheckStatus4", "aksess.linkcheck.statuses.4");
-            labels.put("linkcheckStatus5", "aksess.linkcheck.statuses.5");
-            labels.put("linkcheckStatus6", "aksess.linkcheck.statuses.6");
-            labels.put("linkcheckStatus7", "aksess.linkcheck.statuses.7");
-            labels.put("linkcheckStatus8", "aksess.linkcheck.statuses.8");
-            labels.put("linkcheckStatus9", "aksess.linkcheck.statuses.9");
-            labels.put("httpStatus401", "aksess.linkcheck.httpstatus.401");
-            labels.put("httpStatus404", "aksess.linkcheck.httpstatus.404");
-            labels.put("httpStatus500", "aksess.linkcheck.httpstatus.500");
-            labels.put("details", "aksess.infoslider.details");
-            labels.put("publishinfoAlias", "aksess.publishinfo.alias");
-            labels.put("contentTitle", "aksess.contentproperty.title");
-            labels.put("contentLastModified", "aksess.contentproperty.lastmodified");
-            labels.put("contentModifiedBy", "aksess.contentproperty.modifiedby");
-            labels.put("contentApprovedBy", "aksess.contentproperty.approvedby");
-            labels.put("contentChangeFrom", "aksess.contentproperty.changefrom");
-            labels.put("contentExpireDate", "aksess.contentproperty.expiredate");
-            labels.put("contentOwnerPerson", "aksess.contentproperty.ownerperson");
-            labels.put("contentDisplayTemplate", "aksess.contentproperty.displayTemplate");
-            labels.put("associations", "aksess.infoslider.associations");
-            pageContext.setAttribute("labels", labels);
-            %>
-            <c:forEach items="${labels}" var="label" varStatus="status">${label.key}: '<spring:escapeBody javaScriptEscape="true"><kantega:label key="${label.value}"/></spring:escapeBody>'<c:if test="${!status.last}">,</c:if>
-            </c:forEach>
+            confirmDelete : '<kantega:label key="aksess.confirmdelete.title" escapeJavascript="true"/>',
+            copyPaste : '<kantega:label key="aksess.copypaste.title" escapeJavascript="true"/>',
+            publishinfoPeriod : '<kantega:label key="aksess.publishinfo.period" escapeJavascript="true"/>',
+            editPermissions : '<kantega:label key="aksess.editpermissions.title" escapeJavascript="true"/>',
+            reject : '<kantega:label key="aksess.reject.title" escapeJavascript="true"/>',
+            linkcheckField : '<kantega:label key="aksess.linkcheck.field" escapeJavascript="true"/>',
+            linkcheckUrl : '<kantega:label key="aksess.linkcheck.url" escapeJavascript="true"/>',
+            linkcheckStatus : '<kantega:label key="aksess.linkcheck.status" escapeJavascript="true"/>',
+            linkcheckLastchecked : '<kantega:label key="aksess.linkcheck.lastchecked" escapeJavascript="true"/>',
+            linkcheckTimeschecked : '<kantega:label key="aksess.linkcheck.timeschecked" escapeJavascript="true"/>',
+            linkcheckStatus10: '<kantega:label key="aksess.linkcheck.statuses.10" escapeJavascript="true"/>',
+            linkcheckStatus11: '<kantega:label key="aksess.linkcheck.statuses.11" escapeJavascript="true"/>',
+            linkcheckStatus2: '<kantega:label key="aksess.linkcheck.statuses.2" escapeJavascript="true"/>',
+            linkcheckStatus4: '<kantega:label key="aksess.linkcheck.statuses.4" escapeJavascript="true"/>',
+            linkcheckStatus5: '<kantega:label key="aksess.linkcheck.statuses.5" escapeJavascript="true"/>',
+            linkcheckStatus6: '<kantega:label key="aksess.linkcheck.statuses.6" escapeJavascript="true"/>',
+            linkcheckStatus7: '<kantega:label key="aksess.linkcheck.statuses.7" escapeJavascript="true"/>',
+            linkcheckStatus8: '<kantega:label key="aksess.linkcheck.statuses.8" escapeJavascript="true"/>',
+            linkcheckStatus9: '<kantega:label key="aksess.linkcheck.statuses.9" escapeJavascript="true"/>',
+            httpStatus401: '<kantega:label key="aksess.linkcheck.httpstatus.401" escapeJavascript="true"/>',
+            httpStatus404: '<kantega:label key="aksess.linkcheck.httpstatus.404" escapeJavascript="true"/>',
+            httpStatus500: '<kantega:label key="aksess.linkcheck.httpstatus.500" escapeJavascript="true"/>',
+            details : '<kantega:label key="aksess.infoslider.details" escapeJavascript="true"/>',
+            publishinfoAlias : '<kantega:label key="aksess.publishinfo.alias" escapeJavascript="true"/>',
+            contentTitle : '<kantega:label key="aksess.contentproperty.title" escapeJavascript="true"/>',
+            contentLastModified : '<kantega:label key="aksess.contentproperty.lastmodified" escapeJavascript="true"/>',
+            contentModifiedBy : '<kantega:label key="aksess.contentproperty.modifiedby" escapeJavascript="true"/>',
+            contentApprovedBy : '<kantega:label key="aksess.contentproperty.approvedby" escapeJavascript="true"/>',
+            contentChangeFrom : '<kantega:label key="aksess.contentproperty.changefrom" escapeJavascript="true"/>',
+            contentExpireDate : '<kantega:label key="aksess.contentproperty.expiredate" escapeJavascript="true"/>',
+            contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson" escapeJavascript="true"/>',
+            contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate" escapeJavascript="true"/>',
+            associations : '<kantega:label key="aksess.infoslider.associations" escapeJavascript="true"/>'
         };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>

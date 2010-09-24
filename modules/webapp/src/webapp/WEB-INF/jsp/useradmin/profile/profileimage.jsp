@@ -35,7 +35,7 @@
                 <p class="profileImage">
                     <img src="${profileImage.url}&amp;height=${profileImage.height}&amp;width=${profileImage.width}" alt="${profileImage.name}"/>
                 </p>
-                <p><input name="delete" type="submit" value="<kangega:label key="useradmin.profileimage.delete"/>" onclick="return confirm('<kantega:label key="useradmin.profileimage.delete.confirm"/>')"></p>
+                <p><input name="delete" type="submit" value="<kangega:label key="useradmin.profileimage.delete"/>" onclick="return confirm('<kantega:label key="useradmin.profileimage.delete.confirm" escapeJavascript="true"/>')"></p>
             </c:if>
             <p>
                 <label><kangega:label key="useradmin.profileimage.image"/></label>

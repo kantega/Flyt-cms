@@ -63,7 +63,7 @@
                     openaksess.common.debug("showdisplayperiod - set new date:" + fromDate + "-" + endDate);
                     $.post("../publish/UpdateDisplayPeriod.action", {associationId:${content.association.id}, from_date: fromDate, from_time:fromTime, end_date:endDate, end_time:endTime, updateChildren: updateChild}, function(data) {
                         if (data.error) {
-                            alert('<kantega:label key="aksess.error.generic"/>');
+                            alert('<kantega:label key="aksess.error.generic" escapeJavascript="true"/>');
                         } else {
                             setTimeout("closeWindow()", 10);
                         }

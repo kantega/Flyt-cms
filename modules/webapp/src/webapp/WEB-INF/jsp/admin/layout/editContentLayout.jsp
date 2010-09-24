@@ -38,43 +38,43 @@
             properties.formeditor = { };
         }
         properties.date.labels = {
-            feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat"/>",
-            skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn"/>",
-            feildag : "<kantega:label key="aksess.js.advarsel.dato.feildag"/>",
-            feilmaned : "<kantega:label key="aksess.js.advarsel.dato.feilmaned"/>",
-            feilar : "<kantega:label key="aksess.js.advarsel.dato.feilar"/>",
-            feildagtall : "<kantega:label key="aksess.js.advarsel.dato.feildagtall"/>",
-            feilmanedtall : "<kantega:label key="aksess.js.advarsel.dato.feilmanedtall"/>",
-            feilartall : "<kantega:label key="aksess.js.advarsel.dato.feilartall"/>",
-            feilskuddarmaned : "<kantega:label key="aksess.js.advarsel.dato.feilskuddarmaned"/>",
-            feiltidsformatKolon : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.kolon"/>",
-            feiltidsformat : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat"/>",
-            feiltidsformatMinuttermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minuttermindre"/>",
-            feiltidsformatMinutterstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minutterstorre"/>",
-            feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre"/>",
-            feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
+            feilformat : "<kantega:label key="aksess.js.advarsel.dato.feilformat" escapeJavascript="true"/>",
+            skilletegn : "<kantega:label key="aksess.js.advarsel.dato.skilletegn" escapeJavascript="true"/>",
+            feildag : "<kantega:label key="aksess.js.advarsel.dato.feildag" escapeJavascript="true"/>",
+            feilmaned : "<kantega:label key="aksess.js.advarsel.dato.feilmaned" escapeJavascript="true"/>",
+            feilar : "<kantega:label key="aksess.js.advarsel.dato.feilar" escapeJavascript="true"/>",
+            feildagtall : "<kantega:label key="aksess.js.advarsel.dato.feildagtall" escapeJavascript="true"/>",
+            feilmanedtall : "<kantega:label key="aksess.js.advarsel.dato.feilmanedtall" escapeJavascript="true"/>",
+            feilartall : "<kantega:label key="aksess.js.advarsel.dato.feilartall" escapeJavascript="true"/>",
+            feilskuddarmaned : "<kantega:label key="aksess.js.advarsel.dato.feilskuddarmaned" escapeJavascript="true"/>",
+            feiltidsformatKolon : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.kolon" escapeJavascript="true"/>",
+            feiltidsformat : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat" escapeJavascript="true"/>",
+            feiltidsformatMinuttermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minuttermindre" escapeJavascript="true"/>",
+            feiltidsformatMinutterstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.minutterstorre" escapeJavascript="true"/>",
+            feiltidsformatTimermindre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timermindre" escapeJavascript="true"/>",
+            feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre" escapeJavascript="true"/>"
         };
         properties.editcontext.labels = {
-            selecttopic : '<kantega:label key="aksess.selecttopic.title"/>',
-            selectcontent : '<kantega:label key="aksess.popup.selectcontent"/>',
-            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit"/>',
-            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge"/> ',
-            warningElements : '<kantega:label key="aksess.js.advarsel.elementer"/>',
-            adduser : '<kantega:label key="aksess.adduser.title"/>',
-            multimedia : '<kantega:label key="aksess.multimedia.title"/>',
-            addrole : '<kantega:label key="aksess.addrole.title"/>',
-            editablelistValue : '<kantega:label key="aksess.editablelist.value"/>'
+            selecttopic : '<kantega:label key="aksess.selecttopic.title" escapeJavascript="true"/>',
+            selectcontent : '<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>',
+            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit" escapeJavascript="true"/>',
+            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge" escapeJavascript="true"/> ',
+            warningElements : '<kantega:label key="aksess.js.advarsel.elementer" escapeJavascript="true"/>',
+            adduser : '<kantega:label key="aksess.adduser.title" escapeJavascript="true"/>',
+            multimedia : '<kantega:label key="aksess.multimedia.title" escapeJavascript="true"/>',
+            addrole : '<kantega:label key="aksess.addrole.title" escapeJavascript="true"/>',
+            editablelistValue : '<kantega:label key="aksess.editablelist.value" escapeJavascript="true"/>'
         };
         properties.formeditor.labels = {
-            buttonEdit : '<kantega:label key="aksess.button.edit"/>',
-            buttonDelete : '<kantega:label key="aksess.button.delete"/>',
-            deleteformdataConfirm : '<kantega:label key="aksess.formeditor.deleteformdata.confirm"/>',
-            typeText : '<kantega:label key="aksess.formeditor.type.text"/>',
-            typeTextarea : '<kantega:label key="aksess.formeditor.type.textarea"/>',
-            typeCheckbox : '<kantega:label key="aksess.formeditor.type.checkbox"/>',
-            typeRadio : '<kantega:label key="aksess.formeditor.type.radio"/>',
-            typeSelect : '<kantega:label key="aksess.formeditor.type.select"/>',
-            typeHidden : '<kantega:label key="aksess.formeditor.type.hidden"/>'
+            buttonEdit : '<kantega:label key="aksess.button.edit" escapeJavascript="true"/>',
+            buttonDelete : '<kantega:label key="aksess.button.delete" escapeJavascript="true"/>',
+            deleteformdataConfirm : '<kantega:label key="aksess.formeditor.deleteformdata.confirm" escapeJavascript="true"/>',
+            typeText : '<kantega:label key="aksess.formeditor.type.text" escapeJavascript="true"/>',
+            typeTextarea : '<kantega:label key="aksess.formeditor.type.textarea" escapeJavascript="true"/>',
+            typeCheckbox : '<kantega:label key="aksess.formeditor.type.checkbox" escapeJavascript="true"/>',
+            typeRadio : '<kantega:label key="aksess.formeditor.type.radio" escapeJavascript="true"/>',
+            typeSelect : '<kantega:label key="aksess.formeditor.type.select" escapeJavascript="true"/>',
+            typeHidden : '<kantega:label key="aksess.formeditor.type.hidden" escapeJavascript="true"/>'
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>

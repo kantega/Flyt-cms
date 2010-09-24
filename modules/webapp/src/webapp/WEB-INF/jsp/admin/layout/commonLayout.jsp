@@ -34,9 +34,9 @@
         if (typeof properties == 'undefined') {
             var properties = { };
         }
-        properties.title = '<kantega:label key="aksess.title"/>';
+        properties.title = '<kantega:label key="aksess.title" escapeJavascript="true"/>';
         properties.contextPath = '${pageContext.request.contextPath}';
-        properties.loadingText = '<kantega:label key="aksess.ajax.loading"/>';
+        properties.loadingText = '<kantega:label key="aksess.ajax.loading" escapeJavascript="true"/>';
         properties.debug = <aksess:getconfig key="javascript.debug" default="false"/>;
         properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';

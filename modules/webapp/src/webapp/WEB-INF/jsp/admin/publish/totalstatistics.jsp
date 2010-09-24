@@ -85,8 +85,8 @@
                 openaksess.statistics.drawDateViewStatistics = function() {
                     var chart;
                     var data = new google.visualization.DataTable();
-                    data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.day"/>');
-                    data.addColumn('number', '<kantega:label key="aksess.statistics.pageviews.noviews"/>');
+                    data.addColumn('string', '<kantega:label key="aksess.statistics.pageviews.day" escapeJavascript="true"/>');
+                    data.addColumn('number', '<kantega:label key="aksess.statistics.pageviews.noviews" escapeJavascript="true"/>');
                     data.addRows(${fn:length(dateViewStatistics)});
                 <c:forEach var="stat" items="${dateViewStatistics}" varStatus="status">
                     data.setValue(${status.index}, 0, '${stat.period} (<fmt:formatNumber value="${(stat.noPageViews*100)/sumHits}" minFractionDigits="2" maxFractionDigits="2"/> %)');

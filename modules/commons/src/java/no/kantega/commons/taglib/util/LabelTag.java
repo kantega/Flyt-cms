@@ -17,6 +17,7 @@
 package no.kantega.commons.taglib.util;
 
 import no.kantega.commons.util.LocaleLabels;
+import org.springframework.web.util.JavaScriptUtils;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.tagext.DynamicAttributes;
@@ -36,6 +37,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
     private String key = null;
     private String bundle = LocaleLabels.DEFAULT_BUNDLE;
     private String locale = null;
+    private boolean javaScriptEscape = false;
     private Map<String, Object> params = null;
 
     public void setKey(String key) {
@@ -57,20 +59,27 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             if (key != null) {
                 Locale locale = (Locale)request.getAttribute("aksess_locale");
-                if( this.locale!=null){
+                if (this.locale != null){
                     String[] localePair = this.locale.split("_");
-                    locale = new Locale(localePair[0],localePair[1]);
+                    locale = new Locale(localePair[0], localePair[1]);
                 }
                 if (locale == null) {
                     locale = new Locale("no", "NO");
                 }
 
                 String textLabel = LocaleLabels.getLabel(key, bundle, locale, params);
+                if (javaScriptEscape) {
+                    textLabel = JavaScriptUtils.javaScriptEscape(textLabel);
+                }
                 out.print(textLabel);
             } else {
                 out.print("ERROR: LabelTag, missing key");
             }
             params = null;
+            javaScriptEscape = false;
+            key = null;
+            bundle = LocaleLabels.DEFAULT_BUNDLE;
+            locale = null;
         } catch (IOException e) {
             throw new JspException("ERROR: LabelTag:" + e);
         }
@@ -88,5 +97,9 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
             params = new HashMap<String, Object>();
         }
         params.put(localname, o);
+    }
+
+    public void setJavaScriptEscape(boolean javaScriptEscape) {
+        this.javaScriptEscape = javaScriptEscape;
     }
 }

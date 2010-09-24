@@ -37,18 +37,18 @@
     }
 
     var monthNames = [
-        '<kantega:label key="aksess.googleanalytics.january"/>',
-        '<kantega:label key="aksess.googleanalytics.february"/>',
-        '<kantega:label key="aksess.googleanalytics.march"/>',
-        '<kantega:label key="aksess.googleanalytics.april"/>',
-        '<kantega:label key="aksess.googleanalytics.may"/>',
-        '<kantega:label key="aksess.googleanalytics.june"/>',
-        '<kantega:label key="aksess.googleanalytics.july"/>',
-        '<kantega:label key="aksess.googleanalytics.august"/>',
-        '<kantega:label key="aksess.googleanalytics.september"/>',
-        '<kantega:label key="aksess.googleanalytics.october"/>',
-        '<kantega:label key="aksess.googleanalytics.november"/>',
-        '<kantega:label key="aksess.googleanalytics.december"/>'
+        '<kantega:label key="aksess.googleanalytics.january" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.february" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.march" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.april" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.may" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.june" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.july" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.august" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.september" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.october" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.november" escapeJavascript="true"/>',
+        '<kantega:label key="aksess.googleanalytics.december" escapeJavascript="true"/>'
     ];
 
     function getMonthName(month) {

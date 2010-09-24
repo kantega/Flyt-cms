@@ -32,11 +32,11 @@
             properties.multimedia = {};
         }
         properties.multimedia['labels'] = {
-            confirmDelete : '<kantega:label key="aksess.confirmdelete.title"/>',
-            copypaste : '<kantega:label key="aksess.copypaste.title"/>',
-            editpermissions : '<kantega:label key="aksess.editpermissions.title"/>',
-            foldername : '<kantega:label key="aksess.multimedia.foldername"/>',
-            aksessToolsUpload : '<kantega:label key="aksess.tools.upload"/>'
+            confirmDelete : '<kantega:label key="aksess.confirmdelete.title" escapeJavascript="true"/>',
+            copypaste : '<kantega:label key="aksess.copypaste.title" escapeJavascript="true"/>',
+            editpermissions : '<kantega:label key="aksess.editpermissions.title" escapeJavascript="true"/>',
+            foldername : '<kantega:label key="aksess.multimedia.foldername" escapeJavascript="true"/>',
+            aksessToolsUpload : '<kantega:label key="aksess.tools.upload" escapeJavascript="true"/>'
         };
         properties.contextPath = "${pageContext.request.contextPath}";
         properties.objectTypeMultimedia = <%=ObjectType.MULTIMEDIA%>;
