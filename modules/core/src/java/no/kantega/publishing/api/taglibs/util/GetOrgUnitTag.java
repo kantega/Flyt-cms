@@ -38,6 +38,10 @@ public class GetOrgUnitTag extends TagSupport {
 
     @SuppressWarnings("unchecked")
     public int doStartTag() throws JspException {
+        if (orgUnitId == null || orgUnitId.trim().length() == 0) {
+            return SKIP_BODY;
+        }
+
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             Map<String, OrganizationManager> organizationManagers =  RootContext.getInstance().getBeansOfType(OrganizationManager.class);
