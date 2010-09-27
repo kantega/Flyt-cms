@@ -2423,5 +2423,30 @@
             ]]>
         </example>
     </tag>
+    <tag>
+        <description>Fetch an organizational unit and store as request attribute</description>
+        <name>getorgunit</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetOrgUnitTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>OrgUnitId of unit to fetch</description>
+            <name>orgunitid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute. The attribute is of type no.kantega.publishing.org.OrgUnit. If not specified, the name will be set to 'currentorgunit'</description>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+              <example>
+            <![CDATA[
+                    Display the name of unit with id 24:
+                        <aksess:getorgunit orgunitid="24" name="unit"/>
+                        <span class="unitname">${unit.name}</span>
+            ]]>
+        </example>
+    </tag>    
 
 </taglib>
