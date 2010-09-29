@@ -30,6 +30,9 @@
     if (maxWidth == -1) {
         maxWidth = 570;
     }
+    if (maxWidth > mm.getWidth()) {
+        maxWidth = mm.getWidth();
+    }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
