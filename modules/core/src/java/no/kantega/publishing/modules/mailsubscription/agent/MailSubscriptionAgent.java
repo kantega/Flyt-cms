@@ -44,6 +44,7 @@ import java.util.*;
  */
 public class MailSubscriptionAgent {
     private static final String SOURCE = "aksess.MailSubscriptionAgent";
+    private MailSubscriptionDeliveryService mailSubscriptionDeliveryService;
 
     /**
      *
@@ -53,37 +54,7 @@ public class MailSubscriptionAgent {
      * @throws ConfigurationException -
      * @throws SystemException -
      */
-    public void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) throws  ConfigurationException, SystemException {
-        Configuration config = Aksess.getConfiguration();
-
-        String baseurl = Aksess.getBaseUrl();
-
-        String alias = ".";
-        if (site != null && !site.getAlias().equals("/")) {
-            alias = site.getAlias();
-            alias = alias.replace('/', '.');
-            baseurl = site.getDefaultBaseUrl();
-        }
-
-
-        // Parameters may be given site specific using "mail.alias..." or global for all sites "mail..."
-        String from = config.getString("mail" + alias + "from");
-        if (from == null) {
-            from = config.getString("mail.from");
-            if (from == null) {
-                throw new ConfigurationException("mail.from", SOURCE);
-            }
-        }
-
-        String subject = config.getString("mail" + alias + "subscription.subject", null);
-        if (subject == null) {
-            subject = config.getString("mail.subscription.subject", "Nyhetsbrev");
-        }
-
-        String template = config.getString("mail" + alias + "subscription.template", null);
-        if (template == null) {
-            template = config.getString("mail.subscription.template", "maillist.vm");
-        }
+    public void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
 
 
         Map<String, List<Content>> subscribers = new HashMap<String, List<Content>>();
@@ -96,15 +67,12 @@ public class MailSubscriptionAgent {
                     subscriberContent = new ArrayList<Content>();
                     subscribers.put(email, subscriberContent);
                 }
-                
-                for (int j = 0; j < content.size(); j++) {
-                    // Check if user subscribes to content
-                    Content c = (Content)content.get(j);
 
-                    if(isSubscriptionMatch(subscription, c, site)) {
+                for (Content c : content) {
+                    // Check if user subscribes to content
+                    if (isSubscriptionMatch(subscription, c, site)) {
                         subscriberContent.add(c);
                     }
-
                 }
             }
         }
@@ -112,19 +80,14 @@ public class MailSubscriptionAgent {
         for (String email : subscribers.keySet()) {
             // Send email to this user
             Map<String, Object> param = new HashMap<String, Object>();
-
             List<Content> subscriberContent = subscribers.get(email);
             if (subscriberContent != null && subscriberContent.size() > 0) {
-                param.put("contentlist", subscriberContent);
-                param.put("baseurl", baseurl);
-
                 try {
-                    MailSender.send(from, email, subject, template, param);
+                    mailSubscriptionDeliveryService.sendEmail(email, subscriberContent, site);
                 } catch (Exception e) {
                     Log.error(SOURCE, e, null, null);
                 }
             }
-
         }
     }
 
@@ -229,5 +192,9 @@ public class MailSubscriptionAgent {
                 c.close();
             }
         }
+    }
+
+    public void setMailSubscriptionDeliveryService(MailSubscriptionDeliveryService mailSubscriptionDeliveryService) {
+        this.mailSubscriptionDeliveryService = mailSubscriptionDeliveryService;
     }
 }

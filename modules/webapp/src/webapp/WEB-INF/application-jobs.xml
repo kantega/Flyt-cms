@@ -111,15 +111,23 @@
         </property>
     </bean>
 
+    <!-- MailSubscriptionAgent bean -->
+    <bean id="aksessMailSubscriptionDeliveryService" class="no.kantega.publishing.modules.mailsubscription.agent.DefaultMailSubscriptionService"/>
+
+    <bean id="aksessMailSubscriptionAgent" class="no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent">
+        <property name="mailSubscriptionDeliveryService" ref="aksessMailSubscriptionDeliveryService"/>
+    </bean>
+
     <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
         <property name="jobClass">
             <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
         </property>
         <property name="jobDataAsMap">
             <map>
-              <entry key="interval">
-                <value>immediate</value>
-              </entry>
+                <entry key="interval">
+                    <value>immediate</value>
+                </entry>
+              <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
@@ -130,9 +138,10 @@
         </property>
         <property name="jobDataAsMap">
             <map>
-              <entry key="interval">
-                <value>daily</value>
-              </entry>
+                <entry key="interval">
+                    <value>daily</value>
+                </entry>
+                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
@@ -143,9 +152,10 @@
         </property>
         <property name="jobDataAsMap">
             <map>
-              <entry key="interval">
-                <value>weekly</value>
-              </entry>
+                <entry key="interval">
+                    <value>weekly</value>
+                </entry>
+                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>

@@ -41,6 +41,8 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     // dette er for å sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
     private String interval = MailSubscription.IMMEDIATE;
 
+    private MailSubscriptionAgent mailSubscriptionAgent;
+
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
@@ -66,21 +68,19 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
                 if (previousRun != null) {
                     // Send ut epost med alle nye meldinger
-                    MailSubscriptionAgent agent = new MailSubscriptionAgent();
-
                     boolean groupEmails = config.getBoolean("mail.subscription.groupemails", false);
 
                     if (groupEmails) {
                         // Send en epost for alle sites
                         Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
-                        agent.emailNewContentSincePreviousDate(previousRun, interval, null);
+                        mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, null);
                     } else {
                         // Send en epost for hver site
                         List sites = SiteCache.getSites();
                         for (int i = 0; i < sites.size(); i++) {
                             Site site = (Site) sites.get(i);
                             Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
-                            agent.emailNewContentSincePreviousDate(previousRun, interval, site);
+                            mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, site);
                         }
                     }
                 }
@@ -96,5 +96,9 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
     public void setInterval(String interval) {
         this.interval = interval;
+    }
+
+    public void setMailSubscriptionAgent(MailSubscriptionAgent mailSubscriptionAgent) {
+        this.mailSubscriptionAgent = mailSubscriptionAgent;
     }
 }
