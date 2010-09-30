@@ -110,7 +110,7 @@
                         <tbody>
                         <c:forEach var="item" items="${contentForApproval}" varStatus="status">
                             <tr class="tableRow${status.index mod 2}">
-                                <td class="title"><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
+                                <td class="title"><a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
                                 <td><aksess:getattribute name="modifiedby" obj="${item}"/></td>
                                 <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
                             </tr>
@@ -150,7 +150,7 @@
                                     </thead>
                                     <c:forEach var="item" items="${worklist}" varStatus="pageNo">
                                         <tr class="tableRow${pageNo.index mod 2}">
-                                            <td><a href="../publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
+                                            <td><a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
                                             <td><aksess:getattribute name="lastmodified" obj="${item}"/></td>
                                         </tr>
                                     </c:forEach>
