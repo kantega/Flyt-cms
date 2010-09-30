@@ -4,6 +4,8 @@
 <%@ page import="no.kantega.publishing.security.realm.SecurityRealmFactory"%>
 <%@ page import="no.kantega.publishing.security.data.User"%>
 <%@ page import="no.kantega.commons.exception.SystemException"%>
+<%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -23,10 +25,18 @@
 <%
     Attribute attribute = (Attribute)request.getAttribute("attribute");
     String    fieldName = (String)request.getAttribute("fieldName");
+    Content   content   = (Content)request.getAttribute("content");
 
     String value = attribute.getValue();
     String name = null;
-    if(value != null && !value.trim().equals("")) {
+
+    if (value == null || value.length() == 0) {
+        if (ContentProperty.OWNERPERSON.equalsIgnoreCase(attribute.getField())) {
+            value = content.getOwnerPerson();
+        }
+    }
+
+    if (value != null && !value.trim().equals("")) {
         try {
             User user = SecurityRealmFactory.getInstance().lookupUser(value);
 
