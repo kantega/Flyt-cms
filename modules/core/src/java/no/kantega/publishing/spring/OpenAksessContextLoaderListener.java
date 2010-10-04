@@ -16,34 +16,30 @@
 
 package no.kantega.publishing.spring;
 
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.configuration.ConfigurationLoader;
+import no.kantega.commons.configuration.DefaultConfigurationLoader;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.ServletContextResourceLoader;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.beans.BeansException;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.configuration.DefaultConfigurationLoader;
-import no.kantega.commons.configuration.ConfigurationLoader;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Custom ContextLoaderListener for Aksess.
@@ -203,6 +199,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             Aksess.setConfiguration(configuration);
             Aksess.loadConfiguration();
 
+            dbConnectionFactory.setServletContext(servletContext);
             dbConnectionFactory.setConfiguration(configuration);
             dbConnectionFactory.loadConfiguration();
 

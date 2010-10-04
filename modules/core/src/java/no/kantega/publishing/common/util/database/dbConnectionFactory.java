@@ -18,27 +18,30 @@ package no.kantega.publishing.common.util.database;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
-
-import java.util.*;
-import java.sql.SQLException;
-import java.sql.Connection;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.URL;
-
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.apache.log4j.Logger;
+import org.kantega.openaksess.dbmigrate.DbMigrate;
+import org.kantega.openaksess.dbmigrate.ServletContextScriptSource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
+import javax.servlet.ServletContext;
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.URL;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 /**
  *
@@ -69,6 +72,8 @@ public class dbConnectionFactory {
     private static boolean debugConnections = false;
 
     private static Configuration configuration;
+    private static ServletContext servletContext;
+    private static Logger log = Logger.getLogger(dbConnectionFactory.class);
 
     public static void loadConfiguration() {
         try {
@@ -85,6 +90,7 @@ public class dbConnectionFactory {
             dbEnablePooling = configuration.getBoolean("database.enablepooling", true);
             dbCheckConnections = configuration.getBoolean("database.checkconnections", true);
             debugConnections = configuration.getBoolean("database.debugconnections", false);
+            boolean shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
             if (dbUrl == null || dbUsername == null || dbPassword == null) {
 
                 String message = "Database configuration is not complete. The following settings are missing: ";
@@ -137,6 +143,9 @@ public class dbConnectionFactory {
             }
 
             ensureDatabaseExists(ds);
+            if(shouldMigrateDatabase) {
+                migrateDatabase(servletContext, ds);
+            }
             
             if(dbEnablePooling && dbCheckConnections) {
                 BasicDataSource bds = (BasicDataSource) ds;
@@ -161,6 +170,39 @@ public class dbConnectionFactory {
             Log.error(SOURCE, e, null, null);
             System.out.println("error:" + e);
         }
+    }
+
+    public static void migrateDatabase(ServletContext servletContext, DataSource dataSource) {
+        DbMigrate migrate = new DbMigrate();
+
+        try {
+            new JdbcTemplate(dataSource).queryForInt("select count(version) from oa_db_migrations");
+        } catch (DataAccessException e) {
+            log.info("Automatic database migration cannot be enabled before the final manual upgrade is performed");
+            return;
+        }
+        String root = "/WEB-INF/dbmigrate/";
+        ServletContextScriptSource scriptSource = new ServletContextScriptSource(servletContext, root);
+                        
+        Set<String> domainPaths = servletContext.getResourcePaths(root);
+        List<String> domains = new ArrayList<String>();
+        // We want the oa domain first
+        domains.add("oa");
+
+        for (String domainPath : domainPaths) {
+            // Remove last slash
+            domainPath = domainPath.substring(0, domainPath.length()-1);
+            String domain = domainPath.substring(domainPath.lastIndexOf("/")+1);
+            if(!domain.startsWith(".") && !"oa".equals(domain)) {
+                domains.add(domain);
+            }
+        }
+
+        for (String domain : domains) {
+            log.info("Migrating database domain '" + domain +"'");
+            migrate.migrate(dataSource, domain, scriptSource);
+        }
+
     }
 
     private static void ensureDatabaseExists(DataSource dataSource) {
@@ -354,6 +396,10 @@ public class dbConnectionFactory {
                 loadConfiguration();
             }
         });
+    }
+
+    public static void setServletContext(ServletContext servletContext) {
+        dbConnectionFactory.servletContext = servletContext;
     }
 }
 

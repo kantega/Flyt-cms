@@ -31,6 +31,7 @@
       <li><a href="upgrade-62x-70x.jsp">Upgrade from 6.2.X to 7.0.X - databasechanges</a></li>
       <li><a href="multimediafolderandfilecount.jsp">Upgrade from 6.2.X to 7.0.X - multimedia files and folders count</a></li>
       <li><a href="upgrade-70x-71x.jsp">Upgrade from 7.0.X to 7.1.X - databasechanges</a></li>
+      <li><a href="enable-automigration.jsp">Enable automatic database migration</a></li>
   </ul>
 
   <h1>Export database templates to XML</h1>

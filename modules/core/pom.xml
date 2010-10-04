@@ -56,6 +56,12 @@
         </dependency>
 
         <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-dbmigrate</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.simplericity.datadirlocator</groupId>
             <artifactId>datadirlocator</artifactId>
             <version>1.2</version>
