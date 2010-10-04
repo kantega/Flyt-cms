@@ -51,47 +51,44 @@
     if (mmname.length() == 0) {
         mmname = LocaleLabels.getLabel("aksess.insertlink.multimedia.hint", Aksess.getDefaultAdminLocale());
     }
-    request.setAttribute("fieldName", fieldName);
-    request.setAttribute("originalFieldName", attribute.getName());
-
     request.setAttribute("value", value);
 %>
-<div class="inputs">
-    <c:choose>
-        <c:when test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">
+
+<c:choose>
+    <c:when test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">
+        <div class="inputs">
             <!-- For users without access to mediaarchive - simple file upload -->
             <c:if test="${fn:length(value) != 0}">
-                <div id="media">
-                    <aksess:getattribute name="${originalFieldName}" width="270" cssclass="contentMedia"/>
-                    <div class="buttonGroup">
-                        <a id="contentMediaRemove" href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
-                    </div>
-                    <script type="text/javascript">
-                        var button = $("#contentMediaRemove");
-                        var media = $(".contentMedia");
-                        button.click(function() {
-                            button.remove();
-                            media.remove();
-                        });
-                    </script>
+                <div id="${fieldName}_media">
+                    <aksess:getattribute name="${attribute.name}" obj="${content}" width="270" cssclass="contentMedia"/>
                 </div>
-            </c:if>
-            <input type="file" class="inp" name="${fieldName}_upload" value="${value}" tabindex="<%=attribute.getTabIndex()%>">
+            </c:if>        
             <input type="hidden" name="${fieldName}" value="${value}">
-        </c:when>
-        <c:otherwise>
+            <input type="file" class="inp" name="${fieldName}_upload" value="" tabindex="<%=attribute.getTabIndex()%>">
+            <c:if test="${fn:length(value) != 0}">
+                <a id="${fieldName}_remove" href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+                <script type="text/javascript">
+                    var button = $("#${fieldName}_remove");
+                    var media = $("#${fieldName}_media");
+                    button.click(function() {
+                        button.remove();
+                        media.remove();
+                    });
+                </script>
+            </c:if>
+        </div>
+    </c:when>
+    <c:otherwise>
+        <div class="inputs">
             <input type="hidden" name="${fieldName}" value="${value}" id="${fieldName}">
             <input type="text" name="${fieldName}text" id="${fieldName}text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
             <script type="text/javascript">
                 $("#${fieldName}text").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action").result(openaksess.editcontext.autocompleteInsertMediaIntoFormCallback);
             </script>
-        </c:otherwise>
-    </c:choose>
-
-</div>
-<c:if test="${miniAksessMediaArchive == null || miniAksessMediaArchive}">
-    <div class="buttonGroup">
-        <a href="Javascript:openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-        <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
-    </div>
-</c:if>
+        </div>
+        <div class="buttonGroup">
+            <a href="Javascript:openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+            <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+        </div>
+    </c:otherwise>
+</c:choose>
