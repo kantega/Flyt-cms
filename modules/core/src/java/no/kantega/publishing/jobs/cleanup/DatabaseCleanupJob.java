@@ -28,7 +28,6 @@ import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,7 +39,6 @@ import java.util.GregorianCalendar;
 public class DatabaseCleanupJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
 
-    @Autowired
     private LinkDao linkDao;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
@@ -110,13 +108,16 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setContentId(rs.getInt("ContentId"));
                 String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
-                Log.info(SOURCE, "Sletter side " + title + " fordi den har ligget i papirkurv i 1 måned", null, null);
+                Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month", null, null);
                 EventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
                 linkDao.deleteLinksForContentId(cid.getContentId());
                 MultimediaUsageAO.removeUsageForContentId(cid.getContentId());
-
                 ContentAO.deleteContent(cid);
             }
+
+            // Slett emneknytning til innhold som ikke finnes
+            st = c.prepareStatement("delete from ct2topic where ContentId not in (select ContentId from content)");
+            st.execute();
 
             // Slett lenker i lenkesjekkeren
             st = c.prepareStatement("delete from link where Id not in (select distinct LinkId from linkoccurrence)");
@@ -133,6 +134,10 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 }
             }
         }
+    }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
     }
 }
 
