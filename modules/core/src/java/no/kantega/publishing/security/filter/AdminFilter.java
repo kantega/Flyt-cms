@@ -153,7 +153,7 @@ public class AdminFilter implements Filter {
         }
 
         // It's impossible to add the X-Requested-With parameter or the csrfkey to the first DWR request, so we must manually skip this URL
-        if (request.getPathInfo().endsWith("System.pageLoaded.dwr")) {
+        if (request.getPathInfo() != null && request.getPathInfo().endsWith("System.pageLoaded.dwr")) {
             return false;
         }
 
