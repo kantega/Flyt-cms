@@ -16,3 +16,5 @@ Please note that all scripts for a version tag is run in a single transaction.
 
 Scripts in the all directory will be executed first. Scripts within a directory will be executed in 
 alphabetic order.
+
+Supported database types: 'mysql', 'sqlserver', 'derby', 'oracle', 'postgresql'.
