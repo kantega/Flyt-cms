@@ -137,7 +137,7 @@ public class ContentAO {
 
                 Content content = null;
                 try {
-                    content = ContentAO.getContent(contentIdentifier, true);                    
+                    content = ContentAO.getContent(contentIdentifier, false);
                 } catch (Exception ex) {
                     log.error(ex);
                 }
@@ -270,16 +270,15 @@ public class ContentAO {
             if (isAdminMode) {
                 if (version == -1) {
                     // When in administration mode users should see last version
-                    version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +  " order by Version desc" , "Version");
+                    version = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " order by ContentVersionId desc" , "ContentVersionId");
                     if (version == -1) {
                         return null;
                     }
                 }
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
-                int activeversion = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by Version desc" , "Version");
-                version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND Version > " +activeversion +" order by Version desc" , "Version");
-
+                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
+                version = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
             } else {
                 // Others should see active version
                 version = -1;
@@ -290,7 +289,7 @@ public class ContentAO {
             query.append("select * from content, contentversion where content.ContentId = contentversion.ContentId");
             if (version != -1) {
                 // Hent angitt versjon
-                query.append(" and contentversion.Version = " + version);
+                query.append(" and contentversion.ContentVersionId = " + version);
             } else {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");
