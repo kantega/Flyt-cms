@@ -88,7 +88,10 @@ public class ContentComparator implements Comparator {
         return 0;
     }
 
-    private Content getContentPage(String id) {
+    private String getContentTitle(String id) {
+        if (id == null || id.length() < 1){
+            return "";
+        }
         Content cp = (Content)contentPages.get(id);
         if (cp == null) {
             id = (id.indexOf(",")>-1) ? id.substring(0,id.indexOf(",")) : id;
@@ -105,7 +108,7 @@ public class ContentComparator implements Comparator {
             }
         }
 
-        return cp;
+        return (cp == null) ? "" : cp.getTitle();
     }
 
     public int compare(Object v1, Object v2) {
@@ -146,16 +149,8 @@ public class ContentComparator implements Comparator {
                         return compareDates(d1, d2);
                     } else if (a1 instanceof ContentlistAttribute) {
                         //orders by the page title and not by its id
-                        Content cp1 = getContentPage(a1.getValue());
-                        String title1 = "";
-                        if (cp1 != null) {
-                            title1 = cp1.getTitle();
-                        }
-                        Content cp2 = getContentPage(a2.getValue());
-                        String title2 = "";
-                        if (cp2 != null) {
-                            title2 = cp2.getTitle();
-                        }
+                        String title1 = getContentTitle(a1.getValue());
+                        String title2 = getContentTitle(a2.getValue());
                         return compareStrings(title1, title2);
                     } else if (a1 instanceof NumberAttribute) {
                         try {
