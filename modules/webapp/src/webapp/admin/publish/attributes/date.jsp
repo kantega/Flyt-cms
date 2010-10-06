@@ -34,7 +34,7 @@
             <tr>
                 <td><b><%=attribute.getTitle()%><%if (attribute.isMandatory()) {%> <span class="mandatory">*</span><%}%></b></td>
                 <td><img src="<%=request.getContextPath()%>/admin/bitmaps/common/textseparator.gif" alt=""></td>
-                <td><a href="#" id="velgdato<%=fieldName%>0"><img src="../bitmaps/common/buttons/mini_velg.gif" border="0" alt=""></a></td>
+                <td><a href="#" id="velgdato<%=fieldName%>0"><img src="<%=request.getContextPath()%>/admin/bitmaps/common/buttons/mini_velg.gif" border="0" alt=""></a></td>
                 <td><a href="#" id="velgdato<%=fieldName%>1" class="button"><kantega:label key="aksess.button.velg"/></a></td>
             </tr>
         </table>
