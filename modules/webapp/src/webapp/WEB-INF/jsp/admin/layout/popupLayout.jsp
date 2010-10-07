@@ -66,7 +66,7 @@
             if (window.opener) {
                 window.close();
             } else {
-                window.parent.openaksess.common.modalWindow.close();
+                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
             }
         }
 
