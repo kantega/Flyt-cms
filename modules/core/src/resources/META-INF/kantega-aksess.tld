@@ -693,7 +693,7 @@
         </example>        
     </tag>
     <tag>
-        <description>Prints body is user is authorized to edit this page</description>
+        <description>Prints body if user is authorized to edit this page</description>
         <name>iseditablebyuser</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.IsEditableByUserTag</tag-class>
         <body-content>JSP</body-content>
