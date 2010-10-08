@@ -69,7 +69,7 @@
                 <td align="right">
                     <table border="0" cellspacing="0" cellpadding="0">
                         <tr>
-                            <td><a href="RemoveContentLock.action?contentId=<%=contentLock.getContentId()%>"><img src="../bitmaps/common/buttons/mini_slett.gif" border="0" alt=""></a></td>
+                            <td><a href="RemoveContentLock.action?contentId=<%=contentLock.getContentId()%>"><img src="${pageContext.request.contextPath}/admin/bitmaps/common/buttons/mini_slett.gif" border="0" alt=""></a></td>
                             <td><a href="RemoveContentLock.action?contentId=<%=contentLock.getContentId()%>" class="button"><kantega:label key="aksess.locks.remove"/></a></td>
                         </tr>
                     </table>

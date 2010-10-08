@@ -25,11 +25,11 @@
 <body>
     <table border="0" cellspacing="0" cellpadding="0" width="100%">
         <tr>
-            <td background="<%=framework_bitmaps%>/navigator_bottom.gif"><img src="../bitmaps/blank.gif" width="4" height="4"></td>
+            <td background="<%=framework_bitmaps%>/navigator_bottom.gif"><img src="${pageContext.request.contextPath}/admin/bitmaps/blank.gif" width="4" height="4"></td>
         </tr>
         <tr>
-            <td class="framework"><a href="Javascript:window.parent.main.submitHearing()"><img src="../bitmaps/<%=skin%>/buttons/ok.gif" border="0" hspace="4" vspace="4"></a>
-            <a href="Javascript:window.parent.close()"><img src="../bitmaps/<%=skin%>/buttons/avbryt.gif" border="0" hspace="4" vspace="4"></a></td>
+            <td class="framework"><a href="Javascript:window.parent.main.submitHearing()"><img src="${pageContext.request.contextPath}/admin/bitmaps/<%=skin%>/buttons/ok.gif" border="0" hspace="4" vspace="4"></a>
+            <a href="Javascript:window.parent.close()"><img src="${pageContext.request.contextPath}/admin/bitmaps/<%=skin%>/buttons/avbryt.gif" border="0" hspace="4" vspace="4"></a></td>
         </tr>
         <tr>
             <td class="framework">&nbsp;</td>
