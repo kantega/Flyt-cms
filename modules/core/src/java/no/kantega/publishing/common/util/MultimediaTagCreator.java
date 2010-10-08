@@ -21,6 +21,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.media.ImageInfo;
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaImageMapAO;
@@ -31,6 +32,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -252,7 +254,16 @@ public class MultimediaTagCreator {
         } else {
             mimeType = mimeType.replace('/', '-');
             mimeType = mimeType.replace('.', '-');
-            tag.append("<A href=" + url + " class=\"file " + mimeType + "\">" + mm.getName() + "</A>");
+            SimpleDateFormat sdf = new SimpleDateFormat(Aksess.getDefaultDateFormat());
+            String lastModifiedDateString = sdf.format(mm.getLastModified());
+            tag.append("<a href=\"" + url + "\"><div class=\"media\"><div class=\"icon\">");
+            tag.append("<span class=\"mediafile\"><span class=\"file " + mimeType + "\"></span></span>");
+            tag.append("</div><div class=\"mediaInfo\">");
+            tag.append("<div class=\"name\">"+mm.getName()+"</div>");
+            tag.append("<div class=\"details\">");
+            tag.append(LocaleLabels.getLabel("aksess.multimedia.size", Aksess.getDefaultLocale())+": "+mm.getSize()+" bytes<br>");
+            tag.append(LocaleLabels.getLabel("aksess.multimedia.lastmodified", Aksess.getDefaultLocale())+": "+lastModifiedDateString+"<br>");
+            tag.append("</div></div></div></a>");
         }
         return tag.toString();
     }

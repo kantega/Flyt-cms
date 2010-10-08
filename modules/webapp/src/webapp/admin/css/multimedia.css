@@ -33,7 +33,7 @@ body {
     overflow:hidden;
 }
 
-#MultimediaFolders .folder:hover, #MultimediaFolders .media:hover {
+#MultimediaFolders .folder:hover, #MultimediaFolders .media:hover{
     -moz-border-radius: 8px;
     -webkit-border-radius: 8px;
     border-radius: 8px;
@@ -83,6 +83,18 @@ body {
     width: 100px;
 }
 
+#MediaObject .media {
+    padding: 10px;
+    width: 240px;
+    float: left;
+    cursor: pointer;
+    overflow:hidden;
+}
+
+#MediaObject .media .mediaInfo {
+    color: #000000;
+
+}
 
 a.file {
     font-size: 1.2em;
