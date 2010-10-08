@@ -62,7 +62,7 @@ public class dbConnectionFactory {
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
 
-    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED;
+    private static boolean dbUseTransactions = false;
 
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
@@ -149,12 +149,7 @@ public class dbConnectionFactory {
                 migrateDatabase(servletContext, ds);
             }
 
-            if (isMySQL()) {
-               dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
-
-            }
-
-            dbTransactionIsolationLevel = configuration.getInt("database.transactionlevel", dbTransactionIsolationLevel);
+            dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
             
             if(dbEnablePooling && dbCheckConnections) {
                 BasicDataSource bds = (BasicDataSource) ds;
@@ -381,11 +376,7 @@ public class dbConnectionFactory {
     }
 
     public static boolean useTransactions() {
-        return dbTransactionIsolationLevel != Connection.TRANSACTION_NONE;
-    }
-
-    public static int getTransactionIsolationLevel() {
-        return dbTransactionIsolationLevel;
+        return dbUseTransactions;
     }
 
     public static DataSource getDataSource() {

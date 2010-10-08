@@ -732,10 +732,9 @@ public class ContentAO {
         try {
             c = dbConnectionFactory.getConnection();
 
-            // We only use transactions for databases which support it
+            // We only use transactions if it has been enabled
             if (dbConnectionFactory.useTransactions()) {
                 c.setAutoCommit(false);
-                c.setTransactionIsolation(dbConnectionFactory.getTransactionIsolationLevel());
             }
 
             // Try to lock content in database
