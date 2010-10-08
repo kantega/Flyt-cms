@@ -1025,7 +1025,14 @@ public class ContentAO {
         }
     }
 
-
+    /**
+     * Mechanism to prevent multiple instances or servers modifying same content object at the same time.
+     * Will normally block when database is configured to use transactions,
+     * if not it will throw an exception since the same TransactionId cannot be inserted in the transactionlocks table
+     * @param contentId
+     * @param c
+     * @throws TransactionLockException
+     */
     private static void addContentTransactionLock(int contentId, Connection c) throws TransactionLockException {
         if (contentId != -1) {
             try {
@@ -1039,6 +1046,12 @@ public class ContentAO {
         }
     }
 
+    /**
+     * Remove transaction lock
+     * @param contentId
+     * @param c
+     * @throws SQLException
+     */
     private static void removeContentTransactionLock(int contentId, Connection c) throws SQLException {
         PreparedStatement unlockSt = c.prepareStatement("DELETE from transactionlocks WHERE TransactionId = ?");
         unlockSt.setString(1, "content-" + contentId);
