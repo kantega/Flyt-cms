@@ -65,31 +65,9 @@ public class ContentImportJob {
                 while (iter.hasNext()) {
                     ContentImporter ci = (ContentImporter) iter.next();
                     if (ci != null) {
-
-                        List contentList = ci.getContentList();
-                        if (contentList != null) {
-                            Log.debug(SOURCE, "Starter import av " + contentList.size() + " elementer", null, null);
-                            for (int i = 0; i < contentList.size(); i++) {
-                                Content c = (Content) contentList.get(i);
-                                ContentIdentifier cid = c.getContentIdentifier();
-                                cid.setVersion(-1);
-                                try {
-                                    c = cms.checkOutContent(cid);
-                                    // Only pages with status = PUBLISHED will be updated
-                                    if (c != null && c.getStatus() == ContentStatus.PUBLISHED) {
-                                        ci.updateContent(c);
-                                        cms.checkInContent(c, ContentStatus.PUBLISHED);
-                                    }
-                                } catch (ObjectLockedException e) {
-                                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by someone else", null, null);
-                                } catch (TransactionLockException e) {
-                                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by another process/server", null, null);
-                                }
-                            }
-                        }
+                        importContentFromImporter(cms, ci);
                     }
                 }
-
             }
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
@@ -99,6 +77,30 @@ public class ContentImportJob {
             Log.error(SOURCE, e, null, null);
         } catch (NotAuthorizedException e) {
             Log.error(SOURCE, e, null, null);
+        }
+    }
+
+    private void importContentFromImporter(ContentManagementService cms, ContentImporter ci) throws NotAuthorizedException, InvalidFileException, InvalidTemplateException {
+        List contentList = ci.getContentList();
+        if (contentList != null) {
+            Log.debug(SOURCE, "Starter import av " + contentList.size() + " elementer", null, null);
+            for (int i = 0; i < contentList.size(); i++) {
+                Content c = (Content) contentList.get(i);
+                ContentIdentifier cid = c.getContentIdentifier();
+                cid.setVersion(-1);
+                try {
+                    c = cms.checkOutContent(cid);
+                    // Only pages with status = PUBLISHED will be updated
+                    if (c != null && c.getStatus() == ContentStatus.PUBLISHED) {
+                        ci.updateContent(c);
+                        cms.checkInContent(c, ContentStatus.PUBLISHED);
+                    }
+                } catch (ObjectLockedException e) {
+                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by someone else", null, null);
+                } catch (TransactionLockException e) {
+                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by another process/server", null, null);
+                }
+            }
         }
     }
 }
