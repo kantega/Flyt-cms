@@ -62,6 +62,8 @@ public class dbConnectionFactory {
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
 
+    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
+
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
 
@@ -146,10 +148,17 @@ public class dbConnectionFactory {
             if(shouldMigrateDatabase) {
                 migrateDatabase(servletContext, ds);
             }
+
+            if (isMySQL()) {
+               dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
+
+            }
+
+            dbTransactionIsolationLevel = configuration.getInt("database.transactionlevel", dbTransactionIsolationLevel);
             
             if(dbEnablePooling && dbCheckConnections) {
                 BasicDataSource bds = (BasicDataSource) ds;
-                // Gjør at connections frigjøres ved lukking fra database/brannmur
+                // Gjï¿½r at connections frigjï¿½res ved lukking fra database/brannmur
                 bds.setValidationQuery("SELECT max(ContentId) from content");
                 bds.setTimeBetweenEvictionRunsMillis(1000*60*2);
                 bds.setMinEvictableIdleTimeMillis(1000*60*5);
@@ -166,7 +175,7 @@ public class dbConnectionFactory {
             }
 
         } catch (Exception e) {
-            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
+            Log.debug(SOURCE, "********* Klarte ikke ï¿½ lese aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
             System.out.println("error:" + e);
         }
@@ -371,13 +380,14 @@ public class dbConnectionFactory {
         }
     }
 
-    public static boolean isPostgreSQL() {
-        if (dbDriver.indexOf("postgresql") != -1) {
-            return true;
-        } else {
-            return false;
-        }
+    public static boolean useTransactions() {
+        return dbTransactionIsolationLevel != Connection.TRANSACTION_NONE;
     }
+
+    public static int getTransactionIsolationLevel() {
+        return dbTransactionIsolationLevel;
+    }
+
     public static DataSource getDataSource() {
         if (debugConnections) {
             return proxyDs;
@@ -385,6 +395,7 @@ public class dbConnectionFactory {
             return ds;
         }
     }
+
     public static JdbcTemplate getJdbcTemplate() {
         return new JdbcTemplate(ds);
     }

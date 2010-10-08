@@ -26,6 +26,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.exception.ObjectInUseException;
+import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.data.User;
@@ -727,90 +728,84 @@ public class ContentAO {
 
         Connection c = null;
         Content oldContent = null ;
-        if (!content.isNew()) {
-            ContentIdentifier oldCid = new ContentIdentifier();
-            oldCid.setAssociationId(content.getAssociation().getAssociationId());
-            oldContent = getContent(oldCid, true);
-        }
 
         try {
             c = dbConnectionFactory.getConnection();
-            // Insert base information, no history
-            boolean isNew = content.isNew();
-            int isActiveVersion = 0;
 
-            PreparedStatement st = null;
+            // We only use transactions for databases which support it
+            if (dbConnectionFactory.useTransactions()) {
+                c.setAutoCommit(false);
+                c.setTransactionIsolation(dbConnectionFactory.getTransactionIsolationLevel());
+            }
+
+            // Try to lock content in database
+            addContentTransactionLock(content.getId(), c);
+
+            // Get old version if exists
+            if (!content.isNew()) {
+                ContentIdentifier oldCid = new ContentIdentifier();
+                oldCid.setAssociationId(content.getAssociation().getAssociationId());
+                oldContent = getContent(oldCid, true);
+            }
+
+            boolean isNew = content.isNew();
+            boolean newVersionIsActive = false;
 
             if (content.isNew()) {
                 // New page, always active
-                isActiveVersion = 1;
+                newVersionIsActive = true;
             }
 
-            if (isNew) {
-                st = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
-            } else {
-                // Update
-                st = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
+            // Insert base information, no history
+            insertOrUpdateContentTable(c, content);
+
+            deleteTempContentVersion(content);
+
+            if (content.isNew() || newStatus == ContentStatus.PUBLISHED) {
+                newVersionIsActive = true;
             }
 
-            int p = 1;
-            st.setInt(p++, content.getType().getTypeAsInt());
-            st.setInt(p++, content.getContentTemplateId());
-            st.setInt(p++, content.getMetaDataTemplateId());
-            st.setInt(p++, content.getDisplayTemplateId());
-            st.setInt(p++, content.getDocumentTypeId());
-            st.setInt(p++, content.getGroupId());
-            st.setString(p++, content.getOwner());
-            st.setString(p++, content.getOwnerPerson());
-            st.setString(p++, content.getLocation());
-            st.setString(p++, content.getAlias());
-            st.setTimestamp(p++, content.getPublishDate() == null ? null : new java.sql.Timestamp(content.getPublishDate().getTime()));
-            st.setTimestamp(p++, content.getExpireDate() == null ? null : new java.sql.Timestamp(content.getExpireDate().getTime()));
-            st.setTimestamp(p++, content.getRevisionDate() == null ? null : new java.sql.Timestamp(content.getRevisionDate().getTime()));
-            st.setInt(p++, content.getExpireAction());
-            st.setInt(p++, content.getVisibilityStatus());
-            st.setLong(p++, content.getForumId());
-            st.setInt(p++, content.isOpenInNewWindow() ? 1:0);
-            st.setInt(p++, content.getDocumentTypeIdForChildren());
-            st.setInt(p++, content.isLocked() ? 1:0);
-            st.setInt(p++, content.isSearchable() ? 1:0);
-            if (!content.isNew()) {
-                st.setInt(p++, content.getId());
+            if (!isNew) {
+                newVersionIsActive = archiveOldVersion(c, content, newStatus, newVersionIsActive);
             }
 
-            st.execute();
+            addContentVersion(c, content, newStatus, newVersionIsActive);
 
-            if (isNew) {
-                // Finn id til nytt objekt
-                ResultSet rs = st.getGeneratedKeys();
-                if (rs.next()) {
-                    content.setId(rs.getInt(1));
-                }
-                rs.close();
-            }
-            st.close();
+            setVersionAsActive(c, content);
 
-            if (isNew) {
-                // GroupId benyttes for � angi at en side arver egenskaper, f.eks meny, design fra en annen side
-                if (content.getGroupId() <= 0) {
-                    st = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
-                    st.setInt(1, content.getId());
-                    st.setInt(2, content.getId());
-                    st.execute();
-                    st.close();
+            // Add page attributes
+            insertAttributes(c, content, AttributeDataType.CONTENT_DATA);
+            insertAttributes(c, content, AttributeDataType.META_DATA);
+
+            // Insert associations if new
+            List<Association> associations = content.getAssociations();
+            for (Association association : associations) {
+                if (association.getId() == -1) {
+                    // New association: add
+                    association.setContentId(content.getId());
+                    AssociationAO.addAssociation(association);
                 }
             }
 
-            // If this is a draft, rejected page etc delete previous version
-            if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
-                // Delete this (previous) version
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(content.getAssociation().getId());
-                cid.setVersion(content.getVersion());
-                cid.setLanguage(content.getLanguage());
-                deleteContentVersion(cid, true);
+            // Update contentid on attachments saved in database before the page was saved
+            List<Attachment> attachments = content.getAttachments();
+            if (attachments != null) {
+                for (Attachment a : attachments) {
+                    a.setContentId(content.getId());
+                    AttachmentAO.setAttachment(a);
+                }
             }
 
+            // Delete all existing topic associations before insertion.
+            TopicAO.deleteTopicAssociationsForContent(content.getId());
+
+            // Insert topics
+            List<Topic> topics = content.getTopics();
+            if (topics != null) {
+                for (Topic t : topics) {
+                    TopicAO.addTopicContentAssociation(t, content.getId());
+                }
+            }
 
             // Update subpages if these fields are changed
             if(oldContent != null ) {
@@ -825,119 +820,40 @@ public class ContentAO {
                 }
             }
 
-            if (content.isNew() || newStatus == ContentStatus.PUBLISHED) {
-                isActiveVersion = 1;
-            }
-
-            // Find versionnumber etc
-            if (!isNew) {
-                // Find next version
-                int currentVersion = SQLHelper.getInt(c, "select version from contentversion where ContentId = " + content.getId() + " order by version desc", "version");
-                if (currentVersion > 0) {
-                    content.setVersion(currentVersion + 1);
-                }
-
-                if (newStatus == ContentStatus.PUBLISHED) {
-                    // Set newStatus = ARCHIVED on currently active version
-                    PreparedStatement tmp = c.prepareStatement("update contentversion set Status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-                    tmp.setInt(1, ContentStatus.ARCHIVED);
-                    tmp.setInt(2, content.getId());
-                    tmp.execute();
-                    tmp.close();
-                    tmp = null;
-
-                    // Publisert blir aktiv versjon
-                    isActiveVersion = 1;
-                }
-            }
-
-            // Insert new version
-            st = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            st.setInt(1, content.getId());
-            st.setInt(2, content.getVersion());
-            st.setInt(3, newStatus);
-            st.setInt(4, isActiveVersion);
-            st.setInt(5, content.getLanguage());
-            st.setString(6, content.getTitle());
-            st.setString(7, content.getAltTitle());
-            st.setString(8, content.getDescription());
-            st.setString(9, content.getImage());
-            st.setString(10, content.getKeywords());
-            st.setString(11, content.getPublisher());
-            st.setTimestamp(12, new java.sql.Timestamp(new Date().getTime()));
-            st.setString(13, content.getModifiedBy());
-            st.setString(14, content.getChangeDescription());
-            st.setString(15, content.getApprovedBy());
-            st.setTimestamp(16, content.getChangeFromDate() == null ? null : new java.sql.Timestamp(content.getChangeFromDate().getTime()));
-            st.setInt(17, content.isMinorChange() ? 1 : 0);
-            st.setTimestamp(18, content.getLastMajorChange() == null ? new java.sql.Timestamp(new Date().getTime()) : new java.sql.Timestamp(content.getLastMajorChange().getTime()));
-            st.setString(19, content.getLastMajorChangeBy());
-
-            st.execute();
-
-            ResultSet rs = st.getGeneratedKeys();
-            if (rs.next()) {
-                content.setVersionId(rs.getInt(1));
-            }
-            rs.close();
-            st.close();
-
-            // Update status to active if no active version exists
-            st = c.prepareStatement("select * from contentversion where IsActive = 1 and ContentId = ?");
-            st.setInt(1, content.getId());
-            rs = st.executeQuery();
-            if (!rs.next()) {
-                // No active version found, set this one as active
-                st = c.prepareStatement("update contentversion set IsActive = 1 where ContentVersionId = ?");
-                st.setInt(1, content.getVersionId());
-                st.executeUpdate();
-            }
-
-
-            // Add page attributes
-            insertAttributes(c, content, AttributeDataType.CONTENT_DATA);
-            insertAttributes(c, content, AttributeDataType.META_DATA);
-
-            // Insert associations if new
-            List associations = content.getAssociations();
-            for (int i = 0; i < associations.size(); i++) {
-                Association association = (Association)associations.get(i);
-                if (association.getId() == -1) {
-                    // New association: add
-                    association.setContentId(content.getId());
-                    AssociationAO.addAssociation(association);
-                }
-            }
-
-            // Update contentid on attachments saved in database before the page was saved
-            List attachments = content.getAttachments();
-            if (attachments != null) {
-                for (int i = 0; i < attachments.size(); i++) {
-                    Attachment a = (Attachment)attachments.get(i);
-                    a.setContentId(content.getId());
-                    AttachmentAO.setAttachment(a);
-                }
-            }
-
-            //Delete all existing topic associations before insertion.
-            TopicAO.deleteTopicAssociationsForContent(content.getId());
-
-            // Insert topics
-            List<Topic> topics = content.getTopics();
-            if (topics != null) {
-                for (Topic t : topics) {
-                    TopicAO.addTopicContentAssociation(t, content.getId());
-                }
-            }
-
             // Set page as not checked out
             content.setIsCheckedOut(false);
 
             // Mark as not modified
             content.setIsModified(false);
 
+            // Remove lock
+            removeContentTransactionLock(content.getId(), c);
 
-        } catch (SQLException e) {
+            // We only use transactions for databases which support it
+            if (dbConnectionFactory.useTransactions()) {
+                c.commit();
+            }
+        } catch (TransactionLockException tle) {
+            if (c != null) {
+                try {
+                    if (dbConnectionFactory.useTransactions() && c != null) {
+                        c.rollback();
+                    }
+                } catch (SQLException e1) {
+                    Log.error(SOURCE, e1);
+                }
+            }
+            throw tle;
+        } catch (Exception e) {
+            if (c != null) {
+                try {
+                    if (dbConnectionFactory.useTransactions() && c != null) {
+                        c.rollback();
+                    }
+                } catch (SQLException e1) {
+                    Log.error(SOURCE, e);
+                }
+            }
             throw new SystemException("Feil ved lagring", SOURCE, e);
         } finally {
             try {
@@ -948,6 +864,7 @@ public class ContentAO {
                 // Could not close connection, probably closed already
             }
         }
+
 
         // Delete old versions (only keep last n versions)
         ContentTemplate ct = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
@@ -962,6 +879,171 @@ public class ContentAO {
         content.setStatus(newStatus);
 
         return content;
+    }
+
+    private static void setVersionAsActive(Connection c, Content content) throws SQLException {
+        PreparedStatement st;
+        ResultSet rs;
+
+        // Update status to active if no active version exists
+        st = c.prepareStatement("select * from contentversion where IsActive = 1 and ContentId = ?");
+        st.setInt(1, content.getId());
+        rs = st.executeQuery();
+        if (!rs.next()) {
+            // No active version found, set this one as active
+            st = c.prepareStatement("update contentversion set IsActive = 1 where ContentVersionId = ?");
+            st.setInt(1, content.getVersionId());
+            st.executeUpdate();
+        }
+    }
+
+    private static boolean archiveOldVersion(Connection c, Content content, int newStatus, boolean newVersionIsActive) throws SQLException {
+        // Find next version
+        int currentVersion = SQLHelper.getInt(c, "select version from contentversion where ContentId = " + content.getId() + " order by version desc", "version");
+        if (currentVersion > 0) {
+            content.setVersion(currentVersion + 1);
+        }
+
+        if (newStatus == ContentStatus.PUBLISHED) {
+            // Set newStatus = ARCHIVED on currently active version
+            PreparedStatement tmp = c.prepareStatement("update contentversion set Status = ?, isActive = 0 where ContentId = ? and isActive = 1");
+            tmp.setInt(1, ContentStatus.ARCHIVED);
+            tmp.setInt(2, content.getId());
+            tmp.execute();
+            tmp.close();
+            tmp = null;
+
+            // Publisert blir aktiv versjon
+            newVersionIsActive = true;
+        }
+        return newVersionIsActive;
+    }
+
+    private static void deleteTempContentVersion(Content content) {
+        // If this is a draft, rejected page etc delete previous version
+        if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
+            // Delete this (previous) version
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setAssociationId(content.getAssociation().getId());
+            cid.setVersion(content.getVersion());
+            cid.setLanguage(content.getLanguage());
+            deleteContentVersion(cid, true);
+        }
+    }
+
+
+    private static void addContentVersion(Connection c, Content content, int newStatus, boolean activeVersion) throws SQLException {
+        // Insert new version
+        PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        contentVersionSt.setInt(1, content.getId());
+        contentVersionSt.setInt(2, content.getVersion());
+        contentVersionSt.setInt(3, newStatus);
+        contentVersionSt.setInt(4, activeVersion ? 1 : 0);
+        contentVersionSt.setInt(5, content.getLanguage());
+        contentVersionSt.setString(6, content.getTitle());
+        contentVersionSt.setString(7, content.getAltTitle());
+        contentVersionSt.setString(8, content.getDescription());
+        contentVersionSt.setString(9, content.getImage());
+        contentVersionSt.setString(10, content.getKeywords());
+        contentVersionSt.setString(11, content.getPublisher());
+        contentVersionSt.setTimestamp(12, new Timestamp(new Date().getTime()));
+        contentVersionSt.setString(13, content.getModifiedBy());
+        contentVersionSt.setString(14, content.getChangeDescription());
+        contentVersionSt.setString(15, content.getApprovedBy());
+        contentVersionSt.setTimestamp(16, content.getChangeFromDate() == null ? null : new Timestamp(content.getChangeFromDate().getTime()));
+        contentVersionSt.setInt(17, content.isMinorChange() ? 1 : 0);
+        contentVersionSt.setTimestamp(18, content.getLastMajorChange() == null ? new Timestamp(new Date().getTime()) : new Timestamp(content.getLastMajorChange().getTime()));
+        contentVersionSt.setString(19, content.getLastMajorChangeBy());
+
+        contentVersionSt.execute();
+
+        ResultSet rs = contentVersionSt.getGeneratedKeys();
+        if (rs.next()) {
+            content.setVersionId(rs.getInt(1));
+        }
+        rs.close();
+        contentVersionSt.close();
+    }
+
+    private static void insertOrUpdateContentTable(Connection c, Content content) throws SQLException {
+        PreparedStatement contentSt;
+
+        boolean isNew = content.isNew();
+        if (isNew) {
+            contentSt = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
+        } else {
+            // Update
+            contentSt = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
+        }
+
+        int p = 1;
+        contentSt.setInt(p++, content.getType().getTypeAsInt());
+        contentSt.setInt(p++, content.getContentTemplateId());
+        contentSt.setInt(p++, content.getMetaDataTemplateId());
+        contentSt.setInt(p++, content.getDisplayTemplateId());
+        contentSt.setInt(p++, content.getDocumentTypeId());
+        contentSt.setInt(p++, content.getGroupId());
+        contentSt.setString(p++, content.getOwner());
+        contentSt.setString(p++, content.getOwnerPerson());
+        contentSt.setString(p++, content.getLocation());
+        contentSt.setString(p++, content.getAlias());
+        contentSt.setTimestamp(p++, content.getPublishDate() == null ? null : new Timestamp(content.getPublishDate().getTime()));
+        contentSt.setTimestamp(p++, content.getExpireDate() == null ? null : new Timestamp(content.getExpireDate().getTime()));
+        contentSt.setTimestamp(p++, content.getRevisionDate() == null ? null : new Timestamp(content.getRevisionDate().getTime()));
+        contentSt.setInt(p++, content.getExpireAction());
+        contentSt.setInt(p++, content.getVisibilityStatus());
+        contentSt.setLong(p++, content.getForumId());
+        contentSt.setInt(p++, content.isOpenInNewWindow() ? 1:0);
+        contentSt.setInt(p++, content.getDocumentTypeIdForChildren());
+        contentSt.setInt(p++, content.isLocked() ? 1:0);
+        contentSt.setInt(p++, content.isSearchable() ? 1:0);
+        if (!isNew) {
+            contentSt.setInt(p++, content.getId());
+        }
+
+        contentSt.execute();
+
+        if (isNew) {
+            // Finn id til nytt objekt
+            ResultSet rs = contentSt.getGeneratedKeys();
+            if (rs.next()) {
+                content.setId(rs.getInt(1));
+            }
+            rs.close();
+        }
+        contentSt.close();
+
+
+        if (isNew) {
+            // GroupId benyttes for � angi at en side arver egenskaper, f.eks meny, design fra en annen side
+            if (content.getGroupId() <= 0) {
+                PreparedStatement st = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
+                st.setInt(1, content.getId());
+                st.setInt(2, content.getId());
+                st.execute();
+                st.close();
+            }
+        }
+    }
+
+
+    private static void addContentTransactionLock(int contentId, Connection c) throws TransactionLockException {
+        if (contentId != -1) {
+            try {
+                PreparedStatement lockSt = c.prepareStatement("INSERT INTO transactionlocks VALUES (?,?)");
+                lockSt.setString(1, "content-" + contentId);
+                lockSt.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+                lockSt.executeUpdate();
+            } catch (SQLException e) {
+                throw new TransactionLockException(SOURCE, "Error locking contentId:" + -1, e);
+            }
+        }
+    }
+
+    private static void removeContentTransactionLock(int contentId, Connection c) throws SQLException {
+        PreparedStatement unlockSt = c.prepareStatement("DELETE from transactionlocks WHERE TransactionId = ?");
+        unlockSt.setString(1, "content-" + contentId);
+        unlockSt.executeUpdate();
     }
 
     /**
@@ -1317,7 +1399,7 @@ public class ContentAO {
                 cid.setAssociationId(associationId);
                 cid.setContentId(contentId);
                 cid.setSiteId(siteId);
-                cids.add(cid);                
+                cids.add(cid);
             }
             return aliases;
         } catch (SQLException e) {
@@ -1470,8 +1552,8 @@ public class ContentAO {
         template.update("update content set NumberOfComments = ? where ContentId = ?", new Object[] {numberOfComments, contentId});
     }
 
-    
-    
+
+
     /**
      * Updates publish date and expire date on a content object and all child objects
      * @param cid - ContentIdentifier to content object
