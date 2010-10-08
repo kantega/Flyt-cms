@@ -150,6 +150,11 @@ public class dbConnectionFactory {
             }
 
             dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
+            if (dbUseTransactions) {
+                Log.info(SOURCE, "Using transactions, remember to set database isolation level to avoid blocking");
+            } else {
+                Log.info(SOURCE, "Not using transactions", null, null);
+            }
             
             if(dbEnablePooling && dbCheckConnections) {
                 BasicDataSource bds = (BasicDataSource) ds;
