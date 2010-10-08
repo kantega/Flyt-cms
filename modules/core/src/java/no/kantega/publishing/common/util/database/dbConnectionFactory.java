@@ -62,7 +62,7 @@ public class dbConnectionFactory {
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
 
-    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_READ_COMMITTED;
+    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_READ_UNCOMMITTED;
 
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
