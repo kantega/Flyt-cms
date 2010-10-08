@@ -24,6 +24,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
@@ -38,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: May 23, 2007
  * Time: 11:12:15 AM
  */
@@ -81,6 +82,8 @@ public class ContentImportJob {
                                     }
                                 } catch (ObjectLockedException e) {
                                     Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by someone else", null, null);
+                                } catch (TransactionLockException e) {
+                                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by another process/server", null, null);
                                 }
                             }
                         }
