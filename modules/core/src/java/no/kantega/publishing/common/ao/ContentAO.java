@@ -402,8 +402,8 @@ public class ContentAO {
 
     }
 
-    public static List getMyContentList(User user) throws SystemException {
-        List workList = new ArrayList();
+    public static List<WorkList> getMyContentList(User user) throws SystemException {
+        List<WorkList> workList = new ArrayList<WorkList>();
 
         WorkList draft = new WorkList();
         draft.setDescription("draft");

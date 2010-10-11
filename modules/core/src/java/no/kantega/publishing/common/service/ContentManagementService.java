@@ -140,6 +140,20 @@ public class ContentManagementService {
     }
 
 
+    /**
+     * Henter ut siste versjon av innholdsobjekt fra basen
+     * @param id  - ContentIdentifier til innholdsobjekt
+     * @return Innholdsobjekt
+     * @throws SystemException
+     * @throws NotAuthorizedException - dersom bruker ikke har tilgang
+     */
+    public Content getLastVersionOfContent(ContentIdentifier id) throws SystemException, NotAuthorizedException {
+        Content c = ContentAO.getContent(id, true);
+        if (c != null) {
+            assertCanView(c, true, securitySession);
+        }
+        return c;
+    }
 
     /**
      * Henter ut innholdsobjekt fra basen og logger hvis spesifisert
@@ -559,7 +573,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getMyContentList() throws SystemException {
+    public List<WorkList> getMyContentList() throws SystemException {
         if (securitySession != null && securitySession.getUser() != null) {
             return ContentAO.getMyContentList(securitySession.getUser());
         }

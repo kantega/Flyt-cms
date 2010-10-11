@@ -146,9 +146,12 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
             if (errors.getLength() == 0) {
                 // No errors, save
-                if (errors.getLength() == 0) {
-                    content = cms.checkInContent(content, ContentStatus.PUBLISHED);
+                int status = param.getInt("status");
+                if (status == -1) {
+                    status = ContentStatus.PUBLISHED;
                 }
+
+                content = cms.checkInContent(content, status);
                 session.removeAttribute("currentContent");
 
                 String url;

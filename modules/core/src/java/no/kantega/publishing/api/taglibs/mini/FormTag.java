@@ -39,6 +39,8 @@ import java.util.Locale;
  */
 public class FormTag extends BodyTagSupport {
 
+    private boolean allowDraft = false;
+
     private String action;
 
     @Override
@@ -64,12 +66,17 @@ public class FormTag extends BodyTagSupport {
             String body = bodyContent.getString();
             JspWriter out = bodyContent.getEnclosingWriter();
 
-            //TODO: Use the page's language if this is one of Aksess' supported admin languages.
+            //TODO: Improvement: Use the page's language if this is one of Aksess' supported admin languages.
             Locale locale = Aksess.getDefaultAdminLocale();
 
             if (!canApprove) {
                 out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
             }
+
+            if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
+                out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
+            }
+
             out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">");
             out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
             out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
@@ -84,7 +91,12 @@ public class FormTag extends BodyTagSupport {
             out.write(body);
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
+
             out.write("    <input class=\"editContentButton submit\" type=\"submit\" value=\""+submitButtonLabel+"\">");
+
+            if (allowDraft) {
+                out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"document.myform.status.value=" + ContentStatus.DRAFT + ";document.myform.submit()\">");
+            }
 
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
@@ -92,6 +104,8 @@ public class FormTag extends BodyTagSupport {
             }
             out.write("    <input class=\"editContentButton cancel\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.cancel", locale)+"\" onclick=\"window.location.href ='"+cancelAction+"'\">");
             out.write("</form>");
+
+            allowDraft = false;
 
         } catch (IOException e) {
             Log.error(this.getClass().getName(), e, null, null);
@@ -102,6 +116,10 @@ public class FormTag extends BodyTagSupport {
 
     public void setAction(String action) {
         this.action = action;
+    }
+
+    public void setAllowdraft(boolean allowDraft) {
+        this.allowDraft = allowDraft;
     }
 }
 

@@ -33,8 +33,9 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="editableby" type="xs:string"/>
-	    <xs:attribute name="enumclass" type="xs:string"/>
+            <xs:attribute name="editablebyrole" type="xs:string"/>
+            <xs:attribute name="listeditablebyrole" type="xs:string"/>
+	        <xs:attribute name="enumclass" type="xs:string"/>
             <xs:attribute name="featureset" type="xs:string"/>
             <xs:attribute name="minifeatureset" type="xs:string"/>
             <xs:attribute name="height" type="xs:integer"/>

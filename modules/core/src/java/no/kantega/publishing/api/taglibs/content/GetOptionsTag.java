@@ -27,13 +27,6 @@ import javax.servlet.jsp.JspException;
 import java.util.Iterator;
 import java.util.Collection;
 
-/**
- * Retrieves all options for an EditableListAttribute with a given key.
- *
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: Jun 12, 2007
- * Time: 3:34:21 PM
- */
 public class GetOptionsTag  extends LoopTagSupport {
 
     private static final String SOURCE = "aksess.GetOptionsTag";
