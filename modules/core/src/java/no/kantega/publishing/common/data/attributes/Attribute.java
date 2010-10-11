@@ -70,6 +70,8 @@ public abstract class Attribute {
     private String[] showInSites = null; // Angir alias for siter hvor denne attributten skal vises (null = vis for alle)
     private String[] hideInSites = null; // Angir alias for siter hvor denne attributten ikke skal vises (null = vis for alle)
 
+    private String[] editableByRole = null; // Roles which can edit this element
+
     public Attribute() {
 
     }
@@ -111,6 +113,16 @@ public abstract class Attribute {
             String strMaxlength = config.getAttribute("maxlength");
             if (strMaxlength != null && strMaxlength.length() > 0) {
                 this.maxLength = Integer.parseInt(strMaxlength);
+            }
+
+            String strEditableByRole = config.getAttribute("editablebyrole");
+            if (strEditableByRole != null && strEditableByRole.length() > 0) {
+                editableByRole = strEditableByRole.split(",");
+                for (int i = 0; i < editableByRole.length; i++) {
+                    editableByRole[i] = editableByRole[i].trim();
+                }
+            } else {
+                editableByRole = new String[]{Aksess.getEveryoneRole()};
             }
 
             String strShowInSites = config.getAttribute("showinsites");
@@ -361,5 +373,9 @@ public abstract class Attribute {
 
     public boolean isSearchable() {
         return false;
+    }
+
+    public String[] getEditableByRoles() {
+        return editableByRole;
     }
 }

@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier Selnï¿½s, Kantega AS
  * Date: Jun 11, 2007
  * Time: 10:40:44 AM
  */
@@ -49,7 +49,11 @@ public class EditablelistAttribute extends ListAttribute {
                 key = getName();
             }
 
-            String strEditableBy = config.getAttribute("editableby");
+            String strEditableBy = config.getAttribute("editableby"); // For backwards compability
+            if (strEditableBy == null || strEditableBy.length() == 0) {
+                strEditableBy = config.getAttribute("listeditablebyrole");
+            }
+
             if (strEditableBy != null && strEditableBy.length() > 0) {
                 editableBy = strEditableBy.split(",");
                 for (int i = 0; i < editableBy.length; i++) {
@@ -58,9 +62,7 @@ public class EditablelistAttribute extends ListAttribute {
             } else {
                 editableBy = new String[]{Aksess.getEveryoneRole()};                
             }
-
             ignoreVariant = Boolean.valueOf(config.getAttribute("ignorevariant")).booleanValue();
-
         }
 
     }

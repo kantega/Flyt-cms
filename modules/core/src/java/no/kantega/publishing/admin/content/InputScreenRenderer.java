@@ -34,9 +34,11 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import java.io.File;
@@ -103,7 +105,8 @@ public class InputScreenRenderer {
         List attrlist = content.getAttributes(attributeType);
         for (int i = 0; i < attrlist.size(); i++) {
             Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() && !attr.isHidden(content)) {
+
+            if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
                 String value = attr.getValue();
                 if (value == null || value.length() == 0) {
                     attr.setValue("");
@@ -151,5 +154,14 @@ public class InputScreenRenderer {
                 }
             }
         }
+    }
+
+    private boolean roleCanEdit(Attribute attr, ServletRequest request) {
+        String[] roles = attr.getEditableByRoles();
+        if (roles != null && roles.length > 0) {
+            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);            
+        }
+
+        return true;
     }
 }
