@@ -123,16 +123,17 @@ public class SiteMapEntry extends NavigationMapEntry {
         this.openInNewWindow = openInNewWindow;
     }
 
-    public String getTarget(HttpServletRequest request) {
-        if (HttpHelper.isAdminMode(request)) {
-            return "contentmain";
-        } else {
-            if (openInNewWindow) {
-                return "_blank";
-            }
+    public String getTarget() {
+        if (openInNewWindow) {
+            return "_blank";
         }
 
         return "";
+    }
+
+    @Deprecated
+    public String getTarget(HttpServletRequest request) {
+        return getTarget();
     }
 
     public int getAssociationCategory() {

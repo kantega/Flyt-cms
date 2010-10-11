@@ -125,7 +125,7 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
             if (contentObject != null) {
-                url = contentObject.getUrl(request);
+                url = contentObject.getUrl(isAdminMode);
                 HttpSession session = request.getSession(false);
 
                 try {
@@ -151,7 +151,7 @@ public class GetLinkTag extends BodyTagSupport{
                         }
                     }
                 } catch (ContentNotFoundException e) {
-                    // Vi vet ikke hvilken site denne siden tilhører, er ikke registrert
+                    // Vi vet ikke hvilken site denne siden tilhï¿½rer, er ikke registrert
                 }
             }
 
@@ -185,10 +185,6 @@ public class GetLinkTag extends BodyTagSupport{
                     out.print(" accesskey=\"" + accessKey + "\"");
                 }
 
-                if (target == null && isAdminMode) {
-                    target = "contentmain";
-                }
-                
                 if (target != null && target.length() > 0) {
                     out.print(" target=\"" + target + "\"");
                 }
@@ -199,7 +195,7 @@ public class GetLinkTag extends BodyTagSupport{
 
                 if (title != null) {
                     out.print(" title=\"" + title + "\"");
-                }else{
+                } else {
                     out.print(" title=\"" + contentObject.getTitle() + "\"");
                 }
 

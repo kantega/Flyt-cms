@@ -54,6 +54,31 @@
 <html>
 <head>
 	<title>showcontentinframe.jsp</title>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript">
+        /*
+         * Adds the target=contentmain attribute for all links, this prevents us from getting frames inside frames inside frames...
+         */
+        $(document).ready(function() {
+            $("#LinkFrame").load(function() {
+                addTargetToLinks();
+            });
+            
+            function addTargetToLinks() {
+                try {
+                    $("a[target!=contentmain]", window.LinkFrame.document).each(function() {
+                        $(this).attr('target', 'contentmain');
+                    });
+                    // In case page is modified with ajax
+                    setTimeout(addTargetToLinks, 2000);
+                } catch (e) {
+                    // Accessing external links gives error
+                }
+            }
+
+        });
+
+    </script>
 </head>
 
 <frameset rows="60,*" frameborder="no" border="0" framespacing="0">
@@ -61,9 +86,11 @@
    <%
        if (url != null) {
    %>
-   <frame src="<%=url%>" scrolling="auto" marginwidth="0" marginheight="0">
+   <frame src="<%=url%>" id="LinkFrame" name="LinkFrame" scrolling="auto" marginwidth="0" marginheight="0">
    <%
        }
    %>
 </frameset>
+
+
 </html>

@@ -289,18 +289,23 @@ public class Content extends BaseObject {
         return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(getAssociation().getAssociationId(), title, alias);
     }
 
-    public String getUrl(HttpServletRequest request) {
+    public String getUrl(boolean isAdminMode) {
         Association a = getAssociation();
 
         if (alias != null && alias.startsWith("/") && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
             // Alias brukes n�r angitt og man har en hovedknytning og man ikke er i adminmodus
-            if (HttpHelper.isAdminMode(request)) {
+            if (isAdminMode) {
                 return getUrl();
             } else {
                 return Aksess.getContextPath() + alias;
             }
         }
         return getUrl();
+    }
+
+    public String getUrl(HttpServletRequest request) {
+        boolean isAdminMode = HttpHelper.isAdminMode(request);
+        return getUrl(isAdminMode);
     }
 
     public String getAlias() {
