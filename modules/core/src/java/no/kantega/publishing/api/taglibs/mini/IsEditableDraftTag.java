@@ -30,14 +30,19 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsEditableDraftTag extends ConditionalTagSupport {
 
+    private Content contentObject;
+
     protected boolean condition() throws JspTagException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-        Content content = (Content)request.getAttribute("aksess_this");
-        if (content != null) {
+
+        if (contentObject == null) {
+            contentObject = (Content)request.getAttribute("aksess_this");
+        }
+        if (contentObject != null) {
             ContentManagementService cms = new ContentManagementService(request);
             SecuritySession securitySession = cms.getSecuritySession();
             ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(content.getAssociation().getAssociationId());
+            cid.setAssociationId(contentObject.getAssociation().getAssociationId());
             try {
                 Content lastVersion = cms.getLastVersionOfContent(cid);
                 if (lastVersion != null && lastVersion.getStatus() == ContentStatus.DRAFT && securitySession.isAuthorized(lastVersion, Privilege.UPDATE_CONTENT)) {
@@ -49,5 +54,9 @@ public class IsEditableDraftTag extends ConditionalTagSupport {
         }
 
         return false;
+    }
+
+    public void setObj(Content obj) {
+        this.contentObject = obj;
     }
 }

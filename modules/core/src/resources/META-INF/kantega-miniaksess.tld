@@ -236,6 +236,13 @@
         <name>iseditabledraft</name>
         <tag-class>no.kantega.publishing.api.taglibs.mini.IsEditableDraftTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
     </tag>
 
     <tag>
