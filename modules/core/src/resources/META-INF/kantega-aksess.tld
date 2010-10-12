@@ -697,6 +697,13 @@
         <name>iseditablebyuser</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.IsEditableByUserTag</tag-class>
         <body-content>JSP</body-content>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
     </tag>
 
     <tag>
@@ -797,13 +804,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
-            <name>obj</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>no.kantega.publishing.common.data.Content</type>
-        </attribute>
+|
         <attribute>
             <description>Specify title for a tag. Title of linked page is default</description>
             <name>title</name>

@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsEditableByUserTag";
-
+    private Content contentObject;
 
     protected boolean condition() {
         try {
@@ -45,16 +45,18 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
                 return false;
             }
 
-            Content current = (Content)request.getAttribute("aksess_this");
-            if (current == null) {
+            if (contentObject == null) {
+                contentObject = (Content)request.getAttribute("aksess_this");
+            }
+            if (contentObject == null) {
                 // Hent denne siden
-                current = new ContentManagementService(request).getContent(new ContentIdentifier(request), true);
-                RequestHelper.setRequestAttributes(request, current);
+                contentObject = cms.getContent(new ContentIdentifier(request), true);
+                RequestHelper.setRequestAttributes(request, contentObject);
             }
 
-            if (current != null) {
+            if (contentObject != null) {
                 if (ss.isUserInRole(Aksess.getAuthorRoles()) || ss.isUserInRole(Aksess.getAdminRole())) {
-                    if (ss.isAuthorized(current, Privilege.UPDATE_CONTENT)) {
+                    if (ss.isAuthorized(contentObject, Privilege.UPDATE_CONTENT)) {
                         return true;
                     }
                 }
@@ -69,6 +71,10 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
         }
 
         return false;
+    }
+
+    public void setObj(Content obj) {
+        this.contentObject = obj;
     }
 
 }
