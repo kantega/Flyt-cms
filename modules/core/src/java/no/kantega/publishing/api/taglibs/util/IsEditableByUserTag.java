@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsEditableByUserTag";
-    private Content contentObject;
+    private Content contentObject = null;
 
     protected boolean condition() {
         try {
@@ -42,6 +42,7 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             SecuritySession ss = cms.getSecuritySession();
 
             if (!ss.isLoggedIn()) {
+                contentObject = null;
                 return false;
             }
 
@@ -57,11 +58,12 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             if (contentObject != null) {
                 if (ss.isUserInRole(Aksess.getAuthorRoles()) || ss.isUserInRole(Aksess.getAdminRole())) {
                     if (ss.isAuthorized(contentObject, Privilege.UPDATE_CONTENT)) {
+                        contentObject = null;
                         return true;
                     }
                 }
             }
-
+            contentObject = null;
             return false;
         } catch (ContentNotFoundException e) {
             // Normalt
