@@ -60,6 +60,7 @@
                         <xs:enumeration value="expiredate"/>
                         <xs:enumeration value="owner"/>
                         <xs:enumeration value="ownerperson"/>
+                        <xs:enumeration value="publisher"/>
                         <xs:enumeration value="publishdate"/>
                         <xs:enumeration value="revisiondate"/>
                         <xs:enumeration value="url"/>
