@@ -127,6 +127,8 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
         request.setAttribute("miniAksessMediaArchive", allowArchive);
 
+        addCustomRequestAttributes(request, content);
+
         return new ModelAndView(getView(), null);
     }
 
@@ -151,27 +153,16 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                     status = ContentStatus.PUBLISHED;
                 }
 
+                boolean isNew = content.isNew();
+
                 content = cms.checkInContent(content, status);
                 session.removeAttribute("currentContent");
 
-                String url;
-                String redirectUrl = param.getString("redirectUrl");
-                if (redirectUrl != null && redirectUrl.length() > 0) {
-                    url = redirectUrl;
-                } else {
-                    if (!content.hasDisplayTemplate()) {
-                        // Has no display template, show parent
-                        ContentIdentifier parentCid = cms.getParent(content.getContentIdentifier());
-                        Content parent = cms.getContent(parentCid, false);
-                        url = parent.getUrl();
-                    } else {
-                        url = content.getUrl();
-                    }
-                }
+
 
                 session.removeAttribute("adminMode");
 
-                return new ModelAndView(new RedirectView(url));
+                return postSaveContent(request, response, content, isNew);
             } else {
                 request.setAttribute("errors", errors);
                 return showEditForm(request, content);
@@ -181,6 +172,35 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         session.removeAttribute("adminMode");
 
         return new ModelAndView(new RedirectView(Aksess.getContextPath()));
+    }
+
+    protected void addCustomRequestAttributes(HttpServletRequest request, Content content) {
+
+    }
+
+    protected ModelAndView postSaveContent(HttpServletRequest request, HttpServletResponse response, Content content, boolean isNew) {
+        String url;
+        String redirectUrl = request.getParameter("redirectUrl");
+        if (redirectUrl != null && redirectUrl.length() > 0) {
+            url = redirectUrl;
+        } else {
+            if (!content.hasDisplayTemplate()) {
+                ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
+                // Has no display template, show parent
+                ContentIdentifier parentCid = cms.getParent(content.getContentIdentifier());
+                Content parent = null;
+                try {
+                    parent = cms.getContent(parentCid, false);
+                    url = parent.getUrl();
+                } catch (NotAuthorizedException e) {
+                    url = Aksess.getContextPath();
+                }
+            } else {
+                url = content.getUrl();
+            }
+        }
+
+        return new ModelAndView(new RedirectView(url));
     }
 
     public String getView() {
