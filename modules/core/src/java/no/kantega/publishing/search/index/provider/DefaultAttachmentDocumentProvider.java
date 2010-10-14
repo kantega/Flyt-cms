@@ -18,6 +18,7 @@ package no.kantega.publishing.search.index.provider;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.media.MimeTypes;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
@@ -101,6 +102,14 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             if (searchHit.getTitle() == null || searchHit.getTitle().length() == 0) {
                 searchHit.setTitle(doc.get(Fields.ATTACHMENT_FILE_NAME));
             }
+            try {
+                searchHit.setFileSize(Integer.parseInt(doc.get(Fields.ATTACHMENT_FILE_SIZE)));
+            }
+            catch (NumberFormatException e) {
+                Log.error(SOURCE, "NumberFormatException occured while trying to parse filesize from index for attachment:"+searchHit.getId(), null, null);
+            }
+            searchHit.setMimeType(MimeTypes.getMimeType(searchHit.getFileName()+"."+searchHit.getFileExtension()));
+            
             searchHit.setUrl(Aksess.getContextPath() + "/attachment.ap?id=" + attachmentId);
         }
     }
@@ -205,6 +214,8 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.CONTENT_PARENTS, getParents(content), Field.Store.YES, Field.Index.ANALYZED));
         d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        d.add(new Field(Fields.ATTACHMENT_FILE_SIZE, Integer.toString(a.getSize()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        
 
         String text = "";
         if (te != null) {

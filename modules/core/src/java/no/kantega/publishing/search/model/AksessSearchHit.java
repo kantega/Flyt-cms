@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.search.model;
 
+import no.kantega.commons.media.MimeType;
 import org.apache.lucene.document.Document;
 
 import java.util.List;
@@ -36,6 +37,8 @@ public class AksessSearchHit implements SearchHit {
     private List<PathEntry> pathElements = null;
     private String fileExtension = null;
     private String fileName = null;
+    private int fileSize = 0;
+    private MimeType mimeType = null;
     private boolean doOpenInNewWindow = false;
     private int id = -1;
 
@@ -133,5 +136,21 @@ public class AksessSearchHit implements SearchHit {
 
     public void setDoOpenInNewWindow(boolean openInNewWindow) {
         this.doOpenInNewWindow = openInNewWindow;
+    }
+
+    public int getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(int fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public MimeType getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(MimeType mimeType) {
+        this.mimeType = mimeType;
     }
 }

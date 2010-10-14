@@ -47,5 +47,6 @@ public interface Fields {
     public static final String CONTENT_VISIBILITY_STATUS = "ContentVisibilityStatus";
     public static final String DOCUMENT_TYPE_ID = "DocumentTypeId";
     public static final String ALIAS = "Alias";
+    public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";    
 
 }

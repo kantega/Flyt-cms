@@ -21,6 +21,8 @@ public class AttachmentHit extends Hit {
 
     private String fileName;
 
+    private String fileSize;
+
     public String getType() {
         return "attachment";
     }
@@ -42,4 +44,13 @@ public class AttachmentHit extends Hit {
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
+
 }
