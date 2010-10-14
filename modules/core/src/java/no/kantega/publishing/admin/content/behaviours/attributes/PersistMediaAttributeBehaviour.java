@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
@@ -54,8 +55,12 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     Multimedia multimedia = null;
 
                     try {
-                        int oldId = Integer.parseInt(mediaAttr.getValue());
-                        multimedia = MultimediaAO.getMultimedia(oldId);
+                        if (content.getStatus() == ContentStatus.PUBLISHED) {
+                            // When a file is uploaded and published directly, the old image if overwritten
+                            // This cannot be done for drafts or pages awaiting to be published
+                            int oldId = Integer.parseInt(mediaAttr.getValue());
+                            multimedia = MultimediaAO.getMultimedia(oldId);
+                        }
                     } catch (NumberFormatException e) {
 
                     }
