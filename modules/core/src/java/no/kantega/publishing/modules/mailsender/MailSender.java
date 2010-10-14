@@ -25,6 +25,7 @@ import no.kantega.publishing.spring.RootContext;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.commons.io.IOUtils;
+import org.apache.velocity.tools.generic.DateTool;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
 
@@ -124,7 +125,7 @@ public class MailSender {
                 throw new ConfigurationException("mail.host", SOURCE);
             }
 
-            // I noen tilfeller ønsker vi at all epost skal gå til en testadresse
+            // I noen tilfeller ï¿½nsker vi at all epost skal gï¿½ til en testadresse
             String catchAllTo = config.getString("mail.catchall.to");
             if (catchAllTo != null && catchAllTo.indexOf("@") != -1) {
                 subject = " (original recipient: " + to + ") " + subject;
@@ -187,6 +188,8 @@ public class MailSender {
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(templateFile);
 
+            parameters.put("dateFormatter", new DateTool());            
+
             Configuration config = Aksess.getConfiguration();
 
             String encoding = config.getString("mail.templates.encoding", "ISO-8859-1");
@@ -199,7 +202,7 @@ public class MailSender {
 
             return textWriter.toString();
         } catch (Exception e) {
-            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity", e);
+            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert pï¿½ Velocity", e);
         }
     }
 
@@ -248,7 +251,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binï¿½rfil", e);
         }
     }
 
@@ -274,7 +277,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binï¿½rfil", e);
         }
     }
 }
