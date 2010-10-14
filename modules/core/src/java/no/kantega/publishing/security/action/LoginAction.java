@@ -28,6 +28,7 @@ import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
+import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.role.RoleManager;
 import no.kantega.security.api.common.SystemException;
 
@@ -42,7 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.context.ApplicationContext;
 
-public class LoginAction implements Controller {
+public class LoginAction extends AbstractLoginAction {
 
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
@@ -71,20 +72,15 @@ public class LoginAction implements Controller {
             return new ModelAndView(new RedirectView(Aksess.getContextPath() + "/CreateInitialUser.action"));
         }
 
-        PasswordManager passwordManager = null;
+        PasswordManager passwordManager = getPasswordManager(domain);
+        ResetPasswordTokenManager resetPasswordTokenManager = getResetPasswordTokenManager();
 
         Map model = new HashMap();
 
-        ApplicationContext context = RootContext.getInstance();
-        Map managers = context.getBeansOfType(PasswordManager.class);
-        if (managers != null) {
-            for (Object o : managers.values()) {
-                passwordManager = (PasswordManager) o;
-                if (passwordManager.getDomain().equalsIgnoreCase(domain)) {
-                    break;
-                }
-            }
+        if (Aksess.isSecurityAllowPasswordReset() && resetPasswordTokenManager != null) {
+            model.put("allowPasswordReset", true);
         }
+
 
         if (passwordManager == null) {
             throw new ConfigurationException("PasswordManager == null");
@@ -137,6 +133,7 @@ public class LoginAction implements Controller {
        
         model.put("redirect", redirect);
         model.put("username", username);
+        model.put("loginLayout", getLoginLayout());
 
         return new ModelAndView(loginView, model);
     }

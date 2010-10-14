@@ -70,6 +70,10 @@
             <div id="Submit">
                 <input type="submit" value="<kantega:label key="aksess.login.login"/>">
             </div>
+
+            <c:if test="${allowPasswordReset}">
+                <div id="PasswordReset"><a href="${pageContext.request.contextPath}/RequestPasswordReset.action"><kantega:label key="aksess.login.resetpassword"/></a></div>
+            </c:if>
         </form>
     </div>
 
@@ -114,4 +118,4 @@
     </div>
     --%>
 </kantega:section>
-<%@ include file="../admin/layout/loginLayout.jsp" %>
+<jsp:include page="${loginLayout}"/>

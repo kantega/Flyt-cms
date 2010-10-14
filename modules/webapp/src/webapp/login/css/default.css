@@ -73,6 +73,15 @@ body{
 }
 
 /***********************
+Reset password request
+***********************/
+
+#RequestResetPasswordHelp, #ResetPasswordHelp {
+    width: 400px;
+    margin-bottom: 2em;
+}
+
+/***********************
 Form elements, common
 ***********************/
 form .text, form .password{
@@ -151,7 +160,7 @@ input:focus{
 /******************
 Form elements, login page
 ******************/
-#UserName, #Password{
+#UserName, #Password, #RepeatPassword{
     background:url("../bitmaps/brukernavn.png") no-repeat left top;
     height:27px;
     padding: 0 0 0 35px;
@@ -166,9 +175,11 @@ body.login label{
     position:absolute;
     top:6px;
 }
-#Password{
+
+#Password, #RepeatPassword{
     background:url("../bitmaps/passord.png") no-repeat left top;
 }
+
 #Submit{
     background:url("../bitmaps/login_btn.png") no-repeat right top;
     text-align:center;

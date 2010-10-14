@@ -42,6 +42,8 @@
                 <prop key="/multimedia/**">MultimediaRequestHandler</prop>
                 <prop key="/rss.ap">RssRequestHandler</prop>
                 <prop key="/Login.action">LoginAction</prop>
+                <prop key="/ResetPassword.action">ResetPasswordAction</prop>
+                <prop key="/RequestPasswordReset.action">RequestPasswordResetAction</prop>
                 <prop key="/Logout.action">LogoutAction</prop>
                 <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
                 <prop key="/robots.txt">RobotsController</prop>
@@ -180,7 +182,7 @@
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
                 <!-- Forms -->
-                <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop> 	
+                <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop>
                 <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>
 
                 <prop key="/Rating.action">RatingController</prop>
@@ -255,7 +257,7 @@
     <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
         <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
-    
+
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
 
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AttachmentRequestHandler">
@@ -270,6 +272,9 @@
         <property name="loginView">
             <value>${security.login.view}</value>
         </property>
+        <property name="loginLayout">
+            <value>${security.login.layout}</value>
+        </property>
         <property name="userLoginRestrictor">
             <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
                 <property name="maxAttempts" value="5"/>
@@ -283,6 +288,38 @@
             </bean>
         </property>
     </bean>
+    <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
+        <property name="requestResetPasswordView">
+            <value>${security.login.requestresetpassword.view}</value>
+        </property>
+        <property name="loginLayout">
+            <value>${security.login.layout}</value>
+        </property>
+        <property name="mailFrom">
+            <value>${mail.from}</value>
+        </property>
+        <property name="mailSubject">
+            <value>${security.login.requestresetpassword.mailsubject}</value>
+        </property>
+        <property name="mailTemplate">
+            <value>${security.login.requestresetpassword.mailtemplate}</value>
+        </property>
+    </bean>
+    <bean class="no.kantega.publishing.security.action.ResetPasswordAction" id="ResetPasswordAction">
+        <property name="resetPasswordView">
+            <value>${security.login.resetpassword.view}</value>
+        </property>
+        <property name="loginLayout">
+            <value>${security.login.layout}</value>
+        </property>
+        <property name="resetPasswordErrorView">
+            <value>${security.login.errorview}</value>
+        </property>
+        <property name="minPasswordLength">
+            <value>${security.login.minpasswordlength}</value>
+        </property>
+    </bean>
+
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="LogoutAction">
         <property name="servletClass">
             <value>no.kantega.publishing.security.action.LogoutAction</value>
@@ -548,7 +585,7 @@
     <!-- Search multimedia -->
     <bean id="adminMultimediaSearchController" class="no.kantega.publishing.admin.multimedia.action.SearchMultimediaAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/search.jsp"/>
-    </bean>   
+    </bean>
     <!-- Multimedia -->
     <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
@@ -582,7 +619,7 @@
     </bean>
     <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction">
         <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>                   
+    </bean>
     <!-- Topic maps -->
     <bean class="no.kantega.publishing.admin.topicmaps.action.TopicsAction" id="TopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/topics.jsp"/>
@@ -717,11 +754,11 @@
 
     <bean class="no.kantega.publishing.admin.attributes.ajax.AddListOptionAction" id="AddListOptionAction"/>
     <bean class="no.kantega.publishing.admin.attributes.ajax.RemoveListOptionAction" id="RemoveListOptionAction"/>
-    
+
     <bean class="no.kantega.publishing.admin.administration.action.ViewSystemInformationAction" id="OpenAksessInformationAction">
-        <property name="view" value="/WEB-INF/jsp/admin/administration/openaksessinformation.jsp"/>        
+        <property name="view" value="/WEB-INF/jsp/admin/administration/openaksessinformation.jsp"/>
     </bean>
-          
+
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
         <property name="pluginManager" ref="pluginManager"/>
     </bean>

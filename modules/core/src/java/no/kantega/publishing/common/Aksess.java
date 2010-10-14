@@ -51,6 +51,8 @@ public class Aksess {
 
     private static String startPage = "/index.jsp";
     private static String loginUrl;
+
+    private static boolean securityAllowPasswordReset;
     private static String securityRealm = "";
     private static String defaultSecurityDomain = "ldap";
     private static String contextPath = "";
@@ -173,6 +175,8 @@ public class Aksess {
 
             // Sikkerhetsconfig
             loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
+
+            securityAllowPasswordReset = c.getBoolean("security.allowpasswordreset", true);
 
             defaultSecurityDomain = c.getString("security.defaultdomain", "ldap");
             Log.info(SOURCE, "Using default security domain:" + defaultSecurityDomain, null, null);
@@ -589,5 +593,9 @@ public class Aksess {
 
     public static String getQueryStringEncoding() {
         return queryStringEncoding;
+    }
+
+    public static boolean isSecurityAllowPasswordReset() {
+        return securityAllowPasswordReset;
     }
 }
