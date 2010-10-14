@@ -1,6 +1,6 @@
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="java.util.Map"%>
-<%@ page import="no.kantega.publishing.common.service.lock.LockManager"%>
 <%@ page import="java.util.Iterator"%>
 <%@ page import="no.kantega.publishing.common.service.lock.ContentLock"%>
 <%@ page import="java.text.DateFormat"%>
@@ -9,7 +9,6 @@
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>
 <%@ page import="no.kantega.publishing.common.data.ContentIdentifier"%>
-<%@ include file="../../../../admin/include/jsp_header.jsf" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -89,4 +88,3 @@
     %>
 </body>
 </html>
-<%@ include file="../../../../admin/include/jsp_footer.jsf" %>
