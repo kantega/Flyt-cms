@@ -10,8 +10,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Creates a FormSubmission filled with values based on a form and values sent from user
@@ -140,4 +139,23 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         mandatory = false;
     }
 
+    public void endDocument() throws SAXException {
+        addCustomParametersNotInForm();
+    }
+
+    private void addCustomParametersNotInForm() {
+        Map tmpParameters = new LinkedHashMap<String, String[]>(params);
+        for (FormValue value : formSubmission.getValues()) {
+            tmpParameters.remove(value.getName());
+        }
+        Iterator keys = tmpParameters.keySet().iterator();
+        while (keys.hasNext()) {
+            String name = (String)keys.next();
+            String[] value = (String[])tmpParameters.get(name);
+            FormValue formValue = new FormValue();
+            formValue.setName(name);
+            formValue.setValues(value);
+            formSubmission.addValue(formValue);
+        }
+    }
 }

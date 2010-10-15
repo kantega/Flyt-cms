@@ -27,9 +27,11 @@ public class FormSubmissionFillFilterTest extends TestCase {
         FilterPipeline pipeline = new FilterPipeline();
 
         Map<String, String[]> params = new HashMap<String, String[]>();
+        params.put("customfield", new String[] {"4"});
         params.put("field1", new String[] {"1"});
         params.put("field2", new String[] {"2"});
         params.put("field3", new String[] {"3"});
+
 
         Form form = new Form() {
             public int getId() {
@@ -58,7 +60,7 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
         FormSubmission formSubmission = filter.getFormSubmission();
         List<FormValue> values = formSubmission.getValues();
-        assertEquals(3, values.size());
+        assertEquals(4, values.size());
 
         FormValue value = values.get(0);
         assertEquals("1", value.getValues()[0]);
@@ -68,6 +70,9 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
         value = values.get(2);
         assertEquals("3", value.getValues()[0]);
+
+        value = values.get(3);
+        assertEquals("4", value.getValues()[0]);
 
     }
 }

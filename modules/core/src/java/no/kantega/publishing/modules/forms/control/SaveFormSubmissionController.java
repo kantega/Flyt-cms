@@ -12,6 +12,7 @@ import no.kantega.publishing.security.data.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public class SaveFormSubmissionController implements AksessController {
 
         if (form != null) {
             if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("isAksessFormSubmit") != null) {
-                Map<String, String[]> values = new HashMap<String, String[]>(request.getParameterMap());
+                Map<String, String[]> values = new LinkedHashMap<String, String[]>(request.getParameterMap());
                 addValues(values, request);
 
                 FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form);
