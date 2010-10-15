@@ -17,6 +17,7 @@ import java.util.*;
  * Validates input from user against form definition
  */
 public class FormSubmissionFillFilter extends XMLFilterImpl {
+    private String[] excludedParameters = {"thisId", "contentId", "isAksessFormSubmit"};
 
     private Map<String, String[]> params;
     private FormSubmission formSubmission;
@@ -151,11 +152,26 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         Iterator keys = tmpParameters.keySet().iterator();
         while (keys.hasNext()) {
             String name = (String)keys.next();
-            String[] value = (String[])tmpParameters.get(name);
-            FormValue formValue = new FormValue();
-            formValue.setName(name);
-            formValue.setValues(value);
-            formSubmission.addValue(formValue);
+            if (!isExcludedParameter(name)) {
+                String[] value = (String[])tmpParameters.get(name);
+                FormValue formValue = new FormValue();
+                formValue.setName(name);
+                formValue.setValues(value);
+                formSubmission.addValue(formValue);
+            }
         }
+    }
+
+    private boolean isExcludedParameter(String name) {
+        for (String excluded : excludedParameters) {
+            if (excluded.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }        
+        return false;
+    }
+
+    public void setExcludedParameters(String[] excludedParameters) {
+        this.excludedParameters = excludedParameters;
     }
 }
