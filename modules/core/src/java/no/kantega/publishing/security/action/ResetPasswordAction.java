@@ -80,7 +80,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
 
         model.put("loginLayout", getLoginLayout());
         model.put("minPasswordLength", minPasswordLength);
-        model.put("passwordResetOk", true);
+        model.put("passwordChanged", true);
 
 
         return new ModelAndView(resetPasswordView, model);
