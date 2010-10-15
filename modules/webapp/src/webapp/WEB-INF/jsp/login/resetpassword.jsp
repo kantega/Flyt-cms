@@ -28,7 +28,8 @@
     <c:choose>
         <c:when test="${passwordChanged}">
             <div id="ResetPasswordHelp">
-                <kantega:label key="aksess.resetpassword.changed"/>
+                <p><kantega:label key="aksess.resetpassword.changed"/></p>
+                <p><a href="Login.action"><kantega:label key="aksess.resetpassword.login"/></a></p>
             </div>
         </c:when>
         <c:otherwise>
