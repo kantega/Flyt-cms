@@ -22,10 +22,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
@@ -141,7 +139,7 @@ public class MailSubscriptionAgent {
                     query.setSiteId(site.getId());
                 }
 
-                List allContentList = ContentAO.getContentList(query, -1, null, false);
+                List allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
 
                 // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
                 List<Content> contentList = new ArrayList<Content>();
