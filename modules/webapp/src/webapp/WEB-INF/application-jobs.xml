@@ -286,9 +286,7 @@
             <ref bean="contentImportJobDetail"/>
         </property>
         <property name="cronExpression">
-            <!-- Hvert natt klokka tjue over tre  -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 20 3 * * ?</value>
+            <value>${jobs.contentimport.trigger}</value>
         </property>
     </bean>
 
