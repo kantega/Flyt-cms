@@ -1,6 +1,7 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.security.api.common.SystemException;
@@ -56,7 +57,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         ResetPasswordToken token = tokenManager.generateResetPasswordToken(identity, expireDate);
 
         Map<String, Object> mailParam = new HashMap<String, Object>();
-        String url = Aksess.getApplicationUrl();
+        String url = URLHelper.getServerURL(request) + request.getContextPath();
         url += "/ResetPassword.action";
         url += "?token=" + token.getToken();
         url += "&amp;username=" + identity.getUserId();
