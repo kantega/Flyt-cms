@@ -98,18 +98,19 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                     searchHit.setFileExtension(fileExtension);
                     searchHit.setFileName(fileName);
                 }
+                searchHit.setMimeType(MimeTypes.getMimeType(searchHit.getFileName() + "." + searchHit.getFileExtension()));
             }
+            
             if (searchHit.getTitle() == null || searchHit.getTitle().length() == 0) {
                 searchHit.setTitle(doc.get(Fields.ATTACHMENT_FILE_NAME));
             }
+
             try {
                 searchHit.setFileSize(Integer.parseInt(doc.get(Fields.ATTACHMENT_FILE_SIZE)));
-            }
-            catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 Log.error(SOURCE, "NumberFormatException occured while trying to parse filesize from index for attachment:"+searchHit.getId(), null, null);
             }
-            searchHit.setMimeType(MimeTypes.getMimeType(searchHit.getFileName()+"."+searchHit.getFileExtension()));
-            
+
             searchHit.setUrl(Aksess.getContextPath() + "/attachment.ap?id=" + attachmentId);
         }
     }
