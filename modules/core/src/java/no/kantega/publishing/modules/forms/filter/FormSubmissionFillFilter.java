@@ -17,7 +17,7 @@ import java.util.*;
  * Validates input from user against form definition
  */
 public class FormSubmissionFillFilter extends XMLFilterImpl {
-    private String[] excludedParameters = {"thisId", "contentId", "isAksessFormSubmit"};
+    private String[] excludedParameters = {"thisId", "contentId", "isAksessFormSubmit", "csrfkey"};
 
     private Map<String, String[]> params;
     private FormSubmission formSubmission;
