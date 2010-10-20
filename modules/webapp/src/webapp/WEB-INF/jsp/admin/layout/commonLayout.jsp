@@ -21,6 +21,8 @@
 <html>
 <head>
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
+    <%-- Prevent IE from blocking: http://www.phpied.com/conditional-comments-block-downloads/ --%>
+    <!--[if lt IE 8]><![endif]-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/admin/favicon.ico" type="image/x-icon">
 
