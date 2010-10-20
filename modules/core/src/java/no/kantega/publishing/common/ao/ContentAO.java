@@ -262,35 +262,41 @@ public class ContentAO {
 
     public static Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
 
-        int version = cid.getVersion();
+        int requestedVersion = cid.getVersion();
+        int contentVersionId = -1;
 
         Connection c = null;
 
         try {
             c = dbConnectionFactory.getConnection();
             if (isAdminMode) {
-                if (version == -1) {
+                if (requestedVersion == -1) {
                     // When in administration mode users should see last version
-                    version = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " order by ContentVersionId desc" , "ContentVersionId");
-                    if (version == -1) {
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " order by ContentVersionId desc" , "ContentVersionId");
+                    if (contentVersionId == -1) {
+                        return null;
+                    }
+                } else {
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
+                    if (contentVersionId == -1) {
                         return null;
                     }
                 }
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
                 int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
-                version = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
+                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
             } else {
                 // Others should see active version
-                version = -1;
+                contentVersionId = -1;
             }
 
 
             StringBuffer query = new StringBuffer();
             query.append("select * from content, contentversion where content.ContentId = contentversion.ContentId");
-            if (version != -1) {
+            if (contentVersionId != -1) {
                 // Hent angitt versjon
-                query.append(" and contentversion.ContentVersionId = " + version);
+                query.append(" and contentversion.ContentVersionId = " + contentVersionId);
             } else {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");
