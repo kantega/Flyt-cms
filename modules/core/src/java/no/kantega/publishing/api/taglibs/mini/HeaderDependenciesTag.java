@@ -41,8 +41,12 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "            debug : "+Aksess.isJavascriptDebugEnabled()+",\n" +
                 "            contentRequestHandler : '"+ Aksess.CONTENT_REQUEST_HANDLER+"',\n" +
                 "            thisId : '"+ AdminRequestParameters.THIS_ID+"'\n" +
-                "        }\n" +
+                "        };\n" +
+                "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +
+                "        $.datepicker.setDefaults($.datepicker.regional['" + Aksess.getDefaultAdminLocale().getCountry() + "']);\n" +
+                "        $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});" +
                 "    </script>");
+        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/aksess/js/aksess-i18n.jjs\"></script>\n");
         out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro-oa/miniaksess.js\"></script>\n");
         out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce_gzip.js\"></script>\n");
     }

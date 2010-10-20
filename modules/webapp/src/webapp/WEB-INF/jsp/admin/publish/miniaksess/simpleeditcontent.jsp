@@ -41,29 +41,6 @@
     </style>
 
     <% request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale()); %>
-    <script type="text/javascript">
-        if (typeof properties == 'undefined') {
-            var properties = { };
-        }
-        if (typeof properties.editcontext == 'undefined') {
-            properties.editcontext = {};
-        }
-        properties.debug = <aksess:getconfig key="javascript.debug" default="false"/>;
-        properties.contextPath = '${pageContext.request.contextPath}';
-        properties.contentRequestHandler = '<%=Aksess.CONTENT_REQUEST_HANDLER%>';
-        properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
-        properties.editcontext['labels'] = {
-            selecttopic : '<kantega:label key="aksess.selecttopic.title" escapeJavascript="true"/>',
-            selectcontent : '<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>',
-            selectorgunit : '<kantega:label key="aksess.popup.selectorgunit" escapeJavascript="true"/>',
-            warningMaxchoose : '<kantega:label key="aksess.js.advarsel.dukanmaksimaltvelge" escapeJavascript="true"/> ',
-            warningElements : '<kantega:label key="aksess.js.advarsel.elementer" escapeJavascript="true"/>',
-            adduser : '<kantega:label key="aksess.adduser.title" escapeJavascript="true"/>',
-            multimedia : '<kantega:label key="aksess.multimedia.title" escapeJavascript="true"/>',
-            addrole : '<kantega:label key="aksess.addrole.title" escapeJavascript="true"/>',
-            editablelistValue : '<kantega:label key="aksess.editablelist.value" escapeJavascript="true"/>'
-        };
-    </script>
     <miniaksess:headerdependencies/>
 </head>
 <body class="miniedit">
