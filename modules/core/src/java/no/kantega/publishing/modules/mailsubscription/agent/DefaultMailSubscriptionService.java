@@ -45,6 +45,10 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
             subject = config.getString("mail.subscription.subject", "Nyhetsbrev");
         }
 
+        if (subscriberContent.size() == 1) {
+            subject = subject + ":" + subscriberContent.get(0).getTitle();
+        }
+
         String template = config.getString("mail" + alias + "subscription.template", null);
         if (template == null) {
             template = config.getString("mail.subscription.template", "maillist.vm");
