@@ -50,25 +50,32 @@
             });
 
             // Add content
-            $("#AddExistingTopic input").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteTopics.action?topicMapId=${topic.topicMapId}").result(function(event, data, formatted) {
-                var ids = data[1].split(":");
-                var topicMapId = ids[0];
-                var topicId = ids[1];
-                var container = $(this).closest(".ui-tabs-panel");
-                openaksess.common.debug("ViewTopic.action add topic: " + topicId);
-                container.load("ListAssociatedTopics.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + topicId, function() {
-                    bindTopicInfoEvents();
-                });
+            $("#AddExistingTopic input").autocomplete({
+                source: properties.contextPath + "/ajax/AutocompleteTopics.action",
+                select: function(event, ui){
+                    var topicName = ui.item.name,
+                    topic = ui.item.id.split(":"),
+                    topicMapId = topic[0],
+                    topicId = topic[1];
+                    var container = $(this).closest(".ui-tabs-panel");
+                    openaksess.common.debug("ViewTopic.action add topic: " + topicId);
+                    container.load("ListAssociatedTopics.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + topicId, function() {
+                        bindTopicInfoEvents();
+                    });
+                }
             });
 
             // Add content
-            $("#AddContentButton").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true").result(function(event, data, formatted) {
-                var contentId = data[1];
-                var container = $(this).closest(".ui-tabs-panel");
-                openaksess.common.debug("ViewTopic.action add content: " + contentId);
-                container.load("ListAssociatedContent.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + contentId, function() {
-                    bindTopicInfoEvents();
-                });
+            $("#AddContentButton").autocomplete({
+                source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true",
+                select: function(event, ui){
+                    var contentId = ui.item.id;
+                    var container = $(this).closest(".ui-tabs-panel");
+                    openaksess.common.debug("ViewTopic.action add content: " + contentId);
+                    container.load("ListAssociatedContent.action?topicId=${topic.id}&topicMapId=${topic.topicMapId}&addId=" + contentId, function() {
+                        bindTopicInfoEvents();
+                    });
+                }
             });
         }
 

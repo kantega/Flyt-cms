@@ -31,18 +31,16 @@ import java.util.Map;
 
 public class AutocompleteMultimediaAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
-        RequestParameters param = new RequestParameters(request);
-        
-        String name = param.getString("q");
-        if (name != null && name.length() >= 3) {
+        Map<String, Object> model = new HashMap<String, Object>();
+
+        String name = request.getParameter("term");
+        if (name != null && name.trim().length() > 0) {
             MultimediaService mms = new MultimediaService(request);
-            List mmlist = mms.searchMultimedia(name);
-            for (int i = 0; i < mmlist.size(); i++) {
-                Multimedia m =  (Multimedia)mmlist.get(i);
+            List<Multimedia> mmlist = mms.searchMultimedia(name);
+            for (Multimedia m : mmlist) {
                 String mmName = m.getName();
                 mmName = StringHelper.removeIllegalCharsInTitle(mmName);
-                m.setName(mmName);                
+                m.setName(mmName);
             }
             model.put("multimedialist", mmlist);
         }

@@ -167,34 +167,25 @@ openaksess.editcontext = function()  {
             });
 
             var ths = this;
-            $input.autocomplete(properties.contextPath + "/ajax/AutocompleteTopics.action").result(function(event, data, formatted) {
-                var topicName = data[0];
-                var topicId = data[1].split(":");
-                openaksess.editcontext.focusField = null;
-                ths.addTopic(topicId[0], topicId[1], topicName);
-                $(this).blur();
+            $input.autocomplete({
+                source: properties.contextPath + "/ajax/AutocompleteTopics.action",
+                select: function(event, ui){
+                    var topicName = ui.item.name;
+                    var topic = ui.item.id.split(":");
+                    openaksess.editcontext.focusField = null;
+                    ths.addTopic(topic[0], topic[1], topicName);
+                    $(this).blur();
+                }
             });
         },
 
-        autocompleteInsertIntoFormCallback : function(event, data, formatted) {
-            var name = data[0];
-            var id = data[1];
+        autocompleteInsertIntoFormCallback : function(event, ui) {
             var idField = this.name.substring(0, this.name.length - 4);
-
-            $(this).val(name);
-            $("#" + idField).val(id);
-
-            $(this).blur();
+            var value = ui.item.id;
+            openaksess.common.debug("openaksess.editcontext.autocompleteInsertIntoFormCallback(): Option selected. Inserting value '"+value+"' into field '#"+idField+"'");
+            $("#" + idField).val(value);
         },
 
-        autocompleteInsertMediaIntoFormCallback : function(event, data, formatted) {
-            var idAndName = data[1].split(":");
-            var idField = this.name.substring(0, this.name.length - 4);           
-            $(this).val(idAndName[1]);
-            $("#" + idField).val(idAndName[0]);
-
-            $(this).blur();
-        },        
 
         /**
          *  Remove topic from edited page
@@ -532,6 +523,53 @@ openaksess.editcontext = function()  {
 
     };
 }();
+
+
+
+/**
+ * OpenAksess specific extension of the jQueryUI autocomplete plugin.
+ */
+$.widget('ui.oaAutocomplete', $.ui.autocomplete, {
+    _create: function() {
+        openaksess.common.debug("openaksesswidgets.oaAutocomplete._create(): Widget created");
+        $(this.element).focus($.proxy(this._focus, this)).blur($.proxy(this._blur, this));
+        $.ui.autocomplete.prototype._create.apply(this,null);
+    },
+
+    _focus: function(){
+        openaksess.common.debug("openaksesswidgets.oaAutocomplete._focus(): Focus on " + this.element.attr("id"));
+        if (this.element.val() == this.options.defaultValue) {
+            this.element.val('');
+        }
+    },
+    _blur: function(){
+        var formElement = this.element,
+        elementName = formElement[0].name,
+        elementId = formElement[0].id;
+        openaksess.common.debug("openaksesswidget.oaAutocomplete._blur(): Blur on " + elementId);
+        if (formElement.val().length == 0) {
+            formElement.val(this.options.defaultValue);
+            var idField = elementName.substring(0, elementName.length - 4);
+            $("#" + idField).val('');
+        }
+    }
+
+});
+
+/**
+ * Multimedia specific extension of the OpenAksess autocomplete plugin.
+ */
+$.widget('ui.oaAutocompleteMultimedia', $.ui.oaAutocomplete, {
+
+    _renderItem: function( ul, item ) {
+        return $( "<li></li>" )
+            .data( "item.autocomplete", item )
+            .append( "<a>" + item.image + " " + item.label + "</a>" )
+            .appendTo( ul );
+    }
+
+});
+
 
 document.onkeypress = openaksess.editcontext.editKeyPress;
 

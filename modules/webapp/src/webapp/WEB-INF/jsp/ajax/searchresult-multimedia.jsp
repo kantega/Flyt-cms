@@ -14,6 +14,9 @@
   ~ limitations under the License.
   --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+[
 <c:forEach var="multimedia" items="${multimedialist}" varStatus="status">
-<c:out value="${multimedia.name}"/><img src="${pageContext.request.contextPath}/multimedia.ap?id=${multimedia.id}&width=100&height=100" alt="${multimedia.name}" align="left">|<c:out value="${multimedia.id}"/>:<c:out value="${multimedia.name}"/>
+{"id": "${multimedia.id}", "label": "${multimedia.name}", "value": "${multimedia.name}", "image": "<img src='${pageContext.request.contextPath}/multimedia.ap?id=${multimedia.id}&width=50&height=50' alt='${multimedia.name}'>"}
+<c:if test="${!status.last}">,</c:if>
 </c:forEach>
+]

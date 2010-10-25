@@ -58,7 +58,7 @@
                 title:"Sett inn lenke",
                 iframe:true,
                 href: this.baseUrl + "publish/popups/InsertLink.action?url=" + encodeURI(href) + "&isOpenInNewWindow=" + encodeURI(newWindow) + "&isMiniAdminMode=" + encodeURI(miniAdminMode),
-                width: 600,
+                width: 650,
                 height:300});
         }
 

@@ -25,7 +25,6 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.autocomplete.css">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { content : {} };
@@ -34,7 +33,6 @@
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksess-i18n.jjs"></script>
     <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.autocomplete.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_popup.js"></script>
 </kantega:section>
 

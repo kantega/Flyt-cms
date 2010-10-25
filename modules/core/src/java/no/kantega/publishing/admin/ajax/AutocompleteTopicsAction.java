@@ -28,15 +28,15 @@ import no.kantega.publishing.common.service.TopicMapService;
 
 public class AutocompleteTopicsAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
         RequestParameters param = new RequestParameters(request);
 
         int topicMapId = param.getInt("topicMapId");
 
-        String q = param.getString("q");
-        if (q != null && q.length() >= 1) {
+        String term = param.getString("term");
+        if (term != null && term.trim().length() > 0) {
             TopicMapService tms = new TopicMapService(request);
-            model.put("topics", tms.getTopicsByNameAndTopicMapId(q, topicMapId));            
+            model.put("topics", tms.getTopicsByNameAndTopicMapId(term, topicMapId));
         }
 
         return new ModelAndView("/WEB-INF/jsp/ajax/searchresult-topics.jsp", model);

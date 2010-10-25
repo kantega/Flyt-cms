@@ -26,9 +26,6 @@
     <kantega:label key="aksess.addrole.title"/>
 </kantega:section>
 
-<kantega:section id="head">
-    <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/autocomplete.js"></script>
-</kantega:section>
 
 <kantega:section id="body">
     <script type="text/javascript">

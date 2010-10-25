@@ -32,12 +32,11 @@ import no.kantega.commons.client.util.RequestParameters;
 
 public class AutocompleteOrgUnitsAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
-        RequestParameters param = new RequestParameters(request);
+        Map<String, Object> model = new HashMap<String, Object>();
 
         List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
 
-        String name = param.getString("q");
+        String name = request.getParameter("term");
         if (name != null && name.length() >= 3) {
             ApplicationContext context = RootContext.getInstance();
             Iterator i = context.getBeansOfType(OrganizationManager.class).values().iterator();

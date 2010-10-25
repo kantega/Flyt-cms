@@ -31,10 +31,8 @@ import no.kantega.commons.client.util.RequestParameters;
 
 public class AutocompleteUsersAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
-        RequestParameters param = new RequestParameters(request);
-
-        String name = param.getString("q");
+        Map<String, Object> model = new HashMap<String, Object>();
+        String name = request.getParameter("term");
         if (name != null && name.length() >= 3) {
             SecuritySession securitySession = SecuritySession.getInstance(request);
             List users = securitySession.searchUsers(name);

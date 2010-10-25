@@ -30,7 +30,7 @@
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksess-i18n.jjs"></script>
-    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.js"/>"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.js?minimize=false"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_gzip.js"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>

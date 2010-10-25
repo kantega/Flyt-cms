@@ -35,25 +35,29 @@ import java.util.List;
 import java.util.Map;
 
 public class AutocompleteContentAction implements Controller {
+
     private SiteCache siteCache;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
-        RequestParameters param = new RequestParameters(request);
-        String title = param.getString("q");
-        if (title != null && title.length() >= 3) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        String title = request.getParameter("term");
+
+        if (title != null && title.trim().length() > 0) {
             ContentQuery query = new ContentQuery();
             query.setKeyword(title + '%');
             ContentManagementService cms = new ContentManagementService(request);
 
-            List pages = cms.getContentList(query, 100, new SortOrder(ContentProperty.TITLE, false));
+            List<Content> pages = cms.getContentList(query, 100, new SortOrder(ContentProperty.TITLE, false));
 
-            // Legg inn sitenavn slik at det blir enklere å finne siden og erstatt ulovlige tegn
-            for (int i = 0; i < pages.size(); i++) {
-                Content c =  (Content)pages.get(i);
-                Site s = siteCache.getSiteById(c.getAssociation().getSiteId());
-                String pageTitle = c.getTitle() + " (" + s.getName()  + ")";
+            // Add site name and replace illegal charachters.
+            for (Content page : pages) {
+                String pageTitle = page.getTitle();
+                if (siteCache.getSites().size() > 1) {
+                    Site site = siteCache.getSiteById(page.getAssociation().getSiteId());
+                    pageTitle += " (" + site.getName() + ")";
+                }
                 pageTitle = StringHelper.removeIllegalCharsInTitle(pageTitle);
-                c.setTitle(pageTitle);
+                page.setTitle(pageTitle);
             }
 
             model.put("contentlist", pages);

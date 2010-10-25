@@ -1,4 +1,6 @@
 <%@ page import="no.kantega.commons.util.URLHelper" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.commons.util.LocaleLabels" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
@@ -44,6 +46,10 @@
         <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     </div>
     <script type="text/javascript">
-        $("#urltext").autocomplete("${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action").result(openaksess.editcontext.autocompleteInsertMediaIntoFormCallback);
+        $("#urltext").oaAutocompleteMultimedia({
+            defaultValue: '<kantega:label key="aksess.insertlink.multimedia.hint"/>',
+            source: "${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
+            select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+        });
     </script>
 </div>

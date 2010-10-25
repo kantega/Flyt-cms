@@ -39,3 +39,19 @@ ul.ui-tabs-nav li {
 #MainPaneContent>div.ui-state-highlight {
     margin: 0 20px;
 }
+
+/** Autocomplete plugin **/
+.ui-menu {
+    border: 1px solid #ccc;
+}
+.ui-menu .ui-menu-item {
+    list-style: none;
+    background: #fff;
+    border: 1px solid #fff;
+}
+.ui-menu .ui-menu-item:nth-child(2n+1){
+    background-color: #eee;
+}
+.ui-menu .ui-menu-item .ui-state-hover {
+    background: #C0E5F7;
+}

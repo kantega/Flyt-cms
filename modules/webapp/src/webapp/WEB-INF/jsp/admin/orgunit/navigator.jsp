@@ -18,7 +18,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin"%>
 
-<admin:printorgunitnavigator openUnits="${openUnits}"/>
+<admin:printorgunitnavigator openUnits="${openUnits}" cssClass="orgunit"/>
 
 <div id="NavigatorState" style="display: none;">
     <div class="openFolders">${openFolders}</div>
