@@ -119,6 +119,11 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.util.Set</type>
         </attribute>
+        <attribute>
+            <name>cssClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
 

@@ -161,6 +161,9 @@ ul.breadcrumbs li:first-child {
 
 .navigator .icon {
 }
+.navigator.orgunit .icon {
+    display: none;
+}
 .navigator .icon a {
     display: inline-block;
     position: relative;

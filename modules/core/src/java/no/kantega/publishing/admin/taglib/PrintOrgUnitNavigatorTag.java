@@ -19,6 +19,7 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
     private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintOrgUnitNavigatorTag";
 
     private Set openUnits;
+    private String cssClass;
 
 
     /**
@@ -31,7 +32,11 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
     private void printUnit(OrgUnit orgUnit, OrganizationManager manager) throws IOException {
         JspWriter out = getJspContext().getOut();
 
-        out.write("<ul class=\"navigator\">");
+        out.write("<ul class=\"navigator");
+        if (cssClass != null && cssClass.trim().length() > 0) {
+            out.write(" " + cssClass);
+        }
+        out.write("\">");
         out.write("<li>");
 
         List<OrgUnit> childUnits = new ArrayList<OrgUnit>();
@@ -91,5 +96,9 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
 
     public void setOpenUnits(Set openUnits) {
         this.openUnits = openUnits;
+    }
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
     }
 }
