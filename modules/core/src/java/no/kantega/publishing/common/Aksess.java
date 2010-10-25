@@ -77,7 +77,8 @@ public class Aksess {
 
     private static String outputImageFormat = "jpg";
     private static int outputImageQuality = 85;
-    private static boolean imageConversionEnabled = false;
+
+    private static boolean isDefaultMinorChange = false;
 
     private static boolean openLinksInNewWindow = false;
     private static boolean urlRewritingEnabled = true;
@@ -164,12 +165,12 @@ public class Aksess {
             maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
             maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
 
-            imageConversionEnabled = c.getBoolean("multimedia.convertimages", false);
-
             flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
             flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
             flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
             flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
+
+            isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
 
             historyMaxVersions = c.getInt("history.maxversions", 20);
 
@@ -510,10 +511,6 @@ public class Aksess {
         return securitySessionTimeout;
     }
 
-    public static boolean isImageConversionEnabled() {
-        return imageConversionEnabled;
-    }
-
     public static int getDeletedItemsMaxAge() {
         return deletedItemsMaxAge;
     }
@@ -597,5 +594,9 @@ public class Aksess {
 
     public static boolean isSecurityAllowPasswordReset() {
         return securityAllowPasswordReset;
+    }
+
+    public static boolean isDefaultMinorChange() {
+        return isDefaultMinorChange;
     }
 }

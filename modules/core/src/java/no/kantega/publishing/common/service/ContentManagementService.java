@@ -101,7 +101,7 @@ public class ContentManagementService {
         }
 
         // Reset minor change field
-        c.setMinorChange(false);
+        c.setMinorChange(Aksess.isDefaultMinorChange());
 
         LockManager.lockContent(securitySession.getUser().getId(), c.getId());
 
