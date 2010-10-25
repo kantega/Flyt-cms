@@ -288,7 +288,7 @@ public final class AttributeTagHelper {
                     }
                     ma.setValue(content.getImage());
                     result = ma.getProperty(cmd.getProperty());
-                } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE)) {
+                } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE) || name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
                     Date date = null;
                     if (name.equals(ContentProperty.PUBLISH_DATE)) {
                         date = content.getPublishDate();
