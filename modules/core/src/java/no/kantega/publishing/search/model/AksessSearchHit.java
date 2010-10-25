@@ -17,6 +17,7 @@
 package no.kantega.publishing.search.model;
 
 import no.kantega.commons.media.MimeType;
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
 
 import java.util.List;
@@ -152,5 +153,9 @@ public class AksessSearchHit implements SearchHit {
 
     public void setMimeType(MimeType mimeType) {
         this.mimeType = mimeType;
+    }
+
+    public String getFileSizeToDisplaySize() {
+        return FileUtils.byteCountToDisplaySize(fileSize);
     }
 }
