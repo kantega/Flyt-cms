@@ -38,13 +38,13 @@ import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.security.api.identity.*;
+import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
-import no.kantega.security.api.password.PasswordManager;
+import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -81,7 +81,13 @@ public class SecuritySession {
         IdentityResolver resolver = session.realm.getIdentityResolver();
         Identity identity = null;
         try {
-            identity = resolver.getIdentity(request);
+            Identity fakeIdentity = getFakeIdentity();
+            if(fakeIdentity != null) {
+                identity = fakeIdentity;
+
+            } else {
+                identity = resolver.getIdentity(request);
+            }
         } catch (IdentificationFailedException e) {
             throw new SystemException(SOURCE, "IdentificationFailedException", e);
         }
@@ -109,6 +115,20 @@ public class SecuritySession {
         }
 
         return session;
+    }
+
+    private static Identity getFakeIdentity() {
+        WebApplicationContext root = (WebApplicationContext) RootContext.getInstance();
+        final String fakeUsername = root.getServletContext().getInitParameter("fakeUsername");
+        final String fakeUserDomain= root.getServletContext().getInitParameter("fakeUserDomain");
+        if(fakeUsername != null && fakeUserDomain != null) {
+            DefaultIdentity id = new DefaultIdentity();
+            id.setUserId(fakeUsername);
+            id.setDomain(fakeUserDomain);
+            return id;
+        } else {
+            return null;
+        }
     }
 
     /**
