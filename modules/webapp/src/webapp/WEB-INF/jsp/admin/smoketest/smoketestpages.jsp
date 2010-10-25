@@ -6,9 +6,9 @@
 <%@ page contentType="text/xml" language="java" pageEncoding="iso-8859-1" %>
 <c:forEach items="${pages}" var="page">
     <page url="<aksess:getattribute obj="${page}" name="url"/>"
-          displayTemplate="<aksess:getattribute obj="${page}" name="displaytemplate"/>"
+          category="<aksess:getattribute obj="${page}" name="displaytemplate"/>"
             title="<aksess:getattribute obj="${page}" name="title"/>"
-            contentId="<aksess:getattribute obj="${page}" name="contentId"/>">
+            id="<aksess:getattribute obj="${page}" name="contentId"/>">
     </page>
 </c:forEach>
 
