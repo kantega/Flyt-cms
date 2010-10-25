@@ -42,7 +42,6 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             SecuritySession ss = cms.getSecuritySession();
 
             if (!ss.isLoggedIn()) {
-                contentObject = null;
                 return false;
             }
 
@@ -58,21 +57,27 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             if (contentObject != null) {
                 if (ss.isUserInRole(Aksess.getAuthorRoles()) || ss.isUserInRole(Aksess.getAdminRole())) {
                     if (ss.isAuthorized(contentObject, Privilege.UPDATE_CONTENT)) {
-                        contentObject = null;
                         return true;
                     }
                 }
             }
-            contentObject = null;
             return false;
         } catch (ContentNotFoundException e) {
             // Normalt
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
+        } finally {
+            reset();
         }
 
         return false;
+    }
+
+    /**
+     * Reset tag-data
+     */
+    private void reset() {
+        contentObject = null;
     }
 
     public void setObj(Content obj) {
