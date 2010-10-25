@@ -8,7 +8,7 @@
     <page url="<aksess:getattribute obj="${page}" name="url"/>"
           category="<aksess:getattribute obj="${page}" name="displaytemplate"/>"
             title="<aksess:getattribute obj="${page}" name="title"/>"
-            id="<aksess:getattribute obj="${page}" name="contentId"/>">
+            id="contentid-<aksess:getattribute obj="${page}" name="contentId"/>">
     </page>
 </c:forEach>
 
