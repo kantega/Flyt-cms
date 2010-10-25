@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsEditableByUserTag";
-    private Content contentObject;
+    private Content contentObject = null;
 
     protected boolean condition() {
         try {
@@ -61,16 +61,23 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
                     }
                 }
             }
-
             return false;
         } catch (ContentNotFoundException e) {
             // Normalt
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
+        } finally {
+            reset();
         }
 
         return false;
+    }
+
+    /**
+     * Reset tag-data
+     */
+    private void reset() {
+        contentObject = null;
     }
 
     public void setObj(Content obj) {
