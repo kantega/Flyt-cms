@@ -199,11 +199,13 @@ public class dbConnectionFactory {
         domains.add("oa");
 
         for (String domainPath : domainPaths) {
-            // Remove last slash
-            domainPath = domainPath.substring(0, domainPath.length()-1);
-            String domain = domainPath.substring(domainPath.lastIndexOf("/")+1);
-            if(!domain.startsWith(".") && !"oa".equals(domain)) {
-                domains.add(domain);
+            if(domainPath.endsWith("/")) {
+                // Remove last slash
+                domainPath = domainPath.substring(0, domainPath.length()-1);
+                String domain = domainPath.substring(domainPath.lastIndexOf("/")+1);
+                if(!domain.startsWith(".") && !"oa".equals(domain)) {
+                    domains.add(domain);
+                }
             }
         }
 
