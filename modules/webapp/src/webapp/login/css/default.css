@@ -180,16 +180,6 @@ body.login label{
     background:url("../bitmaps/passord.png") no-repeat left top;
 }
 
-#Submit{
-    background:url("../bitmaps/login_btn.png") no-repeat right top;
-    text-align:center;
-    width:115px;
-    height:35px;
-    padding-top:5px;
-}
-#Submit:hover{
-    background:url("../bitmaps/login_btn_hover.png") no-repeat right top;
-}
 body.login input[type=text], body.login input[type=password]{
     position:absolute;
     background:transparent;
@@ -200,12 +190,20 @@ body.login input[type=text], body.login input[type=password]{
     width:220px;    
 }
 body.login input[type=submit]{
-    background:transparent;
+    background:url("../bitmaps/login_btn.png") no-repeat right top;
+    text-align:center;
+    width:115px;
+    height:35px;
+    padding-top:5px;
     border:none;
-    height:27px;
     font-weight:bold;
     padding-bottom:4px;
 }
+
+body.login input[type=submit]:hover{
+    background:url("../bitmaps/login_btn_hover.png") no-repeat right top;
+}
+
 
 /**********************************
 Error page
