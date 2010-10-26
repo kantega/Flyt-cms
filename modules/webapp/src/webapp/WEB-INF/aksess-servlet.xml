@@ -738,6 +738,7 @@
     <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelController" id="FormSubmissionsExportExcelAction"/>
     <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelView" id="FormSubmissionsExportExcelView">
         <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
+        <property name="formService" ref="aksessContentFormService"/>        
     </bean>
     <bean class="no.kantega.publishing.modules.forms.control.DeleteFormSubmissionsAction" id="DeleteFormSubmissionsAction">
         <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>

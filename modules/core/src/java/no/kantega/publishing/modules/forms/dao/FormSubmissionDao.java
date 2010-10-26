@@ -1,6 +1,7 @@
 package no.kantega.publishing.modules.forms.dao;
 
 import no.kantega.publishing.modules.forms.model.FormSubmission;
+import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
 
 import java.util.List;
 
@@ -55,5 +56,11 @@ public interface FormSubmissionDao {
      * @param formSubmissionId - id of form submission
      */
     public void deleteFormSubmissionById(int formSubmissionId);
+
+    /**
+     * Get a summary of all formsubmissions for all forms
+     * @return - list of FormSubmissionsSummary
+     */
+    public List<FormSubmissionsSummary> getFormSubmissionsSummaryForAllForms();
 
 }

@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import javax.sql.DataSource;
 
+import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
 import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
 import no.kantega.publishing.modules.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.model.AksessContentForm;
@@ -93,4 +94,18 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
 
         assertEquals(3, fieldNames.size());        
     }
+
+    public void testGetFormSubmissionsSummaryForAllForms() {
+        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
+
+        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
+        dao.setDataSource(dataSource);
+
+        List<FormSubmissionsSummary> summaries = dao.getFormSubmissionsSummaryForAllForms();
+
+        assertEquals(1, summaries.size());
+
+        assertEquals(4, summaries.get(0).getNoSubmissions());
+    }
+
 }

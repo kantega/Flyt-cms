@@ -16,6 +16,8 @@
     <bean id="aksessDatabaseFormSubmissionDao" class="no.kantega.publishing.modules.forms.dao.DatabaseFormSubmissionDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
+    <bean id="aksessContentFormService" class="no.kantega.publishing.modules.forms.service.AksessContentFormService"/>
+
     <bean id="aksessEmailFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.EmailFormDeliveryService">
         <property name="mailTemplate" value="formsubmission.vm"/>
     </bean>

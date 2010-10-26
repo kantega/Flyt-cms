@@ -8,9 +8,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 
 import java.util.List;
 
-/**
- *
- */
 public class AksessContentForm implements Form {
 
     private Content content;
