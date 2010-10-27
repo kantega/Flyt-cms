@@ -26,7 +26,7 @@
     background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-excel.png");
 }
 
-.file.application-vnd-ms-powerpoint, file.application-vnd-openxmlformats-officedocument-presentationml-presentation {
+.file.application-vnd-ms-powerpoint, .file.application-vnd-openxmlformats-officedocument-presentationml-presentation {
     background-image: url("../aksess/bitmaps/mimetype/application/vnd.ms-powerpoint.png");
 }
 
