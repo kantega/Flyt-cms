@@ -1,10 +1,10 @@
+<%@ page contentType="text/xml;charset=utf-8" pageEncoding="iso-8859-1" %><?xml version="1.0" encoding="utf-8"?>
 <pages>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
-<%@ page contentType="text/xml" language="java" pageEncoding="iso-8859-1" %>
 <c:forEach items="${pages}" var="page">
     
     <c:set var="url"><aksess:getattribute obj="${page}" name="url"/></c:set> 
