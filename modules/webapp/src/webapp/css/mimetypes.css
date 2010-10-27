@@ -34,6 +34,6 @@
     background-image: url("../aksess/bitmaps/mimetype/application/oo-writer.png");
 }
 
-.file.application-vnd-oasis-opendocument-spreadsheet, .file.application-vnd.oasis-opendocument-spreadsheet-template {
+.file.application-vnd-oasis-opendocument-spreadsheet, .file.application-vnd-oasis-opendocument-spreadsheet-template {
     background-image: url("../aksess/bitmaps/mimetype/application/oo-calc.png");
 }
