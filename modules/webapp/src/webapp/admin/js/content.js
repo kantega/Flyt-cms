@@ -448,8 +448,6 @@ openaksess.content = {
         },
 
         showContentHints : function(hints) {
-            return;
-            var triggerResize = false;
             var $navigateContentHints = $("#NavigateContentHints");
             var isHidden = $navigateContentHints.is(":hidden");
 
