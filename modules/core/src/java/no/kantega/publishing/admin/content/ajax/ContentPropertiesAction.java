@@ -19,12 +19,14 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.dwr.ContentClipboardHandler;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -139,6 +141,13 @@ public class ContentPropertiesAction implements Controller {
                     }
                 }
 
+                // Content hints for publisher
+                if (content.getStatus() == ContentStatus.DRAFT) {
+                    model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.draft", Aksess.getDefaultAdminLocale()));
+                } else if (content.getChangeFromDate() != null) {
+                    model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.changefromdate", Aksess.getDefaultAdminLocale()));
+                }                
+
                 ContentLock lock = LockManager.peekAtLock(content.getId());
                 if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
                     String lockedBy = lock.getOwner();
@@ -153,7 +162,6 @@ public class ContentPropertiesAction implements Controller {
 
             model.put("content", content);
             model.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
-            model.put("sites",  aksessSiteCache.getSites());
             model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
 

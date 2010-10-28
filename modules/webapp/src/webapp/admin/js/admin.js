@@ -391,8 +391,18 @@ $.widget("ui.infoslider", {
 
     _setContent: function(content){
         openaksess.common.debug("Widget.infoslider._setContent(): Setting content");
+        if (content instanceof jQuery) {
+            this.options.parent = content.parent();
+            this.options.originalcontent = content.wrap("<div>").parent().html();
+            content = content.detach();
+            content.css({display:'block'});
+        } else {
+            content = $(content);
+        }
+
+
         this.element
-                .html(content)
+                .append(content)
                 .wrapInner('<div class="slidercontent"/>')
                 .removeClass()
                 .addClass(this.options.sliderCssClass + " " + this.options.cssClasses)
@@ -461,8 +471,13 @@ $.widget("ui.infoslider", {
     _reset: function(){
         openaksess.common.debug("Widget.infoslider._reset(): Resetting slider.");
         this.element.html("").removeClass().addClass(this.options.sliderCssClass);
+        if (this.options.parent && this.options.originalcontent) {
+            this.options.parent.append(this.options.originalcontent);
+        }
         this.options.open = false;
         this.options.floated = true;
+        this.options.parent = null;
+        this.options.originalcontent = null;
         this.element.resizable("destroy");
     },
 

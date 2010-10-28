@@ -87,7 +87,8 @@ openaksess.content = {
                     openaksess.content.contentstatus.associations(data.associations);
                     openaksess.content.contentstatus.enableButtons(data.enabledButtons);
                     openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
-                    openaksess.content.contentstatus.updateFilters(data.sites, data.userPreferences);
+                    openaksess.content.contentstatus.updateFilters(data.userPreferences);
+                    openaksess.content.contentstatus.showContentHints(data.contentHints);
                     openaksess.content.contentstatus.lockedBy = data.lockedBy;
                 }
             }, "json");
@@ -117,7 +118,7 @@ openaksess.content = {
 
         $filterOptions.find(".filtersToggle").live('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked. Opening infoslider widget.");
-            $("#Navigation .infoslider").infoslider('option', 'floated', false).infoslider('toggle', this, $filters.html());
+            $("#Navigation .infoslider").infoslider('option', {cssClasses: 'filters', floated: false}).infoslider('toggle', this, $filters);
         });
 
         $("#FilteroptionSort input[name=sort]").change(function(){
@@ -432,20 +433,43 @@ openaksess.content = {
             openaksess.common.debug("ContentStatus.showApproveOrReject: " + showButtons);
             var $approveButton = $("#EditContentButtons .approve");
             if ($approveButton.size() > 0) {
+                var $buttons = $("#EditContentButtons");
+                var isHidden = $buttons.is(":hidden");
                 if (showButtons) {
-                    $("#EditContentButtons").show();
+                    $buttons.show();
                 } else {
-                    $("#EditContentButtons").hide();
+                    $buttons.hide();
                 }
+                if (isHidden != $buttons.is(":hidden")) {
+                    $.event.trigger("resize");
+                }
+            }
+
+        },
+
+        showContentHints : function(hints) {
+            return;
+            var triggerResize = false;
+            var $navigateContentHints = $("#NavigateContentHints");
+            var isHidden = $navigateContentHints.is(":hidden");
+
+            if (hints && hints != '') {
+                $navigateContentHints.html(hints);
+                $navigateContentHints.show();
+            } else {
+                $navigateContentHints.hide();
+            }
+            if (isHidden != $navigateContentHints.is(":hidden")) {
+                openaksess.common.debug("ContentStatus.showContentHints resizing to show content hints");
                 $.event.trigger("resize");
             }
         },
 
         /**
          * Populates all content filters and sets the user's prefered values.
-         * @param sites - List of all available sites.
+         * @param userPreferences - Key value pair of user preferences (which sites are hidden, sort etc)
          */
-        updateFilters: function(sites, userPreferences){
+        updateFilters: function(userPreferences){
 
             var hiddenSites = [];
             var hideExpired = false;
@@ -466,41 +490,28 @@ openaksess.content = {
             }
 
             //Set sort order
-            $("#FilteroptionSort input.sortnavigator").each(function(){
+            $("#FilteroptionSort input.radio").each(function(){
                 var $this = $(this);
                 if ($this.val() == sort) {
                     $this.attr("checked", "checked");
                 }
             });
 
-            //Set the site filter
-            if (sites && sites.length > 0) {
-                openaksess.common.debug("openaksess.content.contentstatus.updateSiteFilter(): Number of sites: " + sites.length);
-                var $sitesFilterOptionsContainser = $("#FilteroptionSites .options");
-                var siteOptions = '';
-                //Print all sites
-                for(i = 0; i < sites.length; i++) {
-                    siteOptions +=
-                         '<div class="row">' +
-                         '  <input type="checkbox" class="checkbox" name="sites" value="'+sites[i].id+'" id="FilteroptionSites_'+sites[i].id+'"';
-                    var isHidden = false;
-                    //Check if the user has chosen to hide the site.
-                    for (var j=0; j<hiddenSites.length; j++) {
-                        if (hiddenSites[j] == sites[i].id) {
-                            isHidden = true;
-                        }
+            $("#FilteroptionSites input.checkbox").each(function(){
+                var $this = $(this);
+                var isHidden = false;
+                var siteId = $this.val();
+                for (var j = 0; j < hiddenSites.length; j++) {
+                    if (hiddenSites[j] == siteId) {
+                        isHidden = true;
                     }
-                    if (!isHidden) {
-                        siteOptions += ' checked="checked"';
-                    }
-                    siteOptions +=
-                         '><label class="checkbox" for="FilteroptionSites_'+sites[i].id+'">'+sites[i].name+'</label>' +
-                         '  <div class="clearing"></div>' +
-                         '</div>';
                 }
-                $sitesFilterOptionsContainser.html(siteOptions);
-
-            }
+                if (isHidden) {
+                    $this.removeAttr("checked");
+                } else {
+                    $this.attr("checked", "checked");
+                }
+            });
 
             //Has the user chosen to hide expired elements?
             if (hideExpired) {
@@ -534,12 +545,12 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $buttons = $('#EditContentButtons'),
     $mainPane = $('#MainPane'),
     mainPaneHeight = (elementProperties.window.height-elementProperties.top.height),
-    mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width),
     $content = $('#Content'),
+    $contentHints = $('#NavigateContentHints'),
     $mainPaneContent = $("#MainPaneContent"),
     mainPaneContentPaddingTop = 0,
     mainPaneContentPaddingBottom = 0;
-    var $mainContentIframe = $("#Maincontent")
+    var $mainContentIframe = $("#Maincontent");
 
     if ($mainPaneContent) {
         mainPaneContentPaddingTop = $mainPaneContent.css("paddingTop");
@@ -551,19 +562,26 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
         buttonsHeight = $buttons.height();
     }
 
+    var contentHintsHeight = 0;
+    if ($contentHints && !$contentHints.is(":hidden")) {
+        contentHintsHeight = $contentHints.height();
+    }
+
     var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
     if (preferredNavigationWidth) {
         var $navigation = $("#Navigation");
         $navigation.width(preferredNavigationWidth + "px");
         navigationWidth = preferredNavigationWidth;
     }
+    var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width);
 
-    openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeigth: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
+
+    openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
 
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
     $mainPane.height(mainPaneHeight).width(mainPaneWidth);
-    $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight).width(mainPaneWidth);
+    $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
 
     if ($mainPaneContent) {
         $mainPaneContent.height(mainPaneHeight-parseInt(mainPaneContentPaddingTop)-parseInt(mainPaneContentPaddingBottom)-statusbarHeight-buttonsHeight);

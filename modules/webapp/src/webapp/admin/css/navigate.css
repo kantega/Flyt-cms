@@ -75,6 +75,10 @@ body.popup #Navigator{
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -897px;
 }
 
+#NavigateContentHints {
+    margin: 0;
+    display: none;
+}
 
 /************** Navigation (left column) **************/
 #Filteroptions {

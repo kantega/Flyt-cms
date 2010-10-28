@@ -132,8 +132,13 @@
                     <fieldset id="FilteroptionSites">
                         <legend><kantega:label key="aksess.navigator.sites"/>&nbsp;(<a href="#" id="hideexpiredFilteroptionSites_all"><kantega:label key="aksess.navigator.sites.all"/></a>)</legend>
                         <div class="options">
-
-                        <%-- The sites (options) are loaded by content.Contentstatus.updateFilters() --%>
+                            <c:forEach var="site" items="${sites}">
+                                <div class="row">
+                                    <input type="checkbox" class="checkbox" name="sites" value="${site.id}" id="FilteroptionSites_${site.id}">
+                                    <label class="checkbox" for="FilteroptionSites_${site.id}">${site.name}</label>
+                                    <div class="clearing"></div>
+                                </div>
+                            </c:forEach>
                         </div>
                     </fieldset>
                 </div>
@@ -157,6 +162,7 @@
 
             <div class="infoslider"></div>
 
+            <div id="NavigateContentHints" class="ui-state-highlight"></div>
             <kantega:getsection id="content"/>
 
             <c:choose>

@@ -110,6 +110,8 @@ public class NavigateController extends AbstractContentAction {
             setRequestVariables(request, editedContent, aksessService, model);
             Log.debug(this.getClass().getName(), "User is editing page:" + editedContent.getTitle(), null, null);
         }
+
+        model.put("sites", siteCache.getSites());
         model.put("currentUrl", currentUrl);        
 
         return new ModelAndView(view, model);
