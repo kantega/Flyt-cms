@@ -114,11 +114,10 @@ openaksess.content = {
             });
         });
 
-        var $filters = $filterOptions.find(".filters");
 
         $filterOptions.find(".filtersToggle").live('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked. Opening infoslider widget.");
-            $("#Navigation .infoslider").infoslider('option', {cssClasses: 'filters', floated: false}).infoslider('toggle', this, $filters);
+            $("#Navigation .infoslider").infoslider('option', {cssClasses: 'filters', floated: false}).infoslider('toggle', this, $filterOptions.find(".filters"));
         });
 
         $("#FilteroptionSort input[name=sort]").change(function(){
@@ -133,7 +132,7 @@ openaksess.content = {
 
         $("#FilteroptionSites input[name=sites]").live('click',function(){
             var hiddenSites = "";
-            $filters.find("#FilteroptionSites [name=sites]").each(function(){
+            $filterOptions.find("#FilteroptionSites [name=sites]").each(function(){
                 var $site = $(this);
                 if (!$site.is(":checked")) {
                     if (hiddenSites != "") {
