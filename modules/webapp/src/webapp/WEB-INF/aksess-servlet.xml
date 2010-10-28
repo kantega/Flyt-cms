@@ -765,7 +765,6 @@
 
     <bean class="no.kantega.publishing.controls.smoketest.SmokeTestPagesController" id="SmokeTestPagesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
-        <property name="view" value="/WEB-INF/jsp/admin/smoketest/smoketestpages.jsp"/>
     </bean>
 
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
