@@ -813,7 +813,7 @@ div.sidebarFieldset fieldset legend {
 }
 
 div.sidebarFieldset fieldset select {
-    max-width: 260px;
+    width: 235px;
 }
 
 /************** Information slider **************/
