@@ -395,7 +395,7 @@ $.widget("ui.infoslider", {
             this.options.parent = content.parent();
             this.options.originalcontent = content.wrap("<div>").parent().html();
             content = content.detach();
-            content.css({display:'block'});
+            content.show();
         } else {
             content = $(content);
         }
@@ -476,8 +476,8 @@ $.widget("ui.infoslider", {
         }
         this.options.open = false;
         this.options.floated = true;
-        this.options.parent = null;
-        this.options.originalcontent = null;
+        this.options.parent = undefined;
+        this.options.originalcontent = undefined;
         this.element.resizable("destroy");
     },
 
