@@ -1,20 +1,21 @@
 package no.kantega.publishing.modules.forms.dao;
 
-import no.kantega.publishing.modules.forms.model.FormSubmission;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.forms.model.AksessContentForm;
+import no.kantega.publishing.modules.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
 import no.kantega.publishing.modules.forms.model.FormValue;
-import no.kantega.publishing.common.data.Content;
-
-import javax.sql.DataSource;
-import java.util.*;
-import java.util.Date;
-import java.sql.*;
-
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.*;
+import java.util.Date;
 
 /**
  *
@@ -131,6 +132,14 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         JdbcTemplate template = new JdbcTemplate(dataSource);
         template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", new Object[] {formId});        
         template.update("DELETE FROM formsubmission WHERE FormId = ?", new Object[] {formId});
+    }
+
+    public void deleteFormSubmissionsOlderThanDate(Calendar dateLimit) {
+        JdbcTemplate template = new JdbcTemplate(dataSource);
+        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE SubmittedDate < ?)",
+                new Object[]{new Timestamp(dateLimit.getTime().getTime())});
+        template.update("DELETE FROM formsubmission where SubmittedDate < ?",
+                new Object[]{new Timestamp(dateLimit.getTime().getTime())});
     }
 
     public void setDataSource(DataSource dataSource) {

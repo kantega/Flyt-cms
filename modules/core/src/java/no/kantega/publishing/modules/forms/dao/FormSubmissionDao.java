@@ -3,6 +3,7 @@ package no.kantega.publishing.modules.forms.dao;
 import no.kantega.publishing.modules.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -50,6 +51,13 @@ public interface FormSubmissionDao {
      * @param formId - id of form
      */
     public void deleteFormSubmissionsByFormId(int formId);
+
+    /**
+     * Delete all form submissionis that is older than the date represented
+     * by dateLimit.
+     * @param dateLimit - the oldest a formsubmission can be.
+     */
+    public void deleteFormSubmissionsOlderThanDate(Calendar dateLimit);
 
     /**
      * Delete saved form submissions with given id
