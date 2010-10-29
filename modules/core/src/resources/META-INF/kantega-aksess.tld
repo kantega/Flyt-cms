@@ -2470,6 +2470,39 @@
                         <span class="unitname">${unit.name}</span>
             ]]>
         </example>
-    </tag>    
+    </tag>
+    <tag>
+        <description>Strips HTML-tags from content within this tag.</description>
+        <name>stripmarkup</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.StripMarkupTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Comma separated list of tags to strip.</description>
+            <name>tags</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Strip all tags or just firs/last.</description>
+            <name>all</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Should we skip html/head/body tags? Default is true.</description>
+            <name>skiptags</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <aksess:stripmarkup tags="p,br" all="true">
+                        <p>Example of markup where tags will be stripped.<br></p>
+                    </aksess:stripmakup>
+                    Will produce output like this:
+                        Example of markup where tags will be stripped.
+            ]]>
+        </example>
+    </tag>
 
 </taglib>
