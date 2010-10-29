@@ -16,22 +16,22 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.service.ContentManagementService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.view.RedirectView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 public class DeleteAttachmentAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -43,7 +43,7 @@ public class DeleteAttachmentAction implements Controller {
         aksessService.deleteAttachment(attachmentId);
 
         HttpSession session = request.getSession(true);
-        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
+        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content != null) {
             // Delete reference from current object in session
             List attachments = content.getAttachments();

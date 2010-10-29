@@ -18,11 +18,11 @@ package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 import no.kantega.publishing.search.index.jobs.RemoveContentJob;
 import no.kantega.publishing.search.index.jobs.UpdateAttachmentJob;
@@ -72,7 +72,9 @@ public class IndexUpdaterListener extends ContentEventListenerAdapter {
     }
 
     public void attachmentUpdated(ContentEvent event) {
-        indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
+        if (event.getAttachment().getContentId() != -1) {
+            indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
+        }
     }
 
     private void updateIndex(Content content) {
