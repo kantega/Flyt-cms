@@ -103,12 +103,12 @@ openaksess.navigate = {
                     //Click on the openState (-) icon
                     openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click openTree");
                     event.preventDefault();
-                    var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($target.attr("href"));
+                    itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref($target.attr("href"));
                     openaksess.navigate.openTree(itemIdentifier);
                 } else {
                     // Click an item
                     var href = $target.attr("href");
-                    var itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
+                    itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
                     // Always open tree when you navigator to it
                     openaksess.navigate.setFolderOpen(itemIdentifier);
                     openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: "+itemIdentifier);
@@ -118,6 +118,7 @@ openaksess.navigate = {
                     if(typeof openaksess.navigate.updateMainPane == 'function') {
                         openaksess.navigate.updateMainPane(itemIdentifier, true);
                     }
+                    openaksess.common.triggerEvent("navigatorSelect", [itemIdentifier, openaksess.navigate.getOpenFolders(), $target]);
                 }
             }
 
@@ -147,8 +148,9 @@ openaksess.navigate = {
         if (itemIdentifier) {
             params.itemIdentifier = itemIdentifier;
         }
-        if( $("#NavigatorState .openFolders").html() != null) {
-            params.openFolders = $("#NavigatorState .openFolders").html();
+        var openFolders = openaksess.navigate.getOpenFolders();
+        if( openFolders != null) {
+            params.openFolders = openFolders;
         }
         params.expand = expand;
 
@@ -162,6 +164,14 @@ openaksess.navigate = {
                 });                
             }
         });
+    },
+
+    getOpenFolders: function() {
+        return $("#NavigatorState .openFolders").html()
+    },
+
+    setOpenFolders: function(folderList){
+        $("#NavigatorState .openFolders").html(folderList);
     },
 
     /**
@@ -255,7 +265,8 @@ openaksess.navigate = {
         }
 
         openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList);
-        $("#NavigatorState .openFolders").html(newList);
+        openaksess.navigate.setOpenFolders(newList);
+        openaksess.common.triggerEvent("navigatorOpen", [id, newList]);
     },
 
 
@@ -275,7 +286,8 @@ openaksess.navigate = {
         }
 
         openaksess.common.debug("openaksess.navigate.setFolderClosed(): newOpenList: " + newOpenList);
-        $("#NavigatorState .openFolders").html(newOpenList);
+        openaksess.navigate.setOpenFolders(newOpenList);
+        openaksess.common.triggerEvent("navigatorClose", [id, newOpenList]);
     }
 
 

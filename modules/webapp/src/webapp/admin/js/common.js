@@ -258,6 +258,33 @@ openaksess.common = {
         erase : function (name) {
             openaksess.common.cookies.create(name,"",-1);
         }
+    },
+
+    /**
+     * Triggers an OpenAksess specific event.
+     * All events are prefixed with openaksess.[eventname], and
+     * may possibly have data associated.
+     *
+     * If no context is given, the event is bound to the html element.
+     *
+     * Known openaksess events are:
+     * - openaksess.navigatorSelect: When an item in the navigator is selected.
+     * - openaksess.navigatorOpen: When a navigator folder is opened.
+     * - openaksess.navigatorClose: When a navigator folder is closed. 
+     *
+     * @param eventName - Name of the event to trigger, without prefix
+     * @param data - Arbitrary data to send with the event.
+     * @param context - The context within which the event is visible, e.g. "body".
+     * Must be a jQuery selector string or a jQuery object.
+     */
+    triggerEvent: function(eventName, data, context){
+        if (!context) {
+            context = $("html");
+        }
+        if (!(context instanceof jQuery)) {
+            context = $(context);
+        }
+        context.trigger("openaksess." + eventName, data);
     }
 };
 
