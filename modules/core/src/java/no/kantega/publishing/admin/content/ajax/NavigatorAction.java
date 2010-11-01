@@ -90,7 +90,7 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        int startId = params.getInt("startId");
+        int startId = params.getInt(AdminRequestParameters.START_ID);
 
         String openFoldersList = params.getString(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS);
         boolean expand = params.getBoolean(AdminRequestParameters.EXPAND, true);
