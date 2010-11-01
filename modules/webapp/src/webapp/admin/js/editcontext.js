@@ -274,7 +274,7 @@ openaksess.editcontext = function()  {
         selectUser : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.adduser, iframe:true, href: properties.contextPath + "/admin/security/SelectUsers.action?multiple=false&refresh=" + getRefresh(),width: 380, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.adduser, iframe:true, href: properties.contextPath + "/admin/security/SelectUsers.action?multiple=false&refresh=" + getRefresh(),width: 400, height:450});
         },
 
         /*
