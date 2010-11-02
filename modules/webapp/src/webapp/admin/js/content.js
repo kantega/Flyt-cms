@@ -130,9 +130,9 @@ openaksess.content = {
             }
         });
 
-        $("#FilteroptionSites input[name=sites]").live('click',function(){
+        $("#FilteroptionSites input[name=sites]").change(function(){
             var hiddenSites = "";
-            $filterOptions.find("#FilteroptionSites [name=sites]").each(function(){
+            $("#FilteroptionSites input[name=sites]").each(function(){
                 var $site = $(this);
                 if (!$site.is(":checked")) {
                     if (hiddenSites != "") {
