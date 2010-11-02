@@ -20,17 +20,17 @@
 
 <c:choose>
     <c:when test="${canPublish}">
-        <span class="barButton"><input type="button" class="publish" value="<kantega:label key="aksess.button.publish"/>"></span>
+        <span class="barButton"><input type="button" class="publish" value="<kantega:label key="aksess.button.publish"/>" accesskey="P"></span>
     </c:when>
     <c:otherwise>
-        <span class="barButton"><input type="button" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
+        <span class="barButton"><input type="button" class="save" value="<kantega:label key="aksess.button.save"/>" accesskey="P"></span>
     </c:otherwise>
 </c:choose>
-<span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.savedraft"/>"></span>
+<span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.savedraft"/>" accesskey="K"></span>
 <c:if test="${hearingEnabled}">
     <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
 </c:if>
-<span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+<span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>" accesskey="A"></span>
 
 <c:if test="${!currentContent.new}">
     <span>

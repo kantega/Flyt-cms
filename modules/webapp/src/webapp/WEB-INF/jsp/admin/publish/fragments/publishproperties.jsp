@@ -178,7 +178,7 @@
                 <div id="TopicList">...</div>
                 <div id="SelectTopics">
                     <div id="TopicInputContainer">
-                        <input type="text" id="TopicInput" size="20" maxlength="128">
+                        <input type="text" id="TopicInput" size="20" maxlength="128" accesskey="E">
                     </div>
                     <div id="ChooseTopicButton">
                         <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
