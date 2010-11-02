@@ -33,5 +33,5 @@
     }
 %>
 <div class="inputs">
-    <input type="email" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="email" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" class="fullWidth" maxlength="256" tabindex="<%=attribute.getTabIndex()%>">
 </div>
