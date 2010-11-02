@@ -207,7 +207,12 @@ function formNewText() {
 
 function formAddInputValue(type, fieldName, value, checked) {
     html = "<div>";
-    html += '<input type="' + type + '" name="ValuesCheckbox"';
+    var checkboxType = "radio";
+    if (type == "checkbox") {
+        checkboxType = "checkbox";
+    }
+
+    html += '<input type="' + checkboxType + '" name="ValuesCheckbox"';
     if (checked) {
         html += ' checked="checked"';
     }
@@ -428,15 +433,15 @@ function FormElementType(name, type) {
     this.name = name;
     this.type = type;
     this.onEdit = function(element) {
-    }
+    };
 
     this.onSave = function(fieldName) {
         return '<input type="text" name="' + fieldName + '" disabled>';
-    }
+    };
 
     this.onActive = function(isSelected) {
-    }
-}
+    };
+};
 
 var formElementTypes = new Array();
 
@@ -470,7 +475,7 @@ formElementText.onEdit = function(element) {
             $("#form_RegEx").parent().parent().hide();
         }
     });
-}
+};
 formElementText.onSave = function (fieldName) {
     var size = $("#form_Length").val();
     if (size != "") {
@@ -503,7 +508,7 @@ formElementText.onSave = function (fieldName) {
 
 
     return html;
-}
+};
 formElementText.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_text").show();
@@ -511,7 +516,7 @@ formElementText.onActive = function (isSelected) {
     } else {
         $(".form_params_text").hide();
     }
-}
+};
 formElementTypes[formElementTypes.length] = formElementText;
 
 // Textarea
@@ -529,7 +534,7 @@ formElementTextArea.onEdit = function(element) {
     } else {
         $("#form_Cols").val("40");
     }
-}
+};
 
 formElementTextArea.onSave = function(fieldName) {
     var rows = $("#form_Rows").val();
@@ -551,14 +556,14 @@ formElementTextArea.onSave = function(fieldName) {
     }
 
     return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '" disabled></textarea>';
-}
+};
 formElementTextArea.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_textarea").show();
     } else {
         $(".form_params_textarea").hide();
     }
-}
+};
 formElementTypes[formElementTypes.length] = formElementTextArea;
 
 // Checkbox
@@ -569,7 +574,7 @@ formElementCheckbox.onEdit = function(element) {
         var fieldName = $("#form_FieldName").val();
         formAddInputValue("checkbox", fieldName, this.value, this.checked);
     });
-}
+};
 formElementCheckbox.onSave = function (fieldName) {
     html = "";
     $("#form_Values div").each(function (i) {
@@ -584,7 +589,7 @@ formElementCheckbox.onSave = function (fieldName) {
         }
     });
     return html;
-}
+};
 formElementCheckbox.onActive = function (isSelected) {
     if (isSelected) {
         $("#form_AddElement").unbind("click");
@@ -601,7 +606,7 @@ formElementCheckbox.onActive = function (isSelected) {
     } else {
         $(".form_params_list").hide();
     }
-}
+};
 formElementTypes[formElementTypes.length] = formElementCheckbox;
 
 // Radio button
@@ -612,7 +617,7 @@ formElementRadio.onEdit = function(element) {
         var fieldName = $("#form_FieldName").val();
         formAddInputValue("radio", fieldName, this.value, this.checked);
     });
-}
+};
 formElementRadio.onSave = function (fieldName) {
     html = "";
     $("#form_Values div").each(function (i) {
@@ -627,7 +632,7 @@ formElementRadio.onSave = function (fieldName) {
         }
     });
     return html;
-}
+};
 formElementRadio.onActive = function (isSelected) {
     if (isSelected) {
         $("#form_AddElement").unbind("click");
@@ -644,18 +649,18 @@ formElementRadio.onActive = function (isSelected) {
     } else {
         $(".form_params_list").hide();
     }
-}
+};
 formElementTypes[formElementTypes.length] = formElementRadio;
 
 // Select
 var formElementSelect = new FormElementType(properties.formeditor.labels.typeSelect, "select");
 formElementSelect.onEdit = function(element) {
     $("#form_Values").html("");
-    $("div.inputs input", element).each(function() {
+    $("div.inputs option", element).each(function() {
         var fieldName = $("#form_FieldName").val();
-        formAddInputValue("select", fieldName, this.value, this.checked);
+        formAddInputValue("select", fieldName, this.value, this.selected);
     });
-}
+};
 
 formElementSelect.onSave = function (fieldName) {
     html = '<select name="' + fieldName + '" disabled>';
@@ -671,7 +676,7 @@ formElementSelect.onSave = function (fieldName) {
     });
     html += '</select>';
     return html;
-}
+};
 formElementSelect.onActive = function (isSelected) {
     if (isSelected) {
         $("#form_AddElement").unbind("click");
@@ -688,7 +693,7 @@ formElementSelect.onActive = function (isSelected) {
     } else {
         $(".form_params_list").hide();
     }
-}
+};
 formElementTypes[formElementTypes.length] = formElementSelect;
 
 // Hidden
@@ -696,11 +701,11 @@ var formElementHidden = new FormElementType(properties.formeditor.labels.typeHid
 formElementHidden.onEdit = function(element) {
     var val = $("div.inputs input", element).attr("value");
     $("#form_HiddenValue").val(val);
-}
+};
 formElementHidden.onSave = function (fieldName) {
     var val = $("#form_HiddenValue").val();
     return '<input type="hidden" name="' + fieldName + '" value="' + val + '" disabled>';
-}
+};
 formElementHidden.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_hidden").show();
@@ -713,6 +718,6 @@ formElementHidden.onActive = function (isSelected) {
         $("#form_FieldMandatory").removeAttr("disabled");
         $("#form_NoBreak").removeAttr("disabled");
     }
-}
+};
 
 formElementTypes[formElementTypes.length] = formElementHidden;
