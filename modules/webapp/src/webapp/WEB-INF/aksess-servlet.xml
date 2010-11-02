@@ -394,10 +394,12 @@
     </bean>
 
     <!-- Navigate content -->
-    <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController">
+    <bean id="abstractNavigateAction" abstract="true">
+        <property name="siteCache" ref="aksessSiteCache"/>
+    </bean>
+    <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
         <property name="createRootAction" ref="createRootAction"/>
-        <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
@@ -414,7 +416,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/publish/search.jsp"/>
     </bean>
     <!-- Organize subpages -->
-    <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction">
+    <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/organizesubpages.jsp"/>
     </bean>
     <bean id="ListSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ListSubPagesAction">
@@ -424,7 +426,7 @@
     <bean id="ReorderSubPagesAction" class="no.kantega.publishing.admin.content.ajax.ReorderSubpagesAction"/>
 
     <!-- Link check -->
-    <bean id="LinkCheckAction" class="no.kantega.publishing.admin.content.action.LinkCheckAction">
+    <bean id="LinkCheckAction" class="no.kantega.publishing.admin.content.action.LinkCheckAction" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/linkcheck.jsp"/>
     </bean>
     <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
@@ -432,7 +434,7 @@
     </bean>
 
     <!-- Statistics -->
-    <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction">
+    <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/statistics.jsp"/>
     </bean>
     <bean id="PageStatisticsAction" class="no.kantega.publishing.admin.content.ajax.PageStatisticsAction">
@@ -443,7 +445,7 @@
     </bean>
 
     <!-- Notes -->
-    <bean id="NotesAction" class="no.kantega.publishing.admin.content.action.NotesAction">
+    <bean id="NotesAction" class="no.kantega.publishing.admin.content.action.NotesAction" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/notes.jsp"/>
     </bean>
     <bean id="ListNotesAction" class="no.kantega.publishing.admin.content.ajax.ListNotesAction">
