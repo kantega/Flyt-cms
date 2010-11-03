@@ -284,6 +284,16 @@
             <variable-class>no.kantega.publishing.common.data.SiteMapEntry</variable-class>
         </variable>
         <attribute>
+            <name>startid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>endid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>name</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -317,7 +327,9 @@
                         <a href="<aksess:geturl/>">Home</a>
                         <menu:getnavigationpath>
                             &nbsp;&gt;&nbsp;<a href="${entry.url}">${entry.title}</a>
-                        </menu:getnavigationpath>                    
+                        </menu:getnavigationpath>
+
+                    * Use startId and/or endId to get a sub section of the navigation path.
             ]]>
         </example>
     </tag>

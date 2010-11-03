@@ -48,6 +48,48 @@ public class GetNavigationPathTag  extends BodyTagSupport {
     private int offset = 0;
     private String var = "entry";
 
+    private int startId = -1;
+    private int endId = -1;
+
+    public int getStartId() {
+        return startId;
+    }
+
+    public void setStartid(String startId) {
+        if(startId != null && startId.length() > 0 ){
+            try{
+                this.startId = Integer.parseInt(startId);
+            } catch(NumberFormatException e){
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+    }
+
+    public void setStartid(int startId) {
+        this.startId = startId;
+    }
+
+
+    public void setEndid(int endId) {
+        this.endId = endId;
+    }
+
+
+
+    public int getEndId() {
+        return endId;
+    }
+
+    public void setEndid(String endId) {
+        if(endId != null && endId.length() > 0 ){
+            try{
+                this.endId = Integer.parseInt(endId);
+            } catch(NumberFormatException e){
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+    }
+
     public void setName(String name) {
         this.name = name.toLowerCase();
     }
@@ -81,7 +123,8 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
     public void setVar(String var) {
         this.var = var;
-    }    
+    }
+
 
     public int doStartTag() throws JspException {
         pathitems = new ArrayList();
@@ -101,9 +144,13 @@ public class GetNavigationPathTag  extends BodyTagSupport {
                 for (int i = 0; i < tmp.size(); i++) {
                     PathEntry p = (PathEntry)tmp.get(i);
                     if (i > 0 || includeRoot) {
-                        SiteMapEntry s = new SiteMapEntry(p.getId(), p.getId(), -1, ContentType.PAGE, ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE, p.getTitle(), 0);
-                        pathitems.add(s);
+                        if (pathitems.size() > 0 || startId == p.getId() || startId == -1){
+                            SiteMapEntry s = new SiteMapEntry(p.getId(), p.getId(), -1, ContentType.PAGE, ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE, p.getTitle(), 0);
+                            pathitems.add(s);
+                        }
                     }
+
+                    if (p.getId() == endId) break;
                 }
 
                 if (includeCurrent && content != null) {
@@ -123,7 +170,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
         return doIter();
     }
-
+                                                    
     private int doIter() {
         int size = pathitems.size();
         if (offset < size) {
