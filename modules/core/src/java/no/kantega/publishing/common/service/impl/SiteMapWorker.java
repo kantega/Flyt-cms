@@ -199,6 +199,10 @@ public class SiteMapWorker {
     }
 
     public static SiteMapEntry getPartialSiteMap(int siteId, int[] idList, String sort, boolean showExpired) throws SystemException {
+        return SiteMapWorker.getPartialSiteMap(siteId, idList, sort, showExpired, null);
+    }
+
+    public static SiteMapEntry getPartialSiteMap(int siteId, int[] idList, String sort, boolean showExpired, int[] associationCategories) throws SystemException {
         StringBuilder query = new StringBuilder();
 
         query.append(" and associations.SiteId = ").append(siteId);
@@ -209,6 +213,14 @@ public class SiteMapWorker {
             }
         }
         query.append(")");
+
+        if (associationCategories != null) {
+            query.append(" and associations.Category in (0");
+            for (int category : associationCategories) {
+                query.append(",").append(category);
+            }
+            query.append(")");
+        }
 
         // Hide the expired pages
         if (!showExpired) {

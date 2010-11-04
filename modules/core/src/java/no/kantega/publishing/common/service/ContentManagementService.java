@@ -683,6 +683,20 @@ public class ContentManagementService {
 
     /**
      * Hent meny
+     * @param siteId - Site det skal hentes for
+     * @param idList - Liste med �pne element i menyen, henter alle med parent som ligger i lista
+     * @param sort
+     * @param showExpired
+     * @param associationCategories - List of association category ids. Retrieve only content in these categories.
+     * @return
+     * @throws SystemException
+     */
+    public SiteMapEntry getNavigatorMenu(int siteId, int[] idList, String sort, boolean showExpired, int[] associationCategories) throws SystemException {
+        return SiteMapWorker.getPartialSiteMap(siteId, idList, sort, showExpired, associationCategories);
+    }
+
+    /**
+     * Hent meny
      * @param content - Innholdsobjekt
      * @param associationCategory -
      * @param useLocalMenus -

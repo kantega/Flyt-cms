@@ -31,6 +31,7 @@ public class AdminRequestParameters {
     public static final String NAVIGATION_SORT_ORDER = "sort";
     public static final String NAVIGATION_OPEN_FOLDERS = "openFolders";
     public static final String NAVIGATION_SITES = "sites";
+    public static final String NAVIGATION_CATEGORIES = "associationCategories";
 
     public static final String EXPAND = "expand";
     

@@ -115,11 +115,17 @@ public class NavigatorAction implements Controller {
 
         String sort = getSort(request);
 
+        int[] categoryList = null;
+        String categories = params.getString(AdminRequestParameters.NAVIGATION_CATEGORIES);
+        if (categories != null) {
+            categoryList = StringHelper.getInts(categories, ",");
+        }
+
         int[] openIds = StringHelper.getInts(openFoldersList, ",");
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
         for (Site site : siteService.getSites()) {
             if (!site.isDisabled() && !isHiddenByUser(site.getId(), request)) {
-                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, isShowExpired(request));
+                SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, isShowExpired(request), categoryList);
                 if (sitemap != null) {
                     sitemap.setTitle(site.getName());
                     sites.add(sitemap);
