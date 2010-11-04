@@ -43,23 +43,23 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
         // Show image / media object
         Map<String, Object> model = new HashMap<String, Object>();
 
-            model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
-            model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
-            model.put("media", mm);
+        model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
+        model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
+        model.put("media", mm);
 
-            if (mm.getMimeType().userMustInputDimension()) {
-                model.put("showDimension", Boolean.TRUE);
-                if (mm.getWidth() <= 0  || mm.getHeight() <= 0) {
-                    model.put("showDimensionInfo", Boolean.TRUE);
-                }
+        if (mm.getMimeType().userMustInputDimension()) {
+            model.put("showDimension", Boolean.TRUE);
+            if (mm.getWidth() <= 0  || mm.getHeight() <= 0) {
+                model.put("showDimensionInfo", Boolean.TRUE);
             }
+        }
 
-            boolean canEdit = SecuritySession.getInstance(request).isAuthorized(mm, Privilege.UPDATE_CONTENT);
-            if (canEdit) {
-                model.put("isPropertyPaneEditable", Boolean.TRUE);
-            }
+        boolean canEdit = SecuritySession.getInstance(request).isAuthorized(mm, Privilege.UPDATE_CONTENT);
+        if (canEdit) {
+            model.put("isPropertyPaneEditable", Boolean.TRUE);
+        }
 
-            return new ModelAndView(view, model);
+        return new ModelAndView(view, model);
     }
 
     protected ModelAndView handlePost(Multimedia mm, HttpServletRequest request, HttpServletResponse response) {
@@ -96,6 +96,7 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
         Map<String, Object> model = new HashMap<String, Object>();
         if (insert) {
             model.put("media", mm);
+            model.put("maxWidth", param.getInt("maxWidth"));
             return new ModelAndView(selectMediaView, model);
         } else {
             model.put("id", mm.getParentId());

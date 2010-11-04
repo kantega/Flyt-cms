@@ -21,6 +21,7 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.media.MimeType;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import java.util.Date;
 
@@ -191,7 +192,7 @@ public class Multimedia extends BaseObject {
         if (filename == null) {
             return Aksess.getContextPath() + "/multimedia.ap?id=" + id;
         } else {
-            return Aksess.getContextPath() + "/multimedia/" + id + "/" + filename;
+            return Aksess.getContextPath() + PrettyURLEncoder.createMultimediaUrl(id, filename);
         }
     }
 

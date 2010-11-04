@@ -175,7 +175,7 @@ public class MultimediaTagCreator {
                     Log.error(SOURCE, e, null, null);
                 }
             }
-            // Legg til > p� slutten hvis ikke avsluttet
+            // Legg til > pï¿½ slutten hvis ikke avsluttet
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }
@@ -220,11 +220,11 @@ public class MultimediaTagCreator {
             tag.append("</OBJECT>");
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
             int width  = Aksess.getDefaultMediaWidth();
-            if (maxW != -1) {
+            if (maxW > 0) {
                 width = maxW;
             }
             int height = Aksess.getDefaultMediaHeight();
-            if (maxH != -1) {
+            if (maxH > 0) {
                 height = maxH;
             }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();

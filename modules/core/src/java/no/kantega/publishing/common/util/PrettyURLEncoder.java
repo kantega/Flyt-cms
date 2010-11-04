@@ -27,21 +27,24 @@ public class PrettyURLEncoder {
     private static final String SOURCE = "aksess.PrettyURLEncoder";
 
     private static char[] space = {' ', '-'};
-    private static char[] aa = {'\u00E5', 'a'};     // �
-    private static char[] AA = {'\u00C5', 'A'};     // �
-    private static char[] auml = {'\u00E4', 'a'};   // �
-    private static char[] Auml = {'\u00C4', 'A'};   // �
-    private static char[] aelig = {'\u00E6', 'a'};  // �
-    private static char[] Aelig = {'\u00C6', 'A'};  // �
+    private static char[] aa = {'\u00E5', 'a'};
+    private static char[] AA = {'\u00C5', 'A'};
+    private static char[] auml = {'\u00E4', 'a'};
+    private static char[] Auml = {'\u00C4', 'A'};
+    private static char[] aelig = {'\u00E6', 'a'};
+    private static char[] Aelig = {'\u00C6', 'A'};
 
-    private static char[] oslash = {'\u00F8', 'o'}; // �
-    private static char[] Oslash = {'\u00D8', 'O'}; // �
-    private static char[] ouml = {'\u00F6', 'o'};   // �
-    private static char[] Ouml = {'\u00D6', 'O'};   // �
+    private static char[] oslash = {'\u00F8', 'o'};
+    private static char[] Oslash = {'\u00D8', 'O'};
+    private static char[] ouml = {'\u00F6', 'o'};
+    private static char[] Ouml = {'\u00D6', 'O'};
 
     private static char[][] map = { space, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
 
     public static String encode(String url) {
+        if (url == null) {
+            return "";
+        }
         for (int i = 0; i < map.length; i++) {
             if (url.indexOf(map[i][0]) != -1) {
                 url = url.replace(map[i][0], map[i][1]);
@@ -68,4 +71,9 @@ public class PrettyURLEncoder {
         }
 
     }
+
+    public static String createMultimediaUrl(int multimediaId, String filename) {
+        return Aksess.MULTIMEDIA_URL_PREFIX + "/" + multimediaId + "/" + encode(filename);
+    }
+
 }

@@ -26,11 +26,11 @@
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
 
-    int maxWidth = param.getInt("maxWidth");
-    if (maxWidth == -1) {
+    Integer maxWidth = (Integer)request.getAttribute("maxWidth");
+    if (maxWidth == null || maxWidth == -1) {
         maxWidth = 570;
     }
-    if (maxWidth > mm.getWidth()) {
+    if (maxWidth > mm.getWidth() && mm.getWidth() > 0) {
         maxWidth = mm.getWidth();
     }
 %>
