@@ -43,6 +43,9 @@
     <div id="AddAttachmentForm">
         <form name="myform" action="${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action" method="post" enctype="multipart/form-data">
             <input type="hidden" name="insertlink" value="${insertlink}">
+            <c:if test="${attachmentId != null}">
+                <input type="hidden" name="attachmentId" value="${attachmentId}">
+            </c:if>
             <div class="formElement">
                 <div class="inputs">
                     <input type="file" size="20" name="attachment" value="" style="width:300px;">
