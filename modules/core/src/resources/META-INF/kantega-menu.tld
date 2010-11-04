@@ -329,7 +329,7 @@
                             &nbsp;&gt;&nbsp;<a href="${entry.url}">${entry.title}</a>
                         </menu:getnavigationpath>
 
-                    * Use startId and/or endId to get a sub section of the navigation path.
+                    * Use startid and/or endid to get a sub section of the navigation path.
             ]]>
         </example>
     </tag>
