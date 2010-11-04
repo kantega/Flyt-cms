@@ -18,6 +18,7 @@ package no.kantega.publishing.api.taglibs.content.util;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
@@ -355,6 +356,28 @@ public final class AttributeTagHelper {
 
         return result;
     }
+
+    public static int getAssociationIdFromIdOrAlias(String id, HttpServletRequest request) {
+        int associationId = -1;
+        if (id != null && id.length() > 0) {
+            if (Character.isDigit(id.charAt(0))) {
+                try{
+                    associationId = Integer.parseInt(id);
+                } catch(NumberFormatException e){
+                    Log.error("AttributeTagHelper", e, null, null);
+                }
+            } else {
+                //Alias
+                try {
+                    associationId = new ContentIdentifier(request, id).getAssociationId();
+                } catch (Exception e) {
+                }
+            }
+        }
+        return associationId;
+    }
+
+
 
 
     public static String replaceMacros(String url, PageContext pageContext) throws SystemException, NotAuthorizedException {

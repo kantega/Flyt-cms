@@ -51,43 +51,13 @@ public class GetNavigationPathTag  extends BodyTagSupport {
     private int startId = -1;
     private int endId = -1;
 
-    public int getStartId() {
-        return startId;
-    }
-
     public void setStartid(String startId) {
-        if(startId != null && startId.length() > 0 ){
-            try{
-                this.startId = Integer.parseInt(startId);
-            } catch(NumberFormatException e){
-                Log.error(SOURCE, e, null, null);
-            }
-        }
+        this.startId = AttributeTagHelper.getAssociationIdFromIdOrAlias(startId, (HttpServletRequest)pageContext.getRequest());
     }
 
-    public void setStartid(int startId) {
-        this.startId = startId;
-    }
-
-
-    public void setEndid(int endId) {
-        this.endId = endId;
-    }
-
-
-
-    public int getEndId() {
-        return endId;
-    }
 
     public void setEndid(String endId) {
-        if(endId != null && endId.length() > 0 ){
-            try{
-                this.endId = Integer.parseInt(endId);
-            } catch(NumberFormatException e){
-                Log.error(SOURCE, e, null, null);
-            }
-        }
+        this.endId = AttributeTagHelper.getAssociationIdFromIdOrAlias(endId, (HttpServletRequest)pageContext.getRequest());
     }
 
     public void setName(String name) {
@@ -95,22 +65,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
     }
 
     public void setDefaultid(String defaultId) {
-        if (defaultId != null && defaultId.length() > 0) {
-            try {
-                this.defaultId = Integer.parseInt(defaultId);
-            } catch (NumberFormatException e) {
-                try {
-                    Content c = AttributeTagHelper.getContent(pageContext, null, defaultId);
-                    if (c != null) {
-                        this.defaultId = c.getAssociation().getAssociationId();
-                    }
-                } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
-                } catch (NotAuthorizedException e1) {
-                    // Do nothing
-                }
-            }
-        }
+        this.defaultId = AttributeTagHelper.getAssociationIdFromIdOrAlias(defaultId, (HttpServletRequest)pageContext.getRequest());
     }
 
     public void setIncluderoot(boolean includeRoot) {
