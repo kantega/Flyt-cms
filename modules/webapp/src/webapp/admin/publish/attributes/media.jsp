@@ -83,11 +83,11 @@
             <input type="hidden" name="${fieldName}" value="${value}" id="${fieldName}">
             <input type="text" name="${fieldName}text" id="${fieldName}text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
             <script type="text/javascript">
-                $("#${fieldName}text").oaAutocompleteMultimedia({
+                /*$("#${fieldName}text").oaAutocompleteMultimedia({
                     defaultValue: '<kantega:label key="aksess.insertlink.multimedia.hint"/>',
                     source: "${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
                     select: openaksess.editcontext.autocompleteInsertIntoFormCallback
-                });
+                });*/
             </script>
         </div>
         <div class="buttonGroup">
