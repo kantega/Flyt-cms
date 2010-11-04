@@ -42,7 +42,7 @@ public class ContentStateChangeJob  {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
 
         try {
-            Log.debug(SOURCE, "Looking for content that has expired", null, null);
+            Log.info(SOURCE, "Looking for content that has expired", null, null);
             int i = 0;
             while((i = ContentAO.getNextExpiredContentId(i)) > 0) {
                 ContentIdentifier cid = new ContentIdentifier();
@@ -57,12 +57,12 @@ public class ContentStateChangeJob  {
                     contentEventNotifier.contentExpired(new ContentEvent().setContent(content));
                 }
             }
-            Log.debug(SOURCE, "Looking for content that needs activation", null, null);
+            Log.info(SOURCE, "Looking for content that needs activation", null, null);
             i = 0;
             while((i = ContentAO.getNextActivationContentId(i)) > 0) {
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setContentId(i);
-                Content content = ContentAO.getContent(cid, false);
+                Content content = ContentAO.getContent(cid, true);
                 if (content != null) {
                     boolean activated = false;
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {

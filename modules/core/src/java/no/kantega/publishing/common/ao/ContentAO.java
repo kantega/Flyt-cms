@@ -1150,7 +1150,7 @@ public class ContentAO {
         try {
             c = dbConnectionFactory.getConnection();
 
-            int version = SQLHelper.getInt(c, "select Version from contentversion where status = " + ContentStatus.WAITING_FOR_APPROVAL + " order by version desc", "Version");
+            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL + "," + ContentStatus.PUBLISHED_WAITING + ") order by version desc", "Version");
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
@@ -1161,7 +1161,7 @@ public class ContentAO {
                     tmp.execute();
                     tmp.close();
 
-                    tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ? where ContentId = ? and Version = ?");
+                    tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ?, ChangeFrom = null where ContentId = ? and Version = ?");
                     tmp.setInt(1, ContentStatus.PUBLISHED);
                     tmp.setString(2, userId);
                     tmp.setInt(3, cid.getContentId());
@@ -1267,8 +1267,8 @@ public class ContentAO {
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE ((PublishDate < ? AND VisibilityStatus = ?) OR (ContentId IN (SELECT ContentId FROM contentversion WHERE Status = ? AND ChangeFrom < ?))) AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(now));
             p.setInt(2, ContentVisibilityStatus.WAITING);
-            p.setTimestamp(3, new Timestamp(now));
-            p.setInt(4, ContentStatus.PUBLISHED_WAITING);
+            p.setInt(3, ContentStatus.PUBLISHED_WAITING);
+            p.setTimestamp(4, new Timestamp(now));
             p.setInt(5, after);
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
