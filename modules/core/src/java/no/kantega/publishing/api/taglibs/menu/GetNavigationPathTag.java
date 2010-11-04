@@ -190,6 +190,8 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
             pathitems = null;
             offset = 0;
+            startId = -1;
+            endId = -1;
 
             return SKIP_BODY;
         }
