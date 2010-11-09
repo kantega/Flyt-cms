@@ -54,11 +54,11 @@
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
     <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="fullWidth">
     <script type="text/javascript">
-        /*$("#<%=fieldName%>text").oaAutocomplete({
+        $("#<%=fieldName%>text").oaAutocomplete({
             defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
             source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
             select: openaksess.editcontext.autocompleteInsertIntoFormCallback
-        });*/
+        });
     </script>
 </div>
 <div class="buttonGroup">

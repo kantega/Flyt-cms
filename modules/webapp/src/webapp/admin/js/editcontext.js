@@ -532,8 +532,9 @@ openaksess.editcontext = function()  {
 $.widget('ui.oaAutocomplete', $.ui.autocomplete, {
     _create: function() {
         openaksess.common.debug("openaksesswidgets.oaAutocomplete._create(): Widget created");
+        //Add event listeners to focus and blur on the input field.
         $(this.element).focus($.proxy(this._focus, this)).blur($.proxy(this._blur, this));
-        $.ui.autocomplete.prototype._create.apply(this,null);
+        $.ui.autocomplete.prototype._create.apply(this);
     },
 
     _focus: function(){
