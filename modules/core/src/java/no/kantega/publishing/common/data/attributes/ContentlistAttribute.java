@@ -19,9 +19,8 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -36,14 +35,15 @@ public class ContentlistAttribute extends ListAttribute {
 
     protected String contentTemplateId = null;
     protected int documentTypeId = -1;
-    protected int siteId = -1;
+    protected String siteId;
+    protected int currentSiteId = -1;
 
 
     public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
-        	contentTemplateId = config.getAttribute("contenttemplate");
+            contentTemplateId = config.getAttribute("contenttemplate");
             String docType = config.getAttribute("documenttype");
             if (docType != null && docType.length() > 0) {
                 DocumentType dt = DocumentTypeCache.getDocumentTypeByPublicId(docType);
@@ -51,40 +51,45 @@ public class ContentlistAttribute extends ListAttribute {
                     documentTypeId = dt.getId();
                 }
             }
-            String site = config.getAttribute("site");
-            if (site != null && site.trim().length() > 0) {
-                try {
-                    siteId = Integer.parseInt(site);
-                } catch (NumberFormatException e) {
-                    // site er et alias
-                    Site s = SiteCache.getSiteByPublicIdOrAlias(site);
-                    if(s != null) {
-                        siteId = s.getId();
-                    }
-                }
-            }
+            this.siteId = config.getAttribute("site");
+
         }
-    }    
+    }
 
     public int getDocumentTypeId() {
         return documentTypeId;
     }
 
-    public int getSiteId() {
+    public String getSiteId() {
         return siteId;
     }
 
     public List getListOptions(int language) {
+        int requestedSiteId = -1;
         ContentQuery query = new ContentQuery();
         if (contentTemplateId != null && contentTemplateId != ""){
-            query.setContentTemplate(contentTemplateId);        
+            query.setContentTemplate(contentTemplateId);
         }
         if (documentTypeId != -1) {
             query.setDocumentType(documentTypeId);
         }
-        if (siteId != -1) {
-            query.setSiteId(siteId);
+        if("$SITE".equals(siteId)){
+            requestedSiteId = currentSiteId;
+        }else{
+            if (siteId != null && siteId.trim().length() > 0) {
+
+                try {
+                    requestedSiteId = Integer.parseInt(siteId);
+                } catch (NumberFormatException e) {
+                    // site er et alias
+                    Site s = SiteCache.getSiteByPublicIdOrAlias(siteId);
+                    if(s != null) {
+                        requestedSiteId = s.getId();
+                    }
+                } 
+            }
         }
+        query.setSiteId(requestedSiteId);
 
         if (language != -1 ) {
             query.setLanguage(language);
@@ -115,6 +120,15 @@ public class ContentlistAttribute extends ListAttribute {
             cid.setAssociationId(Integer.parseInt(v));
             cids.add(cid);
         }
-        return cids;        
+        return cids;
     }
+
+    public void setCurrentSiteId(int currentSiteId) {
+        this.currentSiteId = currentSiteId;
+    }
+
+    public String getRenderer() {
+        return "contentlist";
+    }
+
 }
