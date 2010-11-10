@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.RequestParameters;
@@ -80,10 +81,14 @@ public class InsertLinkAction extends AdminController {
             model.put("smartLink", Boolean.TRUE);
         }
 
+        Configuration config = Aksess.getConfiguration();
+
         boolean miniAdminMode = param.getBoolean("isMiniAdminMode", false);
-        if (miniAdminMode) {
-            model.put("miniAdminMode", Boolean.TRUE);
-        }
+
+        model.put("miniAdminMode", miniAdminMode);
+        model.put("allowMediaArchive", !miniAdminMode || config.getBoolean("miniaksess.mediaarchive", false));
+        model.put("allowAttachments", !miniAdminMode || config.getBoolean("miniaksess.attachments", false));
+        model.put("allowInternalLinks", !miniAdminMode || config.getBoolean("miniaksess.internallinks", false));
 
         return new ModelAndView(view, model);
     }

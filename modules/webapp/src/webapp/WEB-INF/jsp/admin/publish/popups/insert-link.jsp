@@ -53,7 +53,7 @@
             <li class="<c:if test="${linkType == 'external'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                 <a href="?linkType=external${extraparams}"><kantega:label key="aksess.insertlink.external"/></a>
             </li>
-            <c:if test="${!miniAdminMode}">
+            <c:if test="${allowInternalLinks}">
                 <li class="<c:if test="${linkType == 'internal'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                     <a href="?linkType=internal${extraparams}"><kantega:label key="aksess.insertlink.internal"/></a>
                 </li>
@@ -61,7 +61,7 @@
             <li class="<c:if test="${linkType == 'anchor'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                 <a href="?linkType=anchor${extraparams}"><kantega:label key="aksess.insertlink.anchor"/></a>
             </li>
-            <c:if test="${!miniAdminMode}">
+            <c:if test="${allowAttachments}">
                 <li class="<c:if test="${linkType == 'attachment'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                     <a href="?linkType=attachment${extraparams}"><kantega:label key="aksess.insertlink.attachment"/></a>
                 </li>
@@ -69,7 +69,7 @@
             <li class="<c:if test="${linkType == 'email'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                 <a href="?linkType=email${extraparams}"><kantega:label key="aksess.insertlink.email"/></a>
             </li>
-            <c:if test="${!miniAdminMode}">
+            <c:if test="${allowMediaArchive}">
                 <li class="<c:if test="${linkType == 'multimedia'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
                     <a href="?linkType=multimedia${extraparams}"><kantega:label key="aksess.insertlink.multimedia"/></a>
                 </li>
@@ -77,10 +77,8 @@
         </ul>
         <div id="InsertLinkForm" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
             <form action="" name="linkform">
-                <c:if test="${isMiniAdminMode}">
-                    <c:if test="${linkType == 'internal' || linkType == 'attachment' || linkType == 'multimedia'}">
-                        <c:set var="linkType" value="external"/>
-                    </c:if>
+                <c:if test="${(linkType == 'internal' && !allowInternalLinks) || (linkType == 'attachment' && !allowAttachments) || (linkType == 'multimedia' && !allowInternalLinks)}">
+                    <c:set var="linkType" value="external"/>
                 </c:if>
 
                 <jsp:include page="insert-link/${linkType}.jsp"/>
