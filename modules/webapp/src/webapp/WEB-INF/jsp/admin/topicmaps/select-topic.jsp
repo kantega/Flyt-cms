@@ -103,7 +103,7 @@
                 <c:if test="${selectMultiple}">
                     <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
                 </c:if>
-                <span class="button"><input type="submit" class="cancel" value="<kantega:label key="aksess.button.closewindow"/>"></span>
+                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.closewindow"/>"></span>
             </div>
         </admin:box>
 
