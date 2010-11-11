@@ -80,10 +80,10 @@ public class MimeTypes {
         mimetypes.add(new MimeType("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "MS Powerpoint presentasjon openxml format"));
 
         // Open Office
-        mimetypes.add(new MimeType("odt ", "application/vnd.oasis.opendocument.text", "Open Office"));
-        mimetypes.add(new MimeType("ott ", "application/vnd.oasis.opendocument.text-template", "Open Office"));
-        mimetypes.add(new MimeType("ods ", "application/vnd.oasis.opendocument.spreadsheet", "Open Office"));
-        mimetypes.add(new MimeType("ots ", "application/vnd.oasis.opendocument.spreadsheet-template", "Open Office"));
+        mimetypes.add(new MimeType("odt", "application/vnd.oasis.opendocument.text", "Open Office"));
+        mimetypes.add(new MimeType("ott", "application/vnd.oasis.opendocument.text-template", "Open Office"));
+        mimetypes.add(new MimeType("ods", "application/vnd.oasis.opendocument.spreadsheet", "Open Office"));
+        mimetypes.add(new MimeType("ots", "application/vnd.oasis.opendocument.spreadsheet-template", "Open Office"));
     }
 
 
