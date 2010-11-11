@@ -69,6 +69,17 @@ public class FormTag extends BodyTagSupport {
             //TODO: Improvement: Use the page's language if this is one of Aksess' supported admin languages.
             Locale locale = Aksess.getDefaultAdminLocale();
 
+            out.write("<script type=\"text/javascript\">\n");
+            out.write("var hasSubmitted = false;\n");
+            out.write("function saveContent(status) {\n");
+            out.write("   if (!hasSubmitted) {\n");
+            out.write("      hasSubmitted=true;\n");
+            out.write("      document.myform.status.value=status;\n");
+            out.write("      document.myform.submit();\n");
+            out.write("   }\n");
+            out.write("}\n");
+            out.write("</script>\n");
+
             if (!canApprove) {
                 out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
             }
@@ -91,13 +102,10 @@ public class FormTag extends BodyTagSupport {
             out.write(body);
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
-
-            out.write("    <input class=\"editContentButton submit\" type=\"submit\" value=\""+submitButtonLabel+"\">");
-
+            out.write("    <input class=\"editContentButton submit\" type=\"button\" value=\""+submitButtonLabel+"\" onclick=\"saveContent(" + ContentStatus.PUBLISHED + ")\">");
             if (allowDraft) {
-                out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"document.myform.status.value=" + ContentStatus.DRAFT + ";document.myform.submit()\">");
+                out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"saveContent(" + ContentStatus.DRAFT + ")\">");
             }
-
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 cancelAction = cancelAction+"?redirectUrl="+cancelUrl;
