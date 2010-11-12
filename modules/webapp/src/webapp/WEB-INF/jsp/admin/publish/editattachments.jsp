@@ -46,7 +46,7 @@
         } else {
             title = '<kantega:label key="aksess.attachment.update" escapeJavascript="true"/>';
         }
-        openaksess.common.modalWindow.open({title:title, iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action?attachmentId=" + id,width: 380, height:250});
+        openaksess.common.modalWindow.open({title:title, iframe:true, href: "${pageContext.request.contextPath}/publish/popups/AddAttachment.action?attachmentId=" + id,width: 380, height:250});
     }
 
     function deleteAttachment(id) {

@@ -41,7 +41,7 @@
 
 <kantega:section id="body">
     <div id="AddAttachmentForm">
-        <form name="myform" action="${pageContext.request.contextPath}/admin/publish/popups/AddAttachment.action" method="post" enctype="multipart/form-data">
+        <form name="myform" action="${pageContext.request.contextPath}/publish/popups/AddAttachment.action" method="post" enctype="multipart/form-data">
             <input type="hidden" name="insertlink" value="${insertlink}">
             <c:if test="${attachmentId != null}">
                 <input type="hidden" name="attachmentId" value="${attachmentId}">

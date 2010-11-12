@@ -247,7 +247,7 @@ public class ContentManagementService {
         } else {
             content.setApprovedBy(securitySession.getUser().getId());
         }
-        
+
         // Check if change should be active now
         if (content.getChangeFromDate() != null) {
             if (content.getChangeFromDate().getTime() > new Date().getTime()) {
@@ -299,7 +299,7 @@ public class ContentManagementService {
         ContentListenerUtil.getContentNotifier().contentSaved(new ContentEvent().setContent(c));
         // New content created
         if (isNewContent) {
-            ContentListenerUtil.getContentNotifier().newContentSaved(new ContentEvent().setContent(c));    
+            ContentListenerUtil.getContentNotifier().newContentSaved(new ContentEvent().setContent(c));
         }
 
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
@@ -427,7 +427,7 @@ public class ContentManagementService {
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
                 if (c.getPublishDate().before(currentTime)) {
                     newPublishDate = currentTime;
-                }                                
+                }
             }
         }
 
@@ -474,7 +474,7 @@ public class ContentManagementService {
                 if (!canDelete.booleanValue()) {
                     throw new ObjectInUseException(SOURCE, "I bruk");
                 }
-                
+
                 cid = ContentAO.deleteContent(id);
                 if (title != null) {
                     EventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
@@ -553,7 +553,7 @@ public class ContentManagementService {
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
         return getContentList(query, maxElements, sort, true, false);
     }
-    
+
 
     /**
      * Henter en liste med innholdsobjekter fra basen uten attributter
@@ -820,7 +820,7 @@ public class ContentManagementService {
         return TemplateHelper.getAllowedDisplayTemplatesForChange(content, isAdmin);
     }
 
-   
+
     /**
      * Henter en spalte basert p� id
      * @param id - Id til spalten som skal hentes
@@ -860,7 +860,7 @@ public class ContentManagementService {
      * @param associations
      * @throws SystemException
      */
-    public void setAssociationsPriority(List associations) throws SystemException {
+    public void setAssociationsPriority(List<Association> associations) throws SystemException {
         AssociationAO.setAssociationsPriority(associations);
     }
 
@@ -881,6 +881,7 @@ public class ContentManagementService {
      * @param source - Punktet som skal publiseres
      * @param target - Punktes det skal publiseres under
      * @param category - Spalte det skal publiseres til
+     * @param copyChildren - Skal barn også kopieres
      * @throws SystemException
      */
     public void copyAssociations(Association source, Association target, AssociationCategory category, boolean copyChildren) throws SystemException {
@@ -1004,7 +1005,7 @@ public class ContentManagementService {
      *
      * @return - Liste med alias (String)
      * @throws SystemException
-     */   
+     */
     public List findDuplicateAliases(Association parent) throws SystemException {
         return AssociationAO.findDuplicateAliases(parent);
     }
@@ -1075,11 +1076,25 @@ public class ContentManagementService {
     /**
      * Lagrer et vedlegg i basen
      * @param attachment - Vedlegg som skal lagres
-     * @return
+     * @return - id of saved attachment
      * @throws SystemException
      * @throws SQLException
+     * @throws NotAuthorizedException
      */
-    public int setAttachment(Attachment attachment) throws SystemException, SQLException {
+    public int setAttachment(Attachment attachment) throws SystemException, SQLException, NotAuthorizedException {
+        if (!securitySession.isLoggedIn()) {
+            throw new NotAuthorizedException("Not logged in", SOURCE);
+        }
+
+        if (attachment.getContentId() != -1) {
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setContentId(attachment.getContentId());
+            Content content = getContent(cid);
+            if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
+                throw new NotAuthorizedException("Not authorized to add attachment", SOURCE);
+            }
+        }
+
         if (Aksess.isEventLogEnabled()) {
             EventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename());
         }
@@ -1097,17 +1112,32 @@ public class ContentManagementService {
      * Sletter et vedlegg fra basen
      * @param id - id til vedlegg som skal slettes
      * @throws SystemException
+     * @throws NotAuthorizedException
      */
-    public void deleteAttachment(int id) throws SystemException {
+    public void deleteAttachment(int id) throws SystemException, NotAuthorizedException {
+        if (id == -1) {
+            return;
+        }
         String title = null;
-        if (id != -1 && Aksess.isEventLogEnabled()) {
-            Attachment a = AttachmentAO.getAttachment(id);
-            if (a != null) {
-                title = a.getFilename();
+
+        Attachment attachment = AttachmentAO.getAttachment(id);
+        if (attachment == null) {
+            return;
+        }
+
+        title = attachment.getFilename();
+
+        if (attachment.getContentId() != -1) {
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setContentId(attachment.getContentId());
+            Content content = getContent(cid);
+            if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
+                throw new NotAuthorizedException("Not authorized to delete attachment", SOURCE);
             }
         }
+
         AttachmentAO.deleteAttachment(id);
-        if (title != null) {
+        if (Aksess.isEventLogEnabled()) {
             EventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, title);
         }
     }
