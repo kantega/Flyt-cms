@@ -42,15 +42,15 @@ public class MailSubscriptionService {
     }
 
 
-    public static void addMailSubscription(String email, int channel, int documenttype) throws SystemException, InvalidParameterException {
+    public static void addMailSubscription(String email, int channel, int documenttype) throws SystemException {
         addMailSubscription(email, channel, documenttype, MailSubscription.DAILY, Language.NORWEGIAN_BO);
     }
 
-    public static void addMailSubscription(String email, int channel, int documenttype, int language) throws SystemException, InvalidParameterException {
+    public static void addMailSubscription(String email, int channel, int documenttype, int language) throws SystemException {
         addMailSubscription(email, channel, documenttype, MailSubscription.DAILY, language);
     }
 
-    public static void addMailSubscription(String email, int channel, int documenttype, String interval, int language) throws SystemException, InvalidParameterException {
+    public static void addMailSubscription(String email, int channel, int documenttype, String interval, int language) throws SystemException {
         MailSubscription subscription = new MailSubscription();
         subscription.setEmail(email);
         subscription.setChannel(channel);
@@ -66,21 +66,13 @@ public class MailSubscriptionService {
         addMailSubscription(subscription);
     }
 
-    public static void addMailSubscription(MailSubscription subscription) throws SystemException, InvalidParameterException {
+    public static void addMailSubscription(MailSubscription subscription) throws SystemException {
 
         if (subscription.getEmail() == null || (subscription.getChannel() == -1 && subscription.getDocumenttype() == -1)) {
             throw new InvalidParameterException("email/channel", SOURCE);
         }
 
         String email = subscription.getEmail().toLowerCase();
-
-        try {
-            if (!RegExp.isEmail(email)) {
-                throw new InvalidParameterException("email", SOURCE);
-            }
-        } catch (RegExpSyntaxException e) {
-            Log.error(SOURCE, e, null, null);
-        }
 
         Connection c = null;
         try {

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  *
  */
 public class RegExp {
-    private static String EMAIL =  "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*$";
+    private static String EMAIL =  "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+([A-Za-z0-9-.]*)+\\.[A-Za-z0-9-]{2,4}$";
 
     public static boolean matches(String regexp, String input) throws RegExpSyntaxException {
         Pattern p = Pattern.compile(regexp);
@@ -36,7 +36,7 @@ public class RegExp {
         return p.matcher(input).replaceAll(replacechar);
     }
 
-    public static boolean isEmail(String email) throws RegExpSyntaxException {
+    public static boolean isEmail(String email) {
         Pattern p = Pattern.compile(EMAIL);
         return p.matcher(email).matches();
     }

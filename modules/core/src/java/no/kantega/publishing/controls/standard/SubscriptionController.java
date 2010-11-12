@@ -16,7 +16,9 @@
 
 package no.kantega.publishing.controls.standard;
 
+import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.RegExp;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
@@ -53,27 +55,36 @@ public class SubscriptionController implements AksessController {
 
         Map model = new HashMap();
 
-        if (epost != null && epost.indexOf('@') != -1 && epost.indexOf(".") != -1) {
+        if (epost != null && epost.length() > 0) {
             // Remove spaces
             epost = StringHelper.replace(epost, " ", "");
 
-            Enumeration parameters = request.getParameterNames();
-            while(parameters.hasMoreElements()){
-                String paramName = (String)parameters.nextElement();
-                try {
-                    int channelId = Integer.parseInt(paramName, 10);
-                    String op = param.getString(paramName);
-                    if ("av".equalsIgnoreCase(op)) {
-                        MailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
-                        model.put("meldtAv", Boolean.TRUE);
-                    } else if ("pa".equalsIgnoreCase(op)) {
-                        MailSubscriptionService.addMailSubscription(epost, channelId, documentType, interval, Language.NORWEGIAN_BO);
-                        model.put("meldtPa", Boolean.TRUE);
+            if (validEmail(epost)) {
+                Enumeration parameters = request.getParameterNames();
+                while(parameters.hasMoreElements()){
+                    String paramName = (String)parameters.nextElement();
+                    try {
+                        int channelId = Integer.parseInt(paramName, 10);
+                        String op = param.getString(paramName);
+                        if ("av".equalsIgnoreCase(op) || "off".equalsIgnoreCase(op)) {
+                            MailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
+                            model.put("meldtAv", Boolean.TRUE);  // Backwards compability
+                            model.put("unsubscribed", Boolean.TRUE);
+                        } else if ("pa".equalsIgnoreCase(op) || "on".equalsIgnoreCase(op)) {
+                            MailSubscriptionService.addMailSubscription(epost, channelId, documentType, interval, Language.NORWEGIAN_BO);
+                            model.put("meldtPa", Boolean.TRUE);  // Backwards compability
+                            model.put("subscribed", Boolean.TRUE);
+                        }
+                    } catch (NumberFormatException e) {
+                         //
                     }
-                } catch (NumberFormatException e) {
-                     //
                 }
+            } else {
+                model.put("invalidEmail", Boolean.TRUE);
+                model.put("epost", epost);  // Backwards compability
+                model.put("email", epost);
             }
+
         } else {
             SecuritySession securitySession = SecuritySession.getInstance(request);
             if(securitySession != null && securitySession.isLoggedIn()){
@@ -81,8 +92,13 @@ public class SubscriptionController implements AksessController {
             }
         }
 
-        model.put("epost", epost);
+        model.put("epost", epost);  // Backwards compability
+        model.put("email", epost);
         return model;
+    }
+
+    private boolean validEmail(String email) {
+        return RegExp.isEmail(email);
     }
 
     public String getDescription() {

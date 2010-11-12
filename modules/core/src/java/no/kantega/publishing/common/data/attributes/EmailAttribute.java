@@ -28,8 +28,6 @@ import java.util.Map;
  *
  */
 public class EmailAttribute extends Attribute {
-    protected String regexp = "^[\\w-_.]*[\\w-_.]\\@[\\w].+[\\w]+[\\w]$";
-
     protected boolean isSearchable = true;
 
     public void validate(ValidationErrors errors) throws RegExpSyntaxException {
@@ -38,8 +36,8 @@ public class EmailAttribute extends Attribute {
             return;
         }
 
-        if ((value != null) && (value.length() > 0) && (regexp != null) && (regexp.length() > 0)) {
-            if (!RegExp.matches(regexp, value)) {
+        if ((value != null) && (value.length() > 0)) {
+            if (!RegExp.isEmail(value)) {
                 Map<String, Object> objects = new HashMap<String, Object>();
                 objects.put("field", title);                
                 errors.add(name, "aksess.feil.invalidemail", objects);
