@@ -235,13 +235,13 @@ public class SiteMapWorker {
             List<SiteMapEntry> leafNodes = new ArrayList<SiteMapEntry>();
             getLeafNodes(leafNodes, sitemap);
 
-            updateStatusForLeafNodes(leafNodes);
+            updateStatusForLeafNodes(leafNodes, associationCategories);
         }
 
         return sitemap;
     }
 
-    private static void updateStatusForLeafNodes(List<SiteMapEntry> leafNodes) {
+    private static void updateStatusForLeafNodes(List<SiteMapEntry> leafNodes, int[] associationCategories) {
         Connection c = null;
 
         StringBuilder query = new StringBuilder();
@@ -255,6 +255,15 @@ public class SiteMapWorker {
             query.append(leafNode.currentId);
         }
         query.append(")");
+
+        if (associationCategories != null) {
+            query.append(" and associations.Category in (0");
+            for (int category : associationCategories) {
+                query.append(",").append(category);
+            }
+            query.append(")");
+        }
+
         try {
             c = dbConnectionFactory.getConnection();
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
