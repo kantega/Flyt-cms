@@ -15,5 +15,6 @@ public class RegExpTest {
         assertFalse("anders.skar.kantega.no", RegExp.isEmail("anders.skar.kantega.no"));
         assertFalse("anders.skar@kantegano", RegExp.isEmail("anders.skar@kantegano"));
         assertFalse("anders.skar@.kantegano", RegExp.isEmail("anders.skar@.kantegano"));
+        assertFalse("anders skar@.kantegano", RegExp.isEmail("anders.skar@.kantegano"));
     }
 }

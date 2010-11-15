@@ -57,7 +57,7 @@ public class SubscriptionController implements AksessController {
 
         if (epost != null && epost.length() > 0) {
             // Remove spaces
-            epost = StringHelper.replace(epost, " ", "");
+            epost = epost.trim();
 
             if (validEmail(epost)) {
                 Enumeration parameters = request.getParameterNames();
