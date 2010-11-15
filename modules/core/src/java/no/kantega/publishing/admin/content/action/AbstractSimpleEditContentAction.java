@@ -108,7 +108,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
         ContentIdentifier cid = new ContentIdentifier(request);
-        return new ContentManagementService(request).getContent(cid, false);
+        return new ContentManagementService(request).getLastVersionOfContent(cid);
     }
 
     private ModelAndView showEditForm(HttpServletRequest request, Content content) throws ConfigurationException, InvalidFileException, ObjectLockedException, InvalidTemplateException, NotAuthorizedException {
