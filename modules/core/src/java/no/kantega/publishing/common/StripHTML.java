@@ -108,6 +108,8 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
     }
 
     public void clear() {
+        this.checkedStart = false;
+        this.checkedEnd = false;
         sb.setLength(0);
     }
 
