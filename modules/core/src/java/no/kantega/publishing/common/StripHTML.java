@@ -1,5 +1,6 @@
 package no.kantega.publishing.common;
 
+import javax.swing.text.AttributeSet;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
 import javax.swing.text.html.HTMLEditorKit;
@@ -7,6 +8,7 @@ import javax.swing.text.html.parser.ParserDelegator;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.Enumeration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,14 +61,14 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
         if (skipTag(t)) return;
 
         if (checkedStart && !all) {
-            sb.append("<" + t.toString() + ">");
+            sb.append("<").append(t.toString()).append(getAttributes(a)).append(">");
             return; // only strip first tag
         }
 
         if (t.toString().equals(tag)) {
             checkedStart = true;
         } else {
-            sb.append("<" + t.toString() + ">");
+            sb.append("<").append(t.toString()).append(getAttributes(a)).append(">");
         }
     }
 
@@ -92,7 +94,7 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
         if (t.toString().equals(tag)) {
             // do nothing
         } else {
-            sb.append("<" + t.toString() + ">");
+            sb.append("<").append(t.toString()).append(getAttributes(a)).append(">");
         }
     }
 
@@ -121,9 +123,30 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
         this.skipTags = skipTags;
     }
 
+    private String getAttributes(AttributeSet attributes) {
+        StringBuffer retValue = new StringBuffer();
+        Enumeration e = attributes.getAttributeNames();
+        while (e.hasMoreElements()) {
+            Object name = e.nextElement();
+            String value = (String) attributes.getAttribute(name);
+            retValue.append(" ").append(name).append("=").append("\"").append(value).append("\"");
+        }
+
+        return retValue.toString();
+    }
+
     public static void main(String args[]) {
-        String html = "<p>Dette er en test<br><ul><li>1</li><li>2</li></ul><p>paragraf</p></p>";
         StripHTML parser = new StripHTML();
+
+        String html = "<p><a href=\"#\">link</a></p>";
+        
+        parser.tag = "p";
+        parser.all = false;
+        System.out.println(parser.convert(html));
+
+        html = "<p>Dette er en test<br><ul class=\"klassebold klasseselected\"><li>1</li><li>2</li></ul><p>paragraf</p></p>";
+
+        parser.clear();
         parser.tag = "p";
         parser.all = false;
         System.out.println(parser.convert(html));
