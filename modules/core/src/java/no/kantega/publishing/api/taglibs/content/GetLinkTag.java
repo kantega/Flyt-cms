@@ -126,10 +126,9 @@ public class GetLinkTag extends BodyTagSupport{
 
             if (contentObject != null) {
                 url = contentObject.getUrl(isAdminMode);
-                HttpSession session = request.getSession(false);
 
                 try {
-                    if (url != null && session != null && session.getAttribute("adminMode") != null) {
+                    if (url != null && isAdminMode) {
                         Content current = (Content)request.getAttribute("aksess_this");
                         if (current == null) {
                             // Hent denne siden

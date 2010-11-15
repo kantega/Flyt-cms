@@ -66,7 +66,6 @@ public class EditLinkTag  extends BodyTagSupport {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             ContentManagementService cms = new ContentManagementService(request);
 
-            HttpSession session = request.getSession(false);
             if (HttpHelper.isAdminMode(request)) {
                 return SKIP_BODY;
             }

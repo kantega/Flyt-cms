@@ -29,7 +29,7 @@
 
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
     response.setDateHeader("Expires", 0);
-    ExceptionHandler handler = (ExceptionHandler)request.getSession(false).getAttribute("handler");
+    ExceptionHandler handler = (ExceptionHandler)request.getSession(true).getAttribute("handler");
 
     String error = handler.getMessage();
 

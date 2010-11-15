@@ -58,7 +58,7 @@ public class TrafficLogger {
     }
 
     public static void log(Content content, HttpServletRequest request) throws SystemException {
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession(false);
         if (!HttpHelper.isAdminMode(request)) {
 
             Connection c = null;
@@ -77,7 +77,7 @@ public class TrafficLogger {
                 }
 
                 st.setString(5, referer);
-                st.setString(6, session.getId());
+                st.setString(6, session != null ? session.getId() : "");
                 st.setInt(7, content.getAssociation().getSiteId());
                 st.setString(8, refInfo == null ? null  : refInfo.getHost());
                 st.setString(9, refInfo == null ? null : refInfo.getQuery());
