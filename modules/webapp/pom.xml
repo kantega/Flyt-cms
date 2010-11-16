@@ -60,6 +60,13 @@
             <version>${pom.version}</version>
         </dependency>
 
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-formadmin</artifactId>
+            <version>${pom.version}</version>
+        </dependency>        
+
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>openaksess-rating</artifactId>

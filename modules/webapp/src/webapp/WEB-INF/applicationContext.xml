@@ -25,7 +25,8 @@
     <import resource="application-security.xml"/>
     <import resource="application-search.xml"/>
     <import resource="application-event.xml"/>
-    <import resource="application-editableforms.xml"/>    
+    <import resource="application-editableforms.xml"/>
+    <import resource="classpath:no/kantega/formengine/core/applicationContext.xml"/> 
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
     <bean class="no.kantega.publishing.spring.RootContext"/>
     
