@@ -112,7 +112,7 @@ public class RatingServiceImplTest {
 
         RatingNotificationListener notificationListener1 = mock(RatingNotificationListener.class);
         RatingNotificationListener notificationListener2 = mock(RatingNotificationListener.class);
-        Map<String, Object> notificationListeners = new HashMap();
+        Map<String, RatingNotificationListener> notificationListeners = new HashMap<String, RatingNotificationListener>();
         notificationListeners.put("listener1", notificationListener1);
         notificationListeners.put("listener2", notificationListener2);
 

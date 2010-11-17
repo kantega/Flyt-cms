@@ -50,11 +50,7 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.highlight.Formatter;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.Scorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.search.highlight.*;
 import org.cyberneko.html.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -133,6 +129,8 @@ public class DefaultDocumentProvider implements DocumentProvider {
                         String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
                         searchHit.setContextText(frag);
                     } catch (IOException e) {
+                        Log.error(SOURCE, e, null, null);
+                    }  catch (InvalidTokenOffsetsException e) {
                         Log.error(SOURCE, e, null, null);
                     }
                 }

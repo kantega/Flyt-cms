@@ -66,6 +66,12 @@
             <groupId>com.ettrema</groupId>
             <artifactId>milton-servlet</artifactId>
             <version>1.5.3</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
 
         <dependency>
