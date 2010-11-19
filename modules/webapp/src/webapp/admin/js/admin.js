@@ -187,6 +187,9 @@ openaksess.admin = {
             },
             content : {
                 navigationwidth : 'contentNavigationWidth'
+            },
+            formadmin : {
+                navigationwidth : 'formadminNavigationWidth'
             }
         },
 

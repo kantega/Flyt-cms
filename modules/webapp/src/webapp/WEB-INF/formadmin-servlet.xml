@@ -26,6 +26,10 @@
     <context:annotation-config/>
 
     <bean id="formSubmissionDetailsController" class="no.kantega.formadmin.presentation.controller.FormSubmissionDetailsController"/>
+    <bean id="navigatorController" class="no.kantega.formadmin.presentation.controller.NavigatorController"/>
+
+    <bean id="navigatorMapper" class="no.kantega.formadmin.presentation.util.FormTypeNavigatorMapper"/>
+    <bean id="configurationAccessor" class="no.kantega.formadmin.plugin.FormTypeConfigurationAccessor"/>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/formadmin/"/>

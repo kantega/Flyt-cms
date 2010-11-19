@@ -39,4 +39,4 @@ Form details
 </kantega:section>
 
 
-<%@ include file="/WEB-INF/jsp/admin/layout/fullwidthLayout.jsp" %>
+<%@ include file="/WEB-INF/jsp/admin/layout/formadminNavigateLayout.jsp" %>

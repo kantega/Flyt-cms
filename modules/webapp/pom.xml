@@ -202,6 +202,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>no.kantega.formengine.plugins</groupId>
+            <artifactId>formengine-plugin-aksessforms</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

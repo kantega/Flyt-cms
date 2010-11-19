@@ -46,4 +46,5 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <alias name="aksessDataSource" alias="formengineDataSource"/>
 </beans>
