@@ -45,6 +45,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -62,6 +63,7 @@ public class SecuritySession {
     private CachedBaseObject prevObject = null;
     private int prevPrivilege = -1;
     private boolean prevResult = false;
+    private static final String AKSESS_SECURITY_SESSION = "aksess.securitySession";
 
 
     /**
@@ -72,10 +74,10 @@ public class SecuritySession {
      */
     public static SecuritySession getInstance(HttpServletRequest request) throws SystemException {
 
-        SecuritySession session = (SecuritySession) request.getSession(true).getAttribute("aksess.securitySession");
+        SecuritySession session = getSession(request);
         if (session == null) {
             session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
+            saveSession(request, session, false);
         }
 
         IdentityResolver resolver = session.realm.getIdentityResolver();
@@ -93,7 +95,7 @@ public class SecuritySession {
         }
         Identity currentIdentity = session.identity;
 
-        // If your is now logged in or has changed identity, must create new session
+        // If user is now logged in or has changed identity, must create new session
         if (identity != null && (currentIdentity == null || !identity.getUserId().equals(currentIdentity.getUserId()) || !identity.getDomain().equals(currentIdentity.getDomain()))) {
             session = createNewUserInstance(identity);
             try {
@@ -102,16 +104,47 @@ public class SecuritySession {
                 throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
             }
             // Innloggede brukere har lengre sesjonstimeout
-            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
-                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
+            if (request.getSession(true).getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
+                request.getSession(true).setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
             }
-            request.getSession(true).setAttribute("aksess.securitySession", session);
+
+            // Logged in users are saved in  http session
+            saveSession(request, session, true);
 
         } else if (identity == null && currentIdentity != null) {
             // Bruker er utlogget via ekstern tjeneste - lag blank sesjon           
             session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
-            request.getSession(true).removeAttribute("adminMode");
+            saveSession(request, session, false);
+        }
+
+        return session;
+    }
+
+    private static void saveSession(HttpServletRequest request, SecuritySession session, boolean permanent) {
+        deleteSession(request);
+        if (permanent || Aksess.isAlwaysCreateSession()) {
+            request.getSession(true).setAttribute(AKSESS_SECURITY_SESSION, session);
+        } else {
+            request.setAttribute(AKSESS_SECURITY_SESSION, session);
+        }
+    }
+
+    private static void deleteSession(HttpServletRequest request) {
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession != null) {
+            httpSession.removeAttribute(AKSESS_SECURITY_SESSION);
+        }
+        request.removeAttribute(AKSESS_SECURITY_SESSION);
+    }
+
+    private static SecuritySession getSession(HttpServletRequest request) {
+        SecuritySession session = null;
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession != null) {
+            session = (SecuritySession) httpSession.getAttribute(AKSESS_SECURITY_SESSION);
+        }
+        if (session == null) {
+            session = (SecuritySession) request.getAttribute(AKSESS_SECURITY_SESSION);
         }
 
         return session;

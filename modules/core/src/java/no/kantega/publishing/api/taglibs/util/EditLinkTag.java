@@ -39,9 +39,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 public class EditLinkTag  extends BodyTagSupport {
     private static final String SOURCE = "aksess.EditLinkTag";

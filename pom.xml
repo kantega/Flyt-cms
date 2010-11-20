@@ -239,7 +239,7 @@
         <!-- 3.1-FINAL bygger ikke -->
         <poi.version>3.0-FINAL</poi.version>
         <springframework.version>2.5.6.SEC02</springframework.version>
-        <securityapi.version>2.3</securityapi.version>
+        <securityapi.version>2.4</securityapi.version>
         <securityapi.openimpl.version>2.4</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>

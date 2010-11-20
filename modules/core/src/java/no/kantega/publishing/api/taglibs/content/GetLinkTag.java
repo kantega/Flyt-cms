@@ -30,7 +30,6 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.Aksess;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;

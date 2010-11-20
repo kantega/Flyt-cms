@@ -56,7 +56,9 @@ public class ContentRequestHandler extends AbstractController {
         boolean isAdminMode = HttpHelper.isAdminMode(request);
 
         // Force getting a session since Tomcat does not always create a session
-        request.getSession(true);
+        if (Aksess.isAlwaysCreateSession()) {
+            request.getSession(true);            
+        }
 
         try {
             ContentManagementService cms = new ContentManagementService(request);

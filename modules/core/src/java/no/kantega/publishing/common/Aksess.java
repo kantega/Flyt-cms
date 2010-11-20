@@ -24,7 +24,6 @@ import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.HTMLVersion;
 import no.kantega.publishing.common.data.enums.ServerType;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -126,6 +125,8 @@ public class Aksess {
 
     private static boolean csrfCheckEnabled = true;
     private static boolean javascriptDebugEnabled;
+
+    private static boolean alwaysCreateSession = true;
 
     private static Configuration c;
     
@@ -271,6 +272,8 @@ public class Aksess {
                 databaseCacheTimeout = 900000;
             }
             databaseCacheTimeout = c.getInt("database.cache.timeout", databaseCacheTimeout);
+
+            alwaysCreateSession = c.getBoolean("security.alwayscreatesession", alwaysCreateSession);
 
 
             queryStringEncoding = c.getString("querystring.encoding", "iso-8859-1");
@@ -598,5 +601,9 @@ public class Aksess {
 
     public static boolean isDefaultMinorChange() {
         return isDefaultMinorChange;
+    }
+
+    public static boolean isAlwaysCreateSession() {
+        return alwaysCreateSession;
     }
 }
