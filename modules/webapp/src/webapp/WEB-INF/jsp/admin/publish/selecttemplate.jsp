@@ -278,14 +278,14 @@
                                 AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
                                 out.write("<div class=\"row\">");
                                 if (defaultAssociationCategory == tmp.getId()) {
-                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
+                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
                                     foundDefault = true;
                                     defaultText ="<b>" + tmp.getName() + "</b><br>" + tmp.getDescription();
                                 } else {
-                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
+                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
                                 }
                         %>
-                        <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label>
+                        <label for="category<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label>
                         <div class="clearing"></div>
                         <%
                             out.write("</div>");
