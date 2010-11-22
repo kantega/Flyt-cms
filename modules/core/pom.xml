@@ -181,18 +181,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.textmining</groupId>
-            <artifactId>tm-extractors</artifactId>
-            <version>0.4</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>poi</groupId>
-                    <artifactId>poi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6</version>
