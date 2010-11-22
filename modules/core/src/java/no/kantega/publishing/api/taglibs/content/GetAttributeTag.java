@@ -142,10 +142,17 @@ public class GetAttributeTag extends TagSupport {
                     result = defaultValue;
                 }
 
-                if (result != null) {
+                if (result != null && result.length() > 0) {
                     if (transform != null) {
                         if ("lowercase".equalsIgnoreCase(transform)) result = result.toLowerCase();
                         if ("uppercase".equalsIgnoreCase(transform)) result = result.toUpperCase();
+                        if ("capitalize".equalsIgnoreCase(transform)) {
+                            String tmp = result.substring(0,1).toUpperCase();
+                            if (result.length() > 1) {
+                                tmp += result.substring(1, result.length());
+                            }
+                            result = tmp;
+                        }
                     }
                     out.write(result);
                 }
