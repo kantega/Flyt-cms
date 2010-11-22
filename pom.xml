@@ -236,8 +236,7 @@
         <lucene.version>2.4.0</lucene.version>
         <log4j.version>1.2.9</log4j.version>
         <nekohtml.version>0.9.5</nekohtml.version>
-        <!-- 3.1-FINAL bygger ikke -->
-        <poi.version>3.0-FINAL</poi.version>
+        <poi.version>3.7</poi.version>
         <springframework.version>2.5.6.SEC02</springframework.version>
         <securityapi.version>2.3</securityapi.version>
         <securityapi.openimpl.version>2.4</securityapi.openimpl.version>
