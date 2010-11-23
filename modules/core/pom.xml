@@ -332,6 +332,10 @@
                     <groupId>cglib</groupId>
                     <artifactId>cglib-full</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!--
