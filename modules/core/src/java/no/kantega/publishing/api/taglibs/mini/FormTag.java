@@ -40,6 +40,7 @@ import java.util.Locale;
 public class FormTag extends BodyTagSupport {
 
     private boolean allowDraft = false;
+    private boolean hideInfoMessages = false;
 
     private String action;
 
@@ -80,12 +81,14 @@ public class FormTag extends BodyTagSupport {
             out.write("}\n");
             out.write("</script>\n");
 
-            if (!canApprove) {
-                out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
-            }
+            if (!hideInfoMessages) {
+                if (!canApprove) {
+                    out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
+                }
 
-            if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
-                out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
+                if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
+                    out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
+                }
             }
 
             out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">");
@@ -128,6 +131,10 @@ public class FormTag extends BodyTagSupport {
 
     public void setAllowdraft(boolean allowDraft) {
         this.allowDraft = allowDraft;
+    }
+
+    public void setHideinfomessages(boolean hideInfoMessages) {
+        this.hideInfoMessages = hideInfoMessages;
     }
 }
 
