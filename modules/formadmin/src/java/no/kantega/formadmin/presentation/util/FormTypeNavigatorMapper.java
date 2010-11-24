@@ -45,7 +45,7 @@ public class FormTypeNavigatorMapper {
      * @param openInstances
      * @return Navigator tree
      */
-    public FormadminMapEntry mapInstancesToNavigatorMapEntries(List<FormTypeInstance> instances, int currentInstance, String currentState, int[] openInstances) {
+    public FormadminMapEntry mapInstancesToNavigatorMapEntries(List<FormTypeInstance> instances, String currentInstance, String currentState, int[] openInstances) {
         FormadminMapEntry root = new FormadminMapEntry();
         root.setName("Skjemaarkiv");
         root.setObjectType(FormadminObjectType.ROOT);
@@ -61,8 +61,8 @@ public class FormTypeNavigatorMapper {
             FormadminMapEntry instanceEntry = new FormadminMapEntry();
             instanceEntry.setName(instance.getName());
             instanceEntry.setObjectType(FormadminObjectType.FORM_TYPE_INSTANCE);
-            int instanceId = instance.getFormTypeInstanceIdentifier().getId();
-            instanceEntry.setId(instanceId);
+            String instanceId = instance.getFormTypeInstanceIdentifier().getId();
+            instanceEntry.setId(instanceId.hashCode());
             if (instanceId == currentInstance) {
                 instanceEntry.setOpen(true);
                 instanceEntry.setSelected(true);
@@ -72,7 +72,7 @@ public class FormTypeNavigatorMapper {
             }
             if (!instanceEntry.isOpen() && openInstances != null && openInstances.length > 0) {
                 for (Integer openInstance : openInstances) {
-                    if (instanceId == openInstance) {
+                    if (instanceId.hashCode() == openInstance) {
                         instanceEntry.setOpen(true);
                     }
                 }

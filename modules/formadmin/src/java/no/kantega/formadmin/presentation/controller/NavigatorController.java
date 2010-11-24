@@ -55,11 +55,11 @@ public class NavigatorController extends FormAdminBaseController {
      * @return Navigator view
      */
     @RequestMapping("/navigator")
-    public String getNavigator(@RequestParam(value = "currentInstance", required = false) Integer currentInstance, @RequestParam(value = "currentState", required = false) String currentState, @RequestParam(value = "openInstances", required = false) Integer[] openInstances, Model model, HttpServletRequest request) {
+    public String getNavigator(@RequestParam(value = "currentInstance", required = false) String currentInstance, @RequestParam(value = "currentState", required = false) String currentState, @RequestParam(value = "openInstances", required = false) Integer[] openInstances, Model model, HttpServletRequest request) {
 
         List<FormTypeInstance> instances = formAdministration.searchFormTypeInstances(formAdministration.createFormTypeInstanceQuery(), getIdentityFromRequest(request));
 
-        int currInstanceId = (currentInstance != null)? currentInstance : 0; //Explicit unboxing in case currentInstance is null.
+        String currInstanceId = (currentInstance != null)? currentInstance : null; //Explicit unboxing in case currentInstance is null.
         FormadminMapEntry navigatorContent = navigatorMapper.mapInstancesToNavigatorMapEntries(instances, currInstanceId, currentState, unbox(openInstances));
 
         model.addAttribute("navigatorContent", navigatorContent);

@@ -42,7 +42,7 @@ public class FormSubmissionListController extends FormAdminBaseController {
     }
 
     @RequestMapping("/forminstance")
-    public String getFormSubmissionList(@RequestParam("instanceId") Integer instanceId, @RequestParam(value = "stateId", required = false) String stateId, HttpServletRequest request, Model model) {
+    public String getFormSubmissionList(@RequestParam("instanceId") String instanceId, @RequestParam(value = "stateId", required = false) String stateId, HttpServletRequest request, Model model) {
         FormSubmissionQuery query = formAdministration.createFormSubmissionQuery();
         FormTypeInstanceIdentifier instanceIdentifier = new FormTypeInstanceIdentifier();
         instanceIdentifier.setId(instanceId);
