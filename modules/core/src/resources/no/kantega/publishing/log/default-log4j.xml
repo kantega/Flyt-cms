@@ -20,6 +20,10 @@
         <priority value="debug"/>
     </category>
 
+    <category name="ro.isdc.wro">
+        <priority value="error"/>
+    </category>
+
     <root>
         <priority value="info"/>
         <appender-ref ref="ConsoleAppender"/>
