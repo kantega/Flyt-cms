@@ -159,12 +159,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>formadmin</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    </servlet>
-
-
-    <servlet>
         <servlet-name>dwr</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>3</load-on-startup>
@@ -256,11 +250,6 @@
     <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
         <url-pattern>/admin/administration/useradmin/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>formadmin</servlet-name>
-        <url-pattern>/admin/formadmin/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
