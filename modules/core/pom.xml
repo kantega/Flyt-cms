@@ -74,6 +74,12 @@
         </dependency>
 
         <dependency>
+            <groupId>no.kantega.formengine</groupId>
+            <artifactId>formengine-core</artifactId>
+            <version>${formengine.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>

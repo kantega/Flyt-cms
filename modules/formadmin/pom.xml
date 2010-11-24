@@ -64,7 +64,7 @@
         <dependency>
             <groupId>no.kantega.formengine</groupId>
             <artifactId>formengine-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${formengine.version}</version>
         </dependency>
 
         <dependency>

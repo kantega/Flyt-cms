@@ -21,6 +21,7 @@ import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.formengine.integration.FormSubmissionDao;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
@@ -282,9 +283,14 @@ public class dbConnectionFactory {
             throw new RuntimeException("Unknow database product " + productName +", can't create database tables");
         }
 
-        final URL resource = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
+        final URL aksessDb = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
+        final URL formDb = FormSubmissionDao.class.getClassLoader().getResource("dbschema/formengine-" + dbType + ".sql");
 
+        createTablesFromSchema(dataSource, aksessDb);
+        createTablesFromSchema(dataSource, formDb);
+    }
 
+    private static void createTablesFromSchema(DataSource dataSource, URL resource) {
         if(resource != null) {
             Log.info(SOURCE, "Creating tables from schema definition " + resource, null, null);
             final InputStream schema;

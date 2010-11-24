@@ -246,6 +246,7 @@
         <xml-apis.version>1.0.b2</xml-apis.version>
         <jexmec.version>1.25</jexmec.version>
         <jtds.version>1.2.4</jtds.version>
+        <formengine.version>1.0-SNAPSHOT</formengine.version>
     </properties>
 
 </project>
