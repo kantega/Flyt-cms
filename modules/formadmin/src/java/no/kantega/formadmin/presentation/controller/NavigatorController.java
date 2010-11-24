@@ -20,18 +20,20 @@ import no.kantega.formadmin.presentation.taglib.FormadminMapEntry;
 import no.kantega.formadmin.presentation.util.FormTypeNavigatorMapper;
 import no.kantega.formengine.administration.FormAdministration;
 import no.kantega.formengine.model.FormTypeInstance;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.security.api.identity.Identity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+/**
+ * Provides model data for the navigator.
+ */
 @Controller
-public class NavigatorController {
+public class NavigatorController extends FormAdminBaseController {
 
     private FormAdministration formAdministration;
     private FormTypeNavigatorMapper navigatorMapper;
@@ -42,32 +44,41 @@ public class NavigatorController {
         this.navigatorMapper = navigatorMapper;
     }
 
+    /**
+     * Sets up the navigator
+     *
+     * @param currentInstance
+     * @param currentState
+     * @param openInstances
+     * @param model
+     * @param request
+     * @return Navigator view
+     */
     @RequestMapping("/navigator")
-    public String getNavigator(Model model, HttpServletRequest request) {
+    public String getNavigator(@RequestParam(value = "currentInstance", required = false) Integer currentInstance, @RequestParam(value = "currentState", required = false) String currentState, @RequestParam(value = "openInstances", required = false) Integer[] openInstances, Model model, HttpServletRequest request) {
 
         List<FormTypeInstance> instances = formAdministration.searchFormTypeInstances(formAdministration.createFormTypeInstanceQuery(), getIdentityFromRequest(request));
 
-        FormadminMapEntry navigatorContent = navigatorMapper.mapInstancesToNavigatorMapEntries(instances);
+        int currInstanceId = (currentInstance != null)? currentInstance : 0; //Explicit unboxing in case currentInstance is null.
+        FormadminMapEntry navigatorContent = navigatorMapper.mapInstancesToNavigatorMapEntries(instances, currInstanceId, currentState, unbox(openInstances));
+
         model.addAttribute("navigatorContent", navigatorContent);
+        model.addAttribute("currentInstance", currentInstance);
+        model.addAttribute("currentState", currentState);
+        model.addAttribute("openInstances", openInstances);
+
         return "navigator";
     }
 
-
-
-    //TODO: Refactor into separate class.
-    private Identity getIdentityFromRequest(HttpServletRequest request) {
-        SecuritySession securitySession = getSecuritySession(request);
-        return securitySession.getIdentity();
+    private int[] unbox(Integer[] integerArr) {
+        if (integerArr == null) {
+            return null;
+        }
+        int[] intArr = new int[integerArr.length];
+        for (int i = 0, integerArrLength = integerArr.length; i < integerArrLength; i++) {
+            intArr[i] = integerArr[i];
+        }
+        return intArr;
     }
 
-    /**
-     * Abstraction in order to enable mocking of the SecuritySession.
-     *
-     * @param request
-     * @return
-     */
-    protected SecuritySession getSecuritySession(HttpServletRequest request) {
-        return SecuritySession.getInstance(request);
-
-    }
 }

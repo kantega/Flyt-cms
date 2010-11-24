@@ -40,13 +40,16 @@ public class FormTypeNavigatorMapper {
      * Creates a navigator tree strucure from the list of form instances.
      *
      * @param instances All form instances
+     * @param currentInstance
+     * @param currentState
+     * @param openInstances
      * @return Navigator tree
      */
-    public FormadminMapEntry mapInstancesToNavigatorMapEntries(List<FormTypeInstance> instances) {
+    public FormadminMapEntry mapInstancesToNavigatorMapEntries(List<FormTypeInstance> instances, int currentInstance, String currentState, int[] openInstances) {
         FormadminMapEntry root = new FormadminMapEntry();
         root.setName("Skjemaarkiv");
         root.setObjectType(FormadminObjectType.ROOT);
-        root.setUrl("");//TODO: Sjekk hva denne skal være
+        root.setUrl("root");
         if (instances != null && !instances.isEmpty()) {
             root.setHasChildren(true);
         } else {
@@ -58,8 +61,23 @@ public class FormTypeNavigatorMapper {
             FormadminMapEntry instanceEntry = new FormadminMapEntry();
             instanceEntry.setName(instance.getName());
             instanceEntry.setObjectType(FormadminObjectType.FORM_TYPE_INSTANCE);
-            instanceEntry.setId(instance.getFormTypeInstanceIdentifier().getId());
-            instanceEntry.setUrl("");//TODO: Sjekk hva denne skal være
+            int instanceId = instance.getFormTypeInstanceIdentifier().getId();
+            instanceEntry.setId(instanceId);
+            if (instanceId == currentInstance) {
+                instanceEntry.setOpen(true);
+                instanceEntry.setSelected(true);
+            } else {
+                instanceEntry.setOpen(false);
+                instanceEntry.setSelected(false);
+            }
+            if (!instanceEntry.isOpen() && openInstances != null && openInstances.length > 0) {
+                for (Integer openInstance : openInstances) {
+                    if (instanceId == openInstance) {
+                        instanceEntry.setOpen(true);
+                    }
+                }
+            }
+            instanceEntry.setUrl("instanceId="+instanceId);
 
             if (instance.getFormType() != null) {
                 List<State> states = configurationAccessor.getStates(instance.getFormType().getFormTypeIdentifier());
@@ -69,8 +87,16 @@ public class FormTypeNavigatorMapper {
                         FormadminMapEntry stateEntry = new FormadminMapEntry();
                         stateEntry.setName(state.getDisplayName(Aksess.getDefaultAdminLocale()));
                         stateEntry.setObjectType(FormadminObjectType.STATE);
-                        stateEntry.setId(state.getStateIdentifier().getId().hashCode());
+                        String stateId = state.getStateIdentifier().getId();
+                        stateEntry.setId(stateId.hashCode());
+                        if (stateId.equals(currentState)) {
+                            stateEntry.setSelected(true);
+                        } else {
+                            stateEntry.setSelected(false);
+                        }
                         stateEntry.setHasChildren(false);
+                        stateEntry.setOpen(false);
+                        stateEntry.setUrl("instanceId="+instanceId +"&stateId="+stateId);
                         instanceEntry.addChild(stateEntry);
                     }
                 }

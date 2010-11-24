@@ -17,5 +17,26 @@
   ~ limitations under the License.
   --%>
 
+<kantega:section id="title">
+    <kantega:label key="aksess.formadmin.details.title"/>
+</kantega:section>
 
-Form submission details.
+<kantega:section id="contentclass">formadmin</kantega:section>
+
+<kantega:section id="head extras">
+
+</kantega:section>
+
+<kantega:section id="modesMenu">
+</kantega:section>
+
+<kantega:section id="toolsMenu">
+
+</kantega:section>
+
+<kantega:section id="content">
+Form admin
+</kantega:section>
+
+
+<%@ include file="/WEB-INF/jsp/admin/layout/formadminNavigateLayout.jsp" %>

@@ -103,6 +103,24 @@ openaksess.navigate.getNavigatorAction = function() {
     return navigatorAction;
 };
 
+openaksess.navigate.updateMainPane = function(itemIdentifier) {
+    var params = {};
+    var paramsArr;
+    if (itemIdentifier.indexOf("&") > -1) {
+        paramsArr = itemIdentifier.split("&");
+    } else {
+        paramsArr = [itemIdentifier];
+    }
+
+    for (var param in paramsArr) {
+        var paramArr = paramsArr[param].split("=");
+        var property = paramArr[0];
+        params[property] = paramArr[1];
+    }
+
+    $("#MainPaneContent").load(properties.contextPath + "/admin/formadmin/forminstance", params);
+};
+
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
-    return openaksess.common.getQueryParam("itemIdentifier", href);
+    return href.substring(1, href.length);//Strip off leading '?'
 };

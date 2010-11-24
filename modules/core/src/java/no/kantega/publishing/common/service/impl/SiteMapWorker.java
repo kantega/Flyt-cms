@@ -56,6 +56,7 @@ public class SiteMapWorker {
                 // Legger kun til hovedknytninger, ellers kan ting g� i evig l�kke...
                 addToSiteMap(entry, entries);
                 parent.addChild(entry);
+                parent.setOpen(true);
                 entry = getFirst(parentId, entries);
             }
         }

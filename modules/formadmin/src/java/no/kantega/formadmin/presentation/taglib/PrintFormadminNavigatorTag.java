@@ -16,12 +16,18 @@
 
 package no.kantega.formadmin.presentation.taglib;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.taglib.PrintNavigatorTag;
+import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PrintFormadminNavigatorTag extends PrintNavigatorTag {
@@ -34,7 +40,7 @@ public class PrintFormadminNavigatorTag extends PrintNavigatorTag {
 
         StringBuilder href = new StringBuilder();
         href.append("?");
-        href.append(AdminRequestParameters.ITEM_IDENTIFIER).append("=").append(currentItem.getId());
+        href.append(currentItem.getUrl());
 
         if (currentItem.isHasChildren()) {
             String openState = currentItem.isOpen()? "open": "closed";

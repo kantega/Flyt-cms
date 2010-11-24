@@ -15,7 +15,7 @@
   --%>
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-formadminlayout.css"/>">
-    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-formadminlayout.js"/>"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-formadminlayout.js?minimize=false"/>"></script>
     <kantega:getsection id="head extras"/>
 </kantega:section>
 
@@ -46,8 +46,9 @@
 
             <div class="infoslider"></div>
 
-            <kantega:getsection id="content"/>
-
+            <div id="MainPaneContent">
+                <kantega:getsection id="content"/>
+            </div>
 
         </div>
         <div class="clearing"></div>

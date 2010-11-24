@@ -20,7 +20,7 @@
 <formadmin:printformadminnavigator root="${navigatorContent}"/>
 
 <div id="NavigatorState" style="display: none;">
-    <div class="expand">true</div>
-    <div class="getFoldersOnly">${getFoldersOnly}</div>
-    <div class="openFolders">${openFolders}</div>
+    <div class="currentInstance">${currentInstance}</div>
+    <div class="currentState">${currentState}</div>
+    <div class="openFolders">${openInstances}</div>
 </div>

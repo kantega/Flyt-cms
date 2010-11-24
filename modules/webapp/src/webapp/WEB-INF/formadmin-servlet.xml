@@ -25,6 +25,8 @@
 
     <context:annotation-config/>
 
+    <bean id="formadminController" class="no.kantega.formadmin.presentation.controller.FormadminController"/>
+    <bean id="forminstanceController" class="no.kantega.formadmin.presentation.controller.FormSubmissionListController"/> 
     <bean id="formSubmissionDetailsController" class="no.kantega.formadmin.presentation.controller.FormSubmissionDetailsController"/>
     <bean id="navigatorController" class="no.kantega.formadmin.presentation.controller.NavigatorController"/>
 

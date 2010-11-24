@@ -1,4 +1,5 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 
 <%--
@@ -17,5 +18,12 @@
   ~ limitations under the License.
   --%>
 
+<h1>${formTypeInstance.name}</h1>
 
-Form submission details.
+<table>
+    <c:forEach items="${formSubmissions}" var="formSubmission">
+        <tr>
+            <td>subm.</td>
+        </tr>
+    </c:forEach>
+</table>
