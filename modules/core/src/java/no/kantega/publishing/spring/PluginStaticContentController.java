@@ -16,34 +16,87 @@
 
 package no.kantega.publishing.spring;
 
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.kantega.jexmec.PluginManager;
-import org.kantega.jexmec.ClassLoaderAwarePluginManager;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import org.apache.commons.io.IOUtils;
+import org.kantega.jexmec.ClassLoaderAwarePluginManager;
+import org.kantega.jexmec.PluginManager;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import no.kantega.commons.media.MimeTypes;
-import no.kantega.commons.media.MimeType;
-
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  */
 public class PluginStaticContentController extends AbstractController {
     private PluginManager<OpenAksessPlugin> pluginManager;
+    private String prefix;
+    private final File[] baseDirectories;
+
+    public PluginStaticContentController() {
+        final String resourceBases = System.getProperty("resourceBases");
+
+        // For easy development reload of plugin resources
+
+        List<File> baseDirectories = new ArrayList<File>();
+
+        if(resourceBases != null) {
+            for(String base : resourceBases.split(File.pathSeparator)) {
+                File baseFile = new File(base);
+                if(baseFile.exists() && baseFile.isDirectory()) {
+                    baseDirectories.add(baseFile);
+                }
+            }
+        }
+
+        this.baseDirectories = baseDirectories.toArray(new File[baseDirectories.size()]);
+
+    }
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        final String servletPath = request.getServletPath();
         final String pathInfo = request.getPathInfo();
         String path = pathInfo.substring("/static/".length());
 
-        String resourcePath = "no/kantega/openaksess/static/" + path;
 
+        String resourcePath = prefix + path;
+
+        URL resource = getResourceFromDevelopmentPaths(resourcePath);
+        if(resource == null) {
+            resource = getResourceFromPlugins(resourcePath);
+        }
+        if(resource != null) {
+            String mimeType = getServletContext().getMimeType(pathInfo.substring(pathInfo.lastIndexOf("/") +1));
+            response.setContentType(mimeType);
+            IOUtils.copy(resource.openStream(), response.getOutputStream());
+            return null;
+        } else {
+
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return null;
+        }
+    }
+
+    private URL getResourceFromDevelopmentPaths(String resourcePath) {
+        for(File base : baseDirectories) {
+            final File file = new File(base, resourcePath);
+            if(file.exists()) {
+                try {
+                    return file.toURI().toURL();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return null;
+    }
+
+    private URL getResourceFromPlugins(String resourcePath) {
         ClassLoaderAwarePluginManager<OpenAksessPlugin> pluginManager = ClassLoaderAwarePluginManager.class.cast(this.pluginManager);
         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             ClassLoader classLoader = pluginManager.getClassLoader(plugin);
@@ -51,18 +104,18 @@ public class PluginStaticContentController extends AbstractController {
             if(classLoader != null) {
                 URL resource = classLoader.getResource(resourcePath);
                 if(resource != null) {
-                    MimeType mimeType = MimeTypes.getMimeType(pathInfo.substring(pathInfo.lastIndexOf("/")));
-                    response.setContentType(mimeType.getType());
-                    IOUtils.copy(resource.openStream(), response.getOutputStream());
-                    return null;
+                    return resource;
                 }
             }
         }
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
         return null;
     }
 
     public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
         this.pluginManager = pluginManager;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 }
