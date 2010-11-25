@@ -60,12 +60,6 @@
         <js>/admin/js/content.js</js>
     </group>
 
-    <!--<group name="admin-formadminlayout">
-        <css>/admin/css/navigate.css</css>
-        <js>/admin/js/navigate.js</js>
-        <js>/admin/js/formadmin.js</js>
-    </group>-->
-
     <group name="miniaksess">
         <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
         <css>/admin/css/jquery-ui-additions.css</css>
