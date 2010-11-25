@@ -16,6 +16,8 @@ import org.springframework.web.servlet.view.document.AbstractExcelView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -33,8 +35,9 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 Form form = formService.getFormById(formId);
 
                 List<String> fieldNames = dao.getFieldNamesForForm(formId);
+                String title = cleanUpTitle(form.getTitle());
+                HSSFSheet sheet = hssfWorkbook.createSheet(title);
 
-                HSSFSheet sheet = hssfWorkbook.createSheet(form.getTitle());
                 HSSFRow row = sheet.createRow((short)0);
 
                 HSSFCell cell = row.createCell((short)0);
@@ -82,6 +85,27 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 sheet.autoSizeColumn((short)0);
             }
         }
+    }
+
+    /**
+     * Title for sheet cannot be blank, greater than 31 chars, or contain any ot these characters /\*?[].
+     * @param title
+     * @return,
+     */
+    private String cleanUpTitle(String title){
+        if (title == null || title.trim().length() <  1) return "_";
+        String chars = "[?/\\[\\]*\\\\]";
+        Pattern pattern = Pattern.compile(chars);
+        Matcher m = pattern.matcher(title);
+        while (m.find()){
+            System.out.println(m.start() + ", " + m .group());
+            title = title.replace(m.group(),"_");
+        }
+        if (title.length() >30){
+            return title.substring(0,30);
+        }
+        return title;
+
     }
 
     private boolean isWithinDatePeriod(FormSubmission formSubmission, Date dateFrom, Date dateUntil) {
