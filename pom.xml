@@ -168,7 +168,7 @@
             <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
-                <version>2.7.0</version>
+                <version>${xalan.version}</version>
             </dependency>
 
             <dependency>
@@ -180,7 +180,7 @@
             <dependency>
                 <groupId>regexp</groupId>
                 <artifactId>regexp</artifactId>
-                <version>1.2</version>
+                <version>1.3</version>
             </dependency>
 
             <dependency>
@@ -229,20 +229,20 @@
 
     <properties>
         <codec.version>1.2</codec.version>
-        <commons-pool.version>1.3</commons-pool.version>
-        <commons-logging.version>1.0.4</commons-logging.version>
+        <commons-pool.version>1.5.4</commons-pool.version>
+        <commons-logging.version>1.1</commons-logging.version>
         <httpclient.version>3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <lucene.version>2.9.3</lucene.version>
         <log4j.version>1.2.16</log4j.version>
-        <nekohtml.version>0.9.5</nekohtml.version>
+        <nekohtml.version>1.9.12</nekohtml.version>
         <poi.version>3.7</poi.version>
         <springframework.version>3.0.5.RELEASE</springframework.version>
         <securityapi.version>2.3</securityapi.version>
         <securityapi.openimpl.version>2.4</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
-        <xml-apis.version>1.0.b2</xml-apis.version>
+        <xml-apis.version>1.3.04</xml-apis.version>
         <jexmec.version>1.25</jexmec.version>
         <jtds.version>1.2.4</jtds.version>
         <formengine.version>1.0-SNAPSHOT</formengine.version>
