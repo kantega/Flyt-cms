@@ -1,5 +1,6 @@
 package no.kantega.publishing.api.plugin;
 
+import no.kantega.security.api.identity.IdentityResolver;
 import org.kantega.jexmec.Services;
 import no.kantega.publishing.api.cache.SiteCache;
 
@@ -12,6 +13,8 @@ public interface OpenAksessServices extends Services {
     public SiteCache getSiteCache();
 
     public DataSource getDataSource(DataSourceName name);
+
+    public IdentityResolver getIdentityResolver();
 
     enum DataSourceName {
         aksessDataSource
