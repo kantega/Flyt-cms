@@ -186,7 +186,7 @@
             </c:if>
         </div>
 
-        <div id="Framesplit"></div>
+        <div id="Framesplit" class="framesplit metadata"></div>
         <div class="clearing"></div>
 
     </div>

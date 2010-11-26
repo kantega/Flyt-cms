@@ -173,10 +173,14 @@ table.fullWidth {
     margin: 0;
     height: 100%;
 }
-#Content.publish #Framesplit, #Content.multimedia #Framesplit {
+
+.framesplit {
+    width:10px;
+    height:100%;
+}
+
+.framesplit.metadata{
     float: right;
-    width: 10px;
-    height: 100%;
     border-right: 1px solid #8F8F8F;
     background: url(../bitmaps/sprite-repeat-y.png) repeat-y -40px 0;
 }

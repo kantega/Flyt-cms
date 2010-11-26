@@ -123,7 +123,7 @@
             <div id="SideBar">
                 <%@ include file="../publish/fragments/publishproperties.jsp" %>
             </div>
-            <div id="Framesplit"></div>
+            <div id="Framesplit" class="framesplit metadata"></div>
             <div class="clearing"></div>
         </div>
         <input type="hidden" id="ContentStatus" name="status" value="">
