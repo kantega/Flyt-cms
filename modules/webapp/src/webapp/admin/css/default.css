@@ -957,6 +957,9 @@ div.sidebarFieldset fieldset select {
 #SubPages li.page {
     cursor: pointer;
 }
+#SubPages li.page:hover {
+    background: #eee;
+}
 #SubPages li.page.selected {
     background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -366px;
     color: #ffffff;
