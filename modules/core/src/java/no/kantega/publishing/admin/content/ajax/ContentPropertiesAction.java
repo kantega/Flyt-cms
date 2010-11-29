@@ -110,8 +110,11 @@ public class ContentPropertiesAction implements Controller {
                 List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
+                        //Retrieve the path down to this association
                         List<PathEntry> paths = cms.getPathByAssociation(association);
-                        paths.add(current);
+                        //Add the association itself to the path. 
+                        PathEntry leaf = new PathEntry(association.getId(), content.getTitle());
+                        paths.add(leaf);
                         associations.add(paths);
                     }
                 }
