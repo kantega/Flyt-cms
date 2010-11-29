@@ -1,7 +1,8 @@
-package no.kantega.publishing.modules.forms.formdelivery;
+package no.kantega.openaksess.forms.email.delivery;
 
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.FormValue;
+import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
+import no.kantega.publishing.api.forms.model.FormSubmission;
+import no.kantega.publishing.api.forms.model.FormValue;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
@@ -11,7 +12,6 @@ import no.kantega.commons.log.Log;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 
 import org.springframework.web.util.HtmlUtils;
 
@@ -22,13 +22,17 @@ import org.springframework.web.util.HtmlUtils;
 public class EmailFormDeliveryService implements FormDeliveryService {
     private String mailTemplate = "formsubmission.vm";
 
+    public String getId() {
+        return "aksessEmail";
+    }
+
     public void deliverForm(FormSubmission formSubmission) {
         if (formSubmission.getForm().getEmail() == null || formSubmission.getForm().getEmail().length() == 0) {
             Log.debug(getClass().getName(), "Email was blank, form not sent via email", null, null);
             return;
         }
         try {
-            String from = formSubmission.getEmail();
+            String from = formSubmission.getSubmittedByEmail();
             if (from == null || from.indexOf("@") == -1) {
                 // Use default sender
                 from = Aksess.getConfiguration().getString("mail.from");

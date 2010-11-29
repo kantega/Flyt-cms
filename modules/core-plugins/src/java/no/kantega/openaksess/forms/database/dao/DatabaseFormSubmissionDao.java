@@ -1,10 +1,25 @@
-package no.kantega.publishing.modules.forms.dao;
+/*
+ * Copyright 2010 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.modules.forms.model.AksessContentForm;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
-import no.kantega.publishing.modules.forms.model.FormValue;
+package no.kantega.openaksess.forms.database.dao;
+
+import no.kantega.publishing.api.forms.model.DefaultForm;
+import no.kantega.publishing.api.forms.model.*;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.identity.Identity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -17,17 +32,13 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-/**
- *
- */
 public class DatabaseFormSubmissionDao implements FormSubmissionDao {
-    private FormSubmissionsSummaryMapper formSubmissionsSummaryMapper = new FormSubmissionsSummaryMapper();
     private FormSubmissionMapper formSubmissionMapper = new FormSubmissionMapper();
     private DataSource dataSource;
 
     public FormSubmission getFormSubmissionById(int formSubmissionId) {
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
-        List<FormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionMapper, formSubmissionId);
+        List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionMapper, formSubmissionId);
         if (list.size() > 0) {
             FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
             callback.setFormSubmission(list);
@@ -38,39 +49,42 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormId(int formId) {
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
 
-        List<FormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
+        List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
 
         new JdbcTemplate(dataSource).query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[]{formId}, callback);
 
-        return list;
+        return (List<FormSubmission>)(List)list;
     }
 
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormIdAndIdentity(int formId, String identity) {
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
 
-        List<FormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
+        List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
 
         new JdbcTemplate(dataSource).query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?) ORDER BY FieldNumber", new Object[]{formId, identity}, callback);
 
-        return list;
+        return (List<FormSubmission>)(List)list;
     }
 
     public int saveFormSubmission(final FormSubmission form) {
+        int id = form.getFormSubmissionId();
+
         JdbcTemplate template = new JdbcTemplate(dataSource);
         if (form.getFormSubmissionId() > 0) {
             // Update
             template.update("UPDATE formsubmission SET SubmittedBy = ?, AuthenticatedIdentity = ?, Password = ?, Email = ?, SubmittedDate = ? WHERE FormSubmissionId = ?",
-                    new Object[] {form.getSubmittedBy(), form.getAuthenticatedIdentity(), form.getPassword(), form.getEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId()});
+                    new Object[] {form.getSubmittedByName(), form.getAuthenticatedIdentity(), form.getPassword(), form.getSubmittedByEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId()});
 
             // Delete old form values
             template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", new Object[] {form.getFormSubmissionId()});
@@ -82,16 +96,23 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                     PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, form.getForm().getId());
-                    p.setString(2, form.getSubmittedBy());
-                    p.setString(3, form.getAuthenticatedIdentity());
+                    p.setString(2, form.getSubmittedByName());
+
+                    String auth = "";
+                    Identity identity = form.getAuthenticatedIdentity();
+                    if (identity.getDomain() != null && identity.getDomain().length() > 0) {
+                        auth = identity.getDomain() + ":";
+                    }
+                    auth += identity.getUserId();                                                
+                    p.setString(3, auth);
                     p.setString(4, form.getPassword());
-                    p.setString(5, form.getEmail());
+                    p.setString(5, form.getSubmittedByEmail());
                     p.setTimestamp(6, new Timestamp(new Date().getTime()));
                     return p;
                 }
             }, keyHolder);
 
-            form.setFormSubmissionId(keyHolder.getKey().intValue());
+            id = keyHolder.getKey().intValue();
         }
 
         // Insert map values
@@ -102,13 +123,13 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
                 FormValue value = (FormValue)values.get(i);
                 if (value.getValues() != null) {
                     for (String v : value.getValues()) {
-                        template.update("INSERT INTO formsubmissionvalues (FormSubmissionId, FieldNumber, FieldName, FieldValue) VALUES (?,?,?,?)", new Object[]{form.getFormSubmissionId(), i, value.getName(), v});
+                        template.update("INSERT INTO formsubmissionvalues (FormSubmissionId, FieldNumber, FieldName, FieldValue) VALUES (?,?,?,?)", new Object[]{id, i, value.getName(), v});
                     }                    
                 }
             }
         }
 
-        return form.getFormSubmissionId();
+        return id;
     }
 
     @SuppressWarnings("unchecked")
@@ -152,24 +173,33 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", new Object[] {formSubmissionId});        
     }
 
-    public List<FormSubmissionsSummary> getFormSubmissionsSummaryForAllForms() {
-        SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
-        List <FormSubmissionsSummary> summaries = template.query("SELECT FormId, COUNT(*) AS NoSubmissions, MIN(SubmittedDate) AS FirstDate, MAX(SubmittedDate) AS LastDate FROM formsubmission group by formid", formSubmissionsSummaryMapper);
-        return summaries;
-    }
-
-    private class FormSubmissionMapper implements ParameterizedRowMapper<FormSubmission> {
-        public FormSubmission mapRow(ResultSet rs, int i) throws SQLException {
-            FormSubmission formSubmission = new FormSubmission();
+    private class FormSubmissionMapper implements ParameterizedRowMapper<DefaultFormSubmission> {
+        public DefaultFormSubmission mapRow(ResultSet rs, int i) throws SQLException {
+            DefaultFormSubmission formSubmission = new DefaultFormSubmission();
             formSubmission.setFormSubmissionId(rs.getInt("FormSubmissionId"));
             int formId = rs.getInt("FormId");
-            Content content = new Content();
-            content.setId(formId);
-            formSubmission.setForm(new AksessContentForm(content));
-            formSubmission.setSubmittedBy(rs.getString("SubmittedBy"));
-            formSubmission.setAuthenticatedIdentity(rs.getString("AuthenticatedIdentity"));
+
+            DefaultForm form = new DefaultForm();
+            form.setId(formId);
+            formSubmission.setForm(form);
+            formSubmission.setSubmittedByName(rs.getString("SubmittedBy"));
+
+            String auth = rs.getString("AuthenticatedIdentity");
+            if (auth != null) {
+                DefaultIdentity identity = new DefaultIdentity();
+                if (auth.contains(":")) {
+                    String[] comps = auth.split(":");
+                    identity.setDomain(comps[0]);
+                    identity.setUserId(comps[1]);
+                } else {
+                    identity.setUserId(auth);
+                }
+                formSubmission.setAuthenticatedIdentity(identity);
+            }
+
+
             formSubmission.setPassword(rs.getString("Password"));
-            formSubmission.setEmail(rs.getString("Email"));
+            formSubmission.setSubmittedByEmail(rs.getString("Email"));
             formSubmission.setSubmissionDate(rs.getDate("SubmittedDate"));
             formSubmission.setValues(new ArrayList<FormValue>());
             
@@ -177,31 +207,18 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         }
     }
 
-    private class FormSubmissionsSummaryMapper implements ParameterizedRowMapper<FormSubmissionsSummary> {
-        public FormSubmissionsSummary mapRow(ResultSet rs, int i) throws SQLException {
-            FormSubmissionsSummary summary = new FormSubmissionsSummary();
-            summary.setFormId(rs.getInt("FormId"));
-            summary.setNoSubmissions(rs.getInt("NoSubmissions"));
-            summary.setFirstSubmissionDate(rs.getDate("FirstDate"));
-            summary.setLastSubmissionDate(rs.getDate("LastDate"));
-
-            return summary;
-        }
-    }
-
-
     private class FormSubmissionValuesCallbackHandler implements RowCallbackHandler {
-        private Map<Integer, FormSubmission> formSubmissions = new HashMap<Integer, FormSubmission>();
+        private Map<Integer, DefaultFormSubmission> formSubmissions = new HashMap<Integer, DefaultFormSubmission>();
 
-        public void setFormSubmission(List<FormSubmission> submissions) {
-            for (FormSubmission s : submissions) {
+        public void setFormSubmission(List<DefaultFormSubmission> submissions) {
+            for (DefaultFormSubmission s : submissions) {
                 formSubmissions.put(s.getFormSubmissionId(), s);
             }
         }
 
         public void processRow(ResultSet rs) throws SQLException {
             int id = rs.getInt("FormSubmissionId");
-            FormSubmission submission = formSubmissions.get(id);
+            DefaultFormSubmission submission = formSubmissions.get(id);
             if (submission != null) {
                 List<FormValue> formValues = submission.getValues();
                 if (formValues == null) {
@@ -210,15 +227,15 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
                 }
 
                 String name = rs.getString("FieldName");
-                FormValue formValue = null;
+                DefaultFormValue formValue = null;
                 for (FormValue fv : formValues) {
                     if (fv.getName().equals(name)) {
-                        formValue = fv;
+                        formValue = (DefaultFormValue)fv;
                         break;
                     }
                 }
                 if (formValue == null) {
-                    formValue = new FormValue();
+                    formValue = new DefaultFormValue();
                 }
                 formValue.setName(name);
 

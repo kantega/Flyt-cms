@@ -1,22 +1,37 @@
-package no.kantega.publishing.modules.forms.model;
-
-import java.util.*;
-import no.kantega.publishing.modules.forms.validate.FormError;
-
-/**
+/*
+ * Copyright 2010 Kantega AS
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-public class FormSubmission {
+
+package no.kantega.publishing.api.forms.model;
+
+import no.kantega.security.api.identity.Identity;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+public class DefaultFormSubmission implements FormSubmission {
 
     private int formSubmissionId;
     private Form form;
     private String submittedBy;
-    private String authenticatedIdentity;
+    private Identity authenticatedIdentity;
     private String password;
     private String email;
     private Date submissionDate;
     private List<FormValue> values;
-    private List<FormError> errors;
 
     public int getFormSubmissionId() {
         return formSubmissionId;
@@ -34,19 +49,19 @@ public class FormSubmission {
         this.form = form;
     }
 
-    public String getSubmittedBy() {
+    public String getSubmittedByName() {
         return submittedBy;
     }
 
-    public void setSubmittedBy(String submittedBy) {
+    public void setSubmittedByName(String submittedBy) {
         this.submittedBy = submittedBy;
     }
 
-    public String getAuthenticatedIdentity() {
+    public Identity getAuthenticatedIdentity() {
         return authenticatedIdentity;
     }
 
-    public void setAuthenticatedIdentity(String authenticatedIdentity) {
+    public void setAuthenticatedIdentity(Identity authenticatedIdentity) {
         this.authenticatedIdentity = authenticatedIdentity;
     }
 
@@ -58,11 +73,11 @@ public class FormSubmission {
         this.password = password;
     }
 
-    public String getEmail() {
+    public String getSubmittedByEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setSubmittedByEmail(String email) {
         this.email = email;
     }
 
@@ -81,17 +96,6 @@ public class FormSubmission {
     public void setValues(List<FormValue> values) {
         this.values = values;
     }
-
-    public List<FormError> getErrors() {
-        return errors;
-    }
-
-    public void setErrors(List<FormError> errors) {
-        this.errors = errors;
-    }
-
-
-    
 
     public void addValue(FormValue value) {
         if (values == null) {

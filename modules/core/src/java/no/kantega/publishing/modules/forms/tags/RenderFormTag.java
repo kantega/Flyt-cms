@@ -1,6 +1,6 @@
 package no.kantega.publishing.modules.forms.tags;
 
-import no.kantega.publishing.modules.forms.model.Form;
+import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.tagext.TagSupport;

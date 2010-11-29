@@ -1,6 +1,23 @@
+/*
+ * Copyright 2010 Kantega AS
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package no.kantega.publishing.modules.forms.tags;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.common.data.Content;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -12,7 +29,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import no.kantega.commons.util.LocaleLabels;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.validate.FormError;
 
 /**
@@ -23,7 +39,6 @@ public class FormTag extends BodyTagSupport {
 
     private String action = null;
     private String errortext = null;
-    private boolean clientvalidation = false;
 
     @Override
     public int doAfterBody() throws JspException {
@@ -40,21 +55,21 @@ public class FormTag extends BodyTagSupport {
 
             hasErrors = (request.getAttribute("hasErrors") != null) ? (Boolean) (request.getAttribute("hasErrors")) : false;
 
-            String root = request.getContextPath() + "/";
-
             FormSubmission formSubmission = (FormSubmission)request.getAttribute("formSubmission");
             if (hasErrors && formSubmission != null) {
                 if (errortext == null || errortext.length() == 0) {
                     errortext = LocaleLabels.getLabel("aksess.formerror.header", locale);
                 }
-                List<FormError> errors = formSubmission.getErrors();
+
+
+                List<FormError> errors = (List<FormError>)request.getAttribute("formErrors");
                 if (errors != null && errors.size() > 0) {
                     html.append("<div id=\"form_Error\" class=\"formErrors\">");
                     html.append(errortext);
                     html.append("<ul>");
                     // Display error messages
                     for (FormError error : errors) {
-                        html.append("<li>" + error.getField() + " " + LocaleLabels.getLabel(error.getMessage(), locale) + "</li>");
+                        html.append("<li>").append(error.getField()).append(" ").append(LocaleLabels.getLabel(error.getMessage(), locale)).append("</li>");
                     }
                     html.append("</ul></div>");
                 }
@@ -93,6 +108,6 @@ public class FormTag extends BodyTagSupport {
 
     @Deprecated
     public void setClientvalidation(boolean clientvalidation) {
-        this.clientvalidation = clientvalidation;
+
     }
 }

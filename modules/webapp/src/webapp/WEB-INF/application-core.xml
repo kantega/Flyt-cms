@@ -156,5 +156,5 @@
 
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 
-    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/> 
+    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>    
 </beans>

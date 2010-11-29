@@ -1,16 +1,17 @@
-package no.kantega.publishing.modules.forms.control;
+package no.kantega.openaksess.forms.database.controller;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.modules.forms.dao.FormSubmissionDao;
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.FormValue;
-import no.kantega.publishing.modules.forms.service.FormService;
+import no.kantega.openaksess.forms.database.dao.FormSubmissionDao;
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormSubmission;
+import no.kantega.publishing.api.forms.model.FormValue;
+import no.kantega.publishing.api.forms.service.FormService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,8 +22,9 @@ import java.util.*;
  *
  */
 public class FormSubmissionsExportExcelView  extends AbstractExcelView {
-
+    @Autowired
     private FormSubmissionDao dao;
+    @Autowired
     private FormService formService;
 
     protected void buildExcelDocument(Map map, HSSFWorkbook hssfWorkbook, HttpServletRequest request, HttpServletResponse response) throws Exception {

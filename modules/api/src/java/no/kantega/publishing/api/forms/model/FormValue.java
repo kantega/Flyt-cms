@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2010 Kantega AS
  *
@@ -14,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package no.kantega.publishing.api.plugin;
 
-import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
-import org.kantega.jexmec.Plugin;
-import org.springframework.web.servlet.HandlerMapping;
+package no.kantega.publishing.api.forms.model;
 
-import java.util.List;
+public interface FormValue {
 
-import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+    public String getName();
 
+    public String[] getValues();
 
-public interface OpenAksessPlugin extends Plugin {
-
-
-    public List<HandlerMapping> getHandlerMappings();
-
-    List<ContentRequestListener> getContentRequestListeners();
-
-    List<FormDeliveryService> getFormDeliveryServices();
+    public String getValuesAsString();
 }

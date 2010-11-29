@@ -180,10 +180,7 @@
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
-                <!-- Forms -->
-                <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop>
-                <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>
-
+                <!-- Rating -->
                 <prop key="/Rating.action">RatingController</prop>
 
                 <!-- Information -->
@@ -728,18 +725,6 @@
         <property name="templateValidator" ref="aksessTemplateValidator"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
-
-    <!-- Forms -->
-    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelController" id="FormSubmissionsExportExcelAction"/>
-    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelView" id="FormSubmissionsExportExcelView">
-        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
-        <property name="formService" ref="aksessContentFormService"/>        
-    </bean>
-    <bean class="no.kantega.publishing.modules.forms.control.DeleteFormSubmissionsAction" id="DeleteFormSubmissionsAction">
-        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
-    </bean>
-
-
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
@@ -795,12 +780,6 @@
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
-    </bean>
-
-    <bean id="viewResolverExcel" class="org.springframework.web.servlet.view.BeanNameViewResolver">
-        <property name="order">
-            <value>0</value>
-        </property>
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>

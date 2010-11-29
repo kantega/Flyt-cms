@@ -1,9 +1,8 @@
 package no.kantega.publishing.modules.forms.util;
 
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.Form;
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.filter.FormSubmissionFillFilter;
-import no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.xmlfilter.FilterPipeline;
@@ -15,11 +14,8 @@ import java.io.StringWriter;
  *
  */
 public class DefaultFormSubmissionBuilder implements FormSubmissionBuilder {
-    FormElementValidatorFactory formElementValidatorFactory;
-
     public FormSubmission buildFormSubmission(Map<String, String[]> values, Form form) {
         FormSubmissionFillFilter filter = new FormSubmissionFillFilter(values, form);
-        filter.setFormElementValidatorFactory(formElementValidatorFactory);
 
         FilterPipeline pipeline = new FilterPipeline();
 
@@ -34,9 +30,5 @@ public class DefaultFormSubmissionBuilder implements FormSubmissionBuilder {
         }
 
         return filter.getFormSubmission();
-    }
-
-    public void setFormElementValidatorFactory(FormElementValidatorFactory formElementValidatorFactory) {
-        this.formElementValidatorFactory = formElementValidatorFactory;
     }
 }

@@ -18,9 +18,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-    <import resource="groovyconsole.xml"/>
-    <import resource="groovyscripts.xml"/>
-    <import resource="databaseformdelivery.xml"/>
-    <import resource="emailformdelivery.xml"/>
+    <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
+        <constructor-arg value="org.kantega.openaksess.forms.emaildelivery"/>
+        <property name="formDeliveryServices">
+            <list>
+                <bean class="no.kantega.openaksess.forms.email.delivery.EmailFormDeliveryService">
+                    <property name="mailTemplate" value="formsubmission.vm"/>
+                </bean>
+            </list>
+        </property>        
+    </bean>
 </beans>

@@ -1,15 +1,12 @@
-package no.kantega.publishing.modules.forms.dao;
+package no.kantega.openaksess.forms.database.dao;
 
 import junit.framework.TestCase;
 
 import javax.sql.DataSource;
 
-import no.kantega.publishing.modules.forms.model.FormSubmissionsSummary;
+import no.kantega.publishing.api.forms.model.DefaultForm;
+import no.kantega.publishing.api.forms.model.*;
 import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.AksessContentForm;
-import no.kantega.publishing.modules.forms.model.FormValue;
-import no.kantega.publishing.common.data.Content;
 
 import java.util.*;
 
@@ -25,7 +22,7 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
 
         FormSubmission output = dao.getFormSubmissionById(1);
 
-        assertEquals("donald@duck.com", output.getEmail());
+        assertEquals("donald@duck.com", output.getSubmittedByEmail());
         assertEquals(3, output.getValues().size());
     }
 
@@ -49,26 +46,25 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
     }
 
     public void testSaveFormSubmission() {
-        Content content = new Content();
-        content.setId(100);
-        content.setTitle("TestForm");
+        DefaultForm form = new DefaultForm();
+        form.setId(100);
+        form.setTitle("TestForm");
 
-        FormSubmission formSubmission = new FormSubmission();
+        DefaultFormSubmission formSubmission = new DefaultFormSubmission();
 
         formSubmission.setFormSubmissionId(1);
-        formSubmission.setForm(new AksessContentForm(content));
-        formSubmission.setAuthenticatedIdentity("donald");
+        formSubmission.setForm(form);
         formSubmission.setSubmissionDate(new Date());
-        formSubmission.setEmail("donald@duck.com");
+        formSubmission.setSubmittedByEmail("donald@duck.com");
         formSubmission.setPassword("dolly");
 
         List<FormValue> values = new ArrayList<FormValue>();
-        FormValue name = new FormValue();
+        DefaultFormValue name = new DefaultFormValue();
         name.setName("name");
         name.setValues(new String[] {"Donald Duck"});
         values.add(name);
 
-        FormValue age = new FormValue();
+        DefaultFormValue age = new DefaultFormValue();
         age.setName("age");
         age.setValues(new String[] {"31"});
         values.add(age);
@@ -94,18 +90,4 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
 
         assertEquals(3, fieldNames.size());        
     }
-
-    public void testGetFormSubmissionsSummaryForAllForms() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
-
-        List<FormSubmissionsSummary> summaries = dao.getFormSubmissionsSummaryForAllForms();
-
-        assertEquals(1, summaries.size());
-
-        assertEquals(4, summaries.get(0).getNoSubmissions());
-    }
-
 }
