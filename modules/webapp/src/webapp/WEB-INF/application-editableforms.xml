@@ -13,10 +13,6 @@
         </property>
     </bean>
 
-    <bean id="aksessDatabaseFormSubmissionDao" class="no.kantega.openaksess.forms.database.dao.DatabaseFormSubmissionDao">
-        <property name="dataSource" ref="aksessDataSource"/>
-    </bean>
-
     <bean id="aksessContentFormService" class="no.kantega.publishing.modules.forms.service.AksessContentFormService"/>
 
     <bean id="aksessFormSubmissionValidator" class="no.kantega.publishing.modules.forms.validate.DefaultFormSubmissionValidator">
