@@ -37,11 +37,18 @@
          * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
          */
         function setContentupdateTrigger() {
-            $("#Contentmain").load(function() {
-                var currentUrl = openaksess.navigate.getCurrentLocation().href;
-                openaksess.common.debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
-                openaksess.content.triggerContentUpdateEvent(currentUrl);
-            });
+            var currentUrl = openaksess.navigate.getCurrentLocation().href;
+
+            function checkUrlUpdate() {
+                var iframeUrl = openaksess.navigate.getCurrentLocation().href;
+                if (iframeUrl != currentUrl) {
+                    currentUrl = iframeUrl;
+                    openaksess.common.debug("setContentupdateTrigger(): contentmain url changed. currentUrl: " + currentUrl);
+                    openaksess.content.triggerContentUpdateEvent(currentUrl);
+                }
+            }
+
+            setInterval(checkUrlUpdate, 200);
         }
 
 

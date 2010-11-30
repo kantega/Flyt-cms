@@ -724,7 +724,6 @@ openaksess.navigate.handleContextMenuClick_shortcut = function (action, href) {
  * Returns the location object for the contentmain iframe.
  */
 openaksess.navigate.getCurrentLocation = function() {
-    openaksess.common.debug("openaksess.content.getCurrentLocation()");
     return document.getElementById("Contentmain").contentWindow.document.location;
 };
 
