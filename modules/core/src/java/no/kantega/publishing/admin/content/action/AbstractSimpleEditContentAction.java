@@ -120,6 +120,10 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         if (redirectUrl != null && redirectUrl.length() > 0) {
             request.setAttribute("redirectUrl", redirectUrl);
         }
+        String draftRedirectUrl = request.getParameter("draftRedirectUrl");
+        if (draftRedirectUrl != null && draftRedirectUrl.length() > 0) {
+            request.setAttribute("draftRedirectUrl", draftRedirectUrl);
+        }
         request.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
         session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
@@ -181,8 +185,11 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     protected ModelAndView postSaveContent(HttpServletRequest request, HttpServletResponse response, Content content, boolean isNew) {
         String url;
         String redirectUrl = request.getParameter("redirectUrl");
+        String draftRedirectUrl = request.getParameter("draftRedirectUrl");
         if (redirectUrl != null && redirectUrl.length() > 0) {
             url = redirectUrl;
+        } else if (content.getStatus() == ContentStatus.DRAFT && draftRedirectUrl != null && draftRedirectUrl.length() > 0) {
+            url = draftRedirectUrl;
         } else {
             if (!content.hasDisplayTemplate()) {
                 ContentManagementService cms = new ContentManagementService(getSecuritySession(request));

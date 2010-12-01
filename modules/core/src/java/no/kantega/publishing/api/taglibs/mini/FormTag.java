@@ -58,6 +58,7 @@ public class FormTag extends BodyTagSupport {
         }
 
         String redirectUrl = request.getParameter("redirectUrl");
+        String draftRedirectUrl = request.getParameter("draftRedirectUrl");
         String cancelUrl = request.getParameter("cancelUrl");
         if (cancelUrl == null) {
             cancelUrl = redirectUrl;
@@ -95,8 +96,11 @@ public class FormTag extends BodyTagSupport {
             out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
             out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
             out.write("    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">");
-            if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
+            if (allowDraft && redirectUrl != null && redirectUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
+            }
+            if (draftRedirectUrl != null && draftRedirectUrl.trim().length() > 0 ) {
+                out.write("    <input type=\"hidden\" name=\"draftRedirectUrl\" value=\"" + draftRedirectUrl + "\">");
             }
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"cancelUrl\" value=\"" + cancelUrl + "\">");
