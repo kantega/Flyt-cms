@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.commons.log.Log;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +108,16 @@ public class NavigatorAction implements Controller {
                 }
             }
             if (startId != -1) {
-                openFoldersList += "," + startId;
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setAssociationId(startId);
+                if (!openFoldersList.contains(Integer.toString(startId))) {
+                    try {
+                        Content startContent = cms.getContent(cid);
+                        openFoldersList += startContent.getAssociation().getPath().replaceAll("/", ",") + startId;
+                    } catch (Exception e) {
+                        Log.error(getClass().getSimpleName(), e, null, null);
+                    }
+                }
             }
         }
 

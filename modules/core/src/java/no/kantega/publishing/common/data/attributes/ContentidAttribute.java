@@ -18,6 +18,8 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -30,7 +32,7 @@ import java.util.Map;
 public class ContentidAttribute extends Attribute {
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
-    protected int startId = -1;
+    protected String startId = "";
 
     public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
@@ -46,16 +48,7 @@ public class ContentidAttribute extends Attribute {
             }
             String startIdS = config.getAttribute("startid");
             if(startIdS != null && startIdS.trim().length() > 0) {
-                try {
-                    startId = Integer.parseInt(startIdS);
-                } catch (NumberFormatException e) {
-                    try {
-                        ContentIdentifier cid = new ContentIdentifier(startIdS);
-                        startId = cid.getAssociationId();
-                    } catch (ContentNotFoundException e1) {
-                        Log.error(this.getClass().getName(), e, null, null);
-                    }
-                }
+                this.startId = startIdS;
             }
         }
     }
@@ -72,8 +65,23 @@ public class ContentidAttribute extends Attribute {
         return maxitems;
     }
 
-    public int getStartId() {
-        return startId;
+    public int getStartId(Content content) {
+        int start = -1;
+
+        if (startId != null && startId.length() > 0) {
+            try {
+                start = Integer.parseInt(startId);
+            } catch (NumberFormatException e) {
+                try {
+                    ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, startId);
+                    start = cid.getAssociationId();
+                } catch (ContentNotFoundException e1) {
+                    Log.error(this.getClass().getName(), e, null, null);
+                }
+            }
+
+        }
+        return start;
     }
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {

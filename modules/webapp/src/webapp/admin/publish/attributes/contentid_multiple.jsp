@@ -29,6 +29,8 @@
     String value = attribute.getValue();
 
     ContentManagementService cms = new ContentManagementService(request);
+
+    Content content = (Content)request.getAttribute("content");
 %>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
@@ -50,7 +52,7 @@
     </select>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, <%=maxitems%>, <%=attribute.getStartId()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
+    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, <%=maxitems%>, <%=attribute.getStartId(content)%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
     <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+2)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
     <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()+3%>"><span class="moveUp"><kantega:label key="aksess.button.moveup"/></span></a>
     <a href="Javascript:openaksess.editcontext.moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+4)%>"><span class="moveDown"><kantega:label key="aksess.button.movedown"/></span></a>

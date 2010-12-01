@@ -49,6 +49,7 @@
         contentname = LocaleLabels.getLabel("aksess.insertlink.internal.hint", Aksess.getDefaultAdminLocale());
     }
 
+    Content content = (Content)request.getAttribute("content");
 %>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
@@ -62,6 +63,6 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId(content)%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
