@@ -573,7 +573,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List<WorkList> getMyContentList() throws SystemException {
+    public List<WorkList<Content>> getMyContentList() throws SystemException {
         if (securitySession != null && securitySession.getUser() != null) {
             return ContentAO.getMyContentList(securitySession.getUser());
         }

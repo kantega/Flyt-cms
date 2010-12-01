@@ -408,22 +408,22 @@ public class ContentAO {
 
     }
 
-    public static List<WorkList> getMyContentList(User user) throws SystemException {
-        List<WorkList> workList = new ArrayList<WorkList>();
+    public static List<WorkList<Content>> getMyContentList(User user) throws SystemException {
+        List<WorkList<Content>> workList = new ArrayList<WorkList<Content>>();
 
-        WorkList draft = new WorkList();
+        WorkList<Content> draft = new WorkList<Content>();
         draft.setDescription("draft");
 
-        WorkList waiting = new WorkList();
+        WorkList<Content> waiting = new WorkList<Content>();
         waiting.setDescription("waiting");
 
-        WorkList rejected = new WorkList();
+        WorkList<Content> rejected = new WorkList<Content>();
         rejected.setDescription("rejected");
 
-        WorkList lastpublished = new WorkList();
+        WorkList<Content> lastpublished = new WorkList<Content>();
         lastpublished.setDescription("lastpublished");
 
-        WorkList remind = new WorkList();
+        WorkList<Content> remind = new WorkList<Content>();
         remind.setDescription("remind");
 
         Connection c = null;

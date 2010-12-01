@@ -16,10 +16,9 @@
 
 package no.kantega.publishing.common.data;
 
-import java.util.List;
 import java.util.ArrayList;
 
-public class WorkList extends ArrayList {
+public class WorkList<T> extends ArrayList<T> {
     private String description = "";
 
     public String getDescription() {
