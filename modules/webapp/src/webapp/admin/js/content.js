@@ -377,13 +377,11 @@ openaksess.content = {
                 details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+contentProperties.ownerperson+'</li>';
                 details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
 
+                var displayTemplate = contentProperties.displayTemplate;
+                if (displayTemplate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
+                }
             }
-
-            var displayTemplate = contentProperties.displayTemplate;
-            if (displayTemplate) {
-                details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
-            }
-
             
             details +="</ul>";
 
