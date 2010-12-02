@@ -546,20 +546,20 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $mainPaneContent = $("#MainPaneContent"),
     mainPaneContentPaddingTop = 0,
     mainPaneContentPaddingBottom = 0;
-    var $mainContentIframe = $("#Maincontent");
+    var $mainContentIframe = $("#Contentmain");
 
-    if ($mainPaneContent) {
-        mainPaneContentPaddingTop = $mainPaneContent.css("paddingTop");
-        mainPaneContentPaddingBottom = $mainPaneContent.css("paddingBottom");
+    if ($mainPaneContent.size() > 0) {
+        mainPaneContentPaddingTop = parseInt($mainPaneContent.css("paddingTop"));
+        mainPaneContentPaddingBottom = parseInt($mainPaneContent.css("paddingBottom"));
     }
 
     var buttonsHeight = 0;
-    if ($buttons && !$buttons.is(":hidden")) {
+    if ($buttons.size() > 0 && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
 
     var contentHintsHeight = 0;
-    if ($contentHints && !$contentHints.is(":hidden")) {
+    if ($contentHints.size() > 0 && !$contentHints.is(":hidden")) {
         contentHintsHeight = $contentHints.height();
     }
 
@@ -577,10 +577,12 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
     $mainPane.height(mainPaneHeight).width(mainPaneWidth);
-    $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
+    if ($mainContentIframe.size() > 0) {
+        $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
+    }
 
-    if ($mainPaneContent) {
-        $mainPaneContent.height(mainPaneHeight-parseInt(mainPaneContentPaddingTop)-parseInt(mainPaneContentPaddingBottom)-statusbarHeight-buttonsHeight);
+    if ($mainPaneContent.size() > 0) {
+        $mainPaneContent.height(mainPaneHeight-mainPaneContentPaddingTop-mainPaneContentPaddingBottom-statusbarHeight-buttonsHeight);
     }
 
 };
