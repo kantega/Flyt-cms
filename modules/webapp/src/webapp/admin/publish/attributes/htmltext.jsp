@@ -36,8 +36,6 @@
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
     Content   content   = (Content)request.getAttribute("content");
     String    fieldName = (String)request.getAttribute("fieldName");
-    int height = attribute.getHeight();
-    int width = attribute.getWidth();
     String value = attribute.getValue();
     HTMLEditorHelper helper = new HTMLEditorHelper();
     value = helper.preEditFilter(value, URLHelper.getRootURL(request));
@@ -101,7 +99,7 @@
 </script>
 
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}; height: ${attribute.height}"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}px; height: ${attribute.height}px"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({
