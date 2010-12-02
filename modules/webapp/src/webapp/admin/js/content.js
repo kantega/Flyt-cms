@@ -83,7 +83,7 @@ openaksess.content = {
                 if (data) {
                     openaksess.content.contentstatus.breadcrumbs(data.path);
                     openaksess.content.contentstatus.brokenLinks(data.links);
-                    openaksess.content.contentstatus.details(data);
+                    openaksess.content.contentstatus.details(data.contentProperties);
                     openaksess.content.contentstatus.associations(data.associations);
                     openaksess.content.contentstatus.enableButtons(data.enabledButtons);
                     openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
@@ -351,38 +351,39 @@ openaksess.content = {
         },
 
 
-        details: function(data) {
-            var content = data.content;
+        details: function(contentProperties) {
             var details = "<h3>" + properties.content.labels.details + "</h3><ul>";
 
-            if (content) {
+            if (contentProperties) {
                 openaksess.common.debug("openaksess.content.contentstatus.details(): binding details icon to click");
 
-                details += '<li><span class="label">' + properties.content.labels.contentTitle + ':</span>&nbsp;'+content.title+'</li>';
-                if (content.alias) {
-                    details += '<li><span class="label">' + properties.content.labels.publishinfoAlias + ':</span>&nbsp;'+content.alias+'</li>';
+                details += '<li><span class="label">' + properties.content.labels.contentTitle + ':</span>&nbsp;'+contentProperties.title+'</li>';
+                if (contentProperties.alias) {
+                    details += '<li><span class="label">' + properties.content.labels.publishinfoAlias + ':</span>&nbsp;'+contentProperties.alias+'</li>';
                 }
-                if (content.lastModified) {
-                    details += '<li><span class="label">' + properties.content.labels.contentLastModified + ':</span>&nbsp;'+content.lastModified + ' ' + properties.content.labels.contentModifiedBy + ' ' + content.modifiedBy + '</li>';
+                if (contentProperties.lastModified) {
+                    details += '<li><span class="label">' + properties.content.labels.contentLastModified + ':</span>&nbsp;'+contentProperties.lastModified + ' ' + properties.content.labels.contentModifiedBy + ' ' + contentProperties.lastModifiedBy + '</li>';
                 }
-                if (content.modifiedBy != content.approvedBy) {
-                    details += '<li><span class="label">' + properties.content.labels.contentApprovedBy + ':</span>&nbsp;'+content.approvedBy + '</li>';
+                if (contentProperties.modifiedBy != contentProperties.approvedBy) {
+                    details += '<li><span class="label">' + properties.content.labels.contentApprovedBy + ':</span>&nbsp;'+contentProperties.approvedBy + '</li>';
                 }
-                if (content.changeFromDate) {
-                    details += '<li><span class="label">' + properties.content.labels.contentChangeFrom + ':</span>&nbsp;'+content.changeFromDate+'</li>';
+                if (contentProperties.changeFromDate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentChangeFrom + ':</span>&nbsp;'+contentProperties.changeFromDate+'</li>';
                 }
-                if (content.expireDate) {
-                    details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+content.expireDate+'</li>';
+                if (contentProperties.expireDate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+contentProperties.expireDate+'</li>';
                 }
-                if (content.ownerperson) {
-                    details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+content.ownerperson+'</li>';
-                }
+
+                details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+contentProperties.ownerperson+'</li>';
+                details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
+
             }
 
-            var displayTemplate = data.displayTemplate;
+            var displayTemplate = contentProperties.displayTemplate;
             if (displayTemplate) {
                 details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
             }
+
             
             details +="</ul>";
 
