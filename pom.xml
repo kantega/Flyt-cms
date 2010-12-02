@@ -245,6 +245,10 @@
         <xml-apis.version>1.3.04</xml-apis.version>
         <jexmec.version>1.25</jexmec.version>
         <jtds.version>1.2.4</jtds.version>
+        <servlet.version>2.5</servlet.version>
+        <jsp.version>2.1</jsp.version>
+        <jstl.version>1.1.2</jstl.version>
+        <hsqldb.version>2.0.0</hsqldb.version>
         <formengine.version>1.0-SNAPSHOT</formengine.version>
     </properties>
 
