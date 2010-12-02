@@ -75,8 +75,11 @@
             var categoryinfo = document.getElementById('categoryinfo');
             var categorydesc = document.getElementById('categorydesc');
 
-            categorydesc.innerHTML = document.getElementById('categoryinfo' + id).innerHTML;
-            categoryinfo.style.display = 'block';
+            var category = document.getElementById('categoryinfo' + id);
+            if (category != null) {
+                categorydesc.innerHTML = document.getElementById('categoryinfo' + id).innerHTML;
+                categoryinfo.style.display = 'block';
+            }
         }
 
         function doSelectTemplate() {

@@ -519,6 +519,9 @@ openaksess.editcontext = function()  {
             if (field.value == '') {
                 field.value = defaultValue;
             }
+        },
+        showHearing : function() {
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.hearing, iframe:true, href: properties.contextPath + "/admin/publish/popups/SaveHearing.action?refresh=" + getRefresh() ,width: 600, height:550});
         }
 
     };

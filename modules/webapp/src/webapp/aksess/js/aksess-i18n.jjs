@@ -21,6 +21,7 @@ properties.editcontext['labels'] = {
     warningElements : '<kantega:label key="aksess.js.advarsel.elementer" escapeJavascript="true"/>',
     adduser : '<kantega:label key="aksess.adduser.title" escapeJavascript="true"/>',
     multimedia : '<kantega:label key="aksess.multimedia.title" escapeJavascript="true"/>',
+    hearing : '<kantega:label key="aksess.hearing.title" escapeJavascript="true"/>',
     addrole : '<kantega:label key="aksess.addrole.title" escapeJavascript="true"/>',
     editablelistValue : '<kantega:label key="aksess.editablelist.value" escapeJavascript="true"/>'
 };

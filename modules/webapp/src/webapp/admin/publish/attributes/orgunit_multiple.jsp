@@ -41,6 +41,7 @@
                 }
             }
         %>
+        </select>
 </div>
 <%
     if (manager != null) {

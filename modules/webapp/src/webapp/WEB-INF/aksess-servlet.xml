@@ -102,7 +102,6 @@
                 <prop key="/admin/publish/ConfirmCopyPaste.action">ConfirmCopyPasteContentAction</prop>
                 <prop key="/admin/publish/CopyPasteContent.action">CopyPasteContentAction</prop>
                 <prop key="/admin/publish/DeleteAttachment.action">DeleteAttachmentAction</prop>
-                <prop key="/admin/publish/SaveHearing.action">SaveHearingAction</prop>
                 <prop key="/admin/publish/DeleteAssociation.action">DeleteAssociationAction</prop>
                 <prop key="/admin/publish/DeleteVersion.action">DeleteVersionAction</prop>
                 <prop key="/admin/publish/EditContent.action">EditContentAction</prop>
@@ -117,6 +116,7 @@
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
                 <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
+
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
@@ -132,6 +132,7 @@
                 <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
                 <prop key="/admin/publish/OrgUnitNavigator.action">orgUnitNavigatorAjaxAction</prop>
                 <prop key="/admin/publish/popups/Lix.action">LixAction</prop>
+                <prop key="/admin/publish/popups/SaveHearing.action">SaveHearingAction</prop>
 
                 <!-- Multimedia naviagator -->
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
@@ -497,20 +498,16 @@
     <bean class="no.kantega.publishing.admin.content.action.DeleteVersionAction" id="DeleteVersionAction"/>
     <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.SaveHearingAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveHearingAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.content.action.SaveHearingAction" id="SaveHearingAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
+        <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingCommentAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.SaveHearingCommentAction</value>
         </property>
         <property name="servletName">
-            <value>SaveHearingAction</value>
+            <value>SaveHearingCommentAction</value>
         </property>
     </bean>
 

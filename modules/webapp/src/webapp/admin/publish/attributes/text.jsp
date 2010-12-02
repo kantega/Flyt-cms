@@ -26,6 +26,7 @@
     String    fieldName = (String)request.getAttribute("fieldName");
 
     String value = attribute.getValue();
+    if (value == null) value = "";
     value = StringHelper.escapeQuotes(value);
 
     int maxLength = attribute.getMaxLength();

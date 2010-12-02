@@ -289,6 +289,14 @@ public abstract class Attribute {
         return mandatory;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
+    }
+
     public void cloneValue(Attribute attribute) {
         setValue(attribute.getValue());
     }

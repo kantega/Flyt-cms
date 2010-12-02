@@ -503,6 +503,10 @@ table.fullWidth {
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
 }
 
+#EditContentButtons input.hearing {
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
+}
+
 
 /************** Buttons **************/
 #Content .buttonBar {

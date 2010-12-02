@@ -85,8 +85,8 @@
             saveContent(<%=ContentStatus.DRAFT%>);
         });
         $("#EditContentButtons input.hearing").click(function(){
-            openaksess.common.debug("publishModesAndButtonsJS.hearing");
-            saveContent(<%=ContentStatus.HEARING%>);
+            openaksess.common.debug("publishModesAndButtonsJS.savedraft");
+            openaksess.editcontext.showHearing();
         });
         $("#EditContentButtons input.cancel").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.cancel");

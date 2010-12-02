@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.content.util.SaveHearingHelper;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.data.Hearing;
 import no.kantega.publishing.common.data.HearingInvitee;
 import no.kantega.publishing.common.data.Content;
@@ -37,132 +40,37 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
 import org.apache.log4j.Logger;
+import org.springframework.web.servlet.ModelAndView;
 
 
-public class SaveHearingAction extends HttpServlet  {
+public class SaveHearingAction extends AdminController {
+    private String confirmView;
+    private String formView;
 
-    private Logger log = Logger.getLogger(getClass());
-    public static final String HEARING_KEY = SaveHearingAction.class.getName() + ".HearingKey";
-    public static final String HEARING_INVITEES_KEY = SaveHearingAction.class.getName() +".HearingInviteeKey";
+    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Content content = (Content)request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Map<String, Object> model = new HashMap<String, Object>();
 
-        Hearing hearing = getHearing();
-        List invitees = new ArrayList();
-
-        Map map = new HashMap();
-        ValidationErrors errors = bind(hearing, invitees, request, map);
-
-        if(errors.getLength() == 0) {
-            validate(hearing, invitees, errors, request);
-        }
-        if(errors.getLength() > 0) {
-            Iterator i = map.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String) i.next();
-                String value = (String)map.get(key);
-                request.setAttribute(key, value);
+        if (request.getMethod().equalsIgnoreCase("POST")) {
+            SaveHearingHelper helper = new SaveHearingHelper(request, content);
+            ValidationErrors errors = new ValidationErrors();
+            helper.getHttpParameters(errors);
+            if (errors.getLength() == 0) {
+                // Save
+                return new ModelAndView(confirmView);
             }
-            request.setAttribute("errors", errors);
-            request.getRequestDispatcher("hearing_body.jsp").forward(request, response);
-        } else {
-            try {
-                saveHearing(hearing, invitees, request);
-            } catch (SystemException e) {
-                throw new ServletException(e);
-            }
-            request.getRequestDispatcher("hearing_saved.jsp").forward(request, response);
+            model.put("errors", errors);
         }
 
-
-
+        return new ModelAndView(formView, model);
     }
 
-    private void saveHearing(Hearing hearing, List invitees, HttpServletRequest request) throws SystemException {
-        request.getSession().setAttribute(HEARING_KEY, hearing);
-        request.getSession().setAttribute(HEARING_INVITEES_KEY, invitees);
+    public void setConfirmView(String confirmView) {
+        this.confirmView = confirmView;
     }
 
-    private void validate(Hearing hearing, List invitees, ValidationErrors errors, HttpServletRequest request) {
-        if(hearing.getDeadLine().getTime() < new Date().getTime()) {
-            errors.add("deadline", "Høringsfrist må være i fram i tid");
-        }
-        if(invitees.size() == 0) {
-            errors.add("orgunits", "Høringsinstanser er ikke angitt");
-        }
-
-        Content content = (Content)request.getSession().getAttribute("currentContent");
-        if(content.getChangeDescription() == null || content.getChangeDescription().trim().length() == 0) {
-            errors.add("description", "Endringsbeskrivelse må være fylt ut");
-        }
-
-    }
-
-    private ValidationErrors bind(Hearing hearing, List invitees, HttpServletRequest request, Map map) {
-
-        ValidationErrors errors = new ValidationErrors();
-
-        RequestParameters param = new RequestParameters(request);
-
-        String deadlineString = param.getString("deadline");
-        if(deadlineString == null || deadlineString.equals("")) {
-            errors.add("deadline", "aksess.feil.hearing.deadline.missing");
-        } else {
-            try {
-                Date date = new SimpleDateFormat(Aksess.getDefaultDateFormat()).parse(deadlineString);
-                Calendar calendar = new GregorianCalendar();
-                calendar.setTime(date);
-                calendar.set(Calendar.HOUR_OF_DAY, 23);
-                calendar.set(Calendar.MINUTE, 59);
-                hearing.setDeadLine(calendar.getTime());
-            } catch (ParseException e) {
-                Map<String, Object> objects = new HashMap<String, Object>();
-                objects.put("dateFormat", Aksess.getDefaultDateFormat());
-                errors.add("deadline", "aksess.feil.hearing.deadline.invalid", objects);
-            }
-        }
-        map.put("deadline", deadlineString);
-
-        String description  = param.getString("description");
-
-        if(description == null) {
-            errors.add("description", "aksess.feil.hearing.description.missing");
-        }
-        else {
-             Content content = (Content)request.getSession().getAttribute("currentContent");
-            content.setChangeDescription(description);
-        }
-        map.put("description", description);
-
-        String[] orgunits = param.getString("orgunits").split(",");
-        map.put("orgunits", request.getParameter("orgunits"));
-
-        for (int i = 0; i < orgunits.length; i++) {
-            String orgunit = orgunits[i];
-            if(!orgunit.equals("")) {
-                HearingInvitee invitee = new HearingInvitee();
-                invitee.setType(HearingInvitee.TYPE_ORGUNIT);
-                invitee.setReference(orgunit);
-                invitees.add(invitee);
-            }
-        }
-
-        String[]  users = param.getString("users").split(",");
-        map.put("users", param.getString("users"));
-        for (int i = 0; i < users.length; i++) {
-            String user = users[i];
-            if(!user.equals("")) {
-                HearingInvitee invitee = new HearingInvitee();
-                invitee.setType(HearingInvitee.TYPE_PERSON);
-                invitee.setReference(user);
-                invitees.add(invitee);
-            }
-        }
-
-        return errors;
-    }
-
-    private Hearing getHearing() {
-        return new Hearing();
+    public void setFormView(String formView) {
+        this.formView = formView;
     }
 }

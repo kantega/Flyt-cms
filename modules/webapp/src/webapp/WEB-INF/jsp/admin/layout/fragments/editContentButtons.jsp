@@ -28,7 +28,7 @@
 </c:choose>
 <span class="barButton"><input type="button" class="savedraft" value="<kantega:label key="aksess.button.savedraft"/>" accesskey="K"></span>
 <c:if test="${hearingEnabled}">
-    <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hoering"/>"></span>
+    <span class="barButton"><input type="button" class="hearing" value="<kantega:label key="aksess.button.hearing"/>"></span>
 </c:if>
 <span class="barButton"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>" accesskey="A"></span>
 

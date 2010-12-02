@@ -296,6 +296,16 @@ public class ContentManagementService {
         boolean isNewContent = content.isNew();
         Content c = ContentAO.checkInContent(content, newStatus);
 
+        if (c.getStatus() == ContentStatus.HEARING) {
+            Hearing hearing = content.getHearing();
+            hearing.setContentVersionId(content.getVersionId());
+            int hearingId = HearingAO.saveOrUpdate(hearing);
+            for (HearingInvitee invitee : hearing.getInvitees()) {
+                invitee.setHearingId(hearingId);
+                HearingAO.saveOrUpdate(invitee);
+            }
+        }
+
         ContentListenerUtil.getContentNotifier().contentSaved(new ContentEvent().setContent(c));
         // New content created
         if (isNewContent) {
