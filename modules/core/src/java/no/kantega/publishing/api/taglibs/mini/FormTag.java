@@ -49,6 +49,8 @@ public class FormTag extends BodyTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         Content currentEditContent = (Content) request.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
+        Boolean hearingEnabled = (Boolean)request.getAttribute("hearingEnabled");
+
         SecuritySession securitySession = SecuritySession.getInstance(request);
         boolean canApprove = securitySession.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
         int contentStatus = (canApprove)? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
@@ -113,6 +115,10 @@ public class FormTag extends BodyTagSupport {
             if (allowDraft) {
                 out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"saveContent(" + ContentStatus.DRAFT + ")\">");
             }
+            if (hearingEnabled != null && hearingEnabled) {
+                String url = "openaksess.common.modalWindow.open({title:'" + LocaleLabels.getLabel("aksess.hearing.title", locale) + "', iframe:true, href: '" + request.getContextPath() + "/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});";
+                out.write("    <input class=\"editContentButton hearing\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.hearing", locale)+"\" onclick=\"" + url + "\">");
+            }            
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 cancelAction = cancelAction+"?redirectUrl="+cancelUrl;

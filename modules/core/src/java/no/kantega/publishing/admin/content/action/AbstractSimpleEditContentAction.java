@@ -13,9 +13,11 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
@@ -130,6 +132,12 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         Configuration config = Aksess.getConfiguration();
         Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
         request.setAttribute("miniAksessMediaArchive", allowArchive);
+
+        ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
+        if (contentTemplate.isHearingEnabled() && content.getStatus() != ContentStatus.HEARING) {
+            request.setAttribute("hearingEnabled", Boolean.TRUE);
+        }
+
 
         addCustomRequestAttributes(request, content);
 

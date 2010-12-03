@@ -189,15 +189,20 @@ public class ContentManagementService {
     }
 
     private void assertCanView(Content c, boolean adminMode, SecuritySession securitySession) throws NotAuthorizedException, SystemException {
+        String userId = null;
+        if (securitySession.isLoggedIn()) {
+            userId = securitySession.getUser().getId();
+        }
+
         if (!securitySession.isAuthorized(c, Privilege.VIEW_CONTENT)) {
             throw new NotAuthorizedException("User not authorized to view: " + c.getId(), SOURCE);
         }
 
-        if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode) {
+        if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode && !c.getModifiedBy().equals(userId)) {
             throw new NotAuthorizedException("User is neigther in admin mode or hearing instance", SOURCE);
         }
 
-        if (c.getStatus() == ContentStatus.DRAFT && !adminMode) {
+        if (c.getStatus() == ContentStatus.DRAFT && !adminMode && !c.getModifiedBy().equals(userId)) {
             throw new NotAuthorizedException("Object is draft, must view in admin mode: " + c.getId(), SOURCE);
         }
     }

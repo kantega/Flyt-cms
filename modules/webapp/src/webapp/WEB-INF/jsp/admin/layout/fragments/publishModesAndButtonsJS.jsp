@@ -86,7 +86,7 @@
         });
         $("#EditContentButtons input.hearing").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");
-            openaksess.editcontext.showHearing();
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.hearing.title"/>', iframe:true, href: '${pageContext.request.contextPath}/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});
         });
         $("#EditContentButtons input.cancel").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.cancel");
