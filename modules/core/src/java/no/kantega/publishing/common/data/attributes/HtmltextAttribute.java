@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
@@ -37,7 +38,15 @@ public class HtmltextAttribute extends TextAttribute {
     private String css = "editor.css";
 
     protected int height  = 350;
-    protected int width   = 600;
+    protected int width;
+
+    public HtmltextAttribute() {
+        try {
+            width = Aksess.getConfiguration().getInt("editor.default.width", 600);
+        } catch (ConfigurationException e) {
+            width = 600;
+        }
+    }
 
     public String getRenderer() {
         return "htmltext";
