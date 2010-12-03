@@ -373,9 +373,12 @@ openaksess.content = {
                 if (contentProperties.expireDate) {
                     details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+contentProperties.expireDate+'</li>';
                 }
-
-                details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+contentProperties.ownerperson+'</li>';
-                details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
+                if (contentProperties.ownerperson) {
+                    details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+contentProperties.ownerperson+'</li>';
+                }
+                if (contentProperties.owner) {
+                    details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
+                }                                
 
                 var displayTemplate = contentProperties.displayTemplate;
                 if (displayTemplate) {
