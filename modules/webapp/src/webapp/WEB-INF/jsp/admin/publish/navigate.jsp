@@ -37,7 +37,7 @@
          * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
          */
         function setContentupdateTrigger() {
-            var currentUrl = openaksess.navigate.getCurrentLocation().href;
+            var currentUrl = "";
 
             function checkUrlUpdate() {
                 var iframeUrl = openaksess.navigate.getCurrentLocation().href;
