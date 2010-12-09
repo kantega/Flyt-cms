@@ -72,6 +72,11 @@
             <version>${pom.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${springframework.version}</version>
+        </dependency>                                
 
         <dependency>
             <groupId>ognl</groupId>
@@ -102,6 +107,7 @@
             <version>${codec.version}</version>
         </dependency>
 
+        
         <!-- Is this one really needed?
         Added by Anders when upgrading to Spring 2.5.5 because he hit a runtime error.
         -->

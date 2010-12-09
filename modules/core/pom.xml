@@ -339,10 +339,6 @@
                     <artifactId>cglib-full</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>javax.servlet</groupId>
                     <artifactId>servlet-api</artifactId>
                 </exclusion>
