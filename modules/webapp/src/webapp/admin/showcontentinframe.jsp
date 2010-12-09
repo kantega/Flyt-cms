@@ -31,7 +31,7 @@
             if (url.charAt(0) == '/') {
                 url = Aksess.getContextPath() + url;
             } else if(Aksess.getConfiguration().getString("links.direct") != null && Aksess.getConfiguration().getString("links.direct").equals("false")){
-                url = "admin/showcontentinframelink.jsp?type=" + type + "&url=" + url;
+                url =  Aksess.getContextPath() + "/admin/showcontentinframelink.jsp?type=" + type + "&url=" + url;
             } else {
                 url = content.getLocation();
             }
@@ -39,7 +39,7 @@
             if (content.getLocation() != null) {
                 url = Aksess.getContextPath() + "/attachment.ap?id=" + content.getLocation();
                 if(Aksess.getConfiguration().getString("files.direct") != null && Aksess.getConfiguration().getString("files.direct").equals("false")){
-                    url = "admin/showcontentinframelink.jsp?type=" + type + "&url=" + url;
+                    url = Aksess.getContextPath() + "/admin/showcontentinframelink.jsp?type=" + type + "&url=" + url;
                 }
             }
         } else if (type == ContentType.FORM) {
