@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.jobs.exec;
 
+import no.kantega.commons.log.Log;
 import no.kantega.search.index.IndexManager;
 import no.kantega.publishing.search.index.jobs.ExecWhileClosedJob;
 
@@ -23,8 +24,15 @@ public class AddExecCommandJob {
 
     private IndexManager indexManager;
     private String command;
+    private boolean enabled = true;
 
     public void execute() {
+
+        if (!enabled){
+            Log.info(this.getClass().getSimpleName(), "This job is disabled though config: "+command);
+            return;
+        }
+
         ExecWhileClosedJob job = new ExecWhileClosedJob();
         job.setCommand(command);
         indexManager.addIndexJob(job);
@@ -36,5 +44,9 @@ public class AddExecCommandJob {
 
     public void setCommand(String command) {
         this.command = command;
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
     }
 }

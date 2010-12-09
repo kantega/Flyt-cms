@@ -32,8 +32,15 @@ public class XMLImportJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.XMLImportJob";
     private String id  = null;
     private String url = null;
+    private boolean enabled = true;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
+        
+         if (!enabled){
+            Log.info(this.getClass().getSimpleName(), "This job is disabled though config: "+id+"/"+url);
+            return;
+        }
+
         if (id == null || url == null) {
             Log.error(SOURCE, "Manglende parameter id eller url", null, null);
             throw new JobExecutionException();
@@ -60,6 +67,10 @@ public class XMLImportJob  extends QuartzJobBean {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setEnabled(boolean enabled){
+        this.enabled = enabled;
     }
 
 }
