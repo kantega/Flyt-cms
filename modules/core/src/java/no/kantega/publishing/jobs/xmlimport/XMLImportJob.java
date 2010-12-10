@@ -37,7 +37,7 @@ public class XMLImportJob  extends QuartzJobBean {
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
         
-         if (Aksess.getServerType() == ServerType.SLAVE) {
+        if (Aksess.getServerType() == ServerType.SLAVE) {
             Log.info(SOURCE, "Job is disabled for server type slave", null, null);
             return;
         }
