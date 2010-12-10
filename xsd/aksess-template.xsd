@@ -108,6 +108,7 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="startid" type="xs:string"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="helptext" type="xs:string"/>

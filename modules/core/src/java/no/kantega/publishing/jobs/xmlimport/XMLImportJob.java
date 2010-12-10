@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.jobs.xmlimport;
 
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.ServerType;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.quartz.JobExecutionException;
 import org.w3c.dom.Document;
@@ -32,12 +34,11 @@ public class XMLImportJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.XMLImportJob";
     private String id  = null;
     private String url = null;
-    private boolean enabled = true;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
         
-         if (!enabled){
-            Log.info(this.getClass().getSimpleName(), "This job is disabled though config: "+id+"/"+url);
+         if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
             return;
         }
 
@@ -67,10 +68,6 @@ public class XMLImportJob  extends QuartzJobBean {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public void setEnabled(boolean enabled){
-        this.enabled = enabled;
     }
 
 }
