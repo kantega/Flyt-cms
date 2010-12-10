@@ -214,7 +214,7 @@
     <fieldset>
         <legend><kantega:label key="aksess.publishinfo.otherproperties"/></legend>
         <div class="row">
-            <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
+            <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
             <div class="clearing"></div>
         </div>
         <c:if test="${isDeveloper}">
