@@ -1,6 +1,7 @@
 <%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page buffer="none" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -119,6 +120,18 @@
                 <input type="hidden" name="insert" value="false">
                 <input type="hidden" id="MaxWidth" name="maxWidth" value="-1">
                 </c:if>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <legend><kantega:label key="aksess.multimedia.metadata" /></legend>
+                        <c:if test="${media.height > 0 && media.width > 0}">
+                            <kantega:label key="aksess.multimedia.size" />: ${media.width}x${media.height} px<br />
+                        </c:if>
+                        <kantega:label key="aksess.multimedia.filetype" />: ${media.fileType}<br />
+                        <%--<kantega:label key="aksess.multimedia.filename" />: ${media.filename}<br />--%>
+                        <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br />
+                        <kantega:label key="aksess.multimedia.lastmodified" />: <admin:formatdate date="${media.lastModified}" /> (<kantega:label key="aksess.multimedia.lastmodified.by" /> "${media.modifiedBy}")
+                    </fieldset>
+                </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.medianame"/></legend>

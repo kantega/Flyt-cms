@@ -75,14 +75,16 @@
                     <div class="name">${media.name}</div>
                     <div class="details">
                         <c:choose>
-                            <c:when test="${media.height > 0 &&media.width > 0}">
-                                <kantega:label key="aksess.multimedia.size"/> ${media.width}x${media.height}<br>
+                            <c:when test="${media.height > 0 && media.width > 0}">
+                                <kantega:label key="aksess.multimedia.size"/>: ${media.width}x${media.height} px<br>
                             </c:when>
                             <c:otherwise>
                                 ${media.fileType}<br>
                             </c:otherwise>
                         </c:choose>
-                        <kantega:label key="aksess.multimedia.lastmodified"/> <admin:formatdate date="${media.lastModified}"/>
+                        <kantega:label key="aksess.multimedia.filename" />: <aksess:abbreviate maxsize="15">${media.filename}</aksess:abbreviate><br />
+                        <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br />
+                        <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/>
                     </div>
                 </div>
             </div>
