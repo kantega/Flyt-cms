@@ -354,7 +354,7 @@ public class EditContentHelper {
             }
         }
         if (content.getContentTemplateId() > 0) {
-            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
+            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
             }
