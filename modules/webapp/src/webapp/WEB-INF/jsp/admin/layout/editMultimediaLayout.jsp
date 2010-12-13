@@ -127,6 +127,7 @@
                             <kantega:label key="aksess.multimedia.size" />: ${media.width}x${media.height} pxl<br />
                         </c:if>
                         <kantega:label key="aksess.multimedia.filetype" />: ${media.fileType}<br />
+                        <kantega:label key="aksess.multimedia.filename" />: ${media.filename}<br />
                         <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br />
                         <kantega:label key="aksess.multimedia.lastmodified" />: <admin:formatdate date="${media.lastModified}" /> (<kantega:label key="aksess.multimedia.lastmodified.by" /> "${media.modifiedBy}")
                     </fieldset>
