@@ -21,6 +21,8 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.ValidationErrors;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,5 +50,17 @@ public class NumberAttribute extends Attribute {
     @Override
     public String getRenderer() {
         return "number";
+    }
+
+    public String getValue(String format) {
+        if (value == null) {
+            return "";
+        }
+        if (format == null || format.length() == 0) {
+            return getValue();
+        }
+        
+        NumberFormat formatter = new DecimalFormat("000000");
+        return formatter.format(Integer.parseInt(value));
     }
 }
