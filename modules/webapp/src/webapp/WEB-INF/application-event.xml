@@ -30,6 +30,9 @@
                 <bean class="no.kantega.publishing.jobs.contentstate.RemoveFromLinkCheckerListener"/>
                 <bean class="no.kantega.publishing.jobs.contentstate.DeleteIfExpiredListener"/>
                 <bean class="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener"/>
+                <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator">
+                    <property name="cacheManager" ref="cacheManager"/>
+                </bean>
             </list>
         </property>
     </bean>

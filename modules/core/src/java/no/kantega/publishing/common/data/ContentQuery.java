@@ -83,6 +83,30 @@ public class ContentQuery {
     }
 
     public PreparedStatement getPreparedStatement(Connection c) throws SQLException {
+
+        QueryWithParameters qp = getQueryWithParameters();
+
+        String query = qp.getQuery();
+        List<Object> parameters= qp.getParams();
+
+        //Log.debug(SOURCE, "Query:" + query, null, null);
+        PreparedStatement st = c.prepareStatement(query);
+        for (int i = 0; i < parameters.size(); i++) {
+            Object o = parameters.get(i);
+            //Log.debug(SOURCE, "Parameter:" + (i+1) + ":" + o, null, null);
+            if (o instanceof Date) {
+                Date d = (Date)o;
+                st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
+            } else {
+                st.setObject(i + 1, o);
+            }
+        }
+
+        return st;
+
+    }
+
+    public QueryWithParameters getQueryWithParameters() {
         boolean useSqlSort = useSqlSort();
 
         List parameters = new ArrayList();
@@ -272,7 +296,7 @@ public class ContentQuery {
         if (expireDateTo != null) {
             query.append(" and content.ExpireDate <= ?");
             parameters.add(expireDateTo);
-            showExpired = true; 
+            showExpired = true;
         }
 
         // Fetch archived pages if specified
@@ -388,7 +412,7 @@ public class ContentQuery {
             parameters.add(new Integer(topicType.getTopicMapId()));
             parameters.add(topicType.getId());
         }
-        
+
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
@@ -427,30 +451,38 @@ public class ContentQuery {
         if (attributes != null) {
             try {
                 // M� gj�res tungvint siden MySQL 4.0 ikke st�tter subqueryes
-                PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
-                for (int i = 0; i < attributes.size(); i++) {
-                    Attribute a = (Attribute)attributes.get(i);
-                    st.setString(1, a.getName());
-                    st.setString(2, a.getValue());
+                Connection c = null;
+                try {
+                    c = dbConnectionFactory.getConnection();
+                    PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+                    for (int i = 0; i < attributes.size(); i++) {
+                        Attribute a = (Attribute)attributes.get(i);
+                        st.setString(1, a.getName());
+                        st.setString(2, a.getValue());
 
-                    int noFound = 0;
-                    ResultSet rs = st.executeQuery();
-                    query.append(" and content.ContentId in (");
-                    while(rs.next()) {
-                        if (noFound > 0) {
-                            query.append(",");
+                        int noFound = 0;
+                        ResultSet rs = st.executeQuery();
+                        query.append(" and content.ContentId in (");
+                        while(rs.next()) {
+                            if (noFound > 0) {
+                                query.append(",");
+                            }
+                            int id = rs.getInt("ContentId");
+                            query.append("?");
+                            parameters.add(new Integer(id));
+                            noFound++;
                         }
-                        int id = rs.getInt("ContentId");
-                        query.append("?");
-                        parameters.add(new Integer(id));
-                        noFound++;
+                        query.append(")");
+                        if (noFound == 0) {
+                            return null;
+                        }
                     }
-                    query.append(")");
-                    if (noFound == 0) {
-                        return null;
+                    st.close();
+                } finally {
+                    if(c != null) {
+                        c.close();
                     }
                 }
-                st.close();
             } catch (SQLException e) {
                 Log.error(SOURCE, e, null, null);
             }
@@ -467,21 +499,7 @@ public class ContentQuery {
             query.append(" limit ").append(maxRecords + offset);
         }
 
-        //Log.debug(SOURCE, "Query:" + query, null, null);
-        PreparedStatement st = c.prepareStatement(query.toString());
-        for (int i = 0; i < parameters.size(); i++) {
-            Object o = parameters.get(i);
-            //Log.debug(SOURCE, "Parameter:" + (i+1) + ":" + o, null, null);
-            if (o instanceof Date) {
-                Date d = (Date)o;
-                st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
-            } else {
-                st.setObject(i + 1, o);
-            }
-        }
-
-        return st;
-
+        return new QueryWithParameters(query.toString(), parameters);
     }
 
 
@@ -764,4 +782,49 @@ public class ContentQuery {
     public int getOffset() {
         return offset;
     }
+
+    /**
+     * Class representing an instance of a query, that is the query string and the parameters to be set.
+     */
+    public class QueryWithParameters {
+        private final String query;
+        private final List<Object> params;
+
+        QueryWithParameters(String query, List<Object> params) {
+            this.query = query;
+            this.params = params;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public List<Object> getParams() {
+            return params;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            QueryWithParameters that = (QueryWithParameters) o;
+
+            if (!params.equals(that.params)) return false;
+            if (!query.equals(that.query)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = query.hashCode();
+            result = 31 * result + params.hashCode();
+            return result;
+        }
+    }
+
+
+
+
 }

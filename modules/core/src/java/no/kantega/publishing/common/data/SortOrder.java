@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 
 public class SortOrder {
@@ -89,5 +88,27 @@ public class SortOrder {
 
     public boolean sortDescending() {
         return descending;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SortOrder sortOrder = (SortOrder) o;
+
+        if (descending != sortOrder.descending) return false;
+        if (sort1 != null ? !sort1.equals(sortOrder.sort1) : sortOrder.sort1 != null) return false;
+        if (sort2 != null ? !sort2.equals(sortOrder.sort2) : sortOrder.sort2 != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = sort1 != null ? sort1.hashCode() : 0;
+        result = 31 * result + (sort2 != null ? sort2.hashCode() : 0);
+        result = 31 * result + (descending ? 1 : 0);
+        return result;
     }
 }

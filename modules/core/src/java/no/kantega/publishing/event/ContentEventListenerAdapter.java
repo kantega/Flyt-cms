@@ -77,4 +77,8 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
     public void attachmentUpdated(ContentEvent event) {
 
     }
+
+    public void contentStatusChanged(ContentEvent contentEvent) {
+        
+    }
 }

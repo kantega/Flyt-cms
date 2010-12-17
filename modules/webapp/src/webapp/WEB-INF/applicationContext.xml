@@ -25,8 +25,22 @@
     <import resource="application-security.xml"/>
     <import resource="application-search.xml"/>
     <import resource="application-event.xml"/>
-    <import resource="application-editableforms.xml"/>    
+    <import resource="application-editableforms.xml"/>
+
+    <bean class="no.kantega.publishing.spring.ConditionalResourceImporter">
+        <property name="propertyName" value="server.type"/>
+        <property name="propertyValue" value="SLAVE"/>
+        <property name="resourceLocation" value="/WEB-INF/application-slave.xml"/>
+    </bean>
+
+
+    <bean class="no.kantega.publishing.spring.ConditionalResourceImporter">
+        <property name="propertyName" value="server.type"/>
+        <property name="propertyValue" value="MASTER"/>
+        <property name="resourceLocation" value="/WEB-INF/application-master.xml"/>
+    </bean>
+
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
     <bean class="no.kantega.publishing.spring.RootContext"/>
-    
+
 </beans>

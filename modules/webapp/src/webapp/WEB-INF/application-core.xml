@@ -155,4 +155,10 @@
     </bean>
 
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
+
+    <bean id="cacheManager" class="no.kantega.publishing.cache.CacheManagerFactory"/>
+
+    <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 </beans>

@@ -100,4 +100,10 @@ public interface ContentEventListener {
      * @param event - event.getAttachment contains attachment
      */
     public void attachmentUpdated(ContentEvent event);
+
+    /**
+     * Called when a content status has changed
+     * @param contentEvent
+     */
+    public void contentStatusChanged(ContentEvent contentEvent);
 }

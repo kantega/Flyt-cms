@@ -16,18 +16,16 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 
 /**
@@ -35,8 +33,6 @@ import no.kantega.publishing.security.SecuritySession;
  */
 public class ContentStateChangeJob  {
     private static String SOURCE = "ContentStateChangeJob";
-
-    private ContentEventListener contentEventNotifier;
 
     public void execute() {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
@@ -53,8 +49,8 @@ public class ContentStateChangeJob  {
                     if (content.getExpireAction() == ExpireAction.ARCHIVE) {
                         newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
                     }
-                    ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
-                    contentEventNotifier.contentExpired(new ContentEvent().setContent(content));
+                    cms.setContentVisibilityStatus(content, newVisibilityStatus);
+
                 }
             }
             Log.info(SOURCE, "Looking for content that needs activation", null, null);
@@ -64,34 +60,21 @@ public class ContentStateChangeJob  {
                 cid.setContentId(i);
                 Content content = ContentAO.getContent(cid, true);
                 if (content != null) {
-                    boolean activated = false;
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
                         Log.debug(SOURCE, content.getTitle() + " page was made visible due to publish date", null, null);
-                        ContentAO.setContentVisibilityStatus(content.getId(), ContentVisibilityStatus.ACTIVE);
-                        activated = true;
+                        cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE);
                     } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
                         Log.debug(SOURCE, content.getTitle() + " new version was activated due to change from date", null, null);
                         cms.setContentStatus(cid, ContentStatus.PUBLISHED, "");
-                        activated = true;                        
-                    }
-                    if (activated) {
-                        contentEventNotifier.contentActivated(new ContentEvent().setContent(content));
-                        if (content.getStatus() == ContentStatus.PUBLISHED) {
-                            contentEventNotifier.newContentPublished(new ContentEvent().setContent(content));
-                        }
                     }
                 }
             }
 
         } catch (SystemException e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         } catch (NotAuthorizedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            Log.error(SOURCE, e);
         }
 
-    }
-
-    public void setContentEventNotifier(ContentEventListener contentEventNotifier) {
-        this.contentEventNotifier = contentEventNotifier;
     }
 }

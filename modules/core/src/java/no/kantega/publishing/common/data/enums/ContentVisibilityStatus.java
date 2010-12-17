@@ -16,9 +16,23 @@
 
 package no.kantega.publishing.common.data.enums;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ContentVisibilityStatus {
     public static final int WAITING = 0;
     public static final int ACTIVE  = 10;
     public static final int ARCHIVED  = 15;
     public static final int EXPIRED = 20;
+    private static Map<Integer, String> names = new HashMap<Integer, String>();
+    static {
+        names.put(WAITING, "WAITING");
+        names.put(ACTIVE, "ACTIVE");
+        names.put(ARCHIVED, "ARCHIVED");
+        names.put(EXPIRED, "EXPIRED");
+    }
+
+    public static String getName(int status) {
+        return names.get(status);
+    }
 }
