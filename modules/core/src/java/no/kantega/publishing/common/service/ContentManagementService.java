@@ -983,6 +983,7 @@ public class ContentManagementService {
      */
     public void setAssociationsPriority(List<Association> associations) throws SystemException {
         AssociationAO.setAssociationsPriority(associations);
+        ContentListenerUtil.getContentNotifier().setAssociationsPriority(new ContentEvent());
     }
 
     /**
@@ -1007,6 +1008,7 @@ public class ContentManagementService {
      */
     public void copyAssociations(Association source, Association target, AssociationCategory category, boolean copyChildren) throws SystemException {
         AssociationAO.copyAssociations(source, target, category, copyChildren);
+        ContentListenerUtil.getContentNotifier().associationCopied(new ContentEvent().setAssociation(source));
     }
 
 
@@ -1018,6 +1020,7 @@ public class ContentManagementService {
      */
     public void addAssociation(Association association) throws SystemException {
         AssociationAO.addAssociation(association);
+        ContentListenerUtil.getContentNotifier().associationAdded(new ContentEvent().setAssociation(association));
     }
 
 

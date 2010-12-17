@@ -21,6 +21,26 @@ public class CacheExpirator extends ContentEventListenerAdapter {
     }
 
     @Override
+    public void associationCopied(ContentEvent event) {
+        // Pages could have been copied, safest just to flush everything.
+        removeAllContent();
+        removeAllContentListsAndSiteMaps();
+    }
+
+    @Override
+    public void associationAdded(ContentEvent event) {
+        // Pages could have been copied, safest just to flush everything.
+        removeAllContent();
+        removeAllContentListsAndSiteMaps();
+    }
+
+    @Override
+    public void setAssociationsPriority(ContentEvent contentEvent) {
+        // Pages reordered, all lists and sitemaps should be flushed
+        removeAllContentListsAndSiteMaps();
+    }
+
+    @Override
     public void contentStatusChanged(ContentEvent event) {
         removeContentFromCache(event);
     }
@@ -58,8 +78,6 @@ public class CacheExpirator extends ContentEventListenerAdapter {
             contentCache.remove(key);
         }
         removeAllContentListsAndSiteMaps();
-
-
     }
 
     private void removeAllContentListsAndSiteMaps() {

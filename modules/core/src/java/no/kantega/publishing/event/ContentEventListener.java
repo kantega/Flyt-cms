@@ -38,11 +38,32 @@ public interface ContentEventListener {
      * @param event - Replace objects in event.getModel() to override default parameters for the copy dialoguebox
      */
     public void beforeConfirmCopyPasteContent(ContentEvent event);
+
     /**
      * Called after a page (content) is moved
      * @param event - event.getAssociation contains association which was updated
      */
     public void associationUpdated(ContentEvent event);
+
+    /**
+     * Called after a association is copied - e.g content is crosspublished
+     * @param event - event.getAssociation contains association which was crosspublished
+     */
+    void associationCopied(ContentEvent event);
+
+    /**
+     * Called after a association is added to a page - eg shortcut created
+     * @param event - event.getAssociation contains association which was added
+     */
+    void associationAdded(ContentEvent event);
+
+    /**
+     * Called when priority for a list of associations is updated
+     * @param contentEvent - contains nothing
+     */
+    void setAssociationsPriority(ContentEvent contentEvent);
+
+
     /**
      * Called when content is created before it is edited
      * @param event - event.getContent contains newly created page (content)

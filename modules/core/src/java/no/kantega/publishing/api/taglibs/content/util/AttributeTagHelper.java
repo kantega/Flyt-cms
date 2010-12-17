@@ -28,10 +28,7 @@ import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
-import no.kantega.publishing.common.data.attributes.MediaAttribute;
-import no.kantega.publishing.common.data.attributes.TextAttribute;
+import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.Language;
@@ -222,9 +219,19 @@ public final class AttributeTagHelper {
             Attribute attr = content.getAttribute(name, cmd.getAttributeType());
             if (attr != null && attr.getValue() != null && attr.getValue().length() > 0) {
                 if (attr instanceof DateAttribute) {
+                    if (cmd.getFormat() == null) {
+                        cmd.setFormat(Aksess.getDefaultDateFormat());
+                    }
                     Locale locale = Language.getLanguageAsLocale(content.getLanguage());
                     DateAttribute date = (DateAttribute)attr;
                     result = date.getValue(cmd.getFormat(), locale);
+                } else if(attr instanceof NumberAttribute) {
+                    NumberAttribute number = (NumberAttribute)attr;
+                    if (cmd.getFormat() != null && cmd.getFormat().length() > 0) {
+                        result = number.getValue(cmd.getFormat());
+                    } else {
+                        result = number.getValue();
+                    }                    
                 } else if(attr instanceof MediaAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
                     if (width != -1) {
@@ -291,6 +298,10 @@ public final class AttributeTagHelper {
                     result = ma.getProperty(cmd.getProperty());
                 } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE) || name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
                     Date date = null;
+                    if (cmd.getFormat() == null) {
+                        cmd.setFormat(Aksess.getDefaultDateFormat());
+                    }
+
                     if (name.equals(ContentProperty.PUBLISH_DATE)) {
                         date = content.getPublishDate();
                     } else if (name.equals(ContentProperty.EXPIRE_DATE)) {
