@@ -245,7 +245,7 @@ public class ContentManagementService {
         }
 
         if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode && !c.getModifiedBy().equals(userId)) {
-            throw new NotAuthorizedException("User is neigther in admin mode or hearing instance", SOURCE);
+            throw new NotAuthorizedException("User is neither in admin mode or hearing instance", SOURCE);
         }
 
         if (c.getStatus() == ContentStatus.DRAFT && !adminMode && !c.getModifiedBy().equals(userId)) {
