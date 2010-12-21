@@ -5,6 +5,10 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
+import selenium.admin.pageobjects.EditContentButtons;
+import selenium.admin.pageobjects.ModesMenu;
+import selenium.admin.pageobjects.SideBar;
+import selenium.admin.pageobjects.TabToolsMenu;
 import selenium.admin.publish.view.ViewPage;
 import static org.junit.Assert.*;
 
@@ -32,10 +36,5 @@ public class EditPageFunctionalTest {
         viewPage.checkThatPageElementsArePresent("/template-site");
 
         webDriver.close();
-    }
-
-    @Test
-    public void testClickTabGroup() throws Exception {
-        
     }
 }

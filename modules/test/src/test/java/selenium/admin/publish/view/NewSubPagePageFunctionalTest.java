@@ -2,12 +2,10 @@ package selenium.admin.publish.view;
 
 import selenium.admin.login.*;
 import org.junit.Test;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
 import selenium.admin.pageobjects.EditContentButtons;
-import selenium.admin.pageobjects.ModesMenu;
 import selenium.admin.pageobjects.NewSubPage;
 import selenium.admin.pageobjects.ToolsMenu;
 import static org.junit.Assert.*;

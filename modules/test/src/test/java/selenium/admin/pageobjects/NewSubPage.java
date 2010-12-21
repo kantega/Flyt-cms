@@ -2,6 +2,7 @@ package selenium.admin.pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import selenium.admin.publish.view.ViewPage;
@@ -12,20 +13,26 @@ import selenium.admin.publish.view.ViewPage;
  */
 public class NewSubPage {
 
-    // Step 1
-    private WebElement templateId;
+    private WebDriver webDriver;
 
-    private WebElement associationCategory;
+    // Step 1
+    private RenderedWebElement templateId;
+
+    private RenderedWebElement associationCategory;
 
     @FindBy(className="ok")
-    private WebElement continueButton;
+    private RenderedWebElement continueButton;
 
     // Step 2
     @FindBy(id="SideBar")
-    private WebElement sideBar;
+    private RenderedWebElement sideBar;
 
     @FindBy(id="EditContentPane")
-    private WebElement editContentPane;
+    private RenderedWebElement editContentPane;
+
+    public NewSubPage(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
 
     public void selectTemplateId() {
         templateId.click();

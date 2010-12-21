@@ -1,6 +1,8 @@
 package selenium.admin.pageobjects;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import selenium.admin.publish.view.ViewPage;
@@ -11,8 +13,14 @@ import selenium.admin.publish.view.ViewPage;
  */
 public class ToolsMenu {
 
+    private WebDriver webDriver;
+
     @FindBy(id="ToolsMenu")
-    private WebElement toolsMenu;
+    private RenderedWebElement toolsMenu;
+
+    public ToolsMenu(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
 
     @Deprecated
     public void checkThatElementsArePresent() {

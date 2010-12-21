@@ -1,5 +1,7 @@
 package selenium.admin.pageobjects;
 
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import selenium.admin.publish.view.ViewPage;
@@ -10,8 +12,14 @@ import selenium.admin.publish.view.ViewPage;
  */
 public class MainPane {
 
+    private WebDriver webDriver;
+
     @FindBy(id="MainPane")
-    private WebElement mainPane;
+    private RenderedWebElement mainPane;
+
+    public MainPane(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
 
     @Deprecated
     public void checkThatElementsArePresent() {

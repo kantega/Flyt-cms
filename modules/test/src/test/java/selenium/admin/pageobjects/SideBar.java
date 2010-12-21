@@ -1,7 +1,8 @@
 package selenium.admin.pageobjects;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.RenderedWebElement;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import selenium.admin.publish.edit.EditPage;
 
@@ -11,11 +12,21 @@ import selenium.admin.publish.edit.EditPage;
  */
 public class SideBar {
 
+    private WebDriver webDriver;
+
     @FindBy(id="SideBar")
-    private WebElement sideBar;
+    private RenderedWebElement sideBar;
+
+    public SideBar(WebDriver webDriver) {
+        this.webDriver = webDriver;
+    }
 
     @Deprecated
     public void checkThatElementsArePresent() {
         sideBar.findElement(By.className("sidebarFieldset"));
+    }
+
+    public boolean isDisplayed() {
+        return sideBar.isDisplayed();
     }
 }
