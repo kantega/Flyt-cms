@@ -85,7 +85,10 @@ public class ContentQuery {
     public PreparedStatement getPreparedStatement(Connection c) throws SQLException {
 
         QueryWithParameters qp = getQueryWithParameters();
-
+        //QueryWithParameters is null when there is no content found 
+        if (qp == null){
+            return null;
+        }
         String query = qp.getQuery();
         List<Object> parameters= qp.getParams();
 
