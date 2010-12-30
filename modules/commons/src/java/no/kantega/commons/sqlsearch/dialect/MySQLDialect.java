@@ -35,4 +35,8 @@ public class MySQLDialect implements SQLDialect {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return "'" + df.format(date) + "'";
     }
+
+    public boolean searchIsCaseSensitive() {
+        return false;
+    }
 }

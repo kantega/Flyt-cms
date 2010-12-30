@@ -18,30 +18,21 @@ package no.kantega.publishing.test.database;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.InputStreamReader;
 import java.io.InputStream;
 
-/**
- *
- */
-public class HSQLDBDatabaseCreator extends AbstractDatabaseCreator{
+public class DerbyDatabaseCreator extends AbstractDatabaseCreator{
     static int dbCounter = 0;
 
-    public HSQLDBDatabaseCreator(String datebaseName, InputStream sqlCreateScript) {
+    public DerbyDatabaseCreator(String datebaseName, InputStream sqlCreateScript) {
         super(datebaseName, sqlCreateScript);
     }
 
     @Override
     protected DriverManagerDataSource createDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-        dataSource.setUrl("jdbc:hsqldb:mem:aksess"+ databaseName + dbCounter++);
+        dataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
+        dataSource.setUrl("jdbc:derby:memory:" + databaseName + dbCounter++ + ";create=true");
         return dataSource;
     }
 }
-
 

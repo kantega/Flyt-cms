@@ -35,4 +35,8 @@ public class OracleSQLDialect implements SQLDialect {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return "TO_DATE('" + df.format(date) + "','YYYY-MM-DD HH24:MI')";
     }
+
+    public boolean searchIsCaseSensitive() {
+        return true;
+    }
 }

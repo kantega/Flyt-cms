@@ -29,7 +29,9 @@
                 <bean class="no.kantega.publishing.jobs.cache.UpdateContentCachesListener"/>
                 <bean class="no.kantega.publishing.jobs.contentstate.RemoveFromLinkCheckerListener"/>
                 <bean class="no.kantega.publishing.jobs.contentstate.DeleteIfExpiredListener"/>
-                <bean class="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener"/>
+                <bean class="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener">
+                    <property name="multimediaUsageDao" ref="aksessMultimediaUsageDao"/>
+                </bean>
                 <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator">
                     <property name="cacheManager" ref="cacheManager"/>
                 </bean>

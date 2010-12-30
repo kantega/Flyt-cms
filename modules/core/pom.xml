@@ -51,6 +51,13 @@
 
         <dependency>
             <groupId>${pom.groupId}</groupId>
+            <artifactId>openaksess-db</artifactId>
+            <version>${pom.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${pom.groupId}</groupId>
             <artifactId>openaksess-search</artifactId>
             <version>${pom.version}</version>
         </dependency>
@@ -302,6 +309,14 @@
             <version>1.8.0.7</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.5.3.0_1</version>
+            <scope>test</scope>
+        </dependency>
+
 
         
         <dependency>

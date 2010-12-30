@@ -23,7 +23,6 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;

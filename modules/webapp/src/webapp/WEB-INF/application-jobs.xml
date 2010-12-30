@@ -212,6 +212,7 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="linkDao" value-ref="aksessLinkDao"/>
+                <entry key="multimediaUsageDao" value-ref="aksessMultimediaUsageDao"/>
             </map>
         </property>
     </bean>

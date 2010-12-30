@@ -19,8 +19,8 @@ package no.kantega.publishing.jobs.cleanup;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.ServerType;
@@ -40,6 +40,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
 
     private LinkDao linkDao;
+    private MultimediaUsageDao multimediaUsageDao;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
@@ -111,7 +112,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month", null, null);
                 EventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
                 linkDao.deleteLinksForContentId(cid.getContentId());
-                MultimediaUsageAO.removeUsageForContentId(cid.getContentId());
+                multimediaUsageDao.removeUsageForContentId(cid.getContentId());
                 ContentAO.deleteContent(cid);
             }
 
@@ -138,6 +139,10 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
 
     public void setLinkDao(LinkDao linkDao) {
         this.linkDao = linkDao;
+    }
+
+    public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
+        this.multimediaUsageDao = multimediaUsageDao;
     }
 }
 
