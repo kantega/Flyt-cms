@@ -396,7 +396,7 @@ public final class AttributeTagHelper {
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             if (url.indexOf("$SITE") != -1 || url.indexOf("$LANGUAGE") != -1) {
                 String site = "";
-                Integer language = new Integer(Language.NORWEGIAN_BO);
+                Integer language = Language.NORWEGIAN_BO;
 
                 Content c = AttributeTagHelper.getContent(pageContext, null, null);
                 if (c != null) {
@@ -409,7 +409,7 @@ public final class AttributeTagHelper {
                     }
                 }
 
-                String lang = Language.getLanguageAsISOCode(language.intValue());
+                String lang = Language.getLanguageAsISOCode(language);
 
                 url = url.replaceAll("\\$SITE", site.substring(0, site.length() - 1));
                 url = url.replaceAll("\\$LANGUAGE", lang);

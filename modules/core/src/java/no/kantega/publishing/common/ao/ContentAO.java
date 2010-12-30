@@ -1095,7 +1095,7 @@ public class ContentAO {
             query = "update content set " + field + " = ? where ContentId in (" + whereClause + ")";
             PreparedStatement cp = c.prepareStatement(query);
             cp.setString(1, newValue);
-            int i = cp.executeUpdate();
+            cp.executeUpdate();
             cp.close();
         }
     }

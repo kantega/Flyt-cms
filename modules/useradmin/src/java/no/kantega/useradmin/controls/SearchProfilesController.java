@@ -55,7 +55,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
         if (config != null) {
             model.put("domain", config.getDomain());
             model.put("profileConfigurations", getProfileConfiguration());
-            model.put("numProfileConfigurations", new Integer(getProfileConfiguration().size()));
+            model.put("numProfileConfigurations", getProfileConfiguration().size());
             if (config.getProfileUpdateManager() != null) {
                 model.put("canEdit", Boolean.TRUE);
             }

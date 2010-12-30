@@ -210,16 +210,6 @@ public class ContentPropertiesAction implements Controller {
         this.aksessJsonView = aksessJsonView;
     }
 
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
-        binder.registerCustomEditor(Date.class, editor);
-    }
-
-    private String formatDate(Date date) {
-        return format(date, Aksess.getDefaultDateFormat());
-    }
-
     private String formatDateTime(Date date) {
         return format(date, Aksess.getDefaultDatetimeFormat());
     }

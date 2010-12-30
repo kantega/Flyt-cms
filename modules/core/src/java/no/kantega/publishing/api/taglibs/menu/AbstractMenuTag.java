@@ -353,7 +353,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             if(var != null) {
                 pageContext.setAttribute(var, status.getCurrent());
             }
-            pageContext.setAttribute("aksess_menu_offset" + name, new Integer(status.getIndex()));
+            pageContext.setAttribute("aksess_menu_offset" + name, status.getIndex());
 
             // Current status
             if (varStatus != null) {

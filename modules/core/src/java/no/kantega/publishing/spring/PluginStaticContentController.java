@@ -37,8 +37,6 @@ public class PluginStaticContentController extends AbstractController {
     private PluginManager<OpenAksessPlugin> pluginManager;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        final String servletPath = request.getServletPath();
         final String pathInfo = request.getPathInfo();
         String path = pathInfo.substring("/static/".length());
 

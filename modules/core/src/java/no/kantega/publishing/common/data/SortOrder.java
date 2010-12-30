@@ -46,9 +46,9 @@ public class SortOrder {
     }
 
     public SortOrder(String sortOrder, boolean descending) {
-        if (sortOrder.indexOf(",") != -1) {
-            sort1 = sortOrder.substring(0, sortOrder.indexOf(",")).trim();
-            sort2 = sortOrder.substring(sortOrder.indexOf(",") + 1, sortOrder.length()).trim();
+        if (sortOrder.indexOf(',') != -1) {
+            sort1 = sortOrder.substring(0, sortOrder.indexOf(',')).trim();
+            sort2 = sortOrder.substring(sortOrder.indexOf(',') + 1, sortOrder.length()).trim();
         } else {
             sort1 = sortOrder.trim();
         }

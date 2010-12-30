@@ -55,7 +55,7 @@ public class FormatTimeTag extends TagSupport {
             }
 
         } catch (IOException e) {
-            throw new JspException("ERROR: ButtonTag", e);
+            throw new JspException("ERROR: FormatTimeTag", e);
         }
 
         date = null;

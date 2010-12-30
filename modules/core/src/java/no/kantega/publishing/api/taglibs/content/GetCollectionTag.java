@@ -51,7 +51,7 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
 
             status = new CollectionLoopTagStatus(collection);
 
-            pageContext.setAttribute("aksess_collection_size" + name, new Integer(collection.size()));
+            pageContext.setAttribute("aksess_collection_size" + name, collection.size());
 
         } catch (Exception e) {
             System.err.println(e);
@@ -64,7 +64,7 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
     private int doIter() {
         if (status.getIndex() < status.getCount()) {
             pageContext.setAttribute("aksess_collection_" + name, (Content)status.getCurrent());
-            pageContext.setAttribute("aksess_collection_offset" + name, new Integer(status.getIndex()));
+            pageContext.setAttribute("aksess_collection_offset" + name, status.getIndex());
 
 
             // Current status

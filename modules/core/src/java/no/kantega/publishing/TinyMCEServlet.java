@@ -116,7 +116,7 @@ public class TinyMCEServlet extends HttpServlet {
         supportsGzip = false;
         enc = request.getHeader("Accept-Encoding");
         if (enc != null) {
-            enc.replaceAll("\\s+", "").toLowerCase();
+            enc = enc.replaceAll("\\s+", "").toLowerCase();
             supportsGzip = enc.indexOf("gzip") != -1 || request.getHeader("---------------") != null;
             enc = enc.indexOf("x-gzip") != -1 ? "x-gzip" : "gzip";
         }
@@ -293,15 +293,6 @@ public class TinyMCEServlet extends HttpServlet {
             tempdir = tempdir + File.pathSeparator;
         }
         return tempdir;
-    }
-
-    private String mapPath2(HttpServletRequest request, String path) {
-        try {
-            return request.getSession().getServletContext().getResource(path).getPath();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return new File("").getAbsolutePath();
-        }
     }
 
     private URL mapUrl(HttpServletRequest request, String path) {

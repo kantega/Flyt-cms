@@ -113,7 +113,7 @@ public class PollTag  extends TagSupport {
         String alternativ = containingPage.getAttributeValue("alt" + altnum);
         while(alternativ != null && alternativ.length() > 0){
             if(!alternativeExists("alt" + altnum, pollid)){
-                jdbcTemplate.update("INSERT INTO poll(Alternative, Votes, ContentId) VALUES(?,0,?)", new Object[]{"alt" + altnum, new Integer(pollid)});
+                jdbcTemplate.update("INSERT INTO poll(Alternative, Votes, ContentId) VALUES(?,0,?)", new Object[]{"alt" + altnum, pollid});
             }
             altnum++;
             alternativ = containingPage.getAttributeValue("alt" + altnum);
@@ -129,7 +129,7 @@ public class PollTag  extends TagSupport {
      */
     private boolean alternativeExists(String alt, int contentId) {
         try{
-            int numRows = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM poll WHERE Alternative=? AND ContentId=?", new Object[]{alt, new Integer(pollid)});
+            int numRows = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM poll WHERE Alternative=? AND ContentId=?", new Object[]{alt, pollid});
             return numRows > 0;
         } catch(IncorrectResultSizeDataAccessException e){//Query'et gir ingen treff
             return false;
@@ -145,7 +145,7 @@ public class PollTag  extends TagSupport {
         RequestParameters param = new RequestParameters(request);
         String alternativ = param.getString("alternativ");
         if(alternativ != null){
-            jdbcTemplate.update("UPDATE poll SET Votes=Votes+1 WHERE Alternative=? AND ContentId=?", new Object[]{alternativ, new Integer(pollid)});
+            jdbcTemplate.update("UPDATE poll SET Votes=Votes+1 WHERE Alternative=? AND ContentId=?", new Object[]{alternativ, pollid});
         }
     }
 
@@ -155,7 +155,7 @@ public class PollTag  extends TagSupport {
      * @param request
      */
     private void fetchResults(HttpServletRequest request) {
-        List alternativer = jdbcTemplate.query("SELECT * FROM poll WHERE ContentId=? ORDER BY Alternative", new Object[]{new Integer(pollid)}, new RowMapper(){
+        List alternativer = jdbcTemplate.query("SELECT * FROM poll WHERE ContentId=? ORDER BY Alternative", new Object[]{pollid}, new RowMapper(){
             public Object mapRow(ResultSet rs, int i) throws SQLException {
                 return new Integer(rs.getInt("Votes"));
             }
@@ -168,7 +168,7 @@ public class PollTag  extends TagSupport {
         }
 
         try {
-            int numVotes = jdbcTemplate.queryForInt("SELECT SUM(Votes) FROM poll WHERE ContentId=?", new Object[]{new Integer(pollid)});
+            int numVotes = jdbcTemplate.queryForInt("SELECT SUM(Votes) FROM poll WHERE ContentId=?", new Object[]{pollid});
             request.setAttribute("num_votes", new Integer(numVotes));
         } catch (IncorrectResultSizeDataAccessException e) {
             //Skal ikke skje siden alle alternativer er default 0

@@ -49,14 +49,14 @@ public class AssociationHelper {
             boolean found = false;
             for (int j = 0; j < sites.size(); j++) {
                 Integer site = (Integer)sites.get(j);
-                if (site.intValue() == association.getSiteId()) {
+                if (site == association.getSiteId()) {
                     found = true;
                     break;
                 }
             }
 
             if (!found) {
-                sites.add(new Integer(association.getSiteId()));
+                sites.add(association.getSiteId());
             }
 
             association.setAssociationtype(parent.getAssociationtype());
@@ -85,7 +85,7 @@ public class AssociationHelper {
 
             for (int j = 0; j < associations.size(); j++) {
                 Association tmpA = (Association)associations.get(j);
-                if (siteId.intValue() == tmpA.getSiteId()) {
+                if (siteId == tmpA.getSiteId()) {
                     if (first == -1) first = j;
                     if (tmpA.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
                         noDefaultPostings++;

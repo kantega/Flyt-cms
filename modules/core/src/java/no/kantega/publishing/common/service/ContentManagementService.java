@@ -1037,7 +1037,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List deleteAssociationsById(int[] associationIds, boolean deleteMultiple) throws SystemException {
-        List associations = new ArrayList();
+        List<Integer> associations = new ArrayList<Integer>();
         List deletedItems = new ArrayList();
 
         for (int i = 0; i < associationIds.length; i++) {
@@ -1046,7 +1046,7 @@ public class ContentManagementService {
                 if (a.getAssociationtype() == AssociationType.SHORTCUT) {
                     // Sjekk tilgangen til snarvei
                     if (securitySession.isAuthorized(a, Privilege.APPROVE_CONTENT)) {
-                        associations.add(new Integer(a.getId()));
+                        associations.add(a.getId());
                     }
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker p�
@@ -1064,7 +1064,7 @@ public class ContentManagementService {
                     }
                     if (securitySession.isAuthorized(c, priv)) {
                         deletedItems.add(c);
-                        associations.add(new Integer(a.getId()));
+                        associations.add(a.getId());
                     }
                 }
             }

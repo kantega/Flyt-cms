@@ -157,17 +157,17 @@ public class ContentQuery {
         if (associatedId != null) {
             if (associatedId.getAssociationId() != -1) {
                 query.append(" and associations.ParentAssociationId = ?");
-                parameters.add(new Integer(associatedId.getAssociationId()));
+                parameters.add(associatedId.getAssociationId());
             }
             if (associatedId.getSiteId() != -1) {
                 query.append(" and associations.SiteId = ?");
-                parameters.add(new Integer(associatedId.getSiteId()));
+                parameters.add(associatedId.getSiteId());
             }
 
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
                 query.append(" and associations.Category = ?");
-                parameters.add(new Integer(associationCategory.getId()));
+                parameters.add(associationCategory.getId());
             }
         } else if (contentList != null && contentList.length > 0) {
             query.append(" and associations.UniqueId in (");
@@ -177,7 +177,7 @@ public class ContentQuery {
                         query.append(",");
                     }
                     query.append("?");
-                    parameters.add(new Integer(contentList[i].getAssociationId()));
+                    parameters.add(contentList[i].getAssociationId());
                 }
             }
             query.append(") and associations.Type <> " + AssociationType.SHORTCUT);
@@ -196,7 +196,7 @@ public class ContentQuery {
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
                 query.append(" and associations.Category = ?");
-                parameters.add(new Integer(associationCategory.getId()));
+                parameters.add(associationCategory.getId());
             }
         } else if (excludedPathElementIds != null) {
             for (int i=0; i<excludedPathElementIds.length; i++){
@@ -204,7 +204,7 @@ public class ContentQuery {
                     // exclude all published under given id
                     query.append(" and associations.Path not like ? and associations.AssociationId <> ? ");
                     parameters.add("/%" + excludedPathElementIds[i].getAssociationId() + "/%");
-                    parameters.add(new Integer(excludedPathElementIds[i].getAssociationId()));
+                    parameters.add(excludedPathElementIds[i].getAssociationId());
                 }
             }
         } else if (sql != null) {
@@ -215,22 +215,22 @@ public class ContentQuery {
             query.append(sql);
         } else if (attributes == null) {
             query.append(" and associations.Type = ?");
-            parameters.add(new Integer(AssociationType.DEFAULT_POSTING_FOR_SITE));
+            parameters.add(AssociationType.DEFAULT_POSTING_FOR_SITE);
         }
 
         if (siteId != -1) {
             query.append(" and associations.SiteId = ?");
-            parameters.add(new Integer(siteId));
+            parameters.add(siteId);
         }
 
         if (language != -1) {
             query.append(" and contentversion.Language = ?");
-            parameters.add(new Integer(language));
+            parameters.add(language);
         }
 
         if (contentType != null) {
             query.append(" and content.Type = ?");
-            parameters.add(new Integer(contentType.getTypeAsInt()));
+            parameters.add(contentType.getTypeAsInt());
         }
 
         if (documentType != null && documentType.length > 0) {
@@ -240,7 +240,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(documentType[i]));
+                parameters.add(documentType[i]);
             }
             query.append(") ");
         }
@@ -252,7 +252,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(excludedDocumentTypes[i]));
+                parameters.add(excludedDocumentTypes[i]);
             }
             query.append(") ");
         }
@@ -265,7 +265,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(contentTemplate[i]));
+                parameters.add(contentTemplate[i]);
             }
             query.append(") ");
         }
@@ -277,7 +277,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(displayTemplate[i]));
+                parameters.add(displayTemplate[i]);
             }
             query.append(") ");
         }
@@ -382,7 +382,7 @@ public class ContentQuery {
                         query.append(" and ct2topic.contentId in (select ct2topic.contentId from ct2topic where ");
                     }
                     query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(new Integer(topic.getTopicMapId()));
+                    parameters.add(topic.getTopicMapId());
                     parameters.add(topic.getId());
                     if (i > 0){
                         query.append(")");
@@ -398,7 +398,7 @@ public class ContentQuery {
                         query.append(" or ");
                     }
                     query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(new Integer(topic.getTopicMapId()));
+                    parameters.add(topic.getTopicMapId());
                     parameters.add(topic.getId());
                 }
                 query.append(") ");
@@ -407,12 +407,12 @@ public class ContentQuery {
 
         if (topicMapId != -1) {
             query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ?");
-            parameters.add(new Integer(topicMapId));
+            parameters.add(topicMapId);
         }
 
         if (topicType != null) {
             query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ? and TopicId in (select tmtopic.TopicId from tmtopic where InstanceOf = ?))");
-            parameters.add(new Integer(topicType.getTopicMapId()));
+            parameters.add(topicType.getTopicMapId());
             parameters.add(topicType.getId());
         }
 
@@ -472,7 +472,7 @@ public class ContentQuery {
                             }
                             int id = rs.getInt("ContentId");
                             query.append("?");
-                            parameters.add(new Integer(id));
+                            parameters.add(id);
                             noFound++;
                         }
                         query.append(")");
@@ -826,8 +826,4 @@ public class ContentQuery {
             return result;
         }
     }
-
-
-
-
 }

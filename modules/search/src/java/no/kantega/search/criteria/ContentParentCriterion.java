@@ -32,8 +32,6 @@ public class ContentParentCriterion extends AbstractCriterion {
     private static final String SOURCE = ContentParentCriterion.class.getName();
 
     private int parentId;
-    private boolean inclusive;
-
 
     /**
      * Oppretter et Criterion-objekt som begrenser søkeresultatet til kun å inneholde undersider til den gitte ID'en.
@@ -42,7 +40,6 @@ public class ContentParentCriterion extends AbstractCriterion {
      */
     public ContentParentCriterion(int parentId) {
         this.parentId = parentId;
-        this.inclusive = inclusive;
     }
 
     /**

@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import no.kantega.publishing.common.service.SiteManagementService;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -63,8 +62,6 @@ public class NavigatorAction implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        HttpSession session = request.getSession();
         SiteManagementService siteService = new SiteManagementService(request);
         ContentManagementService cms = new ContentManagementService(request);
 

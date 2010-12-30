@@ -40,8 +40,6 @@ public class FormTag extends BodyTagSupport {
 
             hasErrors = (request.getAttribute("hasErrors") != null) ? (Boolean) (request.getAttribute("hasErrors")) : false;
 
-            String root = request.getContextPath() + "/";
-
             FormSubmission formSubmission = (FormSubmission)request.getAttribute("formSubmission");
             if (hasErrors && formSubmission != null) {
                 if (errortext == null || errortext.length() == 0) {
@@ -54,7 +52,7 @@ public class FormTag extends BodyTagSupport {
                     html.append("<ul>");
                     // Display error messages
                     for (FormError error : errors) {
-                        html.append("<li>" + error.getField() + " " + LocaleLabels.getLabel(error.getMessage(), locale) + "</li>");
+                        html.append("<li>").append(error.getField()).append(" ").append(LocaleLabels.getLabel(error.getMessage(), locale)).append("</li>");
                     }
                     html.append("</ul></div>");
                 }
