@@ -48,7 +48,7 @@ public class ContentIdHelper {
      */
 
     public static ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
-        if (context == null && expr == null) {
+        if (context == null || expr == null) {
             return null;
         }
 
