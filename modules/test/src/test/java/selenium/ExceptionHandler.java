@@ -31,13 +31,12 @@ public class ExceptionHandler {
      * @throws IOException
      */
     public static void createErrorReport(WebDriver webDriver, Class clazz) throws IOException {
-        System.out.println("Test failed at " + webDriver.getCurrentUrl());
+        System.err.println("Test failed at " + webDriver.getCurrentUrl());
 
         // Create Selenium folder for storage of error report files
         File targetDir = new File("target");
         File seleniumDir = new File(targetDir, "selenium");
         seleniumDir.mkdir();
-        System.out.println("seleniumDir created at " + seleniumDir.getAbsolutePath());
 
         // Save screenshot
         TakesScreenshot takesScreenshot = (TakesScreenshot) webDriver;
@@ -46,9 +45,9 @@ public class ExceptionHandler {
         FileUtils.copyFile(screenshot, screenshotCopy);
         screenshot.delete();
         if ("hudson.kantega.lan".equals(InetAddress.getLocalHost().getHostName()) || "backup".equals(InetAddress.getLocalHost().getHostName())) {
-            System.out.println("Screenshot: " + HUDSON_URL + seleniumDir + "/" + screenshotCopy.getName());
+            System.err.println("Screenshot: " + HUDSON_URL + seleniumDir.getName() + "/" + screenshotCopy.getName());
         } else {
-            System.out.println("Screenshot was saved at " + screenshotCopy.getAbsolutePath());
+            System.err.println("Screenshot was saved at " + screenshotCopy.getAbsolutePath());
         }
         
         // Save HTML source code
@@ -57,9 +56,9 @@ public class ExceptionHandler {
         bw.write(webDriver.getPageSource());
         bw.close();
         if ("hudson.kantega.lan".equals(InetAddress.getLocalHost().getHostName()) || "backup".equals(InetAddress.getLocalHost().getHostName())) {
-            System.out.println("Page source code: " + HUDSON_URL + seleniumDir + "/" + pageSource.getName());
+            System.err.println("Page source code: " + HUDSON_URL + seleniumDir.getName() + "/" + pageSource.getName());
         } else {
-            System.out.println("Page source code was saved at " + pageSource.getAbsolutePath());
+            System.err.println("Page source code was saved at " + pageSource.getAbsolutePath());
         }
     }
 }

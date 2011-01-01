@@ -56,7 +56,6 @@ public class TabToolsFunctionalTest {
             tabToolsMenu.clickContent();
             assertTrue(editContentButtons.isDisplayed());
             assertTrue(sideBar.isDisplayed());
-            assertFalse(true); // testing of error report...
         } catch (Throwable throwable) {
             ExceptionHandler.createErrorReport(webDriver, getClass());
             throw throwable;

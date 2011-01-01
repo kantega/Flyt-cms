@@ -14,7 +14,7 @@ public class SideBar {
 
     private WebDriver webDriver;
 
-    @FindBy(id="SideBar")
+    @FindBy(id="SideBarTEST")
     private RenderedWebElement sideBar;
 
     public SideBar(WebDriver webDriver) {
