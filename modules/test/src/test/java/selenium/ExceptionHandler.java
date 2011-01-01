@@ -38,8 +38,6 @@ public class ExceptionHandler {
         File seleniumDir = new File(targetDir, "selenium");
         seleniumDir.mkdir();
 
-        System.out.println("seleniumDir: " + seleniumDir);
-
         // Save screenshot
         TakesScreenshot takesScreenshot = (TakesScreenshot) webDriver;
         File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
