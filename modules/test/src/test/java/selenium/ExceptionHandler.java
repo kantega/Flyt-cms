@@ -17,9 +17,9 @@ public class ExceptionHandler {
 
     /**
      * The URL pointing to the folder at the Hudson server where the target
-     * folder of the project is located.
+     * folder of the project module is located.
      */
-    private static final String HUDSON_URL = "http://hudson.kantega.lan/job/OpenAksess-trunk-functional-testing/ws/trunk/modules/test/target/";
+    private static final String HUDSON_MODULE_URL = "http://hudson.kantega.lan/job/OpenAksess-trunk-functional-testing/ws/trunk/modules/test/";
 
     /**
      * Creates a folder named {@code selenium} in the project module's
@@ -38,6 +38,8 @@ public class ExceptionHandler {
         File seleniumDir = new File(targetDir, "selenium");
         seleniumDir.mkdir();
 
+        System.out.println("seleniumDir: " + seleniumDir);
+
         // Save screenshot
         TakesScreenshot takesScreenshot = (TakesScreenshot) webDriver;
         File screenshot = takesScreenshot.getScreenshotAs(OutputType.FILE);
@@ -45,7 +47,7 @@ public class ExceptionHandler {
         FileUtils.copyFile(screenshot, screenshotCopy);
         screenshot.delete();
         if ("hudson.kantega.lan".equals(InetAddress.getLocalHost().getHostName()) || "backup".equals(InetAddress.getLocalHost().getHostName())) {
-            System.err.println("Screenshot: " + HUDSON_URL + seleniumDir.getName() + "/" + screenshotCopy.getName());
+            System.err.println("Screenshot: " + HUDSON_MODULE_URL + seleniumDir + "/" + screenshotCopy.getName());
         } else {
             System.err.println("Screenshot was saved at " + screenshotCopy.getAbsolutePath());
         }
@@ -56,7 +58,7 @@ public class ExceptionHandler {
         bw.write(webDriver.getPageSource());
         bw.close();
         if ("hudson.kantega.lan".equals(InetAddress.getLocalHost().getHostName()) || "backup".equals(InetAddress.getLocalHost().getHostName())) {
-            System.err.println("Page source code: " + HUDSON_URL + seleniumDir.getName() + "/" + pageSource.getName());
+            System.err.println("Page source code: " + HUDSON_MODULE_URL + seleniumDir + "/" + pageSource.getName());
         } else {
             System.err.println("Page source code was saved at " + pageSource.getAbsolutePath());
         }
