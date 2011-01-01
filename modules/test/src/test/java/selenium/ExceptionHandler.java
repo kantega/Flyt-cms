@@ -19,7 +19,7 @@ public class ExceptionHandler {
      * The URL pointing to the folder at the Hudson server where the target
      * folder of the project is located.
      */
-    private static final String HUDSON_URL = "http://hudson.kantega.lan/job/OpenAksess-trunk/ws/trunk/modules/test/target/";
+    private static final String HUDSON_URL = "http://hudson.kantega.lan/job/OpenAksess-trunk-functional-testing/ws/trunk/modules/test/target/";
 
     /**
      * Creates a folder named {@code selenium} in the project module's
@@ -31,12 +31,13 @@ public class ExceptionHandler {
      * @throws IOException
      */
     public static void createErrorReport(WebDriver webDriver, Class clazz) throws IOException {
-        System.err.println("Test failed at " + webDriver.getCurrentUrl());
+        System.out.println("Test failed at " + webDriver.getCurrentUrl());
 
         // Create Selenium folder for storage of error report files
         File targetDir = new File("target");
         File seleniumDir = new File(targetDir, "selenium");
         seleniumDir.mkdir();
+        System.out.println("seleniumDir created at " + seleniumDir.getAbsolutePath());
 
         // Save screenshot
         TakesScreenshot takesScreenshot = (TakesScreenshot) webDriver;
@@ -45,7 +46,7 @@ public class ExceptionHandler {
         FileUtils.copyFile(screenshot, screenshotCopy);
         screenshot.delete();
         if ("hudson.kantega.lan".equals(InetAddress.getLocalHost().getHostName()) || "backup".equals(InetAddress.getLocalHost().getHostName())) {
-            System.out.println("Screenshot: " + HUDSON_URL + seleniumDir + "/" + screenshot.getName());
+            System.out.println("Screenshot: " + HUDSON_URL + seleniumDir + "/" + screenshotCopy.getName());
         } else {
             System.out.println("Screenshot was saved at " + screenshotCopy.getAbsolutePath());
         }
