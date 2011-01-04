@@ -18,21 +18,25 @@
 package no.kantega.publishing.api.plugin;
 
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import org.kantega.jexmec.AbstractPlugin;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.HandlerMapping;
 
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 
-import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
-
-public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAksessPlugin {
+public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAksessPlugin, ApplicationContextAware {
 
     private List<HandlerMapping> handlerMappings = Collections.emptyList();
 
     private List<ContentRequestListener> contentRequestListeners = Collections.emptyList();
 
     private List<FormDeliveryService> formDeliveryServices = Collections.emptyList();
+    private ApplicationContext applicationContext;
 
     public OpenAksessPluginAdapter(String pluginId) {
         super(pluginId);
@@ -60,5 +64,13 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
 
     public void setFormDeliveryServices(List<FormDeliveryService> formDeliveryServices) {
         this.formDeliveryServices = formDeliveryServices;
+    }
+
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    public List<MessageSource> getMessageSources() {
+        return Collections.singletonList((MessageSource) applicationContext);
     }
 }

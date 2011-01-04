@@ -1,11 +1,13 @@
 package no.kantega.publishing.spring;
 
-import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.HandlerExecutionChain;
-import org.kantega.jexmec.PluginManager;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import org.kantega.jexmec.PluginManager;
+import org.springframework.web.servlet.HandlerExecutionChain;
+import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  */
@@ -14,11 +16,27 @@ public class PluginDelegatingHandlerMapping implements HandlerMapping {
 
     private PluginManager<OpenAksessPlugin> pluginManager;
 
+    public static final String DELEGATED_PLUGIN_ATTR = PluginDelegatingHandlerMapping.class.getName() +"_DELEGATED_PLUGIN_ATTR";
+
+
     public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-        for (OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+        for (final OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             for (HandlerMapping handlerMapping : plugin.getHandlerMappings()) {
-                HandlerExecutionChain executionChain = handlerMapping.getHandler(request);
+                final HandlerExecutionChain executionChain = handlerMapping.getHandler(request);
+
                 if (executionChain != null) {
+                    executionChain.addInterceptor(new HandlerInterceptorAdapter() {
+                        @Override
+                        public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                            request.setAttribute(DELEGATED_PLUGIN_ATTR, plugin);
+                            return super.preHandle(request, response, handler);
+                        }
+
+                        @Override
+                        public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+                            request.removeAttribute(DELEGATED_PLUGIN_ATTR);
+                        }
+                    });
                     return executionChain;
                 }
             }
@@ -29,5 +47,4 @@ public class PluginDelegatingHandlerMapping implements HandlerMapping {
     public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
         this.pluginManager = pluginManager;
     }
-
 }

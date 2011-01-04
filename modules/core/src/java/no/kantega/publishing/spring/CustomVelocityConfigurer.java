@@ -10,6 +10,8 @@ import java.io.File;
  *
  */
 public class CustomVelocityConfigurer extends VelocityConfigurer{
+
+    private static final String PLUGIN_MACRO_LIBRARY = "no/kantega/publishing/api/view/velocity/plugin.vm";
     @Override
     protected void postProcessVelocityEngine(VelocityEngine velocityEngine) {
 
@@ -27,6 +29,8 @@ public class CustomVelocityConfigurer extends VelocityConfigurer{
 
             }
         }
+        velocityEngine.addProperty(
+                        VelocityEngine.VM_LIBRARY, PLUGIN_MACRO_LIBRARY);
 
         super.postProcessVelocityEngine(velocityEngine);
 
