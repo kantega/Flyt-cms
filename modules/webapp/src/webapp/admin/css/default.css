@@ -472,38 +472,38 @@ table.fullWidth {
 }
 
 /************** Buttons ************/
-#EditContentButtons input.publish {
+#EditContentButtons .barButton input.publish {
     margin-left: 10px;
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -657px;
 }
 
-#EditContentButtons input.cancel {
+#EditContentButtons .barButton input.cancel {
     background: url("../bitmaps/sprite-common.png") no-repeat 0 -277px;
 }
 
-#EditContentButtons input.insert {
+#EditContentButtons .barButton input.insert {
     background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.save {
+#EditContentButtons .barButton input.save {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.approve {
+#EditContentButtons .barButton input.approve {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.reject {
+#EditContentButtons .barButton input.reject {
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.savedraft {
+#EditContentButtons .barButton input.savedraft {
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
 }
 
@@ -543,6 +543,7 @@ table.fullWidth {
     height: 50px;
     border: 0;
     cursor: pointer;
+    background: transparent;
 }
 
 #Content .buttonGroup, .ui-dialog-content .buttonGroup{
