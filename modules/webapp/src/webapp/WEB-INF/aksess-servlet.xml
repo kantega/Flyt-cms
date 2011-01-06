@@ -764,7 +764,7 @@
         <property name="resourceLoaderPath" value="classpath:"/>
         <property name="velocityProperties">
             <value>
-                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective
+                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective,no.kantega.publishing.admin.taglib.BoxDirective
                 eventhandler.include.class=org.apache.velocity.app.event.implement.IncludeRelativePath
             </value>
         </property>
