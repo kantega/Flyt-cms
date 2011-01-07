@@ -194,6 +194,8 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             // Replace ${} properties in Spring with config properties
             addConfigurationPropertyReplacer(wac, properties);
 
+            RootContext.setInstance(wac);
+
         }
 
     }

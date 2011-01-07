@@ -23,12 +23,10 @@ body.popup #Navigator{
     background:#fff;
 }
 
-#Framesplit {
+.framesplit.navigate{
     position: absolute;
     top: 0;
     right: 0;
-    width: 10px;
-    height: 100%;
     background: #A0A0A0 url("../bitmaps/sprite-repeat-y.png") repeat-y 0 0;
 }
 

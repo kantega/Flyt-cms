@@ -25,4 +25,6 @@
         <property name="profileConfiguration" ref="profileConfigurations"/>
         <property name="roleConfiguration" ref="roleConfigurations"/>
     </bean>
+
+    <bean id="aksessIdentityResolver" class="no.kantega.publishing.security.realm.AksessIdentityResolverFactoryBean"/>
 </beans>

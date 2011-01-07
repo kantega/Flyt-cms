@@ -13,32 +13,21 @@
         </property>
     </bean>
 
-    <bean id="aksessDatabaseFormSubmissionDao" class="no.kantega.publishing.modules.forms.dao.DatabaseFormSubmissionDao">
-        <property name="dataSource" ref="aksessDataSource"/>
-    </bean>
     <bean id="aksessContentFormService" class="no.kantega.publishing.modules.forms.service.AksessContentFormService"/>
 
-    <bean id="aksessEmailFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.EmailFormDeliveryService">
-        <property name="mailTemplate" value="formsubmission.vm"/>
-    </bean>
-    <bean id="aksessDatabaseFormDeliveryService" class="no.kantega.publishing.modules.forms.formdelivery.DatabaseFormDeliveryService">
-        <property name="formSubmissionDao" ref="aksessDatabaseFormSubmissionDao"/>
-    </bean>
-    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder">
+    <bean id="aksessFormSubmissionValidator" class="no.kantega.publishing.modules.forms.validate.DefaultFormSubmissionValidator">
         <property name="formElementValidatorFactory" ref="aksessFormElementValidatorFactory"/>
     </bean>
     
     <bean id="aksessFilledFormBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFilledFormBuilder"/>
 
-    <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
-        <property name="description" value="Saves form in database and sends to email"/>
-        <property name="formDeliveryServices">
-            <list>
-                <ref bean="aksessDatabaseFormDeliveryService"/>
-                <ref bean="aksessEmailFormDeliveryService"/>
-            </list>
-        </property>
+    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder"/>
 
+    <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
+        <property name="description" value="Collects data from form, validates data and sends to delivery service"/>
+        <property name="formDeliveryServiceIds" value="${forms.deliveryservices}"/>
+        <property name="pluginManager" ref="pluginManager"/>
+        <property name="formSubmissionValidator" ref="aksessFormSubmissionValidator"/>
         <property name="filledFormBuilder" ref="aksessFilledFormBuilder"/>
         <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
     </bean>

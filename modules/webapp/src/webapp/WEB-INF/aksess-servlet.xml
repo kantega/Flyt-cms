@@ -19,7 +19,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:annotation-config/>
 
@@ -34,6 +34,7 @@
                 <!-- Base controllers -->
                 <prop key="/">ContentRequestHandler</prop>
                 <prop key="/oap/static/**">PluginStaticContentController</prop>
+                <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
                 <prop key="/content/**">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
                 <prop key="/attachment.ap">AttachmentRequestHandler</prop>
@@ -180,10 +181,7 @@
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
-                <!-- Forms -->
-                <prop key="/admin/publish/FormSubmissionsExportExcel.action">FormSubmissionsExportExcelAction</prop>
-                <prop key="/admin/publish/DeleteFormSubmissions.action">DeleteFormSubmissionsAction</prop>
-
+                <!-- Rating -->
                 <prop key="/Rating.action">RatingController</prop>
 
                 <!-- Information -->
@@ -724,18 +722,6 @@
         <property name="templateValidator" ref="aksessTemplateValidator"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
-
-    <!-- Forms -->
-    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelController" id="FormSubmissionsExportExcelAction"/>
-    <bean class="no.kantega.publishing.modules.forms.control.FormSubmissionsExportExcelView" id="FormSubmissionsExportExcelView">
-        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
-        <property name="formService" ref="aksessContentFormService"/>        
-    </bean>
-    <bean class="no.kantega.publishing.modules.forms.control.DeleteFormSubmissionsAction" id="DeleteFormSubmissionsAction">
-        <property name="dao" ref="aksessDatabaseFormSubmissionDao"/>
-    </bean>
-
-
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
@@ -760,18 +746,29 @@
 
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
         <property name="pluginManager" ref="pluginManager"/>
+        <property name="prefix" value="no/kantega/openaksess/static/"/>
     </bean>
 
-    <bean id="velocityConfig" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+    <bean id="PluginStaticAdminContentController" class="no.kantega.publishing.spring.PluginStaticContentController">
+        <property name="pluginManager" ref="pluginManager"/>
+        <property name="prefix" value="no/kantega/openaksess/admin/static/"/>
+    </bean>
+
+
+
+
+    <bean id="velocityConfig" class="no.kantega.publishing.spring.CustomVelocityConfigurer">
         <property name="resourceLoaderPath" value="classpath:"/>
         <property name="velocityProperties">
             <value>
-                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective
+                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective,no.kantega.publishing.admin.taglib.BoxDirective
+                eventhandler.include.class=org.apache.velocity.app.event.implement.IncludeRelativePath
             </value>
         </property>
     </bean>
 
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
+        <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>
         <property name="cache" value="true"/>
         <property name="prefix" value=""/>
         <property name="suffix" value=".vm"/>
@@ -780,12 +777,6 @@
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
-    </bean>
-
-    <bean id="viewResolverExcel" class="org.springframework.web.servlet.view.BeanNameViewResolver">
-        <property name="order">
-            <value>0</value>
-        </property>
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>

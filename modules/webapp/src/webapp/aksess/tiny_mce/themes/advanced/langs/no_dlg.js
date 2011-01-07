@@ -45,7 +45,7 @@ link_target:"M\u00E5lvindu",
 link_target_same:"\u00C5pne i dette vindu",
 link_target_blank:"\u00C5pne i nytt vindu",
 link_titlefield:"Tittel",
-link_is_email:"Nettadressen du skrev inn ser ut til \u00E5 v\u00E6re en Epost adresse. \u00D8nsker du \u00E5 legge til obligatorisk mailto:-prefiks?",
+link_is_email:"Nettadressen du skrev inn ser ut til \u00E5 v\u00E6re en Epostadresse. \u00D8nsker du \u00E5 legge til obligatorisk mailto:-prefiks?",
 link_is_external:"Nettadressen du skrev inn ser ut til \u00E5 v\u00E6re en ekstern nettadresse. \u00D8nsker du \u00E5 legge til obligatorisk http://-prefiks?",
 link_list:"Liste over lenker"
 });

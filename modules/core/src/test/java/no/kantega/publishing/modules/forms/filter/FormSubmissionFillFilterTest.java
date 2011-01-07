@@ -10,9 +10,9 @@ import java.util.List;
 
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.model.FormValue;
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormSubmission;
+import no.kantega.publishing.api.forms.model.FormValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 

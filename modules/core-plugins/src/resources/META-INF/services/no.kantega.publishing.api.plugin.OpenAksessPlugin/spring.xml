@@ -20,4 +20,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <import resource="groovyscripts.xml"/>
+    <import resource="databaseformdelivery.xml"/>
+    <import resource="emailformdelivery.xml"/>
 </beans>

@@ -1,14 +1,19 @@
 package no.kantega.publishing.modules.forms.control;
 
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormSubmission;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.forms.util.FormSubmissionBuilder;
 import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
 import no.kantega.publishing.modules.forms.model.AksessContentForm;
-import no.kantega.publishing.modules.forms.formdelivery.FormDeliveryService;
+import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.modules.forms.validate.FormError;
+import no.kantega.publishing.modules.forms.validate.FormSubmissionValidator;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
+import org.kantega.jexmec.PluginManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,8 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.validate.FormError;
 
 /**
  *
@@ -27,7 +30,9 @@ public class SaveFormSubmissionController implements AksessController {
     private String description;
     private FormSubmissionBuilder formSubmissionBuilder;
     private FilledFormBuilder filledFormBuilder;
-    private List<FormDeliveryService> formDeliveryServices;
+    private FormSubmissionValidator formSubmissionValidator;
+    private String formDeliveryServiceIds;
+    private PluginManager<OpenAksessPlugin> pluginManager;
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -47,18 +52,21 @@ public class SaveFormSubmissionController implements AksessController {
                 FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form);
 
                 // Validate formsubmission
-                List<FormError> errors = formSubmission.getErrors();
+                List<FormError> errors = formSubmissionValidator.validate(formSubmission);
                 if (errors != null && errors.size() > 0) {
                     // errrors
                     model.put("hasErrors", Boolean.TRUE);
                     model.put("formSubmission", formSubmission);
-                    form = filledFormBuilder.buildFilledForm(formSubmission);
+                    form = filledFormBuilder.buildFilledForm(formSubmission, errors);
                 } else {
-
                     addUserInformation(formSubmission, request);
 
-                    for (FormDeliveryService service : formDeliveryServices) {
-                        service.deliverForm(formSubmission);
+                    for (OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+                        for (FormDeliveryService service : plugin.getFormDeliveryServices()) {
+                            if (formDeliveryServiceIds.contains(service.getId())) {
+                                service.deliverForm(formSubmission);
+                            }
+                        }
                     }
                     model.put("formSubmission", formSubmission);
                     model.put("hasSubmitted", Boolean.TRUE);
@@ -72,7 +80,7 @@ public class SaveFormSubmissionController implements AksessController {
                 if (prefillValues.size() > 0) {
                     FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form);
                     if (formSubmission.getValues() != null) {
-                        form = filledFormBuilder.buildFilledForm(formSubmission);
+                        form = filledFormBuilder.buildFilledForm(formSubmission, null);
                     }
                 }
             }
@@ -100,8 +108,16 @@ public class SaveFormSubmissionController implements AksessController {
         this.filledFormBuilder = filledFormBuilder;
     }
 
-    public void setFormDeliveryServices(List<FormDeliveryService> formDeliveryServices) {
-        this.formDeliveryServices = formDeliveryServices;
+    public void setFormDeliveryServiceIds(String formDeliveryServiceIds) {
+        this.formDeliveryServiceIds = formDeliveryServiceIds;
+    }
+
+    public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
+        this.pluginManager = pluginManager;
+    }
+
+    public void setFormSubmissionValidator(FormSubmissionValidator formSubmissionValidator) {
+        this.formSubmissionValidator = formSubmissionValidator;
     }
 
     /**
@@ -114,12 +130,12 @@ public class SaveFormSubmissionController implements AksessController {
         SecuritySession session = SecuritySession.getInstance(request);
         if (session.isLoggedIn()) {
             User user = session.getUser();
-            formSubmission.setAuthenticatedIdentity(user.getId());
-            if (formSubmission.getSubmittedBy() == null) {
-                formSubmission.setSubmittedBy(user.getName());
+            formSubmission.setAuthenticatedIdentity(session.getIdentity());
+            if (formSubmission.getSubmittedByName() == null) {
+                formSubmission.setSubmittedByName(user.getName());
             }
-            if (formSubmission.getEmail() == null) {
-                formSubmission.setEmail(user.getEmail());
+            if (formSubmission.getSubmittedByEmail() == null) {
+                formSubmission.setSubmittedByEmail(user.getEmail());
             }
         }
     }
@@ -149,5 +165,4 @@ public class SaveFormSubmissionController implements AksessController {
             values.putAll(prefillValues);
         }
     }
-
 }

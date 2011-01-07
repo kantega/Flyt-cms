@@ -1,8 +1,9 @@
 package no.kantega.publishing.modules.forms.filter;
 
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.FormValue;
+import no.kantega.publishing.api.forms.model.DefaultFormSubmission;
+import no.kantega.publishing.api.forms.model.DefaultFormValue;
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormValue;
 import no.kantega.publishing.modules.forms.validate.FormElementValidator;
 import no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory;
 import no.kantega.publishing.modules.forms.validate.FormError;
@@ -20,7 +21,8 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     private String[] excludedParameters = {"thisId", "contentId", "isAksessFormSubmit", "csrfkey"};
 
     private Map<String, String[]> params;
-    private FormSubmission formSubmission;
+    private DefaultFormSubmission formSubmission;
+    private List<FormError> errors;
     private boolean mandatory = false;
     private int currentFieldIndex;
     private FormElementValidatorFactory formElementValidatorFactory;
@@ -29,9 +31,9 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
 
     public FormSubmissionFillFilter(Map<String, String[]> params, Form form) {
         this.params = params;
-        this.formSubmission = new FormSubmission();
+        this.formSubmission = new DefaultFormSubmission();
         formSubmission.setForm(form);
-        formSubmission.setErrors(new ArrayList<FormError>());
+        this.errors = new ArrayList<FormError>();
         currentFieldIndex = 0;
     }
 
@@ -73,8 +75,12 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         super.characters(ch, start, length);
     }
 
-    public FormSubmission getFormSubmission() {
+    public DefaultFormSubmission getFormSubmission() {
         return formSubmission;
+    }
+
+    public List<FormError> getErrors() {
+        return errors;
     }
 
     private void processDiv(String name, Attributes attributes) {
@@ -98,7 +104,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         String[] values = params.get(inputName);
         boolean isEmpty = true;
         if (values != null && values.length > 0) {
-            FormValue formValue = new FormValue();
+            DefaultFormValue formValue = new DefaultFormValue();
             formValue.setName(inputName);
             formValue.setValues(values);
             String v = formValue.getValuesAsString();
@@ -114,7 +120,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
                     if (attributes.getValue("maxlength") != null) {
                         int inputMaxlength = Integer.parseInt(attributes.getValue("maxlength"));
                         if (v.length() > inputMaxlength) {
-                            formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.size"));
+                            errors.add(new FormError(inputName, currentFieldIndex, "aksess.formerror.size"));
                         }
                     }
                     // Get form element validator for given class
@@ -122,7 +128,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
                         FormElementValidator fev = formElementValidatorFactory.getFormElementValidatorById(inputClass);
                         if (fev != null) {
                             // Validate value
-                            formSubmission.setErrors(fev.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, formSubmission.getErrors()));
+                            errors = fev.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, errors);
                             validatorArg = new StringBuilder();
                         }
                     }
@@ -134,7 +140,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
 
         if (isEmpty && mandatory) {
             // Field is mandatory
-            formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
+            errors.add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
         }
 
         mandatory = false;
@@ -154,7 +160,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
             String name = (String)keys.next();
             if (!isExcludedParameter(name)) {
                 String[] value = (String[])tmpParameters.get(name);
-                FormValue formValue = new FormValue();
+                DefaultFormValue formValue = new DefaultFormValue();
                 formValue.setName(name);
                 formValue.setValues(value);
                 formSubmission.addValue(formValue);

@@ -1,5 +1,7 @@
 package no.kantega.publishing.modules.forms.model;
 
+import no.kantega.publishing.api.forms.model.DefaultForm;
+import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.EditableformAttribute;
@@ -8,61 +10,26 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 
 import java.util.List;
 
-public class AksessContentForm implements Form {
+public class AksessContentForm extends DefaultForm {
 
-    private Content content;
+    public AksessContentForm(Form form) {
+        setId(form.getId());
+        setTitle(form.getTitle());
+        setEmail(form.getEmail());
+        setFormDefinition(form.getFormDefinition());
+    }
 
     public AksessContentForm(Content content) {
-        this.content = content;
-    }
-
-    public int getId() {
-        if (content != null) {
-            return content.getId();
-        } else {
-            return -1;
-        }
-    }
-
-    public String getTitle() {
-        if (content != null) {
-            return content.getTitle();
-        } else {
-            return null;
-        }
-    }
-
-    public String getFormDefinition() {
-        if (content != null) {
-            List attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute attr = (Attribute)attributes.get(i);
-                if (attr instanceof EditableformAttribute) {
-                    return attr.getValue();
-                }
+        List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
+        for (Attribute attr : attributes) {
+            if (attr instanceof EmailAttribute) {
+                setEmail(attr.getValue());
+            }
+            if (attr instanceof EditableformAttribute) {
+                setFormDefinition(attr.getValue());
             }
         }
-        return null;
-    }
-
-    public String getEmail() {
-        if (content != null) {
-            List attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute attr = (Attribute)attributes.get(i);
-                if (attr instanceof EmailAttribute) {
-                    return attr.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    public Content getContent() {
-        return content;
-    }
-
-    public void setContent(Content content) {
-        this.content = content;
+        setId(content.getId());
+        setTitle(content.getTitle());
     }
 }

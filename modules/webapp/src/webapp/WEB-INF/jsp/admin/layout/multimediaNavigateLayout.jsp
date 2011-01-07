@@ -69,7 +69,7 @@
         <div id="Navigation">
 
             <div id="Navigator"></div>
-            <div id="Framesplit"></div>
+            <div id="Framesplit" class="framesplit navigate"></div>
         </div>
 
         <div id="MainPane">
