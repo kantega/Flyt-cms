@@ -24,10 +24,11 @@ import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.HTMLVersion;
 import no.kantega.publishing.common.data.enums.ServerType;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
+import java.net.URL;
 
 /**
  *
@@ -262,7 +263,7 @@ public class Aksess {
 
             csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
 
-            serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.name()).toUpperCase());
+            serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.toString()).toUpperCase());
             Log.info(SOURCE, "Server type:" + serverType);
 
             if (serverType == ServerType.SLAVE) {

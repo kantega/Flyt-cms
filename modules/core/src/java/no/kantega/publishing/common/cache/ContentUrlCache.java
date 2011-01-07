@@ -26,7 +26,7 @@ public class ContentUrlCache {
             url = PrettyURLEncoder.createContentUrl(associationId, title);
             urlCache.putInCache(key, url);
         }
-        return url;
+        return null;
     }
 
     public void flushEntry(int associationId) {

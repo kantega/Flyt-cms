@@ -126,7 +126,7 @@ public class TopiclistAttribute extends ListAttribute {
                                 d.add(new Field(Fields.TM_TOPICS, " " +baseName.getBaseName(), Field.Store.NO, Field.Index.ANALYZED));
                             }
                         } else {
-                            log.debug("Fant ikke topic: " + topicStrings[1], null);
+                            log.debug("Fant ikke topic: " + topicStrings, null);
                         }
                     } catch (SystemException e) {
                         log.error(e.getMessage(), e);

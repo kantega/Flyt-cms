@@ -18,17 +18,19 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XMLHelper;
-import no.kantega.publishing.common.data.XMLCacheEntry;
-import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.data.XMLCacheEntry;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.sql.ResultSet;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
+
+import org.w3c.dom.Document;
 
 public class XMLCacheAO {
     private static final String SOURCE = "XMLCacheAO";
@@ -107,7 +109,7 @@ public class XMLCacheAO {
         }
     }
 
-    public static List<XMLCacheEntry> getSummary() throws SystemException {
+    public static List getSummary() throws SystemException {
         List list = new ArrayList();
 
         Connection c = null;

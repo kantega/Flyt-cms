@@ -310,11 +310,15 @@ public class EditContentHelper {
         } else if (property.equalsIgnoreCase(ContentProperty.EXPIRE_DATE)) {
             dest.setExpireDate(from.getExpireDate());
         } else if (property.equalsIgnoreCase(ContentProperty.TOPICS)) {
-            List<Topic> topics1 = TopicAO.getTopicsByContentId(from.getId());
-            if (topics1 != null) {
+            List topics1 = TopicAO.getTopicsByContentId(from.getId());
+
+            List topics2 = dest.getTopics();
+            if (topics2 == null) {
+                dest.setTopics(topics2);
+            } else {
                 // Copy only topics which dont exists from before
-                for (Topic topic : topics1) {
-                    dest.addTopic(topic);
+                for (int i = 0; i < topics1.size(); i++) {
+                    dest.addTopic((Topic)topics1.get(i));
                 }
             }
         }

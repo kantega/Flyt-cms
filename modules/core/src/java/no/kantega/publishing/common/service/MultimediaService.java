@@ -21,8 +21,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.ao.MultimediaDao;
-import no.kantega.publishing.common.ao.MultimediaUsageDao;
+import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.MultimediaType;
@@ -33,7 +32,6 @@ import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -42,30 +40,20 @@ import java.util.List;
 public class MultimediaService {
     private static final String SOURCE = "aksess.ContentManagementService";
 
-    private MultimediaUsageDao multimediaUsageDao;
-    private MultimediaDao multimediaDao;
-
-    private HttpServletRequest request = null;
-    private SecuritySession securitySession = null;
-
-    public MultimediaService() {
-        multimediaUsageDao = (MultimediaUsageDao)RootContext.getInstance().getBean("aksessMultimediaUsageDao");
-        multimediaDao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-    }
+    HttpServletRequest request = null;
+    SecuritySession securitySession = null;
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
-        this();
         this.request = request;
         this.securitySession = SecuritySession.getInstance(request);
     }
 
     public MultimediaService(SecuritySession securitySession){
-        this();
         this.securitySession = securitySession;
     }
 
     public Multimedia getMultimedia(int id) throws SystemException {
-        return multimediaDao.getMultimedia(id);
+        return MultimediaAO.getMultimedia(id);
     }
 
 
@@ -74,11 +62,11 @@ public class MultimediaService {
     }
 
     public void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {
-        multimediaDao.streamMultimediaData(id, ish);
+        MultimediaAO.streamMultimediaData(id, ish);
     }
 
     public List<Multimedia> getMultimediaList(int parentId) throws SystemException {
-        List<Multimedia> list = multimediaDao.getMultimediaList(parentId);
+        List<Multimedia> list = MultimediaAO.getMultimediaList(parentId);
 
         List<Multimedia> approved = new ArrayList<Multimedia>();
         // Vis alle bilder + kun de mapper som brukeren har tilgang til
@@ -132,7 +120,7 @@ public class MultimediaService {
             throw new NotAuthorizedException("Kan ikke flytte multimedia", SOURCE);
         }
 
-        multimediaDao.moveMultimedia(mmId, newParentId);
+        MultimediaAO.moveMultimedia(mmId, newParentId);
     }
 
     public void deleteMultimedia(int id) throws SystemException, ObjectInUseException {
@@ -143,7 +131,7 @@ public class MultimediaService {
                 title = t.getName();
             }
         }
-        multimediaDao.deleteMultimedia(id);
+        MultimediaAO.deleteMultimedia(id);
         if (title != null) {
             EventLog.log(securitySession, request, Event.DELETE_MULTIMEDIA, title);
         }
@@ -160,7 +148,7 @@ public class MultimediaService {
      * @throws SystemException if a SystemException is thrown by the underlying AO
      */
     public List<Multimedia> searchMultimedia(String phrase, int site, int parentId) throws SystemException {
-        List<Multimedia> list = multimediaDao.searchMultimedia(phrase, site, parentId);
+        List<Multimedia> list = MultimediaAO.searchMultimedia(phrase, site, parentId);
 
         List<Multimedia> approved = new ArrayList<Multimedia>();
         // Legg kun til bilder og mapper som brukeren har tilgang til
@@ -184,10 +172,10 @@ public class MultimediaService {
     public List getUsages(int multimediaId) throws SystemException {
         List pages = new ArrayList();
 
-        List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
-        for (Integer contentId : contentIds) {
+        List contentIds = MultimediaUsageAO.getUsagesForMultimediaId(multimediaId);
+        for (int i = 0; i < contentIds.size(); i++) {
             ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(contentId);
+            cid.setContentId((Integer)contentIds.get(i));
             Content content = ContentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);
@@ -203,7 +191,7 @@ public class MultimediaService {
      * @return
      */
     public Multimedia getProfileImageForUser(String userId) {
-        return multimediaDao.getProfileImageForUser(userId);
+        return MultimediaAO.getProfileImageForUser(userId);
     }
 
     /**
@@ -216,7 +204,7 @@ public class MultimediaService {
             return;
         }
         //Check if the user already has an image.
-        Multimedia profileImage = multimediaDao.getProfileImageForUser(mm.getProfileImageUserId());
+        Multimedia profileImage = MultimediaAO.getProfileImageForUser(mm.getProfileImageUserId());
         if (profileImage != null) {
             mm.setId(profileImage.getId());
         }

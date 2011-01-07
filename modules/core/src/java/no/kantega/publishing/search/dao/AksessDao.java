@@ -124,7 +124,6 @@ public class AksessDao {
     }
 
     // TODO: Slett denne ?
-    @Deprecated
     public int[] getAttachmentIdsByContentId(int contentId) throws SQLException {
         Connection c = dataSource.getConnection();
 
@@ -137,12 +136,12 @@ public class AksessDao {
             List ids = new ArrayList();
 
             while(rs.next()) {
-                ids.add(rs.getInt(1));
+                ids.add(new Integer(rs.getInt(1) ));
             }
 
             int[] ret = new int[ids.size()];
             for (int i = 0; i < ret.length; i++) {
-                ret[i] = (Integer) ids.get(i);
+                ret[i] =  ((Integer)ids.get(i)).intValue();
             }
 
             return ret;

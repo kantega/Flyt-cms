@@ -44,7 +44,7 @@ public class HearingAO {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
         return (Hearing) template.queryForObject("select * from hearing where HearingId = ?",
-                new Integer[] {id},
+                new Integer[] {new Integer(id)},
                 new RowMapper() {
                     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
                         return getHearingFromRS(resultSet);
@@ -58,7 +58,7 @@ public class HearingAO {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
         List list = template.query("select * from hearing where ContentVersionId = ?",
-                new Integer[] {contentVersionId},
+                new Integer[] {new Integer(contentVersionId)},
                 new RowMapper() {
                     public Object mapRow(ResultSet resultSet, int i) throws SQLException {
                         return getHearingFromRS(resultSet);
@@ -76,7 +76,7 @@ public class HearingAO {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
         return template.query("select HearingCommentId, HearingId, UserRef, CommentDate, CommentContent from hearingcomment WHERE HearingId=? order by CommentDate",
-        new Object[] {hearingId},
+        new Object[] {new Integer(hearingId)},
             new RowMapper() {
                 public Object mapRow(ResultSet resultSet, int i) throws SQLException {
                     return getHearingCommentFromResultSet(resultSet);
@@ -93,11 +93,11 @@ public class HearingAO {
         if(comment.getId() > 0) {
             template.update("update hearingcomment set HearingId= ?, UserRef = ?, CommmentDate = ?, CommentContent = ? where HearingCommentId = ?",
                     new Object[] {
-                            comment.getId(),
+                            new Integer(comment.getId()),
                             comment.getUserRef(),
                             new Timestamp(comment.getDate().getTime()),
                             comment.getComment(),
-                            comment.getId()});
+                            new Integer(comment.getId())});
             return comment.getId();
 
         } else {
@@ -144,9 +144,9 @@ public class HearingAO {
         if(hearing.getId() > 0) {
             template.update("update hearing set ContentVersionId = ?, Deadline = ? where HearingId = ?",
                     new Object[] {
-                            hearing.getContentVersionId(),
+                            new Integer(hearing.getContentVersionId()),
                             new Timestamp(hearing.getDeadLine().getTime()),
-                            hearing.getId()
+                            new Integer(hearing.getId())
                     });
             return hearing.getId();
 
@@ -175,10 +175,10 @@ public class HearingAO {
         if(invitee.getId() > 0) {
             template.update("update hearinginvitee set HearingId = ?, InviteeType= ?, InviteeRef = ? where HearingInviteeId = ?",
                     new Object[] {
-                            invitee.getHearingId(),
-                            invitee.getType(),
+                            new Integer(invitee.getHearingId()),
+                            new Integer(invitee.getType()),
                             invitee.getReference(),
-                            invitee.getId()
+                            new Integer(invitee.getId())
                     });
             return invitee.getId();
 
@@ -213,7 +213,7 @@ public class HearingAO {
             JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
             return template.query("select HearingInviteeId, HearingId, InviteeType, InviteeRef from hearinginvitee where hearingId=? AND InviteeType = ?",
-                    new Integer[] {hearingId, type},
+                    new Integer[] {new Integer(hearingId), new Integer(type)},
                     new RowMapper() {
                         public Object mapRow(ResultSet resultSet, int i) throws SQLException {
                             return getHearingInviteeFromRS(resultSet);

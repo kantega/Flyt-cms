@@ -25,6 +25,9 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
+import no.kantega.commons.media.ImageInfo;
 import no.kantega.commons.exception.SystemException;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -40,18 +43,18 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 import com.glaforge.i18n.io.CharsetToolkit;
-import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
-
+/**
+ *
+ */
 public class UploadMultimediaAction extends AdminController {
-
     private ImageEditor imageEditor;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestParameters parameters = new RequestParameters(request, "utf-8");
+        RequestParameters param = new RequestParameters(request, "utf-8");
 
         MultimediaService mediaService = new MultimediaService(request);
 
-        int parentId = parameters.getInt("parentId");
+        int parentId = param.getInt("parentId");
 
         // Save image or other file
         Multimedia parent = null;
@@ -59,11 +62,11 @@ public class UploadMultimediaAction extends AdminController {
             parent = mediaService.getMultimedia(parentId);
         }
 
-        String name = parameters.getString("name");
-        String altName = parameters.getString("altname");
-        String author = parameters.getString("author");
+        String name = param.getString("name");
+        String altName = param.getString("altname");
+        String author = param.getString("author");
 
-        List<Multimedia> multimedia = getUploadedFiles(parameters);
+        List<Multimedia> multimedia = getUploadedFiles(param);
 
         for (Multimedia m : multimedia) {
 
@@ -85,7 +88,7 @@ public class UploadMultimediaAction extends AdminController {
             }
 
             MultimediaHelper.updateMediaDimensions(m);
-            boolean preserveImageSize = parameters.getBoolean("preserveImageSize", false);
+            boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
             if (!preserveImageSize) {
                 m = resizeMultimedia(m);
             }
@@ -105,24 +108,18 @@ public class UploadMultimediaAction extends AdminController {
         }
     }
 
-    private List<Multimedia> getUploadedFiles(RequestParameters parameters) throws IOException {
+    private List<Multimedia> getUploadedFiles(RequestParameters param) throws IOException {
         List<Multimedia> multimedia = new ArrayList<Multimedia>();
         String filename = "";
         String fileExtension = "";
 
-        MultipartFile multipartFile = parameters.getFile("file");
-
-        // Cancel if the file type is blacklisted
-        if (AttachmentBlacklistHelper.isFileTypeInBlacklist(multipartFile)) {
-            return multimedia;
-        }
-
-        if (multipartFile != null) {
-            filename = multipartFile.getOriginalFilename();
+        MultipartFile file = param.getFile("file");
+        if (file != null) {
+            filename = file.getOriginalFilename();
             fileExtension = filename.substring(filename.length() - 3, filename.length());
             if ("zip".equalsIgnoreCase(fileExtension)) {
                 // Upload of multiple files
-                return getZipFiles(multipartFile);
+                return getZipFiles(file);
             } else {
                 // Upload of single file - new or replace existing
                 if(filename.contains("/")) {
@@ -130,9 +127,9 @@ public class UploadMultimediaAction extends AdminController {
                 }
 
                 Multimedia mm = null;
-                int id = parameters.getInt("id");
+                int id = param.getInt("id");
                 if (id != -1) {
-                    MultimediaService mediaService = new MultimediaService(parameters.getRequest());
+                    MultimediaService mediaService = new MultimediaService(param.getRequest());
                     mm = mediaService.getMultimedia(id);
                 }
                 if (mm == null) {
@@ -145,7 +142,7 @@ public class UploadMultimediaAction extends AdminController {
                     }
                     mm.setName(name);
                 }
-                mm.setData(multipartFile.getBytes());
+                mm.setData(file.getBytes());
                 mm.setFilename(filename);
                 multimedia.add(mm);
             }

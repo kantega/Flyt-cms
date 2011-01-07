@@ -90,7 +90,7 @@ public class AssociationAOHelper {
 
                 ResultSet rs = st.executeQuery();
                 while(rs.next()) {
-                    int id = rs.getInt(1);
+                    int id = rs.getInt(0);
                     updateSt.setInt(1, id);
                     updateSt.executeUpdate();
                 }

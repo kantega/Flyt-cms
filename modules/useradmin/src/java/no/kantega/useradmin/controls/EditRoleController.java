@@ -50,7 +50,7 @@ public class EditRoleController extends AbstractUserAdminController {
         model.put("domain", domain);
         model.put("errors", errors);
         model.put("configurations", getRoleConfiguration());
-        model.put("numConfigurations", getRoleConfiguration().size());
+        model.put("numConfigurations", new Integer(getRoleConfiguration().size()));
 
         RoleManagementConfiguration config = getRoleConfiguration(domain);
         RoleManager manager = config.getRoleManager();

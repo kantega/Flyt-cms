@@ -37,7 +37,7 @@ public class AksessMediaFileResource extends AbstractAksessMultimediaResource im
     }
 
     public Long getMaxAgeSeconds(Auth auth) {
-        return (long) 60 * 60 * 24;
+        return new Long(60*60*24);
     }
 
     public String getContentType(String s) {
@@ -45,6 +45,6 @@ public class AksessMediaFileResource extends AbstractAksessMultimediaResource im
     }
 
     public Long getContentLength() {
-        return (long) media.getSize();
+        return new Long(media.getSize());
     }
 }

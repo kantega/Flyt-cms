@@ -74,6 +74,7 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
         token.info = null;
         token.timeout = LockTimeout.parseTimeout("30");
         token.tokenId = currentLock.tokenId;
+        currentLock = token;
         return LockResult.success(token);
     }
 

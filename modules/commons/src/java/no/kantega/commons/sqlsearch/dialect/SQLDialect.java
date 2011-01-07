@@ -26,5 +26,4 @@ import java.util.Date;
 public interface SQLDialect {
     ResultLimitorStrategy getResultLimitorStrategy();
     String getDateAsString(Date date);
-    boolean searchIsCaseSensitive();
 }

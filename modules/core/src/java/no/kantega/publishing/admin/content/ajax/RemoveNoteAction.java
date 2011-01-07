@@ -40,8 +40,13 @@ public class RemoveNoteAction extends SimpleAdminController {
 
         int noteId = param.getInt("noteId");
         if (noteId != -1) {
-            notesDao.removeNote(noteId);
+
         }
+                 
+        notesDao.removeNote(noteId);
+
+        Map<String, Object> model = new HashMap<String, Object>();
+        //model.put("contentId")
 
         return new ModelAndView(new RedirectView("ListNotes.action"), null);
     }

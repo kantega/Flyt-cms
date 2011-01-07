@@ -16,42 +16,37 @@
 
 package no.kantega.publishing.common.service;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.util.HttpHelper;
-import no.kantega.publishing.admin.content.util.EditContentHelper;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.*;
-import no.kantega.publishing.common.cache.*;
+import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.ao.*;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.InvalidTemplateReferenceException;
-import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
-import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.common.service.impl.PathWorker;
-import no.kantega.publishing.common.service.impl.SiteMapWorker;
-import no.kantega.publishing.common.service.impl.TrafficLogger;
-import no.kantega.publishing.common.service.lock.ContentLock;
+import no.kantega.publishing.common.service.impl.*;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.common.service.lock.ContentLock;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.*;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
-import no.kantega.publishing.event.ContentEvent;
-import no.kantega.publishing.event.ContentListenerUtil;
-import no.kantega.publishing.security.SecuritySession;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.util.HttpHelper;
+import no.kantega.commons.log.Log;
+
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
 import java.util.*;
+import java.sql.SQLException;
 
 /**
  *
@@ -61,37 +56,13 @@ public class ContentManagementService {
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;
-    private final Cache contentCache;
-    private final Cache contentListCache;
-    private final Cache siteMapCache;
-    private final Cache xmlCache;
-    private EventLogAO eventLogAO;
-    private boolean cachingEnabled;
-
-    private ContentManagementService() {
-        final CacheManager cacheManager = (CacheManager) RootContext.getInstance().getBean("cacheManager", CacheManager.class);
-        contentCache = cacheManager.getCache("ContentCache");
-        contentListCache = cacheManager.getCache("ContentListCache");
-        siteMapCache = cacheManager.getCache("SiteMapCache");
-        xmlCache = cacheManager.getCache("XmlCache");
-
-        eventLogAO = (EventLogAO) RootContext.getInstance().getBean("eventLogAO");
-
-        try {
-            cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
-        this();
         this.request = request;
         this.securitySession = SecuritySession.getInstance(request);
     }
 
     public ContentManagementService(SecuritySession securitySession) throws SystemException {
-        this();
         this.securitySession = securitySession;
     }
 
@@ -195,7 +166,7 @@ public class ContentManagementService {
     public Content getContent(ContentIdentifier id, boolean logView) throws SystemException, NotAuthorizedException {
         boolean adminMode = HttpHelper.isAdminMode(request);
 
-        Content c = getContentFromCache(id, adminMode);
+        Content c = ContentAO.getContent(id, adminMode);
         if (c != null) {
             assertCanView(c, adminMode, securitySession);
         }
@@ -204,23 +175,6 @@ public class ContentManagementService {
             TrafficLogger.log(c, request);
         }
         return c;
-    }
-
-    private Content getContentFromCache(ContentIdentifier id, boolean adminMode) {
-        if(cachingEnabled) {
-            final Object key = id.getAssociationId();
-            final Element element = contentCache.get(key);
-
-            if(element == null) {
-                Content content = ContentAO.getContent(id, adminMode);
-                contentCache.put(new Element(key, content));
-                return content;
-            } else {
-                return (Content) element.getObjectValue();
-            }
-        } else {
-            return ContentAO.getContent(id, adminMode);
-        }
     }
 
     /**
@@ -245,7 +199,7 @@ public class ContentManagementService {
         }
 
         if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode && !c.getModifiedBy().equals(userId)) {
-            throw new NotAuthorizedException("User is neither in admin mode or hearing instance", SOURCE);
+            throw new NotAuthorizedException("User is neigther in admin mode or hearing instance", SOURCE);
         }
 
         if (c.getStatus() == ContentStatus.DRAFT && !adminMode && !c.getModifiedBy().equals(userId)) {
@@ -443,25 +397,6 @@ public class ContentManagementService {
     }
 
     /**
-     * Updates the visibility status of a content object
-     * @param content
-     * @param newVisibilityStatus
-     */
-    public void setContentVisibilityStatus(Content content, int newVisibilityStatus) {
-        ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
-
-        if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
-            ContentListenerUtil.getContentNotifier().contentExpired(new ContentEvent().setContent(content));
-        } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
-            ContentListenerUtil.getContentNotifier().contentActivated(new ContentEvent().setContent(content));
-            if (content.getStatus() == ContentStatus.PUBLISHED) {
-                ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(content));
-            }
-        }
-        EventLog.log(securitySession, request, "CV-STATUS-" +ContentVisibilityStatus.getName(newVisibilityStatus), content.getTitle(), content);
-    }
-
-    /**
      * Setter ny status p� et objekt, f.eks ved godkjenning av en side.
      * Legger til / fjerner objektet til/fra s�keindeks
      * @param cid - ContentIdenfier for nytt objekt
@@ -517,8 +452,6 @@ public class ContentManagementService {
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
             ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(content));
         }
-
-        ContentListenerUtil.getContentNotifier().contentStatusChanged(new ContentEvent().setContent(content));
 
         return content;
     }
@@ -609,7 +542,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
-        List list = getContentListFromCache(query, maxElements, sort, getAttributes, getTopics);
+        List list = ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
 
         List<Content> approved = new ArrayList<Content>();
         // Legg kun til elementer som brukeren har tilgang til
@@ -621,24 +554,6 @@ public class ContentManagementService {
         }
 
         return approved;
-    }
-
-    private List<Content> getContentListFromCache(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
-        if(cachingEnabled) {
-            ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
-
-            ParameterCacheKey key = new ParameterCacheKey(qp, maxElements, sort, getAttributes, getTopics);
-
-            Element element = contentListCache.get(key);
-
-            if(element == null) {
-                element = new Element(key, ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics));
-                contentListCache.put(element);
-            }
-            return (List<Content>) element.getObjectValue();
-        } else {
-            return ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
-        }
     }
 
 
@@ -764,23 +679,7 @@ public class ContentManagementService {
         if (associationCategoryName != null) {
             category = AssociationCategoryCache.getAssociationCategoryByPublicId(associationCategoryName);
         }
-        return getSiteMapFromCache(siteId, depth, language, rootId, currentId, category);
-    }
-
-    private SiteMapEntry getSiteMapFromCache(int siteId, int depth, int language, int rootId, int currentId, AssociationCategory category) {
-        if(cachingEnabled) {
-            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, currentId, category.getId());
-
-            Element element = siteMapCache.get(key);
-            if(element == null) {
-                element = new Element(key, SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, currentId));
-                siteMapCache.put(element);
-            }
-
-            return (SiteMapEntry) element.getObjectValue();
-        } else {
-            return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, currentId);
-        }
+        return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, currentId);
     }
 
     /**
@@ -883,12 +782,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List searchEventLog(Date from, Date end, String userId, String subjectName, String eventName) throws SystemException {
-        return eventLogAO.createQuery()
-                .setFrom(from)
-                .setTo(end)
-                .setUserId(userId)
-                .setSubjectName(subjectName)
-                .setEventName(eventName).list();
+        return EventLogAO.search(from, end, userId, subjectName, eventName);
     }
 
 
@@ -983,7 +877,6 @@ public class ContentManagementService {
      */
     public void setAssociationsPriority(List<Association> associations) throws SystemException {
         AssociationAO.setAssociationsPriority(associations);
-        ContentListenerUtil.getContentNotifier().setAssociationsPriority(new ContentEvent());
     }
 
     /**
@@ -1008,7 +901,6 @@ public class ContentManagementService {
      */
     public void copyAssociations(Association source, Association target, AssociationCategory category, boolean copyChildren) throws SystemException {
         AssociationAO.copyAssociations(source, target, category, copyChildren);
-        ContentListenerUtil.getContentNotifier().associationCopied(new ContentEvent().setAssociation(source));
     }
 
 
@@ -1020,7 +912,6 @@ public class ContentManagementService {
      */
     public void addAssociation(Association association) throws SystemException {
         AssociationAO.addAssociation(association);
-        ContentListenerUtil.getContentNotifier().associationAdded(new ContentEvent().setAssociation(association));
     }
 
 
@@ -1037,7 +928,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List deleteAssociationsById(int[] associationIds, boolean deleteMultiple) throws SystemException {
-        List<Integer> associations = new ArrayList<Integer>();
+        List associations = new ArrayList();
         List deletedItems = new ArrayList();
 
         for (int i = 0; i < associationIds.length; i++) {
@@ -1046,7 +937,7 @@ public class ContentManagementService {
                 if (a.getAssociationtype() == AssociationType.SHORTCUT) {
                     // Sjekk tilgangen til snarvei
                     if (securitySession.isAuthorized(a, Privilege.APPROVE_CONTENT)) {
-                        associations.add(a.getId());
+                        associations.add(new Integer(a.getId()));
                     }
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker p�
@@ -1064,7 +955,7 @@ public class ContentManagementService {
                     }
                     if (securitySession.isAuthorized(c, priv)) {
                         deletedItems.add(c);
-                        associations.add(a.getId());
+                        associations.add(new Integer(a.getId()));
                     }
                 }
             }
@@ -1287,17 +1178,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
-        if(cachingEnabled) {
-            final Object key = (Object) id;
-            Element element = xmlCache.get(key);
-            if(element == null) {
-                element = new Element(key, XMLCacheAO.getXMLFromCache(id));
-                xmlCache.put(element);
-            }
-            return (XMLCacheEntry) element.getObjectValue();
-        } else {
-            return XMLCacheAO.getXMLFromCache(id);
-        }
+        return XMLCacheAO.getXMLFromCache(id);
     }
 
     /**
@@ -1309,33 +1190,5 @@ public class ContentManagementService {
      */
     public List getXMLCacheSummary() throws SystemException {
         return XMLCacheAO.getSummary();
-    }
-
-
-
-    final static class ParameterCacheKey {
-        private final Object[] cacheKey;
-
-        ParameterCacheKey(Object... cacheKey) {
-            this.cacheKey = cacheKey;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ParameterCacheKey that = (ParameterCacheKey) o;
-
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
-            if (!Arrays.equals(cacheKey, that.cacheKey)) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(cacheKey);
-        }
     }
 }

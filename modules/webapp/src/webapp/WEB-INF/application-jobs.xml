@@ -18,7 +18,12 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
+    <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob">
+        <property name="contentEventNotifier">
+            <ref bean="contentListenerNotifier"/>
+        </property>
+    </bean>
+
 
     <bean id="contentStateChangeJobDetail"
         class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -212,7 +217,6 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="linkDao" value-ref="aksessLinkDao"/>
-                <entry key="multimediaUsageDao" value-ref="aksessMultimediaUsageDao"/>
             </map>
         </property>
     </bean>

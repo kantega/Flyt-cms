@@ -18,18 +18,30 @@ package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.commons.util.HttpHelper;
 
+import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public class EditLinkTag  extends BodyTagSupport {
     private static final String SOURCE = "aksess.EditLinkTag";
@@ -52,6 +64,7 @@ public class EditLinkTag  extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+            ContentManagementService cms = new ContentManagementService(request);
 
             if (HttpHelper.isAdminMode(request)) {
                 return SKIP_BODY;

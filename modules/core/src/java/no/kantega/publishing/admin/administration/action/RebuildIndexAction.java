@@ -63,15 +63,15 @@ public class RebuildIndexAction extends AdminController {
                     indexManager.addIndexJob(new RebuildSpellCheckIndexJob());
                 }
 
-                map.put("current", current);
-                map.put("total", total);
+                map.put("current", new Integer(current));
+                map.put("total", new Integer(total));
                 return new ModelAndView(new RedirectView("RebuildIndex.action"));
             } else {
                 return new ModelAndView(formView);
             }
         } else {
-            map.put("current", current);
-            map.put("total", total);
+            map.put("current", new Integer(current));
+            map.put("total", new Integer(total));
             map.put("docType", docType);
             return new ModelAndView(statusView, map);
         }

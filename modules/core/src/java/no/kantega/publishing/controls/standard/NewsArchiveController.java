@@ -108,7 +108,7 @@ public class NewsArchiveController implements AksessController {
             startYear = currentYear;
         }
         for (int i = currentYear; i >= startYear; i--) {
-            yearList.add(i);
+            yearList.add(new Integer(i));
         }
 
         Map monthMap = new TreeMap();
@@ -121,7 +121,7 @@ public class NewsArchiveController implements AksessController {
         for (int i = 0; i < 12; i++) {
             calendar.set(year, i, 1);
             String m = df.format(calendar.getTime());
-            monthMap.put(i,m);
+            monthMap.put(new Integer(i),m);
         }
 
 
@@ -129,11 +129,11 @@ public class NewsArchiveController implements AksessController {
         model.put("fromDate", fromDate);
         model.put("toDate", toDate);
         model.put("showArchived", showArchived);
-        model.put("max", max);
+        model.put("max", new Integer(max));
         model.put("yearList", yearList);
         model.put("monthMap", monthMap);
-        model.put("selectedYear", year);
-        model.put("selectedMonth", month);
+        model.put("selectedYear", new Integer(year));
+        model.put("selectedMonth", new Integer(month));
 
 
         return model;

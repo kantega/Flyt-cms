@@ -101,16 +101,16 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     status = content.getStatus();
                     switch (status) {
                         case ContentStatus.DRAFT:
-                            message = "draft";
+                            message += "draft";
                             break;
                         case ContentStatus.PUBLISHED:
-                            message = "published";
+                            message += "published";
                             break;
                         case ContentStatus.WAITING_FOR_APPROVAL:
-                            message = "waiting";
+                            message += "waiting";
                             break;
                         case ContentStatus.HEARING:
-                            message = "hearing";
+                            message += "hearing";
                             break;
                     }
                     model.put("message", message);

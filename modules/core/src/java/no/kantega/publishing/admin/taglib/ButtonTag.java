@@ -17,48 +17,59 @@
 package no.kantega.publishing.admin.taglib;
 
 import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.util.LocaleLabels;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.text.DateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 /**
- *
+ * User: Anders Skar, Kantega AS
+ * Date: Jul 1, 2008
+ * Time: 9:53:35 AM
  */
-public class FormatTimeTag extends TagSupport {
-    Date date = null;
+public class ButtonTag  extends TagSupport {
+    String href = null;
+    String button = null;
+    String title = null;
+    String tabindex = null;
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setHref(String href) {
+        this.href = href;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setButton(String button) {
+        this.button = button;
     }
 
     public int doStartTag() throws JspException {
         JspWriter out;
         try {
+            Locale locale = Aksess.getDefaultAdminLocale();
+            String language = locale.getLanguage().toLowerCase();
+
             out = pageContext.getOut();
 
-            String dateFormat = Aksess.getDefaultTimeFormat();
-
-            if (date == null) {
-                String defaultDate = dateFormat;
-                defaultDate = defaultDate.replaceAll("H", LocaleLabels.getLabel("aksess.dateformat.character.hour", Aksess.getDefaultAdminLocale()));
-                defaultDate = defaultDate.replaceAll("m", LocaleLabels.getLabel("aksess.dateformat.character.minute", Aksess.getDefaultAdminLocale()));
-                out.write(defaultDate);
-            } else {
-                DateFormat df = new SimpleDateFormat(dateFormat);
-                out.write(df.format(date));
+            out.write("<a href=\"" + href + "\"");
+            if (tabindex != null) {
+                out.write(" tabindex=\"" + tabindex + "\"");
             }
-
+            out.write(">");
+            out.write("<img src=\"" + Aksess.getContextPath() + "/admin/buttons/default/" + language + "/" + button + ".gif\" alt=\"" + title + "\" title=\"" + title + "\" border=\"0\">");
+            out.write("</a>");
         } catch (IOException e) {
             throw new JspException("ERROR: ButtonTag", e);
         }
 
-        date = null;
+        href = null;
+        button = null;
+        title = null;
+        tabindex = null;
 
         return SKIP_BODY;
     }
@@ -68,4 +79,3 @@ public class FormatTimeTag extends TagSupport {
     }
 
 }
-

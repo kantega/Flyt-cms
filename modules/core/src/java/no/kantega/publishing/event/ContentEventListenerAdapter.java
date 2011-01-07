@@ -46,16 +46,6 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
     public void associationUpdated(ContentEvent event) {
     }
 
-    public void associationCopied(ContentEvent event) {
-    }
-
-    public void associationAdded(ContentEvent event) {
-    }
-
-    public void setAssociationsPriority(ContentEvent contentEvent) {
-
-    }
-
     public void contentCreated(ContentEvent event) {
 
     }
@@ -86,9 +76,5 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
 
     public void attachmentUpdated(ContentEvent event) {
 
-    }
-
-    public void contentStatusChanged(ContentEvent contentEvent) {
-        
     }
 }

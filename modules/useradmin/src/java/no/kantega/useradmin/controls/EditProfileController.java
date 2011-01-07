@@ -48,7 +48,7 @@ public class EditProfileController extends AbstractUserAdminController {
         model.put("domain", domain);
         model.put("errors", errors);
         model.put("configurations", getProfileConfiguration());
-        model.put("numConfigurations", getProfileConfiguration().size());
+        model.put("numConfigurations", new Integer(getProfileConfiguration().size()));
 
         ProfileManagementConfiguration config = getProfileConfiguration(domain);
         ProfileManager manager = config.getProfileManager();
@@ -80,7 +80,7 @@ public class EditProfileController extends AbstractUserAdminController {
             profile.setDepartment(param.getString("department", true));
 
             model.put("profile", profile);
-            model.put("isNew", isNew);
+            model.put("isNew", Boolean.valueOf(isNew));
 
             // Hent eksisterende profil hvis den finnes
             Profile oldProfile = manager.getProfileForUser(identity);

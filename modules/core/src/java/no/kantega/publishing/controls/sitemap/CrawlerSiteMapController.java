@@ -43,7 +43,7 @@ public class CrawlerSiteMapController implements Controller {
 
         if (enabled) {
             model.put("associationcategory", associationcategory);
-            model.put("depth", depth);
+            model.put("depth", new Integer(depth));
             mav = new ModelAndView("/WEB-INF/jsp/sitemap/sitemap.jsp", model);
         } else {
             response.sendError(404);

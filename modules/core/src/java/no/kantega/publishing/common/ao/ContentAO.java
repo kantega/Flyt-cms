@@ -575,22 +575,21 @@ public class ContentAO {
 
         final StringBuffer cvids = new StringBuffer();
 
-        doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
-            public void handleContent(Content content) {
-                contentList.add(content);
-                contentMap.put("" + content.getVersionId(), content);
-                if(cvids.length() != 0) {
-                    cvids.append(",");
-                }
-                cvids.append(content.getVersionId());
-            }
-        });
-
-
         Connection c = null;
 
         try {
             c = dbConnectionFactory.getConnection();
+
+            doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
+                public void handleContent(Content content) {
+                    contentList.add(content);
+                    contentMap.put("" + content.getVersionId(), content);
+                    if(cvids.length() != 0) {
+                        cvids.append(",");
+                    }
+                    cvids.append(content.getVersionId());
+                }
+            });
 
 
             int listSize = contentList.size();
@@ -1095,7 +1094,7 @@ public class ContentAO {
             query = "update content set " + field + " = ? where ContentId in (" + whereClause + ")";
             PreparedStatement cp = c.prepareStatement(query);
             cp.setString(1, newValue);
-            cp.executeUpdate();
+            int i = cp.executeUpdate();
             cp.close();
         }
     }

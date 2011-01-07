@@ -24,6 +24,27 @@
     <short-name>admin</short-name>
     <uri>http://www.kantega.no/aksess/tags/admin</uri>
     <tag>
+        <description>Create a locale specific button</description>
+        <name>button</name>
+        <tag-class>no.kantega.publishing.admin.taglib.ButtonTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>button</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>href</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>title</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
         <description>Format a date using admin locale</description>
         <name>formatdate</name>
         <tag-class>no.kantega.publishing.admin.taglib.FormatDateTag</tag-class>

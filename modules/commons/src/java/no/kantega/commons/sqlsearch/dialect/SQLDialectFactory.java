@@ -16,6 +16,7 @@
 
 package no.kantega.commons.sqlsearch.dialect;
 
+import no.kantega.commons.sqlsearch.resultlimit.ResultLimitorStrategy;
 
 /**
  *

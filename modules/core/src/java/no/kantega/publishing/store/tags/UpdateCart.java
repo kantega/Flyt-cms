@@ -65,7 +65,7 @@ public class UpdateCart extends TagSupport {
                             int quantity = Integer.parseInt(value[0]);
 
                             if(quantity == 0) {
-                                removes.add(line);
+                                removes.add(new Integer(line));
                             } else if(quantity > 0) {
                                 ((CartLine) cart.getLines().get(line)).updateQuantity(quantity);
                             }

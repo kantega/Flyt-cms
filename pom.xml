@@ -23,12 +23,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.1.21-SNAPSHOT</version>
+    <version>7.1.21</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.1.21</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.1.21</developerConnection>
     </scm>
 
     <pluginRepositories>
@@ -60,7 +60,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <version>4.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -148,9 +148,9 @@
                 <version>${log4j.version}</version>
             </dependency>
             <dependency>
-                <groupId>commons-dbcp</groupId>
-                <artifactId>commons-dbcp</artifactId>
-                <version>${commons-dbcp.version}</version>
+                <groupId>commons-pool</groupId>
+                <artifactId>commons-pool</artifactId>
+                <version>${commons-pool.version}</version>
             </dependency>
 
             <dependency>
@@ -229,12 +229,12 @@
 
     <properties>
         <codec.version>1.2</codec.version>
-        <commons-dbcp.version>1.3</commons-dbcp.version>
+        <commons-pool.version>1.3</commons-pool.version>
         <commons-logging.version>1.0.4</commons-logging.version>
         <httpclient.version>3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <lucene.version>2.4.0</lucene.version>
-        <log4j.version>1.2.12</log4j.version>
+        <log4j.version>1.2.9</log4j.version>
         <nekohtml.version>0.9.5</nekohtml.version>
         <poi.version>3.7</poi.version>
         <springframework.version>2.5.6.SEC02</springframework.version>

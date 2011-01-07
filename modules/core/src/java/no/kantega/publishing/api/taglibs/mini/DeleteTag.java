@@ -39,8 +39,6 @@ public class DeleteTag extends AbstractSimpleEditTag {
 
     private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
     private String associationId = null;
-    private String confirmationlabel = null;
-    private String bundle = null;
 
     public int doAfterBody() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -67,12 +65,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
                     locale = new Locale("no", "NO");
                 }
 
-                String txt = null;
-                if(confirmationlabel != null && bundle != null){
-                    txt = LocaleLabels.getLabel(confirmationlabel, bundle, locale);
-                }else{
-                    txt =  LocaleLabels.getLabel("aksess.confirmdelete.mini", locale);
-                }
+                String txt = LocaleLabels.getLabel("aksess.confirmdelete.mini", locale);
 
                 link.append(" href=\"Javascript:if (confirm('" + txt + "')) location.href='");
                 link.append(URLHelper.getRootURL(request));
@@ -102,8 +95,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
 
         resetVars();
         associationId = null;
-        confirmationlabel = null;
-        bundle = null;
+
         return SKIP_BODY;
     }
 
@@ -111,15 +103,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
         this.associationId = associationid;
     }
 
-    public void setConfirmationlabel(String confirmationlabel) {
-        this.confirmationlabel = confirmationlabel;
-    }
-
-    public void setBundle(String bundle) {
-        this.bundle = bundle;
-    }
-
     public void setConfirmmultipledelete(boolean tmp) {
-
+        
     }
 }

@@ -7,8 +7,9 @@ import no.kantega.publishing.common.data.Content;
 import java.util.Map;
 
 /**
- * Container object for objects which were updated.  Which objects have values depends on the event.  E.g for a contentExpired event
- * the content object is set, for a associationUpdated event the association object is set 
+ * User: Kristian Selnæs
+ * Date: 12.mai.2010
+ * Time: 15:09:28
  */
 public class ContentEvent {
 

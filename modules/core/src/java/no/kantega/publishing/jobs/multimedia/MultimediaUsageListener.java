@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
-import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import no.kantega.publishing.common.ao.MultimediaUsageAO;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
@@ -29,14 +29,14 @@ import no.kantega.publishing.common.util.MultimediaHelper;
 import java.util.List;
 
 /**
- *
+ * User: Anders Skar, Kantega AS
+ * Date: Oct 13, 2008
+ * Time: 10:47:32 AM
  */
 public class MultimediaUsageListener extends ContentEventListenerAdapter {
-    private MultimediaUsageDao multimediaUsageDao;
-
     public void contentSaved(ContentEvent event) {
         // Delete all usages for this content
-        multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
+        MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
         
         // Add all contentattributes
         addAttributes(event.getContent().getId(), event.getContent().getAttributes(AttributeDataType.CONTENT_DATA));
@@ -46,18 +46,18 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentDeleted(ContentEvent event) {
-        multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
+        MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
     }
 
     public void contentExpired(ContentEvent event) {
         int action = event.getContent().getExpireAction();
 
         if(action == ExpireAction.DELETE) {
-            multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
+            MultimediaUsageAO.removeUsageForContentId(event.getContent().getId());
         }
     }
 
-    private void addAttributes(int contentId, List attributes) {
+    private static void addAttributes(int contentId, List attributes) {
         for (int i = 0; i < attributes.size(); i++) {
             Attribute attribute = (Attribute)attributes.get(i);
             if (attribute instanceof MediaAttribute) {
@@ -66,7 +66,8 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
                 if (mediaAttribute.getValue() != null) {
                     try {
                         int multimediaId = Integer.parseInt(mediaAttribute.getValue());
-                        multimediaUsageDao.addUsageForContentId(contentId, multimediaId);
+
+                        MultimediaUsageAO.addUsageForContentId(contentId, multimediaId);
                     } catch (NumberFormatException e) {
                         // Do nothing
                     }
@@ -79,14 +80,10 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
                 if (value != null) {
                     List<Integer> ids = MultimediaHelper.getMultimediaIdsFromText(value);
                     for (Integer id : ids) {
-                        multimediaUsageDao.addUsageForContentId(contentId, id);
+                        MultimediaUsageAO.addUsageForContentId(contentId, id);
                     }
                 }
             }
         }
-    }
-
-    public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
-        this.multimediaUsageDao = multimediaUsageDao;
     }
 }

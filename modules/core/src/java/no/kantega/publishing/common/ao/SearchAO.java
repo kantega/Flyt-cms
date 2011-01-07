@@ -100,8 +100,8 @@ public class SearchAO {
                 new Timestamp(new java.util.Date().getTime()),
                 queryString,
                 exactQuery,
-                numberOfHits,
-                siteId
+                new Integer(numberOfHits),
+                new Integer(siteId)
         });
     }
 
@@ -111,7 +111,7 @@ public class SearchAO {
 
         List objects = new ArrayList();
 
-        objects.add(siteId);
+        objects.add(new Integer(siteId));
         buffer.append("where siteId=?");
 
         if(after!= null) {
