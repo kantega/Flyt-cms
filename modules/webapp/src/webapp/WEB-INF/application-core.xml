@@ -156,5 +156,10 @@
 
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 
-    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>    
+    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
+
+    <bean id="pluginConfigProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
+        <constructor-arg value="${appDir}/plugins/config/"/>
+    </bean>
+    
 </beans>
