@@ -22,10 +22,14 @@
         <constructor-arg value="org.kantega.openaksess.groovyplugin"/>
         <property name="handlerMappings">
             <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+                <property name="alwaysUseFullPath" value="true"/>
                 <property name="mappings">
                     <value>
                         /admin/groovy.action=groovyConsole
                     </value>
+                </property>
+                <property name="interceptors">
+                    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor"/>
                 </property>
             </bean>
         </property>
