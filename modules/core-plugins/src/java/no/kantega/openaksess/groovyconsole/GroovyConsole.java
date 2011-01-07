@@ -16,38 +16,34 @@
 
 package no.kantega.openaksess.groovyconsole;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.BeanFactoryUtils;
-import org.springframework.beans.BeansException;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationContext;
-import org.codehaus.groovy.control.CompilationFailedException;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.io.StringWriter;
-import java.io.PrintWriter;
-
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import org.codehaus.groovy.control.CompilationFailedException;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.ServletContextAware;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  */
 @Controller
 @RequestMapping("/admin/groovy.action")
 public class GroovyConsole implements ApplicationContextAware, ServletContextAware {
-    private String view = "/no/kantega/openaksess/groovyconsole/views/groovy";
+    private String view = "no/kantega/openaksess/groovyconsole/views/groovy";
     private ApplicationContext applicationContext;
     private ServletContext servletContext;
 
