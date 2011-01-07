@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.Filter;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,6 +38,8 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
 
     private List<FormDeliveryService> formDeliveryServices = Collections.emptyList();
     private ApplicationContext applicationContext;
+
+    private List<Filter> requestFilters = Collections.emptyList();
 
     public OpenAksessPluginAdapter(String pluginId) {
         super(pluginId);
@@ -73,4 +76,13 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
     public List<MessageSource> getMessageSources() {
         return Collections.singletonList((MessageSource) applicationContext);
     }
+
+    public List<Filter> getRequestFilters() {
+        return requestFilters;
+    }
+
+    public void setRequestFilters(List<Filter> requestFilters) {
+        this.requestFilters = requestFilters;
+    }
+    
 }

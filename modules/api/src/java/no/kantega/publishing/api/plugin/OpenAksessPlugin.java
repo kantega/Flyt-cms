@@ -22,6 +22,7 @@ import org.kantega.jexmec.Plugin;
 import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.Filter;
 import java.util.List;
 
 
@@ -35,4 +36,6 @@ public interface OpenAksessPlugin extends Plugin {
     List<FormDeliveryService> getFormDeliveryServices();
 
     List<MessageSource> getMessageSources();
+
+    List<Filter> getRequestFilters();
 }
