@@ -235,7 +235,7 @@
         <fileupload.version>1.2.1</fileupload.version>
         <lucene.version>2.9.3</lucene.version>
         <log4j.version>1.2.16</log4j.version>
-        <nekohtml.version>1.9.12</nekohtml.version>
+        <nekohtml.version>1.9.14</nekohtml.version>
         <poi.version>3.7</poi.version>
         <springframework.version>3.0.5.RELEASE</springframework.version>
         <securityapi.version>2.3</securityapi.version>
