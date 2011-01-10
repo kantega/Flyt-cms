@@ -82,7 +82,7 @@
 
     <div class="widgetcolumn">
 
-        <c:if test="${fn:length(contentForApproval) > 1}">
+        <c:if test="${fn:length(contentForApproval) > 0}">
             <div class="widget">
                 <div class="widget-header"><h2><kantega:label key="aksess.mypage.approval"/></h2></div>
                 <div class="widget-content">
