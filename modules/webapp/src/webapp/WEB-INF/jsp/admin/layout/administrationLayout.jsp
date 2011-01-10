@@ -1,6 +1,17 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
+<%@ page import="no.kantega.publishing.api.plugin.OpenAksessPlugin" %>
+<%@ page import="no.kantega.publishing.api.ui.MenuItem" %>
+<%@ page import="no.kantega.publishing.api.ui.UIContribution" %>
+<%@ page import="no.kantega.publishing.api.ui.UIServices" %>
+<%@ page import="no.kantega.publishing.spring.PluginMessageSource" %>
+<%@ page import="org.kantega.jexmec.PluginManager" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Locale" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page buffer="none" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -45,52 +56,96 @@
 
 <kantega:section id="body">
     <%
-        String root = Aksess.getContextPath() + "/admin/administration/";
+
+        UIServices uiServices = (UIServices) WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext()).getBean("uiServices");
+
+        MenuItem menu = uiServices.createMenu();
+        
+        final String root = Aksess.getContextPath();
+        final String adminRoot = root + "/admin/administration/";
+
+        menu.addLink("aksess.systeminfo.title", adminRoot + "ViewSystemInformation.action");
+        menu.addLink("aksess.sites.title", adminRoot + "ListSites.action");
+        menu.addLink("aksess.templateconfig.title", adminRoot + "ReloadTemplateConfiguration.action");
+
+        if (Aksess.isTopicMapsEnabled()) {
+            menu.addLink("aksess.topicmaps.title", adminRoot + "topicmaps/ListTopicMaps.action");
+        }
+
+        MenuItem searchMenu = menu.addChildMenuItem("aksess.search.title");
+        {
+            searchMenu.addLink("aksess.search.log.title", adminRoot + "ViewSearchLog.action");
+            searchMenu.addLink("aksess.search.rebuild.title", adminRoot + "RebuildIndex.action");
+        }
+
+        MenuItem securityMenu = menu.addChildMenuItem("aksess.security.title");
+        {
+            securityMenu.addLink("aksess.useradmin.profile.title" , adminRoot + "useradmin/profile/");
+            securityMenu.addLink("aksess.useradmin.role.title", adminRoot + "useradmin/role/");
+            securityMenu.addLink("aksess.viewpermissions.title", adminRoot + "ViewAllPermissions.action");
+
+            if (Aksess.isEventLogEnabled()) {
+                securityMenu.addLink("aksess.eventlog.title", adminRoot + "SearchEventLog.action");
+                securityMenu.addLink("aksess.locks.title", adminRoot + "ListContentLocks.action");
+            }
+
+        }
+
+        MenuItem overViewMenu = menu.addChildMenuItem("aksess.overview.title");
+
+        {
+            overViewMenu.addLink("aksess.aliases.title", adminRoot + "ListAliases.action");
+            overViewMenu.addLink("aksess.contentexpire.title", adminRoot + "ListContentExpiration.action");
+            overViewMenu.addLink("aksess.userchanges.title", adminRoot + "ListUserChanges.action");
+            overViewMenu.addLink("aksess.mailsubscription.title", adminRoot + "ViewMailSubscribers.action");
+        }
+
+        PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext()).getBean("pluginManager");
+
+
+
+
+        // Merge plugin menus into admin menu
+
+        Locale locale = RequestContextUtils.getLocale(request);
+        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+            PluginMessageSource source = new PluginMessageSource(plugin);
+
+            for(UIContribution contrib : plugin.getUIContributions()) {
+                for(MenuItem adminmenuitems : contrib.getAdminMenuItems()) {
+                    for(MenuItem item : adminmenuitems.getChildMenuItems()) {
+                        addPluginMenuItem(menu, item, source, locale, root);
+                    }
+
+                }
+        
+            }
+        }
+        pageContext.setAttribute("adminMenu", menu);
     %>
     <div id="Content" class="administration">
         <div id="Navigation">
             <div id="Navigator">
                 <ul class="navigator">
-                    <li><span class="title"><a href="<%=root%>ViewSystemInformation.action"><kantega:label key="aksess.systeminfo.title"/></a></span></li>
-                    <li><span class="title"><a href="<%=root%>ListSites.action"><kantega:label key="aksess.sites.title"/></a></span></li>
-                    <li><span class="title"><a href="<%=root%>ReloadTemplateConfiguration.action"><kantega:label key="aksess.templateconfig.title"/></a></span></li>
-                    <%
-                        if (Aksess.isTopicMapsEnabled()) {
-                    %>
-                    <li><span class="title"><a href="<%=root%>topicmaps/ListTopicMaps.action"><kantega:label key="aksess.topicmaps.title"/></a></span></li>
-                    <%
-                        }
-                    %>
-                    <li class="open"><kantega:label key="aksess.search.title"/>
-                    <ul class="navigator">
-                        <li><span class="title"><a href="<%=root%>ViewSearchLog.action"><kantega:label key="aksess.search.log.title"/></a></span></li>
-                        <li><span class="title"><a href="<%=root%>RebuildIndex.action"><kantega:label key="aksess.search.rebuild.title"/></a></span></li>
-                    </ul>
-                    </li>
-                    <li><kantega:label key="aksess.security.title"/>
-                        <ul class="navigator">
-                            <li><span class="title"><a href="<%=root%>useradmin/profile/"><kantega:label key="aksess.useradmin.profile.title"/></a></span></li>
-                            <li><span class="title"><a href="<%=root%>useradmin/role/"><kantega:label key="aksess.useradmin.role.title"/></a></span></li>
-                            <li><span class="title"><a href="<%=root%>ViewAllPermissions.action"><kantega:label key="aksess.viewpermissions.title"/></a></span></li>
-                            <%
-                                if (Aksess.isEventLogEnabled()) {
-                            %>
-                            <li><span class="title"><a href="<%=root%>SearchEventLog.action"><kantega:label key="aksess.eventlog.title"/></a></span></li>
-                            <%
-                                }
-                            %>
-                            <li><span class="title"><a href="<%=root%>ListContentLocks.action"><kantega:label key="aksess.locks.title"/></a></span></li>
-                        </ul>
-                    </li>
-                    <li><kantega:label key="aksess.overview.title"/>
-                        <ul class="navigator">
-                            <li><span class="title"><a href="<%=root%>ListAliases.action"><kantega:label key="aksess.aliases.title"/></a></span></li>
-                            <li><span class="title"><a href="<%=root%>ListContentExpiration.action"><kantega:label key="aksess.contentexpire.title"/></a></span></li>
-                            <li><span class="title"><a href="<%=root%>ListUserChanges.action"><kantega:label key="aksess.userchanges.title"/></a></span></li>
-                            <li><span class="title"><a href="<%=root%>ViewMailSubscribers.action"><kantega:label key="aksess.mailsubscription.title"/></a></span></li>
-                        </ul>
-                    </li>
-
+                    <c:forEach items="${adminMenu.childMenuItems}" var="item">
+                        <li>
+                            <c:choose>
+                                <c:when test="${item.href != null}">
+                                    <span class="title"><a href="${item.href}"><kantega:label key="${item.label}"/></a></span>
+                                </c:when>
+                                <c:when test="${not empty item.childMenuItems}">
+                                    <kantega:label key="${item.label}"/>
+                                    <ul class="navigator">
+                                        <c:forEach items="${item.childMenuItems}" var="item">
+                                            <li>
+                                                <span class="title"><a href="${item.href}"><kantega:label key="${item.label}"/></a></span>
+                                            </li>
+                                        </c:forEach>
+                                    </ul>
+                                </c:when>
+                            </c:choose>
+                        </li>
+                    </c:forEach>
                 </ul>
             </div>
         </div>
@@ -107,3 +162,36 @@
 </kantega:section>
 
 <%@include file="commonLayout.jsp"%>
+
+<%!
+    private void addPluginMenuItem(MenuItem menu, MenuItem item, PluginMessageSource source, Locale locale, String root) {
+        if(item.getChildMenuItems().isEmpty()) {
+            if(item.getHref() != null) {
+                String href = item.getHref();
+
+                if(!href.startsWith("http")) {
+                    href = root + href;
+                }
+                menu.addLink(source.getMessage(item.getLabel(), null, locale), href);
+            }
+        } else {
+
+            MenuItem parent = null;
+            for(MenuItem child : menu.getChildMenuItems()) {
+                if(child.getLabel().equals(item.getLabel())) {
+                    parent = child;
+                    break;
+                }
+            }
+            if(parent == null) {
+                parent = menu.addChildMenuItem(source.getMessage(item.getLabel(), null, locale));
+            }
+            for(MenuItem child : new ArrayList<MenuItem>(item.getChildMenuItems())) {
+                addPluginMenuItem(parent, child, source, locale, root);
+            }
+
+        }
+
+    }
+
+%>

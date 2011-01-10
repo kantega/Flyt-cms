@@ -19,6 +19,7 @@ package no.kantega.publishing.api.plugin;
 
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.api.ui.UIContribution;
 import org.kantega.jexmec.AbstractPlugin;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -40,6 +41,8 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
     private ApplicationContext applicationContext;
 
     private List<Filter> requestFilters = Collections.emptyList();
+
+    private List<UIContribution> uiContributions = Collections.emptyList();
 
     public OpenAksessPluginAdapter(String pluginId) {
         super(pluginId);
@@ -84,5 +87,12 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
     public void setRequestFilters(List<Filter> requestFilters) {
         this.requestFilters = requestFilters;
     }
-    
+
+    public List<UIContribution> getUIContributions() {
+        return uiContributions;
+    }
+
+    public void setUIContributions(List<UIContribution> uiContributions) {
+        this.uiContributions = uiContributions;
+    }
 }

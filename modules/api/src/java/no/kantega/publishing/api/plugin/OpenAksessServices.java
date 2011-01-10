@@ -4,6 +4,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.forms.service.FormService;
 import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
+import no.kantega.publishing.api.ui.UIServices;
 import no.kantega.security.api.identity.IdentityResolver;
 import org.kantega.jexmec.Services;
 
@@ -25,6 +26,8 @@ public interface OpenAksessServices extends Services {
     public SystemConfiguration getSystemConfiguration();
 
     public PluginConfigProvider getPluginConfigProvider();
+
+    public UIServices getUIServices();
 
     enum DataSourceName {
         aksessDataSource

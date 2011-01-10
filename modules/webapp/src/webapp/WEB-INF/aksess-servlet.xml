@@ -192,8 +192,7 @@
         </property>
     </bean>
 
-    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
-
+    
     <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
         <property name="pluginManager" ref="pluginManager"/>
     </bean>

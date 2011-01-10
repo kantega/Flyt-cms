@@ -55,6 +55,7 @@
                 <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
                     <property name="exposedBeanNames">
                         <list>
+                            <value>adminRoleInterceptor</value>
                         </list>
                     </property>
                 </bean>
@@ -167,4 +168,9 @@
     <bean id="pluginConfigProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
         <constructor-arg value="${appDir}/plugins/config/"/>
     </bean>
+
+    <bean id="uiServices" class="no.kantega.publishing.ui.DefaultUIServices"/>
+
+    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
+
 </beans>

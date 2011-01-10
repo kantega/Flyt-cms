@@ -18,6 +18,7 @@ package no.kantega.publishing.api.plugin;
 
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.api.ui.UIContribution;
 import org.kantega.jexmec.Plugin;
 import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.HandlerMapping;
@@ -29,7 +30,7 @@ import java.util.List;
 public interface OpenAksessPlugin extends Plugin {
 
 
-    public List<HandlerMapping> getHandlerMappings();
+    List<HandlerMapping> getHandlerMappings();
 
     List<ContentRequestListener> getContentRequestListeners();
 
@@ -38,4 +39,7 @@ public interface OpenAksessPlugin extends Plugin {
     List<MessageSource> getMessageSources();
 
     List<Filter> getRequestFilters();
+
+    List<UIContribution> getUIContributions();
+
 }
