@@ -45,6 +45,8 @@
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/swfobject.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksessmultimedia.jjs"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             bindToolButtons();
