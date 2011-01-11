@@ -229,8 +229,9 @@
 
     <properties>
         <codec.version>1.2</codec.version>
-        <commons-pool.version>1.3</commons-pool.version>
+        <commons-pool.version>1.5.4</commons-pool.version>
         <commons-logging.version>1.0.4</commons-logging.version>
+        <dbcp.version>1.3</dbcp.version>
         <httpclient.version>3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <lucene.version>2.4.0</lucene.version>
