@@ -22,11 +22,13 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class PrettyURLEncoder {
     private static final String SOURCE = "aksess.PrettyURLEncoder";
 
     private static char[] space = {' ', '-'};
+    private static char[] slash = {'/', '-'};
     private static char[] aa = {'\u00E5', 'a'};
     private static char[] AA = {'\u00C5', 'A'};
     private static char[] auml = {'\u00E4', 'a'};
@@ -39,7 +41,9 @@ public class PrettyURLEncoder {
     private static char[] ouml = {'\u00F6', 'o'};
     private static char[] Ouml = {'\u00D6', 'O'};
 
-    private static char[][] map = { space, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
+    private static char[][] map = { space, slash, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
+
+    private static Pattern pattern = Pattern.compile("[^a-zA-Z_0-9-+\\.:]");
 
     public static String encode(String url) {
         if (url == null) {
@@ -51,8 +55,8 @@ public class PrettyURLEncoder {
             }
         }
         try {
-            url = RegExp.replace("^a-zA-Z_0-9-+().:<", url, "");
-        } catch (RegExpSyntaxException e) {
+            url = pattern.matcher(url).replaceAll("");
+        } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
 
