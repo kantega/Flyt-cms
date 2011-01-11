@@ -18,14 +18,38 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="fopPDFGenerator" class="no.kantega.openaksess.forms.pdf.FOPPDFGenerator"/>
+    <bean id="xmlFormFormsubmissionConverter" class="no.kantega.openaksess.forms.xml.DefaultXMLFormFormsubmissionConverter"/>
+
     <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
         <constructor-arg value="org.kantega.openaksess.forms.emaildelivery"/>
+        <property name="handlerMappings">
+            <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+                <property name="mappings">
+                    <value>
+                        /pdf/FormSubmissionExport.pdf=formSubmissionExportPDFAction
+                    </value>
+                </property>
+            </bean>
+        </property>
+
         <property name="formDeliveryServices">
             <list>
                 <bean class="no.kantega.openaksess.forms.email.delivery.EmailFormDeliveryService">
                     <property name="mailTemplate" value="formsubmission.vm"/>
+                    <property name="xmlFormsubmissionConverter" ref="xmlFormFormsubmissionConverter"/>
+                    <property name="pdfGenerator" ref="fopPDFGenerator"/>
+                    <property name="xslFoDocumentPath" value="/WEB-INF/templates/forms/form2pdf.xsl"/>
                 </bean>
             </list>
-        </property>        
+        </property>
     </bean>
+
+    <bean id="formSubmissionExportPDFAction" class="no.kantega.openaksess.forms.pdf.controller.FormSubmissionExportPDFAction">
+        <property name="xslFoDocumentPath"  value="/WEB-INF/templates/forms/form2pdf.xsl"/>
+        <property name="pdfGenerator" ref="fopPDFGenerator"/>
+        <property name="xmlFormsubmissionConverter" ref="xmlFormFormsubmissionConverter"/>
+    </bean>
+
 </beans>

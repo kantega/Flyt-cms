@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import no.kantega.commons.client.util.RequestParameters;
 
-public class DeleteFormSubmissionsAction  extends AbstractController {
+public class DeleteFormSubmissionsAction extends AbstractController {
     FormSubmissionDao dao;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

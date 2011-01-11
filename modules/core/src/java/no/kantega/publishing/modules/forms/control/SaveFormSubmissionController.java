@@ -68,6 +68,8 @@ public class SaveFormSubmissionController implements AksessController {
                             }
                         }
                     }
+                    request.getSession(true).setAttribute("aksessFormSubmission", formSubmission);
+
                     model.put("formSubmission", formSubmission);
                     model.put("hasSubmitted", Boolean.TRUE);
                     model.put("hasErrors",Boolean.FALSE);
