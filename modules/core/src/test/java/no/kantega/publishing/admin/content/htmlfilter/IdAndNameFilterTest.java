@@ -65,7 +65,7 @@ public class IdAndNameFilterTest  {
         assertEquals(expectedOutput, sw.toString());
 
         input = "<a id=\"abc*\" name=\"abc*\"></a>";
-        expectedOutput = "<a id=\"abc-\" name=\"abc-\"></a>";
+        expectedOutput = "<a id=\"abc\" name=\"abc\"></a>";
         sw = new StringWriter();
         pipeline.filter(new StringReader(input), sw);
         assertEquals(expectedOutput, sw.toString());
