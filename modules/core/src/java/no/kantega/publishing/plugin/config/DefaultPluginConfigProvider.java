@@ -1,34 +1,66 @@
 package no.kantega.publishing.plugin.config;
 
+import no.kantega.commons.configuration.ConfigurationLoader;
+import no.kantega.commons.configuration.DefaultConfigurationLoader;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.plugin.config.PluginConfig;
 import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
+import no.kantega.publishing.common.ao.PluginConfigurationAO;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.ResourceLoader;
 
-import java.io.*;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
  *
  */
-public class DefaultPluginConfigProvider implements PluginConfigProvider {
-    private final File rootDirectory;
+public class DefaultPluginConfigProvider implements PluginConfigProvider, ResourceLoaderAware {
+    private final File environmentDirectory;
+    private final PluginConfigurationAO pluginConfigurationAO;
 
-    public DefaultPluginConfigProvider(File rootDirectory) {
-        this.rootDirectory = rootDirectory;
+    private Map<String, PluginConfig> configurations = new HashMap<String, PluginConfig>();
+
+    private ResourceLoader resourceLoader;
+
+    public DefaultPluginConfigProvider(File environmentDirectory, PluginConfigurationAO pluginConfigurationAO) {
+        this.environmentDirectory = environmentDirectory;
+        this.pluginConfigurationAO = pluginConfigurationAO;
     }
 
-    public PluginConfig get(OpenAksessPlugin plugin) {
+    public synchronized PluginConfig get(OpenAksessPlugin plugin) {
         if(plugin.getPluginUid() == null) {
             throw new IllegalArgumentException("Plugin " + plugin + " has null pluginUid" );
         }
-        return new PropertyFileConfig(new File(rootDirectory, plugin.getPluginUid() +".properties"));
+        PluginConfig config = configurations.get(plugin.getPluginUid());
+        if(config == null) {
+            config = new NestedPropertiesConfig(plugin.getPluginUid());
+            configurations.put(plugin.getPluginUid(), config);
+        }
+        return config;
     }
 
-    class PropertyFileConfig implements PluginConfig {
-        private final File propertyFile;
+    public void setResourceLoader(ResourceLoader resourceLoader) {
+        this.resourceLoader = resourceLoader;
+    }
 
-        public PropertyFileConfig(File propertyFile) {
-            this.propertyFile = propertyFile;
+    class NestedPropertiesConfig implements PluginConfig {
+        private final ConfigurationLoader configurationLoader;
+        private final String pluginUid;
+
+
+        public NestedPropertiesConfig(String pluginUid) {
+            this.pluginUid = pluginUid;
+            DefaultConfigurationLoader configurationLoader = new DefaultConfigurationLoader(resourceLoader);
+            this.configurationLoader = configurationLoader;
+            // First, add the plugin's default properties
+            configurationLoader.addResource("classpath:META-INF/services/" + OpenAksessPlugin.class.getName() +"/" + pluginUid + ".conf");
+            // Then add the project config
+            configurationLoader.addResource("/WEB-INF/config/plugins/" +pluginUid + ".conf");
+            // Then add environment specific config
+            configurationLoader.addResource("file:" + new File(environmentDirectory, pluginUid +".conf").getAbsoluteFile());
         }
 
 
@@ -37,44 +69,23 @@ public class DefaultPluginConfigProvider implements PluginConfigProvider {
         }
 
         public String get(String name, String defaultValue) {
-            final String value = read().getProperty(name);
+            // Try database first
+            String value = pluginConfigurationAO.getProperty(pluginUid, name);
+            if(value == null) {
+                value = read().getProperty(name);
+            }
             return value == null ? defaultValue : value;
         }
 
         public PluginConfig set(String name, String value) {
-            final Properties properties = read();
-            properties.setProperty(name, value);
-            save(properties);
+            pluginConfigurationAO.setProperty(pluginUid, name, value);
             return this;
         }
 
         private Properties read() {
-            try {
-                final Properties props = new Properties();
-                if(propertyFile.exists()) {
-                    final FileInputStream fis = new FileInputStream(propertyFile);
-                    props.load(fis);
-                    fis.close();
-                }
-                return props;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
+            return configurationLoader.loadConfiguration();
         }
 
-        private void save(Properties properties) {
-            synchronized (DefaultPluginConfigProvider.this) {
-                try {
-                    if(!propertyFile.getParentFile().exists()) {
-                        propertyFile.getParentFile().mkdirs();
-                    }
-                    properties.store(new FileOutputStream(propertyFile), null);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
 

@@ -424,4 +424,9 @@
         <column name="Data" required="true" type="CLOB" size="2147483647"/>
         <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
     </table>
+    <table name="pluginConfiguration">
+        <column name="pluginNamespace" required="true" type="VARCHAR" size="255"/>
+        <column name="configName" required="true" type="VARCHAR" size="512"/>
+        <column name="configValue" required="true" type="CLOB" size="2147483647"/>
+    </table>
 </database>

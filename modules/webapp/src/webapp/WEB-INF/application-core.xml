@@ -165,12 +165,17 @@
     
     <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
 
-    <bean id="pluginConfigProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
-        <constructor-arg value="${appDir}/plugins/config/"/>
-    </bean>
-
     <bean id="uiServices" class="no.kantega.publishing.ui.DefaultUIServices"/>
 
     <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
+
+    <bean id="pluginConfigurationDao" class="no.kantega.publishing.common.ao.JdbcPluginConfigurationAO">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="pluginConfigurationProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
+        <constructor-arg value="${appDir}/conf/plugins"/>
+        <constructor-arg ref="pluginConfigurationDao"/>
+    </bean>
 
 </beans>
