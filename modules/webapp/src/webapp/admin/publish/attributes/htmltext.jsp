@@ -93,13 +93,22 @@
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
     request.setAttribute("cssPath", cssPath);
+
+    int width = attribute.getWidth();
+    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", 600);
+    request.setAttribute("attributeWidth", width);
+
+    int height = attribute.getHeight();
+    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 350);
+    request.setAttribute("attributeHeight", height);
+
 %>
 <script type="text/javascript">
     var miniAdminMode = <%=isMiniAdminMode%>;
 </script>
 
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}px; height: ${attribute.height}px"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}px; height: ${attributeHeight}px"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({
@@ -130,11 +139,10 @@
             button_tile_map : true,
             plugins : plugins,
 
-            // TODO: decide desired elements and attributes
             valid_elements : '<%=valid_elements%>',
 
-            width : "${attribute.width}",
-            height : "${attribute.height}",
+            width : "${attributeWidth}",
+            height : "${attributeHeight}",
 
             // Theme options
             theme_advanced_toolbar_location : "top",
