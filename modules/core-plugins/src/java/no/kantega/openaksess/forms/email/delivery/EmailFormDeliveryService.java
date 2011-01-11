@@ -16,7 +16,6 @@
 
 package no.kantega.openaksess.forms.email.delivery;
 
-import no.kantega.commons.datasource.ByteArrayDataSource;
 import no.kantega.openaksess.forms.pdf.PDFGenerator;
 import no.kantega.openaksess.forms.xml.XMLFormsubmissionConverter;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
@@ -32,6 +31,7 @@ import java.util.*;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeBodyPart;
+import javax.mail.util.ByteArrayDataSource;
 
 
 /**
@@ -86,7 +86,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         bodyparts.add(messagePart);
 
         MimeBodyPart attachmentPath = new MimeBodyPart();
-        DataSource ds = new ByteArrayDataSource("skjema.pdf", pdf, "application/pdf");
+        DataSource ds = new ByteArrayDataSource(pdf, "application/pdf");
 
         attachmentPath.setDataHandler(new DataHandler(ds));
         attachmentPath.setHeader("Content-ID", "<pdf" + new Date().getTime() + ">");
