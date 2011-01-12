@@ -175,7 +175,7 @@
         function selectPage(row){
             currentRow = row;
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action",width: 280, height:450});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action",width: 400, height:450});
         }
 
         // Callback from navigator        

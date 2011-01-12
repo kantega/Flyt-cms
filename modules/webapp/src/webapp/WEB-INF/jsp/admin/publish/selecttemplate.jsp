@@ -55,7 +55,7 @@
 
         function selectContent() {
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 380, height:450});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 400, height:450});
         }
 
         function showTemplateInfo(i, defaultCategory) {

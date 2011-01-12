@@ -56,9 +56,9 @@
 
         var url = "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action";
         if (frm.smartlink.checked) {
-            url += "?useContentId=true";
+            url += "?selectContentId=true";
         }
-        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=400,height=450,resizable=yes,scrollbars=yes");
         contentwin.focus();
     }
 
