@@ -70,8 +70,12 @@
         function saveContent(status) {
             openaksess.common.debug("publishLayout.saveContent(): status: " + status);
 
+
             if (validatePublishProperties()) {
                 if (!hasSubmitted) {
+
+                    window.onbeforeunload = null;
+
                     hasSubmitted = true;
                     openaksess.editcontext.saveAll();
                     var $contentIsModified = $("#ContentIsModified");
@@ -84,6 +88,15 @@
             }
         }
 
+        function confirmBeforeUnload() {
+            if (openaksess.editcontext.isModified()) {
+                return '<kantega:label key="aksess.editcontent.navigateaway"/>';
+            } else {
+                return '';
+            }
+        }
+
+        window.onbeforeunload = confirmBeforeUnload;
     </script>
 </kantega:section>
 
