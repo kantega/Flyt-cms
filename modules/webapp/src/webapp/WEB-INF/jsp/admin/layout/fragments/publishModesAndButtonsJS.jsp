@@ -91,6 +91,7 @@
         $("#EditContentButtons input.cancel").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.cancel");
             if (confirmCancel()) {
+                window.onbeforeunload = null;
                 window.location.href = 'CancelEdit.action';
             }
         });
