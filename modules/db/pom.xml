@@ -55,6 +55,9 @@
                 <configuration>
                     <ddl2dbTasks>
                         <mkdir dir="${basedir}/target/classes/dbschema" />
+                        <mkdir dir="${basedir}/target/classes/org/kantega/openaksess/db/"/>
+
+                        <copy file="${basedir}/src/main/schema/aksess-dbschema.xml" tofile="${basedir}/target/classes/org/kantega/openaksess/db/openaksess-dbschema.xml"/>
 
                         <ddlToDatabase databaseType="mysql">
 

@@ -1,0 +1,110 @@
+#macro(printNull $value)
+    #if(!$value)
+        null
+    #else
+        $value
+    #end
+#end
+
+#macro(explainAddedColumn $change)
+    Column <code>$change.newColumn.name</code> added 
+#end
+
+#macro(explainColumnChange $change)
+#set($origColumn = $change.findChangedColumn($actualModel, false))
+    Column <code>$change.changedColumn</code> changed:
+<ul>
+    
+    #if($change.isTypeChanged($platformInfo, $origColumn, $change.newColumn))
+        <li>Type changed from $origColumn.type to $change.newColumn.type </li>
+    #end
+    #if($change.isSizeChanged($platformInfo, $origColumn, $change.newColumn))
+        <li>Size changed from $origColumn.size to $change.newColumn.size </li>
+    #end
+    #if($change.isDefaultValueChanged($origColumn, $change.newColumn))
+        <li>Default value changed from <code>#printNull($origColumn.defaultValue)</code> to <code>#printNull($change.newColumn.defaultValue)</code> </li>
+    #end
+    #if($change.isRequiredStatusChanged($origColumn, $change.newColumn))
+        <li>Required status changed from <code>$origColumn.required</code> to <code>$change.newColumn.required</code> </li>
+    #end
+    #if($change.isAutoIncrementChanged($origColumn, $change.newColumn))
+        <li>Autoincrement changed from <code>$origColumn.autoIncrement</code> to <code>$change.newColumn.autoIncrement</code> </li>
+    #end
+</ul>
+#end
+
+#macro(explainRecretionChange $change)
+    #if(!$dbDiffTool.canMigrateData($change))
+        WARNING! Performing this change will LOSE DATA. The table will be dropped hard and recreated without data.
+    #end
+    Table needs to recreated for the following reasons:
+
+<ul>
+    #foreach($origChange in $change.originalChanges)
+        <li>#explainChange($origChange)</li>
+    #end
+</ul>
+
+#end
+#macro(explainChange $change)
+    #if($change.class.simpleName == "RecreateTableChange")
+        #explainRecretionChange($change)
+    #elseif ($change.class.simpleName == "ColumnDefinitionChange")
+        #explainColumnChange($change)
+    #elseif ($change.class.simpleName == "AddColumnChange")
+        #explainAddedColumn($change)
+    #elseif ($change.class.simpleName == "AddTableChange")
+        Table <code>$change.newTable.name</code> has been added
+    #elseif ($change.class.simpleName == "AddForeignKeyChange")
+        Foreign key <code>$change.newForeignKey.name</code> has been added
+    #elseif ($change.class.simpleName == "AddIndexChange")
+        Index <code>$change.newIndex.name</code> has been added
+    #else
+        $change.class.simpleName (Unknown)
+    #end
+#end
+
+#setTitle('dbdiff.title')
+#section("content")
+
+<h1>Database status</h1>
+
+#if($changes.isEmpty())
+    No changes needed, database is up to date!
+#else
+<h2>All SQL changes:</h2>
+    #if(!$dbDiffTool.canMigrateData($changes))
+        WARNING! Performing this change will LOSE DATA. Some tables will be dropped hard and recreated without data!
+    #end
+<textarea rows="10" cols="80">${alters}</textarea>
+
+<h2>Logical changes:</h2>
+
+<table>
+    <tr>
+        <th>Table</th>
+        <th>Changes</th>
+        <th>SQL</th>
+    </tr>
+    #foreach($change in $changes)
+        <tr>
+            <td valign="top">
+                <code>#if($change.changedTable)$change.changedTable#else$change.newTable.name#end</code>
+            </td>
+
+            <td valign="top">
+                #explainChange($change)
+            </td>
+            <th valign="top">
+                <textarea rows="20" cols="40">$dbDiffTool.getAlterString($change)</textarea>
+            </th>
+
+        </tr>
+    #end
+</table>
+#end
+
+#end
+
+
+#applyAdminLayout()

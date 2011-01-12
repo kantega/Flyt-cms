@@ -22,4 +22,13 @@
     <import resource="groovyscripts.xml"/>
     <import resource="databaseformdelivery.xml"/>
     <import resource="pdf-and-emailformdelivery.xml"/>
+    <import resource="dbdiff.xml"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:org/kantega/openaksess/plugins/dbdiff/dbdiff</value>
+            </list>
+        </property>
+    </bean>
 </beans>

@@ -10,3 +10,11 @@
  * Macro to translate a message code into a message from the plugin's message source
  *#
 #macro( pluginMessage $code )$pluginRequestContext.getMessage($code)#end
+
+#macro(setTitle $code )
+#section("title")#pluginMessage($code)#end
+#end
+
+#macro(applyAdminLayout)
+    #dispatch("/WEB-INF/jsp/admin/layout/administrationLayout.jsp")
+#end
