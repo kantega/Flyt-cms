@@ -225,6 +225,9 @@ public class ContentPropertiesAction implements Controller {
     }
 
     private String format(Date date, String dateFormat) {
+        if (date == null) {
+            return "";
+        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             return sdf.format(date);
