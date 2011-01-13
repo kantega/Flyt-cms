@@ -58,7 +58,19 @@ public class DefaultPluginRequestContext implements PluginRequestContext {
     }
 
     public String getMessage(String code) {
-        return getMessage(code, null, defaultHtmlEscape);
+        return getMessage(code, (Object[]) null, defaultHtmlEscape);
+    }
+
+    public String getMessage(String code, List args, boolean htmlEscape) {
+        return getMessage(code, args == null ? null : args.toArray(new Object[args.size()]), htmlEscape);
+    }
+
+    public String getMessage(String code, Object[] args) {
+        return getMessage(code, args, defaultHtmlEscape);
+    }
+
+    public String getMessage(String code, List args) {
+        return getMessage(code, args, defaultHtmlEscape);  
     }
 
     public String getMessage(String code, Object[] args, boolean htmlEscape) throws NoSuchMessageException {

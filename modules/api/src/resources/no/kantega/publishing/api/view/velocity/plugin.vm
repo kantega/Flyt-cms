@@ -11,6 +11,8 @@
  *#
 #macro( pluginMessage $code )$pluginRequestContext.getMessage($code)#end
 
+#macro( pluginArgMessage $code $args)$pluginRequestContext.getMessage($code, $args)#end
+
 #macro(setTitle $code )
 #section("title")#pluginMessage($code)#end
 #end
