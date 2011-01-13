@@ -15,8 +15,8 @@
   ~ limitations under the License.
   -->
 
-<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database.dtd">
-<database name="aksess_db">
+<database name="aksess_db" xmlns="http://db.apache.org/ddlutils/schema/1.1">
+
     <table name="associationcategory">
         <column name="AssociationId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="AssociationName" required="false" type="VARCHAR" size="64"/>
@@ -86,7 +86,7 @@
         <column name="DocumentTypeIdForChildren" required="false" type="INTEGER" size="10"/>
         <column name="IsLocked" required="false" type="INTEGER" size="10" default="0"/>
         <column name="RatingScore" required="false" type="FLOAT" default="0"/>
-        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>        
+        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>
         <column name="IsSearchable" required="false" type="INTEGER" size="10" default="1"/>
         <column name="NumberOfComments" required="false" type="INTEGER" size="10" default="0"/>
         <index name="idx_content_alias">
@@ -188,7 +188,7 @@
         <column name="UserId" required="true" type="VARCHAR" size="255"/>
         <column name="Token" required="true" type="VARCHAR" size="255"/>
         <column name="ExpireDate" required="true" type="TIMESTAMP" size="23,3"/>
-    </table>        
+    </table>
     <table name="deleteditems">
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Title" required="true" type="VARCHAR" size="255"/>
@@ -268,7 +268,7 @@
         <column name="UsageInfo" required="false" type="CLOB" size="2147483647"/>
         <column name="ProfileImageUserId" required="false" type="VARCHAR" size="64"/>
         <column name="NoFiles" required="false" type="INTEGER" size="10"/>
-        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>        
+        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>
@@ -428,5 +428,9 @@
         <column name="pluginNamespace" required="true" type="VARCHAR" size="255"/>
         <column name="configName" required="true" type="VARCHAR" size="512"/>
         <column name="configValue" required="true" type="CLOB" size="2147483647"/>
+    </table>
+    <table name="oa_db_migrations">
+        <column name="dbnamespace" type="VARCHAR" size="255" required="true"/>
+        <column name="version" type="VARCHAR" size="255" required="true"/>
     </table>
 </database>

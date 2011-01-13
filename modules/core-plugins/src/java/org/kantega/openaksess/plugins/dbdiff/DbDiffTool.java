@@ -22,17 +22,8 @@ import java.util.List;
  *
  */
 public class DbDiffTool {
-    private Database actual;
-    private Database wanted;
-    private Platform platform;
 
-    public DbDiffTool(Database actual, Database wanted, Platform platform) {
-        this.actual = actual;
-        this.wanted = wanted;
-        this.platform = platform;
-    }
-
-    public String getAlterString(ModelChange change) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public String getAlterString(Database actual, ModelChange change, Platform platform) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         final Database database = new CloneHelper().clone(actual);
         final StringWriter sw = new StringWriter();
         platform.getSqlBuilder().setWriter(sw);

@@ -34,6 +34,9 @@
                 </property>
             </bean>
         </property>
+        <property name="UIContributions">
+            <bean class="org.kantega.openaksess.plugins.dbdiff.DbDiffAdminMenuContribution"/>
+        </property>
     </bean>
 
     <bean id="dbDiffController" class="org.kantega.openaksess.plugins.dbdiff.DbDiffController">

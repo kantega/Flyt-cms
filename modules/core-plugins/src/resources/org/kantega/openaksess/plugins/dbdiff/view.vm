@@ -7,18 +7,18 @@
 #end
 
 #macro(explainAddedColumn $change)
-    Column <code>$change.newColumn.name</code> added 
+    Column <code>$change.newColumn.name</code> added
 #end
 
-#macro(explainColumnChange $change)
-#set($origColumn = $change.findChangedColumn($actualModel, false))
+#macro(explainColumnChange $schema $change)
+#set($origColumn = $change.findChangedColumn($schema.actual, false))
     Column <code>$change.changedColumn</code> changed:
 <ul>
-    
-    #if($change.isTypeChanged($platformInfo, $origColumn, $change.newColumn))
+
+    #if($change.isTypeChanged($schema.platform.platformInfo, $origColumn, $change.newColumn))
         <li>Type changed from $origColumn.type to $change.newColumn.type </li>
     #end
-    #if($change.isSizeChanged($platformInfo, $origColumn, $change.newColumn))
+    #if($change.isSizeChanged($schema.platform.platformInfo, $origColumn, $change.newColumn))
         <li>Size changed from $origColumn.size to $change.newColumn.size </li>
     #end
     #if($change.isDefaultValueChanged($origColumn, $change.newColumn))
@@ -33,32 +33,43 @@
 </ul>
 #end
 
-#macro(explainRecretionChange $change)
+#macro(explainRecretionChange $schema $change)
     #if(!$dbDiffTool.canMigrateData($change))
         WARNING! Performing this change will LOSE DATA. The table will be dropped hard and recreated without data.
     #end
-    Table needs to recreated for the following reasons:
+    Table needs to be recreated for the following reasons:
 
 <ul>
     #foreach($origChange in $change.originalChanges)
-        <li>#explainChange($origChange)</li>
+        <li>#explainChange($schema, $origChange)</li>
     #end
 </ul>
 
 #end
-#macro(explainChange $change)
+#macro(explainChange $schema $change)
     #if($change.class.simpleName == "RecreateTableChange")
-        #explainRecretionChange($change)
+        #explainRecretionChange($schema, $change)
     #elseif ($change.class.simpleName == "ColumnDefinitionChange")
-        #explainColumnChange($change)
+        #explainColumnChange($schema, $change)
     #elseif ($change.class.simpleName == "AddColumnChange")
         #explainAddedColumn($change)
     #elseif ($change.class.simpleName == "AddTableChange")
-        Table <code>$change.newTable.name</code> has been added
+        Table <code>$change.newTable.name</code> needs to be added
     #elseif ($change.class.simpleName == "AddForeignKeyChange")
-        Foreign key <code>$change.newForeignKey.name</code> has been added
+        Foreign key needs to be added referencing table <code>${change.newForeignKey.foreignTable.name}</code>
+        ( Columns: 
+        #foreach($ref in $change.newForeignKey.references)
+            <code>$ref.localColumn.name -> <code>$ref.foreignColumn.name</code>
+            #if( $velocityHasNext ),#end
+        #end)
+    #elseif ($change.class.simpleName == "RemoveForeignKeyChange")
+        Foreign key should be removed
     #elseif ($change.class.simpleName == "AddIndexChange")
-        Index <code>$change.newIndex.name</code> has been added
+        Index <code>$change.newIndex.name</code> needs to be added
+    #elseif ($change.class.simpleName == "RemoveIndexChange")
+        Index <code>$change.findChangedIndex($schema.actual, false).name</code> may be removed
+    #elseif ($change.class.simpleName == "ColumnOrderChange")
+        The order of the columns in the table differs
     #else
         $change.class.simpleName (Unknown)
     #end
@@ -67,43 +78,87 @@
 #setTitle('dbdiff.title')
 #section("content")
 
-<h1>Database status</h1>
-
-#if($changes.isEmpty())
-    No changes needed, database is up to date!
-#else
-<h2>All SQL changes:</h2>
-    #if(!$dbDiffTool.canMigrateData($changes))
-        WARNING! Performing this change will LOSE DATA. Some tables will be dropped hard and recreated without data!
-    #end
-<textarea rows="10" cols="80">${alters}</textarea>
-
-<h2>Logical changes:</h2>
-
+#box()
+<h1>Summary</h1>
 <table>
     <tr>
-        <th>Table</th>
-        <th>Changes</th>
-        <th>SQL</th>
+        <th>Schema name</th>
+        <th>Status</th>
     </tr>
-    #foreach($change in $changes)
+    #foreach($schema in $schemas)
         <tr>
-            <td valign="top">
-                <code>#if($change.changedTable)$change.changedTable#else$change.newTable.name#end</code>
+            <td>
+                <a href="#db$schema.wanted.name">$schema.wanted.name</a>
             </td>
-
-            <td valign="top">
-                #explainChange($change)
+            <td>
+                #if($schema.changes.isEmpty())
+                    Up to date
+                #else
+                    $schema.changes.size() suggested changes
+                #end
             </td>
-            <th valign="top">
-                <textarea rows="20" cols="40">$dbDiffTool.getAlterString($change)</textarea>
-            </th>
-
         </tr>
     #end
+
 </table>
+
+<h2>Unknown tables</h2>
+#if($unknownTables.isEmpty())
+    The database has no unknown tables
+#else
+    The database has $unknownTables.size() unknown table(s):
+    <ul>
+        #foreach($tableName in $unknownTables)
+            <li>$tableName</li>
+        #end
+    </ul>
+    <p>Generated DDLUtils model of the table(s):</p>
+    <textarea style="width:100%;height:30px">$unknownModel</textarea> 
 #end
 
+
+#end
+#foreach($schema in $schemas)
+#box()
+    <a name="db$schema.wanted.name"
+    <h1>$schema.wanted.name - <code>$schema.resourcePath</code></h1>
+
+    #if($schema.changes.isEmpty())
+    <p>Database is up to date.</p>
+    #else
+    <h3>All changes SQL:</h3>
+        #if(!$dbDiffTool.canMigrateData($schema.changes))
+        WARNING! Performing this change will LOSE DATA. Some tables will be dropped hard and recreated without data!
+        #end
+    <textarea style="width:100%;height: 80px">${schema.sql}</textarea>
+
+    <h3>Detailed changes:</h3>
+
+    <table width="100%" style="table-layout:fixed;">
+        <tr>
+            <th width="30%">Table</th>
+            <th width="40%">Changes</th>
+            <th width="30%">SQL</th>
+        </tr>
+        #foreach($change in $schema.changes)
+            <tr>
+                <td valign="top" width="30%" style="word-wrap:break-word;" >
+                    <code>#if($change.changedTable)$change.changedTable#else$change.newTable.name#end</code>
+                </td>
+
+                <td valign="top" style="word-wrap:break-word;" width="40%">
+                    #explainChange($schema, $change)
+                </td>
+                <th valign="top" width="30%" style="word-wrap:break-word;" >
+                    <textarea style="width:100%;height: 200px">$dbDiffTool.getAlterString($schema.actual, $change, $schema.platform)</textarea>
+                </th>
+
+            </tr>
+        #end
+    </table>
+    #end
+    #end
+#end
 #end
 
 

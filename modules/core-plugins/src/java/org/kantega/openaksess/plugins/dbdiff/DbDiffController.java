@@ -2,10 +2,13 @@ package org.kantega.openaksess.plugins.dbdiff;
 
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
-import org.apache.ddlutils.alteration.TableChange;
+import org.apache.ddlutils.alteration.ModelChange;
 import org.apache.ddlutils.io.DatabaseIO;
+import org.apache.ddlutils.model.CloneHelper;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
+import org.kantega.openaksess.plugins.dbdiff.transform.ModelTransformer;
+import org.kantega.openaksess.plugins.dbdiff.transform.MyISAMForeginKeyTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -14,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.sql.DataSource;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -30,45 +31,118 @@ public class DbDiffController {
     @Autowired
     @Qualifier("aksessDataSource")
     private DataSource aksessDataSource;
-    
+
+    private final ClassLoader loader = getClass().getClassLoader();
+
     @RequestMapping(method = RequestMethod.GET)
-    public String  view(ModelMap model) {
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("org/kantega/openaksess/db/openaksess-dbschema.xml");
+    public String view(ModelMap model) throws IOException {
 
 
-        if(stream != null) {
+        List<OaDatabaseSchema> schemas = new ArrayList<OaDatabaseSchema>();
 
-            Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
-            Set<String> wantedTablesNames  = new HashSet<String>();
-            for (Table table : wanted.getTables()) {
-                wantedTablesNames.add(table.getName());
-            }
+        Set<String> allTableNames = new TreeSet<String>();
 
-            Platform platform = PlatformFactory.createNewPlatformInstance(aksessDataSource);
-            platform.setSqlCommentsOn(false);
-            platform.setScriptModeOn(true);
+        Set<String> knownTableNames = new TreeSet<String>();
 
-            final Database actual = platform.readModelFromDatabase(null);
+        Platform platform = PlatformFactory.createNewPlatformInstance(aksessDataSource);
+        platform.setSqlCommentsOn(false);
+        platform.setScriptModeOn(true);
 
-            for(Table table : actual.getTables()) {
-                if(!wantedTablesNames.contains(table.getName())) {
-                    actual.removeTable(table);
+        Database actual = platform.readModelFromDatabase(null);
+
+        for (String resourcePath : getSchemaResoucePaths()) {
+
+            InputStream stream = loader.getResourceAsStream(resourcePath);
+
+            if (stream != null) {
+                Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
+                Set<String> wantedTablesNames = new HashSet<String>();
+                for (Table table : wanted.getTables()) {
+                    wantedTablesNames.add(table.getName());
                 }
+                knownTableNames.addAll(wantedTablesNames);
+
+
+                final Database actualCopy = new CloneHelper().clone(actual);
+
+                transform(actualCopy, wanted, platform);
+
+                for (Table table : actualCopy.getTables()) {
+                    allTableNames.add(table.getName());
+                    if (!wantedTablesNames.contains(table.getName())) {
+                        actualCopy.removeTable(table);
+                    }
+                }
+
+                final List<ModelChange> changes = platform.getChanges(actualCopy, wanted);
+
+                String sql = platform.getAlterModelSql(actualCopy, wanted);
+
+                schemas.add(new OaDatabaseSchema(resourcePath, actualCopy, wanted, sql, changes, platform));
+
             }
-
-            final List<TableChange> changes = platform.getChanges(actual, wanted);
-
-            String sql = platform.getAlterModelSql(actual, wanted);
-
-            model.addAttribute("alters", sql);
-            model.addAttribute("changes", changes);
-
-            model.addAttribute("actualModel", actual);
-            model.addAttribute("wantedModel", wanted);
-            model.addAttribute("platformInfo", platform.getPlatformInfo());
-            model.addAttribute("dbDiffTool", new DbDiffTool(actual, wanted, platform));
         }
+
+        Collections.sort(schemas, new Comparator<OaDatabaseSchema>() {
+            public int compare(OaDatabaseSchema a, OaDatabaseSchema b) {
+                return a.getWanted().getName().compareTo(b.getWanted().getName());
+            }
+        });
+
+        Set<String> unknownTables = new TreeSet<String>(allTableNames);
+        unknownTables.removeAll(knownTableNames);
+
+        Database unknown = new CloneHelper().clone(actual);
+        for(Table table : unknown.getTables()) {
+            if(knownTableNames.contains(table.getName())) {
+                unknown.removeTable(table);
+            }
+        }
+
+        unknown.setName("unknown-tables");
+        final StringWriter unknownWriter = new StringWriter();
+        new DatabaseIO().write(unknown, unknownWriter);
+
+
+        model.addAttribute("unknownModel", unknownWriter.toString());
+        model.addAttribute("unknownTables", unknownTables);
+        model.addAttribute("schemas", schemas);
+        model.addAttribute("dbDiffTool", new DbDiffTool());
 
         return "org/kantega/openaksess/plugins/dbdiff/view";
     }
+
+    private void transform(Database database, Database wanted, Platform platform) {
+        for(ModelTransformer transformer : Collections.singleton(new MyISAMForeginKeyTransformer())) {
+            transformer.transform(database, wanted, platform);
+        }
+    }
+
+    private List<String> getSchemaResoucePaths() throws IOException {
+
+        List<String> resourcePaths = new ArrayList<String>();
+
+        // OpenAksess
+        resourcePaths.add("org/kantega/openaksess/db/openaksess-dbschema.xml");
+
+
+        // Plugins etc:
+        final Enumeration<URL> schemaListResources = loader.getResources("META-INF/services/openaksess-dbschemas.txt");
+
+        for (URL listUrl : Collections.list(schemaListResources)) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.length() > 0) {
+                    resourcePaths.add(line);
+                }
+            }
+
+            br.close();
+        }
+        return resourcePaths;
+    }
+
+
 }
