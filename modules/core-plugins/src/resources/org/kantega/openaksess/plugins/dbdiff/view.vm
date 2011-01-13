@@ -7,37 +7,53 @@
 #end
 
 #macro(explainAddedColumn $change)
-    Column <code>$change.newColumn.name</code> added
+    #pluginArgMessage('dbdiff.changes.columnadded', [$change.newColumn.name])
 #end
 
 #macro(explainColumnChange $schema $change)
 #set($origColumn = $change.findChangedColumn($schema.actual, false))
-    Column <code>$change.changedColumn</code> changed:
+    #pluginArgMessage('dbdiff.changes.columnchanged', [$change.changedColumn])
 <ul>
 
     #if($change.isTypeChanged($schema.platform.platformInfo, $origColumn, $change.newColumn))
-        <li>Type changed from $origColumn.type to $change.newColumn.type </li>
+        <li>#pluginArgMessage('dbdiff.changes.columnchanged.type', [$origColumn.type, $change.newColumn.type])</li>
     #end
     #if($change.isSizeChanged($schema.platform.platformInfo, $origColumn, $change.newColumn))
-        <li>Size changed from $origColumn.size to $change.newColumn.size </li>
+        <li>#pluginArgMessage('dbdiff.changes.columnchanged.size', [$origColumn.size, $change.newColumn.size])</li>
     #end
     #if($change.isDefaultValueChanged($origColumn, $change.newColumn))
-        <li>Default value changed from <code>#printNull($origColumn.defaultValue)</code> to <code>#printNull($change.newColumn.defaultValue)</code> </li>
+
+        #set($origDefault = $origColumn.defaultValue)
+        #if(!$origDefault)
+            #set($origDefault = "null")
+        #end
+        #set($newDefault = $change.newColumn.defaultValue)
+        #if(!$newDefault)
+            #set($newDefault = "null")
+        #end
+
+        <li>#pluginArgMessage('dbdiff.changes.columnchanged.default', [$origDefault, $newDefault])</li>
     #end
     #if($change.isRequiredStatusChanged($origColumn, $change.newColumn))
-        <li>Required status changed from <code>$origColumn.required</code> to <code>$change.newColumn.required</code> </li>
+        <li>
+            #if($origColumn.required)
+                #pluginMessage('dbdiff.changes.columnchanged.notrequired')
+            #else
+                #pluginMessage('dbdiff.changes.columnchanged.required')
+            #end
+        </li>
     #end
     #if($change.isAutoIncrementChanged($origColumn, $change.newColumn))
-        <li>Autoincrement changed from <code>$origColumn.autoIncrement</code> to <code>$change.newColumn.autoIncrement</code> </li>
+        <li>#pluginArgMessage('dbdiff.changes.columnchanged.autoincrement', [$origColumn.autoIncrement, $change.newColumn.autoIncrement])</li>
     #end
 </ul>
 #end
 
 #macro(explainRecretionChange $schema $change)
     #if(!$dbDiffTool.canMigrateData($change))
-        WARNING! Performing this change will LOSE DATA. The table will be dropped hard and recreated without data.
+        #pluginMessage("dbdiff.changes.recreate.dataloss")
     #end
-    Table needs to be recreated for the following reasons:
+    #pluginMessage("dbdiff.changes.recreate.reasons")
 
 <ul>
     #foreach($origChange in $change.originalChanges)
@@ -54,24 +70,24 @@
     #elseif ($change.class.simpleName == "AddColumnChange")
         #explainAddedColumn($change)
     #elseif ($change.class.simpleName == "AddTableChange")
-        Table <code>$change.newTable.name</code> needs to be added
+        #pluginArgMessage("dbdiff.changes.addtable", [$change.newTable.name])
     #elseif ($change.class.simpleName == "AddForeignKeyChange")
-        Foreign key needs to be added referencing table <code>${change.newForeignKey.foreignTable.name}</code>
-        ( Columns: 
+        #pluginArgMessage("dbdiff.changes.addforeignkey", [${change.newForeignKey.foreignTable.name}])
+        (
         #foreach($ref in $change.newForeignKey.references)
             <code>$ref.localColumn.name -> <code>$ref.foreignColumn.name</code>
             #if( $velocityHasNext ),#end
         #end)
     #elseif ($change.class.simpleName == "RemoveForeignKeyChange")
-        Foreign key should be removed
+        #pluginMessage("dbdiff.changes.removeforeignkey")
     #elseif ($change.class.simpleName == "AddIndexChange")
-        Index <code>$change.newIndex.name</code> needs to be added
+        #pluginArgMessage("dbdiff.changes.addindex", [$change.newIndex.name])
     #elseif ($change.class.simpleName == "RemoveIndexChange")
-        Index <code>$change.findChangedIndex($schema.actual, false).name</code> may be removed
+        #pluginArgMessage("dbdiff.changes.removeindex", [$change.findChangedIndex($schema.actual, false).name])
     #elseif ($change.class.simpleName == "ColumnOrderChange")
-        The order of the columns in the table differs
+        #pluginMessage("dbdiff.changes.orderdiffers")
     #else
-        $change.class.simpleName (Unknown)
+        $change.class.simpleName #pluginMessage("dbdiff.changes.unknown")
     #end
 #end
 
@@ -79,11 +95,11 @@
 #section("content")
 
 #box()
-<h1>Summary</h1>
+<h1>#pluginMessage("dbdiff.summary")</h1>
 <table>
     <tr>
-        <th>Schema name</th>
-        <th>Status</th>
+        <th>#pluginMessage("dbdiff.schema.name")</th>
+        <th>#pluginMessage("dbdiff.schema.status")</th>
     </tr>
     #foreach($schema in $schemas)
         <tr>
@@ -92,9 +108,9 @@
             </td>
             <td>
                 #if($schema.changes.isEmpty())
-                    Up to date
+                    #pluginMessage("dbdiff.schema.uptodate")
                 #else
-                    $schema.changes.size() suggested changes
+                    #pluginArgMessage("dbdiff.schema.numberofchanges", [$schema.changes.size()]) 
                 #end
             </td>
         </tr>
@@ -102,17 +118,17 @@
 
 </table>
 
-<h2>Unknown tables</h2>
+<h2>#pluginMessage("dbdiff.unknown.title")</h2>
 #if($unknownTables.isEmpty())
-    The database has no unknown tables
+    #pluginMessage("dbdiff.unknown.nounknown")
 #else
-    The database has $unknownTables.size() unknown table(s):
+    #pluginArgMessage("dbdiff.unknown.numberofunknown", [$unknownTables.size()])
     <ul>
         #foreach($tableName in $unknownTables)
             <li>$tableName</li>
         #end
     </ul>
-    <p>Generated DDLUtils model of the table(s):</p>
+    <p>#pluginMessage("dbdiff.unknown.ddlmodel")</p>
     <textarea style="width:100%;height:30px">$unknownModel</textarea> 
 #end
 
@@ -124,21 +140,21 @@
     <h1>$schema.wanted.name - <code>$schema.resourcePath</code></h1>
 
     #if($schema.changes.isEmpty())
-    <p>Database is up to date.</p>
+    <p>#pluginMessage("dbdiff.details.uptodate")</p>
     #else
-    <h3>All changes SQL:</h3>
+    <h3>#pluginMessage("dbdiff.details.allsql"):</h3>
         #if(!$dbDiffTool.canMigrateData($schema.changes))
-        WARNING! Performing this change will LOSE DATA. Some tables will be dropped hard and recreated without data!
+            #pluginMessage("dbdiff.details.dataloss")
         #end
     <textarea style="width:100%;height: 80px">${schema.sql}</textarea>
 
-    <h3>Detailed changes:</h3>
+    <h3>#pluginMessage("dbdiff.details.label")</h3>
 
     <table width="100%" style="table-layout:fixed;">
         <tr>
-            <th width="30%">Table</th>
-            <th width="40%">Changes</th>
-            <th width="30%">SQL</th>
+            <th width="30%">#pluginMessage("dbdiff.details.table.table")</th>
+            <th width="40%">#pluginMessage("dbdiff.details.table.change")</th>
+            <th width="30%">#pluginMessage("dbdiff.details.table.sql")</th>
         </tr>
         #foreach($change in $schema.changes)
             <tr>
