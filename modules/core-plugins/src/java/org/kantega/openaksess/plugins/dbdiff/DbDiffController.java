@@ -7,8 +7,10 @@ import org.apache.ddlutils.io.DatabaseIO;
 import org.apache.ddlutils.model.CloneHelper;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
+import org.apache.ddlutils.platform.mssql.MSSqlPlatform;
 import org.kantega.openaksess.plugins.dbdiff.transform.ModelTransformer;
 import org.kantega.openaksess.plugins.dbdiff.transform.MyISAMForeginKeyTransformer;
+import org.kantega.openaksess.plugins.dbdiff.transform.MsSqlDoubleAsFloatTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.sql.Types;
 import java.util.*;
 
 /**
@@ -45,6 +48,11 @@ public class DbDiffController {
         Set<String> knownTableNames = new TreeSet<String>();
 
         Platform platform = PlatformFactory.createNewPlatformInstance(aksessDataSource);
+        if(platform instanceof MSSqlPlatform) {
+            platform.getPlatformInfo().addNativeTypeMapping(Types.CLOB, "TEXT", Types.CLOB);
+            platform.getPlatformInfo().addNativeTypeMapping(Types.BLOB, "IMAGE", Types.BLOB);
+            //platform.getPlatformInfo().addNativeTypeMapping(Types.FLOAT, "FLOAT", Types.FLOAT);
+        }
         platform.setSqlCommentsOn(false);
         platform.setScriptModeOn(true);
 
@@ -103,9 +111,12 @@ public class DbDiffController {
         final StringWriter unknownWriter = new StringWriter();
         new DatabaseIO().write(unknown, unknownWriter);
 
+        final String unknowTablesDeleteSql = platform.getAlterModelSql(unknown, new Database());
+
 
         model.addAttribute("unknownModel", unknownWriter.toString());
         model.addAttribute("unknownTables", unknownTables);
+        model.addAttribute("unknownTablesDeleteSql", unknowTablesDeleteSql);
         model.addAttribute("schemas", schemas);
         model.addAttribute("dbDiffTool", new DbDiffTool());
 
@@ -113,7 +124,7 @@ public class DbDiffController {
     }
 
     private void transform(Database database, Database wanted, Platform platform) {
-        for(ModelTransformer transformer : Collections.singleton(new MyISAMForeginKeyTransformer())) {
+        for(ModelTransformer transformer : Arrays.asList(new MyISAMForeginKeyTransformer(), new MsSqlDoubleAsFloatTransformer())) {
             transformer.transform(database, wanted, platform);
         }
     }

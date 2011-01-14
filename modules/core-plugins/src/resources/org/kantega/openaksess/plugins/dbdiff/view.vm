@@ -129,7 +129,9 @@
         #end
     </ul>
     <p>#pluginMessage("dbdiff.unknown.ddlmodel")</p>
-    <textarea style="width:100%;height:30px">$unknownModel</textarea> 
+    <p><textarea style="width:100%;height:30px">$unknownModel</textarea></p>
+    <p>#pluginMessage("dbdiff.unknown.deletesql")</p>
+    <textarea style="width:100%;height:30px">$unknownTablesDeleteSql</textarea>
 #end
 
 
