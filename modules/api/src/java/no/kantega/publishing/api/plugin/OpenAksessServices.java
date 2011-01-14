@@ -6,6 +6,7 @@ import no.kantega.publishing.api.forms.service.FormService;
 import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
 import no.kantega.publishing.api.ui.UIServices;
 import no.kantega.security.api.identity.IdentityResolver;
+import no.kantega.security.api.profile.ProfileManager;
 import org.kantega.jexmec.Services;
 
 import javax.sql.DataSource;
@@ -21,6 +22,8 @@ public interface OpenAksessServices extends Services {
 
     public IdentityResolver getIdentityResolver(IdentityResolverName name);
 
+    public ProfileManager getProfileManager(ProfileManagerName name);
+
     public FormService getFormService();
 
     public SystemConfiguration getSystemConfiguration();
@@ -35,6 +38,10 @@ public interface OpenAksessServices extends Services {
 
     enum IdentityResolverName {
         aksessIdentityResolver
+    }
+
+    enum ProfileManagerName {
+        aksessProfileManager
     }
 
 }
