@@ -772,6 +772,13 @@
         <property name="prefix" value=""/>
         <property name="suffix" value=".vm"/>
         <property name="contentType" value="text/html;charset=utf-8"/>
+        <property name="attributesMap">
+            <map>
+                <entry key="dateTool">
+                    <bean class="org.apache.velocity.tools.generic.DateTool"/>
+                </entry>
+            </map>
+        </property>
     </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
