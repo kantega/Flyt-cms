@@ -49,6 +49,10 @@ public class FormSubmissionFillFilterTest extends TestCase {
             public String getEmail() {
                 return "donald@duck.com";
             }
+
+            public List<String> getFieldNames() {
+                return null;
+            }
         };
 
         FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);

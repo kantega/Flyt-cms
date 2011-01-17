@@ -3,6 +3,8 @@ package no.kantega.openaksess.forms.xml;
 import no.kantega.publishing.api.forms.model.*;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -37,6 +39,10 @@ public class DefaultXMLFormFormsubmissionConverterTest {
             }
 
             public String getEmail() {
+                return null;
+            }
+
+            public List<String> getFieldNames() {
                 return null;
             }
         };

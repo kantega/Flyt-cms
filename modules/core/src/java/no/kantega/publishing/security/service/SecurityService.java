@@ -228,13 +228,13 @@ public class SecurityService {
      * @return
      * @throws SystemException
      */
-    public static List getPermissions(BaseObject object) throws SystemException {
+    public static List<Permission> getPermissions(BaseObject object) throws SystemException {
         if (object instanceof Content) {
             Content c = (Content)object;
             object = c.getAssociation();
         }
 
-        List permissions = new ArrayList();
+        List<Permission> permissions = new ArrayList<Permission>();
 
         // Klone liste i tilfelle den blir endret
         List tmp = PermissionsCache.getPermissions(object);
