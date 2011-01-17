@@ -76,6 +76,7 @@
                 widgetLoaded();
             });
             $("#ContentStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/ContentStatistics.action");
+            $("#OrgUnitStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/OrgUnitStatistics.action");
             $("#UserInfo").load("${pageContext.request.contextPath}/admin/mypage/plugins/UserInfo.action");
         });
     </script>
@@ -200,6 +201,19 @@
     </div>
 
     <div class="widgetcolumn">
+        <%-- Look up property from aksess-project.conf --%>
+        <c:set var="showOrgUnitStatistics"><aksess:getconfig key="mypage.orgunitstatistics.show" /></c:set>
+        <c:if test="${showOrgUnitStatistics == true}">
+            <div class="widget">
+                <div class="widget-header">
+                    <h2><kantega:label key="aksess.orgunitstatistics.title"/></h2>
+                </div>
+                <div class="widget-content">
+                    <div id="OrgUnitStatistics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
+                </div>
+            </div>
+        </c:if>
+
         <div class="widget">
             <div class="widget-header">
                 <h2><a href="https://www.google.com/analytics/reporting/dashboard"><kantega:label key="aksess.googleanalytics.title"/></a></h2>

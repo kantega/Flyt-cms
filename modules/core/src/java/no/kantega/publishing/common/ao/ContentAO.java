@@ -38,6 +38,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import no.kantega.publishing.org.OrgUnit;
 
 /**
  *
@@ -376,6 +377,42 @@ public class ContentAO {
         }
     }
 
+    /**
+     * Looks up the published page associated with a User's {@link OrgUnit}.
+     *
+     * @param orgUnit Organization unit belonging to a user.
+     * @return Content object of the organization unit page; {@code null} if it does not exist.
+     * @throws SystemException
+     */
+    public static Content getContent(OrgUnit orgUnit) throws SystemException {
+        Content content = null;
+
+        Connection conn = null;
+        try {
+            conn = dbConnectionFactory.getConnection();
+            PreparedStatement ps = conn.prepareStatement("select ContentId, ContentTemplateId from content where Owner = ? and (ContentTemplateId = 7 or ContentTemplateId = 13) order by ContentTemplateId");
+            ps.setString(1, orgUnit.getId());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int contentId = rs.getInt("ContentId");
+                ContentIdentifier contentIdentifier = new ContentIdentifier();
+                contentIdentifier.setContentId(contentId);
+                content = ContentAO.getContent(contentIdentifier, true);
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                
+            }
+        }
+
+        return content;
+    }
 
     public static String getTitleByAssociationId(int associationId) {
         String title = null;
