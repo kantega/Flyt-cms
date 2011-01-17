@@ -147,7 +147,7 @@ openaksess.admin = {
         };
 
         this.getState = function() {
-            return currentState;
+            return $.bbq.getState("state");
         };
 
         var bindHashChange = function(updateEventType) {
