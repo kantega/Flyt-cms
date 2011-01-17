@@ -46,7 +46,7 @@
                 <div class="icon">
                     <c:choose>
                         <c:when test="${mediaSearch}">
-                            <a href="EditMultimedia.action?id=${media.id}" target="_top">
+                            <a href="EditMultimedia.action?id=${media.id}" target="_parent">
                         </c:when>
                         <c:otherwise>
                             <a href="EditMultimedia.action?id=${media.id}">
