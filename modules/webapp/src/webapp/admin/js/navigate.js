@@ -88,7 +88,7 @@ openaksess.navigate = {
      */
     bindNavigatorClickEvents : function () {
         $("#Navigator, #Breadcrumbs, #Statusbar .statusDetails .breadcrumbs").live('click', function(event) {
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click" + event.target.tagName);
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): clicked tag: " + event.target.tagName);
             if (event.target.tagName == 'A') {
                 event.preventDefault();
 
@@ -248,7 +248,7 @@ openaksess.navigate = {
 
     setFolderOpen : function (id) {
         var newList = $("#NavigatorState .openFolders").html();
-        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList + ", id: " + id);
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): current list: " + newList + ", id: " + id);
 
         var openList = newList.split(",");
         for (var i = 0; i < openList.length; i++) {
@@ -264,7 +264,7 @@ openaksess.navigate = {
             newList = newList + "," + id;
         }
 
-        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList);
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): new list: " + newList);
         openaksess.navigate.setOpenFolders(newList);
         openaksess.common.triggerEvent("navigatorOpen", [id, newList]);
     },
