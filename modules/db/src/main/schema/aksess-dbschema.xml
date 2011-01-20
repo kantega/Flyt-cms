@@ -17,13 +17,6 @@
 
 <database name="aksess_db" xmlns="http://db.apache.org/ddlutils/schema/1.1">
 
-    <table name="associationcategory">
-        <column name="AssociationId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="AssociationName" required="false" type="VARCHAR" size="64"/>
-        <column name="Description" required="false" type="CLOB" size="2147483647"/>
-        <column name="PublicId" required="false" type="VARCHAR" size="255"/>
-        <column name="LastModified" required="false" type="TIMESTAMP" size="23,3"/>
-    </table>
     <table name="associations">
         <column name="UniqueId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="AssociationId" required="false" type="INTEGER" size="10"/>
