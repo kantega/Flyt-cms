@@ -105,6 +105,34 @@ public class TopicMapAO {
         return topicmap;
     }
 
+    public static TopicMap getTopicMapByName(String name) throws SystemException{
+        Connection c = null;
+        TopicMap topicmap = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement st = c.prepareStatement("SELECT * FROM tmmaps WHERE name like '"+name+"%'");
+
+            ResultSet rs = st.executeQuery();
+            if(rs.next()) {
+                topicmap = getTopicMapFromRS(rs);
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL feil", SOURCE, e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+
+        return topicmap;
+    }
+
+
     public static TopicMap setTopicMap(TopicMap topicMap) throws SystemException {
         Connection c = null;
 
