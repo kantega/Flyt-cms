@@ -468,11 +468,12 @@ public class ContentAO {
         try {
             c = dbConnectionFactory.getConnection();
             // Get drafts, pages waiting for approval and rejected pages
-            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? order by contentversion.Status, contentversion.LastModified desc");
+            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
             st.setInt(1, ContentStatus.DRAFT);
             st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL);
             st.setInt(3, ContentStatus.REJECTED);
             st.setString(4, user.getId());
+            st.setInt(5, AssociationType.DEFAULT_POSTING_FOR_SITE);
             ResultSet rs = st.executeQuery();
 
             int prevContentId = -1;
