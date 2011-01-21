@@ -54,7 +54,7 @@
 <html>
 <head>
 	<title>showcontentinframe.jsp</title>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.4.min.js"></script>
     <script type="text/javascript">
         /*
          * Adds the target=contentmain attribute for all links, this prevents us from getting frames inside frames inside frames...
