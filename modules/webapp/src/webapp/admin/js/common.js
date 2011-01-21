@@ -39,7 +39,7 @@ openaksess.common = {
         if (columnized.size() > 0) {
             var columncount = 1;
             var classes = columnized.attr("class").split(" ");
-            for (var i in classes) {
+            for (var i = 0; i < classes.length; i++) {
                 var c = classes[i];
                 if (c.indexOf("columnCount") > -1) {
                     columncount = parseInt(c.substring("columnCount".length, c.length));
