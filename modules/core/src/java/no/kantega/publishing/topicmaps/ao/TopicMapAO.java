@@ -111,7 +111,8 @@ public class TopicMapAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            PreparedStatement st = c.prepareStatement("SELECT * FROM tmmaps WHERE name like '"+name+"%'");
+            PreparedStatement st = c.prepareStatement("SELECT * FROM tmmaps WHERE name like ?");
+            st.setString(1, name+"%");
 
             ResultSet rs = st.executeQuery();
             if(rs.next()) {
