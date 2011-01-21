@@ -31,7 +31,7 @@ public class DerbyDatabaseCreator extends AbstractDatabaseCreator{
     protected DriverManagerDataSource createDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
-        dataSource.setUrl("jdbc:derby:memory:" + databaseName + ";create=true");
+        dataSource.setUrl("jdbc:derby:memory:" + databaseName + dbCounter++ + ";create=true");
 
         return dataSource;
     }
