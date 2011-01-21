@@ -36,57 +36,106 @@ public class JdbcTopicMapDaoTest {
     }
 
     @Test
-    public void testGetTopicMaps() throws Exception {
+    public void shouldGetTopicMapAfterSave() throws Exception {
+        // Given
         TopicMap topicMap = new TopicMap();
         topicMap.setName("My topicmap");
 
-        dao.setTopicMap(topicMap);
+        // When
+        dao.saveOrUpdateTopicMap(topicMap);
+        List<TopicMap> topicMapsFromDB = dao.getTopicMaps();
 
-        List<TopicMap> topicMaps = dao.getTopicMaps();
-
-        assertTrue("topicMaps.size() > 0", topicMaps.size() > 0);
+        // Then
+        assertEquals(topicMapsFromDB.size(), 1);
     }
 
     @Test
-    public void testGetTopicMapById() throws Exception {
+    public void shouldPreserveTopicMapNameWhenSaved() throws Exception {
+        // Given
         TopicMap topicMap = new TopicMap();
         topicMap.setName("My topicmap");
 
-        TopicMap topicMapAfterSave = dao.setTopicMap(topicMap);
+        // When
+        TopicMap topicMapAfterSave = dao.saveOrUpdateTopicMap(topicMap);
+        TopicMap topicMapFromDB = dao.getTopicMapById(topicMapAfterSave.getId());
 
-        TopicMap topicMap2 = dao.getTopicMapById(topicMapAfterSave.getId());
-
-        assertNotNull("dao.getTopicMapById != null", topicMap2);
-
-        assertEquals("topicMap.name != topicMap2.name", topicMap.getName(), topicMap2.getName());
+        // Then
+        assertNotNull("topicMapFromDB != null", topicMapFromDB);
+        assertEquals(topicMap.getName(), topicMapFromDB.getName());
     }
 
     @Test
-    public void testSetTopicMap() throws Exception {
+    public void shouldUpdateNewTopicMapNameWhenSaved() throws Exception {
+        // Given
+        TopicMap originalTopicMap = new TopicMap();
+        originalTopicMap.setName("My topicmap");
+        originalTopicMap = dao.saveOrUpdateTopicMap(originalTopicMap);
+
+        // When
+        originalTopicMap.setName("New name");
+        dao.saveOrUpdateTopicMap(originalTopicMap);
+        TopicMap topicMapAfterChange = dao.getTopicMapById(originalTopicMap.getId());
+
+        // Then
+        assertEquals(originalTopicMap.getName(), topicMapAfterChange.getName());
+    }
+
+    @Test
+    public void shouldSetIdWhenTopicMapIsSaved() throws Exception {
+        // Given
         TopicMap topicMap = new TopicMap();
         topicMap.setName("My topicmap");
 
-        TopicMap topicMapAfterSave = dao.setTopicMap(topicMap);
+        // When
+        TopicMap topicMapFromDB = dao.saveOrUpdateTopicMap(topicMap);
 
-        assertNotNull("topicMapAfterSave != null", topicMapAfterSave);
-        assertTrue("topicMapAfterSave.getId() > 0", topicMapAfterSave.getId() > 0);
+        // Then
+        assertNotNull("topicMapAfterSave != null", topicMapFromDB);
+        assertTrue("topicMapAfterSave.getId() > 0", topicMapFromDB.getId() > 0);
 
     }
 
     @Test
-    public void testGetTopicMapByName() throws Exception {
+    public void shouldReturnTopicMapByName() throws Exception {
+        // Given
         TopicMap topicMap = new TopicMap();
         topicMap.setName("My topicmap");
 
-        dao.setTopicMap(topicMap);
+        // When
+        dao.saveOrUpdateTopicMap(topicMap);
+        TopicMap topicMapFromDB = dao.getTopicMapByName("My top");
 
-        TopicMap topicMap2 = dao.getTopicMapByName("My top");
+        // Then
+        assertNotNull("dao.getTopicMapByName('My top') != null", topicMapFromDB);
+    }
 
-        assertNotNull("dao.getTopicMapByName('My top') != null", topicMap2);
+    @Test
+    public void shouldReturnNullForUnknownTopicMapName() throws Exception {
+        // Given
+        String topicName = "Undefined";
 
-        TopicMap topicMap3 = dao.getTopicMapByName("None");
+        // When
+        TopicMap topicMap3 = dao.getTopicMapByName(topicName);
 
+        // Then
         assertNull("dao.getTopicMapByName('None') == null", topicMap3);
 
+    }
+
+
+    @Test
+    public void shouldReturnNullWhenTopicMapIsDeleted() throws Exception {
+        // Given
+        TopicMap topicMap = new TopicMap();
+        topicMap.setName("shouldReturnNullWhenTopicMapIsDeleted");
+
+        TopicMap topicMapFromDB = dao.saveOrUpdateTopicMap(topicMap);
+
+        // When
+        dao.deleteTopicMap(topicMapFromDB.getId());
+        List<TopicMap> topicMaps = dao.getTopicMaps();
+
+        // Then
+        assertEquals(0, topicMaps.size());
     }
 }

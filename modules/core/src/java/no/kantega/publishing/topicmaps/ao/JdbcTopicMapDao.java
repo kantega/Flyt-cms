@@ -41,7 +41,7 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
         return getSimpleJdbcTemplate().queryForObject("SELECT * FROM tmmaps WHERE Id = ?", rowMapper, topicMapId);
     }
 
-    public TopicMap setTopicMap(final TopicMap topicMap) {
+    public TopicMap saveOrUpdateTopicMap(final TopicMap topicMap) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -63,17 +63,6 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
                     st.setInt(6, topicMap.getId());
                 }
 
-                st.execute();
-
-                if (topicMap.isNew()) {
-                    // Finn id til nytt objekt
-                    ResultSet rs = st.getGeneratedKeys();
-                    if (rs.next()) {
-                        topicMap.setId(rs.getInt(1));
-                    }
-                    rs.close();
-                }
-
                 return st;
             }
         }, keyHolder);
@@ -86,7 +75,7 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
     }
 
     public void deleteTopicMap(int topicMapId) throws ObjectInUseException {
-        int cnt = getSimpleJdbcTemplate().queryForInt("select * from tmtopic where TopicMapId = ?", topicMapId);
+        int cnt = getSimpleJdbcTemplate().queryForInt("select count(*) from tmtopic where TopicMapId = ?", topicMapId);
         if (cnt > 0) {
             throw new ObjectInUseException(this.getClass().getSimpleName(), "");
         }

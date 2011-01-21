@@ -35,7 +35,7 @@ public class AbstractTestJdbcTopicMap {
 
         TopicMap newTopicMap = new TopicMap();
         newTopicMap.setName("My topicmap");
-        topicMap = topicMapDao.setTopicMap(newTopicMap);
+        topicMap = topicMapDao.saveOrUpdateTopicMap(newTopicMap);
 
         topicDao = new JdbcTopicDao();
         topicDao.setDataSource(dataSource);

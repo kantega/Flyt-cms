@@ -44,7 +44,7 @@ public class TopicMapAO {
 
     public static TopicMap setTopicMap(TopicMap topicMap) throws SystemException {
         TopicMapDao dao = (TopicMapDao)RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
-        return dao.setTopicMap(topicMap);
+        return dao.saveOrUpdateTopicMap(topicMap);
     }
 
     public static void deleteTopicMap(int id) throws SystemException, ObjectInUseException {

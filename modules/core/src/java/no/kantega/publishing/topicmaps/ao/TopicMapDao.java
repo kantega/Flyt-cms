@@ -24,7 +24,7 @@ import java.util.List;
 public interface TopicMapDao {
     List<TopicMap> getTopicMaps();
     TopicMap getTopicMapById(int topicMapId);
-    TopicMap setTopicMap(TopicMap topicMap);
+    TopicMap saveOrUpdateTopicMap(TopicMap topicMap);
     void deleteTopicMap(int topicMapId) throws ObjectInUseException;
     TopicMap getTopicMapByName(String name);
 }
