@@ -10,6 +10,10 @@
     #pluginArgMessage('dbdiff.changes.columnadded', [$change.newColumn.name])
 #end
 
+#macro(explainRemovedColumn $shema, $change)
+    #pluginArgMessage('dbdiff.changes.columnremoved', [$change.findChangedColumn($schema.actual, false).name])
+#end
+
 #macro(explainColumnChange $schema $change)
 #set($origColumn = $change.findChangedColumn($schema.actual, false))
     #pluginArgMessage('dbdiff.changes.columnchanged', [$change.changedColumn])
@@ -69,6 +73,8 @@
         #explainColumnChange($schema, $change)
     #elseif ($change.class.simpleName == "AddColumnChange")
         #explainAddedColumn($change)
+    #elseif ($change.class.simpleName == "RemoveColumnChange")
+        #explainRemovedColumn($schema, $change)
     #elseif ($change.class.simpleName == "AddTableChange")
         #pluginArgMessage("dbdiff.changes.addtable", [$change.newTable.name])
     #elseif ($change.class.simpleName == "AddForeignKeyChange")

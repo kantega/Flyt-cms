@@ -47,16 +47,22 @@ public class DbDiffController {
 
         Set<String> knownTableNames = new TreeSet<String>();
 
+        final String name = null;
+        final String catalog = null;
+        String schema = null;
+        final String[] tableTypes = null;
+
+
         Platform platform = PlatformFactory.createNewPlatformInstance(aksessDataSource);
         if(platform instanceof MSSqlPlatform) {
             platform.getPlatformInfo().addNativeTypeMapping(Types.CLOB, "TEXT", Types.CLOB);
             platform.getPlatformInfo().addNativeTypeMapping(Types.BLOB, "IMAGE", Types.BLOB);
-            //platform.getPlatformInfo().addNativeTypeMapping(Types.FLOAT, "FLOAT", Types.FLOAT);
+            schema ="dbo";
         }
         platform.setSqlCommentsOn(false);
         platform.setScriptModeOn(true);
 
-        Database actual = platform.readModelFromDatabase(null);
+        Database actual = platform.readModelFromDatabase(name, catalog, schema, tableTypes);
 
         for (String resourcePath : getSchemaResoucePaths()) {
 
