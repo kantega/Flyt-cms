@@ -28,6 +28,8 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ImageAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.factory.AttributeFactory;
+import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
@@ -220,14 +222,12 @@ public class EditContentHelper {
         for (Element attr : attributes) {
             String name = attr.getAttribute("name");
             String type = attr.getAttribute("type");
-            if (type == null || type.length() == 0) {
-                type = "text";
-            }
-            type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
+
+            AttributeFactory attributeFactory = new ClassNameAttributeFactory();
 
             Attribute attribute = null;
             try {
-                attribute = (Attribute) Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
+                attribute = attributeFactory.newAttribute(type);
             } catch (ClassNotFoundException e) {
                 throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
             } catch (Exception e) {
@@ -235,7 +235,6 @@ public class EditContentHelper {
             }
 
             attribute.setType(attributeType);
-
 
             attribute.setConfig(attr, defaultValues);
 

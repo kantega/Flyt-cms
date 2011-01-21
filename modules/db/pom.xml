@@ -80,7 +80,8 @@
                             <fileset dir="src/main/schema">
                                 <include name="aksess-dbschema.xml" />
                             </fileset>
-                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby.sql" doDrops="false" />
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby.sql" doDrops="true" />
                         </ddlToDatabase>
 
                         <ddlToDatabase databaseType="oracle10">

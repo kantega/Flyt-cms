@@ -1,42 +1,24 @@
-/*
- * Copyright 2009 Kantega AS
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package no.kantega.publishing.common.ao;
+package no.kantega.publishing.common.ao.rowmapper;
 
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- *
- */
-public class ContentAOHelper {
-    private static final String SOURCE = "aksess.ContentAOHelper";
+public class ContentRowMapper implements RowMapper<Content> {
+    private static AssociationRowMapper associationRowMapper = new AssociationRowMapper();
+    private boolean getAssociationInfo = false;
 
-    public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
+    public ContentRowMapper(boolean getAssociationInfo) {
+        this.getAssociationInfo = getAssociationInfo;
+    }
+
+    public Content mapRow(ResultSet rs, int i) throws SQLException {
         Content content = new Content();
 
-        // Felter fra Content
+        // Content table
         content.setId(rs.getInt("ContentId"));
 
         content.setType(ContentType.getContentTypeAsEnum(rs.getInt("Type")));
@@ -68,7 +50,7 @@ public class ContentAOHelper {
         content.setDoOpenInNewWindow(rs.getInt("OpenInNewWindow") == 1);
         content.setDocumentTypeIdForChildren(rs.getInt("DocumentTypeIdForChildren"));
 
-        // Felter fra ContentVersion
+        // ContentVersion table
         content.setVersionId(rs.getInt("ContentVersionId"));
         content.setVersion(rs.getInt("Version"));
         content.setStatus(rs.getInt("Status"));
@@ -106,34 +88,8 @@ public class ContentAOHelper {
 
         // Info som avhenger av i hvilken kontekst dette er publisert
         if (getAssociationInfo) {
-            content.addAssociation(AssociationAO.getAssociationFromRS(rs));
+            content.addAssociation(associationRowMapper.mapRow(rs, 0));
         }
         return content;
     }
-
-    public static void addAttributeFromRS(Content content, ResultSet rs) throws SQLException, SystemException {
-
-        String attrType = rs.getString("AttributeType");
-        if (attrType == null) {
-            attrType = "Text";
-        }
-        attrType = attrType.substring(0, 1).toUpperCase() + attrType.substring(1, attrType.length()).toLowerCase();
-
-        Attribute attribute = null;
-        try {
-            attribute = (Attribute)Class.forName(ClassNameAttributeFactory.ATTRIBUTE_CLASS_PATH + attrType + "Attribute").newInstance();
-        } catch (Exception e) {
-            throw new SystemException("Feil ved oppretting av klasse for attributt" +  attrType, SOURCE, e);
-        }
-
-        int attrDataType = rs.getInt("DataType");
-
-        attribute.setName(rs.getString("Name"));
-
-        UnPersistAttributeBehaviour behaviour = attribute.getFetchBehaviour();
-        behaviour.unpersistAttribute(rs, attribute);       
-
-        content.addAttribute(attribute, attrDataType);
-    }
 }
-

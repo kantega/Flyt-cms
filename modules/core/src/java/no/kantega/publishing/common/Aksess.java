@@ -37,7 +37,6 @@ public class Aksess {
 
     public static final String PROPERTY_FILE = "aksess.conf";
     public static final String VAR_WEB = "<@WEB@>";
-    public static final String ATTRIBUTE_CLASS_PATH = "no.kantega.publishing.common.data.attributes.";
     public static final String ERROR_URL = "/aksess/error/error.jsp";
 
     public static final String CONTENT_URL_PREFIX = "/content";

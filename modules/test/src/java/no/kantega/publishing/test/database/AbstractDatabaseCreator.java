@@ -56,8 +56,12 @@ public abstract class AbstractDatabaseCreator {
                 try {
                     dataSource.getConnection().createStatement().execute(statement);
                 } catch (SQLException ex) {
-                    System.out.println("ERROR: parsing:" + statement);
-                    throw new RuntimeException(ex);
+                    // Ignore drop table if it fails
+                    if (!statement.toUpperCase().contains("DROP ")) {
+                        System.out.println("ERROR: parsing:" + statement);
+                        System.out.println(ex.toString());
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         } catch (IOException e) {

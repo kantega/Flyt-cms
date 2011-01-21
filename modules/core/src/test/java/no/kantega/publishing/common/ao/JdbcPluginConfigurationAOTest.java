@@ -19,7 +19,7 @@ public class JdbcPluginConfigurationAOTest {
     @Before
     public void setup() {
         
-        String create= "create table pluginConfiguration (pluginNamespace varchar(255) not null, configName varchar(512) NOT NULL, configValue CLOB NOT NULL);";
+        String create= "DROP table pluginConfiguration; create table pluginConfiguration (pluginNamespace varchar(255) not null, configName varchar(512) NOT NULL, configValue CLOB NOT NULL);";
         
         DataSource dataSource = new DerbyDatabaseCreator("aksess", new ByteArrayInputStream(create.getBytes())).createDatabase();
         

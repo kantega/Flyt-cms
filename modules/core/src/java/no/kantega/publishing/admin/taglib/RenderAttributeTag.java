@@ -12,6 +12,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.common.factory.AttributeFactory;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -71,12 +73,8 @@ public class RenderAttributeTag extends TagSupport {
 
             try {
                 if (attribute == null) {
-                    if (type == null || type.length() < 2) {
-                        type = "text";
-                    }
-                    type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
-
-                    attribute = (Attribute) Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
+                    AttributeFactory attributeFactory = (AttributeFactory) RootContext.getInstance().getBean("aksessAttributeFactory");
+                    attribute = attributeFactory.newAttribute(type);
                 }
                 if (value != null && value.length() > 0) {
                     attribute.setValue(value);

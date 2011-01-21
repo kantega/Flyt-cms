@@ -47,6 +47,24 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean id="aksessTopicMapDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicMapDao">
+        <property name="dataSource"  ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="aksessTopicUsageCounter" class="no.kantega.publishing.topicmaps.ao.TopicUsageCounter">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="aksessTopicDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="topicUsageCounter" ref="aksessTopicUsageCounter"/>
+    </bean>
+
+    <bean id="aksessTopicAssociationDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicAssociationDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="topicUsageCounter" ref="aksessTopicUsageCounter"/>
+    </bean>
+
 
     <bean id="aksessNotesDao" class="no.kantega.publishing.common.ao.JdbcNotesDao">
         <property name="dataSource" ref="aksessDataSource"/>

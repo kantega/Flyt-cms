@@ -10,7 +10,7 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -124,7 +124,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         params.add(MultimediaType.MEDIA.getTypeAsInt());
 
-        String where = "";
+        String where;
         int id = -1;
         try {
             id = Integer.parseInt(phrase);
@@ -311,7 +311,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         this.sqlDialect = sqlDialect;
     }
 
-    private class MultimediaRowMapper implements ParameterizedRowMapper<Multimedia> {
+    private class MultimediaRowMapper implements RowMapper<Multimedia> {
         public Multimedia mapRow(ResultSet rs, int i) throws SQLException {
             Multimedia mm = new Multimedia();
 
