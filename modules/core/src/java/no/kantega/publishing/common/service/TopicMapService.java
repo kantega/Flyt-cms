@@ -56,7 +56,7 @@ public class TopicMapService {
         return TopicMapAO.getTopicMap(id);
     }
 
-    public TopicMap getTopicMapByname(String name) throws SystemException{
+    public TopicMap getTopicMapByName(String name) throws SystemException{
         return TopicMapAO.getTopicMapByName(name);
     }
 
