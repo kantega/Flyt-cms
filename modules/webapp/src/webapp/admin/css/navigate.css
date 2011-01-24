@@ -2,7 +2,8 @@
 #Navigation {
     position: relative;
     float: left;
-    width: 190px;
+    width: 17.273em; /*190px*/
+    /*width: 190px;*/
     padding-right: 10px;/*Framesplit.width*/
     background: #ffffff;
 }

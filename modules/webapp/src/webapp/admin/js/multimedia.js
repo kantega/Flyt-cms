@@ -393,7 +393,7 @@ openaksess.navigate.onNavigatorTitleClick = function(elm) {
  * See navigate.js
  */
 openaksess.navigate.navigatorResizeOnResize = function() {
-    $.event.trigger("resize");
+    $(window).trigger("resize");
 };
 
 openaksess.search.getSearchAction = function() {

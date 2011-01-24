@@ -452,7 +452,7 @@ openaksess.content = {
                     $buttons.hide();
                 }
                 if (isHidden != $buttons.is(":hidden")) {
-                    $.event.trigger("resize");
+                    $(window).trigger("resize");
                 }
             }
 
@@ -470,7 +470,7 @@ openaksess.content = {
             }
             if (isHidden != $navigateContentHints.is(":hidden")) {
                 openaksess.common.debug("ContentStatus.showContentHints resizing to show content hints");
-                $.event.trigger("resize");
+                $(window).trigger("resize");
             }
         },
 
@@ -573,7 +573,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
 
     var contentHintsHeight = 0;
     if ($contentHints.size() > 0 && !$contentHints.is(":hidden")) {
-        contentHintsHeight = $contentHints.height();
+        contentHintsHeight = $contentHints.outerHeight();
     }
 
     var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
@@ -582,7 +582,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
         $navigation.width(preferredNavigationWidth + "px");
         navigationWidth = preferredNavigationWidth;
     }
-    var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width);
+    var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width)-2;
 
 
     openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
@@ -630,13 +630,14 @@ openaksess.navigate.navigatorResizeOnStart = function() {
 openaksess.navigate.navigatorResizeOnStop = function() {
     openaksess.common.debug("openaksess.content.navigatorResizeOnStop(): Removing overlay");
     openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.content.navigationwidth, $("#Navigation").width());
-    $.event.trigger("resize");
+    $(window).trigger("resize");
     $("#Contentoverlay").remove();
 };
 
 openaksess.navigate.navigatorResizeOnResize = function() {
     //TODO: Verify the performance of this in all browsers.
-    $.event.trigger("resize");
+    openaksess.common.debug("openaksess.content.navigatorResizeOnResize(): Triggering resize event");
+    $(window).trigger("resize");
 };
 
 
