@@ -47,11 +47,11 @@ public class TopicUsageCounter extends SimpleJdbcDaoSupport {
 
         List<Map<String, Object>> rows = getSimpleJdbcTemplate().queryForList(sql.toString(), params.toArray());
         for (Map row : rows) {
-            Integer cnt = (Integer)row.get("Cnt");
+            Number cnt = (Number)row.get("Cnt");
             String topicId = (String)row.get("TopicId");
             for (Topic topic : topics) {
                 if (topic.getId().equals(topicId)) {
-                    topic.setNoUsages(cnt);
+                    topic.setNoUsages(cnt.intValue());
                 }
             }
         }
