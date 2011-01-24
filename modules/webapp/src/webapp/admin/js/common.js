@@ -285,6 +285,16 @@ openaksess.common = {
             context = $(context);
         }
         context.trigger("openaksess." + eventName, data);
+    },
+
+    abbreviate: function(str, maxlen, suffix) {
+        if (str.length <= maxlen) {
+            return str;
+        }
+        if (!suffix) {
+            suffix = "...";
+        }
+        return str.substring(0, maxlen) + suffix;
     }
 };
 

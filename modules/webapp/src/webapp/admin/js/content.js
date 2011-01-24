@@ -294,8 +294,18 @@ openaksess.content = {
         breadcrumbs: function (path) {
             if (path) {
                 var crumbs = '<ul class="breadcrumbs">';
+                openaksess.common.debug("openaksess.contentstatus.breadcrumbs(): Bread crumbs size: " + path.length + " elements");
                 for (var i=0; i<path.length; i++) {
-                    crumbs += "<li><a href=\"?thisId="+path[i].id+"\">"+path[i].title+"</a></li>";
+                    var visibleTitle = path[i].title;
+                    //Truncate the path if it's 5 or more elements. Do not trucate the first or two last elements.
+                    if (path.length > 4 && i < path.length-2) {
+                        visibleTitle = openaksess.common.abbreviate(path[i].title, 3);
+                    }
+                    //Abbreviate all titles that are longer than 20 characters
+                    if (visibleTitle.length > 20) {
+                        visibleTitle = openaksess.common.abbreviate(visibleTitle, 20);
+                    }
+                    crumbs += "<li><a href=\"?thisId="+path[i].id+"\" title=\""+path[i].title+"\">"+visibleTitle+"</a></li>";
                 }
                 crumbs += "</ul>";
                 $("#Breadcrumbs").html(crumbs);

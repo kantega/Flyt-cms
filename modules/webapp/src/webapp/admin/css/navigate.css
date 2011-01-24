@@ -54,6 +54,7 @@ body.popup #Navigator{
     border-bottom: 1px solid #cccccc;
     padding: 0 10px;
     position: relative;
+    overflow: hidden;/* Prevents the bar contents from wrapping */
 }
 
 #MainPane .supportMenu a {
