@@ -18,7 +18,7 @@ public class JdbcMultimediaDaoTest {
 
     @Before
     public void setUp() {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby.sql")).createDatabase();
+        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
         dao = new JdbcMultimediaDao();
         dao.setDataSource(dataSource);
         dao.setSqlDialect(new DerbySQLDialect());

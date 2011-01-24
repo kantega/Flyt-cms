@@ -21,8 +21,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import java.io.InputStream;
 
 public class DerbyDatabaseCreator extends AbstractDatabaseCreator{
-    static int dbCounter = 0;
-
     public DerbyDatabaseCreator(String datebaseName, InputStream sqlCreateScript) {
         super(datebaseName, sqlCreateScript);
     }
@@ -31,7 +29,7 @@ public class DerbyDatabaseCreator extends AbstractDatabaseCreator{
     protected DriverManagerDataSource createDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.apache.derby.jdbc.EmbeddedDriver");
-        dataSource.setUrl("jdbc:derby:memory:" + databaseName + dbCounter++ + ";create=true");
+        dataSource.setUrl("jdbc:derby:memory:" + databaseName + ";create=true");
 
         return dataSource;
     }

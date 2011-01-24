@@ -29,7 +29,7 @@ public class AbstractTestJdbcTopicMap {
     protected DataSource dataSource;
 
     public void setUp() throws Exception {
-        dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby.sql")).createDatabase();
+        dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
         JdbcTopicMapDao topicMapDao = new JdbcTopicMapDao();
         topicMapDao.setDataSource(dataSource);
 

@@ -33,7 +33,7 @@ public class TopicUsageCounterTest {
 
     @Before
     public void setUp() throws Exception {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby.sql")).createDatabase();
+        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
         counter = new TopicUsageCounter();
         counter.setDataSource(dataSource);
 

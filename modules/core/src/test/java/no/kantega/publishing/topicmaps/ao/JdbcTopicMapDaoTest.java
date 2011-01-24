@@ -30,7 +30,7 @@ public class JdbcTopicMapDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby.sql")).createDatabase();
+        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
         dao = new JdbcTopicMapDao();
         dao.setDataSource(dataSource);
     }
