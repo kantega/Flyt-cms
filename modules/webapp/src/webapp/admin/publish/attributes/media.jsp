@@ -66,7 +66,7 @@
             <input type="hidden" name="${fieldName}" value="${value}">
             <input type="file" class="inp" name="${fieldName}_upload" value="" tabindex="<%=attribute.getTabIndex()%>">
             <c:if test="${fn:length(value) != 0}">
-                <a id="${fieldName}_remove" href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+                <a id="${fieldName}_remove" href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
                 <script type="text/javascript">
                     var button = $("#${fieldName}_remove");
                     var media = $("#${fieldName}_media");
@@ -91,8 +91,8 @@
             </script>
         </div>
         <div class="buttonGroup">
-            <a href="Javascript:openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-            <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
         </div>
     </c:otherwise>
 </c:choose>

@@ -1,9 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier,
-                 no.kantega.publishing.common.data.enums.Language,
-                 no.kantega.publishing.common.data.Content,
-                 no.kantega.publishing.common.data.attributes.Attribute,
+<%@ page import="no.kantega.publishing.common.data.attributes.Attribute,
                  no.kantega.publishing.common.data.Multimedia"%>
 <%@ page import="no.kantega.publishing.common.service.MultimediaService"%>
 <%--
@@ -48,6 +45,6 @@
     <input type="text" class="fullWidth disabled" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=mmname%>" readonly onFocus="this.blur()">
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectMediaFolder(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectMediaFolder(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
