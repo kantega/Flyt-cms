@@ -106,9 +106,11 @@ table.noborder td, table.noborder th {
 
 
 /************** Layout **************/
+#Top {
+    min-width: 982px;
+}
 
 #TopMenu {
-    min-width: 982px;
     height: 28px;
     line-height: 28px;
     padding: 0 17px;
