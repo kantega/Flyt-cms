@@ -42,7 +42,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Print todays date</description>
+        <description>Print today's date</description>
         <name>getdate</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.GetDateTag</tag-class>
         <body-content>empty</body-content>
