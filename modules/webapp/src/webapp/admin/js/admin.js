@@ -105,7 +105,7 @@ openaksess.admin = {
         }, 100);
 
         function bodyLargerThanWindow() {
-            return $(document).height()+100 > $(window).height();
+            return $(document).height() > $(window).height()+100;
         }
     },
 
