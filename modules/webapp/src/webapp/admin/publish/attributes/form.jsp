@@ -24,5 +24,5 @@
     <%@include file="listoptions.jsf"%>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:editForm(document.myform.<%=formFieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="edit"><kantega:label key="aksess.button.edit"/></span></a>
+    <a href="#" onclick="editForm(document.myform.<%=formFieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="edit"><kantega:label key="aksess.button.edit"/></span></a>
 </div>

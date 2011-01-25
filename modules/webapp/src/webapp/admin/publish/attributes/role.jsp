@@ -37,6 +37,6 @@
     <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=roleName%>" onFocus="this.select()" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectRole(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectRole(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
