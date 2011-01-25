@@ -123,7 +123,7 @@ openaksess.common = {
             horizontalPadding: 0,
             verticalPadding: 0,
             open: function(){
-                $.event.trigger("resize");
+                $(window).trigger("resize");
             },
             autoResize: true,
             autoOpen: true,

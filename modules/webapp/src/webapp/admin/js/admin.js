@@ -69,28 +69,44 @@ openaksess.admin = {
      * Adjusts the height and width of the iframe onload and onresize.
      */
     setWindowSize : function () {
+
+        var doResize = false;
+
         $(window).bind('resize load', function(e) {
-            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received");
-
-            var windowHeight = $(window).height();
-            var windowWidth = $(window).width();
-            var topHeight = $("#Top").height();
-            var navigationWidth = $("#Navigation").width();
-            var framesplitWidth = $("#Framesplit").outerWidth(true);
-
-            openaksess.common.debug("openaksess.admin.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
-
-            $('#Content').css('height', (windowHeight-topHeight) + 'px');
-
-            if (typeof openaksess.admin.setLayoutSpecificSizes == 'function') {
-                openaksess.common.debug("openaksess.openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
-                openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
-            }
-
-            $(document).ready(function() {
-                $("body").addClass("fuckIE7").removeClass("fuckIE7");
-            });
+            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received. Do resize? " + doResize);
+            doResize = true;
         });
+
+        setInterval(function(){
+            if (doResize || bodyLargerThanWindow()) {
+                doResize = false;
+                //openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received");
+
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                //alert("TopMenu width: " + $("#TopMenu").outerWidth() + ", window width: " + windowWidth);
+                var topHeight = $("#Top").height();
+                var navigationWidth = $("#Navigation").width();
+                var framesplitWidth = $("#Framesplit").outerWidth(true);
+
+                openaksess.common.debug("openaksess.admin.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
+
+                $('#Content').css('height', (windowHeight-topHeight) + 'px');
+
+                if (typeof openaksess.admin.setLayoutSpecificSizes == 'function') {
+                    openaksess.common.debug("openaksess.openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
+                    openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
+                }
+
+                $(document).ready(function() {
+                    $("body").addClass("fuckIE7").removeClass("fuckIE7");
+                });
+            }
+        }, 100);
+
+        function bodyLargerThanWindow() {
+            return $(document).height()+100 > $(window).height();
+        }
     },
 
 
