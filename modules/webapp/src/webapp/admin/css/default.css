@@ -310,7 +310,7 @@ table.fullWidth {
 }
 
 #ModesMenu .search input[type=text]{
-    width: 200px;
+    width: 120px;
     height: 26px;
     line-height: 26px;
     border: none;
