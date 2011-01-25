@@ -77,14 +77,19 @@ openaksess.admin = {
             doResize = true;
         });
 
+        /**
+         * The window resize process could potentially be a resource consuming process.
+         * It is therefore not appropriate to preform this operation at every fired resize event.
+         * The interval between each resize is set to minimum 100ms.
+         */
+        var minResizeInteval = 100;
+
         setInterval(function(){
             if (doResize || bodyLargerThanWindow()) {
                 doResize = false;
-                //openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received");
 
                 var windowHeight = $(window).height();
                 var windowWidth = $(window).width();
-                //alert("TopMenu width: " + $("#TopMenu").outerWidth() + ", window width: " + windowWidth);
                 var topHeight = $("#Top").height();
                 var navigationWidth = $("#Navigation").width();
                 var framesplitWidth = $("#Framesplit").outerWidth(true);
@@ -102,9 +107,20 @@ openaksess.admin = {
                     $("body").addClass("fuckIE7").removeClass("fuckIE7");
                 });
             }
-        }, 100);
+        }, minResizeInteval);
 
+        /**
+         * Under ideal conditions, the body should be as high as the view port (window).
+         * Sometimes, for example when changing font size, the resize calculations fail, often beacause of a
+         * temporary scroll bar added during the font size change process. This will cause the content frame iFrame
+         * to wrap below the view port.
+         *
+         * To check if the content frame has wrapped below the window we check if the total body height is
+         * higher than the view port.
+         */
         function bodyLargerThanWindow() {
+            //Add 100px to the calculation just to make sure that it's acutually a frame wrap situation that
+            //has occurred, not just an odd pixel difference.
             return $(document).height() > $(window).height()+100;
         }
     },
