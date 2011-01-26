@@ -77,14 +77,19 @@ openaksess.admin = {
             doResize = true;
         });
 
+        /**
+         * The window resize process could potentially be a resource consuming process.
+         * It is therefore not appropriate to preform this operation at every fired resize event.
+         * The interval between each resize is set to minimum 100ms.
+         */
+        var minResizeInteval = 100;
+
         setInterval(function(){
-            if (doResize || bodyLargerThanWindow()) {
+            if (doResize || openaksess.admin.isResizeNecessary()) {
                 doResize = false;
-                //openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received");
 
                 var windowHeight = $(window).height();
                 var windowWidth = $(window).width();
-                //alert("TopMenu width: " + $("#TopMenu").outerWidth() + ", window width: " + windowWidth);
                 var topHeight = $("#Top").height();
                 var navigationWidth = $("#Navigation").width();
                 var framesplitWidth = $("#Framesplit").outerWidth(true);
@@ -102,13 +107,17 @@ openaksess.admin = {
                     $("body").addClass("fuckIE7").removeClass("fuckIE7");
                 });
             }
-        }, 100);
+        }, minResizeInteval);
 
-        function bodyLargerThanWindow() {
-            return $(document).height() > $(window).height()+100;
-        }
     },
 
+    /**
+     * Override this method if layout specific events require resizing of the window.
+     * @return Must return a boolean true if the window requires a resize, otherwise false.
+     */
+    isResizeNecessary: function() {
+        return false;
+    },
 
 
     ajaxSetup :function () {
@@ -163,7 +172,7 @@ openaksess.admin = {
         };
 
         this.getState = function() {
-            return currentState;
+            return $.bbq.getState("state");
         };
 
         var bindHashChange = function(updateEventType) {
@@ -203,6 +212,9 @@ openaksess.admin = {
             },
             content : {
                 navigationwidth : 'contentNavigationWidth'
+            },
+            formadmin : {
+                navigationwidth : 'formadminNavigationWidth'
             }
         },
 

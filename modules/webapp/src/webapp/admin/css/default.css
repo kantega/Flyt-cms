@@ -106,8 +106,11 @@ table.noborder td, table.noborder th {
 
 
 /************** Layout **************/
-#TopMenu {
+#Top {
     min-width: 982px;
+}
+
+#TopMenu {
     height: 28px;
     line-height: 28px;
     padding: 0 17px;
@@ -170,10 +173,14 @@ table.fullWidth {
     margin: 0;
     height: 100%;
 }
-#Content.publish #Framesplit, #Content.multimedia #Framesplit {
+
+.framesplit {
+    width:10px;
+    height:100%;
+}
+
+.framesplit.metadata{
     float: right;
-    width: 10px;
-    height: 100%;
     border-right: 1px solid #8F8F8F;
     background: url(../bitmaps/sprite-repeat-y.png) repeat-y -40px 0;
 }
@@ -470,38 +477,38 @@ table.fullWidth {
 }
 
 /************** Buttons ************/
-#EditContentButtons input.publish {
+#EditContentButtons .barButton input.publish {
     margin-left: 10px;
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -657px;
 }
 
-#EditContentButtons input.cancel {
+#EditContentButtons .barButton input.cancel {
     background: url("../bitmaps/sprite-common.png") no-repeat 0 -277px;
 }
 
-#EditContentButtons input.insert {
+#EditContentButtons .barButton input.insert {
     background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.save {
+#EditContentButtons .barButton input.save {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.approve {
+#EditContentButtons .barButton input.approve {
     margin-left: 10px;
     background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.reject {
+#EditContentButtons .barButton input.reject {
     background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
     /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
 }
 
-#EditContentButtons input.savedraft {
+#EditContentButtons .barButton input.savedraft {
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
 }
 
@@ -545,6 +552,7 @@ table.fullWidth {
     height: 50px;
     border: 0;
     cursor: pointer;
+    background: transparent;
 }
 
 #Content .buttonGroup, .ui-dialog-content .buttonGroup{
@@ -962,6 +970,9 @@ div.sidebarFieldset fieldset select {
 
 #SubPages li.page {
     cursor: pointer;
+}
+#SubPages li.page:hover {
+    background: #eee;
 }
 #SubPages li.page.selected {
     background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -366px;

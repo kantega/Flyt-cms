@@ -378,14 +378,14 @@ openaksess.content = {
                 }
                 if (contentProperties.owner) {
                     details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
-                }                                
+                }
 
                 var displayTemplate = contentProperties.displayTemplate;
                 if (displayTemplate) {
                     details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
                 }
             }
-            
+
             details +="</ul>";
 
             $("#Statusbar .details").unbind('click').bind('click', function(){
@@ -588,6 +588,21 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
         $mainPaneContent.height(mainPaneHeight-mainPaneContentPaddingTop-mainPaneContentPaddingBottom-statusbarHeight-buttonsHeight);
     }
 
+};
+
+/**
+ * Under ideal conditions, the body should be as high as the view port (window).
+ * Sometimes, for example when changing font size, the resize calculations fail, often beacause of a
+ * temporary scroll bar added during the font size change process. This will cause the content frame iFrame
+ * to wrap below the view port.
+ *
+ * To check if the content frame has wrapped below the window we check if the total body height is
+ * higher than the view port.
+ */
+openaksess.admin.isResizeNecessary = function() {
+    //Add 100px to the calculation just to make sure that it's acutually a frame wrap situation that
+    //has occurred, not just an odd pixel difference.
+    return $(document).height() > $(window).height()+100;
 };
 
 
