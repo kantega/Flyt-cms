@@ -85,7 +85,7 @@ openaksess.admin = {
         var minResizeInteval = 100;
 
         setInterval(function(){
-            if (doResize || bodyLargerThanWindow()) {
+            if (doResize || openaksess.admin.isResizeNecessary()) {
                 doResize = false;
 
                 var windowHeight = $(window).height();
@@ -109,22 +109,15 @@ openaksess.admin = {
             }
         }, minResizeInteval);
 
-        /**
-         * Under ideal conditions, the body should be as high as the view port (window).
-         * Sometimes, for example when changing font size, the resize calculations fail, often beacause of a
-         * temporary scroll bar added during the font size change process. This will cause the content frame iFrame
-         * to wrap below the view port.
-         *
-         * To check if the content frame has wrapped below the window we check if the total body height is
-         * higher than the view port.
-         */
-        function bodyLargerThanWindow() {
-            //Add 100px to the calculation just to make sure that it's acutually a frame wrap situation that
-            //has occurred, not just an odd pixel difference.
-            return $(document).height() > $(window).height()+100;
-        }
     },
 
+    /**
+     * Override this method if layout specific events require resizing of the window.
+     * @return Must return a boolean true if the window requires a resize, otherwise false.
+     */
+    isResizeNecessary: function() {
+        return false;
+    },
 
 
     ajaxSetup :function () {
