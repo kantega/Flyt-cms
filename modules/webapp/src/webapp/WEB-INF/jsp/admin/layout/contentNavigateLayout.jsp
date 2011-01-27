@@ -146,7 +146,7 @@
             </div>
             <div class="infoslider"></div>
             <div id="Navigator"></div>
-            <div id="Framesplit" class="framesplit navigate"></div>
+            <div id="Framesplit" class="framesplit navigate"><div class="framesplitDrag"></div></div>
         </div>
 
 
