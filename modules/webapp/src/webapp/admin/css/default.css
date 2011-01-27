@@ -375,7 +375,7 @@ table.fullWidth {
     padding-right: 4px;
     margin-left: 4px;
     display: block;
-    overflow: auto;
+    overflow: hidden;
 }
 
 #ModesMenu .buttonGroup .button.last.active {
