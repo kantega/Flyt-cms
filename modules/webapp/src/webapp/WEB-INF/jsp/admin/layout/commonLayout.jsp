@@ -70,7 +70,7 @@
 
     </script>
 </head>
-<body>
+<body<kantega:hassection id="bodyclass"> class="<kantega:getsection id="bodyclass"/>"</kantega:hassection>>
 
 <div id="Top">
     <kantega:hassection id="topMenu">
