@@ -75,6 +75,7 @@ public class XStreamTemplateHelper {
         xstream.useAttributeFor(ContentTemplate.class, "isHearingEnabled");
         xstream.useAttributeFor(ContentTemplate.class, "expireAction");
         xstream.useAttributeFor(ContentTemplate.class, "expireMonths");
+        xstream.useAttributeFor(ContentTemplate.class, "isSearchable");
 
         // DisplayTemplate aliases
         xstream.useAttributeFor(DisplayTemplate.class, "allowMultipleUsages");

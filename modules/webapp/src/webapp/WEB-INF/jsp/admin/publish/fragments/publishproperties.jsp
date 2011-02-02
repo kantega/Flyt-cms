@@ -213,10 +213,17 @@
 <div class="sidebarFieldset">
     <fieldset>
         <legend><kantega:label key="aksess.publishinfo.otherproperties"/></legend>
-        <div class="row">
-            <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
-            <div class="clearing"></div>
-        </div>
+        <c:choose>
+            <c:when test="${toogleSearchableEnabled}">
+                <div class="row">
+                    <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
+                    <div class="clearing"></div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="searchable" value="false">
+            </c:otherwise>
+        </c:choose>
         <c:if test="${isDeveloper}">
             <div class="row">
                 <input type="checkbox" class="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="Locked"><label for="Locked" class="checkbox"><kantega:label key="aksess.publishinfo.locked"/></label>
