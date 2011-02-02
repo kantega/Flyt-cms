@@ -167,6 +167,7 @@
                         <xs:attribute name="id" use="required" type="xs:string"/>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="defaultPageUrlAlias" type="xs:string"/>
             </xs:all>
             <xs:attribute name="contentType">
                 <xs:simpleType>
@@ -184,6 +185,7 @@
             <xs:attribute name="keepVersions" type="xs:integer"/>
             <xs:attribute name="expireAction" type="xs:integer"/>
             <xs:attribute name="expireMonths" type="xs:integer"/>
+            <xs:attribute name="hideFromSearch" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

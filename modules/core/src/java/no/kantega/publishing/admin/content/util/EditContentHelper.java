@@ -142,6 +142,13 @@ public class EditContentHelper {
         if (contentTemplate.getDocumentTypeForChildren() != null) {
             content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
         }
+        if (contentTemplate.getDefaultPageUrlAlias() != null && contentTemplate.getDefaultPageUrlAlias().length() > 0) {
+            content.setAlias(contentTemplate.getDefaultPageUrlAlias());
+        }
+
+        content.setSearchable(contentTemplate.isSearchable());
+
+
         content.setType(contentTemplate.getContentType());
 
         // Inherit owner, language etc from parent
