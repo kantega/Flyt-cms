@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2011 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
