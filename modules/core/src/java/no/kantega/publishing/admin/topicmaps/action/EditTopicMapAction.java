@@ -72,31 +72,6 @@ public class EditTopicMapAction extends AdminController {
 
             topicMap = topicService.setTopicMap(topicMap);
 
-            if (topicMap.isEditable()) {
-                // Legger til basistype emne og kopling mellom emner, inntil dette evt blir en funksjon i GUI for å lage typer topics og koplinger
-                Topic type = topicService.getTopic(topicMap.getId(), "emne");
-                if (type == null) {
-                    // Legg til emne som type topic
-                    type = new Topic("emne", topicMap.getId());
-                    type.setIsTopicType(true);
-                    type.setBaseName("Emne");
-                    type.setIsSelectable(true);
-                    topicService.setTopic(type);
-
-                    Topic associationType = new Topic("emne-emne", topicMap.getId());
-                    associationType.setIsAssociation(true);
-
-                    List<TopicBaseName> basenames = new ArrayList<TopicBaseName>();
-                    TopicBaseName basename = new TopicBaseName();
-                    basename.setBaseName("er relatert til");
-                    basename.setScope("emne");
-                    basenames.add(basename);
-                    associationType.setBaseNames(basenames);
-
-                    topicService.setTopic(associationType);
-                }
-            }
-
             return new ModelAndView(new RedirectView("ListTopicMaps.action"));
         } else {
             model.put("topicMap", topicMap);
