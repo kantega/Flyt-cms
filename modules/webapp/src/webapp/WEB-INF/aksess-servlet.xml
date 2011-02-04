@@ -225,6 +225,9 @@
                 <prop key="/admin/administration/topicmaps/DeleteTopicMap.action">deleteTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/EditTopicMap.action">editTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/ListTopicMaps.action">listTopicMapsAction</prop>
+                <prop key="/admin/administration/topicmaps/ListTopicTypes.action">listTopicTypesAction</prop>
+                <prop key="/admin/administration/topicmaps/EditTopicType.action">editTopicTypeAction</prop>
+                <prop key="/admin/administration/topicmaps/DeleteTopicType.action">deleteTopicTypeAction</prop>
                 <!-- Site config controllers -->
                 <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
                 <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
@@ -693,6 +696,13 @@
     <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopicmaps.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicTypesAction" id="listTopicTypesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopictypes.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicTypeAction" id="editTopicTypeAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopictype.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicTypeAction" id="deleteTopicTypeAction"/>
     <!-- Site config -->
     <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>
