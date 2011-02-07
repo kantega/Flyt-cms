@@ -24,10 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Utility class for getting request parameters
@@ -203,5 +200,17 @@ public class RequestParameters  {
 
         return file;
     }
+
+    public List<MultipartFile> getFiles(String wantedname) {
+        List<MultipartFile> files = new ArrayList<MultipartFile>();
+
+        if (request instanceof MultipartHttpServletRequest) {
+            MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)request;
+            files = multipart.getFiles(wantedname);
+        }
+
+        return files;
+    }
+
 }
 

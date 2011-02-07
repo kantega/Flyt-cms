@@ -92,29 +92,4 @@ public class AttachmentBlacklistHelper {
 
         return blacklistedFileTypes;
     }
-
-    /**
-     * Returns the error message to be displayed (in a JavaScript alert box)
-     * when the user attempts to upload a black-listed file type.
-     * <p />
-     * Example: 
-     * <blockquote>
-     *    <code>attachment.filetypes.blacklisted.errorMessage = The file type is not allowed.</code>
-     * </blockquote>
-     *
-     * @return The error message
-     */
-    public static String getErrorMessage() {
-        String errorMessage = null;
-
-        try {
-            errorMessage = Aksess.getConfiguration().getString("attachment.filetypes.blacklisted.errorMessage");
-        } catch (ConfigurationException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
-        } catch (IllegalArgumentException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
-        }
-
-        return errorMessage;
-    }
 }

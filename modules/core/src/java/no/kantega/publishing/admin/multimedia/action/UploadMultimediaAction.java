@@ -106,52 +106,58 @@ public class UploadMultimediaAction extends AdminController {
     }
 
     private List<Multimedia> getUploadedFiles(RequestParameters parameters) throws IOException {
-        List<Multimedia> multimedia = new ArrayList<Multimedia>();
-        String filename = "";
-        String fileExtension = "";
+        List<Multimedia> multimediaList = new ArrayList<Multimedia>();
 
-        MultipartFile multipartFile = parameters.getFile("file");
+        List<MultipartFile> multipartFiles = parameters.getFiles("file");
 
-        // Cancel if the file type is blacklisted
-        if (AttachmentBlacklistHelper.isFileTypeInBlacklist(multipartFile)) {
-            return multimedia;
-        }
-
-        if (multipartFile != null) {
-            filename = multipartFile.getOriginalFilename();
-            fileExtension = filename.substring(filename.length() - 3, filename.length());
-            if ("zip".equalsIgnoreCase(fileExtension)) {
-                // Upload of multiple files
-                return getZipFiles(multipartFile);
-            } else {
-                // Upload of single file - new or replace existing
-                if(filename.contains("/")) {
-                    filename = filename.substring(filename.lastIndexOf("/")+1);
+        for (MultipartFile multipartFile : multipartFiles) {
+            if (multipartFile != null && !AttachmentBlacklistHelper.isFileTypeInBlacklist(multipartFile)) {
+                if (isZipFile(multipartFile)) {
+                    multimediaList.addAll(unpackFilesFromZipArchive(multipartFile));
+                } else {
+                    multimediaList.add(getNormalFile(parameters, multipartFile));
                 }
-
-                Multimedia mm = null;
-                int id = parameters.getInt("id");
-                if (id != -1) {
-                    MultimediaService mediaService = new MultimediaService(parameters.getRequest());
-                    mm = mediaService.getMultimedia(id);
-                }
-                if (mm == null) {
-                    mm = new Multimedia();
-                    String name;
-                    if (filename.indexOf(".") != -1) {
-                        name = filename.substring(0, filename.lastIndexOf('.'));
-                    } else {
-                        name = filename;
-                    }
-                    mm.setName(name);
-                }
-                mm.setData(multipartFile.getBytes());
-                mm.setFilename(filename);
-                multimedia.add(mm);
             }
         }
 
-        return multimedia;
+        return multimediaList;
+    }
+
+    private boolean isZipFile(MultipartFile multipartFile) {
+        String filename = multipartFile.getOriginalFilename();
+        return filename.toLowerCase().endsWith(".zip");
+    }
+
+    private Multimedia getNormalFile(RequestParameters parameters, MultipartFile multipartFile) throws IOException {
+        String filename = multipartFile.getOriginalFilename();
+
+        // Upload of single file - new or replace existing
+        filename = removeDirectoryFromFilename(filename);
+
+        Multimedia mm = null;
+        int id = parameters.getInt("id");
+        if (id != -1) {
+            MultimediaService mediaService = new MultimediaService(parameters.getRequest());
+            mm = mediaService.getMultimedia(id);
+        }
+        if (mm == null) {
+            mm = new Multimedia();
+            String name = removeFileExtension(filename);
+            mm.setName(name);
+        }
+        mm.setData(multipartFile.getBytes());
+        mm.setFilename(filename);
+        return mm;
+    }
+
+    private String removeFileExtension(String filename) {
+        String name;
+        if (filename.indexOf(".") != -1) {
+            name = filename.substring(0, filename.lastIndexOf('.'));
+        } else {
+            name = filename;
+        }
+        return name;
     }
 
     /**
@@ -160,7 +166,7 @@ public class UploadMultimediaAction extends AdminController {
      * @return
      * @throws IOException
      */
-    private List getZipFiles(MultipartFile file) throws IOException {
+    private List<Multimedia> unpackFilesFromZipArchive(MultipartFile file) throws IOException {
         List<Multimedia> files = new ArrayList<Multimedia>();
         File temp = File.createTempFile("multimedia", ".zip");
         file.transferTo(temp);
@@ -203,41 +209,22 @@ public class UploadMultimediaAction extends AdminController {
             List<ZipEntry> entries = Collections.list(zipFile.getEntries());
             for(ZipEntry entry : entries) {
                 if (isValidEntry(entry)) {
+                    Multimedia multimedia = new Multimedia();
 
-                    InputStream zis = zipFile.getInputStream(entry);
-                    Multimedia mm = new Multimedia();
+                    byte[] data = getDataFromZipFileEntry(zipFile, entry);
 
-
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = zis.read(buf)) > 0) {
-                        bos.write(buf, 0, len);
-                    }
-
-                    byte[] data = bos.toByteArray();
-                    mm.setData(data);
-
-                    bos.close();
-
+                    multimedia.setData(data);
 
                     // Create name from filename
-                    String name = "";
                     String entryFilename = entry.getName();
-                    entryFilename = normalize(entryFilename);
-                    if(entryFilename.contains("/")) {
-                        entryFilename = entryFilename.substring(entryFilename.lastIndexOf("/")+1);
-                    }
-                    if (entryFilename.indexOf(".") != -1) {
-                        name = entryFilename.substring(0, entryFilename.lastIndexOf('.'));
-                    } else {
-                        name = entryFilename;
-                    }
-                    mm.setName(name);
-                    mm.setFilename(entryFilename);
+                    entryFilename = normalizeFilename(entryFilename);
+                    entryFilename = removeDirectoryFromFilename(entryFilename);
+                    multimedia.setFilename(entryFilename);
 
-                    files.add(mm);
+                    String name = removeFileExtension(entryFilename);
+                    multimedia.setName(name);
+
+                    files.add(multimedia);
                 }
 
             }
@@ -249,7 +236,30 @@ public class UploadMultimediaAction extends AdminController {
         return files;
     }
 
-    private String normalize(String entryfilename) {
+    private byte[] getDataFromZipFileEntry(ZipFile zipFile, ZipEntry entry) throws IOException {
+        InputStream zis = zipFile.getInputStream(entry);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = zis.read(buf)) > 0) {
+            bos.write(buf, 0, len);
+        }
+
+        byte[] data = bos.toByteArray();
+        bos.close();
+        return data;
+    }
+
+    private String removeDirectoryFromFilename(String entryFilename) {
+        if(entryFilename.contains("/")) {
+            entryFilename = entryFilename.substring(entryFilename.lastIndexOf("/")+1);
+        }
+        return entryFilename;
+    }
+
+    private String normalizeFilename(String entryfilename) {
         // Replace composed unicode norwegian aring with the single byte aring
         return entryfilename.replaceAll("\u0061\u030a", "\u00e5");
     }

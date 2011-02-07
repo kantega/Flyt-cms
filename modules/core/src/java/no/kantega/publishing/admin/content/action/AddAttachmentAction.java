@@ -97,7 +97,6 @@ public class AddAttachmentAction implements Controller {
                 model.put("attachmentId", attachmentId);
             }
             model.put("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
-            model.put("blacklistErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
             return new ModelAndView(formView, model);
         }
     }

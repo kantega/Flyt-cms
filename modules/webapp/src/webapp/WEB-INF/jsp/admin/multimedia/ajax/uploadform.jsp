@@ -35,7 +35,7 @@
                 var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
                 var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
                 if ((indexOfMatch != -1) && (indexOfMatch == expectedIndexOfMatch)) {
-                    alert("${blacklistErrorMessage}");
+                    alert('<kantega:label key="attachment.filetypes.blacklisted.errorMessage" escapeJavascript="true"/>');
                     return false;
                 }
             }
@@ -72,7 +72,7 @@
                 <label><kantega:label key="aksess.multimedia.uploadfile"/></label>
             </div>
             <div class="inputs">
-                <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()">
+                <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()" <c:if test="${id == -1}">multiple</c:if>>
                 <c:if test="${allowPreserveImageSize}"><br>
                     <input type="checkbox" id="PreserveImageSize" name="preserveImageSize" value="true"><label for="PreserveImageSize"><kantega:label key="aksess.multimedia.preserveimagesize"/></label>
                 </c:if>

@@ -48,7 +48,6 @@ public class ViewUploadMultimediaFormAction implements Controller {
         model.put("parentId", folderId);
         model.put("id", id);
         model.put("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
-        model.put("blacklistErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
         model.put("altNameRequired", Aksess.getConfiguration().getBoolean("multimedia.altname.required", false));
         model.put("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));
 
