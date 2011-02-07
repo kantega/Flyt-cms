@@ -33,11 +33,11 @@
             this.editor.windowManager.bookmark = this.editor.selection.getBookmark(1);
 
             openaksess.common.modalWindow.open({
-                title:"Sett inn multimedia",
-                iframe:true,
-                href: "../multimedia/EditMultimedia.action",
-                width: 860,
-                height:560});
+                title : "Sett inn multimedia",
+                iframe : true,
+                href : properties.contextPath + "/admin/multimedia/EditMultimedia.action",
+                width : 860,
+                height : 560});
         }
 
 	});
