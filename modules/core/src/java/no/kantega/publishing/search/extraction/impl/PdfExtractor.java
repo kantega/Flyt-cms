@@ -19,8 +19,8 @@ package no.kantega.publishing.search.extraction.impl;
 import no.kantega.publishing.search.extraction.TextExtractor;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.commons.log.Log;
-import org.pdfbox.pdmodel.PDDocument;
-import org.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
