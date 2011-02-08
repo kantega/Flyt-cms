@@ -2,7 +2,7 @@
 <%@ page import="no.kantega.commons.util.URLHelper"%>
 <%@ page import="java.io.BufferedReader"%>
 <%@ page import="java.io.InputStream"%>
-<%@ page import="java.io.InputStreamReader"%><%@ page import="java.io.IOException"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="java.util.List"%>
+<%@ page import="java.io.InputStreamReader"%><%@ page import="java.io.IOException"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="java.util.List"%><%@ page import="no.kantega.publishing.common.Aksess"%><%@ page import="no.kantega.commons.configuration.Configuration"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
@@ -49,13 +49,20 @@
     query.setSql("content.IsSearchable = 0");
     ContentManagementService cms = new ContentManagementService(request);
     List<Content> excludedPages = cms.getContentSummaryList(query, -1, null);
-    for (Content excludedPage : excludedPages) {        
+    for (Content excludedPage : excludedPages) {
         if (excludedPage.getAlias() != null && excludedPage.getAlias().length() > 0) {
-            out.println("Disallow: " + request.getContextPath() + excludedPage.getAlias());        
+            out.println("Disallow: " + request.getContextPath() + excludedPage.getAlias());
         } else {
             out.println("Disallow: " + excludedPage.getUrl());
         }
     }
+
+    Configuration conf = Aksess.getConfiguration();
+
+    for (String disallowUrl : conf.getStrings("robots.disallow")) {
+        out.println("Disallow: " + disallowUrl);
+    }
+
     out.println("Disallow: /admin/");
     out.println("Disallow: /login/");
     out.println("Disallow: /Login.action");
