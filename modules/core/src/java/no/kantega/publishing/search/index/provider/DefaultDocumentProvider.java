@@ -314,6 +314,8 @@ public class DefaultDocumentProvider implements DocumentProvider {
             d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
+            d.add(new Field(Fields.ASSOCIATION_ID, getAssociations(content), Field.Store.YES, Field.Index.ANALYZED));
+
             addAttributeFields(content, d);
             addOtherFields(content, d);
 
@@ -432,6 +434,18 @@ public class DefaultDocumentProvider implements DocumentProvider {
             TmBaseName baseName = baseNames[i];
             sb.append(baseName.getBaseName());
             if(i < baseNames.length -1) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private String getAssociations(Content content) {
+        StringBuffer sb = new StringBuffer();
+        List <Association> associations = content.getAssociations();
+        for (int i = 0; i < associations.size(); i++) {
+            sb.append(associations.get(i).getAssociationId());
+            if (i < associations.size() - 1) {
                 sb.append(" ");
             }
         }
