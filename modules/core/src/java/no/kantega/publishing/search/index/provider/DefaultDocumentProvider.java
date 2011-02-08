@@ -50,11 +50,7 @@ import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.highlight.Formatter;
-import org.apache.lucene.search.highlight.Highlighter;
-import org.apache.lucene.search.highlight.QueryScorer;
-import org.apache.lucene.search.highlight.Scorer;
-import org.apache.lucene.search.highlight.SimpleHTMLFormatter;
+import org.apache.lucene.search.highlight.*;
 import org.cyberneko.html.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -140,7 +136,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
                 if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
                     searchHit.setDoOpenInNewWindow(true);
                 }
-                
+
                 searchHit.setId(c.getAssociation().getAssociationId());
             }
 
@@ -295,7 +291,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             Field fKeywords = new Field(Fields.KEYWORDS, content.getKeywords() == null ? "" : content.getKeywords(), Field.Store.NO, Field.Index.ANALYZED);
             fKeywords.setBoost(1.5f);
-            d.add(fKeywords);            
+            d.add(fKeywords);
 
             d.add(new Field(Fields.LAST_MODIFIED, DateTools.dateToString(content.getLastModified(), DateTools.Resolution.MINUTE), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.LANGUAGE, Integer.toString(content.getLanguage()), Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -316,6 +312,8 @@ public class DefaultDocumentProvider implements DocumentProvider {
             d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
+            d.add(new Field(Fields.ASSOCIATION_ID, getAssociations(content), Field.Store.YES, Field.Index.ANALYZED));
+
             addAttributeFields(content, d);
             addOtherFields(content, d);
 
@@ -324,7 +322,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
                     searchField.addToIndex(content, d);
                 }
             }
-            
+
             return d;
         } catch(Throwable e) {
             Log.error(getClass().getName(), "Exception creating index document for content id " + content.getId() +": " + e.getMessage(), null, null);
@@ -434,6 +432,18 @@ public class DefaultDocumentProvider implements DocumentProvider {
             TmBaseName baseName = baseNames[i];
             sb.append(baseName.getBaseName());
             if(i < baseNames.length -1) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
+    private String getAssociations(Content content) {
+        StringBuffer sb = new StringBuffer();
+        List <Association> associations = content.getAssociations();
+        for (int i = 0; i < associations.size(); i++) {
+            sb.append(associations.get(i).getAssociationId());
+            if (i < associations.size() - 1) {
                 sb.append(" ");
             }
         }

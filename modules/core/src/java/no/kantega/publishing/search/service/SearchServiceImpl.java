@@ -30,19 +30,7 @@ import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.model.AksessSearchHitContext;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.core.Searcher;
-import no.kantega.search.criteria.ContentParentCriterion;
-import no.kantega.search.criteria.ContentStatusCriterion;
-import no.kantega.search.criteria.ContentTemplateCriterion;
-import no.kantega.search.criteria.ContentTypeCriterion;
-import no.kantega.search.criteria.Criterion;
-import no.kantega.search.criteria.DocumentTypeCriterion;
-import no.kantega.search.criteria.LanguageCriterion;
-import no.kantega.search.criteria.LastModifiedCriterion;
-import no.kantega.search.criteria.OrCriterion;
-import no.kantega.search.criteria.PhraseCriterion;
-import no.kantega.search.criteria.SiteCriterion;
-import no.kantega.search.criteria.TextCriterion;
-import no.kantega.search.criteria.VisibilityStatusCriterion;
+import no.kantega.search.criteria.*;
 import no.kantega.search.index.Fields;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.index.provider.DocumentProvider;
@@ -218,7 +206,7 @@ public class SearchServiceImpl implements SearchService {
         return alternatives;
     }
 
-    
+
     /**
      * Returns default filters: only search visible published pages
      * @return - List of criterion
@@ -269,7 +257,7 @@ public class SearchServiceImpl implements SearchService {
                             c.add(criterion);
                         }
                     }
-                }                
+                }
             }
             criterionList.add(c);
         }
@@ -317,19 +305,31 @@ public class SearchServiceImpl implements SearchService {
          * ContentParents (foreldreelement i meny)
          */
         if (query.getIntegerParam(SearchServiceQuery.PARAM_CONTENT_PARENT) != null) {
+            BooleanCriterion bq = new OrCriterion();
             Integer contentParent = query.getIntegerParam(SearchServiceQuery.PARAM_CONTENT_PARENT);
-            ContentParentCriterion c = new ContentParentCriterion(contentParent);
-            criterionList.add(c);
+
+            ContentParentCriterion cc = new ContentParentCriterion(contentParent);
+
+            AssociationIdCriterion ac = new AssociationIdCriterion(contentParent);
+
+            bq.add(cc);
+            bq.add(ac);
+            criterionList.add(bq);
         }
 
         /**
          * Excluded ContentParents (unntatte foreldreelement i meny)
          */
         if (query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_PARENT) != null) {
+            BooleanCriterion bq = new AndCriterion();
+
             Integer contentParent = query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_PARENT);
-            ContentParentCriterion c = new ContentParentCriterion(contentParent);
-            c.setOperator(BooleanClause.Occur.MUST_NOT);
-            criterionList.add(c);
+            ContentParentCriterion cc = new ContentParentCriterion(contentParent);
+            AssociationIdCriterion ac = new AssociationIdCriterion(contentParent);
+
+            bq.add(cc);
+            bq.add(ac);
+            criterionList.add(bq);
         }
 
 

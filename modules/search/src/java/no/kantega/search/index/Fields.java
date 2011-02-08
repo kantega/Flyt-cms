@@ -19,7 +19,7 @@ package no.kantega.search.index;
 
 public interface Fields {
 
-    
+
     public static final String CONTENT_ID = "ContentId";
     public static final String ATTACHMENT_ID = "AttachmentId";
     public static final String CONTENT = "Content";
@@ -47,6 +47,7 @@ public interface Fields {
     public static final String CONTENT_VISIBILITY_STATUS = "ContentVisibilityStatus";
     public static final String DOCUMENT_TYPE_ID = "DocumentTypeId";
     public static final String ALIAS = "Alias";
-    public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";    
+    public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";
+    public static final String ASSOCIATION_ID = "AssociationId";
 
 }
