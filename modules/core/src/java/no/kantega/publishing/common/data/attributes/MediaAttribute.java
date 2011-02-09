@@ -79,6 +79,7 @@ public class MediaAttribute extends Attribute {
                    || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
                    || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
                    || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
+                   || AttributeProperty.PARENTID.equalsIgnoreCase(property)
                    || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
             try {
                 int id;
@@ -109,6 +110,8 @@ public class MediaAttribute extends Attribute {
                     return "" + mm.getAltname();
                 } else if (AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)) {
                     return "" + mm.getDescription();
+                } else if (AttributeProperty.PARENTID.equalsIgnoreCase(property)) {
+                    return "" + mm.getParentId();
                 } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
                     return "" + mm.getMimeType().getType();
                 }
