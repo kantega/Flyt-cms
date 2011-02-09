@@ -444,7 +444,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images)</description>
+            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images), parentid (for images), description (for images)</description>
             <name>property</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
