@@ -127,12 +127,29 @@
         </property>
     </bean>
 
+    <bean id="aksessExifMetadataExtractor" class="no.kantega.publishing.multimedia.metadata.exif.DrewNoakesExifMetadataExtractor"/>
+
+    <bean id="aksessImageWidthAndHeightExtractor" class="no.kantega.publishing.multimedia.metadata.ImageWidthAndHeightExtractor"/>
+    <bean id="aksessJpegImageMetadataExtractor" class="no.kantega.publishing.multimedia.metadata.JpegImageMetadataExtractor">
+        <property name="exifMetadataExtractor" ref="aksessExifMetadataExtractor"/>
+    </bean>
+
+    <bean id="aksessMultimediaMetadataExtractors" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <ref bean="aksessImageWidthAndHeightExtractor"/>
+                <ref bean="aksessJpegImageMetadataExtractor"/>
+            </list>
+        </property>
+    </bean>
+
     <!-- Webdav support -->
     <bean id="aksessWebDavSecurityHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper"/>
 
     <bean id="aksessWebDavMultimediaHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper">
         <property name="imageEditor" ref="aksessImageEditor"/>
         <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
+        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
     </bean>
 
 

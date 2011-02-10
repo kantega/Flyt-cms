@@ -39,6 +39,7 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import no.kantega.publishing.multimedia.ImageEditor;
+import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,28 +117,16 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     multimedia.setData(data);
 
                     MimeType mimeType = MimeTypes.getMimeType(filename);
-                    if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-                        // For images and Flash we can find the dimensions
-                        ImageInfo ii = new ImageInfo();
-                        ii.setInput(new ByteArrayInputStream(multimedia.getData()));
-                        if (ii.check()) {
-                            multimedia.setWidth(ii.getWidth());
-                            multimedia.setHeight(ii.getHeight());
-                            if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-                                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                                    try {
-                                        ImageEditor editor = (ImageEditor)RootContext.getInstance().getBean("aksessImageEditor");
-                                        multimedia = editor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                                    } catch (Exception e) {
-                                        Log.error(this.getClass().getName(), e, null, null);
-                                    }
-                                }
-                            }                                                    
+
+                    List<MultimediaMetadataExtractor> multimediaMetadataExtractors = (List<MultimediaMetadataExtractor>)RootContext.getInstance().getBean("aksessMultimediaMetadataExtractors");
+                    for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
+                        if (extractor.supportsMimeType(multimedia.getMimeType().getType())) {
+                            multimedia = extractor.extractMetadata(multimedia);
                         }
-                    } else if (mimeType.isDimensionRequired() && (multimedia.getWidth() <= 0 || multimedia.getHeight() <= 0)) {
-                        multimedia.setWidth(Aksess.getDefaultMediaWidth());
-                        multimedia.setHeight(Aksess.getDefaultMediaHeight());
                     }
+
+                    multimedia = resizeImage(multimedia, mimeType);
+
                     multimedia.setFilename(filename);
 
                     int id = MultimediaAO.setMultimedia(multimedia);
@@ -154,6 +143,23 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
         }
 
         PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
-        saveSimple.persistAttribute(c, content, attribute);        
+        saveSimple.persistAttribute(c, content, attribute);
+    }
+
+    private Multimedia resizeImage(Multimedia multimedia, MimeType mimeType) {
+        if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
+            // For images and Flash we can find the dimensions
+            if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
+                    try {
+                        ImageEditor editor = (ImageEditor) RootContext.getInstance().getBean("aksessImageEditor");
+                        multimedia = editor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
+                    } catch (Exception e) {
+                        Log.error(this.getClass().getName(), e, null, null);
+                    }
+                }
+            }
+        }
+        return multimedia;
     }
 }

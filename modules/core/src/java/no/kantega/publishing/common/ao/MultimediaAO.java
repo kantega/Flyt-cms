@@ -39,7 +39,7 @@ public class MultimediaAO {
     private static final String SOURCE = "aksess.MultimediaAO";
 
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId, NoFiles, NoSubFolders";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders";
 
 
     /**
@@ -512,16 +512,16 @@ public class MultimediaAO {
             if (mm.isNew()) {
                 // Ny
                 if (data == null) {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 } else {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 }
             } else {
                 // Oppdater
                 if (data == null) {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ? where Id = ?");
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                 } else {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ? where Id = ?");
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                 }
             }
 
@@ -551,6 +551,13 @@ public class MultimediaAO {
             st.setString(p++, mm.getModifiedBy());
             st.setString(p++, mm.getAltname());
             st.setString(p++, mm.getUsage());
+            st.setTimestamp(p++, mm.getOriginalDate() != null ? new java.sql.Timestamp(mm.getOriginalDate().getTime()) : null);
+            st.setString(p++, mm.getCameraMake());
+            st.setString(p++, mm.getCameraModel());
+            st.setString(p++, mm.getGpsLatitudeRef());
+            st.setString(p++, mm.getGpsLatitude());
+            st.setString(p++, mm.getGpsLongitudeRef());
+            st.setString(p++, mm.getGpsLongitude());
 
             if (!mm.isNew()) {
                 st.setInt(p++, mm.getId());
@@ -633,6 +640,13 @@ public class MultimediaAO {
         mm.setModifiedBy(rs.getString("LastModifiedBy"));
         mm.setAltname(rs.getString("AltName"));
         mm.setUsage(rs.getString("UsageInfo"));
+        mm.setOriginalDate(rs.getDate("OriginalDate"));
+        mm.setCameraMake(rs.getString("CameraMake"));
+        mm.setCameraModel(rs.getString("CameraModel"));
+        mm.setGpsLatitudeRef(rs.getString("GPSLatitudeRef"));
+        mm.setGpsLatitude(rs.getString("GPSLatitude"));
+        mm.setGpsLongitudeRef(rs.getString("GPSLongitudeRef"));
+        mm.setGpsLongitude(rs.getString("GPSLongitude"));
         mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
         mm.setNoFiles(rs.getInt("NoFiles"));
         mm.setNoSubFolders(rs.getInt("NoSubFolders"));

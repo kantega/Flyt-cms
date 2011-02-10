@@ -30,4 +30,7 @@ public class AttributeProperty {
     public static final String DESCRIPTION = "description";
     public static final String ALTNAME = "altname";
     public static final String PARENTID = "parentid";
+    public static final String LATITUDE = "latitude";
+    public static final String LONGITUDE = "longitude";
+
 }

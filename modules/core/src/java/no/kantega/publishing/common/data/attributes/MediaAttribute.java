@@ -79,6 +79,8 @@ public class MediaAttribute extends Attribute {
                    || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
                    || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
                    || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
+                   || AttributeProperty.LATITUDE.equalsIgnoreCase(property)
+                   || AttributeProperty.LONGITUDE.equalsIgnoreCase(property)
                    || AttributeProperty.PARENTID.equalsIgnoreCase(property)
                    || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
             try {
@@ -112,6 +114,10 @@ public class MediaAttribute extends Attribute {
                     return "" + mm.getDescription();
                 } else if (AttributeProperty.PARENTID.equalsIgnoreCase(property)) {
                     return "" + mm.getParentId();
+                } else if (AttributeProperty.LATITUDE.equalsIgnoreCase(property)) {
+                    return Double.toString(mm.getGpsLatitudeAsDouble());
+                } else if (AttributeProperty.LONGITUDE.equalsIgnoreCase(property)) {
+                    return Double.toString(mm.getGpsLongitudeAsDouble());
                 } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
                     return "" + mm.getMimeType().getType();
                 }

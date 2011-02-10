@@ -22,13 +22,10 @@ import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
-import no.kantega.commons.media.ImageInfo;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.multipart.MultipartFile;
@@ -48,6 +45,8 @@ import com.glaforge.i18n.io.CharsetToolkit;
  */
 public class UploadMultimediaAction extends AdminController {
     private ImageEditor imageEditor;
+
+    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -87,7 +86,12 @@ public class UploadMultimediaAction extends AdminController {
                 }
             }
 
-            MultimediaHelper.updateMediaDimensions(m);
+            for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
+                if (extractor.supportsMimeType(m.getMimeType().getType())) {
+                    m = extractor.extractMetadata(m);
+                }
+            }
+
             boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
             if (!preserveImageSize) {
                 m = resizeMultimedia(m);
@@ -272,5 +276,9 @@ public class UploadMultimediaAction extends AdminController {
 
     public void setImageEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
+    }
+
+    public void setMultimediaMetadataExtractors(List<MultimediaMetadataExtractor> multimediaMetadataExtractors) {
+        this.multimediaMetadataExtractors = multimediaMetadataExtractors;
     }
 }
