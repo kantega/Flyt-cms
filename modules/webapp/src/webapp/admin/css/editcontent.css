@@ -247,3 +247,6 @@ html, body {
     background: url("../bitmaps/editor/editor_replace.gif") no-repeat;
     width: 18px;
 }
+
+/* TinyMCE override styles */
+.o2k7Skin .mceMenu { width: auto !important;}
