@@ -73,7 +73,7 @@ openaksess.admin = {
         var doResize = false;
 
         $(window).bind('resize load', function(e) {
-            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received. Do resize? " + doResize);
+            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received. Is resize already in progress? " + doResize);
             doResize = true;
         });
 
@@ -99,7 +99,7 @@ openaksess.admin = {
                 $('#Content').css('height', (windowHeight-topHeight) + 'px');
 
                 if (typeof openaksess.admin.setLayoutSpecificSizes == 'function') {
-                    openaksess.common.debug("openaksess.openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
+                    openaksess.common.debug("openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
                     openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
                 }
 

@@ -180,24 +180,31 @@ openaksess.content = {
     bindToolButtons : function() {
         $("#ToolsMenu .button .newSubpage").click(function(){
             openaksess.content.publish.newSubpage(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .delete").click(function(){
             openaksess.content.publish.deleteItem(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .cut").click(function(){
             openaksess.content.publish.cut(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .copy").click(function(){
             openaksess.content.publish.copy(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .paste").click(function(){
             openaksess.content.publish.paste(stateHandler.getState());
+            return false;
         });
-        $("#ToolsMenu .button .displayPeriod").click(function(){
+        $("#ToolsMenu .button .displayPeriod").click(function(e){
             openaksess.content.publish.displayPeriod(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .privileges").click(function(){
             openaksess.content.publish.managePrivileges(stateHandler.getState());
+            return false;
         });
     },
 
@@ -575,7 +582,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width)-2;
 
 
-    openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
+    openaksess.common.debug("openaksess.content.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
 
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
