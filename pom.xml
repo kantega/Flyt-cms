@@ -41,6 +41,27 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    <repositories>
+        <repository>
+            <id>opensource-thirdparty</id>
+            <name>Third party</name>
+            <url>http://opensource.kantega.no/nexus/content/repositories/thirdparty/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>opensource.kantega.no</id>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
     <modules>
         <module>modules/db</module>
