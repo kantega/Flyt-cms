@@ -120,11 +120,13 @@
         });
     </script>
 
+    <aksess:getconfig key="editor.custom.javascript"/>
+
     <script type="text/javascript">
         var plugins = '<%=plugins%>';
         var buttonRows = [];
         <% for (String row : buttonRows) { %>
-            buttonRows.push('<%=row%>');
+        buttonRows.push('<%=row%>');
         <% } %>
 
         var options = {
@@ -162,7 +164,7 @@
             <%
                 }
             %>
-
+            <aksess:getconfig key="editor.custom.tinymceparameters"/>
             // Path to editor.css
             content_css : "${pageContext.request.contextPath}${cssPath}"
         };
