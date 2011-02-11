@@ -60,7 +60,7 @@
             </div>
             <div class="buttonGroup">
                 <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
-                <span class="button"><input type="submit" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <span class="button"><input type="button" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </admin:box>
     </form>
