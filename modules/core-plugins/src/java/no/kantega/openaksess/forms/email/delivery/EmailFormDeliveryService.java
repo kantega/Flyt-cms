@@ -40,6 +40,7 @@ import javax.mail.util.ByteArrayDataSource;
 public class EmailFormDeliveryService implements FormDeliveryService {
     private String mailTemplate = null;
     private String xslFoDocumentPath = null;
+    private String pdfFilename = "kvittering.pdf";
 
     private PDFGenerator pdfGenerator;
     private XMLFormsubmissionConverter xmlFormsubmissionConverter;
@@ -85,13 +86,16 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         MimeBodyPart messagePart = MailSender.createMimeBodyPartFromStringMessage(body);
         bodyparts.add(messagePart);
 
-        MimeBodyPart attachmentPath = new MimeBodyPart();
+        MimeBodyPart attachmentPart = new MimeBodyPart();
         DataSource ds = new ByteArrayDataSource(pdf, "application/pdf");
 
-        attachmentPath.setDataHandler(new DataHandler(ds));
-        attachmentPath.setHeader("Content-ID", "<pdf" + new Date().getTime() + ">");
+        attachmentPart.setDataHandler(new DataHandler(ds));
+        attachmentPart.setHeader("Content-ID", "<pdf" + new Date().getTime() + ">");
+        attachmentPart.addHeader("Content-Description", pdfFilename);
+        attachmentPart.addHeader("Content-Disposition", "attachment; filename=\"" + pdfFilename + "\"");
 
-        bodyparts.add(attachmentPath);
+
+        bodyparts.add(attachmentPart);
 
         MailSender.send(from, to, formSubmission.getForm().getTitle(), bodyparts.toArray(new MimeBodyPart[bodyparts.size()]));
     }
@@ -110,5 +114,9 @@ public class EmailFormDeliveryService implements FormDeliveryService {
 
     public void setXslFoDocumentPath(String xslFoDocumentPath) {
         this.xslFoDocumentPath = xslFoDocumentPath;
+    }
+
+    public void setPdfFilename(String pdfFilename) {
+        this.pdfFilename = pdfFilename;
     }
 }
