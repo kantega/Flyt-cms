@@ -104,6 +104,7 @@ public class EditTopicTypeAction extends AdminController {
         basename.setBaseName("er relatert til");
         basename.setScope(scope);
         basenames.add(basename);
+        topicMapService.setTopic(associationType);
     }
 
     private boolean scopeFound(String scope, Topic associationType) {
