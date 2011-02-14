@@ -80,9 +80,9 @@ public class HTMLEditorHelper {
         contextPathFilter.setRootUrlToken(Aksess.VAR_WEB);
         pipe.addFilter(contextPathFilter);
 
-        // Remove empty P, SPAN etc tags
+        // Remove empty B, SPAN etc tags
         try {
-            value = RegExp.replace("<(i|I|b|B|em|EM|b|B|p|P|span|SPAN)>(\\s|&nbsp;)*</\\1>", value, "");
+            value = RegExp.replace("<(i|I|b|B|em|EM|b|B|span|SPAN)>(\\s|&nbsp;)*</\\1>", value, "");
         } catch (RegExpSyntaxException e) {
 
         }
