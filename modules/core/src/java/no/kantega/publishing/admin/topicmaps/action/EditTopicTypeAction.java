@@ -89,18 +89,41 @@ public class EditTopicTypeAction extends AdminController {
 
             Topic associationType = topicMapService.getTopic(topicMapId, "emne-emne");
             if (associationType == null) {
-                createTopicAssociation(associationType);
+                createTopicAssociation(topicMapId, id);
+            } else {
+                if (!scopeFound(id, associationType)) {
+                    addScope(id, associationType);
+                }
             }
         }
     }
 
-    private void createTopicAssociation(Topic associationType) {
+    private void addScope(String scope, Topic associationType) {
+        List<TopicBaseName> basenames = associationType.getBaseNames();
+        TopicBaseName basename = new TopicBaseName();
+        basename.setBaseName("er relatert til");
+        basename.setScope(scope);
+        basenames.add(basename);
+        topicMapService.setTopic(associationType);
+    }
+
+    private boolean scopeFound(String scope, Topic associationType) {
+        for (TopicBaseName baseName : associationType.getBaseNames()) {
+            if (baseName.getScope().equals(scope)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void createTopicAssociation(int topicMapId, String scope) {
+        Topic associationType = new Topic("emne-emne", topicMapId);
         associationType.setIsAssociation(true);
 
         List<TopicBaseName> basenames = new ArrayList<TopicBaseName>();
         TopicBaseName basename = new TopicBaseName();
         basename.setBaseName("er relatert til");
-        basename.setScope("emne");
+        basename.setScope(scope);
         basenames.add(basename);
         associationType.setBaseNames(basenames);
 

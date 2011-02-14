@@ -431,4 +431,8 @@
         <column name="Data" required="true" type="CLOB" size="2147483647"/>
         <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
     </table>
+    <table name="oa_db_migrations">
+        <column name="dbnamespace" type="VARCHAR" size="255" required="true"/>
+        <column name="version" type="VARCHAR" size="255" required="true"/>
+    </table>
 </database>
