@@ -30,6 +30,11 @@ a.disabled {
     color:#5e5e5e;
 }
 
+a.textlink {
+    color: #1780B9;
+    font-weight: bold;
+}
+
 input[type=submit] {
     cursor: pointer;
 }

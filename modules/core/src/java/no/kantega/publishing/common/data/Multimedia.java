@@ -21,6 +21,7 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.media.MimeType;
+import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import java.util.Date;
@@ -39,6 +40,15 @@ public class Multimedia extends BaseObject {
     private int size = 0;
     private int width = 0;
     private int height = 0;
+
+    private Date originalDate;
+    private String cameraMake;
+    private String cameraModel;
+    private String gpsLatitudeRef;
+    private String gpsLatitude;
+    private String gpsLongitudeRef;
+    private String gpsLongitude;
+
 
     byte[] data = null;
 
@@ -226,5 +236,79 @@ public class Multimedia extends BaseObject {
 
     public void setNoSubFolders(int noSubFolders) {
         this.noSubFolders = noSubFolders;
+    }
+
+    public Date getOriginalDate() {
+        return originalDate;
+    }
+
+    public void setOriginalDate(Date originalDate) {
+        this.originalDate = originalDate;
+    }
+
+    public String getCameraMake() {
+        return cameraMake;
+    }
+
+    public void setCameraMake(String cameraMake) {
+        this.cameraMake = cameraMake;
+    }
+
+    public String getCameraModel() {
+        return cameraModel;
+    }
+
+    public void setCameraModel(String cameraModel) {
+        this.cameraModel = cameraModel;
+    }
+
+    public double getGpsLatitudeAsDouble() {
+        double lat = -1;
+        if (gpsLatitude != null  && gpsLatitudeRef != null) {
+            lat = GeoCoordinateConverter.convertHoursMinutesAndSecondsStringToDouble(gpsLatitude);
+            if ("S".equals(gpsLatitudeRef)) lat = lat*(-1);
+        }
+        return lat;
+    }
+
+    public double getGpsLongitudeAsDouble() {
+        double lon = -1;
+        if (gpsLongitude != null  && gpsLongitudeRef != null) {
+            lon = GeoCoordinateConverter.convertHoursMinutesAndSecondsStringToDouble(gpsLongitude);
+            if ("E".equals(gpsLatitudeRef)) lon = lon*(-1);
+        }
+        return lon;
+    }
+
+    public String getGpsLatitudeRef() {
+        return gpsLatitudeRef;
+    }
+
+    public void setGpsLatitudeRef(String gpsLatitudeRef) {
+        this.gpsLatitudeRef = gpsLatitudeRef;
+    }
+
+    public String getGpsLatitude() {
+        return gpsLatitude;
+    }
+
+    public void setGpsLatitude(String gpsLatitude) {
+        this.gpsLatitude = gpsLatitude;
+    }
+
+    public String getGpsLongitudeRef() {
+        return gpsLongitudeRef;
+    }
+
+    public void setGpsLongitudeRef(String gpsLongitudeRef) {
+        this.gpsLongitudeRef = gpsLongitudeRef;
+    }
+
+    public String getGpsLongitude() {
+        return gpsLongitude;
+    }
+
+    public void setGpsLongitude(String gpsLongitude) {
+        this.gpsLongitude = gpsLongitude;
     }
 }

@@ -26,6 +26,7 @@ import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,6 +46,7 @@ import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 public class UploadMultimediaAction extends AdminController {
 
     private ImageEditor imageEditor;
+    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters parameters = new RequestParameters(request, "utf-8");
@@ -63,42 +65,47 @@ public class UploadMultimediaAction extends AdminController {
         String altName = parameters.getString("altname");
         String author = parameters.getString("author");
 
-        List<Multimedia> multimedia = getUploadedFiles(parameters);
+        List<Multimedia> uploadedFiles = getUploadedFiles(parameters);
 
-        for (Multimedia m : multimedia) {
+        for (Multimedia file : uploadedFiles) {
 
-            if (m.isNew()) {
+            if (file.isNew()) {
                 // New file
                 if (parent != null) {
-                    m.setSecurityId(parent.getSecurityId());
-                    m.setParentId(parentId);
+                    file.setSecurityId(parent.getSecurityId());
+                    file.setParentId(parentId);
                 } else {
-                    m.setSecurityId(0);
+                    file.setSecurityId(0);
                 }
-                if (multimedia.size() == 1) {
+                if (uploadedFiles.size() == 1) {
                     if (name != null && name.length() > 0) {
-                        m.setName(name);
+                        file.setName(name);
                     }
-                    m.setAltname(altName);
-                    m.setAuthor(author);
+                    file.setAltname(altName);
+                    file.setAuthor(author);
                 }
             }
 
-            MultimediaHelper.updateMediaDimensions(m);
+            for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
+                if (extractor.supportsMimeType(file.getMimeType().getType())) {
+                    file = extractor.extractMetadata(file);
+                }
+            }
+
             boolean preserveImageSize = parameters.getBoolean("preserveImageSize", false);
             if (!preserveImageSize) {
-                m = resizeMultimedia(m);
+                file = resizeMultimedia(file);
             }
 
             // Save object
-            int newId = mediaService.setMultimedia(m);
-            m.setId(newId);
+            int newId = mediaService.setMultimedia(file);
+            file.setId(newId);
         }
 
 
-        if (multimedia.size() == 1) {
+        if (uploadedFiles.size() == 1) {
             Map model = new HashMap();
-            model.put("id", multimedia.get(0).getId());
+            model.put("id", uploadedFiles.get(0).getId());
             return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
         } else {
             return new ModelAndView(new RedirectView("Navigate.action"));
@@ -285,5 +292,9 @@ public class UploadMultimediaAction extends AdminController {
 
     public void setImageEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
+    }
+
+    public void setMultimediaMetadataExtractors(List<MultimediaMetadataExtractor> multimediaMetadataExtractors) {
+        this.multimediaMetadataExtractors = multimediaMetadataExtractors;
     }
 }

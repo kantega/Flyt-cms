@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId, NoFiles, NoSubFolders";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders";
 
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
@@ -216,16 +216,16 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 if (multimedia.isNew()) {
                     // Ny
                     if (data == null) {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     } else {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     }
                 } else {
                     // Oppdater
                     if (data == null) {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ? where Id = ?");
+                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                     } else {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ? where Id = ?");
+                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                     }
                 }
 
@@ -250,6 +250,13 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 st.setString(p++, multimedia.getModifiedBy());
                 st.setString(p++, multimedia.getAltname());
                 st.setString(p++, multimedia.getUsage());
+                st.setTimestamp(p++, multimedia.getOriginalDate() != null ? new java.sql.Timestamp(multimedia.getOriginalDate().getTime()) : null);
+                st.setString(p++, multimedia.getCameraMake());
+                st.setString(p++, multimedia.getCameraModel());
+                st.setString(p++, multimedia.getGpsLatitudeRef());
+                st.setString(p++, multimedia.getGpsLatitude());
+                st.setString(p++, multimedia.getGpsLongitudeRef());
+                st.setString(p++, multimedia.getGpsLongitude());
 
                 if (!multimedia.isNew()) {
                     st.setInt(p++, multimedia.getId());
@@ -330,6 +337,13 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             mm.setModifiedBy(rs.getString("LastModifiedBy"));
             mm.setAltname(rs.getString("AltName"));
             mm.setUsage(rs.getString("UsageInfo"));
+            mm.setOriginalDate(rs.getDate("OriginalDate"));
+            mm.setCameraMake(rs.getString("CameraMake"));
+            mm.setCameraModel(rs.getString("CameraModel"));
+            mm.setGpsLatitudeRef(rs.getString("GPSLatitudeRef"));
+            mm.setGpsLatitude(rs.getString("GPSLatitude"));
+            mm.setGpsLongitudeRef(rs.getString("GPSLongitudeRef"));
+            mm.setGpsLongitude(rs.getString("GPSLongitude"));
             mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
             mm.setNoFiles(rs.getInt("NoFiles"));
             mm.setNoSubFolders(rs.getInt("NoSubFolders"));

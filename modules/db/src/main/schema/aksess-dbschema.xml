@@ -79,7 +79,7 @@
         <column name="DocumentTypeIdForChildren" required="false" type="INTEGER" size="10"/>
         <column name="IsLocked" required="false" type="INTEGER" size="10" default="0"/>
         <column name="RatingScore" required="false" type="FLOAT" default="0"/>
-        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>
+        <column name="NumberOfRatings" required="false" type="INTEGER" size="10" default="0"/>        
         <column name="IsSearchable" required="false" type="INTEGER" size="10" default="1"/>
         <column name="NumberOfComments" required="false" type="INTEGER" size="10" default="0"/>
         <index name="idx_content_alias">
@@ -181,7 +181,7 @@
         <column name="UserId" required="true" type="VARCHAR" size="255"/>
         <column name="Token" required="true" type="VARCHAR" size="255"/>
         <column name="ExpireDate" required="true" type="TIMESTAMP" size="23,3"/>
-    </table>
+    </table>        
     <table name="deleteditems">
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Title" required="true" type="VARCHAR" size="255"/>
@@ -262,6 +262,13 @@
         <column name="ProfileImageUserId" required="false" type="VARCHAR" size="64"/>
         <column name="NoFiles" required="false" type="INTEGER" size="10"/>
         <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>
+        <column name="OriginalDate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="CameraMake" required="false" type="VARCHAR" size="255"/>
+        <column name="CameraModel" required="false" type="VARCHAR" size="255"/>
+        <column name="GPSLatitudeRef" required="false" type="VARCHAR" size="1"/>
+        <column name="GPSLatitude" required="false" type="VARCHAR" size="32"/>
+        <column name="GPSLongitudeRef" required="false" type="VARCHAR" size="1"/>
+        <column name="GPSLongitude" required="false" type="VARCHAR" size="32"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>

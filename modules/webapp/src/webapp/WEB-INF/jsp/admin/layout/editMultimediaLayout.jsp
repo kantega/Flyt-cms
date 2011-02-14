@@ -123,10 +123,10 @@
                 <input type="hidden" name="changed" value="false">
                 <input type="hidden" name="insert" value="false">
                 <input type="hidden" id="MaxWidth" name="maxWidth" value="-1">
-                </c:if>
+            </c:if>
                 <div class="sidebarFieldset">
                     <fieldset>
-                        <legend><kantega:label key="aksess.multimedia.metadata" /></legend>
+                        <legend><kantega:label key="aksess.multimedia.properties" /></legend>
                         <c:if test="${media.height > 0 && media.width > 0}">
                             <kantega:label key="aksess.multimedia.size" />: ${media.width}x${media.height}<br>
                         </c:if>
@@ -134,7 +134,24 @@
                         <c:if test="${media.size > 1024}">
                             <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br>
                         </c:if>
-                        <kantega:label key="aksess.multimedia.lastmodified" />: <admin:formatdate date="${media.lastModified}" /> (<kantega:label key="aksess.multimedia.lastmodified.by" /> "${media.modifiedBy}")
+                        <kantega:label key="aksess.multimedia.lastmodified" />: <admin:formatdate date="${media.lastModified}" /> (<kantega:label key="aksess.multimedia.lastmodified.by" /> "${media.modifiedBy}")<br>
+
+                        <c:if test="${media.originalDate != null}">
+                            <kantega:label key="aksess.multimedia.originaldate" />: <admin:formatdate date="${media.originalDate}" /><br>
+                        </c:if>
+
+                        <c:if test="${media.cameraMake != null && media.cameraMake != ''}">
+                            <kantega:label key="aksess.multimedia.camera" />: ${media.cameraMake}
+                            <c:if test="${media.cameraModel != null}">
+                                - ${media.cameraModel}
+                            </c:if>
+                            <br>
+                        </c:if>
+
+                        <c:if test="${media.gpsLatitudeAsDouble != -1 && media.gpsLongitudeAsDouble != -1}">
+                            <br><a class="textlink" href="http://maps.google.com/?t=h&q=loc:${media.gpsLatitudeAsDouble},${media.gpsLongitudeAsDouble}&z=15"><kantega:label key="aksess.multimedia.showlocation" /></a>
+                        </c:if>
+
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
@@ -192,7 +209,7 @@
                             <ul id="MultimediaPagesUsing">
                                 <c:forEach items="${usages}" var="page">
                                     <li>
-                                        <a href="${page.url}" target="_new">${page.title}</a>
+                                        <a href="${page.url}" class="textlink" target="_new">${page.title}</a>
                                     </li>
                                 </c:forEach>
                             </ul>
@@ -200,8 +217,8 @@
                     </div>
                 </c:if>
                 <c:if test="${isPropertyPaneEditable}">
-            </form>
-            </c:if>
+                </form>
+                </c:if>
         </div>
 
         <div id="Framesplit" class="framesplit metadata"></div>

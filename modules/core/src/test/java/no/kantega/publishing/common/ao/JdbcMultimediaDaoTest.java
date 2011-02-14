@@ -43,18 +43,18 @@ public class JdbcMultimediaDaoTest {
         folder.setName("myfolder");
         int folderId = dao.setMultimedia(folder);
 
-        Multimedia multimedia = createMultimedia();
-        multimedia.setParentId(folderId);
-        int id = dao.setMultimedia(multimedia);
-        Multimedia multimedia2 = dao.getMultimedia(id);
-        assertNotNull("dao.getMultimedia != null", multimedia2);
+        Multimedia multimediaBeforeSave = createMultimedia();
+        multimediaBeforeSave.setParentId(folderId);
+        int id = dao.setMultimedia(multimediaBeforeSave);
+        Multimedia multimediaAfterSave = dao.getMultimedia(id);
+        assertNotNull("dao.getMultimedia != null", multimediaAfterSave);
 
-        assertEquals("multimedia.getName == multimedia2.getName", multimedia.getName(), multimedia2.getName());
-        assertEquals("multimedia.getAltname == multimedia2.getAltname", multimedia.getAltname(), multimedia2.getAltname());
-        assertEquals("multimedia.getAuthor == multimedia2.getAuthor", multimedia.getAuthor(), multimedia2.getAuthor());
-        assertEquals("multimedia.getDescription == multimedia2.getDescription", multimedia.getDescription(), multimedia2.getDescription());
-        assertEquals("multimedia.getFilename == multimedia2.getFilename", multimedia.getFilename(), multimedia2.getFilename());
-        assertEquals("multimedia.getParentId == multimedia2.getParentId", multimedia.getParentId(), multimedia2.getParentId());
+        assertEquals(multimediaBeforeSave.getName(), multimediaAfterSave.getName());
+        assertEquals(multimediaBeforeSave.getAltname(), multimediaAfterSave.getAltname());
+        assertEquals(multimediaBeforeSave.getAuthor(), multimediaAfterSave.getAuthor());
+        assertEquals(multimediaBeforeSave.getDescription(), multimediaAfterSave.getDescription());
+        assertEquals(multimediaBeforeSave.getFilename(), multimediaAfterSave.getFilename());
+        assertEquals(multimediaBeforeSave.getParentId(), multimediaAfterSave.getParentId());
     }
 
     @Test
@@ -161,6 +161,12 @@ public class JdbcMultimediaDaoTest {
         multimedia.setAuthor("Author");
         multimedia.setFilename("text.txt");
         multimedia.setUsage("Usage");
+        multimedia.setCameraMake("Apple");
+        multimedia.setCameraMake("iPhone");
+        multimedia.setGpsLatitude("0");
+        multimedia.setGpsLongitude("0");
+        multimedia.setGpsLatitudeRef("W");
+        multimedia.setGpsLongitudeRef("E");
         String data = "The quick brown fox jumps over the lazy dog";
         multimedia.setData(data.getBytes());
 
