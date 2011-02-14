@@ -36,6 +36,7 @@ var formTextEditorHTML = null;
 
 function formDeleteElement(element) {
     $(element).remove();
+    openaksess.editcontext.setIsModified();
 }
 
 function formEditElement(element) {
@@ -266,6 +267,8 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
         $("#form_FormElements .formElement").eq(childNo).html(html);
         $("#form_FormElements .formElement").eq(childNo).attr("class", elementClz);
     }
+
+    openaksess.editcontext.setIsModified();
 }
 
 function formAddOrSaveText(textChildNo) {
