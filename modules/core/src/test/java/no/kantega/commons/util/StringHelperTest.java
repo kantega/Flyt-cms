@@ -53,5 +53,14 @@ public class StringHelperTest extends TestCase{
                          " Ev. spørsmål sendes til <a href=\"mailto:test@test.no\">test@test.no</a>" ;
         String result = StringHelper.makeLinks(input);
         assertEquals(expected,result);
-        }
+    }
+
+    public void testIsNumeric() {
+        assertEquals(StringHelper.isNumeric("1234"), true);
+        assertEquals(StringHelper.isNumeric("abc123"), false);
+        assertEquals(StringHelper.isNumeric("abc123"), false);
+        assertEquals(StringHelper.isNumeric("1"), true);
+        assertEquals(StringHelper.isNumeric("a"), false);
+        assertEquals(StringHelper.isNumeric("open aksess"), false);
+    }
 }
