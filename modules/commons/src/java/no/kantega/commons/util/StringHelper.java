@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2009-2011 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package no.kantega.commons.util;
 
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 public class StringHelper {
     /**
@@ -191,5 +192,15 @@ public class StringHelper {
      */
     public static String stripHtml(String source) {
         return source.replaceAll("<(.|\\n)+?>", "");
+    }
+
+    /**
+     * Checks if a string is all digits
+     * @param val - the string to check
+     * @return True if numberic, otherwise false
+     */
+    public static boolean isNumeric(String val) {
+        Pattern p = Pattern.compile("\\d+");
+        return p.matcher(val).matches();
     }
 }
