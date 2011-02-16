@@ -1069,6 +1069,12 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
             <name>owner</name>
             <required>false</required>
@@ -1381,6 +1387,12 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
             <name>owner</name>
             <required>false</required>
@@ -1632,6 +1644,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
@@ -2228,8 +2246,15 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Id or name of topic map to get</description>
+            <description>Id of topicmap to get</description>
             <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
         </attribute>
@@ -2270,6 +2295,12 @@
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Iterate over the topics for the given topic type</description>
@@ -2294,6 +2325,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
             <description>Id of topictype</description>
