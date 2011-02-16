@@ -2228,11 +2228,10 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Id of topic map to get</description>
+            <description>Id or name of topic map to get</description>
             <name>topicmapid</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
-            <type>int</type>
         </attribute>
         <attribute>
             <description>Name of collection of pages, use getcollection with gettopics=true instead</description>

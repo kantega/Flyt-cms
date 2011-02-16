@@ -18,9 +18,11 @@ package no.kantega.publishing.api.taglibs.topicmaps;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import org.apache.log4j.Logger;
@@ -43,7 +45,7 @@ public class GetTopicsTag extends LoopTagSupport {
 
     private Iterator i;
     private String associatedid = null;
-    private int topicmapid =-1;
+    private String topicmapid = null;
     private String ignoretopics = null;
     private String instance = null;
     private String topicid = null;
@@ -59,14 +61,22 @@ public class GetTopicsTag extends LoopTagSupport {
 
     protected void prepare() throws JspTagException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-        
+        int tmMapId = -1;
+        if (topicmapid != null) {
+            if (StringHelper.isNumeric(topicmapid)) {
+                tmMapId = Integer.parseInt(topicmapid, 10);
+            } else {
+                tmMapId = TopicMapAO.getTopicMapByName(topicmapid).getId();
+            }
+        }
+
         try {
             TopicMapService topicService = new TopicMapService(request);
             if (topicid != null) {
-                if (topicmapid == -1) {
+                if (topicmapid == null) {
                     throw new JspTagException("topicmapid must be specified when topicid is specified");
                 }
-                Topic t = topicService.getTopic(topicmapid, topicid);
+                Topic t = topicService.getTopic(tmMapId, topicid);
                 List list = new ArrayList();
                 if(t != null) {
                     list.add(t);
@@ -74,17 +84,17 @@ public class GetTopicsTag extends LoopTagSupport {
                 i = list.iterator();
 
             } else if (instance != null) {
-                if(topicmapid == -1) {
+                if(topicmapid == null) {
                     throw new JspTagException("topicmapid must be specified when instance is specified");
                 }
-                List list = topicService.getTopicsByInstance(new Topic(instance, topicmapid));
+                List list = topicService.getTopicsByInstance(new Topic(instance, tmMapId));
                 i = list.iterator();
 
             } else if (associatedid != null) {
-                if(topicmapid == -1) {
+                if(topicmapid == null) {
                     throw new JspTagException("topicmapid must be specified when associatedid is specified");
                 }
-                Topic topic = topicService.getTopic(topicmapid, associatedid);
+                Topic topic = topicService.getTopic(tmMapId, associatedid);
 
                 List associations = topicService.getTopicAssociations(topic);
 
@@ -122,7 +132,7 @@ public class GetTopicsTag extends LoopTagSupport {
             }
 
             associatedid = null;
-            topicmapid = -1;
+            topicmapid = null;
             ignoretopics = null;
             instance = null;
             topicid = null;
@@ -178,7 +188,7 @@ public class GetTopicsTag extends LoopTagSupport {
         this.associatedid = associatedid;
     }
 
-    public void setTopicmapid(int topicmapid) {
+    public void setTopicmapid(String topicmapid) {
         this.topicmapid = topicmapid;
     }
 
