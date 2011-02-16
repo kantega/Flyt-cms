@@ -519,9 +519,9 @@ public class MultimediaAO {
             } else {
                 // Oppdater
                 if (data == null) {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                 } else {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                 }
             }
 
