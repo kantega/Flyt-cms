@@ -46,7 +46,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
         }
 
         if (subscriberContent.size() == 1) {
-            subject = subject + ":" + subscriberContent.get(0).getTitle();
+            subject = subject + ": " + subscriberContent.get(0).getTitle();
         }
 
         String template = config.getString("mail" + alias + "subscription.template", null);
