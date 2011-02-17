@@ -321,7 +321,7 @@ public class SearchServiceImpl implements SearchService {
          * Excluded ContentParents (unntatte foreldreelement i meny)
          */
         if (query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_PARENT) != null) {
-            BooleanCriterion bq = new AndCriterion();
+            BooleanCriterion bq = new OrCriterion();
 
             Integer contentParent = query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_PARENT);
             ContentParentCriterion cc = new ContentParentCriterion(contentParent);
@@ -329,6 +329,7 @@ public class SearchServiceImpl implements SearchService {
 
             bq.add(cc);
             bq.add(ac);
+            bq.setOperator(BooleanClause.Occur.MUST_NOT);
             criterionList.add(bq);
         }
 
