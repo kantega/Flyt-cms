@@ -24,6 +24,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
@@ -91,8 +92,10 @@ public class MultimediaRequestHandler implements Controller {
             String mimetype = mm.getMimeType().getType();
             ServletOutputStream out = response.getOutputStream();
 
-            int width = param.getInt("width");
-            int height = param.getInt("height");
+            MultimediaDimensions dimensions = calculateDimensions(param, mm);
+
+            int width = dimensions.getWidth();
+            int height = dimensions.getHeight();
 
             String key = mmId + "-" + width + "-" + height + "-" + mm.getLastModified().getTime();
 
@@ -166,6 +169,50 @@ public class MultimediaRequestHandler implements Controller {
             Log.error(SOURCE, e, null, null);
         }
         return null;
+    }
+
+    /**
+     * Calculates dimensions for multimedia resizing based on get-parameters
+     * use of minheight and minwidth parameters ensures that the resized image is never smaller than either of the parameters
+     * while height and width parameters ensures that the resized image is never bigger than either of the parameters.
+     * when combined, min* parameters takes presedence.
+     * @param param
+     * @param mm
+     * @return
+     */
+    private MultimediaDimensions calculateDimensions(RequestParameters param, Multimedia mm) {
+
+        int     width       = param.getInt("width");
+        int     height      = param.getInt("height");
+        double  minWidth    = param.getInt("minwidth");
+        double  minHeight   = param.getInt("minheight");
+
+        if (minWidth > 0 || minHeight > 0){
+
+            double mmWidth = mm.getWidth();
+            double mmHeight = mm.getHeight();
+
+            double newWidth = -1;
+            double newHeight = -1;
+
+            if (minWidth > mmWidth) minWidth = mmWidth;
+            if (minHeight > mmHeight) minHeight = mmHeight;
+
+            double aspectRatio = (mmWidth / mmHeight);
+
+            if (newWidth < minWidth && minWidth > 0){
+                newHeight = (int) Math.ceil(minWidth / aspectRatio);
+                newWidth = (int) Math.ceil(( aspectRatio * newHeight));
+            }
+            if (newHeight < minHeight && minHeight > 0){
+                newWidth = (int) Math.ceil(( aspectRatio * minHeight));
+                newHeight = (int) Math.ceil(newWidth / aspectRatio);
+            }
+            height = newHeight > 0 ? (int) newHeight: (int) mmHeight;
+            width = newWidth > 0 ? (int) newWidth: (int) mmWidth;
+        }
+
+        return new MultimediaDimensions(width, height);
     }
 
     public void setImageEditor(ImageEditor imageEditor) {
