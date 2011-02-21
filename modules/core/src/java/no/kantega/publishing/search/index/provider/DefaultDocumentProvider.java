@@ -20,19 +20,21 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.PathEntry;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.dao.AksessDao;
+import no.kantega.publishing.search.extraction.TextExtractor;
+import no.kantega.publishing.search.extraction.TextExtractorSelector;
 import no.kantega.publishing.search.index.boost.ContentBooster;
 import no.kantega.publishing.search.index.model.TmBaseName;
 import no.kantega.publishing.search.model.AksessSearchHit;
@@ -46,6 +48,7 @@ import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.QueryInfo;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
+import org.apache.log4j.pattern.LogEvent;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -56,6 +59,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
@@ -75,6 +80,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     private String sourceId;
     private List<SearchField> customSearchFields;
 
+    private TextExtractorSelector textExtractorSelector;
 
     /**
      * {@inheritDoc}
@@ -286,6 +292,12 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             allText += getArticleText(content);
 
+            if (content.getType() == ContentType.FILE) {
+                allText += getAttachmentText(content);
+            }
+
+
+
             d.add(new Field(Fields.TITLE_UNANALYZED, title, Field.Store.NO, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.SITE_ID, siteId, Field.Store.YES, Field.Index.ANALYZED));
             d.add(new Field(Fields.CONTENT, allText, Field.Store.NO, Field.Index.ANALYZED));
@@ -332,6 +344,28 @@ public class DefaultDocumentProvider implements DocumentProvider {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getAttachmentText(Content content) {
+        String text = "";
+
+        try {
+            int attachmentId = Integer.parseInt(content.getLocation());
+
+            Attachment attachment = AttachmentAO.getAttachment(attachmentId);
+
+            TextExtractor te = textExtractorSelector.select(attachment.getFilename());
+            if (te != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(bos));
+                text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
+            }
+
+        } catch (Exception e) {
+            Log.error(getClass().getName(), e);
+        }
+
+        return text;
     }
 
     protected void addOtherFields(Content content, Document d) {
@@ -467,6 +501,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
     public void setBoosters(List boosters) {
         this.boosters = boosters;
+    }
+
+    public void setTextExtractorSelector(TextExtractorSelector textExtractorSelector) {
+        this.textExtractorSelector = textExtractorSelector;
     }
 }
 

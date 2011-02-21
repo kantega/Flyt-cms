@@ -23,6 +23,7 @@ import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.Aksess;
@@ -100,7 +101,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                 }
                 searchHit.setMimeType(MimeTypes.getMimeType(searchHit.getFileName() + "." + searchHit.getFileExtension()));
             }
-            
+
             if (searchHit.getTitle() == null || searchHit.getTitle().length() == 0) {
                 searchHit.setTitle(doc.get(Fields.ATTACHMENT_FILE_NAME));
             }
@@ -131,14 +132,16 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                     break;
                 }
                 try {
-                        Attachment a = AttachmentAO.getAttachment(i);
-                        Document d = getAttachmentDocument(a);
+                    Attachment a = AttachmentAO.getAttachment(i);
+                    Document d = getAttachmentDocument(a);
+                    if (d != null) {
                         handler.handleDocument(d);
-                        reporter.reportProgress(++c, "aksess-vedlegg", total);
+                    }
+                    reporter.reportProgress(++c, "aksess-vedlegg", total);
 
                 } catch (Throwable e) {
-                        Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
-                        Log.error(SOURCE, e, null, null);
+                    Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
+                    Log.error(SOURCE, e, null, null);
                 }
             }
         } catch (SQLException e) {
@@ -154,7 +157,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (SystemException e) {
-            
+
         }
         return null;
     }
@@ -175,6 +178,11 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     private Document getAttachmentDocument(Attachment a) throws SQLException, SystemException {
         Content content = ContentAO.getContent(new ContentIdentifier(a.getContentId()), false);
         if (!content.isSearchable()) {
+            return null;
+        }
+
+        if (content.getType() == ContentType.FILE) {
+            // Text in files are indexed as part of content object, should not index here to get duplicate
             return null;
         }
 
@@ -199,7 +207,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
 
         Field fKeywords = new Field(Fields.KEYWORDS, content.getKeywords() == null ? "" : content.getKeywords(), Field.Store.NO, Field.Index.ANALYZED);
         fKeywords.setBoost(1.5f);
-        d.add(fKeywords);                    
+        d.add(fKeywords);
 
         d.add(new Field(Fields.TITLE_UNANALYZED, content.getTitle(), Field.Store.NO, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.DOCTYPE, Fields.TYPE_ATTACHMENT, Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -216,7 +224,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         d.add(new Field(Fields.CONTENT_PARENTS, getParents(content), Field.Store.YES, Field.Index.ANALYZED));
         d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.ATTACHMENT_FILE_SIZE, Integer.toString(a.getSize()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-        
+
 
         String text = "";
         if (te != null) {

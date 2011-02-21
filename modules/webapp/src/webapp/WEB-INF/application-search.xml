@@ -109,6 +109,7 @@
         <property name="aksessDao" ref="aksessDao"/>
         <property name="sourceId" value="aksessContent"/>
         <property name="customSearchFields" ref="aksessCustomSearchFields"/>
+        <property name="textExtractorSelector" ref="textExtractorSelector"/>
     </bean>
 
     <bean id="defaultAttachmentDocumentProvider" class="no.kantega.publishing.search.index.provider.DefaultAttachmentDocumentProvider">
