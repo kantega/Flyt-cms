@@ -26,14 +26,17 @@ import no.kantega.commons.util.XMLHelper;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.ao.XMLCacheAO;
 import no.kantega.publishing.common.data.XMLCacheEntry;
+import org.w3c.dom.Element;
 
 import java.net.URL;
 import java.net.MalformedURLException;
 
-public class XMLImportJob  extends QuartzJobBean {
+public class XMLImportJob extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.XMLImportJob";
     private String id  = null;
     private String url = null;
+    private XMLImportValidator validator = new DefaultXMLImportValidator();
+
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
         
@@ -43,23 +46,37 @@ public class XMLImportJob  extends QuartzJobBean {
         }
 
         if (id == null || url == null) {
-            Log.error(SOURCE, "Manglende parameter id eller url", null, null);
+            Log.error(SOURCE, "Missing parameter id or url", null, null);
             throw new JobExecutionException();
         }
-        Log.debug(SOURCE, "XMLImport start:" + id + ", url:" + url, null, null);
+        Log.info(SOURCE, "XMLImport started:" + id + ", url:" + url);
 
         try {
             Document xml = XMLHelper.openDocument(new URL(url));
 
-            XMLCacheEntry cacheEntry = new XMLCacheEntry(id, xml);
-            XMLCacheAO.storeXMLInCache(cacheEntry);
-
+            if (isValidXML(xml)) {
+                XMLCacheEntry cacheEntry = new XMLCacheEntry(id, xml);
+                XMLCacheAO.storeXMLInCache(cacheEntry);
+            }
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
         } catch (MalformedURLException e) {
             Log.error(SOURCE, e, null, null);
         }
-        Log.debug(SOURCE, "XMLImport slutt:" + id, null, null);
+        Log.info(SOURCE, "XMLImport ended:" + id, null, null);
+    }
+
+    private boolean isValidXML(Document xml) {
+        if (xml == null) {
+            return false;
+        }
+
+        boolean isValid = validator.isValidXML(xml);
+        if (!isValid) {
+            Log.error(SOURCE, "Validator failed, skipping XML import (" + id + ") from URL:" + url);
+        }
+
+        return isValid;
     }
 
     public void setId(String id) {
@@ -70,5 +87,8 @@ public class XMLImportJob  extends QuartzJobBean {
         this.url = url;
     }
 
+    public void setValidator(XMLImportValidator validator) {
+        this.validator = validator;
+    }
 }
 
