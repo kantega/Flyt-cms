@@ -1,7 +1,6 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="no.kantega.publishing.common.data.enums.ContentType" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -19,14 +18,12 @@
   --%>
 
 <%
-    RequestParameters param = new RequestParameters(request, "utf-8");
-    int type = param.getInt("type");
-
-    String key = "aksess.showcontentinframe.link";
-    if (type == ContentType.FILE.getTypeAsInt()) {
-        key = "aksess.showcontentinframe.file";
-    } else if (type == ContentType.FORM.getTypeAsInt()) {
-        key = "aksess.showcontentinframe.form";
+    String url = "";
+    String title = "";
+    Content content = (Content)request.getAttribute("aksess_this");
+    if (content != null) {
+        url = content.getLocation();
+        title = content.getTitle();
     }
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -41,7 +38,8 @@
 
 <body style="margin: 10px">
 <div class="ui-state-highlight">
-    <kantega:label key="<%=key%>"/>
+    <p><kantega:label key="aksess.showcontentinframe.file"/></p>
+    <p><kantega:label key="aksess.showcontentinframe.showfile"/> <a href="${pageContext.request.contextPath}/attachment/<%=url%>/" target="_new" class="textlink"><%=title%></a></p>
 </div>
 </body>
 </html>

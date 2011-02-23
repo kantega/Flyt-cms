@@ -30,7 +30,7 @@ a.disabled {
     color:#5e5e5e;
 }
 
-a.textlink {
+a.textlink, .ui-state-highlight a.textlink {
     color: #1780B9;
     font-weight: bold;
 }
