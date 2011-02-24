@@ -75,6 +75,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                             filename = filename.substring(filename.length() - 255, filename.length());
                         }
                         multimedia.setName(filename);
+                        multimedia.setFilename(filename);
 
                         int mediaFolderId = -1;
                         String mediaFolder = mediaAttr.getDefaultMediaFolder();
@@ -105,7 +106,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                             if (mediaFolderId == -1) {
                                 // Folder does not exists create one
                                 Multimedia folder = new Multimedia();
-                                folder.setName(defaultFolderName);
+                                folder.setName(mediaFolder);
                                 folder.setType(MultimediaType.FOLDER);
                                 mediaFolderId = MultimediaAO.setMultimedia(folder);
                             }
@@ -126,8 +127,6 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     }
 
                     multimedia = resizeImage(multimedia, mimeType);
-
-                    multimedia.setFilename(filename);
 
                     int id = MultimediaAO.setMultimedia(multimedia);
                     mediaAttr.setValue("" + id);
