@@ -56,7 +56,7 @@ public class AksessDao {
     public int countActiveAttachmentIds() throws SQLException {
         Connection c = dataSource.getConnection();
         try {
-            PreparedStatement p = c.prepareStatement("SELECT count(DISTINCT attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0 AND (Filename like '%pdf' OR Filename like '%doc')");
+            PreparedStatement p = c.prepareStatement("SELECT count(DISTINCT attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
 
             ResultSet rs = p.executeQuery();
             int n = 0;
@@ -91,7 +91,7 @@ public class AksessDao {
     public int getNextActiveAttachmentId(int i) throws SQLException {
         Connection c = dataSource.getConnection();
         try {
-            PreparedStatement p = c.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0 AND (Filename like '%pdf' OR Filename like '%doc') AND attachments.id > ? ORDER BY attachments.id");
+            PreparedStatement p = c.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0 AND attachments.id > ? ORDER BY attachments.id");
             p.setInt(1, i);
             ResultSet rs = p.executeQuery();
             int n = -1;
@@ -118,54 +118,6 @@ public class AksessDao {
             }
 
             return a;
-        } finally {
-            c.close();
-        }
-    }
-
-    // TODO: Slett denne ?
-    public int[] getAttachmentIdsByContentId(int contentId) throws SQLException {
-        Connection c = dataSource.getConnection();
-
-        try {
-            PreparedStatement p = c.prepareStatement("SELECT Id FROM attachments WHERE ContentId=? AND (Filename like '%pdf' OR Filename like '%doc')");
-            p.setInt(1, contentId);
-
-            ResultSet rs = p.executeQuery();
-
-            List ids = new ArrayList();
-
-            while(rs.next()) {
-                ids.add(new Integer(rs.getInt(1) ));
-            }
-
-            int[] ret = new int[ids.size()];
-            for (int i = 0; i < ret.length; i++) {
-                ret[i] =  ((Integer)ids.get(i)).intValue();
-            }
-
-            return ret;
-        } finally {
-            c.close();
-        }
-    }
-
-    public java.util.Date getContentLastPublishedDate(int contentId) throws SQLException {
-        int a = getActiveContentVersionId(contentId);
-        Connection c = dataSource.getConnection();
-        try {
-            PreparedStatement p = c.prepareStatement("SELECT LastModified FROM contentversion WHERE ContentVersionId = ? AND IsActive = 1");
-            p.setInt(1, a);
-
-            ResultSet rs = p.executeQuery();
-
-            java.util.Date d = new java.util.Date();
-            if(rs.next()) {
-                d = new java.util.Date(rs.getTimestamp(1).getTime());
-            }
-
-
-            return d;
         } finally {
             c.close();
         }
