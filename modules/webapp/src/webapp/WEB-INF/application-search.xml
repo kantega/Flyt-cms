@@ -131,7 +131,22 @@
         <property name="extractors">
             <map>
                 <entry key="doc">
-                    <bean class="no.kantega.publishing.search.extraction.impl.MsWordExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                </entry>
+                <entry key="docx">
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                </entry>
+                <entry key="xls">
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                </entry>
+                <entry key="xlsx">
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                </entry>
+                <entry key="ppt">
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                </entry>
+                <entry key="pptx">
+                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
                 </entry>
                 <entry key="pdf">
                     <bean class="no.kantega.publishing.search.extraction.impl.PdfExtractor"/>

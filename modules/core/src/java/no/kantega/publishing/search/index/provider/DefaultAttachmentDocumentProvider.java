@@ -123,8 +123,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter) {
         try {
             int i = -1;
-            int c=0;
-            i = aksessDao.getNextActiveAttachmentId(i);
+            int c = 0;
             int total = aksessDao.countActiveAttachmentIds();
             while((i = aksessDao.getNextActiveAttachmentId(i)) > 0) {
                 if(handler.isStopRequested()) {
@@ -187,6 +186,10 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         }
 
         TextExtractor te = textExtractorSelector.select(a.getFilename());
+        if (te == null) {
+            return null;
+        }
+
         Document d = new Document();
 
         Field fTitle = new Field(Fields.TITLE, content.getTitle(), Field.Store.YES, Field.Index.ANALYZED);
@@ -227,15 +230,13 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
 
 
         String text = "";
-        if (te != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            AttachmentAO.streamAttachmentData(a.getId(), new InputStreamHandler(bos));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        AttachmentAO.streamAttachmentData(a.getId(), new InputStreamHandler(bos));
 
-            text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
-            d.add(new Field(Fields.CONTENT, text, Field.Store.NO, Field.Index.ANALYZED));
-            String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
-            d.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NOT_ANALYZED));
-        }
+        text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
+        d.add(new Field(Fields.CONTENT, text, Field.Store.NO, Field.Index.ANALYZED));
+        String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
+        d.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NOT_ANALYZED));
         return d;
     }
 
