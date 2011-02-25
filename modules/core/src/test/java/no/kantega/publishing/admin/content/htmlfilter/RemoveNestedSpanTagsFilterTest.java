@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2011 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,4 +70,50 @@ public class RemoveNestedSpanTagsFilterTest {
 
         assertEquals(expectedHtmlAfter, sw.toString());
     }
+
+    @Test
+    public void shouldRemoveNestedTagWithSameStyle() throws SystemException {
+        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
+        pipeline.addFilter(filter);
+
+        String htmlBefore = "<p><strong><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"> </span></span></span></span></span></span></span></span></span></span></span></span></span></span></strong></p>";
+        String expectedHtmlAfter = "<p><strong><span style=\"text-decoration: underline;\"> </span></strong></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+    }
+
+    @Test
+    public void shouldRemoveNestedTagWithMultipelSimpleSpans() throws SystemException {
+        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
+        pipeline.addFilter(filter);
+
+        String htmlBefore = "<p><span style=\"font-size: 1em;\"><span><span>ff</span></span></span></p>";
+        String expectedHtmlAfter = "<p><span style=\"font-size: 1em;\"><span>ff</span></span></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+    }
+
+    @Test
+    public void shouldRemoveNestedTagLeavingOneTag() throws SystemException {
+        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
+        pipeline.addFilter(filter);
+
+        String htmlBefore = "<p><span><span>gg<span>ff</span></span></span></p>";
+        String expectedHtmlAfter = "<p><span>ggff</span></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+    }
+
 }
