@@ -52,7 +52,9 @@
             closeWindow();
         <%
             } else {
+
         %>
+            window.onbeforeunload = null;
             p.location.reload();
         <%
             }
