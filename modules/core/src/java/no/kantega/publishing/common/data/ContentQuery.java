@@ -71,6 +71,7 @@ public class ContentQuery {
     private boolean showExpired = false;
     private String onHearingFor = null;
     private SortOrder sortOrder = null;
+    private boolean includeDrafts = false;
 
     private int maxRecords = -1;
     private int offset = 0;
@@ -146,10 +147,12 @@ public class ContentQuery {
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
         query.append("and contentversion.Status IN (");
+        query.append(ContentStatus.PUBLISHED);
         if(onHearingFor != null) {
-            query.append(ContentStatus.PUBLISHED + "," + ContentStatus.HEARING);
-        } else {
-            query.append(ContentStatus.PUBLISHED);
+            query.append("," + ContentStatus.HEARING);
+        }
+        if (includeDrafts) {
+            query.append("," + ContentStatus.DRAFT);
         }
 
         query.append(") and content.ContentId = associations.ContentId");
@@ -784,6 +787,14 @@ public class ContentQuery {
 
     public int getOffset() {
         return offset;
+    }
+
+    public boolean isIncludeDrafts() {
+        return includeDrafts;
+    }
+
+    public void setIncludeDrafts(boolean includeDrafts) {
+        this.includeDrafts = includeDrafts;
     }
 
     /**
