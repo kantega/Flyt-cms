@@ -6,7 +6,7 @@
                  no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
 <%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
-<%@ page import="no.kantega.publishing.admin.content.util.HTMLEditorHelper"%>
+<%@ page import="no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>

@@ -19,11 +19,11 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.content.util.HTMLEditorHelper;
 
 import javax.servlet.http.HttpServletRequest;
 

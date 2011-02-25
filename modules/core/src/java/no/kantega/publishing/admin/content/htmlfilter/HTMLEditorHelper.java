@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.content.util;
+package no.kantega.publishing.admin.content.htmlfilter;
 
 import no.kantega.commons.util.RegExp;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.admin.content.htmlfilter.*;
 import no.kantega.publishing.common.Aksess;
 
 import java.io.StringReader;
@@ -74,18 +73,15 @@ public class HTMLEditorHelper {
         // Fix image width and height, shrink images automatically
         pipe.addFilter(new ImgHeightAndWidthFilter());
 
+        // Remove nested span tags, typically caused by TinyMCE
+        pipe.addFilter(new RemoveNestedSpanTagsFilter());
+
+
         // Replace context path with <@WEB@>
         ContextPathFilter contextPathFilter = new ContextPathFilter();
         contextPathFilter.setContextPath(Aksess.getContextPath());
         contextPathFilter.setRootUrlToken(Aksess.VAR_WEB);
         pipe.addFilter(contextPathFilter);
-
-        // Remove empty B, SPAN etc tags
-        try {
-            value = RegExp.replace("<(i|I|b|B|em|EM|b|B|span|SPAN)>(\\s|&nbsp;)*</\\1>", value, "");
-        } catch (RegExpSyntaxException e) {
-
-        }
 
         String origVal = value;
 
@@ -113,6 +109,13 @@ public class HTMLEditorHelper {
             Log.error("", e, null, null);
         }
 
+        // Remove empty B, SPAN etc tags
+        try {
+            value = RegExp.replace("<(i|I|b|B|em|EM|b|B|span|SPAN)>(\\s|&nbsp;)*</\\1>", value, "");
+        } catch (RegExpSyntaxException e) {
+
+        }
+
         // Some versions of Xerces creates XHTML tags
         value = StringHelper.replace(value, "</HR>", "");
         value = StringHelper.replace(value, "</BR>", "");
@@ -125,12 +128,13 @@ public class HTMLEditorHelper {
     /**
      * Replacements done before editing content
      * @param value - HTML text
+     * @param contextPath - context path
      * @return - cleaned HTML
      */
-    public String preEditFilter(String value, String rootUrl) {
+    public String preEditFilter(String value, String contextPath) {
 
-        value = StringHelper.replace(value, "\"" + Aksess.VAR_WEB + "\"/", rootUrl);
-        value = StringHelper.replace(value, Aksess.VAR_WEB + "/", rootUrl);
+        value = StringHelper.replace(value, "\"" + Aksess.VAR_WEB + "\"/", contextPath);
+        value = StringHelper.replace(value, Aksess.VAR_WEB + "/", contextPath);
 
         // Convert strong and em tags back to b and i tags to enable edit of text with these tags.
         value = value.replaceAll("<strong>", "<b>");
