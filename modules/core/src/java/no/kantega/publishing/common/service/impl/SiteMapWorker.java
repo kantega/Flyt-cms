@@ -66,7 +66,7 @@ public class SiteMapWorker {
         List tmpentries = new ArrayList();
 
         StringBuilder query = new StringBuilder();
-        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, contentversion.Status, contentversion.Title, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
+        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = " + ContentStatus.PUBLISHED);
@@ -101,6 +101,8 @@ public class SiteMapWorker {
                 String owner = rs.getString(p++);
                 String ownerPerson = rs.getString(p++);
                 boolean isSearchable = rs.getInt(p++) == 1;
+                int contentTemplateId = rs.getInt(p++);
+                int displayTemplateId = rs.getInt(p++);
                 int status  = rs.getInt(p++);
                 String title = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);
@@ -128,6 +130,8 @@ public class SiteMapWorker {
                     sitemap.setOwnerPerson(ownerPerson);
                     sitemap.setSecurityId(aSecId);
                     sitemap.setSearchable(isSearchable);
+                    sitemap.setContentTemplateId(contentTemplateId);
+                    sitemap.setDisplayTemplateId(displayTemplateId);
                 } else {
                     SiteMapEntry entry = new SiteMapEntry(uniqueId, currentId, parentId, type, status, visibilityStatus, title, numberOfNotes);
                     if (alias != null && alias.length() > 0) {
@@ -141,6 +145,8 @@ public class SiteMapWorker {
                     entry.setOwnerPerson(ownerPerson);
                     entry.setSecurityId(aSecId);
                     entry.setSearchable(isSearchable);
+                    entry.setContentTemplateId(contentTemplateId);
+                    entry.setDisplayTemplateId(displayTemplateId);
                     if (type == ContentType.LINK) {
                         // Enten har bruker angitt at lenke skal �pnes i eget vindu eller s� skal dette skje automatisk
                         if (openInNewWindow || (location != null && location.length() > 0 && location.charAt(0) != '/')) {
