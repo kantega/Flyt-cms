@@ -131,25 +131,43 @@
         <property name="extractors">
             <map>
                 <entry key="doc">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="docx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="xls">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="xlsx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="ppt">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="pptx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.OfficeTextExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
                 <entry key="pdf">
-                    <bean class="no.kantega.publishing.search.extraction.impl.PdfExtractor"/>
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="rtf">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="odt">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="ods">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="odp">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="html">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+                </entry>
+                <entry key="xhtml">
+                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
                 </entry>
             </map>
         </property>

@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.search.extraction;
 
-
-
 import java.util.Map;
 
 public class TextExtractorSelector {

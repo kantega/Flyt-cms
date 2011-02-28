@@ -259,6 +259,7 @@
         <log4j.version>1.2.16</log4j.version>
         <nekohtml.version>0.9.5</nekohtml.version>
         <poi.version>3.7</poi.version>
+        <tika.version>0.9</tika.version>
         <springframework.version>2.5.6.SEC02</springframework.version>
         <securityapi.version>2.3</securityapi.version>
         <securityapi.openimpl.version>2.4</securityapi.openimpl.version>

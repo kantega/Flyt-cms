@@ -233,7 +233,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         AttachmentAO.streamAttachmentData(a.getId(), new InputStreamHandler(bos));
 
-        text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
+        text = te.extractText(new ByteArrayInputStream(bos.toByteArray()), a.getFilename());
         d.add(new Field(Fields.CONTENT, text, Field.Store.NO, Field.Index.ANALYZED));
         String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
         d.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NOT_ANALYZED));
