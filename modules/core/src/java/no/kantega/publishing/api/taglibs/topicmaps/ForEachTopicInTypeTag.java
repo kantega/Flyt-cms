@@ -1,6 +1,7 @@
 package no.kantega.publishing.api.taglibs.topicmaps;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.common.service.TopicMapService;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,8 +55,19 @@ public class ForEachTopicInTypeTag extends LoopTagSupport {
         }
     }
 
+    /**
+     * @deprecated use topicMap
+     */
+    @Deprecated
     public void setTopicmapid(int topicmapid) {
         this.topicmapid = topicmapid;
+    }
+
+    public void setTopicmap(String topicmap) {
+        TopicMap tm = TopicMapAO.getTopicMapByName(topicmap);
+        if (tm != null) {
+            this.topicmapid = tm.getId();
+        }
     }
 
     public void setTopictypeid(String topictypeid) {
