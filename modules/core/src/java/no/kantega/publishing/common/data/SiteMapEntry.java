@@ -39,6 +39,8 @@ public class SiteMapEntry extends NavigationMapEntry {
     private String ownerPerson = null;
     public ContentType type = ContentType.PAGE;
     private boolean isSearchable = true;
+    private int contentTemplateId;
+    private int displayTemplateId;
 
     public SiteMapEntry() {
     }
@@ -202,5 +204,21 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public void setSearchable(boolean searchable) {
         isSearchable = searchable;
+    }
+
+    public int getContentTemplateId() {
+        return contentTemplateId;
+    }
+
+    public void setContentTemplateId(int contentTemplateId) {
+        this.contentTemplateId = contentTemplateId;
+    }
+
+    public int getDisplayTemplateId() {
+        return displayTemplateId;
+    }
+
+    public void setDisplayTemplateId(int displayTemplateId) {
+        this.displayTemplateId = displayTemplateId;
     }
 }
