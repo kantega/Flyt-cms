@@ -66,6 +66,7 @@
                         <xs:enumeration value="url"/>
                         <xs:enumeration value="alttitle"/>
                         <xs:enumeration value="topics"/>
+                        <xs:enumeration value="documenttype"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>

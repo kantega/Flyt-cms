@@ -84,6 +84,14 @@ public class MapSimpleAttributeValueToContentPropertyBehaviour implements MapAtt
             ValidatorHelper.validateAlias(alias, content, errors);
         } else if (field.equalsIgnoreCase(ContentProperty.PUBLISHER)) {
             content.setPublisher(value);
+        } else if(field.equalsIgnoreCase(ContentProperty.DOCUMENTTYPEID)){
+            int documenttypeValue = 0;
+            try {
+                documenttypeValue = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                //do nothing, documenttype will be 0
+            }
+            content.setDocumentTypeId(documenttypeValue);
         }
     }
 }

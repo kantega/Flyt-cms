@@ -50,4 +50,5 @@ public class ContentProperty {
     public static final String NUMBER_OF_COMMENTS = "numberofcomments";
     public static final String LAST_MAJOR_CHANGE = "lastmajorchange";
     public static final String LAST_MAJOR_CHANGE_BY = "lastmajorchangeby";
+    public static final String DOCUMENTTYPEID = "documenttype";
 }
