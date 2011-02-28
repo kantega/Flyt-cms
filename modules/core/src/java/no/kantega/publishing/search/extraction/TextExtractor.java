@@ -16,11 +16,9 @@
 
 package no.kantega.publishing.search.extraction;
 
-import no.kantega.publishing.common.data.Attachment;
-
 import java.io.InputStream;
 
 
 public interface TextExtractor {
-    public String extractText(InputStream is);
+    public String extractText(InputStream is, String fileName);
 }

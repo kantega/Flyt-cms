@@ -358,7 +358,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
             if (te != null) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(bos));
-                text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
+                text = te.extractText(new ByteArrayInputStream(bos.toByteArray()), attachment.getFilename());
             }
 
         } catch (Exception e) {
