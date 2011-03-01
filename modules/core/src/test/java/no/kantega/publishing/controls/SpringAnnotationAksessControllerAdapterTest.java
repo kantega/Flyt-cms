@@ -15,10 +15,29 @@
  */
 package no.kantega.publishing.controls;
 
+import no.kantega.commons.client.util.RequestParameters;
 import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  *
@@ -50,12 +69,72 @@ public class SpringAnnotationAksessControllerAdapterTest {
         }
     }
 
-    @Controller
-    class AnnotatedController {
+    @Test
+    public void shouldThrowExceptionWhenNoRequestMapping() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setMethod("GET");
+        request.setRequestURI("/content/1234/Whatever");
 
+        adapter.setController(new AnnotatedController());
+        try {
+            adapter.handleRequest(request, response);
+            fail("Expected NoSuchRequestHandlingMethodException");
+        } catch (NoSuchRequestHandlingMethodException nsrhme) {
+            //Expected
+        } catch (Exception e) {
+            fail("Expected NoSuchRequestHandlingMethodException only. Caught " + e.getClass().getSimpleName());
+        }
     }
 
-    class NotAnnotatedController {
+    @Test
+    public void shouldHandleGet() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = mock(ServletOutputStream.class);
+        when(response.getOutputStream()).thenReturn(outputStream);
 
+        request.setMethod("GET");
+        request.setRequestURI("/content/1234/Whatever");
+        adapter.setController(new AnnotatedControllerWithRequestMappings());
+
+        adapter.handleRequest(request, response);
+        verify(outputStream).print("works!");
+    }
+
+    @Test
+    public void shouldHandlePost() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+
+        request.setMethod("POST");
+        request.setRequestURI("/content/1234/Whatever");
+        String paramValue = "paramValue";
+        request.setParameter("postParam", paramValue);
+        adapter.setController(new AnnotatedControllerWithRequestMappings());
+
+        Map model = adapter.handleRequest(request, response);
+        assertEquals(paramValue, model.get("myAttr"));
+    }
+
+
+    @Controller
+    class AnnotatedController {}
+
+    class NotAnnotatedController {}
+
+    @Controller
+    class AnnotatedControllerWithRequestMappings {
+
+        @RequestMapping(method = RequestMethod.GET)
+        public void handleGet(HttpServletResponse response) throws IOException {
+            response.getOutputStream().print("works!");
+        }
+
+        @RequestMapping(method = RequestMethod.POST)
+        public String handlePost(Model model, @RequestParam String postParam) {
+            model.addAttribute("myAttr", postParam);
+            return "";
+        }
     }
 }
