@@ -46,11 +46,8 @@
         <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     </div>
     <script type="text/javascript">
+        $(document).ready() {
 
-        $("#urltext").oaAutocompleteMultimedia({
-            defaultValue: '<kantega:label key="aksess.insertlink.multimedia.hint"/>',
-            source: "${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
-            select: openaksess.editcontext.autocompleteInsertIntoFormCallback
-        });
+        }
     </script>
 </div>

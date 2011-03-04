@@ -50,9 +50,11 @@
             <input type="hidden" name="${fieldName}" id="${fieldName}" value="<%=value%>">
             <input type="text" name="${fieldName}text" id="${fieldName}text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="${attribute.tabIndex}">
             <script type="text/javascript">
-                $("#${fieldName}text").oaAutocomplete({
-                    source: "${pageContext.request.contextPath}/ajax/AutocompleteOrgUnits.action",
-                    select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                $(document).ready(function() {
+                    $("#${fieldName}text").oaAutocomplete({
+                        source: "${pageContext.request.contextPath}/ajax/AutocompleteOrgUnits.action",
+                        select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                    });
                 });
             </script>
 
