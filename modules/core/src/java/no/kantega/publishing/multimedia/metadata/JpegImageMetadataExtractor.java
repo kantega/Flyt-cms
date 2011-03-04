@@ -24,10 +24,18 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
                 addExifMetadata(multimedia, metadata);
             } else if (metadata.getDirectory().equals(ExifMetadata.GPS_DIRECTORY)) {
                 addExifGPSMetadata(multimedia, metadata);
+            } else if (metadata.getDirectory().equals(ExifMetadata.IPTC_DIRECTORY)) {
+                addIptcMetadata(multimedia, metadata);
             }
         }
         multimedia.setExifMetadata(metadatas);
         return multimedia;
+    }
+
+    private void addIptcMetadata(Multimedia multimedia, ExifMetadata metadata) {
+        if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && multimedia.getAuthor() == null && multimedia.getAuthor().length() == 0 ) {
+            multimedia.setAuthor(metadata.getValue());
+        }
     }
 
 
@@ -44,7 +52,7 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     private void addExifMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT)) {
+        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT) && multimedia.getAuthor() == null && multimedia.getAuthor().length() == 0 ) {
             multimedia.setAuthor(metadata.getValue());
         } else if (metadata.getKey().equals(ExifMetadata.EXIF_MAKE)) {
             multimedia.setCameraMake(metadata.getValue());
