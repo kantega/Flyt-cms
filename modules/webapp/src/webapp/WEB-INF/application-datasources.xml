@@ -41,6 +41,7 @@
     <bean id="aksessMultimediaDao" class="no.kantega.publishing.common.ao.JdbcMultimediaDao">
         <property name="dataSource" ref="aksessDataSource"/>
         <property name="sqlDialect" ref="sqlDialect"/>
+        <property name="multimediaUsageDao" ref="aksessMultimediaUsageDao"/>
     </bean>
 
     <bean id="aksessMultimediaUsageDao" class="no.kantega.publishing.common.ao.JdbcMultimediaUsageDao">
