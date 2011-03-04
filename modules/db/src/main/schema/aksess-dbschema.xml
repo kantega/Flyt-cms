@@ -280,7 +280,16 @@
             <index-column name="ParentId"/>
         </index>
     </table>
-
+    <table name="multimediaexifdata">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="MultimediaId" required="true" type="INTEGER" size="10"/>
+        <column name="Directory" required="true" type="VARCHAR" size="255"/>
+        <column name="ValueKey" required="true" type="VARCHAR" size="255"/>
+        <column name="Value" required="false" type="CLOB" size="2147483647"/>
+        <index name="idx_multimediaexifdata">
+            <index-column name="MultimediaId"/>
+        </index>
+    </table>
     <table name="multimediaimagemap">
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="MultimediaId" required="true" type="INTEGER" size="10"/>

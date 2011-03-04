@@ -28,6 +28,7 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.ao.PermissionsAO;
+import no.kantega.publishing.spring.RootContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,11 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultimediaAO {
-    private static final String SOURCE = "aksess.MultimediaAO";
-
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders";
-
 
     /**
      * Sletter et multimediaobjekt
@@ -48,69 +45,11 @@ public class MultimediaAO {
      * @throws SystemException
      * @throws ObjectInUseException - Hvis det finnes underobjekter
      */
+
+    @Deprecated
     public static void deleteMultimedia(int id) throws SystemException, ObjectInUseException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-            // F�rst sjekk om det finnes underlementer
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from multimedia where ParentId = " + id);
-            if (rs.next()) {
-                rs.close();
-                rs = null;
-                throw new ObjectInUseException(SOURCE, "");
-            }
-
-            // Get parent id
-            int parentId = SQLHelper.getInt(c, "select parentId from multimedia where Id = " + id, "ParentId");
-
-            PreparedStatement st = c.prepareStatement("delete from multimedia where Id = ?");
-            st.setInt(1, id);
-            st.execute();
-            st.close();
-
-            if (parentId > 0) {
-                updateNoSubFoldersAndFiles(c, parentId);
-            }
-
-            // Slett eventuelle tilgangsrettigheter
-            st = c.prepareStatement("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?");
-            st.setInt(1, id);
-            st.setInt(2, ObjectType.MULTIMEDIA);
-            st.execute();
-            st.close();
-
-            // Delete usagecount
-            MultimediaUsageAO.removeMultimediaId(id);
-
-        } catch (SQLException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new SystemException(SOURCE, "SQL feil ved sletting av multimediaobjekt", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
-        }
-    }
-
-    /**
-     * Update number of subfolders and files in a folder
-     * @param c - connection
-     * @param parentId - parent
-     * @throws SQLException
-     */
-    private static void updateNoSubFoldersAndFiles(Connection c, int parentId) throws SQLException {
-        int noFiles = SQLHelper.getInt(c, "select count(Id) as cnt from multimedia where ParentId = " + parentId + " and Type = " + MultimediaType.MEDIA.getTypeAsInt(), "cnt");
-        int noSubFolders = SQLHelper.getInt(c, "select count(Id) as cnt from multimedia where ParentId = " + parentId + " and Type = " + MultimediaType.FOLDER.getTypeAsInt(), "cnt");
-        PreparedStatement st = c.prepareStatement("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?");
-        st.setInt(1, noFiles);
-        st.setInt(2, noSubFolders);
-        st.setInt(3, parentId);
-        st.execute();
-        st.close();
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        dao.deleteMultimedia(id);
     }
 
 
@@ -120,32 +59,10 @@ public class MultimediaAO {
      * @return
      * @throws SystemException
      */
+    @Deprecated
     public static Multimedia getMultimedia(int id) throws SystemException {
-        Connection c = null;
-
-        String query = "select " + DB_COLS + " from multimedia where Id = " + id;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            if (!rs.next()) {
-                return null;
-            }
-            Multimedia mm = getMultimediaFromRS(rs);
-            rs.close();
-            return mm;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.getMultimedia(id);
     }
 
     /**
@@ -155,33 +72,10 @@ public class MultimediaAO {
      * @return
      * @throws SystemException
      */
+    @Deprecated
     public static Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            PreparedStatement st = c.prepareStatement("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND Name = ?");
-            st.setInt(1, parentId);
-            st.setString(2, name);
-            ResultSet rs = st.executeQuery();
-            if (!rs.next()) {
-                return null;
-            }
-            Multimedia mm = getMultimediaFromRS(rs);
-            rs.close();
-            return mm;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.getMultimediaByParentIdAndName(parentId, name);
     }
 
     /**
@@ -191,37 +85,10 @@ public class MultimediaAO {
      * @return
      * @throws SystemException
      */
+    @Deprecated
     public static Multimedia getProfileImageForUser(String userId) throws SystemException {
-        if (userId == null || userId.trim().equals("")) {
-            return null;
-        }
-
-        Connection c = null;
-
-        String query = "SELECT " + DB_COLS + " FROM multimedia WHERE ProfileImageUserId = '" + userId+"'";
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            // Hent content og contentversion
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            if (!rs.next()) {
-                return null;
-            }
-            Multimedia mm = getMultimediaFromRS(rs);
-            rs.close();
-            return mm;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.getProfileImageForUser(userId);
     }
 
 
@@ -232,35 +99,8 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {
-        Blob blob   = null;
-
-        Connection c = null;
-
-        String query = "select Data from multimedia where Id = " + id;
-        try {
-            c = dbConnectionFactory.getConnection();
-            // Hent content og contentversion
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            if (!rs.next()) {
-                return;
-            }
-            blob = rs.getBlob("Data");
-            ish.handleInputStream(blob.getBinaryStream());
-
-            rs.close();
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } catch (IOException e) {
-            // Brukeren har avbrutt
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        dao.streamMultimediaData(id, ish);
     }
 
 
@@ -271,33 +111,8 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static List<Multimedia> getMultimediaList(int parentId) throws SystemException {
-        Connection c = null;
-
-        List<Multimedia> mmList = new ArrayList<Multimedia>();
-
-        String query = "select " + DB_COLS + " from multimedia where ParentId = " + parentId + " AND ProfileImageUserId IS NULL order by Type, Name";
-
-        try {
-            c = dbConnectionFactory.getConnection();
-            // Hent content og contentversion
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            while(rs.next()) {
-                Multimedia mm = getMultimediaFromRS(rs);
-                mmList.add(mm);
-            }
-            rs.close();
-            return mmList;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.getMultimediaList(parentId);
     }
 
     /**
@@ -307,28 +122,8 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int getMultimediaCount() throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?");
-            p.setInt(1, MultimediaType.MEDIA.getTypeAsInt());
-            ResultSet rs = p.executeQuery();
-            if (!rs.next()) {
-                return -1;
-            } else {
-                return rs.getInt("count");
-            }
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                // Could not close connection, probably closed already
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.getMultimediaCount();
     }
 
     /**
@@ -341,111 +136,8 @@ public class MultimediaAO {
      * @return a list of Multimedia-objects matching the given criteria
      */
     public static List<Multimedia> searchMultimedia(String phrase, int site, int parentId) throws SystemException {
-        List<Multimedia> mmList = new ArrayList<Multimedia>();
-
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            int id = -1;
-            try {
-                id = Integer.parseInt(phrase);
-            } catch (NumberFormatException e) {
-
-            }
-
-            String where = "";
-            if (id != -1) {
-                where = "Id = ?";
-            } else {
-                where = "Name like ? or Author like ? or Description like ? or Filename like ?";
-                String driver = dbConnectionFactory.getDriverName();
-                if ((driver.indexOf("oracle") != -1) || (driver.indexOf("postgresql") != -1)) {
-                    phrase = phrase.toLowerCase();
-                    where = "lower(Name) like ? or lower(Author) like ? or lower(Description) like ? or lower(Filename) like ?";
-                }
-            }
-
-            String join = "";
-            String where2 = "";
-            if (site != -1 || parentId != -1) {
-                join = "LEFT JOIN multimediausage ON multimedia.Id=multimediausage.MultimediaId LEFT JOIN associations ON associations.ContentId=multimediausage.ContentId";
-                if (site != -1) {
-                    where2 = "SiteId = ?";
-                    if (parentId != -1) {
-                        where2 += " and Path LIKE ?";
-                    }
-                } else {
-                    where2 = "path LIKE ?";
-                }
-            }
-
-            StringBuilder query = new StringBuilder();
-            query.append("select ");
-            query.append(DB_COLS);
-            if (site != -1 || parentId != -1) {
-                query.append(", associations.Path, associations.SiteId");
-            }
-            query.append(" from multimedia ");
-
-            // join
-            query.append(join);
-            query.append(" ");
-            
-            query.append("where ").append(DB_TABLE).append(".Type = ? and ProfileImageUserId is NULL and (");
-            query.append(where);
-            query.append(") ");
-
-            if (!"".equals(where2)) {
-                query.append("AND (");
-                query.append(where2);
-                query.append(") ");
-            }
-
-            query.append("order by Name");
-
-            PreparedStatement st = c.prepareStatement(query.toString());
-            int paramIdx = 0;
-            st.setInt(++paramIdx, MultimediaType.MEDIA.getTypeAsInt());
-            if (id != -1) {
-                st.setInt(++paramIdx, id);
-            } else {
-                st.setString(++paramIdx, phrase + "%");
-                st.setString(++paramIdx, phrase + "%");
-                st.setString(++paramIdx, "%" + phrase + "%");
-                st.setString(++paramIdx, phrase + "%");
-            }
-
-            if (site != -1 || parentId != -1) {
-                if (site != -1) {
-                    st.setInt(++paramIdx, site);
-                    if (parentId != -1) {
-                        st.setString(++paramIdx, "%/" + parentId + "/%");
-                    }
-                } else {
-                    st.setString(++paramIdx, "%/" + parentId + "/%");
-                }
-            }
-
-            ResultSet rs = st.executeQuery();
-            while(rs.next()) {
-                Multimedia mm = getMultimediaFromRS(rs);
-                mmList.add(mm);
-            }
-            rs.close();
-            return mmList;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        return dao.searchMultimedia(phrase, site, parentId);
     }
 
 
@@ -456,41 +148,10 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static void moveMultimedia(int mmId, int newParentId) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            // Get parent id
-            int oldParentId = SQLHelper.getInt(c, "select parentId from multimedia where Id = " + mmId, "ParentId");
-
-            // Set new parent id
-            PreparedStatement st =  c.prepareStatement("update multimedia set ParentId = ? where Id = ?");
-            st.setInt(1, newParentId);
-            st.setInt(2, mmId);
-            st.execute();
-
-            // Update count in old and new folder
-            if (oldParentId > 0) {
-                updateNoSubFoldersAndFiles(c, oldParentId);
-            }
-            if (newParentId > 0) {
-                updateNoSubFoldersAndFiles(c, newParentId);
-            }
-        } catch (SQLException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new SystemException(SOURCE, "SQL feil ved flytting av multimediaobjekt", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
-        }
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        dao.moveMultimedia(mmId, newParentId);
 
     }
-
 
     /**
      * Lagre multimedia objekt i basen
@@ -499,159 +160,20 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int setMultimedia(Multimedia mm) throws SystemException {
-        Connection c = null;
+        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
 
-        // Name must be unique in folder for webdav support
-        String name = getUniqueName(mm);
-        mm.setName(name);
+        dao.setMultimedia(mm);
 
-        try {
-            c = dbConnectionFactory.getConnection();
-            PreparedStatement st = null;
-            byte[] data = mm.getData();
-            if (mm.isNew()) {
-                // Ny
-                if (data == null) {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-                } else {
-                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-                }
-            } else {
-                // Oppdater
-                if (data == null) {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
-                } else {
-                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
-                }
-            }
+        if (mm.isNew()) {
+            MultimediaRequestHandler.thumbnailCache.flushGroup(Integer.toString(mm.getId()));
+        }
 
-            int p = 1;
-            if (mm.isNew()) {
-                st.setInt(p++, mm.getParentId());
-                st.setInt(p++, mm.getSecurityId());
-                st.setInt(p++, mm.getType().getTypeAsInt());
-            }
-            st.setString(p++, mm.getName());
-            st.setString(p++, mm.getAuthor());
-            st.setString(p++, mm.getDescription());
-            st.setInt(p++, mm.getWidth());
-            st.setInt(p++, mm.getHeight());
-
-            if (data != null) {
-                st.setString(p++, mm.getFilename());
-                st.setInt(p++, mm.getSize());
-                st.setBinaryStream(p++, new ByteArrayInputStream(data), data.length);
-                try {
-                    MultimediaRequestHandler.thumbnailCache.flushGroup(Integer.toString(mm.getId()));
-                } catch (NullPointerException e) {
-                    // F�r nullpeker dersom group ikke finnes
-                }
-            }
-            st.setTimestamp(p++, new java.sql.Timestamp(new java.util.Date().getTime()));
-            st.setString(p++, mm.getModifiedBy());
-            st.setString(p++, mm.getAltname());
-            st.setString(p++, mm.getUsage());
-            st.setTimestamp(p++, mm.getOriginalDate() != null ? new java.sql.Timestamp(mm.getOriginalDate().getTime()) : null);
-            st.setString(p++, mm.getCameraMake());
-            st.setString(p++, mm.getCameraModel());
-            st.setString(p++, mm.getGpsLatitudeRef());
-            st.setString(p++, mm.getGpsLatitude());
-            st.setString(p++, mm.getGpsLongitudeRef());
-            st.setString(p++, mm.getGpsLongitude());
-
-            if (!mm.isNew()) {
-                st.setInt(p++, mm.getId());
-            } else {
-                st.setString(p++, mm.getProfileImageUserId());
-            }
-
-            st.execute();
-
-            if (data != null) {
-                data = null;
-            }
-
-            if (mm.isNew()) {
-                // Finn id til det nye objektet
-                ResultSet rs = st.getGeneratedKeys();
-                if (rs.next()) {
-                    mm.setId(rs.getInt(1));
-                }
-            }
-
-            // Update parent count
-            if (mm.getParentId() > 0) {
-                updateNoSubFoldersAndFiles(c, mm.getParentId());
-            }
-
-            if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
-                PermissionsAO.setPermissions(mm, null);
-                mm.setSecurityId(mm.getId());
-            }
-
-        } catch (SQLException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new SystemException(SOURCE, "SQL feil ved lagring av multimediaobjekt", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+        if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
+            PermissionsAO.setPermissions(mm, null);
+            mm.setSecurityId(mm.getId());
         }
 
         return mm.getId();
-    }
-
-    private static String getUniqueName(Multimedia newMedia) {
-        String name = newMedia.getName();
-        int cnt = 2;
-
-        Multimedia existing;
-        do {
-            existing = getMultimediaByParentIdAndName(newMedia.getParentId(), name);
-            if (existing != null && existing.getId() != newMedia.getId()) {
-                name = newMedia.getName() + cnt;
-            } else {
-                return name;
-            }
-            cnt++;
-
-        } while (true);
-    }
-
-
-    private static Multimedia getMultimediaFromRS(ResultSet rs) throws SQLException {
-        Multimedia mm = new Multimedia();
-
-        mm.setId(rs.getInt("Id"));
-        mm.setParentId(rs.getInt("ParentId"));
-        mm.setSecurityId(rs.getInt("SecurityId"));
-        mm.setType(MultimediaType.getMultimediaTypeAsEnum(rs.getInt("Type")));
-        mm.setName(rs.getString("Name"));
-        mm.setAuthor(rs.getString("Author"));
-        mm.setDescription(rs.getString("Description"));
-        mm.setFilename(rs.getString("Filename"));
-        mm.setSize(rs.getInt("MediaSize"));
-        mm.setWidth(rs.getInt("Width"));
-        mm.setHeight(rs.getInt("Height"));
-        mm.setLastModified(rs.getTimestamp("LastModified"));
-        mm.setModifiedBy(rs.getString("LastModifiedBy"));
-        mm.setAltname(rs.getString("AltName"));
-        mm.setUsage(rs.getString("UsageInfo"));
-        mm.setOriginalDate(rs.getDate("OriginalDate"));
-        mm.setCameraMake(rs.getString("CameraMake"));
-        mm.setCameraModel(rs.getString("CameraModel"));
-        mm.setGpsLatitudeRef(rs.getString("GPSLatitudeRef"));
-        mm.setGpsLatitude(rs.getString("GPSLatitude"));
-        mm.setGpsLongitudeRef(rs.getString("GPSLongitudeRef"));
-        mm.setGpsLongitude(rs.getString("GPSLongitude"));
-        mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
-        mm.setNoFiles(rs.getInt("NoFiles"));
-        mm.setNoSubFolders(rs.getInt("NoSubFolders"));
-
-        return mm;
     }
 
 
@@ -673,6 +195,7 @@ public class MultimediaAO {
 
 
     /**
+     * TODO: These methods should be moved to a new non static MultimediaPermissionsDao class
      * Setter securityId til angitt objekt, samt alle underobjekter lik angitt objekts id
      * @param c - Databasekopling
      * @param object - objekt som det skal settes ny securityid for

@@ -1,4 +1,8 @@
-package no.kantega.publishing.multimedia.metadata.exif;
+package no.kantega.publishing.common.data;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ExifMetadata {
     public static final String EXIF_DIRECTORY = "Exif";
@@ -15,7 +19,7 @@ public class ExifMetadata {
 
     private String directory;
     private String key;
-    private String value;
+    private String[] values;
 
     public String getDirectory() {
         return directory;
@@ -33,12 +37,34 @@ public class ExifMetadata {
         this.key = key;
     }
 
+    public String[] getValues() {
+        if (values == null) {
+            return new String[]{};
+        } else {
+            return values;
+        }
+    }
+
+    public void setValues(String[] values) {
+        this.values = values;
+    }
+
     public String getValue() {
-        return value;
+        if (values == null) {
+            return null;
+        } else {
+            return values[0];
+        }
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.values = new String[] {value};
+    }
+
+    public void addValue(String value) {
+        List<String> listValues = new ArrayList<String>(Arrays.asList(getValues()));
+        listValues.add(value);
+        setValues(listValues.toArray(new String[listValues.size()]));
     }
 
     @Override
@@ -46,7 +72,8 @@ public class ExifMetadata {
         return "ExifMetadata{" +
                 "directory='" + directory + '\'' +
                 ", key='" + key + '\'' +
-                ", value='" + value + '\'' +
+                ", values=" + (values == null ? null : Arrays.asList(values)) +
                 '}';
     }
+
 }
