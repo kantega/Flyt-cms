@@ -2,6 +2,9 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
+import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.ao.rowmapper.ExifMetadataToMultimediaRowMapper;
+import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;
@@ -54,6 +57,8 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         getSimpleJdbcTemplate().update("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?", id, ObjectType.MULTIMEDIA);
 
+        deleteExistingExifData(id);
+
         // Delete usagecount
         multimediaUsageDao.removeMultimediaId(id);
     }
@@ -62,7 +67,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     public Multimedia getMultimedia(int id) {
         List<Multimedia> media = getSimpleJdbcTemplate().query("select " + DB_COLS + " from multimedia where Id = ?", rowMapper, id);
         if (media.size() > 0) {
-            return media.get(0);
+            return updateMultimediaWithExifData(media).get(0);
         }
 
         return null;
@@ -72,7 +77,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     public Multimedia getMultimediaByParentIdAndName(int parentId, String name) {
         List<Multimedia> media = getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND Name = ?", rowMapper, parentId, name);
         if (media.size() > 0) {
-            return media.get(0);
+            return updateMultimediaWithExifData(media).get(0);
         }
         return null;
     }
@@ -85,12 +90,38 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         List<Multimedia> media = getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ProfileImageUserId = ?", rowMapper, userId);
         if (media.size() > 0) {
-            return media.get(0);
+            return updateMultimediaWithExifData(media).get(0);
         }
 
         return null;
     }
 
+    private List<Multimedia> updateMultimediaWithExifData(List<Multimedia> multimedia) {
+        if (multimedia.size() == 0) {
+            return multimedia;
+        }
+
+        String query = getQueryForExifData(multimedia);
+        getSimpleJdbcTemplate().query(query, new ExifMetadataToMultimediaRowMapper(multimedia));
+
+        return multimedia;
+    }
+
+    private String getQueryForExifData(List<Multimedia> multimedia) {
+        StringBuffer query = new StringBuffer();
+        query.append("SELECT * FROM multimediaexifdata WHERE MultimediaId IN (");
+
+        for (int i = 0, multimediaSize = multimedia.size(); i < multimediaSize; i++) {
+            Multimedia media = multimedia.get(i);
+            if (i > 0) {
+                query.append(",");
+            }
+            query.append(media.getId());
+        }
+
+        query.append(") ORDER BY MultimediaId, Directory, ValueKey");
+        return query.toString();
+    }
 
     public void streamMultimediaData(final int id, final InputStreamHandler ish) {
         getJdbcTemplate().execute(new ConnectionCallback() {
@@ -112,7 +143,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     }
 
     public List<Multimedia> getMultimediaList(int parentId) {
-        return getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, parentId);
+        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, parentId));
     }
 
     public int getMultimediaCount() {
@@ -183,7 +214,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         query.append("order by Name");
 
-        return getSimpleJdbcTemplate().query(query.toString(), rowMapper, params.toArray());
+        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query(query.toString(), rowMapper, params.toArray()));
     }
 
     public void moveMultimedia(int multimediaId, int newParentId) {
@@ -209,20 +240,22 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        final boolean hasData = multimedia.getData() != null;
+
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection c) throws SQLException {
                 PreparedStatement st;
                 byte[] data = multimedia.getData();
                 if (multimedia.isNew()) {
                     // Ny
-                    if (data == null) {
+                    if (!hasData) {
                         st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     } else {
                         st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     }
                 } else {
                     // Oppdater
-                    if (data == null) {
+                    if (!hasData) {
                         st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ? GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
                     } else {
                         st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
@@ -276,6 +309,11 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             multimedia.setId(keyHolder.getKey().intValue());
         }
 
+        if (hasData) {
+            deleteExistingExifData(multimedia.getId());
+            saveExifData(multimedia);
+        }
+
         // Update parent count
         if (multimedia.getParentId() > 0) {
             updateNoSubFoldersAndFiles( multimedia.getParentId());
@@ -284,6 +322,20 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         return multimedia.getId();
     }
 
+    private void deleteExistingExifData(int multimediaId) {
+        getSimpleJdbcTemplate().update("DELETE FROM multimediaexifdata WHERE MultimediaId = ?", multimediaId);
+    }
+
+    private void saveExifData(Multimedia multimedia) {
+        for (ExifMetadata metadata : multimedia.getExifMetadata()) {
+            String values[] = metadata.getValues();
+            if (values != null) {
+                for (String value : values) {
+                    getSimpleJdbcTemplate().update("INSERT INTO multimediaexifdata (MultimediaId, Directory, ValueKey, Value) VALUES (?,?,?,?)", multimedia.getId(), metadata.getDirectory(), metadata.getKey(), value);
+                }
+            }
+        }
+    }
 
     private String getUniqueName(Multimedia newMedia) {
         String name = newMedia.getName();

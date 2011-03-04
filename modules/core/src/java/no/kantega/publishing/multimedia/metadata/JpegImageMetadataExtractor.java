@@ -1,8 +1,8 @@
 package no.kantega.publishing.multimedia.metadata;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.multimedia.metadata.exif.ExifMetadata;
 import no.kantega.publishing.multimedia.metadata.exif.ExifMetadataExtractor;
 
 import java.text.DateFormat;
@@ -26,6 +26,7 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
                 addExifGPSMetadata(multimedia, metadata);
             }
         }
+        multimedia.setExifMetadata(metadatas);
         return multimedia;
     }
 

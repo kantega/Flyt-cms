@@ -1,6 +1,7 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.sqlsearch.dialect.DerbySQLDialect;
+import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.test.database.DerbyDatabaseCreator;
@@ -58,6 +59,23 @@ public class JdbcMultimediaDaoTest {
     }
 
     @Test
+    public void shouldGetExifData() throws Exception {
+        Multimedia folder = new Multimedia();
+        folder.setType(MultimediaType.FOLDER);
+        folder.setName("myfolder");
+        int folderId = dao.setMultimedia(folder);
+
+        Multimedia multimediaBeforeSave = createMultimedia();
+        multimediaBeforeSave.setParentId(folderId);
+        int id = dao.setMultimedia(multimediaBeforeSave);
+        Multimedia multimediaAfterSave = dao.getMultimedia(id);
+        assertNotNull("dao.getMultimedia != null", multimediaAfterSave);
+
+        assertEquals(2, multimediaAfterSave.getExifMetadata().size());
+    }
+
+
+    @Test
     public void testGetMultimediaByParentIdAndName() throws Exception {
         Multimedia multimedia = createMultimedia();
         multimedia.setName("newname");
@@ -96,7 +114,7 @@ public class JdbcMultimediaDaoTest {
     }
 
     @Test
-    public void testSearchMultimedia() throws Exception {
+    public void shouldReturn2ItemsForSearch() throws Exception {
         Multimedia multimedia1 = createMultimedia();
         multimedia1.setName("multimedia");
         dao.setMultimedia(multimedia1);
@@ -110,7 +128,7 @@ public class JdbcMultimediaDaoTest {
     }
 
     @Test
-    public void testMoveMultimedia() throws Exception {
+    public void shouldMoveMultimediaFolder() throws Exception {
         Multimedia folder = new Multimedia();
         folder.setType(MultimediaType.FOLDER);
         folder.setName("myfolder");
@@ -137,7 +155,7 @@ public class JdbcMultimediaDaoTest {
     }
 
     @Test
-    public void testSetMultimedia() throws Exception {
+    public void shouldSaveAndUpdateMultimediaName() throws Exception {
         Multimedia multimedia = createMultimedia();
         int multimediaId = dao.setMultimedia(multimedia);
 
@@ -169,6 +187,18 @@ public class JdbcMultimediaDaoTest {
         multimedia.setGpsLongitudeRef("E");
         String data = "The quick brown fox jumps over the lazy dog";
         multimedia.setData(data.getBytes());
+
+        ExifMetadata camera = new ExifMetadata();
+        camera.setDirectory("EXIF");
+        camera.setKey("Camera");
+        camera.setValue("iPhone");
+        multimedia.getExifMetadata().add(camera);
+
+        ExifMetadata keywords = new ExifMetadata();
+        keywords.setDirectory("EXIF2");
+        keywords.setKey("Keywords");
+        keywords.setValues(new String[]{"sand", "fog", "sea"});
+        multimedia.getExifMetadata().add(keywords);
 
         return multimedia;
     }

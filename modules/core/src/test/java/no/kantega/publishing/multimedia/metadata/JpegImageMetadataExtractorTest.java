@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
@@ -15,11 +16,23 @@ public class JpegImageMetadataExtractorTest {
 
     private JpegImageMetadataExtractor metadataExtractor;
     private Multimedia multimediaWithoutMetadata;
+    private Multimedia multimediaWithoutMetadata2;
 
 
     @Before
     public void setUp() throws Exception {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("testimage.jpg");
+        multimediaWithoutMetadata = getMultimediaForTest("testimage.jpg");
+        multimediaWithoutMetadata2 = getMultimediaForTest("testimage2.jpg");
+
+        metadataExtractor = new JpegImageMetadataExtractor();
+
+        DrewNoakesExifMetadataExtractor exifExtractor = new DrewNoakesExifMetadataExtractor();
+        metadataExtractor.setExifMetadataExtractor(exifExtractor);
+
+    }
+
+    private Multimedia getMultimediaForTest(String filename) throws IOException {
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(filename);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 
@@ -31,15 +44,11 @@ public class JpegImageMetadataExtractorTest {
 
         byte[] imageData = outputStream.toByteArray();
 
-        multimediaWithoutMetadata = new Multimedia();
-        multimediaWithoutMetadata.setFilename("testimage.jpg");
-        multimediaWithoutMetadata.setData(imageData);
+        Multimedia multimedia = new Multimedia();
+        multimedia.setFilename(filename);
+        multimedia.setData(imageData);
 
-        metadataExtractor = new JpegImageMetadataExtractor();
-
-        DrewNoakesExifMetadataExtractor exifExtractor = new DrewNoakesExifMetadataExtractor();
-        metadataExtractor.setExifMetadataExtractor(exifExtractor);
-
+        return multimedia;
     }
 
 
@@ -72,5 +81,11 @@ public class JpegImageMetadataExtractorTest {
         Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata);
         assertEquals("N", multimediaWithMetadata.getGpsLatitudeRef());
         assertEquals("E", multimediaWithMetadata.getGpsLongitudeRef());
+    }
+
+    @Test
+    public void shouldGetAllExifData() {
+        Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
+        assertEquals(65, multimediaWithMetadata.getExifMetadata().size());
     }
 }

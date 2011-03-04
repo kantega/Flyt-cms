@@ -24,7 +24,9 @@ import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Multimedia extends BaseObject {
     private int parentId = 0;
@@ -59,6 +61,9 @@ public class Multimedia extends BaseObject {
 
     private int noFiles = 0; // Number of files in folder
     private int noSubFolders = 0; // Number of sub folders in folder
+
+
+    private List<ExifMetadata> exifMetadata;
 
     public Multimedia() {
 
@@ -310,5 +315,16 @@ public class Multimedia extends BaseObject {
 
     public void setGpsLongitude(String gpsLongitude) {
         this.gpsLongitude = gpsLongitude;
+    }
+
+    public List<ExifMetadata> getExifMetadata() {
+        if (exifMetadata == null) {
+            exifMetadata = new ArrayList<ExifMetadata>();
+        }
+        return exifMetadata;
+    }
+
+    public void setExifMetadata(List<ExifMetadata> exifMetadata) {
+        this.exifMetadata = exifMetadata;
     }
 }
