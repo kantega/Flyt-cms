@@ -14,6 +14,8 @@ public class ExifMetadata {
     public static final String EXIF_ORIGINAL_DATE = "Date/Time Original";
     public static final String EXIF_COPYRIGHT = "Copyright";
     public static final String IPTC_COPYRIGHT = "Copyright Notice";
+    public static final String IPTC_KEYWORDS = "Keywords";
+    public static final String IPTC_CHARSET = "Coded Character Set";
     public static final String GPS_LATITUDE_REF = "GPS Latitude Ref";
     public static final String GPS_LATITUDE = "GPS Latitude";
     public static final String GPS_LONGITUDE_REF = "GPS Longitude Ref";
