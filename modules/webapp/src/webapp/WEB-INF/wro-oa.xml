@@ -132,7 +132,7 @@
     </group>
 
     <group name="jquery-core">
-        <js>/aksess/js/jquery-1.4.4.min.js</js>
+        <js>/aksess/js/jquery-1.5.1.min.js</js>
     </group>
 
     <group name="jquery-all">
