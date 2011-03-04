@@ -11,6 +11,7 @@ public class ExifMetadata {
     public static final String EXIF_MAKE = "Make";
     public static final String EXIF_MODEL = "Model";
     public static final String EXIF_ORIGINAL_DATE = "Date/Time Original";
+    public static final String EXIF_COPYRIGHT = "Copyright";
 
     public static final String GPS_LATITUDE_REF = "GPS Latitude Ref";
     public static final String GPS_LATITUDE = "GPS Latitude";

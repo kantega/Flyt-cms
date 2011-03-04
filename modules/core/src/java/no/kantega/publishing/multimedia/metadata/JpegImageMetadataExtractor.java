@@ -44,7 +44,9 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     private void addExifMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.EXIF_MAKE)) {
+        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT)) {
+            multimedia.setAuthor(metadata.getValue());
+        } else if (metadata.getKey().equals(ExifMetadata.EXIF_MAKE)) {
             multimedia.setCameraMake(metadata.getValue());
         } else if (metadata.getKey().equals(ExifMetadata.EXIF_MODEL)) {
             multimedia.setCameraModel(metadata.getValue());
