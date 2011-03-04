@@ -6,13 +6,14 @@ import java.util.List;
 
 public class ExifMetadata {
     public static final String EXIF_DIRECTORY = "Exif";
+    public static final String IPTC_DIRECTORY = "Iptc";
     public static final String GPS_DIRECTORY = "GPS";
 
     public static final String EXIF_MAKE = "Make";
     public static final String EXIF_MODEL = "Model";
     public static final String EXIF_ORIGINAL_DATE = "Date/Time Original";
     public static final String EXIF_COPYRIGHT = "Copyright";
-
+    public static final String IPTC_COPYRIGHT = "Copyright Notice";
     public static final String GPS_LATITUDE_REF = "GPS Latitude Ref";
     public static final String GPS_LATITUDE = "GPS Latitude";
     public static final String GPS_LONGITUDE_REF = "GPS Longitude Ref";
