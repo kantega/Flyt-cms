@@ -92,7 +92,7 @@ public class JpegImageMetadataExtractorTest {
     @Test
     public void shouldExtractIptcKeywords() {
         Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
-        assertEquals("Kysttype, Landskapsvernområde, Naturreservat, Ressurs, Sjøfugl, Skjær, Sortna (VV00002733), Sør-Smøla (VV00002731), Vernestatus, Ærfugl",multimediaWithMetadata.getDescription());
+        assertEquals("OpenAksessKeyword1, OpenAksesKeyword2",multimediaWithMetadata.getDescription());
     }
 
     @Test
