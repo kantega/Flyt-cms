@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.service.impl;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.Multimedia;
@@ -162,14 +163,19 @@ public class PathWorker {
 
         try {
             c = dbConnectionFactory.getConnection();
+
+            int count = 0;
             while (parentId != 0) {
                 ResultSet rs = SQLHelper.getResultSet(c, "select Id, ParentId, Name from multimedia where id = " + parentId);
-                if(rs.next()) {
+                if(rs.next() && count < 100) {
                     int id = rs.getInt("Id");
                     parentId = rs.getInt("ParentId");
                     String title = rs.getString("Name");
                     PathEntry entry = new PathEntry(id, title);
                     pathentries.add(0, entry);
+                } else {
+                    Log.error(SOURCE, "Infinte recursion detected media object with id: " + parentId);
+                    break;
                 }
             }
         } catch (SQLException e) {
