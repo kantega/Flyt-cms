@@ -39,7 +39,7 @@
 <body style="margin: 10px">
 <div class="ui-state-highlight">
     <p><kantega:label key="aksess.showcontentinframe.file"/></p>
-    <p><kantega:label key="aksess.showcontentinframe.showfile"/> <a href="${pageContext.request.contextPath}/attachment.ap?thisId=<%=url%>" target="_new" class="textlink"><%=title%></a></p>
+    <p><kantega:label key="aksess.showcontentinframe.showfile"/> <a href="${pageContext.request.contextPath}/attachment.ap?id=<%=url%>" target="_new" class="textlink"><%=title%></a></p>
 </div>
 </body>
 </html>
