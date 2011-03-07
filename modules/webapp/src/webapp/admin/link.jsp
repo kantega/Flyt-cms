@@ -27,8 +27,6 @@
         url = content.getLocation();
         if (url.charAt(0) == '/') {
             url = Aksess.getContextPath() + url;
-        } else if(Aksess.getConfiguration().getString("links.direct") != null && Aksess.getConfiguration().getString("links.direct").equals("false")){
-            url =  Aksess.getContextPath() + "/admin/showexternallink.jsp?url=" + url;
         } else {
             url = content.getLocation();
         }
