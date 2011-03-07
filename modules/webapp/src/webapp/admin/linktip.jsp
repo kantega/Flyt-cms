@@ -1,7 +1,5 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="no.kantega.publishing.common.data.enums.ContentType" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -18,17 +16,6 @@
   ~ limitations under the License.
   --%>
 
-<%
-    RequestParameters param = new RequestParameters(request, "utf-8");
-    int type = param.getInt("type");
-
-    String key = "aksess.showcontentinframe.link";
-    if (type == ContentType.FILE.getTypeAsInt()) {
-        key = "aksess.showcontentinframe.file";
-    } else if (type == ContentType.FORM.getTypeAsInt()) {
-        key = "aksess.showcontentinframe.form";
-    }
-%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 <html>
@@ -41,7 +28,7 @@
 
 <body style="margin: 10px">
 <div class="ui-state-highlight">
-    <kantega:label key="<%=key%>"/>
+    <kantega:label key="aksess.showcontentinframe.link"/>
 </div>
 </body>
 </html>

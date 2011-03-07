@@ -33,9 +33,11 @@ import no.kantega.commons.util.HttpHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.kantega.jexmec.PluginManager;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContext;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -48,96 +50,120 @@ public class ContentRequestDispatcher {
     private UrlContentRewriter urlRewriter;
 
     public void dispatchContentRequest(Content content, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
-
-        int siteId = content.getAssociation().getSiteId();
-        Site site = siteCache.getSiteById(siteId);
-        String alias = site.getAlias();
 
         boolean adminMode = HttpHelper.isAdminMode(request);
 
         RequestHelper.setRequestAttributes(request, content);
 
         if (content.getType() == ContentType.PAGE) {
-            String template;
-            DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
-            if (dt != null) {
-                template = dt.getView();
-            } else {
-                template = Aksess.getStartPage();
-            }
-
-            // If template filename contains macro $SITE, replace with correct site
-            if (template.indexOf("$SITE") != -1) {
-                template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
-            }
-            response.addHeader("X-Powered-By", "OpenAksess " + Aksess.getVersion());
-
-            // Run template controllers
-            RequestHelper.runTemplateControllers(dt, request, response, servletContext);
-
-            // Check if we need to filter URLs - unable to rewrite using filter if call is via 404 (alias)
-            CharResponseWrapper wrappedResponse = null;
-            HttpServletResponse originalResponse = response;
-
-            if (shouldFilterOutput(adminMode, originalUri)) {
-                // Rewrite URLs
-                wrappedResponse = new CharResponseWrapper(response);
-                response = wrappedResponse;
-            }
-
-            for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
-                for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
-                    listener.beforeDisplayTemplateDispatch(new DefaultDispatchContext(request, response, template));
-                }
-            }
-            // Only forward to view template if contentrequestlistener hasn't commited the response yet
-            if(!response.isCommitted()) {
-                // Forward request
-                request.getRequestDispatcher(template).forward(request, response);
-
-            }
-            if(shouldFilterOutput(adminMode, originalUri)) {
-                // Write output
-                if (wrappedResponse.isWrapped()) {
-                    String result = urlRewriter.rewriteContent(request,wrappedResponse.toString());
-                    PrintWriter out = originalResponse.getWriter();
-                    out.write(result);
-                    out.flush();
-                }
-            }
+            dispatchPage(content, servletContext, request, response, adminMode);
         } else {
             if (adminMode) {
-                request.getRequestDispatcher("/admin/showcontentinframe.jsp").forward(request, response);
+                dispatchAdminMode(content, request, response);
             } else {
-                String url = content.getLocation();
-                if (url != null && url.length() > 0) {
-                    if (content.getType() == ContentType.FILE) {
-                        request.setAttribute("attachment-id", url);
-                        request.getRequestDispatcher("/attachment.ap").forward(request, response);
-                    } else  if (content.getType() == ContentType.FORM) {
-                        response.sendRedirect(Aksess.getContextPath() + "/forms/flow?_flowId=fillform&formId=" + url);
-                    } else {
-                        String redirector = Aksess.getCustomUrlRedirector();
-                        if (content.isExternalLink() && redirector != null && redirector.length() > 0) {
-                            // Use a custom redirect page for external links
-                            request.setAttribute("url", url);
-                            request.getRequestDispatcher(redirector).forward(request, response);
-                        } else {
-                            if (url.charAt(0) == '/') {
-                                url = Aksess.getContextPath() + url;
-                            }
-                            // Rewrite URL if necessary (may be in form /content.ap?xxx should change to alias
-                            url = urlRewriter.rewriteContent(request, url);
-
-                            response.sendRedirect(url);
-                        }
-
-                    }
-                } else {
-                    throw new ContentNotFoundException("", this.getClass().getName());
-                }
+                dispatchNonPage(content, request, response);
             }
+        }
+    }
+
+    private void dispatchNonPage(Content content, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
+        String url = content.getLocation();
+        if (url != null && url.length() > 0) {
+            if (content.getType() == ContentType.FILE) {
+                request.setAttribute("attachment-id", url);
+                request.getRequestDispatcher("/attachment.ap").forward(request, response);
+            } else {
+                String redirector = Aksess.getCustomUrlRedirector();
+                if (content.isExternalLink() && redirector != null && redirector.length() > 0) {
+                    // Use a custom redirect page for external links
+                    request.setAttribute("url", url);
+                    request.getRequestDispatcher(redirector).forward(request, response);
+                } else {
+                    if (url.charAt(0) == '/') {
+                        url = Aksess.getContextPath() + url;
+                    }
+                    // Rewrite URL if necessary (may be in form /content.ap?xxx should change to alias
+                    url = urlRewriter.rewriteContent(request, url);
+
+                    response.sendRedirect(url);
+                }
+
+            }
+        } else {
+            throw new ContentNotFoundException("", this.getClass().getName());
+        }
+    }
+
+    private void dispatchPage(Content content, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response, boolean adminMode) throws Exception {
+        int siteId = content.getAssociation().getSiteId();
+
+        String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
+
+        DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
+
+        String view = getView(siteId, dt);
+
+        response.addHeader("X-Powered-By", "OpenAksess " + Aksess.getVersion());
+
+        // Run template controllers
+        RequestHelper.runTemplateControllers(dt, request, response, servletContext);
+
+        // Check if we need to filter URLs - unable to rewrite using filter if call is via 404 (alias)
+        CharResponseWrapper wrappedResponse = null;
+        HttpServletResponse originalResponse = response;
+
+        if (shouldFilterOutput(adminMode, originalUri)) {
+            // Rewrite URLs
+            wrappedResponse = new CharResponseWrapper(response);
+            response = wrappedResponse;
+        }
+
+        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+            for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
+                listener.beforeDisplayTemplateDispatch(new DefaultDispatchContext(request, response, view));
+            }
+        }
+
+        // Only forward to view template if contentrequestlistener hasn't commited the response yet
+        if(!response.isCommitted()) {
+            // Forward request
+            request.getRequestDispatcher(view).forward(request, response);
+
+        }
+        if(shouldFilterOutput(adminMode, originalUri)) {
+            // Write output
+            if (wrappedResponse.isWrapped()) {
+                String result = urlRewriter.rewriteContent(request,wrappedResponse.toString());
+                PrintWriter out = originalResponse.getWriter();
+                out.write(result);
+                out.flush();
+            }
+        }
+    }
+
+    private String getView(int siteId, DisplayTemplate dt) {
+        Site site = siteCache.getSiteById(siteId);
+        String alias = site.getAlias();
+
+        String template;
+        if (dt != null) {
+            template = dt.getView();
+        } else {
+            template = Aksess.getStartPage();
+        }
+
+        // If template filename contains macro $SITE, replace with correct site
+        if (template.indexOf("$SITE") != -1) {
+            template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
+        }
+        return template;
+    }
+
+    private void dispatchAdminMode(Content content, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (content.getType() == ContentType.FILE) {
+            request.getRequestDispatcher("/admin/file.jsp").forward(request, response);
+        } else {
+            request.getRequestDispatcher("/admin/link.jsp").forward(request, response);
         }
     }
 

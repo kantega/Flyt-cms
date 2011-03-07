@@ -1,7 +1,6 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="no.kantega.publishing.common.data.enums.ContentType" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -9,7 +8,7 @@
   ~ you may not use this file except in compliance with the License.
   ~ You may obtain a copy of the License at
   ~
-  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~     http://www.apache.org/licenses/LICENSE-2.0
   ~
   ~ Unless required by applicable law or agreed to in writing, software
   ~ distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,18 +18,13 @@
   --%>
 
 <%
-    RequestParameters param = new RequestParameters(request, "utf-8");
-    int type = param.getInt("type");
-    String url = param.getString("url");
-
-    String key;
-    if (type == ContentType.FILE.getTypeAsInt()) {
-        key = "aksess.showcontentinframe.showfile";
-    } else {
-        key = "aksess.showcontentinframe.showlink";
+    String url = "";
+    String title = "";
+    Content content = (Content)request.getAttribute("aksess_this");
+    if (content != null) {
+        url = content.getLocation();
+        title = content.getTitle();
     }
-
-
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
@@ -44,7 +38,8 @@
 
 <body style="margin: 10px">
 <div class="ui-state-highlight">
-    <kantega:label key="<%=key%>"/> <a href="<%=url%>"><%=url%></a>
+    <p><kantega:label key="aksess.showcontentinframe.file"/></p>
+    <p><kantega:label key="aksess.showcontentinframe.showfile"/> <a href="${pageContext.request.contextPath}/attachment.ap?id=<%=url%>" target="_new" class="textlink"><%=title%></a></p>
 </div>
 </body>
 </html>
