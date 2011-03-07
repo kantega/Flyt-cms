@@ -90,12 +90,6 @@ public class JpegImageMetadataExtractorTest {
     }
 
     @Test
-    public void shouldExtractIptcKeywords() {
-        Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
-        assertEquals("OpenAksessKeyword1, OpenAksesKeyword2",multimediaWithMetadata.getDescription());
-    }
-
-    @Test
     public void shouldExtractIptcCopyright() {
         Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
         assertEquals("OpenAksessTest", multimediaWithMetadata.getAuthor());

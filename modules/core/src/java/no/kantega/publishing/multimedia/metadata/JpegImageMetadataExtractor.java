@@ -14,9 +14,7 @@ import java.util.List;
 public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     private ExifMetadataExtractor exifMetadataExtractor;
 
-    /* Assume UTF-8 for IPTC. */
-    //TODO: See if Drew Noakes libs add support for IPTC Coded Character Set.
-    private static final String iptcEncoding = "UTF-8";
+    //TODO: See if Drew Noakes library adds support for IPTC Coded Character Set.
 
     public boolean supportsMimeType(String mimeType) {
         return mimeType.equals("image/jpeg");
@@ -40,22 +38,6 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     private void addIptcMetadata(Multimedia multimedia, ExifMetadata metadata) {
         if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && (multimedia.getAuthor() == null || multimedia.getAuthor().length() == 0 )) {
             multimedia.setAuthor(metadata.getValue());
-        }
-        else if (metadata.getKey().equals(ExifMetadata.IPTC_KEYWORDS) && (multimedia.getDescription() == null || multimedia.getDescription().length() == 0 )) {
-            StringBuffer buf = new StringBuffer();
-            String[] keywords = metadata.getValues();
-            for (int i = 0; i<keywords.length; i++) {
-                try {
-                    buf.append(new String(keywords[i].getBytes(), iptcEncoding));
-                    if (i!=keywords.length-1) {
-                        buf.append(", ");
-                    }
-                }
-                catch (UnsupportedEncodingException e) {
-                    Log.error(this.getClass().getName(), e);
-                }
-            }
-            multimedia.setDescription(buf.toString());
         }
     }
 
