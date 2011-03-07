@@ -91,40 +91,18 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                         }
 
                         if (mediaFolderId == -1) {
-                            String defaultFolderName = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
-                            if (mediaFolder == null || mediaFolder.length() == 0) {
-                                mediaFolder = defaultFolderName;
-                            }
-                            // Find folder with this name
-                            List<Multimedia> folders = MultimediaAO.getMultimediaList(0);
-                            for (Multimedia m : folders) {
-                                if (m.getType() == MultimediaType.FOLDER && m.getName().equalsIgnoreCase(mediaFolder)) {
-                                    mediaFolderId = m.getId();
-                                }
-                            }
-
-                            if (mediaFolderId == -1) {
-                                // Folder does not exists create one
-                                Multimedia folder = new Multimedia();
-                                folder.setName(mediaFolder);
-                                folder.setType(MultimediaType.FOLDER);
-                                mediaFolderId = MultimediaAO.setMultimedia(folder);
-                            }
+                            mediaFolderId = createMediaFolder(mediaFolderId, mediaFolder);
                         }
 
                         multimedia.setParentId(mediaFolderId);
                     }
+
                     byte[] data = importFile.getBytes();
                     multimedia.setData(data);
 
                     MimeType mimeType = MimeTypes.getMimeType(filename);
 
-                    List<MultimediaMetadataExtractor> multimediaMetadataExtractors = (List<MultimediaMetadataExtractor>)RootContext.getInstance().getBean("aksessMultimediaMetadataExtractors");
-                    for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
-                        if (extractor.supportsMimeType(multimedia.getMimeType().getType())) {
-                            multimedia = extractor.extractMetadata(multimedia);
-                        }
-                    }
+                    multimedia = extractMetadata(multimedia);
 
                     multimedia = resizeImage(multimedia, mimeType);
 
@@ -143,6 +121,39 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
 
         PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
         saveSimple.persistAttribute(c, content, attribute);
+    }
+
+    private Multimedia extractMetadata(Multimedia multimedia) {
+        List<MultimediaMetadataExtractor> multimediaMetadataExtractors = (List<MultimediaMetadataExtractor>) RootContext.getInstance().getBean("aksessMultimediaMetadataExtractors");
+        for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
+            if (extractor.supportsMimeType(multimedia.getMimeType().getType())) {
+                multimedia = extractor.extractMetadata(multimedia);
+            }
+        }
+        return multimedia;
+    }
+
+    private int createMediaFolder(int mediaFolderId, String mediaFolder) {
+        String defaultFolderName = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
+        if (mediaFolder == null || mediaFolder.length() == 0) {
+            mediaFolder = defaultFolderName;
+        }
+        // Find folder with this name
+        List<Multimedia> folders = MultimediaAO.getMultimediaList(0);
+        for (Multimedia m : folders) {
+            if (m.getType() == MultimediaType.FOLDER && m.getName().equalsIgnoreCase(mediaFolder)) {
+                mediaFolderId = m.getId();
+            }
+        }
+
+        if (mediaFolderId == -1) {
+            // Folder does not exists create one
+            Multimedia folder = new Multimedia();
+            folder.setName(mediaFolder);
+            folder.setType(MultimediaType.FOLDER);
+            mediaFolderId = MultimediaAO.setMultimedia(folder);
+        }
+        return mediaFolderId;
     }
 
     private Multimedia resizeImage(Multimedia multimedia, MimeType mimeType) {
