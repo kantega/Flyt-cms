@@ -116,9 +116,9 @@
             var id = 'imagemapRow' + no;
             var html = '<tr class="imagemap' + no + '" id="' + id + '">';
             var coords = startX + ',' + startY + ',' + endX + ',' + endY;
-            html += '<input type="hidden" name="coords' + no + '" value="' + coords + '">';
+            html += '<td><input type="hidden" name="coords' + no + '" value="' + coords + '">';
             html += '<input type="hidden" name="deleted' + no + '" value="false">';
-            html += '<td><input type="text" name="url' + no + '" id="url' + no + '" value="' + url + '" class="imageMapAreaUrl">';
+            html += '<input type="text" name="url' + no + '" id="url' + no + '" value="' + url + '" class="imageMapAreaUrl">';
             html += '<a href="#"><span class="add"><kantega:label key="aksess.button.choose"/></span></a></td>';
             html += '<td><input type="text" name="altTitle' + no + '" id="altTitle' + no + '" value="' + altTitle + '" class="imageMapAreaAltTitle"></td>';
             html += '<td><input type="checkbox" value="true" name="newWindow' + no + '"';
