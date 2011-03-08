@@ -290,7 +290,9 @@
         </property>
     </bean>
 
-    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob"/>
+    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
+        <property name="indexManager" ref="indexManager"/>
+    </bean>
 
     <bean id="rebuildSearchIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
