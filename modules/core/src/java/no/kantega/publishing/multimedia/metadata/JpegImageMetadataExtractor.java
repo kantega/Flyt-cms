@@ -5,6 +5,7 @@ import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.multimedia.metadata.exif.ExifMetadataExtractor;
 
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     private ExifMetadataExtractor exifMetadataExtractor;
+
+    //TODO: See if Drew Noakes library adds support for IPTC Coded Character Set.
 
     public boolean supportsMimeType(String mimeType) {
         return mimeType.equals("image/jpeg");
@@ -33,7 +36,7 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     private void addIptcMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && multimedia.getAuthor() == null && multimedia.getAuthor().length() == 0 ) {
+        if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && (multimedia.getAuthor() == null || multimedia.getAuthor().length() == 0 )) {
             multimedia.setAuthor(metadata.getValue());
         }
     }
@@ -52,7 +55,7 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     private void addExifMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT) && multimedia.getAuthor() == null && multimedia.getAuthor().length() == 0 ) {
+        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT) && (multimedia.getAuthor() == null || multimedia.getAuthor().length() == 0)) {
             multimedia.setAuthor(metadata.getValue());
         } else if (metadata.getKey().equals(ExifMetadata.EXIF_MAKE)) {
             multimedia.setCameraMake(metadata.getValue());
