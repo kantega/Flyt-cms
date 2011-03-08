@@ -84,15 +84,8 @@ public class JpegImageMetadataExtractorTest {
     }
 
     @Test
-    public void shouldGetAllExifData() {
-        Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
-        assertEquals(66, multimediaWithMetadata.getExifMetadata().size());
-    }
-
-    @Test
     public void shouldExtractIptcCopyright() {
         Multimedia multimediaWithMetadata = metadataExtractor.extractMetadata(multimediaWithoutMetadata2);
         assertEquals("OpenAksessTest", multimediaWithMetadata.getAuthor());
     }
-
 }
