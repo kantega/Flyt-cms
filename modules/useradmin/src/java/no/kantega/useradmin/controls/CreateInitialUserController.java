@@ -16,34 +16,35 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.security.api.common.SystemException;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.password.PasswordManager;
+import no.kantega.security.api.profile.DefaultProfile;
+import no.kantega.security.api.profile.ProfileUpdateManager;
+import no.kantega.security.api.role.DefaultRole;
+import no.kantega.security.api.role.RoleUpdateManager;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.security.SecureRandom;
-
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.security.api.role.RoleUpdateManager;
-import no.kantega.security.api.role.DefaultRole;
-import no.kantega.security.api.common.SystemException;
-import no.kantega.security.api.profile.DefaultProfile;
-import no.kantega.security.api.profile.ProfileUpdateManager;
-import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.security.api.password.PasswordManager;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -275,7 +276,7 @@ public class CreateInitialUserController extends AdminController {
     }
 
     private boolean isLocalhost(HttpServletRequest request) {
-        if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1")) {
+        if (request.getRemoteAddr().equals("127.0.0.1") || request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") || request.getRemoteAddr().equals("localhost")) {
             return true;
         }
 
