@@ -2,7 +2,6 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
-import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.ao.rowmapper.ExifMetadataToMultimediaRowMapper;
 import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
@@ -238,11 +237,34 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         String name = getUniqueName(multimedia);
         multimedia.setName(name);
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
 
+        boolean hasData = multimedia.getData() != null;
+
+        if (multimedia.isNew()) {
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            getJdbcTemplate().update(getPreparedStatementCreator(multimedia), keyHolder);
+            multimedia.setId(keyHolder.getKey().intValue());
+        } else {
+            getJdbcTemplate().update(getPreparedStatementCreator(multimedia));
+        }
+
+        if (hasData) {
+            deleteExistingExifData(multimedia.getId());
+            saveExifData(multimedia);
+        }
+
+        // Update parent count
+        if (multimedia.getParentId() > 0) {
+            updateNoSubFoldersAndFiles( multimedia.getParentId());
+        }
+
+        return multimedia.getId();
+    }
+
+    private PreparedStatementCreator getPreparedStatementCreator(final Multimedia multimedia) {
         final boolean hasData = multimedia.getData() != null;
 
-        getJdbcTemplate().update(new PreparedStatementCreator() {
+        return new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection c) throws SQLException {
                 PreparedStatement st;
                 byte[] data = multimedia.getData();
@@ -303,23 +325,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
                 return st;
             }
-        },keyHolder);
-
-        if (multimedia.isNew()) {
-            multimedia.setId(keyHolder.getKey().intValue());
-        }
-
-        if (hasData) {
-            deleteExistingExifData(multimedia.getId());
-            saveExifData(multimedia);
-        }
-
-        // Update parent count
-        if (multimedia.getParentId() > 0) {
-            updateNoSubFoldersAndFiles( multimedia.getParentId());
-        }
-
-        return multimedia.getId();
+        };
     }
 
     private void deleteExistingExifData(int multimediaId) {
