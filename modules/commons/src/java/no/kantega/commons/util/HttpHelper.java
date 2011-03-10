@@ -16,11 +16,12 @@
 
 package no.kantega.commons.util;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Enumeration;
 
 public class HttpHelper {
     public static boolean isInClientCache(HttpServletRequest request, HttpServletResponse response, String etag, Date lastModified) {
@@ -75,5 +76,28 @@ public class HttpHelper {
         }
 
         return false;
+    }
+
+    public static String createQueryStringFromRequestParameters(HttpServletRequest request) {
+        StringBuffer params = new StringBuffer();
+        Enumeration parameterNames = request.getParameterNames();
+        boolean first = true;
+        while (parameterNames.hasMoreElements()) {
+            String parameterName = (String)parameterNames.nextElement();
+            String[] values = request.getParameterValues(parameterName);
+            if (values != null) {
+                for (String value : values) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        params.append("&");
+                    }
+                    params.append(parameterName).append("=").append(value);
+                }
+            }
+
+        }
+
+        return params.toString();
     }
 }
