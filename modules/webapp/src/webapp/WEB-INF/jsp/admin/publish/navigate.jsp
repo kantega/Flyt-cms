@@ -40,11 +40,15 @@
             var currentUrl = "";
 
             function checkUrlUpdate() {
-                var iframeUrl = openaksess.navigate.getCurrentLocation().href;
-                if (iframeUrl != currentUrl) {
-                    currentUrl = iframeUrl;
-                    openaksess.common.debug("setContentupdateTrigger(): contentmain url changed. currentUrl: " + currentUrl);
-                    openaksess.content.triggerContentUpdateEvent(currentUrl);
+                try {
+                    var iframeUrl = openaksess.navigate.getCurrentLocation().href;
+                    if (iframeUrl != currentUrl) {
+                        currentUrl = iframeUrl;
+                        openaksess.common.debug("setContentupdateTrigger(): contentmain url changed. currentUrl: " + currentUrl);
+                        openaksess.content.triggerContentUpdateEvent(currentUrl);
+                    }
+                } catch (e) {
+                    // External link
                 }
             }
 
@@ -68,7 +72,7 @@
             }
             var iframe = document.getElementById("Contentmain");
             if (iframe) {
-                iframe.contentWindow.document.location.href = openaksess.common.getContentUrlFromAssociationId(id);
+                iframe.src = openaksess.common.getContentUrlFromAssociationId(id);
             }
         };
 
