@@ -18,21 +18,20 @@ package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
+import no.kantega.publishing.security.SecuritySession;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
 import java.util.HashMap;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import java.util.Map;
 
 /**
  * Crop image
@@ -79,14 +78,6 @@ public class ImageCropAction extends AbstractEditMultimediaAction {
                     mm.setName(name + suffix);
                     mm.setId(-1);
                 }
-
-                // Add file ending (jpg/png)
-                String filename = mm.getFilename();
-                if (filename.indexOf(".") != -1) {
-                    filename = filename.substring(0, filename.lastIndexOf(".") + 1) + mm.getMimeType().getFileExtension();
-                }
-                mm.setFilename(filename);
-
                 mm.setId(mediaService.setMultimedia(mm));
             }
         } catch (Exception e) {

@@ -147,6 +147,11 @@
         </property>
     </bean>
 
+    <bean id="aksessMultimediaUploadHandler" class="no.kantega.publishing.multimedia.DefaultMultimediaUploadHandler">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
+    </bean>
+
     <!-- Webdav support -->
     <bean id="aksessWebDavSecurityHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper"/>
 

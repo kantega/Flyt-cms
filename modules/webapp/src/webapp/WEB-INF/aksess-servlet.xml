@@ -609,8 +609,7 @@
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
-        <property name="imageEditor" ref="aksessImageEditor"/>
-        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
+        <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">

@@ -50,7 +50,7 @@
     <bean id="editProfileController" class="no.kantega.useradmin.controls.EditProfileController" parent="useradminController"></bean>
     <bean id="deleteProfileController" class="no.kantega.useradmin.controls.DeleteProfileController" parent="useradminController"></bean>
     <bean id="profileImageController" class="no.kantega.useradmin.controls.ProfileImageController" parent="useradminController">
-        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
+        <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>
     </bean>
 
     <bean id="viewUserRolesController" class="no.kantega.useradmin.controls.ViewUserRolesController" parent="useradminController"></bean>

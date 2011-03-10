@@ -4,8 +4,7 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.util.MultimediaHelper;
-import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
+import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.profile.Profile;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ProfileImageController extends AbstractUserAdminController {
@@ -24,7 +22,7 @@ public class ProfileImageController extends AbstractUserAdminController {
     private int imgPreviewMaxHeight = 200;
     private int imgPreviewMaxWidth = 200;
 
-    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
+    private MultimediaUploadHandler multimediaUploadHandler;
 
     @Override
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -67,20 +65,7 @@ public class ProfileImageController extends AbstractUserAdminController {
                 MultipartFile file = params.getFile("profileImage");
                 if (file != null) {
                     profileImage = new Multimedia();
-
-                    profileImage.setData(file.getBytes());
-                    String filename = file.getOriginalFilename();
-                    if (filename.length() > 255) {
-                        filename = filename.substring(filename.length() - 255, filename.length());
-                    }
-                    profileImage.setFilename(filename);
-
-                    for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
-                        if (extractor.supportsMimeType(profileImage.getMimeType().getType())) {
-                            profileImage = extractor.extractMetadata(profileImage);
-                        }
-                    }
-
+                    multimediaUploadHandler.updateMultimediaWithData(profileImage, file.getBytes(), file.getOriginalFilename(), true);
                     if (profileImage.getMimeType().getType().startsWith("image")) {
 
                         profileImage.setName(name);
@@ -119,7 +104,7 @@ public class ProfileImageController extends AbstractUserAdminController {
         this.imgPreviewMaxWidth = imgPreviewMaxWidth;
     }
 
-    public void setMultimediaMetadataExtractors(List<MultimediaMetadataExtractor> multimediaMetadataExtractors) {
-        this.multimediaMetadataExtractors = multimediaMetadataExtractors;
+    public void setMultimediaUploadHandler(MultimediaUploadHandler multimediaUploadHandler) {
+        this.multimediaUploadHandler = multimediaUploadHandler;
     }
 }
