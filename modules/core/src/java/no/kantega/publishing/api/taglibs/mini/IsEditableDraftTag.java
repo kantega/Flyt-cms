@@ -46,17 +46,23 @@ public class IsEditableDraftTag extends ConditionalTagSupport {
             try {
                 Content lastVersion = cms.getLastVersionOfContent(cid);
                 if (lastVersion != null && lastVersion.getStatus() == ContentStatus.DRAFT && securitySession.isAuthorized(lastVersion, Privilege.UPDATE_CONTENT)) {
+                    resetVars();
                     return true;
                 }
             } catch (NotAuthorizedException e) {
                 // Do nothing
             }
         }
+        resetVars();
 
         return false;
     }
 
     public void setObj(Content obj) {
         this.contentObject = obj;
+    }
+
+    private void resetVars() {
+        contentObject = null;
     }
 }
