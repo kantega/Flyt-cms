@@ -1853,6 +1853,45 @@
         </attribute>
     </tag>
     <tag>
+        <description>Print body if role is authorized for operation</description>
+        <name>roleisauthorized</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.RoleIsAuthorizedTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Role</description>
+            <name>role</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if role not has access</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Privilege to check, default is Privilege.READ</description>
+            <name>privilege</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>Include JSP mini view for display of object (for portlet like view)</description>
         <name>miniview</name>
         <tag-class>no.kantega.publishing.api.taglibs.content.MiniViewTag</tag-class>
