@@ -35,7 +35,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     <title>link</title>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.5.1.min.js"></script>
     <script type="text/javascript">
         /*
          * Adds the target=contentmain attribute for all links, this prevents us from getting frames inside frames inside frames...
