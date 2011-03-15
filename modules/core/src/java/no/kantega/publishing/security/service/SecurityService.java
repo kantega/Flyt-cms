@@ -41,6 +41,11 @@ public class SecurityService {
      * @throws SystemException
      */
     public static boolean isAuthorized(Role role, BaseObject object, int privilege) throws SystemException {
+        if (object instanceof Content) {
+            Content c = (Content)object;
+            object = c.getAssociation();
+        }
+
         List permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
             // Ingen rettigheter definert for dette privilegium, ok
