@@ -81,9 +81,11 @@ public class MimeTypes {
 
         // Open Office
         mimetypes.add(new MimeType("odt", "application/vnd.oasis.opendocument.text", "Open Office"));
-        mimetypes.add(new MimeType("ott", "application/vnd.oasis.opendocument.text-template", "Open Office"));
-        mimetypes.add(new MimeType("ods", "application/vnd.oasis.opendocument.spreadsheet", "Open Office"));
-        mimetypes.add(new MimeType("ots", "application/vnd.oasis.opendocument.spreadsheet-template", "Open Office"));
+        mimetypes.add(new MimeType("ott", "application/vnd.oasis.opendocument.text-template", "Open Office template"));
+        mimetypes.add(new MimeType("ods", "application/vnd.oasis.opendocument.spreadsheet", "Open Office Spreadsheet"));
+        mimetypes.add(new MimeType("ots", "application/vnd.oasis.opendocument.spreadsheet-template", "Open Office Spreadsheet template"));
+        mimetypes.add(new MimeType("odp", "application/vnd.oasis.opendocument.presentation", "Open Office Presentation"));
+        mimetypes.add(new MimeType("otp", "application/vnd.oasis.opendocument.presentation-template", "Open Office Presentation template"));
     }
 
 

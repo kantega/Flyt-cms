@@ -423,6 +423,10 @@ openaksess.editcontext = function()  {
             }
         },
 
+        insertMultimedia: function(metadata) {
+            openaksess.editcontext.insertValueAndNameIntoForm(metadata.id, metadata.name);
+        },
+
 
         /*
          * Remove id and value from form

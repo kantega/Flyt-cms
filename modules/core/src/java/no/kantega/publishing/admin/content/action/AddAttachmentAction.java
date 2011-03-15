@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -89,8 +90,14 @@ public class AddAttachmentAction implements Controller {
                     content.addAttachment(attachment);
                     session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 }
+                model.put("attachmentId", attachmentId);
+                model.put("name", filename);
+                MimeType mimeType = attachment.getMimeType();
+                if (mimeType != null) {
+                    model.put("mimeType", mimeType.getType());
+                    model.put("fileExtension", mimeType.getFileExtension());
+                }
             }
-            model.put("attachmentId", attachmentId);
             return new ModelAndView(confirmView, model);
         } else {
             if (attachmentId != -1) {
