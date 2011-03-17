@@ -56,7 +56,7 @@ public class AksessDao {
     public int countActiveAttachmentIds() throws SQLException {
         Connection c = dataSource.getConnection();
         try {
-            PreparedStatement p = c.prepareStatement("SELECT count(DISTINCT attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0)");
+            PreparedStatement p = c.prepareStatement("SELECT count(DISTINCT attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
 
             ResultSet rs = p.executeQuery();
             int n = 0;
