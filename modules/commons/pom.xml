@@ -19,6 +19,7 @@
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
         <version>7.1.36-SNAPSHOT</version>
+         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>

@@ -23,8 +23,8 @@ if(jQuery)( function() {
 			if( o.menu == undefined ) return false;
             if( o.itemClass == undefined ) return false;
             if( o.itemTagName == undefined ) return false;
-			if( o.inSpeed == undefined ) o.inSpeed = 150;
-			if( o.outSpeed == undefined ) o.outSpeed = 75;
+			if( o.inSpeed == undefined ) o.inSpeed = 0;
+			if( o.outSpeed == undefined ) o.outSpeed = 0;
 			// 0 needs to be -1 for expected results (no fade)
 			if( o.inSpeed == 0 ) o.inSpeed = -1;
 			if( o.outSpeed == 0 ) o.outSpeed = -1;
