@@ -33,7 +33,7 @@ public class TikaTextExtractor implements TextExtractor {
             Metadata metadata = new Metadata();
             metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
             AutoDetectParser autoDetectParser = new AutoDetectParser();
-            ContentHandler bodyHandler = new BodyContentHandler();
+            ContentHandler bodyHandler = new BodyContentHandler(-1);
             autoDetectParser.parse(is, bodyHandler, metadata);
 
             return bodyHandler.toString();
