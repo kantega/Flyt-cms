@@ -542,18 +542,30 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
-        List list = ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
+        List<Content> list = ContentAO.getContentList(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
 
         List<Content> approved = new ArrayList<Content>();
-        // Legg kun til elementer som brukeren har tilgang til
-        for (int i = 0; i < list.size(); i++) {
-            Content c = (Content)list.get(i);
-            if (securitySession.isAuthorized(c, Privilege.VIEW_CONTENT)) {
-                approved.add(c);
+        // Add only elements which user is authorized for, and only get maxElements items
+        for (Content content : list) {
+            if (securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
+                approved.add(content);
+            }
+            if (maxElements != -1 && maxElements == approved.size()) {
+                break;
             }
         }
 
         return approved;
+    }
+
+    private int getMaxElementsToGetBeforeAuthorizationCheck(int maxElements) {
+        int maxElementsToGetBeforeAuthorizationCheck = -1;
+        if (maxElements > 10) {
+            maxElementsToGetBeforeAuthorizationCheck = maxElements+10;
+        } else if (maxElements != -1) {
+            maxElementsToGetBeforeAuthorizationCheck = maxElements*2;
+        }
+        return maxElementsToGetBeforeAuthorizationCheck;
     }
 
 
