@@ -109,6 +109,9 @@
                     </tr>
                     <tr>
                         <td colspan="2">
+                            <div class="form_params_select" style="display:none;">
+                                <input type="checkbox" name="form_FirstValueBlank" id="form_FirstValueBlank"><label for="form_FirstValueBlank"><kantega:label key="aksess.formeditor.firstvalueblank"/></label><br>
+                            </div>
                             <input type="checkbox" name="form_FieldMandatory" id="form_FieldMandatory"><label for="form_FieldMandatory"><kantega:label key="aksess.formeditor.mandatory"/></label><br>
                             <input type="checkbox" name="form_NoBreak" id="form_NoBreak"><label for="form_NoBreak"><kantega:label key="aksess.formeditor.nobreak"/></label><br>
                             <input type="checkbox" name="form_FieldReadonly" id="form_FieldReadonly" checked="checked"><label for="form_FieldReadonly"><kantega:label key="aksess.formeditor.readonly"/></label>

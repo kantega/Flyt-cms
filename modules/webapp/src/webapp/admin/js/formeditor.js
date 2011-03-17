@@ -659,9 +659,12 @@ formElementTypes[formElementTypes.length] = formElementRadio;
 var formElementSelect = new FormElementType(properties.formeditor.labels.typeSelect, "select");
 formElementSelect.onEdit = function(element) {
     $("#form_Values").html("");
-    $("div.inputs option", element).each(function() {
+    $("div.inputs option", element).each(function(i) {
         var fieldName = $("#form_FieldName").val();
-        formAddInputValue("select", fieldName, this.value, this.selected);
+        if (i == 0 && this.value == ""){
+            $("#form_FirstValueBlank").attr("checked", "checked");
+        }
+        formAddInputValue("select", fieldName, this.text, this.selected);
     });
 };
 
@@ -670,7 +673,12 @@ formElementSelect.onSave = function (fieldName) {
     $("#form_Values div").each(function (i) {
         val = $("input[type=text]", this).val();
         if (val != "") {
-            html += '<option value="' + val + '" ';
+            var useFirstOptionAsLabel = $("#form_FirstValueBlank").is(":checked");
+            if (i == 0 && useFirstOptionAsLabel) {
+                html += '<option value="" ';
+            } else {
+                html += '<option value="' + val + '" ';
+            }
             if ($("input[type=radio]", this).is(":checked")) {
                 html += ' selected="selected"';
             }
@@ -682,6 +690,7 @@ formElementSelect.onSave = function (fieldName) {
 };
 formElementSelect.onActive = function (isSelected) {
     if (isSelected) {
+        $(".form_params_select").show();
         $("#form_AddElement").unbind("click");
         $("#form_AddElement").click(function(event) {
             event.preventDefault();
@@ -693,8 +702,11 @@ formElementSelect.onActive = function (isSelected) {
             formAddInputValue("select", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $(".form_params_select").show();
     } else {
+        $(".form_params_select").hide();
         $(".form_params_list").hide();
+        $(".form_params_select").hide();
     }
 };
 formElementTypes[formElementTypes.length] = formElementSelect;
