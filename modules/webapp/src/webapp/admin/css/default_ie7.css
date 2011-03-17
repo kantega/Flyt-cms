@@ -3,11 +3,11 @@
 
 
 .navigator .icon a {
-    top:0 !important;
+    top: 0 !important;
 }
 
 .navigator .openState a {
-    top:0 !important;
+    top: -3px !important;
 }
 
 div.row label {
