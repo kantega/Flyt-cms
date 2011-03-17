@@ -325,9 +325,8 @@ table.fullWidth {
     height: 26px;
     line-height: 26px;
     border: none;
-    color: #dddddd;
     font-size: 14px;
-    margin-top:6px;
+    margin-top: 7px;
     padding:0 0 0 25px;
     background: url("../bitmaps/sprite-buttons.png") no-repeat left -234px;
     float: left;
