@@ -18,7 +18,6 @@ package no.kantega.publishing.search.extraction.impl;
 
 import no.kantega.publishing.search.extraction.TextExtractor;
 import org.apache.log4j.Logger;
-import org.apache.tika.config.TikaConfig;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
@@ -34,6 +33,9 @@ public class TikaTextExtractor implements TextExtractor {
             Metadata metadata = new Metadata();
             metadata.set(Metadata.RESOURCE_NAME_KEY, fileName);
             AutoDetectParser autoDetectParser = new AutoDetectParser();
+            /* -1 is used to specify no write limit for ContentHandler.
+                Default limit is 100 000 characters
+             */
             ContentHandler bodyHandler = new BodyContentHandler(-1);
             autoDetectParser.parse(is, bodyHandler, metadata);
 
