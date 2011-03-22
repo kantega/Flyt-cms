@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -110,6 +111,21 @@ public class SpringAnnotationAksessControllerAdapterTest {
 
         Map model = adapter.handleRequest(request, response);
         assertEquals(paramValue, model.get("myAttr"));
+    }
+
+    @Test
+    public void shouldNotReturnNullModel() throws Exception {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletOutputStream outputStream = mock(ServletOutputStream.class);
+        when(response.getOutputStream()).thenReturn(outputStream);
+
+        request.setMethod("GET");
+        request.setRequestURI("/content/1234/Whatever");
+        adapter.setController(new AnnotatedControllerWithRequestMappings());
+
+        Map model = adapter.handleRequest(request, response);
+        assertNotNull("Model should not be null", model);
     }
 
 

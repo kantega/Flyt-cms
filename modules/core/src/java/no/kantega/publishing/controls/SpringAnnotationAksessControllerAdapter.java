@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAda
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -39,8 +40,8 @@ public class SpringAnnotationAksessControllerAdapter implements AksessController
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
         ModelAndView mav = handlerAdapter.handle(request, response, controller);
-        Map model = null;
-        if (mav != null) {
+        Map model = Collections.emptyMap();
+        if (mav != null && mav.getModel() != null && !mav.getModel().isEmpty()) {
             return mav.getModel();
         }
         return model;
