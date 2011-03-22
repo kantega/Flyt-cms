@@ -1,23 +1,27 @@
 package no.kantega.publishing.modules.forms.control;
 
-import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.modules.forms.util.FormSubmissionBuilder;
-import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.AksessContentForm;
-import no.kantega.publishing.modules.forms.formdelivery.FormDeliveryService;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.controls.AksessController;
+import no.kantega.publishing.modules.forms.formdelivery.FormDeliveryService;
+import no.kantega.publishing.modules.forms.model.AksessContentForm;
+import no.kantega.publishing.modules.forms.model.Form;
+import no.kantega.publishing.modules.forms.model.FormSubmission;
+import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
+import no.kantega.publishing.modules.forms.util.FormSubmissionBuilder;
+import no.kantega.publishing.modules.forms.validate.FormError;
+import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.validate.FormError;
+import java.util.Map;
 
 /**
  *
@@ -28,6 +32,9 @@ public class SaveFormSubmissionController implements AksessController {
     private FormSubmissionBuilder formSubmissionBuilder;
     private FilledFormBuilder filledFormBuilder;
     private List<FormDeliveryService> formDeliveryServices;
+    private String mailConfirmationSubject;
+    private String mailConfirmationTemplate;
+    private String mailConfirmationContentAttribute;
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -54,7 +61,6 @@ public class SaveFormSubmissionController implements AksessController {
                     model.put("formSubmission", formSubmission);
                     form = filledFormBuilder.buildFilledForm(formSubmission);
                 } else {
-
                     addUserInformation(formSubmission, request);
 
                     for (FormDeliveryService service : formDeliveryServices) {
@@ -64,6 +70,11 @@ public class SaveFormSubmissionController implements AksessController {
                     model.put("hasSubmitted", Boolean.TRUE);
                     model.put("hasErrors",Boolean.FALSE);
 
+                    Configuration configuration = Aksess.getConfiguration();
+                    if (configuration.getBoolean("formengine.mailconfirmation.enabled", false)) {
+                        sendConfirmationEmail(formSubmission, content);
+                        model.put("mailSent", Boolean.TRUE);
+                    }
                 }
             } else {
                 // Form is entered for the first time
@@ -82,6 +93,18 @@ public class SaveFormSubmissionController implements AksessController {
         model.put("form", form);
 
         return model;
+    }
+
+    protected void sendConfirmationEmail(FormSubmission formsubmission, Content currentPage) throws ConfigurationException {
+        String from = Aksess.getConfiguration().getString("mail.from");
+        String recipient = formsubmission.getEmail();
+        if (recipient != null && recipient.contains("@")) {
+            String subject = String.format(mailConfirmationSubject, formsubmission.getForm().getTitle());
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("currentPage", currentPage);
+            params.put("form", formsubmission);
+            MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
+        }
     }
 
     public String getDescription() {
@@ -150,4 +173,15 @@ public class SaveFormSubmissionController implements AksessController {
         }
     }
 
+    public void setMailConfirmationSubject(String mailConfirmationSubject) {
+        this.mailConfirmationSubject = mailConfirmationSubject;
+    }
+
+    public void setMailConfirmationTemplate(String mailConfirmationTemplate) {
+        this.mailConfirmationTemplate = mailConfirmationTemplate;
+    }
+
+    public void setMailConfirmationContentAttribute(String mailConfirmationContentAttribute) {
+        this.mailConfirmationContentAttribute = mailConfirmationContentAttribute;
+    }
 }

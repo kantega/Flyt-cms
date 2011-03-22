@@ -42,16 +42,16 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if (name.equalsIgnoreCase("div")) {
-            processDiv(name, attributes);
+            checkIfDivTagIsNewFormElement(name, attributes);
         } else if (name.equalsIgnoreCase("span")) {
-            processSpan(name, attributes);
+            checkIfSpanTagContainsRegexp(name, attributes);
         } else if (name.equalsIgnoreCase("input")
                 || name.equalsIgnoreCase("radio")
                 || name.equalsIgnoreCase("checkbox")
                 || name.equalsIgnoreCase("textarea")
                 || name.equalsIgnoreCase("select")) {
             // New input field
-            processInput(name, attributes);
+            processFormElement(name, attributes);
         }
 
         super.startElement(string, localName, name, attributes);
@@ -77,7 +77,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         return formSubmission;
     }
 
-    private void processDiv(String name, Attributes attributes) {
+    private void checkIfDivTagIsNewFormElement(String name, Attributes attributes) {
         if (attributes != null && attributes.getValue("class") != null && attributes.getValue("class").contains("formElement")) {
             // New form element, check if it is mandatory
             mandatory = attributes.getValue("class").contains("mandatory");
@@ -85,59 +85,75 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         }
     }
 
-    private void processSpan(String name, Attributes attributes) {
+    private void checkIfSpanTagContainsRegexp(String name, Attributes attributes) {
         capture = attributes != null
                 && attributes.getValue("class") != null
                 && attributes.getValue("class").contains("regex");
     }
 
-    private void processInput(String name, Attributes attributes) {
+    private void processFormElement(String name, Attributes attributes) {
         String inputName = attributes.getValue("name");
         String inputType = attributes.getValue("type");
 
         String[] values = params.get(inputName);
-        boolean isEmpty = true;
+
         if (values != null && values.length > 0) {
             FormValue formValue = new FormValue();
             formValue.setName(inputName);
             formValue.setValues(values);
-            String v = formValue.getValuesAsString();
-            if (v != null && v.length() > 0) {
-                isEmpty = false;
-            }
 
-            String inputClass = attributes.getValue("class");
-
-            if (!isEmpty && inputType != null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
-                if (inputClass != null && inputClass.length() > 0) {
-                    // Check if element length > maxlength
-                    if (attributes.getValue("maxlength") != null) {
-                        int inputMaxlength = Integer.parseInt(attributes.getValue("maxlength"));
-                        if (v.length() > inputMaxlength) {
-                            formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.size"));
-                        }
-                    }
-                    // Get form element validator for given class
-                    if (formElementValidatorFactory != null) {
-                        FormElementValidator fev = formElementValidatorFactory.getFormElementValidatorById(inputClass);
-                        if (fev != null) {
-                            // Validate value
-                            formSubmission.setErrors(fev.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, formSubmission.getErrors()));
-                            validatorArg = new StringBuilder();
-                        }
-                    }
-                }
-            }
+            validateField(name, attributes, inputName, inputType, formValue);
+            setRecipientMailIfExists(formValue, attributes);
 
             formSubmission.addValue(formValue);
         }
 
-        if (isEmpty && mandatory) {
-            // Field is mandatory
-            formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
+        mandatory = false;
+    }
+
+    private void setRecipientMailIfExists(FormValue formValue, Attributes attributes) {
+        String fieldId = attributes.getValue("id");
+        if ("RecipientEmail".equalsIgnoreCase(fieldId)) {
+            formSubmission.setEmail(formValue.getValuesAsString());
+        }
+    }
+
+    private void validateField(String name, Attributes attributes, String inputName, String inputType, FormValue formValue) {
+        String formValueAsString = formValue.getValuesAsString();
+        boolean isEmpty = true;
+        if (formValueAsString != null && formValueAsString.length() > 0) {
+            isEmpty = false;
         }
 
-        mandatory = false;
+
+        String inputClass = attributes.getValue("class");
+        if (!isEmpty && inputType != null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
+            validateMaxlength(attributes, inputName, formValueAsString);
+            validateFieldBasedOnType(formValue, inputClass);
+        }
+
+        if (isEmpty && mandatory) {
+            formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
+        }
+    }
+
+    private void validateFieldBasedOnType(FormValue formValue, String inputClass) {
+        if (formElementValidatorFactory != null) {
+            FormElementValidator validator = formElementValidatorFactory.getFormElementValidatorById(inputClass);
+            if (validator != null) {
+                formSubmission.setErrors(validator.validate(formValue, currentFieldIndex, new String[]{ validatorArg.toString() }, formSubmission.getErrors()));
+                validatorArg = new StringBuilder();
+            }
+        }
+    }
+
+    private void validateMaxlength(Attributes attributes, String inputName, String formValueAsString) {
+        if (attributes.getValue("maxlength") != null) {
+            int inputMaxlength = Integer.parseInt(attributes.getValue("maxlength"));
+            if (formValueAsString.length() > inputMaxlength) {
+                formSubmission.getErrors().add(new FormError(inputName, currentFieldIndex, "aksess.formerror.size"));
+            }
+        }
     }
 
     public void endDocument() throws SAXException {
@@ -167,7 +183,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
             if (excluded.equalsIgnoreCase(name)) {
                 return true;
             }
-        }        
+        }
         return false;
     }
 

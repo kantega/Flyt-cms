@@ -1,20 +1,19 @@
 package no.kantega.publishing.modules.forms.filter;
 
 import junit.framework.TestCase;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.xmlfilter.FilterPipeline;
+import no.kantega.publishing.modules.forms.model.Form;
+import no.kantega.publishing.modules.forms.model.FormSubmission;
+import no.kantega.publishing.modules.forms.model.FormValue;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
-
-import no.kantega.commons.xmlfilter.FilterPipeline;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.modules.forms.model.FormSubmission;
-import no.kantega.publishing.modules.forms.model.Form;
-import no.kantega.publishing.modules.forms.model.FormValue;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import java.util.Map;
 
 /**
  *
@@ -23,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 public class FormSubmissionFillFilterTest extends TestCase {
 
     @Autowired
-    public void testStartElement() throws SystemException {
+    public void testShouldPickupValuesFoundInSubmission() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
         Map<String, String[]> params = new HashMap<String, String[]>();
@@ -75,4 +74,45 @@ public class FormSubmissionFillFilterTest extends TestCase {
         assertEquals("4", value.getValues()[0]);
 
     }
+
+    public void testShouldPickupValueForRecipientEmail() throws SystemException {
+        FilterPipeline pipeline = new FilterPipeline();
+
+        Map<String, String[]> params = new HashMap<String, String[]>();
+
+        String recipientEmail = "test@kantega.no";
+        params.put("email", new String[] {recipientEmail});
+        params.put("email2", new String[] {"test2@kantega.no"});
+
+
+        Form form = new Form() {
+            public int getId() {
+                return 0;
+            }
+
+            public String getTitle() {
+                return "title";
+            }
+
+            public String getFormDefinition() {
+                return "<div class=\"formElement\"><input name=\"email\" type=\"text\" id=\"RecipientEmail\"><br><input name=\"email2\" type=\"text\"></div>";
+            }
+
+            public String getEmail() {
+                return "donald@duck.com";
+            }
+        };
+
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);
+
+        pipeline.addFilter(filter);
+
+        StringWriter  sw = new StringWriter();
+        pipeline.filter(new StringReader(form.getFormDefinition()), sw);
+
+        FormSubmission formSubmission = filter.getFormSubmission();
+
+        assertEquals(recipientEmail, formSubmission.getEmail());
+    }
+
 }

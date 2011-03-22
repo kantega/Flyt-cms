@@ -4,6 +4,8 @@
 <%@ page import="no.kantega.publishing.common.data.Content"%>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.security.data.enums.Privilege" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -76,7 +78,7 @@
                             </select>
                         </td>
                     </tr>
-                    <tr class="form_params_text" style="display:none;">
+                    <tr class="form_validatorparams_regularexpression" style="display:none;">
                         <td><label for="form_RegEx"><kantega:label key="aksess.formeditor.fieldregex"/></label></td>
                         <td>
                             <input type="text" id="form_RegEx" name="form_RegEx">
@@ -109,6 +111,12 @@
                     </tr>
                     <tr>
                         <td colspan="2">
+                            <c:set var="mailconfirmationEnabled"><aksess:getconfig key="formengine.mailconfirmation.enabled" default="false"/></c:set>
+                            <c:if test="${mailconfirmationEnabled}">
+                                <div class="form_validatorparams_email" style="display:none;">
+                                    <input type="checkbox" name="form_IsRecipientEmail" id="form_IsRecipientEmail"><label for="form_IsRecipientEmail"><kantega:label key="aksess.formeditor.isrecipientemail"/></label><br>
+                                </div>
+                            </c:if>
                             <div class="form_params_select" style="display:none;">
                                 <input type="checkbox" name="form_FirstValueBlank" id="form_FirstValueBlank"><label for="form_FirstValueBlank"><kantega:label key="aksess.formeditor.firstvalueblank"/></label><br>
                             </div>

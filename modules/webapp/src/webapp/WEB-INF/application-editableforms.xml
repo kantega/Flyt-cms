@@ -32,6 +32,12 @@
 
     <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
         <property name="description" value="Saves form in database and sends to email"/>
+        <property name="mailConfirmationSubject">
+            <value>${formengine.mailconfirmation.subject}</value>
+        </property>
+        <property name="mailConfirmationTemplate">
+            <value>${formengine.mailconfirmation.mailtemplate}</value>
+        </property>
         <property name="formDeliveryServices">
             <list>
                 <ref bean="aksessDatabaseFormDeliveryService"/>
