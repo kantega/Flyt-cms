@@ -65,6 +65,23 @@ public class SpringAnnotationAksessControllerAdapterTest {
         }
     }
 
+    @Test
+    public void shouldThrowExceptionWhenNoRequestMapping() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.setMethod("GET");
+        request.setRequestURI("/content/1234/Whatever");
+
+        adapter.setController(new AnnotatedController());
+        try {
+            adapter.handleRequest(request, response);
+            fail("Expected NoSuchRequestHandlingMethodException");
+        } catch (NoSuchRequestHandlingMethodException nsrhme) {
+            //Expected
+        } catch (Exception e) {
+            fail("Expected NoSuchRequestHandlingMethodException only. Caught " + e.getClass().getSimpleName());
+        }
+    }
 
     @Test
     public void shouldHandleGet() throws Exception {
