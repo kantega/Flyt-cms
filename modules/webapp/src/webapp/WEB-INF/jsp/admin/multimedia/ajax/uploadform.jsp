@@ -35,7 +35,7 @@
                 var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
                 var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
                 if ((indexOfMatch != -1) && (indexOfMatch == expectedIndexOfMatch)) {
-                    alert('<kantega:label key="attachment.filetypes.blacklisted.errorMessage" escapeJavascript="true"/>');
+                    alert('<kantega:label key="aksess.multimedia.filetype.blacklisted" escapeJavascript="true"/>');
                     return false;
                 }
             }
