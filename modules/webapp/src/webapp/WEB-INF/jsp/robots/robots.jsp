@@ -58,9 +58,11 @@
     }
 
     Configuration conf = Aksess.getConfiguration();
-
-    for (String disallowUrl : conf.getStrings("robots.disallow")) {
-        out.println("Disallow: " + disallowUrl);
+    String[] disallowUrls = conf.getStrings("robots.disallow");
+    if (disallowUrls != null) {
+        for (String disallowUrl : disallowUrls) {
+            out.println("Disallow: " + disallowUrl);
+        }
     }
 
     out.println("Disallow: /admin/");
