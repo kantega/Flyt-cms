@@ -30,5 +30,11 @@
         <property name="formSubmissionValidator" ref="aksessFormSubmissionValidator"/>
         <property name="filledFormBuilder" ref="aksessFilledFormBuilder"/>
         <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
+        <property name="mailConfirmationSubject">
+            <value>${formengine.mailconfirmation.subject}</value>
+        </property>
+        <property name="mailConfirmationTemplate">
+            <value>${formengine.mailconfirmation.mailtemplate}</value>
+        </property>
     </bean>
 </beans>

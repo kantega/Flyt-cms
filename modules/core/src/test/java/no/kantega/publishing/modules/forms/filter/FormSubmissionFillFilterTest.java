@@ -79,4 +79,49 @@ public class FormSubmissionFillFilterTest extends TestCase {
         assertEquals("4", value.getValues()[0]);
 
     }
+
+public void testShouldPickupValueForRecipientEmail() throws SystemException {
+        FilterPipeline pipeline = new FilterPipeline();
+
+        Map<String, String[]> params = new HashMap<String, String[]>();
+
+        String recipientEmail = "test@kantega.no";
+        params.put("email", new String[] {recipientEmail});
+        params.put("email2", new String[] {"test2@kantega.no"});
+
+
+        Form form = new Form() {
+            public int getId() {
+                return 0;
+            }
+
+            public String getTitle() {
+                return "title";
+            }
+
+            public String getFormDefinition() {
+                return "<div class=\"formElement\"><input name=\"email\" type=\"text\" id=\"RecipientEmail\"><br><input name=\"email2\" type=\"text\"></div>";
+            }
+
+            public String getEmail() {
+                return "donald@duck.com";
+            }
+
+            public List<String> getFieldNames() {
+                return null;
+            }
+        };
+
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);
+
+        pipeline.addFilter(filter);
+
+        StringWriter  sw = new StringWriter();
+        pipeline.filter(new StringReader(form.getFormDefinition()), sw);
+
+        FormSubmission formSubmission = filter.getFormSubmission();
+
+        assertEquals(recipientEmail, formSubmission.getSubmittedByEmail());
+    }
+
 }

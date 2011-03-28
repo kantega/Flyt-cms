@@ -458,7 +458,9 @@ formElementText.onEdit = function(element) {
         $("#form_Length").val("");
     }
 
-    var maxsize = $("div.inputs input", element).attr("maxlength");
+    var $input = $("div.inputs input", element);
+
+    var maxsize = $input.attr("maxlength");
     if (!isNaN(maxsize) && maxsize > 0 && maxsize < 128000) {
         $("#form_MaxLength").val(maxsize);
     } else {
@@ -468,15 +470,21 @@ formElementText.onEdit = function(element) {
     var regex = $("div.inputs span.regex", element).html();
     $("#form_RegEx").val(regex);
 
-    var clz = $("div.inputs input", element).attr("class");
+    var clz = $input.attr("class");
     $("#form_Validator").val(clz);
 
+    var id = $input.attr('id');
+    if ('RecipientEmail' == id) {
+        $("#form_IsRecipientEmail").attr('checked', 'checked');
+    } else {
+        $("#form_IsRecipientEmail").removeAttr('checked');
+    }
+
     $("#form_Validator").change(function() {
-        if ("regularexpression" === $(this).val()) {
-            $("#form_RegEx").parent().parent().show();
-        } else {
-            $("#form_RegEx").parent().parent().hide();
-        }
+        $(".form_validatorparams_regularexpression").hide();
+        $(".form_validatorparams_email").hide();
+        var formParamsType = ".form_validatorparams_" + $(this).val();
+        $(formParamsType).show();
     });
 };
 formElementText.onSave = function (fieldName) {
@@ -506,6 +514,9 @@ formElementText.onSave = function (fieldName) {
 
     if (validator != '') {
         html += ' class="' + validator + '"';
+        if (validator == 'email' && $("#form_IsRecipientEmail").is(":checked")) {
+            html += ' id="RecipientEmail"' ;
+        }
     }
     html += '>';
 
@@ -514,10 +525,12 @@ formElementText.onSave = function (fieldName) {
 };
 formElementText.onActive = function (isSelected) {
     if (isSelected) {
-        $(".form_params_text").show();
         $("#form_Validator").change();
+        $(".form_params_text").show();
     } else {
         $(".form_params_text").hide();
+        $(".form_validatorparams_email").hide();
+        $(".form_validatorparams_regularexpression").hide();
     }
 };
 formElementTypes[formElementTypes.length] = formElementText;
@@ -659,9 +672,12 @@ formElementTypes[formElementTypes.length] = formElementRadio;
 var formElementSelect = new FormElementType(properties.formeditor.labels.typeSelect, "select");
 formElementSelect.onEdit = function(element) {
     $("#form_Values").html("");
-    $("div.inputs option", element).each(function() {
+    $("div.inputs option", element).each(function(i) {
         var fieldName = $("#form_FieldName").val();
-        formAddInputValue("select", fieldName, this.value, this.selected);
+        if (i == 0 && this.value == ""){
+            $("#form_FirstValueBlank").attr("checked", "checked");
+        }
+        formAddInputValue("select", fieldName, this.text, this.selected);
     });
 };
 
@@ -670,7 +686,12 @@ formElementSelect.onSave = function (fieldName) {
     $("#form_Values div").each(function (i) {
         val = $("input[type=text]", this).val();
         if (val != "") {
-            html += '<option value="' + val + '" ';
+            var useFirstOptionAsLabel = $("#form_FirstValueBlank").is(":checked");
+            if (i == 0 && useFirstOptionAsLabel) {
+                html += '<option value="" ';
+            } else {
+                html += '<option value="' + val + '" ';
+            }
             if ($("input[type=radio]", this).is(":checked")) {
                 html += ' selected="selected"';
             }
@@ -682,6 +703,7 @@ formElementSelect.onSave = function (fieldName) {
 };
 formElementSelect.onActive = function (isSelected) {
     if (isSelected) {
+        $(".form_params_select").show();
         $("#form_AddElement").unbind("click");
         $("#form_AddElement").click(function(event) {
             event.preventDefault();
@@ -693,8 +715,11 @@ formElementSelect.onActive = function (isSelected) {
             formAddInputValue("select", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $(".form_params_select").show();
     } else {
+        $(".form_params_select").hide();
         $(".form_params_list").hide();
+        $(".form_params_select").hide();
     }
 };
 formElementTypes[formElementTypes.length] = formElementSelect;
