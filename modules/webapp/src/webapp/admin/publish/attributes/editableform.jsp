@@ -162,7 +162,7 @@
     <%
         if (!content.isNew()) {
     %>
-    <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
+    <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" target="_new" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
     <%
         if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.APPROVE_CONTENT)) {
     %>
