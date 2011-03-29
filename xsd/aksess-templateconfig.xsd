@@ -185,7 +185,7 @@
             <xs:attribute name="keepVersions" type="xs:integer"/>
             <xs:attribute name="expireAction" type="xs:integer"/>
             <xs:attribute name="expireMonths" type="xs:integer"/>
-            <xs:attribute name="hideFromSearch" type="xs:boolean"/>
+            <xs:attribute name="isSearchable" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>
