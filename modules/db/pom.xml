@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.2.0-SNAPSHOT</version>
+        <version>7.2.0</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -55,9 +55,9 @@
                 <configuration>
                     <ddl2dbTasks>
                         <mkdir dir="${basedir}/target/classes/dbschema" />
-                        <mkdir dir="${basedir}/target/classes/org/kantega/openaksess/db/"/>
+                        <mkdir dir="${basedir}/target/classes/org/kantega/openaksess/db/" />
 
-                        <copy file="${basedir}/src/main/schema/aksess-dbschema.xml" tofile="${basedir}/target/classes/org/kantega/openaksess/db/openaksess-dbschema.xml"/>
+                        <copy file="${basedir}/src/main/schema/aksess-dbschema.xml" tofile="${basedir}/target/classes/org/kantega/openaksess/db/openaksess-dbschema.xml" />
 
                         <ddlToDatabase databaseType="mysql">
 
