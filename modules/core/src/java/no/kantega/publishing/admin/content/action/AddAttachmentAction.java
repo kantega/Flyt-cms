@@ -18,6 +18,8 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.media.MimeType;
+import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -104,6 +106,7 @@ public class AddAttachmentAction implements Controller {
                 model.put("attachmentId", attachmentId);
             }
             model.put("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
+            model.put("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
             return new ModelAndView(formView, model);
         }
     }

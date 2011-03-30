@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.action.AddAttachmentAction;
 import no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction;
 import no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction;
@@ -91,5 +92,33 @@ public class AttachmentBlacklistHelper {
         }
 
         return blacklistedFileTypes;
+    }
+
+    /**
+     * Returns the error message to be displayed (in a JavaScript alert box)
+     * when the user attempts to upload a black-listed file type.
+     * You can set the message using a project-specific configuration file,
+     * typically aksess-webapp.conf. If no message is set, a locale-specific
+     * default message will be used.
+     * <p />
+     * Example:
+     * <blockquote>
+     *    <code>attachment.filetypes.blacklisted.errorMessage = The file type is not allowed.</code>
+     * </blockquote>
+     *
+     * @return The error message
+     */
+    public static String getErrorMessage() {
+        String errorMessage = LocaleLabels.getLabel("aksess.multimedia.filetype.blacklisted", Aksess.getDefaultAdminLocale());
+
+        try {
+            errorMessage = Aksess.getConfiguration().getString("attachment.filetypes.blacklisted.errorMessage", errorMessage);
+        } catch (ConfigurationException ex) {
+            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
+        } catch (IllegalArgumentException ex) {
+            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
+        }
+
+        return errorMessage;
     }
 }
