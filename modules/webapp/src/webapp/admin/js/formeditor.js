@@ -358,7 +358,7 @@ function formAddOrSaveSection(sectionChildNo) {
     if (sectionChildNo < 0) {
         $("#form_FormElements").append('<div class="formSection"><h2>' + sectionTitle + '</h2></div>');
         if (numberOfSections == 0) {
-            var $formElements = $("#form_FormElements div.formElement");
+            var $formElements = $("#form_FormElements div.formElement, #form_FormElements div.formText");
             openaksess.common.debug("Adding section, moving: " + $formElements.size() + " elements");
             // Move existing form elements into first section when first section is created
             $formElements.appendTo("#form_FormElements div.formSection");
@@ -414,12 +414,23 @@ function formSaveSection() {
 
 
 function formBindSort() {
-    $('#form_FormElements, #form_FormElements .formSection').sortable(
+    $('#form_FormElements').sortable(
     {
         opacity: 	0.8,
         axis:		'vertically',
-        revert:		true
+        revert:		true,
+        items:      'div.formElement, div.formText, div.formSection'
     });
+
+    $('#form_FormElements .formSection').sortable(
+    {
+        connectWith: '.formSection',
+        opacity: 	0.8,
+        axis:		'vertically',
+        revert:		true,
+        items:      'div.formElement, div.formText'
+    });
+
 }
 
 function formSave() {
@@ -440,6 +451,9 @@ function formSave() {
     $("#form_FormElements div").removeAttr("sizset");
     $("#form_FormElements div").removeAttr("animationhandler");
     $("#form_FormElements div").removeAttr("ui-sortable");
+    $("#form_FormElements div").removeAttr("sizcache");
+    $("#form_FormElements div").removeAttr("lpcachedvistime");
+    $("#form_FormElements div").removeAttr("lpcachedvisval");
 
     // Remove editor buttons
     $("#form_FormElements .formElementButtons").remove();
