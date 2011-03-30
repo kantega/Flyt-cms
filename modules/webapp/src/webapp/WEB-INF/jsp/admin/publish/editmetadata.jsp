@@ -37,7 +37,7 @@
         Content current = (Content)session.getAttribute("currentContent");
     %>    
         <%@ include file="../layout/fragments/infobox.jsp" %>
-        <c:if test="${fn:length(documentTypes) > 1}">
+        <c:if test="${fn:length(documentTypes) > 0}">
             <div class="contentAttribute">
                 <div class="heading"><kantega:label key="aksess.contentproperty.doctype"/></div>
                 <div class="inputs">
