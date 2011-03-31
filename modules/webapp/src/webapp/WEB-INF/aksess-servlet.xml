@@ -188,7 +188,7 @@
                 <!-- Information -->
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
 
-                <prop key="/SmokeTestPages.action">SmokeTestPagesAction</prop>
+                <prop key="/TestPages.action">testPagesAction</prop>
             </props>
         </property>
     </bean>
@@ -754,7 +754,7 @@
     </bean>
 
 
-    <bean class="no.kantega.publishing.controls.smoketest.SmokeTestPagesController" id="SmokeTestPagesAction">
+    <bean class="no.kantega.publishing.controls.smoketest.TestPagesController" id="testPagesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
 
