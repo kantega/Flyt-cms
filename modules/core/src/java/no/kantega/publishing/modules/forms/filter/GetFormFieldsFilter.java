@@ -16,6 +16,7 @@ public class GetFormFieldsFilter extends XMLFilterImpl {
             String inputName = attributes.getValue("name");
             fieldNames.add(inputName);
         }
+        super.startElement(string,  localName, name, attributes);
     }
 
     public List<String> getFieldNames() {
