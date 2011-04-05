@@ -25,7 +25,6 @@
 <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="menuitem ${publishSelected}"><kantega:label key="aksess.menu.publish"/></a>
 <a href="${pageContext.request.contextPath}/admin/multimedia/Navigate.action" class="menuitem ${multimediaSelected}"><kantega:label key="aksess.menu.multimedia"/></a>
 <a href="${pageContext.request.contextPath}/admin/topicmaps/Topics.action" class="menuitem ${topicMapsSelected}"><kantega:label key="aksess.menu.topicmaps"/></a>
-<a href="${pageContext.request.contextPath}/admin/oap/formadmin/" class="menuitem">Skjema</a>
 <% if (SecuritySession.getInstance(request).isUserInRole(Aksess.getAdminRole())) { %>
 <a href="${pageContext.request.contextPath}/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
 <%}%>
