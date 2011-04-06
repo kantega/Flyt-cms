@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.springframework.web.servlet.ModelAndView;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteTopicTypeAction implements Controller {
+    private final static String SOURCE = "aksess.DeleteTopicMapAction";
     
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         TopicMapService topicService = new TopicMapService(request);
@@ -36,7 +38,8 @@ public class DeleteTopicTypeAction implements Controller {
 
         if (topicId != null && topicMapId != -1) {
             Topic topic = topicService.getTopic(topicMapId, topicId);
-            if (topic != null) {
+            if (topic != null && topicService.getTopicsByInstance(topic).isEmpty()) {
+                Log.info(SOURCE, "Delete topictype:" + topicId, null, null);
                 topicService.deleteTopic(topic);
             }            
         }
