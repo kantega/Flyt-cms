@@ -87,7 +87,7 @@
                         url: '<%= Aksess.getContextPath() + "/attachment.ap?id=" + a.getId() %>',
                         clz: 'file <%=a.getMimeType().getFileExtension()%> ' + mimeType
                     });
-                    select.append(new Option('<%=filename%>'));
+                    select.append("<option><%=filename%></option>");
                     <%
                 }
             }
