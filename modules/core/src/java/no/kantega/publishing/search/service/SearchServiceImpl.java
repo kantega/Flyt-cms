@@ -89,7 +89,7 @@ public class SearchServiceImpl implements SearchService {
         SearchResult searchResult = new SearchResultExtendedImpl();
         List<Alternative> alternatives = new ArrayList<Alternative>();
 
-        if (searchServiceQuery != null && searchServiceQuery.getSearchPhrase() != null) {
+        if (searchServiceQuery != null && (searchServiceQuery.getSearchPhrase() != null || searchServiceQuery.isAllowEmptySearchPhrase())) {
             // Bare s�k hvis det er gitt en s�kestreng
             SearchQuery searchQuery = createSearchQuery(searchServiceQuery);
             try{
@@ -239,7 +239,9 @@ public class SearchServiceImpl implements SearchService {
          */
         Analyzer analyzer = indexManager.getAnalyzerFactory().createInstance();
 
-        if (query.getStringParam(SearchServiceQuery.PARAM_SEARCH_PHRASE) != null) {
+        String queryParam = query.getStringParam(SearchServiceQuery.PARAM_SEARCH_PHRASE);
+
+        if (queryParam != null && queryParam.length() > 0) {
             String queryPhrase = query.getStringParam(SearchServiceQuery.PARAM_SEARCH_PHRASE);
             OrCriterion c = new OrCriterion();
             c.add(new TextCriterion(Fields.CONTENT, queryPhrase, analyzer));
@@ -260,6 +262,9 @@ public class SearchServiceImpl implements SearchService {
                 }
             }
             criterionList.add(c);
+        } else if (query.isAllowEmptySearchPhrase()) {
+            // Must have a search criteria, search for all content with status published
+            criterionList.add(new ContentStatusCriterion(ContentStatus.PUBLISHED));
         }
 
         return criterionList;
@@ -382,7 +387,7 @@ public class SearchServiceImpl implements SearchService {
     private SearchServiceResultImpl createAksessSearchResult(SearchServiceQuery query, SearchResult searchResult) {
         long start = System.currentTimeMillis();
         SearchServiceResultImpl aksessSearchResult = new SearchServiceResultImpl(searchResult);
-        if (query.getSearchPhrase() != null) {
+        if (query.getSearchPhrase() != null || query.isAllowEmptySearchPhrase()) {
             processSearchHits(query, aksessSearchResult);
             processHitCounts(aksessSearchResult);
         }
@@ -392,7 +397,7 @@ public class SearchServiceImpl implements SearchService {
 
     private void logSearch(SearchServiceQuery searchServiceQuery, SearchQuery searchQuery, int numberOfHits) {
         try {
-            if (Aksess.isSearchLogEnabled() && searchServiceQuery.getSearchPhrase().length() > 0) {
+            if (Aksess.isSearchLogEnabled() && searchServiceQuery.getSearchPhrase() != null && searchServiceQuery.getSearchPhrase().length() > 0) {
                 // Register number of hits for this query
                 Log.info(SOURCE, "Kaller SearchAO.registerSearch(" + searchServiceQuery.getSearchPhrase() + ", " + searchQuery.toString() + ", " + findSiteId(searchServiceQuery.getRequest()) + ", " + numberOfHits + ");", "logSearch", null);
                 SearchAO.registerSearch(searchServiceQuery.getSearchPhrase(), searchQuery.toString(), findSiteId(searchServiceQuery.getRequest()), numberOfHits);
@@ -453,6 +458,7 @@ public class SearchServiceImpl implements SearchService {
         }
         context.setSiteId(findSiteId(request));
         context.setQueryInfo(searchResult.getQueryInfo());
+        context.setShouldGetContentObject(query.isShouldGetContentDocument());
         return context;
     }
 

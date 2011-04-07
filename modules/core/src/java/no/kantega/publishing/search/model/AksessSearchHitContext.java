@@ -30,6 +30,7 @@ public class AksessSearchHitContext implements SearchHitContext {
     private int siteId = -1;
     private SecuritySession securitySession;
     private QueryInfo queryInfo;
+    private boolean shouldGetContentObject = true;
 
     public int getSiteId() {
         return siteId;
@@ -55,4 +56,11 @@ public class AksessSearchHitContext implements SearchHitContext {
         this.queryInfo = queryInfo;
     }
 
+    public boolean isShouldGetContentObject() {
+        return shouldGetContentObject;
+    }
+
+    public void setShouldGetContentObject(boolean shouldGetContentObject) {
+        this.shouldGetContentObject = shouldGetContentObject;
+    }
 }

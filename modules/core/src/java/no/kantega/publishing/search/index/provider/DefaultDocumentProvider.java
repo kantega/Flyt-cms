@@ -114,43 +114,50 @@ public class DefaultDocumentProvider implements DocumentProvider {
         }
         cid.setContentId(contentId);
         try {
-            Content c = ContentAO.getContent(cid, true);
-            SecuritySession session = aContext != null ? aContext.getSecuritySession() : null;
-            if (session != null) {
-                if (!session.isAuthorized(c, Privilege.VIEW_CONTENT)) {
-                    throw new NotAuthorizedException("", SOURCE);
-                }
+            if (aContext != null && aContext.isShouldGetContentObject()) {
+                addValuesFromContentDocument(context, aContext, searchHit, cid);
+                List<PathEntry> path = PathWorker.getPathByContentId(cid);
+                searchHit.setPathElements(path);
+                searchHit.setUrl(Aksess.getContextPath() + "/content.ap?thisId=" + cid.getAssociationId());
+            } else {
+                searchHit.setUrl(Aksess.getContextPath() + "/content.ap?contentId=" + contentId);
             }
-
-            if (c != null) {
-                searchHit.setAllText(getArticleText(c));
-
-                QueryInfo queryInfo = context.getQueryInfo();
-                if (searchHit.getAllText().length() > 0 && queryInfo != null) {
-                    // Add text to show where hit was found
-                    Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
-                    Scorer scorer = new QueryScorer(queryInfo.getQuery());
-                    Highlighter highlighter = new Highlighter(formatter, scorer);
-                    try {
-                        String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
-                        searchHit.setContextText(frag);
-                    } catch (IOException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                }
-
-                if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
-                    searchHit.setDoOpenInNewWindow(true);
-                }
-
-                searchHit.setId(c.getAssociation().getAssociationId());
-            }
-
-            List<PathEntry> path = PathWorker.getPathByContentId(cid);
-            searchHit.setPathElements(path);
-            searchHit.setUrl(Aksess.getContextPath() + "/content.ap?thisId=" + cid.getAssociationId());
         } catch (SystemException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addValuesFromContentDocument(SearchHitContext context, AksessSearchHitContext aContext, AksessSearchHit searchHit, ContentIdentifier cid) throws NotAuthorizedException {
+        Content c = ContentAO.getContent(cid, true);
+        SecuritySession session = aContext != null ? aContext.getSecuritySession() : null;
+        if (session != null) {
+            if (!session.isAuthorized(c, Privilege.VIEW_CONTENT)) {
+                throw new NotAuthorizedException("", SOURCE);
+            }
+        }
+
+        if (c != null) {
+            searchHit.setAllText(getArticleText(c));
+
+            QueryInfo queryInfo = context.getQueryInfo();
+            if (searchHit.getAllText().length() > 0 && queryInfo != null) {
+                // Add text to show where hit was found
+                Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
+                Scorer scorer = new QueryScorer(queryInfo.getQuery());
+                Highlighter highlighter = new Highlighter(formatter, scorer);
+                try {
+                    String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
+                    searchHit.setContextText(frag);
+                } catch (IOException e) {
+                    Log.error(SOURCE, e, null, null);
+                }
+            }
+
+            if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
+                searchHit.setDoOpenInNewWindow(true);
+            }
+
+            searchHit.setId(c.getAssociation().getAssociationId());
         }
     }
 
