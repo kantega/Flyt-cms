@@ -9,6 +9,7 @@ import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
@@ -58,21 +59,23 @@ public class TestPagesController extends AbstractController {
             Element pages = new Element("pages");
 
             for(Content content : contents) {
-                Element page = new Element("page");
-                final GetAttributeCommand cmd = new GetAttributeCommand();
-                cmd.setAttributeType(AttributeDataType.CONTENT_DATA);
+                if (content.getType() == ContentType.PAGE) {
+                    Element page = new Element("page");
+                    final GetAttributeCommand cmd = new GetAttributeCommand();
+                    cmd.setAttributeType(AttributeDataType.CONTENT_DATA);
 
-                cmd.setName("url");
-                page.setAttribute("url", AttributeTagHelper.getAttribute(content, cmd).substring(request.getContextPath().length()));
+                    cmd.setName("url");
+                    page.setAttribute("url", AttributeTagHelper.getAttribute(content, cmd).substring(request.getContextPath().length()));
 
-                cmd.setName("displaytemplate");
-                page.setAttribute("category", AttributeTagHelper.getAttribute(content, cmd));
+                    cmd.setName("displaytemplate");
+                    page.setAttribute("category", AttributeTagHelper.getAttribute(content, cmd));
 
-                page.setAttribute("title", content.getTitle());
+                    page.setAttribute("title", content.getTitle());
 
-                page.setAttribute("id", "contentId-" + content.getId());
+                    page.setAttribute("id", "contentId-" + content.getId());
 
-                pages.addContent(page);
+                    pages.addContent(page);
+                }
             }
 
             response.setContentType("text/xml");
