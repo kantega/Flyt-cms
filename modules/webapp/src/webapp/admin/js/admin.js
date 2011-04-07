@@ -398,6 +398,8 @@ $.widget("ui.infoslider", {
      * @param content - The content to display in the info slider.
      */
     toggle: function(opener, content){
+        console.debug(this.options.opener);
+        openaksess.common.debug("Widget.infoslider.toggle(): Already open? " + this.options.open);
         if (!this.options.open) {
             this._openSlider(content);
         } else {
@@ -406,6 +408,20 @@ $.widget("ui.infoslider", {
             } else {
                 this._setContent(content);
             }
+        }
+        this.options.opener = opener;
+    },
+
+    /**
+     * Opens and sets infoslider content. If the slider is already open the content will be replaced.
+     * @param opener - The object which triggered slider opening
+     * @param content - The content to display in the info slider.
+     */
+    open: function(opener, content) {
+        if (!this.options.open) {
+            this._openSlider(content);
+        } else {
+            this._setContent(content);
         }
         this.options.opener = opener;
     },
@@ -430,6 +446,7 @@ $.widget("ui.infoslider", {
 
 
         this.element
+                .empty()
                 .append(content)
                 .wrapInner('<div class="slidercontent"/>')
                 .removeClass()

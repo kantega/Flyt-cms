@@ -122,7 +122,7 @@ openaksess.navigate = {
                 }
             }
 
-        });        
+        });
     },
 
     /**
@@ -161,7 +161,7 @@ openaksess.navigate = {
                 ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
                     openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
                     openaksess.navigate.setContextMenus(clipboardEmpty);
-                });                
+                });
             }
         });
     },
@@ -324,7 +324,7 @@ openaksess.search = {
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
             var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
-            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false}).infoslider('toggle', this, content);
+            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false}).infoslider('open', document.getElementById("SearchForm"), content);
         }
     },
 
