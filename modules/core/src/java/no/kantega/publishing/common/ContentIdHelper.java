@@ -162,7 +162,7 @@ public class ContentIdHelper {
         }
 
         url = url.toLowerCase();
-        if (url.indexOf("://") != -1) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
             url = url.substring(url.indexOf("://") + 3, url.length());
             if (url.indexOf('/') != -1) {
                url = url.substring(url.indexOf('/'), url.length());

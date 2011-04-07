@@ -6,6 +6,7 @@
 <%@ page import="no.kantega.publishing.security.data.enums.Privilege" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -29,6 +30,7 @@
     String value = attribute.getValue();
 %>
 <div class="inputs">
+    <admin:box>
     <div id="form_EditableForm">
         <div id="form_FormElements">
             <%=value%>
@@ -134,6 +136,7 @@
                 </table>
             </div>
         </div>
+
         <div id="form_TextPlaceHolder" style="display:none;">
             <div id="EditFormText">
                 <input type="hidden" id="form_TextChildNo" value="">
@@ -153,10 +156,36 @@
                 </table>
             </div>
         </div>
+
+        <div id="form_SectionPlaceHolder" style="display: none;">
+            <div id="EditFormSection">
+                <input type="hidden" id="form_SectionChildNo" value="">
+                <table>
+                    <tr valign="top">
+                        <td><label for="form_SectionTitle" ><kantega:label key="aksess.formeditor.section.title"/></label></td>
+                        <td>
+                            <input type="text" id="form_SectionTitle" size="30" maxlength="128" name="form_SectionTitle">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="right">
+                            <input type="button" id="form_SaveFormSection" value="<kantega:label key="aksess.button.save"/>">
+                            <input type="button" id="form_CancelFormSection" value="<kantega:label key="aksess.button.cancel"/>">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <div>
         <textarea name="<%=fieldName%>" rows="4" cols="20" style="display:none;" id="form_Value"></textarea>
     </div>
+        </admin:box>
+</div>
+<div class="buttonGroup">
+    <a href="form_NewElement" id="form_NewElement" class="button"><span class="add"><kantega:label key="aksess.formeditor.newfield"/></span></a>
+    <a href="form_NewText" id="form_NewText" class="button"><span class="add"><kantega:label key="aksess.formeditor.newtext"/></span></a>
+    <a href="form_NewSection" id="form_NewSection" class="button"><span class="add"><kantega:label key="aksess.formeditor.newsection"/></span></a>
 </div>
 <div class="buttonGroup">
     <%
@@ -171,6 +200,4 @@
             }
         }
     %>
-    <a href="form_NewElement" id="form_NewElement" class="button"><span class="add"><kantega:label key="aksess.formeditor.newfield"/></span></a>
-    <a href="form_NewText" id="form_NewText" class="button"><span class="add"><kantega:label key="aksess.formeditor.newtext"/></span></a>
 </div>
