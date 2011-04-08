@@ -121,8 +121,11 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
-        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1 || newParent.getAssociation().getAssociationId() == selectedPageAssociationId)) {
+        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1)) {
             // Will lead to recursion
+            error = "aksess.copypaste.recursion";
+        } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {
+            // Do not allow a page to be pasted onto itself.
             error = "aksess.copypaste.recursion";
         } else if (allowedAssociations == null || allowedAssociations.size() == 0) {
             // Not allowed to publish here
