@@ -22,11 +22,14 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%
     EditablelistAttribute attribute = (EditablelistAttribute) request.getAttribute("attribute");
+    request.setAttribute("alwaysUseSelectList", Boolean.TRUE);
 %>
 <div class="inputs">
 <%@include file="listoptions.jsf"%>
 </div>
 <%
+    request.removeAttribute("alwaysUseSelectList");
+
     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
 %>
 <div class="buttonGroup">
