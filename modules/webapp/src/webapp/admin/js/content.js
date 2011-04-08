@@ -322,48 +322,48 @@ openaksess.content = {
         brokenLinks: function (links) {
             if (links && links.length > 0) {
                 openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
-                $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
-                    openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): click");
-                    var details = '<table>' +
-                                '   <thead>' +
-                                '       <tr>' +
-                                '           <th class="field">' + properties.content.labels.linkcheckField + '</th>' +
-                                '           <th class="url">' + properties.content.labels.linkcheckUrl + '</th>' +
-                                '           <th class="status">' + properties.content.labels.linkcheckStatus + '</th>' +
-                                '           <th class="lastChecked">' + properties.content.labels.linkcheckLastchecked + '</th>' +
-                                '           <th class="timesChecked">' + properties.content.labels.linkcheckTimeschecked + '</th>' +
-                                '       </tr>' +
-                                '</thead>' +
-                                '<tbody>';
-                    for (var i = 0; i < links.length; i++) {
-                        var statustxt = "";
-                        if (links[i].status === 2) {
-                            if (links[i].httpStatus == 401) {
-                                statustxt = properties.content.labels.httpStatus401;
-                            } else if (links[i].httpStatus == 404) {
-                                statustxt = properties.content.labels.httpStatus404;
-                            } else if (links[i].httpStatus == 500) {
-                                statustxt = properties.content.labels.httpStatus500;
-                            } else {
-                                statustxt = "HTTP " + links[i].httpStatus;
-                            }
+
+                var details = '<table>' +
+                            '   <thead>' +
+                            '       <tr>' +
+                            '           <th class="field">' + properties.content.labels.linkcheckField + '</th>' +
+                            '           <th class="url">' + properties.content.labels.linkcheckUrl + '</th>' +
+                            '           <th class="status">' + properties.content.labels.linkcheckStatus + '</th>' +
+                            '           <th class="lastChecked">' + properties.content.labels.linkcheckLastchecked + '</th>' +
+                            '           <th class="timesChecked">' + properties.content.labels.linkcheckTimeschecked + '</th>' +
+                            '       </tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                for (var i = 0; i < links.length; i++) {
+                    var statustxt = "";
+                    if (links[i].status === 2) {
+                        if (links[i].httpStatus == 401) {
+                            statustxt = properties.content.labels.httpStatus401;
+                        } else if (links[i].httpStatus == 404) {
+                            statustxt = properties.content.labels.httpStatus404;
+                        } else if (links[i].httpStatus == 500) {
+                            statustxt = properties.content.labels.httpStatus500;
                         } else {
-                            statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
+                            statustxt = "HTTP " + links[i].httpStatus;
                         }
-
-                        details += '<tr>' +
-                                 '  <td>'+links[i].attributeName+'</td>' +
-                                 '  <td>'+links[i].url+'</td>' +
-                                 '  <td>'+statustxt+'</td>' +
-                                 '  <td>'+links[i].lastChecked+'</td>' +
-                                 '  <td>'+links[i].timesChecked+'</td>' +
-                                 '</tr>';
+                    } else {
+                        statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
                     }
-                    details +='   </tbody>' +
-                            '</table>';
 
-                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'brokenlinks', floated: true, resizable: false}).infoslider('toggle', this, details);
-                }).show();
+                    details += '<tr>' +
+                             '  <td>'+links[i].attributeName+'</td>' +
+                             '  <td>'+links[i].url+'</td>' +
+                             '  <td>'+statustxt+'</td>' +
+                             '  <td>'+links[i].lastChecked+'</td>' +
+                             '  <td>'+links[i].timesChecked+'</td>' +
+                             '</tr>';
+                }
+                details +='   </tbody>' +
+                        '</table>';
+
+                openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .brokenLink", "brokenlinks", details);
+            } else {
+                openaksess.content.contentstatus.unbindInfoSliderTrigger("#Statusbar .brokenLink");
             }
         },
 
@@ -405,32 +405,62 @@ openaksess.content = {
 
             details +="</ul>";
 
-            $("#Statusbar .details").unbind('click').bind('click', function(){
-                openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                $("#MainPane .infoslider").infoslider('option', {cssClasses: 'details', floated: true, resizable: false}).infoslider('toggle', this, details);
-            }).show();
+            openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .details", "details", details);
+
         },
 
 
         associations: function (associations) {
             if (associations && associations.length > 1) {
                 openaksess.common.debug("openaksess.content.contentstatus.associations(): Number of associations: "+associations.length);
-                $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
-                    openaksess.common.debug("openaksess.content.contentstatus.associations(): click");
-                    var details = '<h3>' + properties.content.labels.associations + '</h3>';
-                    for (var i = 0; i < associations.length; i++) {
-                        details += '<ul class="breadcrumbs">';
-                        for (var j = 0; j<associations[i].length; j++) {
-                            details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
-                        }
-                        details += '</ul><div class="clearing"></div>';
-                    }
 
-                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'associations', floated: true, resizable: false}).infoslider('toggle', this, details);
-                }).show();
+                var details = '<h3>' + properties.content.labels.associations + '</h3>';
+                for (var i = 0; i < associations.length; i++) {
+                    details += '<ul class="breadcrumbs">';
+                    for (var j = 0; j<associations[i].length; j++) {
+                        details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
+                    }
+                    details += '</ul><div class="clearing"></div>';
+                }
+
+                openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .crossPublish", 'associations', details);
+            } else {
+                openaksess.content.contentstatus.unbindInfoSliderTrigger("#Statusbar .crossPublish");
             }
         },
 
+        /**
+         * Sets up the infoslider for each of the triggers, ie. broken links, associations, content details etc.
+         * @param triggerSelector jQuery selector for the element that triggers the infoslider.
+         * @param cssClass Infoslider css class for this trigger
+         * @param content Infoslider content.
+         */
+        bindInfoSliderTrigger: function(triggerSelector, cssClass, content) {
+            openaksess.common.debug("ContentStatus.bindInfoSliderTrigger(): triggerSelector: " + triggerSelector + ", cssClass: " + cssClass);
+            var infoslider = $("#MainPane .infoslider"),
+            infosliderTrigger = $(triggerSelector);
+
+            //initialize the infoslider
+            infoslider.infoslider('option', {cssClasses: cssClass, floated: true, resizable: false});
+            //replaceContentIfOpen will keep the slider open and replace the content
+            //if the current trigger is the trigger that opened the slider in the first place
+            infoslider.infoslider('replaceContentIfOpen', infosliderTrigger[0], content);
+
+            //Toggle the info slider upon trigger click.
+            infosliderTrigger.unbind('click').bind('click', function(){
+                openaksess.common.debug("openaksess.content.contentstatus.bindInfoSliderTrigger(): click");
+                infoslider.infoslider('toggle', infosliderTrigger[0], content);
+            }).show();
+        },
+
+        /**
+         * Removes info slider trigger for the given element.
+         * @param triggerSelector jQuery selector.
+         */
+        unbindInfoSliderTrigger: function(triggerSelector) {
+            openaksess.common.debug("ContentStatus.unbindInfoSliderTrigger(): triggerSelector: " + triggerSelector);
+            $("#MainPane .infoslider").infoslider('close', $(triggerSelector)[0]);
+        },
 
         disableButtons: function() {
             $("#ToolsMenu a").addClass("disabled");

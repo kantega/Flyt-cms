@@ -398,7 +398,6 @@ $.widget("ui.infoslider", {
      * @param content - The content to display in the info slider.
      */
     toggle: function(opener, content){
-        console.debug(this.options.opener);
         openaksess.common.debug("Widget.infoslider.toggle(): Already open? " + this.options.open);
         if (!this.options.open) {
             this._openSlider(content);
@@ -424,6 +423,29 @@ $.widget("ui.infoslider", {
             this._setContent(content);
         }
         this.options.opener = opener;
+    },
+
+    /**
+     * Closes the slider if it's opened by the given opener.
+     * Only the slider's opener is allowed to close it.
+     * @param opener Element attempting to close the slider.
+     */
+    close: function(opener) {
+        if (this.options.open && this.options.opener == opener) {
+            this._closeSlider();
+        }
+    },
+
+    /**
+     * Replaaces the slider content if it's already open and sets current opener to the new opener
+     * @param opener New opener
+     * @param content New content
+     */
+    replaceContentIfOpen: function(opener, content) {
+        if (this.options.open && this.options.opener == opener) {
+            openaksess.common.debug("Widget.infoslider.replaceContentIfOpen(): Replacing content");
+            this._setContent(content);
+        }
     },
 
     _openSlider: function(content){
