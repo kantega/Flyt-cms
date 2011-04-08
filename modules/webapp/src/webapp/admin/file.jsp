@@ -1,6 +1,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -25,6 +26,8 @@
         url = content.getLocation();
         title = content.getTitle();
     }
+
+    request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
