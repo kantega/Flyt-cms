@@ -121,7 +121,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
-        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1 || newParent.getAssociation().getAssociationId() == selectedPageAssociationId)) {
+        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1)) {
             // Will lead to recursion
             error = "aksess.copypaste.recursion";
         } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {
