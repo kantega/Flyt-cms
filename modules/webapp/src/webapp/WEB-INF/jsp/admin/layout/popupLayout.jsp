@@ -78,6 +78,13 @@
             }
         }
 
+        $(document).ready(function(){
+            var title = $("title").text();
+            //Use the iframe page's title as modal window title if set.
+            if (!window.opener && $.trim(title).length > 0) {
+                parent.openaksess.common.modalWindow.setTitle(title);
+            }
+        });
     </script>
     <kantega:getsection id="head"/>
 </head>

@@ -124,6 +124,9 @@ public class ConfirmCopyPasteContentAction implements Controller {
         } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + uniqueId + "/") != -1)) {
             // Will lead to recursion
             error = "aksess.copypaste.recursion";
+        } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {
+            // Do not allow a page to be pasted onto itself.
+            error = "aksess.copypaste.recursion";
         } else if (allowedAssociations == null || allowedAssociations.size() == 0) {
             // Not allowed to publish here
             error = "aksess.copypaste.notallowed";

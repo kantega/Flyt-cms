@@ -210,6 +210,13 @@ openaksess.common = {
              */
             close : function(){
                 $content.dialog('close');
+            },
+
+            /**
+             * Sets the modal window's title (top bar)
+             */
+            setTitle: function(title) {
+                $content.dialog( "option", "title", title );
             }
         };
 
