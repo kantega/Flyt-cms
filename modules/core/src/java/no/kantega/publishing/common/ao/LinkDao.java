@@ -48,13 +48,21 @@ public interface LinkDao {
 
 
     /**
-     * Calls the supplied LinkOccurrenceHandler for each link in the site.
+     * Find all broken links under given parent
      *
-     * @param cid - Fetches all the links for this page and below this page
-     * @param sort -
-     * @param handler - Callback
+     * @param parent - ContentIdentifier for parent
+     * @param sortBy - string to sort on
+     * @return List of broken links
      */
-    public void doForEachLinkOccurrence(ContentIdentifier parent, String sort, LinkOccurrenceHandler handler);
+    public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sortBy);
+
+    /**
+     * All broken links
+     * @param sort
+     * @return List of broken links
+     */
+    List<LinkOccurrence> getAllBrokenLinks(String sort);
+
 
     /**
      * Gets all broken links for a given content
@@ -62,7 +70,7 @@ public interface LinkDao {
      * @param contentId - The id of the content to investigate
      * @return List of link occurrences
      */
-    public List<LinkOccurrence> getLinksforContentId(int contentId);
+    public List<LinkOccurrence> getBrokenLinksforContentId(int contentId);
 
 
     /**
@@ -77,4 +85,5 @@ public interface LinkDao {
      * @return int - Total
      */
     public int getNumberOfLinks();
+
 }

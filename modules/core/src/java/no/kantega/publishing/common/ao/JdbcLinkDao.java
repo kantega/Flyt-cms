@@ -17,13 +17,9 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
-import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.commons.log.Log;
@@ -34,13 +30,13 @@ import java.sql.*;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.dao.DataAccessException;
 
 public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
     private SQLDialect sqlDialect;
+    private String brokenLinkBasisQuery = "SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion  WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND content.ContentId in (select ContentId from associations where IsDeleted = 0) AND linkoccurrence.linkid=link.id)";
 
     /**
      * @see no.kantega.publishing.common.ao.LinkDao#deleteAllLinks()
@@ -107,7 +103,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
         final String query = term.getQuery("Id, url", sqlDialect.getResultLimitorStrategy());
 
-        Log.debug(this.getClass().getName(), "query=" + query, null, null);
+            Log.debug(this.getClass().getName(), "query=" + query, null, null);
 
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
@@ -138,59 +134,35 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         });
     }
 
+    /**
+     * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.common.data.ContentIdentifier, String)
+     */
+    public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
+        String query = brokenLinkBasisQuery;
+        query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE '%/?/%' OR UniqueId = ?)";
+        query += getDefaultOrderByClause();
+        Object[] args = {parent.getAssociationId(), parent.getAssociationId()};
+        return findMatchingLinkOccurrences(query, args);
+    }
 
     /**
-     * @see no.kantega.publishing.common.ao.LinkDao#doForEachLinkOccurrence(ContentIdentifier, String, no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler)
+     * @see LinkDao#getAllBrokenLinks(String)
      */
-    public void doForEachLinkOccurrence(ContentIdentifier parent, String sort, final LinkOccurrenceHandler handler) {
-        String orderBy;
-        if("url".equals(sort)) {
-            orderBy = "link.url";
-        } else if("status".equals(sort)) {
-            orderBy = "link.status, link.httpstatus, contentversion.title";
-        } else if("lastchecked".equals(sort)) {
-            orderBy = "link.lastchecked";
-        } else if("timeschecked".equals(sort)) {
-            orderBy = "link.timeschecked";
-        } else {
-            orderBy = "contentversion.title";
-        }
-
-        String siteClause = "";
-        if (parent != null) {
-            siteClause = " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE '%/" + parent.getAssociationId() + "/%' OR UniqueId = " + parent.getAssociationId() + ")";
-        }
-        final String query = "SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid and content.ContentId=contentversion.ContentID and contentversion.IsActive=1 and content.ContentId in (select ContentId from associations where IsDeleted = 0) AND linkoccurrence.linkid=link.id) " + siteClause + " ORDER BY " + orderBy;
-
-        getJdbcTemplate().execute(new ConnectionCallback() {
-            public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                PreparedStatement p = connection.prepareStatement(query);
-                ResultSet rs = p.executeQuery();
-
-                while(rs.next()) {
-                    LinkOccurrence o = getOccurrenceFromResultSet(rs);
-                    handler.handleLinkOccurrence(o);
-                }
-                return null;
-            }
-
-        });
-
+    public List<LinkOccurrence> getAllBrokenLinks(String sortBy) {
+        String query = brokenLinkBasisQuery;
+        query += getOrderByClause("");
+        Object[] args = {};
+        return findMatchingLinkOccurrences(query, args);
     }
 
 
     /**
-     * @see LinkDao#getLinksforContentId(int)
+     * @see LinkDao#getBrokenLinksforContentId(int)
      */
     @SuppressWarnings("unchecked")
-    public List<LinkOccurrence> getLinksforContentId(int contentId) {
-        return getJdbcTemplate().query("SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND linkoccurrence.linkid=link.id AND content.ContentId=?) ORDER BY link.lastchecked", new Object[]{contentId},new RowMapper(){
-            public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return getOccurrenceFromResultSet(rs);
-            }
-        });
+    public List<LinkOccurrence> getBrokenLinksforContentId(int contentId) {
+        return findMatchingLinkOccurrences("SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND linkoccurrence.linkid=link.id AND content.ContentId=?) ORDER BY link.lastchecked", new Object[]{contentId});
     }
-
 
     /**
      * @see LinkDao#deleteLinksForContentId(int)
@@ -262,6 +234,34 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         o.setTimesChecked(rs.getInt("timeschecked"));
 
         return o;
+    }
+
+    private List<LinkOccurrence> findMatchingLinkOccurrences(String query, Object[] args) {
+        return getJdbcTemplate().query(query, args, new RowMapper() {
+            public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return getOccurrenceFromResultSet(rs);
+            }
+        });
+    }
+
+    private String getDefaultOrderByClause(){
+        return getOrderByClause("");
+    }
+
+    private String getOrderByClause(String sort) {
+        String orderBy;
+        if("url".equals(sort)) {
+            orderBy = "link.url";
+        } else if("status".equals(sort)) {
+            orderBy = "link.status, link.httpstatus, contentversion.title";
+        } else if("lastchecked".equals(sort)) {
+            orderBy = "link.lastchecked";
+        } else if("timeschecked".equals(sort)) {
+            orderBy = "link.timeschecked";
+        } else {
+            orderBy = "contentversion.title";
+        }
+        return " ORDER BY " + orderBy;
     }
 
     public void setSqlDialect(SQLDialect sqlDialect) {
