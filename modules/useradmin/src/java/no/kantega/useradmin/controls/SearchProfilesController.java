@@ -33,15 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jun 26, 2007
- * Time: 10:10:35 AM
- */
 public class SearchProfilesController extends AbstractUserAdminController  {
 
-    private int minQueryLength = -1;
-    
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
@@ -64,14 +57,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
             }
             ProfileManager manager = config.getProfileManager();
 
-            if (minQueryLength <= 0 || (query != null && query.length() >= minQueryLength)) {
-                // Søkt etter bruker
-                SearchResult result = manager.searchProfiles(query == null ? "" : query);
-                if (result != null) {
-                    model.put("users", result.getAllResults());                    
-                }
-                model.put("query", query);
-            } else if (userId != null && userId.length() > 0) {
+            if (userId != null && userId.length() > 0) {
                 // Opprettet en bruker, vis denne
                 List users = new ArrayList();
                 DefaultIdentity identity = new DefaultIdentity();
@@ -82,13 +68,16 @@ public class SearchProfilesController extends AbstractUserAdminController  {
                     users.add(p);
                     model.put("users", users.iterator());
                 }
+            } else {
+                // Søkt etter bruker eller vis alle
+                SearchResult result = manager.searchProfiles(query == null ? "" : query);
+                if (result != null) {
+                    model.put("users", result.getAllResults());
+                }
+                model.put("query", query);
             }
         }
 
         return new ModelAndView("/profile/search", model);
-    }
-
-    public void setMinQueryLength(int minQueryLength) {
-        this.minQueryLength = minQueryLength;
     }
 }

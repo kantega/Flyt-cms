@@ -57,25 +57,31 @@
             </tr>
             </thead>
             <tbody>
+            <c:set var="numberOfUsers" value="0"/>
             <c:forEach var="user" items="${users}" varStatus="status">
-            <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')"><c:out value="${user.givenName}"/> <c:out value="${user.surname}"/></a></td>
-                <td><c:out value="${user.department}"/></td>
-                <td align="right">
-                    <c:if test="${canSetPassword}">
-                        <a class="button" href="Javascript:doAction('../password/reset', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.password"/></a>
-                    </c:if>
-                    <c:if test="${canEdit}">
-                        <a class="button" href="Javascript:doAction('delete', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.delete"/></a>
-                    </c:if>
-                    <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.roles"/></a>
-                    <c:if test="${canEdit}">
-                        <a class="button" href="profileimage?domain=${user.identity.domain}&amp;userId=${user.identity.userId}"><kantega:label key="useradmin.searchprofiles.profileimage"/></a>
-                    </c:if>
+                <c:set var="numberOfUsers" value="${numberOfUsers+1}"/>
+                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                    <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')"><c:out value="${user.givenName}"/> <c:out value="${user.surname}"/></a></td>
+                    <td><c:out value="${user.department}"/></td>
+                    <td align="right">
+                        <c:if test="${canSetPassword}">
+                            <a class="button" href="Javascript:doAction('../password/reset', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.password"/></a>
+                        </c:if>
+                        <c:if test="${canEdit}">
+                            <a class="button" href="Javascript:doAction('delete', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.delete"/></a>
+                        </c:if>
+                        <a href="Javascript:doAction('../role/user', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.roles"/></a>
+                        <c:if test="${canEdit}">
+                            <a class="button" href="profileimage?domain=${user.identity.domain}&amp;userId=${user.identity.userId}"><kantega:label key="useradmin.searchprofiles.profileimage"/></a>
+                        </c:if>
                 </td>
             </tr>
             </c:forEach>
         </table>
+
+        <c:if test="${numberOfUsers > 0}">
+            <p><kantega:label key="useradmin.searchprofiles.foundnusers" numberOfUsers="${numberOfUsers}"/></p>
+        </c:if>
 
         <c:if test="${canEdit}">
             <div class="buttonGroup">
