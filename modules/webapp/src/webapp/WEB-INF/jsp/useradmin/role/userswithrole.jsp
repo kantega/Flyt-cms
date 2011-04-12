@@ -50,7 +50,7 @@
                 </tr>
                 <c:forEach items="${profileSet.profiles}" var="profile" varStatus="status">
                     <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                        <td><c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/></td>
+                        <td><a href="../profile/edit?domain=${profile.identity.domain}&amp;userId=${profile.identity.userId}"><c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/></a></td>
                         <td align="right">
                             <c:if test="${profileSet.isEditable}">
                                 <a href="Javascript:removeRole('<c:out value="${role.id}"/>', '<c:out value="${role.domain}"/>')" class="button delete"><kantega:label key="useradmin.userroles.remove"/></a>

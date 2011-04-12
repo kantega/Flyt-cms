@@ -43,9 +43,7 @@
 
     <bean id="resetPasswordController" class="no.kantega.useradmin.controls.ResetPasswordController" parent="useradminController"></bean>
 
-    <bean id="searchProfilesController" class="no.kantega.useradmin.controls.SearchProfilesController" parent="useradminController">
-        <property name="minQueryLength" value="${security.profiles.minquerylength}"/> 
-    </bean>
+    <bean id="searchProfilesController" class="no.kantega.useradmin.controls.SearchProfilesController" parent="useradminController"/>
 
     <bean id="editProfileController" class="no.kantega.useradmin.controls.EditProfileController" parent="useradminController"></bean>
     <bean id="deleteProfileController" class="no.kantega.useradmin.controls.DeleteProfileController" parent="useradminController"></bean>
