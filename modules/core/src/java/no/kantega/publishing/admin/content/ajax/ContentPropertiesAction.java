@@ -100,7 +100,7 @@ public class ContentPropertiesAction implements Controller {
 
 
                 //Broken links
-                model.put("links", aksessLinkDao.getLinksforContentId(content.getId()));
+                model.put("links",  aksessLinkDao.getBrokenLinksforContentId(content.getId()));
 
 
                 //Associations

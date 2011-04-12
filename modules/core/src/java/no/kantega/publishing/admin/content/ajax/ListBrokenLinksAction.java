@@ -21,7 +21,6 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.ao.LinkDao;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.commons.client.util.RequestParameters;
 
@@ -47,13 +46,9 @@ public class ListBrokenLinksAction extends SimpleAdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         RequestParameters params = new RequestParameters(request);
-
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
-
-        final List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
-
+        List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
         String sort = params.getString("sort");
-
         Map<String, Object> model = new HashMap<String, Object>();
 
         // Extracting currently selected content from it's url
@@ -61,20 +56,11 @@ public class ListBrokenLinksAction extends SimpleAdminController {
         if (!"".equals(url)) {
             try {
                 cid = new ContentIdentifier(request, url);
-
-                // Find all broken links
-                linkDao.doForEachLinkOccurrence(cid, sort, new LinkOccurrenceHandler() {
-                    public void handleLinkOccurrence(LinkOccurrence linkOccurrence) {
-                        brokenLinks.add(linkOccurrence);
-                    }
-                });
-
+                brokenLinks = linkDao.getBrokenLinksUnderParent(cid, sort);
                 model.put("brokenLinks", brokenLinks);
             } catch (ContentNotFoundException e) {
-                // Do nothing
             }
         }
-
         return new ModelAndView(getView(), model);
     }
 }
