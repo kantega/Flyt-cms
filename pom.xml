@@ -274,7 +274,7 @@
         <tika.version>0.9</tika.version>
         <springframework.version>2.5.6.SEC02</springframework.version>
         <securityapi.version>2.3</securityapi.version>
-        <securityapi.openimpl.version>2.6</securityapi.openimpl.version>
+        <securityapi.openimpl.version>2.5</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
         <xml-apis.version>1.0.b2</xml-apis.version>
