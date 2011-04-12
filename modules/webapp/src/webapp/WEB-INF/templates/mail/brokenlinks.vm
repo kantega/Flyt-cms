@@ -1,6 +1,6 @@
 <html>
 <body>
-Brunke lenker:
+<h1>Brukne lenker</h1>
 <table>
     <tr>
         <td>Side (Klikk for å redigere)</td>
@@ -25,7 +25,7 @@ Brunke lenker:
     #end
 
     <p>
-        Denne eposten er automatisk generert av Aksess Publisering. Du er registrert som mottaker.
+        Denne eposten er automatisk generert av OpenAksess.
     </p>
 </table>
 </body>

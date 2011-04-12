@@ -1,11 +1,5 @@
 <%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="no.kantega.publishing.modules.linkcheck.check.BrokenLinkNotifierJob"%>
-<%--
-<%
-    LinkCrawlerJob crawler = (LinkCrawlerJob)RootContext.getInstance().getBean("linkCrawlJob");
-    crawler.execute();
-%>--%>
-
 
 <html>
 <body>
