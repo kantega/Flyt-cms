@@ -62,11 +62,13 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
         } else if (metadata.getKey().equals(ExifMetadata.EXIF_MODEL)) {
             multimedia.setCameraModel(metadata.getValue());
         } else if (metadata.getKey().equals(ExifMetadata.EXIF_ORIGINAL_DATE)) {
-            DateFormat df = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
-            try {
-                multimedia.setOriginalDate(df.parse(metadata.getValue()));
-            } catch (ParseException e) {
-                Log.info(this.getClass().getName(), "Unable to parse date for image:" + multimedia.getName());
+            if (!metadata.getValue().startsWith("0000")) {
+                DateFormat df = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+                try {
+                    multimedia.setOriginalDate(df.parse(metadata.getValue()));
+                } catch (ParseException e) {
+                    Log.info(this.getClass().getName(), "Unable to parse date for image:" + multimedia.getName());
+                }
             }
         }
     }
