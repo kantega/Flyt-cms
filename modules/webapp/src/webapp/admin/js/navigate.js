@@ -82,6 +82,9 @@ openaksess.navigate = {
     navigatorResizeOnStop : function(){},
     navigatorResizeOnResize : function(){},
 
+    getClipBoardHandler : function() {
+        return null;
+    },
 
     /**
      * Defines actions for clicks in the navigator.
@@ -154,11 +157,13 @@ openaksess.navigate = {
         }
         params.expand = expand;
 
-        // TODO: Cant check contentclipboard handler -- what about mediaarchive?
         $("#Navigator").load(openaksess.navigate.getNavigatorAction(), params, function() {
             openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + openaksess.navigate.getNavigatorAction() + " received");
-            if (typeof ContentClipboardHandler == "object") {
-                ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
+
+            var clipBoardHandler = openaksess.navigate.getClipBoardHandler();
+
+            if (typeof clipBoardHandler == "object") {
+                clipBoardHandler.isClipboardEmpty(function(clipboardEmpty){
                     openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
                     openaksess.navigate.setContextMenus(clipboardEmpty);
                 });                

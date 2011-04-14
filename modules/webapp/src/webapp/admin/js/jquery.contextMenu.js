@@ -92,7 +92,7 @@ if(jQuery)( function() {
 
                             // Show the menu
 
-                            $("body").unbind('click');
+                            $(document).unbind('click.contextMenu');
 
                             $(menu).css({ top: y, left: x }).fadeIn(o.inSpeed);
                             // Hover events
@@ -104,7 +104,7 @@ if(jQuery)( function() {
                             });
 
                             // Keyboard
-                            $("body").keypress( function(e) {
+                            $(document).bind('keypress.contextMenu', function(e) {
                                 switch( e.keyCode ) {
                                     case 38: // up
                                         if( $(menu).find('LI.hover').size() == 0 ) {
@@ -134,7 +134,7 @@ if(jQuery)( function() {
                             // When items are selected
                             $('#' + o.menu).find('A').unbind('click');
                             $('#' + o.menu).find('LI:not(.disabled) A').click( function() {
-                                $(document).unbind('click').unbind('keypress');
+                                $(document).unbind('click.contextMenu').unbind('keypress.contextMenu');
                                 $(".contextMenu").hide();
                                 // Callback
                                 if( callback ) callback( $(this).attr('href').substr(1), activeElement, {x: x - offset.left, y: y - offset.top, docX: x, docY: y} );
@@ -146,8 +146,8 @@ if(jQuery)( function() {
 
                             // Hide bindings
                             setTimeout( function() { // Delay for Mozilla
-                                $("body").click( function() {
-                                    $("body").unbind('click').unbind('keypress');
+                                $(document).bind('click.contextMenu', function() {
+                                    $(document).unbind('click.contextMenu').unbind('keypress.contextMenu');
                                     $(menu).fadeOut(o.outSpeed);
                                     return false;
                                 });
