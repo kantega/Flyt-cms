@@ -17,6 +17,7 @@
 package no.kantega.publishing.api.taglibs.photoalbum;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -75,7 +76,7 @@ public class PhotoLinkTag extends BodyTagSupport {
                 } else {
                     url = url + "&amp;id=" + mm.getId();
                 }
-                out.write(" href=\"" + url + "\">");
+                out.write(" href=\"" + Aksess.getContextPath() + url + "\">");
                 bodyContent.writeOut(out);
                 out.write("</a>");
             }
