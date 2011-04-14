@@ -104,7 +104,7 @@ if(jQuery)( function() {
                             });
 
                             // Keyboard
-                            $(document).keypress( function(e) {
+                            $("body").keypress( function(e) {
                                 switch( e.keyCode ) {
                                     case 38: // up
                                         if( $(menu).find('LI.hover').size() == 0 ) {
