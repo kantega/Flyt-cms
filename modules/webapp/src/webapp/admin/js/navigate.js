@@ -198,11 +198,6 @@ openaksess.navigate = {
      * @param disabledOptions Array of disabled options. Must be the href-value in the menu's a-element, without the leading hash (#).
      */
     setContextMenu : function(type, disabledOptions) {
-        //$("#Navigator").
-
-
-        //This menu performs so badly, must replace with our own
-
         $("#Navigator").contextMenu(
             {
                 itemClass: type,
