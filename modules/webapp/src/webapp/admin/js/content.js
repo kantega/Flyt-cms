@@ -675,7 +675,7 @@ openaksess.navigate.getNavigatorAction = function() {
 };
 
 openaksess.navigate.getClipBoardHandler = function() {
-    return ContentClipBoardHandler;
+    return ContentClipboardHandler;
 };
 
 /**
