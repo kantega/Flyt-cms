@@ -91,6 +91,15 @@
                 $("#LockedHelp").hide();
             }
         });
+        $("#EndDateAction input[name=expireaction]").change(function() {
+            var expireAction = $(this).val();
+            if (expireAction == <%=ExpireAction.DELETE%>) {
+                $("#ExpireActionDeleteWarning").show();
+            } else {
+                $("#ExpireActionDeleteWarning").hide();
+            }
+        });
+
         // Load topics
         var params = new Object();
         openaksess.editcontext.updateTopics(params);
@@ -140,6 +149,7 @@
                         <td><label for="ExpireActionDelete"><kantega:label key="aksess.publishinfo.period.action.delete"/></label></td>
                     </tr>
                 </table>
+                <div class="ui-state-error" id="ExpireActionDeleteWarning" <%if (expireAction != ExpireAction.DELETE) out.write(" style=\"display:none\"");%>><kantega:label key="aksess.publishinfo.period.action.delete.warning"/></div>
             </div>
         </fieldset>
     </div>
