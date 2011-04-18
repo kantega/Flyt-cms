@@ -367,6 +367,11 @@ openaksess.navigate.getNavigatorAction = function() {
     return properties.contextPath + "/admin/multimedia/MultimediaNavigator.action";
 };
 
+openaksess.navigate.getClipBoardHandler = function() {
+    return MultimediaClipboardHandler;
+};
+
+
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
 };

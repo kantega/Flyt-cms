@@ -714,6 +714,10 @@ openaksess.navigate.getNavigatorAction = function() {
     return properties.contextPath + "/admin/publish/ContentNavigator.action";
 };
 
+openaksess.navigate.getClipBoardHandler = function() {
+    return ContentClipboardHandler;
+};
+
 /**
  * Handles selections in the context menu for menu items of type page.
  *
