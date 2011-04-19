@@ -35,6 +35,7 @@ import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -95,15 +96,15 @@ public final class AttributeTagHelper {
                             ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
                             if (cid != null) {
                                 // Next or previous page found
-                            content = cs.getContent(cid, false);
-                            if (collection == null) {
+                                content = cs.getContent(cid, false);
+                                if (collection == null) {
                                     request.setAttribute(getCacheKeyPrefix(request) + contentId, content);
-                            }
+                                }
                             } else {
                                 // Page was not found
                                 content = null;
+                            }
                         }
-                    }
                     }
                 } catch (NotAuthorizedException e) {
                     // Viser ikke elementet dersom brukeren ikke har tilgang til det
@@ -166,7 +167,22 @@ public final class AttributeTagHelper {
      * @throws SystemException
      * @throws NotAuthorizedException
      */
+    @Deprecated
     public static String getAttribute(Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
+        return getAttribute(SecuritySession.createNewAdminInstance(), content, cmd, inheritFromAncestors);
+    }
+
+    /**
+     * Henter en attributt for angitt objekt, b�de faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde p� innhold hvis n�dvendig etc.
+     * Leter etter attributt p� alle niv�ene overfor hvis inheritFromAncestors = true
+     * @param content
+     * @param cmd
+     * @return
+     * @throws SystemException
+     * @throws NotAuthorizedException
+     */
+    public static String getAttribute(SecuritySession securitySession, Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
         String value = getAttribute(content, cmd);
         if ((value == null || value.length() == 0) && (content != null && inheritFromAncestors)) {
             // Fant ikke verdi p� dette niv�et, pr�ver � lete lengre opp
@@ -177,8 +193,8 @@ public final class AttributeTagHelper {
 
                 ContentQuery query = new ContentQuery();
                 query.setContentList(contentList);
-
-                List parents = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), true);
+                ContentManagementService cms = new ContentManagementService(securitySession);
+                List parents = cms.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), true, false);
                 for (int i = parents.size() - 1; i >= 0 ; i--) {
                     Content parent =  (Content)parents.get(i);
                     value = getAttribute(parent, cmd);
@@ -190,6 +206,7 @@ public final class AttributeTagHelper {
         }
         return value;
     }
+
 
 
     /**
@@ -231,7 +248,7 @@ public final class AttributeTagHelper {
                         result = number.getValue(cmd.getFormat());
                     } else {
                         result = number.getValue();
-                    }                    
+                    }
                 } else if(attr instanceof MediaAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
                     if (width != -1) {
@@ -265,7 +282,7 @@ public final class AttributeTagHelper {
                 } else if (name.equals(ContentProperty.CONTENTID)) {
                     result = "" + content.getId();
                 } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
-                    result = "" + content.getAssociation().getNumberOfViews();                    
+                    result = "" + content.getAssociation().getNumberOfViews();
                 } else if (name.equals(ContentProperty.URL)) {
                     result = content.getUrl();
                 } else if (name.equals(ContentProperty.ALIAS)) {

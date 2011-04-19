@@ -136,7 +136,9 @@ public class GetAttributeTag extends TagSupport {
                 if (contentObject == null) {
                     contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
                 }
-                String result = AttributeTagHelper.getAttribute(contentObject, cmd, inheritFromAncestors);
+
+                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+                String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
 
                 if (defaultValue != null && (result == null || result.length() == 0)) {
                     result = defaultValue;

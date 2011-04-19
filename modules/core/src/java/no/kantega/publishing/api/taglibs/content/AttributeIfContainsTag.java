@@ -20,7 +20,9 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.security.SecuritySession;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.jsp.JspException;
 import java.util.StringTokenizer;
@@ -70,7 +72,9 @@ public class AttributeIfContainsTag  extends ConditionalTagSupport {
             cmd.setName(name);
             cmd.setProperty(AttributeProperty.VALUE);
 
-            String result = AttributeTagHelper.getAttribute(contentObject, cmd, inheritFromAncestors);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+
+            String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
             if (result != null){
                 StringTokenizer resultSplit = new StringTokenizer(result, ",");
                 while (resultSplit.hasMoreTokens()){
