@@ -65,6 +65,11 @@ public class CacheExpirator extends ContentEventListenerAdapter {
         removeContentFromCache(event);
     }
 
+    @Override
+    public void newContentPublished(ContentEvent event) {
+        removeContentFromCache(event);
+    }
+
     private Cache getContentCache() {
         return cacheManager.getCache(CacheManagerFactory.CacheNames.ContentCache.name());
     }
