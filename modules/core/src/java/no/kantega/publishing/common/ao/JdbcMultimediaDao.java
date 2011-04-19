@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap";
 
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
@@ -271,9 +271,9 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 if (multimedia.isNew()) {
                     // Ny
                     if (!hasData) {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?)", Statement.RETURN_GENERATED_KEYS);
                     } else {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?)", Statement.RETURN_GENERATED_KEYS);
                     }
                 } else {
                     // Oppdater
@@ -405,6 +405,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
             mm.setNoFiles(rs.getInt("NoFiles"));
             mm.setNoSubFolders(rs.getInt("NoSubFolders"));
+            mm.setHasImageMap(rs.getInt("HasImageMap") > 0);
 
             return mm;
         }

@@ -62,6 +62,8 @@ public class Multimedia extends BaseObject {
     private int noFiles = 0; // Number of files in folder
     private int noSubFolders = 0; // Number of sub folders in folder
 
+    private boolean hasImageMap = false;
+
 
     private List<ExifMetadata> exifMetadata;
 
@@ -326,5 +328,13 @@ public class Multimedia extends BaseObject {
 
     public void setExifMetadata(List<ExifMetadata> exifMetadata) {
         this.exifMetadata = exifMetadata;
+    }
+
+    public boolean hasImageMap() {
+        return hasImageMap;
+    }
+
+    public void setHasImageMap(boolean hasImageMap) {
+        this.hasImageMap = hasImageMap;
     }
 }

@@ -269,6 +269,7 @@
         <column name="GPSLatitude" required="false" type="VARCHAR" size="32"/>
         <column name="GPSLongitudeRef" required="false" type="VARCHAR" size="1"/>
         <column name="GPSLongitude" required="false" type="VARCHAR" size="32"/>
+        <column name="HasImageMap" required="false" type="INTEGER" size="10"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>
