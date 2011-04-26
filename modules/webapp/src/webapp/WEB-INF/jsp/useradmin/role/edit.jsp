@@ -60,6 +60,12 @@
                 <input type="text" name="roleId" class="textInput" value="<c:out value="${role.id}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
             </p>
 
+            <c:if test="${!canEdit}">
+                <div class="ui-state-highlight">
+                    <kantega:label key="useradmin.role.noteditable"/>
+                </div>
+            </c:if>
+
             <div class="buttonGroup">
                 <c:if test="${canEdit}">
                     <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.save"/>"></span>
