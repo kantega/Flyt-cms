@@ -120,6 +120,12 @@ public class dbConnectionFactory {
             }
 
 
+            DriverManagerDataSource rawDataSource = new DriverManagerDataSource();
+            rawDataSource.setDriverClassName(dbDriver);
+            rawDataSource.setUrl(dbUrl);
+            rawDataSource.setUsername(dbUsername);
+            rawDataSource.setPassword(dbPassword);
+
             if (dbEnablePooling) {
                 // Enable DBCP pooling
                 BasicDataSource bds = new BasicDataSource();
@@ -150,17 +156,13 @@ public class dbConnectionFactory {
 
                 ds = bds;
             } else {
-                DriverManagerDataSource dmds = new DriverManagerDataSource();
-                dmds.setDriverClassName(dbDriver);
-                dmds.setUrl(dbUrl);
-                dmds.setUsername(dbUsername);
-                dmds.setPassword(dbPassword);
-                ds = dmds;
+                ds = rawDataSource;
             }
 
-            ensureDatabaseExists(ds);
+            // Use non-pooled datasource for table creation since validation query might fail
+            ensureDatabaseExists(rawDataSource);
             if(shouldMigrateDatabase) {
-                migrateDatabase(servletContext, ds);
+                migrateDatabase(servletContext, rawDataSource);
             }
 
             dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
