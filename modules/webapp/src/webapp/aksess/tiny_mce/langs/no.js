@@ -130,7 +130,7 @@ fullscreen:{
 desc:"Sl\u00E5 fullskjermmodus av/p\u00E5"
 },
 media:{
-desc:"Sett inn/editer innebygget objekt",
+desc:"Sett inn/editer multimedieobjekt",
 edit:"Editer innebygget objekt"
 },
 fullpage:{
