@@ -266,7 +266,7 @@ public abstract class Attribute {
     }
 
     public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
-        if (mandatory && (value == null || value.length() == 0)) {
+        if (mandatory && editable && (value == null || value.length() == 0)) {
             Map<String, Object> objects = new HashMap<String, Object>();
             objects.put("field", title);
             errors.add(name, "aksess.feil.mandatoryfield", objects);
