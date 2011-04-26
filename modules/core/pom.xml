@@ -65,13 +65,7 @@
         <dependency>
             <groupId>${pom.groupId}</groupId>
             <artifactId>openaksess-dbmigrate</artifactId>
-            <version>1.3</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>1.4</version>
         </dependency>
 
         <dependency>
