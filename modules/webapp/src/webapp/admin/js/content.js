@@ -219,7 +219,7 @@ openaksess.content = {
         },
 
         openInNewWindow : function(url) {
-            window.open(properties.contextPath + "/content.ap" + url);
+            window.open(properties.contextPath + "/content.ap?" + url);
         },
 
         newSubpage : function(url) {
@@ -824,6 +824,37 @@ openaksess.navigate.getNavigatorParams = function() {
     params.showExpired = !$("#FilteroptionHideExpired").is(":checked");
     return params;
 };
+
+
+
+
+/**
+ * Changes the content of the contentmain iframe.
+ * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
+ *
+ * Overrides the default implementation. See navigate.js
+ *
+ * If no arguments are supplied, i.e. no id=undefined and suppressNavigatorUpdate=undefined, an iframe reload is implied.
+ *
+ * @param id
+ * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
+ */
+openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
+    openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
+    if (suppressNavigatorUpdate) {
+        suppressNavigatorUpdate = true;
+    }
+    var iframe = document.getElementById("Contentmain");
+    if (iframe) {
+        if (id == undefined && suppressNavigatorUpdate == undefined) {
+            iframe.contentWindow.document.location.reload();
+        } else {
+            iframe.src = openaksess.common.getContentUrlFromAssociationId(id);
+        }
+
+    }
+};
+
 
 /*
  * Return URL to search action

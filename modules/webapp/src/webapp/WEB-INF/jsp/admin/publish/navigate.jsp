@@ -56,27 +56,6 @@
         }
 
 
-        /**
-         * Changes the content of the contentmain iframe.
-         * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
-         *
-         * Overrides the default implementation. See navigate.js
-         *
-         * @param id
-         * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
-         */
-        openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
-            openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
-            if (suppressNavigatorUpdate) {
-                suppressNavigatorUpdate = true;
-            }
-            var iframe = document.getElementById("Contentmain");
-            if (iframe) {
-                iframe.src = openaksess.common.getContentUrlFromAssociationId(id);
-            }
-        };
-
-
     </script>
 </kantega:section>
 

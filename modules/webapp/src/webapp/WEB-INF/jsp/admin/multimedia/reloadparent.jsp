@@ -36,6 +36,7 @@
 
         $(document).ready(function() {
             getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
+            getParent().openaksess.navigate.updateMainPane(getParent().openaksess.navigate.getCurrentItemIdentifier(), false);
         });
 
         setTimeout('closePopup()', 3000);
