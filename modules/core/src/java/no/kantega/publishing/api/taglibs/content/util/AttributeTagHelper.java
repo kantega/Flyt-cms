@@ -25,6 +25,7 @@ import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.*;
@@ -34,6 +35,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 
@@ -249,18 +251,17 @@ public final class AttributeTagHelper {
                     } else {
                         result = number.getValue();
                     }
-                } else if(attr instanceof MediaAttribute) {
+                } else if(attr instanceof MediaAttribute || attr instanceof ImageAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
-                    if (width != -1) {
-                        media.setMaxWidth(width);
+
+                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
+                        Multimedia mm = media.getMultimedia();
+                        if (mm != null) {
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                        }
+                    } else {
+                        result = media.getProperty(cmd.getProperty());
                     }
-                    if (height != -1) {
-                        media.setMaxHeight(height);
-                    }
-                    if (cssClass != null) {
-                        media.setCssclass(cssClass);
-                    }
-                    result = media.getProperty(cmd.getProperty());
 
                     // Angi om bilde / medieobjekt skal vises inline eller lastes ned
                     if (cmd.getContentDisposition() != null && AttributeProperty.URL.equalsIgnoreCase(cmd.getProperty())) {
@@ -301,18 +302,16 @@ public final class AttributeTagHelper {
                     result = content.getKeywords();
                     isTextAttribute = true;
                 } else if (name.equals(ContentProperty.IMAGE)) {
-                    MediaAttribute ma = new MediaAttribute();
-                    if (width != -1) {
-                        ma.setMaxWidth(width);
+                    MediaAttribute media = new MediaAttribute();
+                    media.setValue(content.getImage());
+                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
+                        Multimedia mm = media.getMultimedia();
+                        if (mm != null) {
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                        }
+                    } else {
+                        result = media.getProperty(cmd.getProperty());
                     }
-                    if (height != -1) {
-                        ma.setMaxHeight(height);
-                    }
-                    if (cssClass != null) {
-                        ma.setCssclass(cssClass);
-                    }
-                    ma.setValue(content.getImage());
-                    result = ma.getProperty(cmd.getProperty());
                 } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE) || name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
                     Date date = null;
                     if (cmd.getFormat() == null) {

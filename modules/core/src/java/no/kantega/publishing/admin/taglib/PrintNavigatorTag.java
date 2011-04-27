@@ -84,9 +84,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
         sitemap.setDepth(currentDepth);
 
-        if (sitemap.getId() == currentId) {
-            sitemap.setSelected(true);
-        }
+        sitemap.setSelected(sitemap.getId() == currentId);
 
         if (sitemap.getId() == startId && !doDisplay) {
             doDisplay = true;
@@ -95,6 +93,8 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         if (doDisplay) {
             menuitems.add(sitemap);
         }
+
+        sitemap.setOpen(false);
 
         List<NavigationMapEntry> children = sitemap.getChildren();
         if (children != null) {

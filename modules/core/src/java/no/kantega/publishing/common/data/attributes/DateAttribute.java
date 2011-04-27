@@ -48,11 +48,11 @@ public class DateAttribute extends Attribute {
         setValue(value);
     }
 
-    public void setFormat(String dateFormat) {
+    protected void setFormat(String dateFormat) {
         setFormat(dateFormat, null);
     }
 
-    public void setFormat(String dateFormat, Locale locale) {
+    protected void setFormat(String dateFormat, Locale locale) {
         this.dateFormat = dateFormat;
 
         if (dateValue != null) {

@@ -36,6 +36,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
+@Deprecated
 public class FormAttribute extends ListAttribute {
     private static final String SOURCE = "aksess.FormAttribute";
 

@@ -98,10 +98,10 @@ public class SiteMapEntry extends NavigationMapEntry {
 
      public boolean isAncestorFor(int childId){
         boolean result = false;
-        if (getChildren()!=null){
-            for (int i=0;i<getChildren().size(); i++){
+        if (getChildren() != null) {
+            for (int i=0;i<getChildren().size(); i++) {
                 SiteMapEntry child = (SiteMapEntry) getChildren().get(i);
-                if (child.getId()==childId) return true;
+                if (child.getId() == childId) return true;
                 result = child.isAncestorFor(childId);
                 if (result) break;
             }
