@@ -101,7 +101,7 @@
                 $(document).ready(function() {
                     $("#url_contentIdtext").oaAutocomplete({
                         defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
-                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
+                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true",
                         select: openaksess.editcontext.autocompleteInsertIntoFormCallback
                     });
                 });
