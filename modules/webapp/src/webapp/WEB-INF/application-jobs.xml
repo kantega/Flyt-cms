@@ -47,7 +47,9 @@
     <bean name="expireContentAlertJob" class="no.kantega.publishing.jobs.alerts.ExpireContentAlertJob">
         <property name="listeners">
             <list>
-                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener"/>
+                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
+                    <property name="mailFrom" value="${mail.from}"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -79,6 +81,7 @@
             <list>
                 <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
                     <property name="mailTemplate" value="revisioncontent.vm"/>
+                    <property name="mailFrom" value="${mail.from}"/>
                 </bean>
             </list>
         </property>

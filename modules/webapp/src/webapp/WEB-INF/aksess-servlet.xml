@@ -226,7 +226,6 @@
                 <prop key="/admin/administration/topicmaps/ListTopicTypes.action">listTopicTypesAction</prop>
                 <prop key="/admin/administration/topicmaps/EditTopicType.action">editTopicTypeAction</prop>
                 <prop key="/admin/administration/topicmaps/DeleteTopicType.action">deleteTopicTypeAction</prop>
-                <!--<prop key="/admin/administration/ListJobs.action">listJobsAction</prop>-->
                 <!-- Site config controllers -->
                 <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
                 <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
@@ -706,9 +705,6 @@
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopictype.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicTypeAction" id="deleteTopicTypeAction"/>
-<!--    <bean class="org.kantega.openaksess.plugins.jobexecuter.ListJobsController" id="listJobsAction">
-        <property name="view" value="/WEB-INF/jsp/admin/administration/listjobs.jsp"/>
-    </bean>-->
     <!-- Site config -->
     <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>
