@@ -1086,7 +1086,7 @@ public class ContentAO {
                 lockSt.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
                 lockSt.executeUpdate();
             } catch (SQLException e) {
-                throw new TransactionLockException(SOURCE, "Error locking contentId:" + -1, e);
+                throw new TransactionLockException(SOURCE, "Error locking contentId:" + contentId, e);
             }
         }
     }
