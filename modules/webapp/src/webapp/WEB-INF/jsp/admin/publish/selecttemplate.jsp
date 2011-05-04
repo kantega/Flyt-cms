@@ -252,6 +252,7 @@
                             }
                         }
                         name = name.replace('*', ' ');
+                        if (desc == null) desc = "";
                 %>
                 <div class="row">
                     <input id="template_<%=type%>_<%=id%>" type="radio" class="radio" name="templateId" value="<%=type%>_<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
