@@ -18,7 +18,6 @@ package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import org.apache.commons.io.IOUtils;
-import org.kantega.jexmec.ClassLoaderAwarePluginManager;
 import org.kantega.jexmec.PluginManager;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -97,7 +96,6 @@ public class PluginStaticContentController extends AbstractController {
     }
 
     private URL getResourceFromPlugins(String resourcePath) {
-        ClassLoaderAwarePluginManager<OpenAksessPlugin> pluginManager = ClassLoaderAwarePluginManager.class.cast(this.pluginManager);
         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             ClassLoader classLoader = pluginManager.getClassLoader(plugin);
 

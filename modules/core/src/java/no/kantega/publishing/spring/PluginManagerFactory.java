@@ -1,8 +1,10 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import org.kantega.jexmec.*;
-import org.kantega.jexmec.simple.SimpleClassLoaderStrategy;
+import org.kantega.jexmec.PluginLoader;
+import org.kantega.jexmec.PluginManager;
+import org.kantega.jexmec.ServiceLocator;
+import org.kantega.jexmec.manager.DefaultPluginManager;
 import org.kantega.jexmec.spring.SpringPluginLoader;
 import org.kantega.jexmec.spring.SpringServiceLocator;
 import org.springframework.beans.BeansException;
@@ -34,8 +36,8 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     private ServiceLocator serviceLocator;
     private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
     private List<BeanFactoryPostProcessor> postProcessors;
-    private Class<? extends Services> servicesClass;
-    private Class<? extends Plugin> pluginClass;
+    private Class servicesClass;
+    private Class pluginClass;
 
     public Class getObjectType() {
         return PluginManager.class;
@@ -90,9 +92,9 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         }
 
         pluginClass = OpenAksessPlugin.class;
-        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass,
-                serviceLocator);
-        manager.addClassLoaderStrategy(new SimpleClassLoaderStrategy(applicationContext.getClassLoader()));
+        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass);
+        manager.addServiceLocator(serviceLocator);
+        manager.addPluginClassLoader(applicationContext.getClassLoader());
         manager.addPluginLoader(spring);
         return manager;
     }
@@ -124,11 +126,11 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         }
     }
 
-    public void setServicesClass(Class<? extends Services> servicesClass) {
+    public void setServicesClass(Class servicesClass) {
         this.servicesClass = servicesClass;
     }
 
-    public void setPluginClass(Class<? extends Plugin> pluginClass) {
+    public void setPluginClass(Class pluginClass) {
         this.pluginClass = pluginClass;
     }
 

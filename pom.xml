@@ -256,7 +256,7 @@
         <xalan.version>2.7.1</xalan.version>
         <xercesImpl.version>2.9.1</xercesImpl.version>
         <xml-apis.version>1.3.04</xml-apis.version>
-        <jexmec.version>1.25</jexmec.version>
+        <jexmec.version>2.0.0rc6</jexmec.version>
         <jtds.version>1.2.5</jtds.version>
         <mysql.version>5.1.14</mysql.version>
         <servlet.version>2.5</servlet.version>
