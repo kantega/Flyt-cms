@@ -250,3 +250,10 @@ html, body {
 
 /* TinyMCE override styles */
 .o2k7Skin .mceMenu { width: auto !important;}
+
+.inpSelectList {
+    background: #fff;
+    border: 1px solid #999;
+    max-height: 200px;
+    overflow: auto;
+}
