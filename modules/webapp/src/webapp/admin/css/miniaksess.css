@@ -154,3 +154,10 @@
 iframe#externalSite {
     padding: 0;
 }
+
+.inpSelectList {
+    background: #fff;
+    border: 1px solid #999;
+    max-height: 200px;
+    overflow: auto;
+}
