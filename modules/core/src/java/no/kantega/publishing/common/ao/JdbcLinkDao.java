@@ -139,9 +139,9 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
         String query = brokenLinkBasisQuery;
-        query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE '%/?/%' OR UniqueId = ?)";
+        query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)";
         query += getDefaultOrderByClause();
-        Object[] args = {parent.getAssociationId(), parent.getAssociationId()};
+        Object[] args = {"%/" + parent.getAssociationId() + "/%", parent.getAssociationId()};
         return findMatchingLinkOccurrences(query, args);
     }
 
