@@ -28,7 +28,6 @@
 
     DatetimeAttribute attribute = (DatetimeAttribute)request.getAttribute("attribute");
 
-    attribute.setFormat(Aksess.getDefaultDatetimeFormat());
     String dateValue = (attribute.getDateValue() != null && attribute.getDateValue().trim().length() > 0)? attribute.getDateValue() : DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale());
     String timeValue = (attribute.getTimeValue() != null && attribute.getTimeValue().trim().length() > 0)? attribute.getTimeValue() : DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale());
 %>
