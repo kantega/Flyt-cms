@@ -69,7 +69,14 @@ public class ListJobsController extends AdminController {
         for (Scheduler scheduler : schedulers) {
             for (String group : scheduler.getTriggerGroupNames()) {
                 for (String trigger : scheduler.getTriggerNames(group)) {
-                    triggers.add(scheduler.getTrigger(trigger,group));
+                    Trigger trig = scheduler.getTrigger(trigger,group);
+                    /*
+                     If trigger does not have any nextfiretime it is caused by a manual execution of a job.
+                     We do not want these triggers included, because they will result in duplicates.
+                     */
+                    if (trig.getNextFireTime()!=null) {
+                        triggers.add(trig);
+                    }
                 }
             }
             currentyExecuting.addAll(scheduler.getCurrentlyExecutingJobs());
