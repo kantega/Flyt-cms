@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.search.dao;
 
+import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.search.index.model.TmBaseName;
 
 import javax.sql.DataSource;
@@ -29,7 +30,6 @@ import java.util.List;
 
 public class AksessDao {
     private DataSource dataSource;
-    private static final int STATUS_PUBLISHED = 30;
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -110,7 +110,7 @@ public class AksessDao {
         try {
             PreparedStatement p = c.prepareStatement("SELECT ContentVersionId FROM contentversion WHERE ContentId = ? AND IsActive=1 AND Status = ?");
             p.setInt(1, contentId);
-            p.setInt(2, STATUS_PUBLISHED);
+            p.setInt(2, ContentStatus.PUBLISHED);
             int a = -1;
             ResultSet rs = p.executeQuery();
             if(rs.next()) {
