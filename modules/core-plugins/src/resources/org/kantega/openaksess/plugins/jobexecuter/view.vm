@@ -7,6 +7,7 @@
             <table class="fullWidth">
                 <tr>
                     <th><strong>#pluginMessage('jobexecuter.jobname')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.cronexpression')</strong></th>
                     <th><strong>#pluginMessage('jobexecuter.job.previousrun')</strong></th>
                     <th><strong>#pluginMessage('jobexecuter.job.nextrun')</strong></th>
                     <th>&nbsp;</th>
@@ -14,13 +15,14 @@
                 #foreach($trigger in $triggers)
                     <tr>
                         <td>$trigger.jobName</td>
+                        <td>$!{trigger.cronExpression}</td>
                         <td>#if (!$trigger.previousFireTime)
                                 #pluginMessage('jobexecuter.job.neverrun')
                             #else
-                                $trigger.previousFireTime
+                                $dateTool.format("yyyy-MM-dd HH:mm", $trigger.previousFireTime)
                             #end
                         </td>
-                        <td>$trigger.nextFireTime</td>
+                        <td>$dateTool.format("yyyy-MM-dd HH:mm", $trigger.nextFireTime)</td>
                         <td><a href="?runJobName=$trigger.jobName&runGroupName=$trigger.jobGroup">#pluginMessage('jobexecuter.job.execute')</a></td>
                     </tr>
                 #end
