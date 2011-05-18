@@ -33,6 +33,7 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
     private ApplicationContext rootApplicationContext;
 
     @RequestMapping(method = RequestMethod.GET)
-    public String show(HttpServletRequest request, ModelMap model) {
+    public String show(HttpServletRequest request, ModelMap model) throws IOException {
         model.put("contextPath", request.getContextPath());
         return view;
     }
