@@ -802,6 +802,8 @@
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
 
+    <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
+
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
 
 </beans>
