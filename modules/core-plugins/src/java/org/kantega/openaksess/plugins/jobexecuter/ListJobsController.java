@@ -16,10 +16,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -81,12 +78,21 @@ public class ListJobsController extends AdminController {
             }
             currentyExecuting.addAll(scheduler.getCurrentlyExecutingJobs());
         }
-        triggers = filterJobs(triggers, jobs);
+        triggers = sortJobs(filterJobs(triggers, jobs));
 
         model.put("currentlyExecuting", currentyExecuting);
         model.put("triggers", triggers);
 
         return new ModelAndView ("org/kantega/openaksess/plugins/jobexecuter/view", model);
+    }
+
+    private List<Trigger> sortJobs(List<Trigger> triggers) {
+        Collections.sort(triggers, new Comparator<Trigger>() {
+            public int compare(Trigger trigger, Trigger trigger1) {
+                return trigger.getName().compareTo(trigger1.getName());
+            }
+        });
+        return triggers;
     }
 
     private List<Trigger> filterJobs(List<Trigger> triggers, String[] jobs) {
