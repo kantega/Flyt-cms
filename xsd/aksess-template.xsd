@@ -3,7 +3,7 @@
     <xs:element name="template">
         <xs:complexType>
             <xs:all minOccurs="0">
-                <xs:element ref="helptext" maxOccurs="1"/>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="attributes" maxOccurs="1" minOccurs="1"/>
             </xs:all>
         </xs:complexType>
