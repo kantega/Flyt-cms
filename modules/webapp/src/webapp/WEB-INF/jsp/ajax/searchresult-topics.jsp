@@ -15,7 +15,7 @@
   --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 [
-<c:forEach var="topic" items="${topics}">
+<c:forEach var="topic" items="${topics}" varStatus="status"
 {"id": "${topic.topicMapId}:${topic.id}", "label": "${topic.baseName}", "value": "${topic.baseName}"}
 <c:if test="${!status.last}">,</c:if>
 </c:forEach>
