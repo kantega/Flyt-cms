@@ -89,6 +89,7 @@
                 <xs:element name="description" type="xs:string" minOccurs="0"/>
                 <xs:element name="view" type="xs:string"/>
                 <xs:element name="miniView" type="xs:string" minOccurs="0"/>
+                <xs:element name="rssView" type="xs:string" minOccurs="0"/>
                 <xs:element name="controllers" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
@@ -131,6 +132,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element name="name" type="xs:string" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="databaseId" type="xs:integer"/>
             <xs:attribute name="id" use="required" type="xs:string"/>
