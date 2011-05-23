@@ -17,6 +17,7 @@
 package no.kantega.publishing.search.model;
 
 import no.kantega.commons.media.MimeType;
+import no.kantega.publishing.common.data.Content;
 import org.apache.commons.io.FileUtils;
 import org.apache.lucene.document.Document;
 
@@ -42,6 +43,7 @@ public class AksessSearchHit implements SearchHit {
     private MimeType mimeType = null;
     private boolean doOpenInNewWindow = false;
     private int id = -1;
+    private Content contentObject;
 
     public int getId() {
         return id;
@@ -157,5 +159,13 @@ public class AksessSearchHit implements SearchHit {
 
     public String getFileSizeToDisplaySize() {
         return FileUtils.byteCountToDisplaySize(fileSize);
+    }
+
+    public Content getContentObject() {
+        return contentObject;
+    }
+
+    public void setContentObject(Content contentObject) {
+        this.contentObject = contentObject;
     }
 }

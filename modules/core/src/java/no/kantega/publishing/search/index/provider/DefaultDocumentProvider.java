@@ -162,6 +162,8 @@ public class DefaultDocumentProvider implements DocumentProvider {
             }
 
             searchHit.setId(c.getAssociation().getAssociationId());
+
+            searchHit.setContentObject(c);
         }
     }
 

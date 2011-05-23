@@ -1903,6 +1903,36 @@
         </attribute>
     </tag>
     <tag>
+        <description>Include JSP search view for customized display of object in search result</description>
+        <name>searchview</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.SearchViewTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of request variable to store searchHit in</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>searchhit</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify default view for search hits that are normal content pages</description>
+            <name>defaultviewcontent</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify view for search hits that are not content pages (eg attachments)</description>
+            <name>otherview</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>Get sitemap and save as request attribute</description>
         <name>getsitemap</name>
         <tag-class>no.kantega.publishing.api.taglibs.sitemap.GetSiteMapTag</tag-class>
