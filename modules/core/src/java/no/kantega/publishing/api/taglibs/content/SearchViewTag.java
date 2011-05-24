@@ -22,9 +22,12 @@ public class SearchViewTag extends TagSupport {
 
     private SearchHit searchHit = null;
     private String var = "searchHit";
-    private String defaultViewContent;
-    private String otherView;
+    private String defaultViewContent = "/WEB-INF/jsp/defaultviews/search.jsp";
+    private String otherView = "/WEB-INF/jsp/defaultviews/search.jsp";
 
+    public void setVar(String var) {
+        this.var = var;
+    }
 
     public void setSearchhit(SearchHit searchHit) {
         this.searchHit = searchHit;
@@ -39,8 +42,6 @@ public class SearchViewTag extends TagSupport {
     }
 
     public int doStartTag() throws JspException {
-        resetVars();
-
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
         SiteCache siteCache = (SiteCache) RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
 
