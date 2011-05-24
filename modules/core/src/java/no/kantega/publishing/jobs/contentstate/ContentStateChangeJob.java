@@ -19,6 +19,8 @@ package no.kantega.publishing.jobs.contentstate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
@@ -40,6 +42,11 @@ public class ContentStateChangeJob  {
 
     public void execute() {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
+
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            return;
+        }
 
         try {
             Log.info(SOURCE, "Looking for content that has expired", null, null);
