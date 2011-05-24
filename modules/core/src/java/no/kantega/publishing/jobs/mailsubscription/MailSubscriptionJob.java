@@ -57,7 +57,7 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
             Log.debug(SOURCE, "Unable to read aksess configuration", null, null);
         }
         if(jobDisabled){
-            Log.debug(SOURCE, "Mailsubscriptionjob disabled", null, null);
+            Log.info(SOURCE, "Mailsubscriptionjob disabled", null, null);
         }else{
             Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
             try {
@@ -72,14 +72,14 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
                     if (groupEmails) {
                         // Send en epost for alle sites
-                        Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
+                        Log.info(SOURCE, "Sending mailsubscriptions for all sites", null, null);
                         mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, null);
                     } else {
                         // Send en epost for hver site
                         List sites = SiteCache.getSites();
                         for (int i = 0; i < sites.size(); i++) {
                             Site site = (Site) sites.get(i);
-                            Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
+                            Log.info(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
                             mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, site);
                         }
                     }
