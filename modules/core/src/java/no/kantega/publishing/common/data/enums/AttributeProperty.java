@@ -32,5 +32,6 @@ public class AttributeProperty {
     public static final String PARENTID = "parentid";
     public static final String LATITUDE = "latitude";
     public static final String LONGITUDE = "longitude";
-
+    public static final String TOPICMAPID = "topicmapid";
+    public static final String TOPICID = "topicid";
 }

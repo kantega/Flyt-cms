@@ -267,6 +267,17 @@ public final class AttributeTagHelper {
                     if (cmd.getContentDisposition() != null && AttributeProperty.URL.equalsIgnoreCase(cmd.getProperty())) {
                         result = result + "&contentdisposition=" + cmd.getContentDisposition();
                     }
+                } else if (attr instanceof TopicAttribute){
+                    TopicAttribute ta = (TopicAttribute)attr;
+                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.NAME)){
+                        result = ta.getValueAsTopic().getBaseName();
+                    } else if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.TOPICID)){
+                        result = ta.getTopicId();
+                    } else if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.TOPICMAPID)){
+                        result = String.valueOf(ta.getTopicMapId());
+                    } else {
+                        result = attr.getProperty(cmd.getProperty());
+                    }
                 } else {
                     result = attr.getProperty(cmd.getProperty());
                 }
