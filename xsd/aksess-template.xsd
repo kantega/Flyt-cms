@@ -77,6 +77,8 @@
             <xs:attribute name="site" type="xs:string"/>
             <xs:attribute name="showinsites" type="xs:string"/>
             <xs:attribute name="title" type="xs:string"/>
+            <xs:attribute name="topicmapid" type="xs:string"/>
+            <xs:attribute name="topicinstanceof" type="xs:string"/>
             <xs:attribute name="type" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
@@ -111,7 +113,7 @@
             <xs:attribute name="startid" type="xs:string"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="helptext" type="xs:string"/>
+    <xs:element name="helptext" type="xs:string" />
     <xs:element name="script" type="xs:string"/>
     <xs:element name="options">
         <xs:complexType>
