@@ -2318,14 +2318,14 @@
             <description>Id of topicmap to get</description>
             <name>topicmapid</name>
             <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
         <attribute>
             <description>Name of topicmap to get</description>
             <name>topicmap</name>
             <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description>Name of collection of pages, use getcollection with gettopics=true instead</description>
