@@ -75,7 +75,7 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
         String[] stopwords = indexManager.getAnalyzerFactory().getStopwords();
 
         IndexReader reader = indexManager.getIndexReaderManager().getReader("aksess");
-        Directory spellDirectory = indexManager.getIndexReaderManager().getReader("spelling").directory();
+        Directory spellDirectory = reader.directory();
         SpellChecker spellChecker = new SpellChecker(spellDirectory);
         spellChecker.setAccuracy(accuracy);
 
@@ -87,7 +87,7 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
             if (Arrays.binarySearch(stopwords, s) < 0) {
                 int currentDocFreq = reader.docFreq(factoryTerm.createTerm(s));
                 if (currentDocFreq > textTermDocFreq) {
-                    // Bare ta med ord som har høyere dokumentfrekvens enn det originale
+                    // Bare ta med ord som har hï¿½yere dokumentfrekvens enn det originale
                     suggestionsByDocFreq.add(new Suggestion(s, currentDocFreq));
                 }
             }
@@ -96,6 +96,9 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
         if (suggestionsByDocFreq.size() > max) {
             suggestionsByDocFreq = suggestionsByDocFreq.subList(0, max);
         }
+        spellChecker.close();
+        spellDirectory.close();
+        reader.close();
         return suggestionsByDocFreq;
     }
 

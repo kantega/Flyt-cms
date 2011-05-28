@@ -20,6 +20,7 @@ import no.kantega.search.index.jobs.context.JobContext;
 import no.kantega.search.index.jobs.IndexJob;
 import no.kantega.search.index.Fields;
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.search.spell.LuceneDictionary;
 import org.apache.lucene.store.Directory;
@@ -31,8 +32,11 @@ public class RebuildSpellCheckIndexJob extends IndexJob {
     private Logger log = Logger.getLogger(getClass());
 
     public void executeJob(final JobContext context) {
+        IndexReader ir = null;
+        Directory spellingDirectory = null;
         try {
-            Directory spellingDirectory = context.getIndexReaderManager().getReader("spelling").directory();
+            ir = context.getIndexReaderManager().getReader("spelling");
+            spellingDirectory = ir.directory();
             SpellChecker checker = new SpellChecker(spellingDirectory);
             log.info("Updating spellchecking index");
             long before = System.currentTimeMillis();
@@ -40,6 +44,19 @@ public class RebuildSpellCheckIndexJob extends IndexJob {
             log.info("Finished updating spellchecking index in " + (System.currentTimeMillis()-before));
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        finally {
+            try {
+                if (spellingDirectory!=null) {
+                    spellingDirectory.close();
+                }
+                if (ir!=null) {
+                    ir.close();
+                }
+            }
+            catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

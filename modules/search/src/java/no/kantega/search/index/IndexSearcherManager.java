@@ -43,7 +43,7 @@ public class IndexSearcherManager {
         if (indexSearcher == null) {
             Log.debug(SOURCE, "indexSearcher was null. Opening new instance.", "getSearcher", null);
             openIndexSearcher(id);
-        } else if (System.currentTimeMillis() - timeOpened > SEARCHER_TIMEOUT) {
+        } else if (System.currentTimeMillis() - timeOpened > searcherTimeout) {
             Log.debug(SOURCE, "indexSearcher has been open for " + (System.currentTimeMillis() - timeOpened) / 1000d + " secs. Opening new instance.", "getSearcher", null);
             closeIndexSearcher();
             openIndexSearcher(id);

@@ -20,6 +20,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.SuggestionQuery;
 import no.kantega.search.result.Suggestion;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.WildcardTermEnum;
 
@@ -76,12 +77,14 @@ public class SuggestionProviderCompletionsImpl implements SuggestionProvider {
         String word = terms[terms.length-1];
 
         Term wildcardTerm = new Term(query.getField(), prepareText(word));
+        IndexReader reader = indexManager.getIndexReaderManager().getReader("aksess");
         try {
-            termEnum = new WildcardTermEnum(indexManager.getIndexReaderManager().getReader("aksess"), wildcardTerm);
+            termEnum = new WildcardTermEnum(reader, wildcardTerm);
             buildSuggestionList(suggestions, termEnum, prePhraseBuilder.toString());
         } finally {
             ensureClosed(termEnum);
         }
+        reader.close();
 
         Collections.sort(suggestions);
         if (suggestions.size() > query.getMax()) {
