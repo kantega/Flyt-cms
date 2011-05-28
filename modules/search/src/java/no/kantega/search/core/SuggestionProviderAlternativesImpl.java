@@ -75,7 +75,8 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
         String[] stopwords = indexManager.getAnalyzerFactory().getStopwords();
 
         IndexReader reader = indexManager.getIndexReaderManager().getReader("aksess");
-        Directory spellDirectory = reader.directory();
+        IndexReader spellReader = indexManager.getIndexReaderManager().getReader("spelling");
+        Directory spellDirectory = spellReader.directory();
         SpellChecker spellChecker = new SpellChecker(spellDirectory);
         spellChecker.setAccuracy(accuracy);
 
@@ -98,6 +99,7 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
         }
         spellChecker.close();
         spellDirectory.close();
+        spellReader.close();
         reader.close();
         return suggestionsByDocFreq;
     }
