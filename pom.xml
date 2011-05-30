@@ -23,12 +23,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.2.7</version>
+    <version>7.2.8-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.2.7</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.2.7</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
     </scm>
 
     <pluginRepositories>
