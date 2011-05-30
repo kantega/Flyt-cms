@@ -42,11 +42,16 @@ public class SearchEventLogAction extends AdminController {
             RequestParameters p = new RequestParameters(request, "utf-8");
 
             Date from = p.getDate("from_date", Aksess.getDefaultDateFormat());
+
             // Dates inclusive
-            GregorianCalendar end  = new GregorianCalendar();
-            end.setTime(p.getDate("end_date", Aksess.getDefaultDateFormat()));
-            end.add(Calendar.DATE, 1);
-            List events = cms.searchEventLog(from, end.getTime(), p.getString("userid"), p.getString("subject"), p.getString("event"));
+            Date end = p.getDate("end_date", Aksess.getDefaultDateFormat());
+            if (end != null) {
+                GregorianCalendar endInclusive  = new GregorianCalendar();
+                endInclusive.setTime(end);
+                endInclusive.add(Calendar.DATE, 1);
+                end.setTime(endInclusive.getTimeInMillis());
+            }
+            List events = cms.searchEventLog(from, end, p.getString("userid"), p.getString("subject"), p.getString("event"));
             model.put("events", events);
 
             return new ModelAndView(resultsView, model);
