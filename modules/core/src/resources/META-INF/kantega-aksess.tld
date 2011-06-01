@@ -16,9 +16,9 @@
   -->
 
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-         version="2.0">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
     <description>Aksess CMS Main Taglib API</description>
     <tlib-version>2.0</tlib-version>
     <short-name>aksess</short-name>
@@ -219,7 +219,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
             <name>obj</name>
@@ -299,7 +299,7 @@
                             </aksess:exists>
                         </aksess:getcollection>
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Print body if specified attribute not exists or is empty</description>
@@ -382,7 +382,7 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
-        
+
     </tag>
     <tag>
         <description>Print body if current page is within path of specified contentid</description>
@@ -610,7 +610,7 @@
             <name>attributetype</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Name to use for stored request attribute</description>
             <name>name</name>
@@ -690,7 +690,7 @@
                         <aksess:getsitemap name="sitemap" depth="${depth}" associationcategory="Global menu"/>
                         <aksess:printsitemap name="sitemap"/>
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Prints body if user is authorized to edit this page</description>
@@ -1172,7 +1172,7 @@
                         
 
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Performs a query for pages and print body if collection of pages is not empty</description>
@@ -1244,7 +1244,7 @@
             <name>excludeddocumenttypes</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
@@ -1503,7 +1503,7 @@
             <name>excludeddocumenttypes</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
@@ -2408,7 +2408,7 @@
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-    </tag>    
+    </tag>
     <tag>
         <description>Transform and display XML document in cache with given xslt</description>
         <name>transformxml</name>
@@ -2505,7 +2505,7 @@
             <name>varStatus</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
     </tag>
     <tag>
         <description>Set specified content as current page temporarily</description>
@@ -2568,7 +2568,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-              <example>
+        <example>
             <![CDATA[
                     Display the name of unit with id 24:
                         <aksess:getorgunit orgunitid="24" name="unit"/>
@@ -2606,6 +2606,77 @@
                     </aksess:stripmakup>
                     Will produce output like this:
                         Example of markup where tags will be stripped.
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Create pagination of a given collection</description>
+        <name>paginate</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.paginate.PaginateCollectionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of collection to paginate</description>
+            <name>collection</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for previous link. Leave blank to not use</description>
+            <name>prevlabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for next link. Leave blank to not use</description>
+            <name>nextlabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Number of results per page. Default is 25</description>
+            <name>resultsperpage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the ul element. Default is paginate</description>
+            <name>ulclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the previous element. Default is prev</description>
+            <name>prevclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the next element. Default is next</description>
+            <name>nextclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the current selected element. Default is current</description>
+            <name>currentclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the gap elements. Default is gap</description>
+            <name>gapclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <aksess:ifcollectionnotempty name="myCollection">
+                        <aksess:paginate collection="myCollection" prevlabel="Previous" nextlabel="Next"/>
+                        <aksess:getcollection name="myCollection">
+                            ....
+                        </aksess:getcollection>
+                     </aksess:ifcollectionnotempty>
             ]]>
         </example>
     </tag>
