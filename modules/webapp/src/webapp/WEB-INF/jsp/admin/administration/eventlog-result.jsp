@@ -54,7 +54,7 @@
                     int subjectType = event.getSubjectType();
                     if (subjectId > 0) {
                         if (subjectType == ObjectType.CONTENT) {
-                            link = Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(subjectId, event.getSubjectName(), null);
+                            link = Aksess.getContextPath() + "/content.ap?contentId=" + subjectId;
                         } else if (subjectType == ObjectType.MULTIMEDIA) {
                             link = Aksess.getContextPath() + "/multimedia.ap?id=" + subjectId;
                         }
