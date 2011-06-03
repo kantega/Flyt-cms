@@ -31,7 +31,7 @@ public class GetAttributeCommand {
     int maxLength = -1;
     int attributeType = AttributeDataType.ANY;
     String cssClass = null;
-    String format = Aksess.getDefaultDateFormat();
+    String format = null;
     int width = -1;
     int height = -1;
     String contentDisposition = null;

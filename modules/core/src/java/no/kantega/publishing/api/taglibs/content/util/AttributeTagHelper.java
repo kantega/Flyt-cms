@@ -230,10 +230,6 @@ public final class AttributeTagHelper {
         int height = cmd.getHeight();
         String cssClass = cmd.getCssClass();
 
-        if (cmd.getFormat() == null) {
-            cmd.setFormat(Aksess.getDefaultDateFormat());
-        }
-
         if (content != null) {
             Attribute attr = content.getAttribute(name, cmd.getAttributeType());
             if (attr != null && attr.getValue() != null && attr.getValue().length() > 0) {
