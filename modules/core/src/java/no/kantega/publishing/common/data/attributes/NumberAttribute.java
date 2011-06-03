@@ -60,7 +60,7 @@ public class NumberAttribute extends Attribute {
             return getValue();
         }
         
-        NumberFormat formatter = new DecimalFormat("000000");
+        NumberFormat formatter = new DecimalFormat(format);
         return formatter.format(Integer.parseInt(value));
     }
 }
