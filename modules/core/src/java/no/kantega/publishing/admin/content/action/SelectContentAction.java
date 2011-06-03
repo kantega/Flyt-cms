@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.data.Content;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,7 +40,18 @@ public class SelectContentAction implements Controller {
             model.put("selectContentId", Boolean.TRUE);
         }
 
+        int currentId = -1;
+        Content currentContent = (Content)request.getSession().getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+        if (currentContent != null) {
+            if (currentContent.isNew()) {
+                currentId = currentContent.getAssociation().getParentAssociationId();
+            } else {
+                currentId = currentContent.getAssociation().getAssociationId();
+            }
+        }
+        model.put("currentId", currentId);
         model.put("startId", param.getInt("startId"));
+
 
         return new ModelAndView(view, model);
     }

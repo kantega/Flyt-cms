@@ -67,7 +67,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <name>highlightCurrent</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Prints a navigator for multimedia</description>

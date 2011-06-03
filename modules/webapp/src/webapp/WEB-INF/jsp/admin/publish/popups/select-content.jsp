@@ -28,7 +28,7 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/engine.js"></script>
     <script type="text/javascript">
-        var currentItemIdentifier = -1;
+        var currentItemIdentifier = "?thisId=${currentId}";
 
         $(document).ready(function() {
             openaksess.common.debug("$(document).ready(): select-content");
@@ -36,7 +36,7 @@
         });
 
         openaksess.navigate.getNavigatorAction = function() {
-            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action?startId=${startId}";
+            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action?startId=${startId}&highlightCurrent=false";
         };
 
         openaksess.navigate.onNavigatorTitleClick = function(elm) {

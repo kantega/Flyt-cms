@@ -70,7 +70,7 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
         }
 
         String titleClass = NavigatorUtil.getContextMenuType(type, visibilityStatus, currentItem.getStatus());
-        if (isSelected) {
+        if (isSelected && highlightCurrent) {
             titleClass += " selected";
         }
         out.write("<span class=\"title\"><a href=\""+ href +"\" class=\""+ titleClass +"\" title=\"" + title + "\">" + title +"</a></span>");

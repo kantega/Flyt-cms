@@ -146,6 +146,7 @@ public class NavigatorAction implements Controller {
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.THIS_ID, currentId);
         model.put(AdminRequestParameters.START_ID, startId);
+        model.put(AdminRequestParameters.HIGHLIGHT_CURRENT, params.getBoolean(AdminRequestParameters.HIGHLIGHT_CURRENT, true));
 
         return new ModelAndView(view, model);
     }

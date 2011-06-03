@@ -18,7 +18,7 @@
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin"%>
 
 <c:forEach items="${sites}" var="site">
-    <admin:printcontentnavigator root="${site}" currentId="${thisId}" startId="${startId}"/>
+    <admin:printcontentnavigator root="${site}" currentId="${thisId}" highlightCurrent="${highlightCurrent}" startId="${startId}"/>
 </c:forEach>
 
 
