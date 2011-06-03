@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.client;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.model.Site;
@@ -100,6 +102,9 @@ public class ContentRequestDispatcher {
         String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
 
         DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
+        if (dt == null) {
+            throw new SystemException("DisplayTemplate not found. Check if displaytemplate with databaseid=" + content.getDisplayTemplateId() + " has been deleted from aksess-templateconfig.xml", getClass().getName(), null);
+        }
 
         String view = getView(siteId, dt);
 
@@ -145,12 +150,7 @@ public class ContentRequestDispatcher {
         Site site = siteCache.getSiteById(siteId);
         String alias = site.getAlias();
 
-        String template;
-        if (dt != null) {
-            template = dt.getView();
-        } else {
-            template = Aksess.getStartPage();
-        }
+        String template = dt.getView();
 
         // If template filename contains macro $SITE, replace with correct site
         if (template.indexOf("$SITE") != -1) {
