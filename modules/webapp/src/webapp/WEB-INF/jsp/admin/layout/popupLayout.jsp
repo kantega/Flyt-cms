@@ -22,8 +22,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html id="Popup">
 <head>
-    <title><kantega:getsection id="title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><kantega:getsection id="title"/></title>
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-popuplayout.css"/>">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {

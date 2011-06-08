@@ -20,10 +20,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
     <%-- Prevent IE from blocking: http://www.phpied.com/conditional-comments-block-downloads/ --%>
     <!--[if lt IE 8]><![endif]-->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/admin/favicon.ico" type="image/x-icon">
 
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-commonlayout.css"/>">
