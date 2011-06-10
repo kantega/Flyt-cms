@@ -11,6 +11,16 @@ import no.kantega.commons.log.Log;
  */
 public class ContentCommentNotificationListener implements CommentNotificationListener {
     public void newCommentNotification(CommentNotification notification) {
+        updateNrOfComments(notification);
+    }
+
+
+    public void commentDeletedNotification(CommentNotification notification) {
+        updateNrOfComments(notification);
+    }
+
+
+    private void updateNrOfComments(CommentNotification notification) {
         if (notification.getContext().equalsIgnoreCase("content")) {
             try {
                 ContentAO.setNumberOfComments(Integer.parseInt(notification.getObjectId()), notification.getNumberOfComments());

@@ -9,6 +9,7 @@ public interface CommentNotificationListener {
      * Called whenever a comment is added 
      * @param notification
      */
-    public void newCommentNotification(CommentNotification notification);
+    void newCommentNotification(CommentNotification notification);
+    void commentDeletedNotification(CommentNotification notification);
 
 }
