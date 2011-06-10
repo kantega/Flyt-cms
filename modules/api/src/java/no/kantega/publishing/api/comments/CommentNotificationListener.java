@@ -10,6 +10,10 @@ public interface CommentNotificationListener {
      * @param notification
      */
     void newCommentNotification(CommentNotification notification);
+    /**
+     * Called whenever a comment is deleted
+     * @param notification
+     */
     void commentDeletedNotification(CommentNotification notification);
 
 }
