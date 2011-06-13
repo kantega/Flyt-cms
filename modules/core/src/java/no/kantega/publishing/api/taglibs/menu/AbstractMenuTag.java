@@ -214,6 +214,10 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             sitemap.setSelected(true);
         }
 
+        if (sitemap.getId() == currentId || currentPath.indexOf("/" + sitemap.getId() + "/") != -1){
+            sitemap.setOpen(true);
+        }
+
         if (currentDepth == 0 && includeRoot) {
             currentDepth++;
         }
@@ -229,11 +233,11 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
                 boolean isOpen = false;
-                if(child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1){
+                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1){
                     isOpen = true;
                 }
                 if (expandAll || isOpen) {
-                    if(isOpen){
+                    if (isOpen){
                         sitemap.setOpen(true);
                     }
                     // We get one more level than we need, don't display all
