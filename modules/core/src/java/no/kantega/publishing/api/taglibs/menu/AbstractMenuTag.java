@@ -212,6 +212,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
 
         sitemap.setSelected(sitemap.getId() == currentId);
 
+        sitemap.setOpen(sitemap.getId() == currentId || currentPath.contains("/" + sitemap.getId() + "/"));
+
         if (currentDepth == 0 && includeRoot) {
             currentDepth++;
         }
@@ -227,7 +229,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
                 boolean isOpen = false;
-                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1){
+                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.contains("/" + child.getParentId() + "/") || child.getParentId() == defaultOpenId || defaultOpenPath.contains("/" + child.getParentId() + "/")){
                     isOpen = true;
                 }
                 if (expandAll || isOpen) {
