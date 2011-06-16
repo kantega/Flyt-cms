@@ -329,8 +329,9 @@ public class DefaultDocumentProvider implements DocumentProvider {
             d.add(new Field(Fields.CONTENT_TEMPLATE_ID, Integer.toString(content.getContentTemplateId()), Field.Store.NO, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_STATUS, Integer.toString(content.getStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-
+            if (content.getDocumentTypeId() > 0) {
+                d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            }
             d.add(new Field(Fields.ASSOCIATION_ID, getAssociations(content), Field.Store.YES, Field.Index.ANALYZED));
 
             addAttributeFields(content, d);
