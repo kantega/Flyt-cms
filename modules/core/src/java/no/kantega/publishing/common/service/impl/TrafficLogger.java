@@ -83,7 +83,7 @@ public class TrafficLogger {
                     try {
 
                         c = dbConnectionFactory.getConnection();
-                        PreparedStatement st = c.prepareStatement("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider) values(?,?,?,?,?,?,?,?,?,?)");
+                        PreparedStatement st = c.prepareStatement("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider, UserAgent) values(?,?,?,?,?,?,?,?,?,?,?)");
                         st.setTimestamp(1, new java.sql.Timestamp(time));
                         st.setInt(2, id);
                         st.setInt(3, language);
@@ -101,11 +101,12 @@ public class TrafficLogger {
                         st.setString(8, refInfo == null ? null  : refInfo.getHost());
                         st.setString(9, refInfo == null ? null : refInfo.getQuery());
                         st.setInt(10, isBotOrSpider(userAgent) ? 1:0);
+                        st.setString(11, userAgent.length() > 255 ? userAgent.substring(0,255) : userAgent);
 
                         st.execute();
                         st.close();
                     } catch (SQLException e) {
-                        // Logger at logging feilet, ikke kritisk
+                        // Logger failed, not critical
                         Log.error(SOURCE, e, null, null);
                     } finally {
                         if(c != null) {
@@ -182,11 +183,7 @@ public class TrafficLogger {
             return null;
         }
 
-
-        
         RefererInfo info = new RefererInfo(referer);
-
-
         info.setHost(url.getHost());
 
         for(Iterator i = searchEnginePatterns.iterator(); i.hasNext();) {
@@ -198,8 +195,6 @@ public class TrafficLogger {
                 break;
             }
         }
-
-
         return info;
     }
 }

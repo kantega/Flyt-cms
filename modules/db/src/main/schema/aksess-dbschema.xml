@@ -413,6 +413,7 @@
         <column name="SiteId" required="false" type="INTEGER" size="10"/>
 	    <column name="RefererHost" required="false" type="VARCHAR" size="255"/>
 	    <column name="RefererQuery" required="false" type="VARCHAR" size="255"/>
+        <column name="UserAgent" required="false" type="VARCHAR" size="255"/>
         <column name="IsSpider" required="true" type="INTEGER" size="10" default="0"/>
         <index name="idx_trafficlog_contentid">
             <index-column name="ContentId"/>
