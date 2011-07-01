@@ -101,7 +101,7 @@ public class TrafficLogger {
                         st.setString(8, refInfo == null ? null  : refInfo.getHost());
                         st.setString(9, refInfo == null ? null : refInfo.getQuery());
                         st.setInt(10, isBotOrSpider(userAgent) ? 1:0);
-                        st.setString(11, userAgent.length() > 255 ? userAgent.substring(0,255) : userAgent);
+                        st.setString(11, userAgent != null && userAgent.length() > 255 ? userAgent.substring(0,255) : userAgent);
 
                         st.execute();
                         st.close();
