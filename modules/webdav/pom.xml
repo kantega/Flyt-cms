@@ -56,20 +56,19 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.ettrema</groupId>
-            <artifactId>milton-api</artifactId>
-            <version>1.5.3</version>
-        </dependency>
 
         <dependency>
             <groupId>com.ettrema</groupId>
             <artifactId>milton-servlet</artifactId>
-            <version>1.5.3</version>
+            <version>1.5.10</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-webmvc</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
