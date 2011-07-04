@@ -121,3 +121,6 @@ a.formOptionDelete {
 #form_FormElements .hidden {
     display: block;
 }
+.formSection h2{
+    cursor:move;
+}

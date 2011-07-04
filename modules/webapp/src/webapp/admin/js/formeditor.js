@@ -414,23 +414,35 @@ function formSaveSection() {
 
 
 function formBindSort() {
-    $('#form_FormElements').sortable(
-    {
-        opacity: 	0.8,
-        axis:		'vertically',
-        revert:		true,
-        items:      'div.formElement, div.formText, div.formSection'
-    });
 
-    $('#form_FormElements .formSection').sortable(
-    {
-        connectWith: '.formSection',
-        opacity: 	0.8,
-        axis:		'vertically',
-        revert:		true,
-        items:      'div.formElement, div.formText'
-    });
+    var numberOfSections = $("div.formSection").size();
+    if(numberOfSections > 0){
+        $('#form_FormElements').sortable(
+        {
+            opacity: 	0.8,
+            axis:		'vertically',
+            revert:		true,
+            items:      ' div.formSection',
+            handle:     'h2'
+        });
 
+        $('#form_FormElements .formSection').sortable(
+        {
+            connectWith: '.formSection',
+            opacity: 	0.8,
+            axis:		'vertically',
+            revert:		true,
+            items:      'div.formElement, div.formText'
+        });
+    }else{
+        $('#form_FormElements').sortable(
+        {
+            opacity: 	0.8,
+            axis:		'vertically',
+            revert:		true,
+            items:      'div.formElement, div.formText'
+        });
+    }
 }
 
 function formSave() {
@@ -503,7 +515,7 @@ function formBindHover() {
             function () {
                 $(".formElementButtons", this).remove();
             }
-    );
+            );
 
     $("#form_FormElements .formSection h2").hover(
             function () {
@@ -522,7 +534,7 @@ function formBindHover() {
             function () {
                 $(".formElementButtons", this).remove();
             }
-    );
+            );
 }
 
 var formNextId = 0;
