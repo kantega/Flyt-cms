@@ -86,12 +86,16 @@
         hasHtmlEditorRole = securitySession.isUserInRole(htmlEditorRole);
     }
 
-    // Let etter /css/site/editor.css og /site/css/editor.css
+    // Let etter /css/site/editor.css og /site/css/editor.css og /css/editor.css
     String cssPath = "/css" + site.getAlias() + attribute.getCss();
 
     if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
+    if (pageContext.getServletContext().getResource(cssPath) == null) {
+        cssPath = "css/" + attribute.getCss();
+    }
+
     request.setAttribute("cssPath", cssPath);
 
     int width = attribute.getWidth();
