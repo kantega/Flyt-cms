@@ -92,6 +92,11 @@
     if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
+
+    if (pageContext.getServletContext().getResource(cssPath) == null) {
+        cssPath = "css/" + attribute.getCss();
+    }
+
     request.setAttribute("cssPath", cssPath);
 
     int width = attribute.getWidth();
