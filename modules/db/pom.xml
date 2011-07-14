@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.2.0-SNAPSHOT</version>
+        <version>7.2.13-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -55,6 +55,9 @@
                 <configuration>
                     <ddl2dbTasks>
                         <mkdir dir="${basedir}/target/classes/dbschema" />
+                        <mkdir dir="${basedir}/target/classes/org/kantega/openaksess/db/" />
+
+                        <copy file="${basedir}/src/main/schema/aksess-dbschema.xml" tofile="${basedir}/target/classes/org/kantega/openaksess/db/openaksess-dbschema.xml" />
 
                         <ddlToDatabase databaseType="mysql">
 
@@ -77,8 +80,19 @@
                             <fileset dir="src/main/schema">
                                 <include name="aksess-dbschema.xml" />
                             </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
                             <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby.sql" doDrops="false" />
                         </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="derby">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby-test.sql" doDrops="true" />
+                        </ddlToDatabase>
+
 
                         <ddlToDatabase databaseType="oracle10">
 

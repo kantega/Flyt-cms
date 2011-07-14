@@ -31,7 +31,6 @@ public class CleanupFormHtmlFilter extends XMLFilterImpl {
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if (name.equalsIgnoreCase("input")) {
-
             // Set type attribute equal to "text" if it does not exist
             if (attributes == null || attributes.getValue("type") == null) {
                 AttributesImpl newAttributes = new AttributesImpl(attributes);

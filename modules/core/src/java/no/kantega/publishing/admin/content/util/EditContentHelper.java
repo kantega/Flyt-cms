@@ -28,6 +28,8 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ImageAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.factory.AttributeFactory;
+import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
@@ -140,6 +142,13 @@ public class EditContentHelper {
         if (contentTemplate.getDocumentTypeForChildren() != null) {
             content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
         }
+        if (contentTemplate.getDefaultPageUrlAlias() != null && contentTemplate.getDefaultPageUrlAlias().length() > 0) {
+            content.setAlias(contentTemplate.getDefaultPageUrlAlias());
+        }
+
+        content.setSearchable(contentTemplate.isSearchable());
+
+
         content.setType(contentTemplate.getContentType());
 
         // Inherit owner, language etc from parent
@@ -220,14 +229,12 @@ public class EditContentHelper {
         for (Element attr : attributes) {
             String name = attr.getAttribute("name");
             String type = attr.getAttribute("type");
-            if (type == null || type.length() == 0) {
-                type = "text";
-            }
-            type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
+
+            AttributeFactory attributeFactory = new ClassNameAttributeFactory();
 
             Attribute attribute = null;
             try {
-                attribute = (Attribute) Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
+                attribute = attributeFactory.newAttribute(type);
             } catch (ClassNotFoundException e) {
                 throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
             } catch (Exception e) {
@@ -235,7 +242,6 @@ public class EditContentHelper {
             }
 
             attribute.setType(attributeType);
-
 
             attribute.setConfig(attr, defaultValues);
 
@@ -310,15 +316,11 @@ public class EditContentHelper {
         } else if (property.equalsIgnoreCase(ContentProperty.EXPIRE_DATE)) {
             dest.setExpireDate(from.getExpireDate());
         } else if (property.equalsIgnoreCase(ContentProperty.TOPICS)) {
-            List topics1 = TopicAO.getTopicsByContentId(from.getId());
-
-            List topics2 = dest.getTopics();
-            if (topics2 == null) {
-                dest.setTopics(topics2);
-            } else {
+            List<Topic> topics1 = TopicAO.getTopicsByContentId(from.getId());
+            if (topics1 != null) {
                 // Copy only topics which dont exists from before
-                for (int i = 0; i < topics1.size(); i++) {
-                    dest.addTopic((Topic)topics1.get(i));
+                for (Topic topic : topics1) {
+                    dest.addTopic(topic);
                 }
             }
         }
@@ -354,7 +356,7 @@ public class EditContentHelper {
             }
         }
         if (content.getContentTemplateId() > 0) {
-            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
+            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
             }

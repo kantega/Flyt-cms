@@ -36,6 +36,7 @@ public class ListAliasesAction extends AdminController {
         Map<String, Object> model = new HashMap<String, Object>();
 
         ContentQuery query = new ContentQuery();
+        query.setShowExpired(true);
         String driver = dbConnectionFactory.getDriverName().toLowerCase();
         if (driver.indexOf("oracle") != -1) {
             query.setSql(" and content.Alias is not null and associations.Type = 1");

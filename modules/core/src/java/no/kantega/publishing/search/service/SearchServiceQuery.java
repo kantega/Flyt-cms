@@ -68,6 +68,8 @@ public class SearchServiceQuery {
     private List<HitCountQuery> hitCountQueries = new ArrayList<HitCountQuery>();
     private List<SearchField> customSearchFields;
     private List<String> paramNames;
+    private boolean allowEmptySearchPhrase = false;
+    private boolean shouldGetContentDocument = true;
 
     {
         paramNames = new ArrayList<String>();
@@ -271,4 +273,19 @@ public class SearchServiceQuery {
         return s == null || s.trim().equals("");
     }
 
+    public void setAllowEmptySearchPhrase(boolean allowEmptySearchPhrase) {
+        this.allowEmptySearchPhrase = allowEmptySearchPhrase;
+    }
+
+    public boolean isAllowEmptySearchPhrase() {
+        return allowEmptySearchPhrase;
+    }
+
+    public boolean isShouldGetContentDocument() {
+        return shouldGetContentDocument;
+    }
+
+    public void setShouldGetContentDocument(boolean shouldGetContentDocument) {
+        this.shouldGetContentDocument = shouldGetContentDocument;
+    }
 }

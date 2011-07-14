@@ -155,7 +155,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
 
             } else {
                 // Just set the password
-                if (password1 == null || password1.length() < 6) {
+                if (password1.length() < 6) {
                     errors.add(null, "useradmin.password.minlength");
                     model.put("userId", id);
                     model.put("errors", errors);

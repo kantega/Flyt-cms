@@ -1,0 +1,32 @@
+<html>
+<body>
+<h1>Brukne lenker</h1>
+<table>
+    <tr>
+        <td>Side (Klikk for å redigere)</td>
+        <td>Felt</td>
+        <td>Lenke</td>
+    </tr>
+
+    #foreach ($link in $linklist)
+        <tr>
+            #if($link.url.length() > 40)
+                #set($url = $link.url.substring(0,37) + "...")
+            #else
+                #set($url = $link.url)
+            #end
+            <td><a href="$applicationurl/admin/?contentId=$link.getContentId()">$link.getContentTitle()</a></td>
+            <td>#if($link.getAttributeName())
+                    $link.getAttributeName()
+                #end
+            </td>
+            <td><a href="$link.url">$url</a></td>
+        </tr>
+    #end
+
+    <p>
+        Denne eposten er automatisk generert av OpenAksess.
+    </p>
+</table>
+</body>
+</html>

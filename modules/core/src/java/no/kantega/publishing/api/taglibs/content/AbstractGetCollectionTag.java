@@ -26,8 +26,10 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -352,8 +354,19 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         this.topicId = topicId;
     }
 
+    /**
+     * @deprecated use topicMap
+     */
+    @Deprecated
     public void setTopicmapid(int topicMapId) {
         this.topicMapId = topicMapId;
+    }
+
+    public void setTopicmap(String topicmap) {
+        TopicMap tm = TopicMapAO.getTopicMapByName(topicmap);
+        if (tm != null) {
+            this.topicMapId = tm.getId();
+        }
     }
 
     public void setOwner(String owner) {

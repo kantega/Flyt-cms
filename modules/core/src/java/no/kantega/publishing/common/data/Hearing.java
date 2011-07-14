@@ -19,10 +19,7 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 
-import java.util.List;
-import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
@@ -34,6 +31,8 @@ public class Hearing {
     private Date deadLine;
 
     private int contentVersionId;
+
+    private List<HearingInvitee> invitees = new ArrayList<HearingInvitee>();
 
     public Hearing() {
 
@@ -74,5 +73,13 @@ public class Hearing {
             Date exp = new Date(deadLine.getTime());
             return exp.getTime() > date.getTime();
         }
+    }
+
+    public List<HearingInvitee> getInvitees() {
+        return invitees;
+    }
+
+    public void setInvitees(List<HearingInvitee> invitees) {
+        this.invitees = invitees;
     }
 }

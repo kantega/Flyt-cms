@@ -33,23 +33,9 @@ public class ContentEmailAlertListener implements ContentAlertListener {
 
     private String mailSubject = "Aksess Publisering";
     private String mailTemplate = "expirecontent.vm";
+    private String mailFrom = "noreply";
 
     public void sendContentAlert(User user, List content) {
-
-        String editor = "";
-
-        try {
-            Configuration config = Aksess.getConfiguration();
-            editor = config.getString("mail.editor");
-
-            if (editor != null && editor.indexOf("@") == -1) {
-                throw new ConfigurationException("mail.editor", SOURCE);
-            }
-
-        } catch (ConfigurationException e) {
-            Log.error(SOURCE, e, null, null);
-            return;
-        }
 
         String recipient = user.getEmail();
         if (recipient == null || recipient.indexOf("@") == -1) {
@@ -61,14 +47,14 @@ public class ContentEmailAlertListener implements ContentAlertListener {
         try {
             Map param = new HashMap();
             param.put("contentlist", content);
-            param.put("editor", editor);
+            param.put("editor", mailFrom);
 
             param.put("baseurl", Aksess.getBaseUrl());
             param.put("applicationurl", Aksess.getApplicationUrl());
 
             Log.debug(SOURCE, "Sender varsling til:" + recipient, null, null);
 
-            MailSender.send(editor, recipient, mailSubject, mailTemplate, param);
+            MailSender.send(mailFrom, recipient, mailSubject, mailTemplate, param);
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
         } catch (ConfigurationException e) {
@@ -82,5 +68,9 @@ public class ContentEmailAlertListener implements ContentAlertListener {
 
     public void setMailTemplate(String mailTemplate) {
         this.mailTemplate = mailTemplate;
+    }
+
+    public void setMailFrom(String mailFrom) {
+        this.mailFrom = mailFrom;
     }
 }

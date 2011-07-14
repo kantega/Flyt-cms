@@ -69,30 +69,55 @@ openaksess.admin = {
      * Adjusts the height and width of the iframe onload and onresize.
      */
     setWindowSize : function () {
+
+        var doResize = false;
+
         $(window).bind('resize load', function(e) {
-            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received");
-
-            var windowHeight = $(window).height();
-            var windowWidth = $(window).width();
-            var topHeight = $("#Top").height();
-            var navigationWidth = $("#Navigation").width();
-            var framesplitWidth = $("#Framesplit").outerWidth(true);
-
-            openaksess.common.debug("openaksess.admin.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
-
-            $('#Content').css('height', (windowHeight-topHeight) + 'px');
-
-            if (typeof openaksess.admin.setLayoutSpecificSizes == 'function') {
-                openaksess.common.debug("openaksess.openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
-                openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
-            }
-
-            $(document).ready(function() {
-                $("body").addClass("fuckIE7").removeClass("fuckIE7");
-            });
+            openaksess.common.debug("openaksess.admin.setWindowSize(): " + e.type + " event received. Is resize already in progress? " + doResize);
+            doResize = true;
         });
+
+        /**
+         * The window resize process could potentially be a resource consuming process.
+         * It is therefore not appropriate to preform this operation at every fired resize event.
+         * The interval between each resize is set to minimum 100ms.
+         */
+        var minResizeInteval = 100;
+
+        setInterval(function(){
+            if (doResize || openaksess.admin.isResizeNecessary()) {
+                doResize = false;
+
+                var windowHeight = $(window).height();
+                var windowWidth = $(window).width();
+                var topHeight = $("#Top").height();
+                var navigationWidth = $("#Navigation").width();
+                var framesplitWidth = $("#Framesplit").outerWidth(true);
+
+                openaksess.common.debug("openaksess.admin.setWindowSize(): windowHeight: " + windowHeight + ", windowWidth: " + windowWidth + ", topHeight: " + topHeight+", navigationWidth: "+navigationWidth+", framesplitWidth: "+framesplitWidth);
+
+                $('#Content').css('height', (windowHeight-topHeight) + 'px');
+
+                if (typeof openaksess.admin.setLayoutSpecificSizes == 'function') {
+                    openaksess.common.debug("openaksess.admin.setWindowSize(): setLayoutSpecificSizes function found");
+                    openaksess.admin.setLayoutSpecificSizes({window:{height: windowHeight, width: windowWidth}, top:{height:topHeight}, navigation:{width:navigationWidth},framesplit:{width:framesplitWidth}});
+                }
+
+                $(document).ready(function() {
+                    $("body").addClass("fuckIE7").removeClass("fuckIE7");
+                });
+            }
+        }, minResizeInteval);
+
     },
 
+    /**
+     * Override this method if layout specific events require resizing of the window.
+     * @return Must return a boolean true if the window requires a resize, otherwise false.
+     */
+    isResizeNecessary: function() {
+        return false;
+    },
 
 
     ajaxSetup :function () {
@@ -147,7 +172,7 @@ openaksess.admin = {
         };
 
         this.getState = function() {
-            return currentState;
+            return $.bbq.getState("state");
         };
 
         var bindHashChange = function(updateEventType) {
@@ -373,6 +398,7 @@ $.widget("ui.infoslider", {
      * @param content - The content to display in the info slider.
      */
     toggle: function(opener, content){
+        openaksess.common.debug("Widget.infoslider.toggle(): Already open? " + this.options.open);
         if (!this.options.open) {
             this._openSlider(content);
         } else {
@@ -383,6 +409,43 @@ $.widget("ui.infoslider", {
             }
         }
         this.options.opener = opener;
+    },
+
+    /**
+     * Opens and sets infoslider content. If the slider is already open the content will be replaced.
+     * @param opener - The object which triggered slider opening
+     * @param content - The content to display in the info slider.
+     */
+    open: function(opener, content) {
+        if (!this.options.open) {
+            this._openSlider(content);
+        } else {
+            this._setContent(content);
+        }
+        this.options.opener = opener;
+    },
+
+    /**
+     * Closes the slider if it's opened by the given opener.
+     * Only the slider's opener is allowed to close it.
+     * @param opener Element attempting to close the slider.
+     */
+    close: function(opener) {
+        if (this.options.open && this.options.opener == opener) {
+            this._closeSlider();
+        }
+    },
+
+    /**
+     * Replaaces the slider content if it's already open and sets current opener to the new opener
+     * @param opener New opener
+     * @param content New content
+     */
+    replaceContentIfOpen: function(opener, content) {
+        if (this.options.open && this.options.opener == opener) {
+            openaksess.common.debug("Widget.infoslider.replaceContentIfOpen(): Replacing content");
+            this._setContent(content);
+        }
     },
 
     _openSlider: function(content){
@@ -405,6 +468,7 @@ $.widget("ui.infoslider", {
 
 
         this.element
+                .empty()
                 .append(content)
                 .wrapInner('<div class="slidercontent"/>')
                 .removeClass()

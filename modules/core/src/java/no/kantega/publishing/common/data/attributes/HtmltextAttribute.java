@@ -36,19 +36,19 @@ public class HtmltextAttribute extends TextAttribute {
     private String miniFeatureSet = null;
     private String css = "editor.css";
 
-    protected int height  = 350;
-    protected int width   = 600;
+    protected int height  = -1;
+    protected int width = -1;
 
     public String getRenderer() {
         return "htmltext";
     }
 
-    public int getHeight() {
-        return height;
-    }
-
     public int getWidth() {
         return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public String getFeatureSet() {

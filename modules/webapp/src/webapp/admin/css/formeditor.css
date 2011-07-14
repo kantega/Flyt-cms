@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-#form_EditableForm {
-    width: 590px;
-    border: 1px dotted black;
-    padding: 5px;
-}
 
 #form_FormElements td {
     border: 0;
 }
-
 
 #form_FormElements .formElement .textarea textarea {
     width: 300px;
@@ -34,6 +28,20 @@
     border-bottom: 1px dotted black;
     cursor: move;
     margin-right: 10px;
+}
+
+#form_FormElements .formSection {
+    border: 1px solid black;
+    padding: 4px;
+    margin-bottom: 4px;
+}
+
+
+#form_FormElements .formSection h2 {
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    text-align: left;
 }
 
 #form_FormElements .formElement .helpText {
@@ -55,8 +63,8 @@
     background-color: #eeeeee;
 }
 
-#EditFormElement, #EditFormText {
-    background-color: #E3F3FF;
+#EditFormElement, #EditFormText, #EditFormSection {
+    background-color: #F7F7F7;
 }
 
 #form_FormElements .formElementButtons {
@@ -76,16 +84,18 @@
 #form_FormElements .formElementButtons .edit {
     background: url("../bitmaps/common/icons/small/edit.png") no-repeat left;
     display: inline-block;
-    margin: 5px 5px 5px 20px;
     padding: 5px 5px 5px 20px;
+    font-weight: normal;
+    font-size: 12px;
     color: #0030ff;
 }
 
 #form_FormElements .formElementButtons .delete {
     background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
     display: inline-block;
-    margin: 5px 5px 5px 20px;
     padding: 5px 5px 5px 20px;
+    font-weight: normal;
+    font-size: 12px;
     color: #0030ff;
 }
 
@@ -110,4 +120,7 @@ a.formOptionDelete {
 
 #form_FormElements .hidden {
     display: block;
+}
+.formSection h2{
+    cursor:move;
 }

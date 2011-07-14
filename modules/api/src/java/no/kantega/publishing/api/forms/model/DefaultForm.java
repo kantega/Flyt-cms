@@ -16,11 +16,14 @@
 
 package no.kantega.publishing.api.forms.model;
 
+import java.util.List;
+
 public class DefaultForm implements Form {
     private int id;
     private String title;
     private String formDefinition;
     private String email;
+    private List<String> fieldNames;
 
     public int getId() {
         return id;
@@ -52,5 +55,13 @@ public class DefaultForm implements Form {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<String> getFieldNames() {
+        return fieldNames;
+    }
+
+    public void setFieldNames(List<String> fieldNames) {
+        this.fieldNames = fieldNames;
     }
 }

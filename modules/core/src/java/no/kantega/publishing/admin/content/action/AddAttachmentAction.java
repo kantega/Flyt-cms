@@ -17,41 +17,39 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 
 public class AddAttachmentAction implements Controller {
-    String formView;
-    String confirmView;
+
+    private String formView;
+    
+    private String confirmView;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestParameters param = new RequestParameters(request, "utf-8");
+        RequestParameters requestParameters = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession();
-        Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+        Content content = (Content) session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-        int attachmentId   = param.getInt("attachmentId");
-        boolean insertLink = param.getBoolean("insertLink");
+        int attachmentId = requestParameters.getInt("attachmentId");
+        boolean insertLink = requestParameters.getBoolean("insertLink");
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("refresh", new Date().getTime());
@@ -60,16 +58,22 @@ public class AddAttachmentAction implements Controller {
         if (request.getMethod().equalsIgnoreCase("POST")) {
             ContentManagementService aksessService = new ContentManagementService(request);
 
-            MultipartFile file = param.getFile("attachment");
-            if (file != null && content != null) {
+            MultipartFile multipartFile = requestParameters.getFile("attachment");
+
+            // Cancel if the file type is blacklisted
+            if (AttachmentBlacklistHelper.isFileTypeInBlacklist(multipartFile)) {
+                return new ModelAndView(confirmView, model);
+            }
+
+            if ((multipartFile != null) && (content != null)) {
                 Attachment attachment = new Attachment();
                 attachment.setContentId(content.getId());
                 attachment.setLanguage(content.getLanguage());
                 attachment.setId(attachmentId);
 
-                byte[] data = file.getBytes();
+                byte[] data = multipartFile.getBytes();
 
-                String filename = file.getOriginalFilename();
+                String filename = multipartFile.getOriginalFilename();
                 if (filename.length() > 255) {
                     filename = filename.substring(filename.length() - 255, filename.length());
                 }
@@ -88,13 +92,21 @@ public class AddAttachmentAction implements Controller {
                     content.addAttachment(attachment);
                     session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
                 }
+                model.put("attachmentId", attachmentId);
+                model.put("name", filename);
+                MimeType mimeType = attachment.getMimeType();
+                if (mimeType != null) {
+                    model.put("mimeType", mimeType.getType());
+                    model.put("fileExtension", mimeType.getFileExtension());
+                }
             }
-            model.put("attachmentId", attachmentId);
             return new ModelAndView(confirmView, model);
         } else {
             if (attachmentId != -1) {
                 model.put("attachmentId", attachmentId);
             }
+            model.put("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
+            model.put("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
             return new ModelAndView(formView, model);
         }
     }
@@ -115,5 +127,3 @@ public class AddAttachmentAction implements Controller {
         this.confirmView = confirmView;
     }
 }
-
-

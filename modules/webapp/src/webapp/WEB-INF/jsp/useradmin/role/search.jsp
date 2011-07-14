@@ -35,16 +35,18 @@
     <admin:box>
         <h1><kantega:label key="useradmin.searchroles.title"/></h1>
 
-        <c:if test="${numRoleConfigurations > 1}">
-            <form action="search" method="post">
+        <form action="search" method="post">
+            <c:if test="${numRoleConfigurations > 1}">
                 <select name="domain">
                     <c:forEach items="${roleConfigurations}" var="config">
                         <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
                     </c:forEach>
                 </select>
-                <span class="button"><input type="submit" class="show" value="<kantega:label key="useradmin.searchroles.show"/>"></span>
-            </form>
-        </c:if>
+            </c:if>
+            <input type="text" name="q" value="<c:out value="${query}"/>">
+            <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
+        </form>
+        <br>
         <table border="0" cellspacing="0" cellpadding="0" class="fullWidth">
             <thead>
             <tr>

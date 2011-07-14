@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.publishing.api.model.PublicIdObject;
 
+import java.util.Properties;
 import java.util.Set;
 import java.util.List;
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class DisplayTemplate implements PublicIdObject {
     private String view;
     private String miniView;
     private String rssView;
+    private String searchView;
 
     private Boolean allowMultipleUsages;
     private Boolean isNewGroup;
@@ -47,6 +49,8 @@ public class DisplayTemplate implements PublicIdObject {
 
     private int id = -1;
     private String publicId = "";
+
+    private Properties properties;
 
     public DisplayTemplate() {
         allowMultipleUsages = true;
@@ -125,6 +129,14 @@ public class DisplayTemplate implements PublicIdObject {
         this.rssView = rssView;
     }
 
+    public String getSearchView() {
+        return searchView;
+    }
+
+    public void setSearchView(String searchView) {
+        this.searchView = searchView;
+    }
+
     public boolean allowMultipleUsages() {
         if (allowMultipleUsages == null) {
             return true;
@@ -190,6 +202,17 @@ public class DisplayTemplate implements PublicIdObject {
 
     public void setSites(List<Site> sites) {
         this.sites = sites;
+    }
+
+    public synchronized Properties getProperties() {
+        if (properties == null) {
+            properties = new Properties();
+        }
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public String toString() {

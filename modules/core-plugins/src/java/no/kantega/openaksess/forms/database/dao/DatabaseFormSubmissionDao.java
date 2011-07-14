@@ -100,10 +100,12 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
                     String auth = "";
                     Identity identity = form.getAuthenticatedIdentity();
-                    if (identity.getDomain() != null && identity.getDomain().length() > 0) {
-                        auth = identity.getDomain() + ":";
+                    if (identity != null) {
+                        if (identity.getDomain() != null && identity.getDomain().length() > 0) {
+                            auth = identity.getDomain() + ":";
+                        }
+                        auth += identity.getUserId();
                     }
-                    auth += identity.getUserId();                                                
                     p.setString(3, auth);
                     p.setString(4, form.getPassword());
                     p.setString(5, form.getSubmittedByEmail());

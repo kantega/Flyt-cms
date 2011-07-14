@@ -27,6 +27,7 @@ public class AdminRequestParameters {
     public static final String URL = "url";
     public static final String ITEM_IDENTIFIER = "itemIdentifier";
     public static final String SHOW_EXPIRED = "showExpired";
+    public static final String HIGHLIGHT_CURRENT = "highlightCurrent";
 
     public static final String NAVIGATION_SORT_ORDER = "sort";
     public static final String NAVIGATION_OPEN_FOLDERS = "openFolders";

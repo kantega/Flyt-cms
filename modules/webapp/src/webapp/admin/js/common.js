@@ -39,7 +39,7 @@ openaksess.common = {
         if (columnized.size() > 0) {
             var columncount = 1;
             var classes = columnized.attr("class").split(" ");
-            for (var i in classes) {
+            for (var i = 0; i < classes.length; i++) {
                 var c = classes[i];
                 if (c.indexOf("columnCount") > -1) {
                     columncount = parseInt(c.substring("columnCount".length, c.length));
@@ -123,7 +123,7 @@ openaksess.common = {
             horizontalPadding: 0,
             verticalPadding: 0,
             open: function(){
-                $.event.trigger("resize");
+                $(window).trigger("resize");
             },
             autoResize: true,
             autoOpen: true,
@@ -210,6 +210,13 @@ openaksess.common = {
              */
             close : function(){
                 $content.dialog('close');
+            },
+
+            /**
+             * Sets the modal window's title (top bar)
+             */
+            setTitle: function(title) {
+                $content.dialog( "option", "title", title );
             }
         };
 
@@ -285,6 +292,16 @@ openaksess.common = {
             context = $(context);
         }
         context.trigger("openaksess." + eventName, data);
+    },
+
+    abbreviate: function(str, maxlen, suffix) {
+        if (str.length <= maxlen) {
+            return str;
+        }
+        if (!suffix) {
+            suffix = "...";
+        }
+        return str.substring(0, maxlen) + suffix;
     }
 };
 

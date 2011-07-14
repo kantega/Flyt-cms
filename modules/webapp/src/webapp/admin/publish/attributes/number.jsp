@@ -28,10 +28,12 @@
     String value = attribute.getValue();
     value = StringHelper.escapeQuotes(value);
 
+    int maxLength = attribute.getMaxLength();
+
     if (ContentProperty.TITLE.equalsIgnoreCase(attribute.getField()) && !content.isNew()) {
         value = content.getTitle();
     }
 %>
 <div class="inputs">
-    <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>" maxlength="<%=maxLength%>">
 </div>

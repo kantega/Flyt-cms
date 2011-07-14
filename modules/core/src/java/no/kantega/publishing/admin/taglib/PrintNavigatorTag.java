@@ -43,6 +43,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
     private NavigationMapEntry site;
     private int currentId;
     private int startId = -1;
+    protected boolean highlightCurrent = true;
 
     private List<NavigationMapEntry> menuitems = null;
     private int prevDepth = -1;
@@ -80,13 +81,15 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         this.site = site;
     }
 
+    public void setHighlightCurrent(boolean highlightCurrent) {
+        this.highlightCurrent = highlightCurrent;
+    }
+
     private void addToSiteMap(NavigationMapEntry sitemap, int currentDepth, boolean doDisplay) {
 
         sitemap.setDepth(currentDepth);
 
-        if (sitemap.getId() == currentId) {
-            sitemap.setSelected(true);
-        }
+        sitemap.setSelected(sitemap.getId() == currentId);
 
         if (sitemap.getId() == startId && !doDisplay) {
             doDisplay = true;
@@ -95,6 +98,8 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         if (doDisplay) {
             menuitems.add(sitemap);
         }
+
+        sitemap.setOpen(false);
 
         List<NavigationMapEntry> children = sitemap.getChildren();
         if (children != null) {
@@ -128,6 +133,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         }
 
         currentId = -1;
+        highlightCurrent = true;
         startId = -1;
         site = null;
         menuitems = null;
@@ -147,7 +153,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
         StringBuffer clz = new StringBuffer();
 
-        if (selectedClass != null && currentItem.isSelected()) {
+        if (highlightCurrent && selectedClass != null && currentItem.isSelected()) {
             if (clz.length()  > 0) clz.append(" ");
             clz.append(selectedClass);
         }

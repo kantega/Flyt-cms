@@ -1,8 +1,10 @@
 package no.kantega.publishing.spring;
 
-import org.kantega.jexmec.*;
-import org.kantega.jexmec.simple.PluginJarClassLoader;
-import org.kantega.jexmec.simple.SimpleClassLoaderStrategy;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import org.kantega.jexmec.PluginLoader;
+import org.kantega.jexmec.PluginManager;
+import org.kantega.jexmec.ServiceLocator;
+import org.kantega.jexmec.manager.DefaultPluginManager;
 import org.kantega.jexmec.spring.SpringPluginLoader;
 import org.kantega.jexmec.spring.SpringServiceLocator;
 import org.springframework.beans.BeansException;
@@ -10,20 +12,17 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.*;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
 import javax.servlet.ServletContext;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashSet;
 import java.util.Enumeration;
-
-import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import java.util.List;
 
 
 /**
@@ -37,8 +36,8 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     private ServiceLocator serviceLocator;
     private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
     private List<BeanFactoryPostProcessor> postProcessors;
-    private Class<? extends Services> servicesClass;
-    private Class<? extends Plugin> pluginClass;
+    private Class servicesClass;
+    private Class pluginClass;
 
     public Class getObjectType() {
         return PluginManager.class;
@@ -78,10 +77,12 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
             @Override
             protected ConfigurableApplicationContext
             createApplicationContext(URL url, ClassLoader loader) {
-                final XmlWebApplicationContext context = new XmlWebApplicationContext();
+                final String resourceBases = System.getProperty("resourceBases");
+                final XmlWebApplicationContext context = resourceBases == null ? new XmlWebApplicationContext() : new DevXmlWebApplicationContext(resourceBases);
                 context.setClassLoader(loader);
                 context.setConfigLocation(url.toExternalForm());
                 context.setServletContext(servletContext);
+
                 return context;
             }
 
@@ -91,9 +92,9 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         }
 
         pluginClass = OpenAksessPlugin.class;
-        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass,
-                serviceLocator);
-        manager.addClassLoaderStrategy(new SimpleClassLoaderStrategy(applicationContext.getClassLoader()));
+        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass);
+        manager.addServiceLocator(serviceLocator);
+        manager.addPluginClassLoader(applicationContext.getClassLoader());
         manager.addPluginLoader(spring);
         return manager;
     }
@@ -125,11 +126,35 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         }
     }
 
-    public void setServicesClass(Class<? extends Services> servicesClass) {
+    public void setServicesClass(Class servicesClass) {
         this.servicesClass = servicesClass;
     }
 
-    public void setPluginClass(Class<? extends Plugin> pluginClass) {
+    public void setPluginClass(Class pluginClass) {
         this.pluginClass = pluginClass;
+    }
+
+    /**
+     * Check resources on resourceBases first
+     */
+    private class DevXmlWebApplicationContext extends XmlWebApplicationContext {
+        private final String[] resourceBases;
+
+        public DevXmlWebApplicationContext(String resourceBases) {
+            this.resourceBases = resourceBases.split(File.pathSeparator);
+        }
+
+        @Override
+        public Resource getResource(String location) {
+            if (location.startsWith(CLASSPATH_URL_PREFIX)) {
+                for(String base : resourceBases) {
+                    final FileSystemResource resource = new FileSystemResource(new File(base, location.substring(CLASSPATH_URL_PREFIX.length())));
+                    if(resource.exists()) {
+                        return resource;
+                    }
+                }
+            }
+            return super.getResource(location);
+        }
     }
 }

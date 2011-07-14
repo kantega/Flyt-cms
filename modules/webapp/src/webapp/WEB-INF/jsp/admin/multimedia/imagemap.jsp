@@ -116,9 +116,9 @@
             var id = 'imagemapRow' + no;
             var html = '<tr class="imagemap' + no + '" id="' + id + '">';
             var coords = startX + ',' + startY + ',' + endX + ',' + endY;
-            html += '<input type="hidden" name="coords' + no + '" value="' + coords + '">';
+            html += '<td><input type="hidden" name="coords' + no + '" value="' + coords + '">';
             html += '<input type="hidden" name="deleted' + no + '" value="false">';
-            html += '<td><input type="text" name="url' + no + '" id="url' + no + '" value="' + url + '" class="imageMapAreaUrl">';
+            html += '<input type="text" name="url' + no + '" id="url' + no + '" value="' + url + '" class="imageMapAreaUrl">';
             html += '<a href="#"><span class="add"><kantega:label key="aksess.button.choose"/></span></a></td>';
             html += '<td><input type="text" name="altTitle' + no + '" id="altTitle' + no + '" value="' + altTitle + '" class="imageMapAreaAltTitle"></td>';
             html += '<td><input type="checkbox" value="true" name="newWindow' + no + '"';
@@ -175,7 +175,7 @@
         function selectPage(row){
             currentRow = row;
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action",width: 280, height:450});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action",width: 400, height:450});
         }
 
         // Callback from navigator        

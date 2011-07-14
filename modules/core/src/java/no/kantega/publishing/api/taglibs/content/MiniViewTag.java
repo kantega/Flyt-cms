@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-public class MiniViewTag  extends TagSupport {
+public class MiniViewTag extends TagSupport {
     private static final String SOURCE = "aksess.MiniViewTag";
 
     private String collection = null;
@@ -71,12 +71,6 @@ public class MiniViewTag  extends TagSupport {
                     // Ved å legge content på request'en med navn aksess_this vil malen kunne bruke standard tagger
                     RequestHelper.setRequestAttributes(request, content);
                     try {
-                        int siteId = content.getAssociation().getSiteId();
-                        no.kantega.publishing.api.model.Site site = siteCache.getSiteById(siteId);
-                        String alias = site.getAlias();
-                        if (template.indexOf("$SITE") != -1) {
-                            template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
-                        }
                         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
                             for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
                                 listener.beforeMiniviewDispatch(new DefaultDispatchContext((HttpServletRequest)pageContext.getRequest(), (HttpServletResponse) pageContext.getResponse(), template));

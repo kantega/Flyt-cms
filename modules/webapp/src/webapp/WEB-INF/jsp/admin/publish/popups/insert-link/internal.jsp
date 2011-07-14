@@ -56,9 +56,9 @@
 
         var url = "${pageContext.request.contextPath}/admin/publish/popups/SelectContent.action";
         if (frm.smartlink.checked) {
-            url += "?useContentId=true";
+            url += "?selectContentId=true";
         }
-        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
+        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=400,height=450,resizable=yes,scrollbars=yes");
         contentwin.focus();
     }
 
@@ -85,10 +85,12 @@
             <input type="hidden" name="url_associationId" id="url_associationId" value="">
             <input type="text" name="url_associationIdtext" id="url_associationIdtext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.internal.hint"/>" class="fullWidth" maxlength="128">
             <script type="text/javascript">
-                $("#url_associationIdtext").oaAutocomplete({
-                    defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
-                    source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
-                    select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                $(document).ready(function() {
+                    $("#url_associationIdtext").oaAutocomplete({
+                        defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
+                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
+                        select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                    });
                 });
             </script>
         </div>
@@ -96,10 +98,12 @@
             <input type="hidden" name="url_contentId" id="url_contentId" value="">
             <input type="text" name="url_contentIdtext" id="url_contentIdtext" onfocus="this.select()" value="<kantega:label key="aksess.insertlink.internal.hint"/>" class="fullWidth" maxlength="128">
             <script type="text/javascript">
-                $("#url_contentIdtext").oaAutocomplete({
-                    defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
-                    source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
-                    select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                $(document).ready(function() {
+                    $("#url_contentIdtext").oaAutocomplete({
+                        defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
+                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action?useContentId=true",
+                        select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                    });
                 });
             </script>
         </div>

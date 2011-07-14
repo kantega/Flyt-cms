@@ -48,5 +48,6 @@ public interface Fields {
     public static final String DOCUMENT_TYPE_ID = "DocumentTypeId";
     public static final String ALIAS = "Alias";
     public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";    
+    public static final String ASSOCIATION_ID = "AssociationId";
 
 }

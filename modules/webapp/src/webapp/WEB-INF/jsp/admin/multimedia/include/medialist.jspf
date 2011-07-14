@@ -46,7 +46,7 @@
                 <div class="icon">
                     <c:choose>
                         <c:when test="${mediaSearch}">
-                            <a href="EditMultimedia.action?id=${media.id}" target="_top">
+                            <a href="EditMultimedia.action?id=${media.id}" target="_parent">
                         </c:when>
                         <c:otherwise>
                             <a href="EditMultimedia.action?id=${media.id}">
@@ -75,14 +75,17 @@
                     <div class="name">${media.name}</div>
                     <div class="details">
                         <c:choose>
-                            <c:when test="${media.height > 0 &&media.width > 0}">
-                                <kantega:label key="aksess.multimedia.size"/> ${media.width}x${media.height}<br>
+                            <c:when test="${media.height > 0 && media.width > 0}">
+                                <kantega:label key="aksess.multimedia.size"/>: ${media.width}x${media.height}<br>
                             </c:when>
                             <c:otherwise>
                                 ${media.fileType}<br>
                             </c:otherwise>
                         </c:choose>
-                        <kantega:label key="aksess.multimedia.lastmodified"/> <admin:formatdate date="${media.lastModified}"/>
+                        <c:if test="${media.height > 0 && media.width > 0}">
+                            <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br>
+                        </c:if>
+                        <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/>
                     </div>
                 </div>
             </div>

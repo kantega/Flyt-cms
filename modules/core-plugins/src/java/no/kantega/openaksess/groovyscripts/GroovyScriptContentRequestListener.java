@@ -31,6 +31,7 @@ import org.springframework.web.servlet.HandlerMapping;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLConnection;
 import java.io.IOException;
@@ -188,6 +189,9 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 continue;
             }
             if (method.getName().equals("main")) {
+                continue;
+            }
+            if (method.getModifiers() == Modifier.PRIVATE) {
                 continue;
             }
 

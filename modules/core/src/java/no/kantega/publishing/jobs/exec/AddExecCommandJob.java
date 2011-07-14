@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.jobs.exec;
 
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.search.index.IndexManager;
 import no.kantega.publishing.search.index.jobs.ExecWhileClosedJob;
 
@@ -25,6 +28,12 @@ public class AddExecCommandJob {
     private String command;
 
     public void execute() {
+
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            Log.info(this.getClass().getSimpleName(), "Job is disabled for server type slave", null, null);
+            return;
+        }
+
         ExecWhileClosedJob job = new ExecWhileClosedJob();
         job.setCommand(command);
         indexManager.addIndexJob(job);
@@ -37,4 +46,6 @@ public class AddExecCommandJob {
     public void setCommand(String command) {
         this.command = command;
     }
+
+
 }

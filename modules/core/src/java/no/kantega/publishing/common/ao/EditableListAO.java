@@ -80,7 +80,7 @@ public class EditableListAO {
             jdbcTemplate.update("UPDATE attribute_editablelist SET DefaultSelected = 0 WHERE AttributeKey = ? AND Language = ?", new Object[]{attributeKey.toLowerCase(), language});
         }
         int intDefaultSelected = (defaultSelected)? 1 : 0;
-        jdbcTemplate.update("INSERT INTO attribute_editablelist(AttributeKey, Value, DefaultSelected, Language) VALUES(?, ?, ?, ?)", new Object[]{attributeKey.toLowerCase(), value, new Integer(intDefaultSelected), language});
+        jdbcTemplate.update("INSERT INTO attribute_editablelist(AttributeKey, Value, DefaultSelected, Language) VALUES(?, ?, ?, ?)", new Object[]{attributeKey.toLowerCase(), value, intDefaultSelected, language});
     }
 
 

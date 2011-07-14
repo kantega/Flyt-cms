@@ -19,7 +19,7 @@ package no.kantega.publishing.api.plugin;
 
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
-import org.kantega.jexmec.AbstractPlugin;
+import no.kantega.publishing.api.ui.UIContribution;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -30,7 +30,7 @@ import javax.servlet.Filter;
 import java.util.Collections;
 import java.util.List;
 
-public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAksessPlugin, ApplicationContextAware {
+public class OpenAksessPluginAdapter implements OpenAksessPlugin, ApplicationContextAware {
 
     private List<HandlerMapping> handlerMappings = Collections.emptyList();
 
@@ -41,8 +41,15 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
 
     private List<Filter> requestFilters = Collections.emptyList();
 
-    public OpenAksessPluginAdapter(String pluginId) {
-        super(pluginId);
+    private List<UIContribution> uiContributions = Collections.emptyList();
+    private final String pluginUid;
+
+    public OpenAksessPluginAdapter(String pluginUid) {
+        this.pluginUid = pluginUid;
+    }
+
+    public String getPluginUid() {
+        return pluginUid;
     }
 
     public void setHandlerMappings(List<HandlerMapping> handlerMappings) {
@@ -84,5 +91,12 @@ public class OpenAksessPluginAdapter extends AbstractPlugin implements OpenAkses
     public void setRequestFilters(List<Filter> requestFilters) {
         this.requestFilters = requestFilters;
     }
-    
+
+    public List<UIContribution> getUIContributions() {
+        return uiContributions;
+    }
+
+    public void setUIContributions(List<UIContribution> uiContributions) {
+        this.uiContributions = uiContributions;
+    }
 }

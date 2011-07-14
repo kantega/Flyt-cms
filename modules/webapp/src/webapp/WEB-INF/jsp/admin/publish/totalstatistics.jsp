@@ -52,11 +52,11 @@
                 </tr>
                 <tr class="tableRow1">
                     <td><kantega:label key="aksess.statistics.summary.sessions"/></td>
-                    <td class="number">${sumHits}</td>
+                    <td class="number">${sumSessions}</td>
                 </tr>
                 <tr class="tableRow0">
                     <td><kantega:label key="aksess.statistics.summary.avghitspersession"/></td>
-                    <td class="number"><fmt:formatNumber value="${avgHitsPerSession}" minFractionDigits="2" maxFractionDigits="2"/>%</td>
+                    <td class="number"><fmt:formatNumber value="${avgHitsPerSession}" minFractionDigits="2" maxFractionDigits="2"/></td>
                 </tr>
                 </tbody>
             </table>

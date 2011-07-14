@@ -103,6 +103,7 @@ public class SearchHandlerExtendedImpl extends SearchHandlerDefaultImpl {
                     continue;
                 }
                 //
+
                 TopDocs topDocs = getIndexSearcher().search(q, filter, extQuery.getMaxHits());
                 if (hitCountQuery.getTerms().length == 0 || Arrays.binarySearch(hitCountQuery.getTerms(), term) >= 0) {
                     String termTranslated = translateTerm(extQuery.getTermTranslator(), field, term);

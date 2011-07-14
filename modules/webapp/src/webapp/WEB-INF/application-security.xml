@@ -27,4 +27,5 @@
     </bean>
 
     <bean id="aksessIdentityResolver" class="no.kantega.publishing.security.realm.AksessIdentityResolverFactoryBean"/>
+    <bean id="aksessProfileManager" class="no.kantega.publishing.security.realm.AksessProfileManagerFactoryBean"/>
 </beans>

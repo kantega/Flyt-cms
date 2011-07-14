@@ -49,7 +49,6 @@ public class MultimediaMapWorker {
         while (entry != null) {
             addToSiteMap(entry, entries);
             parent.addChild(entry);
-            //parent.setOpen(true);
             entry = getFirst(parentId, entries);
         }
     }

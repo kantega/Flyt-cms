@@ -133,7 +133,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
             if(var != null) {
                 pageContext.setAttribute(var, (SiteMapEntry)pathitems.get(offset));
             }
-            pageContext.setAttribute("aksess_menu_" + name, new Integer(offset));
+            pageContext.setAttribute("aksess_menu_" + name, offset);
             offset++;
             return EVAL_BODY_TAG;
         } else {

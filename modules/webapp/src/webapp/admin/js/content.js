@@ -83,7 +83,7 @@ openaksess.content = {
                 if (data) {
                     openaksess.content.contentstatus.breadcrumbs(data.path);
                     openaksess.content.contentstatus.brokenLinks(data.links);
-                    openaksess.content.contentstatus.details(data);
+                    openaksess.content.contentstatus.details(data.contentProperties);
                     openaksess.content.contentstatus.associations(data.associations);
                     openaksess.content.contentstatus.enableButtons(data.enabledButtons);
                     openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
@@ -180,24 +180,31 @@ openaksess.content = {
     bindToolButtons : function() {
         $("#ToolsMenu .button .newSubpage").click(function(){
             openaksess.content.publish.newSubpage(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .delete").click(function(){
             openaksess.content.publish.deleteItem(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .cut").click(function(){
             openaksess.content.publish.cut(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .copy").click(function(){
             openaksess.content.publish.copy(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .paste").click(function(){
             openaksess.content.publish.paste(stateHandler.getState());
+            return false;
         });
-        $("#ToolsMenu .button .displayPeriod").click(function(){
+        $("#ToolsMenu .button .displayPeriod").click(function(e){
             openaksess.content.publish.displayPeriod(stateHandler.getState());
+            return false;
         });
         $("#ToolsMenu .button .privileges").click(function(){
             openaksess.content.publish.managePrivileges(stateHandler.getState());
+            return false;
         });
     },
 
@@ -212,7 +219,7 @@ openaksess.content = {
         },
 
         openInNewWindow : function(url) {
-            window.open(properties.contextPath + "/content.ap" + url);
+            window.open(properties.contextPath + "/content.ap?" + url);
         },
 
         newSubpage : function(url) {
@@ -294,8 +301,18 @@ openaksess.content = {
         breadcrumbs: function (path) {
             if (path) {
                 var crumbs = '<ul class="breadcrumbs">';
+                openaksess.common.debug("openaksess.contentstatus.breadcrumbs(): Bread crumbs size: " + path.length + " elements");
                 for (var i=0; i<path.length; i++) {
-                    crumbs += "<li><a href=\"?thisId="+path[i].id+"\">"+path[i].title+"</a></li>";
+                    var visibleTitle = path[i].title;
+                    //Truncate the path if it's 5 or more elements. Do not trucate the first or two last elements.
+                    if (path.length > 4 && i < path.length-2) {
+                        visibleTitle = openaksess.common.abbreviate(path[i].title, 3);
+                    }
+                    //Abbreviate all titles that are longer than 20 characters
+                    if (visibleTitle.length > 20) {
+                        visibleTitle = openaksess.common.abbreviate(visibleTitle, 20);
+                    }
+                    crumbs += "<li><a href=\"?thisId="+path[i].id+"\" title=\""+path[i].title+"\">"+visibleTitle+"</a></li>";
                 }
                 crumbs += "</ul>";
                 $("#Breadcrumbs").html(crumbs);
@@ -305,113 +322,145 @@ openaksess.content = {
         brokenLinks: function (links) {
             if (links && links.length > 0) {
                 openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): binding links icon to click. Number of links: " +links.length);
-                $("#Statusbar .brokenLink").unbind('click').bind('click', function(){
-                    openaksess.common.debug("openaksess.content.contentstatus.brokenLinks(): click");
-                    var details = '<table>' +
-                                '   <thead>' +
-                                '       <tr>' +
-                                '           <th class="field">' + properties.content.labels.linkcheckField + '</th>' +
-                                '           <th class="url">' + properties.content.labels.linkcheckUrl + '</th>' +
-                                '           <th class="status">' + properties.content.labels.linkcheckStatus + '</th>' +
-                                '           <th class="lastChecked">' + properties.content.labels.linkcheckLastchecked + '</th>' +
-                                '           <th class="timesChecked">' + properties.content.labels.linkcheckTimeschecked + '</th>' +
-                                '       </tr>' +
-                                '</thead>' +
-                                '<tbody>';
-                    for (var i = 0; i < links.length; i++) {
-                        var statustxt = "";
-                        if (links[i].status === 2) {
-                            if (links[i].httpStatus == 401) {
-                                statustxt = properties.content.labels.httpStatus401;
-                            } else if (links[i].httpStatus == 404) {
-                                statustxt = properties.content.labels.httpStatus404;
-                            } else if (links[i].httpStatus == 500) {
-                                statustxt = properties.content.labels.httpStatus500;
-                            } else {
-                                statustxt = "HTTP " + links[i].httpStatus;
-                            }
+
+                var details = '<table>' +
+                            '   <thead>' +
+                            '       <tr>' +
+                            '           <th class="field">' + properties.content.labels.linkcheckField + '</th>' +
+                            '           <th class="url">' + properties.content.labels.linkcheckUrl + '</th>' +
+                            '           <th class="status">' + properties.content.labels.linkcheckStatus + '</th>' +
+                            '           <th class="lastChecked">' + properties.content.labels.linkcheckLastchecked + '</th>' +
+                            '           <th class="timesChecked">' + properties.content.labels.linkcheckTimeschecked + '</th>' +
+                            '       </tr>' +
+                            '</thead>' +
+                            '<tbody>';
+                for (var i = 0; i < links.length; i++) {
+                    var statustxt = "";
+                    if (links[i].status === 2) {
+                        if (links[i].httpStatus == 401) {
+                            statustxt = properties.content.labels.httpStatus401;
+                        } else if (links[i].httpStatus == 404) {
+                            statustxt = properties.content.labels.httpStatus404;
+                        } else if (links[i].httpStatus == 500) {
+                            statustxt = properties.content.labels.httpStatus500;
                         } else {
-                            statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
+                            statustxt = "HTTP " + links[i].httpStatus;
                         }
-
-                        details += '<tr>' +
-                                 '  <td>'+links[i].attributeName+'</td>' +
-                                 '  <td>'+links[i].url+'</td>' +
-                                 '  <td>'+statustxt+'</td>' +
-                                 '  <td>'+links[i].lastChecked+'</td>' +
-                                 '  <td>'+links[i].timesChecked+'</td>' +
-                                 '</tr>';
+                    } else {
+                        statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
                     }
-                    details +='   </tbody>' +
-                            '</table>';
 
-                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'brokenlinks', floated: true, resizable: false}).infoslider('toggle', this, details);
-                }).show();
+                    details += '<tr>' +
+                             '  <td>'+links[i].attributeName+'</td>' +
+                             '  <td>'+links[i].url+'</td>' +
+                             '  <td>'+statustxt+'</td>' +
+                             '  <td>'+links[i].lastChecked+'</td>' +
+                             '  <td>'+links[i].timesChecked+'</td>' +
+                             '</tr>';
+                }
+                details +='   </tbody>' +
+                        '</table>';
+
+                openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .brokenLink", "brokenlinks", details);
+            } else {
+                openaksess.content.contentstatus.unbindInfoSliderTrigger("#Statusbar .brokenLink");
             }
         },
 
 
-        details: function(data) {
-            var content = data.content;
+        details: function(contentProperties) {
             var details = "<h3>" + properties.content.labels.details + "</h3><ul>";
 
-            if (content) {
+            if (contentProperties) {
                 openaksess.common.debug("openaksess.content.contentstatus.details(): binding details icon to click");
 
-                details += '<li><span class="label">' + properties.content.labels.contentTitle + ':</span>&nbsp;'+content.title+'</li>';
-                if (content.alias) {
-                    details += '<li><span class="label">' + properties.content.labels.publishinfoAlias + ':</span>&nbsp;'+content.alias+'</li>';
+                details += '<li><span class="label">' + properties.content.labels.contentTitle + ':</span>&nbsp;'+contentProperties.title+'</li>';
+                if (contentProperties.alias) {
+                    details += '<li><span class="label">' + properties.content.labels.publishinfoAlias + ':</span>&nbsp;'+contentProperties.alias+'</li>';
                 }
-                if (content.lastModified) {
-                    details += '<li><span class="label">' + properties.content.labels.contentLastModified + ':</span>&nbsp;'+content.lastModified + ' ' + properties.content.labels.contentModifiedBy + ' ' + content.modifiedBy + '</li>';
+                if (contentProperties.lastModified) {
+                    details += '<li><span class="label">' + properties.content.labels.contentLastModified + ':</span>&nbsp;'+contentProperties.lastModified + ' ' + properties.content.labels.contentModifiedBy + ' ' + contentProperties.lastModifiedBy + '</li>';
                 }
-                if (content.modifiedBy != content.approvedBy) {
-                    details += '<li><span class="label">' + properties.content.labels.contentApprovedBy + ':</span>&nbsp;'+content.approvedBy + '</li>';
+                if (contentProperties.modifiedBy != contentProperties.approvedBy) {
+                    details += '<li><span class="label">' + properties.content.labels.contentApprovedBy + ':</span>&nbsp;'+contentProperties.approvedBy + '</li>';
                 }
-                if (content.changeFromDate) {
-                    details += '<li><span class="label">' + properties.content.labels.contentChangeFrom + ':</span>&nbsp;'+content.changeFromDate+'</li>';
+                if (contentProperties.changeFromDate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentChangeFrom + ':</span>&nbsp;'+contentProperties.changeFromDate+'</li>';
                 }
-                if (content.expireDate) {
-                    details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+content.expireDate+'</li>';
+                if (contentProperties.expireDate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentExpireDate + ':</span>&nbsp;'+contentProperties.expireDate+'</li>';
                 }
-                if (content.ownerperson) {
-                    details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+content.ownerperson+'</li>';
+                if (contentProperties.ownerperson) {
+                    details += '<li><span class="label">' + properties.content.labels.contentOwnerPerson + ':</span>&nbsp;'+contentProperties.ownerperson+'</li>';
+                }
+                if (contentProperties.owner) {
+                    details += '<li><span class="label">' + properties.content.labels.contentOwner + ':</span>&nbsp;'+contentProperties.owner+'</li>';
+                }
+
+                var displayTemplate = contentProperties.displayTemplate;
+                if (displayTemplate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
                 }
             }
 
-            var displayTemplate = data.displayTemplate;
-            if (displayTemplate) {
-                details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
-            }
-            
             details +="</ul>";
 
-            $("#Statusbar .details").unbind('click').bind('click', function(){
-                openaksess.common.debug("openaksess.content.contentstatus.details(): click");
-                $("#MainPane .infoslider").infoslider('option', {cssClasses: 'details', floated: true, resizable: false}).infoslider('toggle', this, details);
-            }).show();
+            openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .details", "details", details);
+
         },
 
 
         associations: function (associations) {
             if (associations && associations.length > 1) {
                 openaksess.common.debug("openaksess.content.contentstatus.associations(): Number of associations: "+associations.length);
-                $("#Statusbar .crossPublish").unbind('click').bind('click', function(){
-                    openaksess.common.debug("openaksess.content.contentstatus.associations(): click");
-                    var details = '<h3>' + properties.content.labels.associations + '</h3>';
-                    for (var i = 0; i < associations.length; i++) {
-                        details += '<ul class="breadcrumbs">';
-                        for (var j = 0; j<associations[i].length; j++) {
-                            details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
-                        }
-                        details += '</ul><div class="clearing"></div>';
-                    }
 
-                    $("#MainPane .infoslider").infoslider('option', {cssClasses: 'associations', floated: true, resizable: false}).infoslider('toggle', this, details);
-                }).show();
+                var details = '<h3>' + properties.content.labels.associations + '</h3>';
+                for (var i = 0; i < associations.length; i++) {
+                    details += '<ul class="breadcrumbs">';
+                    for (var j = 0; j<associations[i].length; j++) {
+                        details += '<li><a href="?thisId='+associations[i][j].id+'">' + associations[i][j].title + '</a></li>';
+                    }
+                    details += '</ul><div class="clearing"></div>';
+                }
+
+                openaksess.content.contentstatus.bindInfoSliderTrigger("#Statusbar .crossPublish", 'associations', details);
+            } else {
+                openaksess.content.contentstatus.unbindInfoSliderTrigger("#Statusbar .crossPublish");
             }
         },
 
+        /**
+         * Sets up the infoslider for each of the triggers, ie. broken links, associations, content details etc.
+         * @param triggerSelector jQuery selector for the element that triggers the infoslider.
+         * @param cssClass Infoslider css class for this trigger
+         * @param content Infoslider content.
+         */
+        bindInfoSliderTrigger: function(triggerSelector, cssClass, content) {
+            openaksess.common.debug("ContentStatus.bindInfoSliderTrigger(): triggerSelector: " + triggerSelector + ", cssClass: " + cssClass);
+            var infoslider = $("#MainPane .infoslider"),
+            infosliderTrigger = $(triggerSelector);
+
+            //initialize the infoslider
+            infoslider.infoslider('option', {cssClasses: cssClass, floated: true, resizable: false});
+            //replaceContentIfOpen will keep the slider open and replace the content
+            //if the current trigger is the trigger that opened the slider in the first place
+            infoslider.infoslider('replaceContentIfOpen', infosliderTrigger[0], content);
+
+            //Toggle the info slider upon trigger click.
+            infosliderTrigger.unbind('click').bind('click', function(){
+                openaksess.common.debug("openaksess.content.contentstatus.bindInfoSliderTrigger(): click");
+                infoslider.infoslider('toggle', infosliderTrigger[0], content);
+            }).show();
+        },
+
+        /**
+         * Removes info slider trigger for the given element.
+         * @param triggerSelector jQuery selector.
+         */
+        unbindInfoSliderTrigger: function(triggerSelector) {
+            openaksess.common.debug("ContentStatus.unbindInfoSliderTrigger(): triggerSelector: " + triggerSelector);
+            $("#MainPane .infoslider").infoslider('close', $(triggerSelector)[0]);
+        },
 
         disableButtons: function() {
             $("#ToolsMenu a").addClass("disabled");
@@ -440,7 +489,7 @@ openaksess.content = {
                     $buttons.hide();
                 }
                 if (isHidden != $buttons.is(":hidden")) {
-                    $.event.trigger("resize");
+                    $(window).trigger("resize");
                 }
             }
 
@@ -458,7 +507,7 @@ openaksess.content = {
             }
             if (isHidden != $navigateContentHints.is(":hidden")) {
                 openaksess.common.debug("ContentStatus.showContentHints resizing to show content hints");
-                $.event.trigger("resize");
+                $(window).trigger("resize");
             }
         },
 
@@ -547,21 +596,21 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $mainPaneContent = $("#MainPaneContent"),
     mainPaneContentPaddingTop = 0,
     mainPaneContentPaddingBottom = 0;
-    var $mainContentIframe = $("#Maincontent");
+    var $mainContentIframe = $("#Contentmain");
 
-    if ($mainPaneContent) {
-        mainPaneContentPaddingTop = $mainPaneContent.css("paddingTop");
-        mainPaneContentPaddingBottom = $mainPaneContent.css("paddingBottom");
+    if ($mainPaneContent.size() > 0) {
+        mainPaneContentPaddingTop = parseInt($mainPaneContent.css("paddingTop"));
+        mainPaneContentPaddingBottom = parseInt($mainPaneContent.css("paddingBottom"));
     }
 
     var buttonsHeight = 0;
-    if ($buttons && !$buttons.is(":hidden")) {
+    if ($buttons.size() > 0 && !$buttons.is(":hidden")) {
         buttonsHeight = $buttons.height();
     }
 
     var contentHintsHeight = 0;
-    if ($contentHints && !$contentHints.is(":hidden")) {
-        contentHintsHeight = $contentHints.height();
+    if ($contentHints.size() > 0 && !$contentHints.is(":hidden")) {
+        contentHintsHeight = $contentHints.outerHeight();
     }
 
     var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
@@ -570,20 +619,37 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
         $navigation.width(preferredNavigationWidth + "px");
         navigationWidth = preferredNavigationWidth;
     }
-    var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width);
+    var mainPaneWidth = (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width)-2;
 
 
-    openaksess.common.debug("openaksess.admin.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
+    openaksess.common.debug("openaksess.content.setLayoutSpecificSizes(): filteroptionsHeight: "+filteroptionsHeight+", statusbarHeight"+statusbarHeight + ", buttonsHeight: " + buttonsHeight);
 
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
     $mainPane.height(mainPaneHeight).width(mainPaneWidth);
-    $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
-
-    if ($mainPaneContent) {
-        $mainPaneContent.height(mainPaneHeight-parseInt(mainPaneContentPaddingTop)-parseInt(mainPaneContentPaddingBottom)-statusbarHeight-buttonsHeight);
+    if ($mainContentIframe.size() > 0) {
+        $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
     }
 
+    if ($mainPaneContent.size() > 0) {
+        $mainPaneContent.height(mainPaneHeight-mainPaneContentPaddingTop-mainPaneContentPaddingBottom-statusbarHeight-buttonsHeight);
+    }
+
+};
+
+/**
+ * Under ideal conditions, the body should be as high as the view port (window).
+ * Sometimes, for example when changing font size, the resize calculations fail, often beacause of a
+ * temporary scroll bar added during the font size change process. This will cause the content frame iFrame
+ * to wrap below the view port.
+ *
+ * To check if the content frame has wrapped below the window we check if the total body height is
+ * higher than the view port.
+ */
+openaksess.admin.isResizeNecessary = function() {
+    //Add 100px to the calculation just to make sure that it's acutually a frame wrap situation that
+    //has occurred, not just an odd pixel difference.
+    return $(document).height() > $(window).height()+100;
 };
 
 
@@ -616,13 +682,14 @@ openaksess.navigate.navigatorResizeOnStart = function() {
 openaksess.navigate.navigatorResizeOnStop = function() {
     openaksess.common.debug("openaksess.content.navigatorResizeOnStop(): Removing overlay");
     openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.content.navigationwidth, $("#Navigation").width());
-    $.event.trigger("resize");
+    $(window).trigger("resize");
     $("#Contentoverlay").remove();
 };
 
 openaksess.navigate.navigatorResizeOnResize = function() {
     //TODO: Verify the performance of this in all browsers.
-    $.event.trigger("resize");
+    openaksess.common.debug("openaksess.content.navigatorResizeOnResize(): Triggering resize event");
+    $(window).trigger("resize");
 };
 
 
@@ -645,6 +712,10 @@ openaksess.navigate.setContextMenus = function(clipboardEmpty) {
 
 openaksess.navigate.getNavigatorAction = function() {
     return properties.contextPath + "/admin/publish/ContentNavigator.action";
+};
+
+openaksess.navigate.getClipBoardHandler = function() {
+    return ContentClipboardHandler;
 };
 
 /**
@@ -724,7 +795,6 @@ openaksess.navigate.handleContextMenuClick_shortcut = function (action, href) {
  * Returns the location object for the contentmain iframe.
  */
 openaksess.navigate.getCurrentLocation = function() {
-    openaksess.common.debug("openaksess.content.getCurrentLocation()");
     return document.getElementById("Contentmain").contentWindow.document.location;
 };
 
@@ -754,6 +824,37 @@ openaksess.navigate.getNavigatorParams = function() {
     params.showExpired = !$("#FilteroptionHideExpired").is(":checked");
     return params;
 };
+
+
+
+
+/**
+ * Changes the content of the contentmain iframe.
+ * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
+ *
+ * Overrides the default implementation. See navigate.js
+ *
+ * If no arguments are supplied, i.e. no id=undefined and suppressNavigatorUpdate=undefined, an iframe reload is implied.
+ *
+ * @param id
+ * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
+ */
+openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
+    openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
+    if (suppressNavigatorUpdate) {
+        suppressNavigatorUpdate = true;
+    }
+    var iframe = document.getElementById("Contentmain");
+    if (iframe) {
+        if (id == undefined && suppressNavigatorUpdate == undefined) {
+            iframe.contentWindow.document.location.reload();
+        } else {
+            iframe.src = openaksess.common.getContentUrlFromAssociationId(id);
+        }
+
+    }
+};
+
 
 /*
  * Return URL to search action

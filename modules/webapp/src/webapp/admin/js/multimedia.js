@@ -367,6 +367,11 @@ openaksess.navigate.getNavigatorAction = function() {
     return properties.contextPath + "/admin/multimedia/MultimediaNavigator.action";
 };
 
+openaksess.navigate.getClipBoardHandler = function() {
+    return MultimediaClipboardHandler;
+};
+
+
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function(href) {
     return openaksess.common.getQueryParam("itemIdentifier", href);
 };
@@ -393,7 +398,7 @@ openaksess.navigate.onNavigatorTitleClick = function(elm) {
  * See navigate.js
  */
 openaksess.navigate.navigatorResizeOnResize = function() {
-    $.event.trigger("resize");
+    $(window).trigger("resize");
 };
 
 openaksess.search.getSearchAction = function() {

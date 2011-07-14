@@ -16,30 +16,31 @@
 
 package no.kantega.publishing.client;
 
-import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.security.SecuritySession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.util.*;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
@@ -105,13 +106,16 @@ public class ContentRequestHandler extends AbstractController {
                             if (scheme == null) {
                                 scheme = request.getScheme();
                             }
+                            if ("GET".equalsIgnoreCase(request.getMethod())) {
+                                url = createRedirectUrlWithIncomingParameters(request, url);
+                            }
                             url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             response.sendRedirect(url);
                             return null;
                         }
                     }
                     if (isAdminMode) {
-                        response.setDateHeader("Expires", 0);                        
+                        response.setDateHeader("Expires", 0);
                     }
                     contentRequestDispatcher.dispatchContentRequest(content, getServletContext(), request, response);
                     long end = new Date().getTime();
@@ -153,7 +157,6 @@ public class ContentRequestHandler extends AbstractController {
         return null;
     }
 
-
     @Autowired
     public void setContentRequestDispatcher(ContentRequestDispatcher contentRequestDispatcher) {
         this.contentRequestDispatcher = contentRequestDispatcher;
@@ -163,5 +166,17 @@ public class ContentRequestHandler extends AbstractController {
     @Autowired
     public void setSiteCache(SiteCache siteCache) {
         this.siteCache = siteCache;
+    }
+
+    private String createRedirectUrlWithIncomingParameters(HttpServletRequest request, String url) {
+        String params = HttpHelper.createQueryStringFromRequestParameters(request);
+        if (params.length() > 0) {
+            if (url.contains("?")) {
+                url = url + "&" + params;
+            } else {
+                url = url + "?" + params;
+            }
+        }
+        return url;
     }
 }

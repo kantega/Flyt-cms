@@ -4,7 +4,7 @@
     Connection c = dbConnectionFactory.getConnection();
     try {
 
-        PreparedStatement updateSt = c.prepareStatement("create table oa_db_migrations (dbnamespace varchar(256), version varchar(255))");
+        PreparedStatement updateSt = c.prepareStatement("create table oa_db_migrations (dbnamespace varchar(255) NOT NULL, version varchar(255) NOT NULL)");
         updateSt.executeUpdate();
 
         dbConnectionFactory.migrateDatabase(pageContext.getServletContext(), dbConnectionFactory.getDataSource());

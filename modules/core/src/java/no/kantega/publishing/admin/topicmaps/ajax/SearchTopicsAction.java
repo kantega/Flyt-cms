@@ -84,13 +84,15 @@ public class SearchTopicsAction extends AdminController {
     private Map getAlphabeticalMap(List<Topic> allTopics) {
         Map<String, List<Topic>> letters = new TreeMap<String, List<Topic>>();
         for (Topic topic : allTopics) {
-            String letter = topic.getBaseName().substring(0, 1).toUpperCase();
-            List<Topic> topicsForLetter = letters.get(letter);
-            if (topicsForLetter == null) {
-                topicsForLetter = new ArrayList<Topic>();
-                letters.put(letter, topicsForLetter);
+            if (topic.getBaseName() != null && topic.getBaseName().trim().length() > 0){
+                String letter = topic.getBaseName().substring(0, 1).toUpperCase();
+                List<Topic> topicsForLetter = letters.get(letter);
+                if (topicsForLetter == null) {
+                    topicsForLetter = new ArrayList<Topic>();
+                    letters.put(letter, topicsForLetter);
+                }
+                topicsForLetter.add(topic);
             }
-            topicsForLetter.add(topic);
         }
 
         return letters;

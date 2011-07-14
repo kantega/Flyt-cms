@@ -116,43 +116,47 @@ public class InputScreenRenderer {
                 attr.setTabIndex(tabIndex);
                 tabIndex += 10;
 
-                request.setAttribute("content", content);
-                request.setAttribute("attribute", attr);
-                request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
-
-                try {
-                    if (fieldErrors.get(attr.getName()) != null) {
-                        out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
-                    } else {
-                        out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
-                    }
-                    out.print("<div class=\"heading\">" + attr.getTitle());
-                    if (attr.isMandatory()) {
-                        out.print("<span class=\"mandatory\">*</span>");
-                    }
-                    out.print("</div>");
-                    String helptext = attr.getHelpText();
-                    if (helptext != null && helptext.length() > 0) {
-                        out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
-                    }
-                    String script = attr.getScript();
-                    if (script != null && script.length() > 0) {
-                        out.print("<script type=\"text/javascript\">\n" + script+ "\n</script>\n");
-                    }
-                    if (attr.inheritsFromAncestors()) {
-                        String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
-                        out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
-                    }
-                    pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
-                    out.print("\n");
-                    out.print("</div>\n");
-                } catch (Exception e) {
-                    out.print("</div>\n");
-                    Log.error(SOURCE, e, null, null);
-                    String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
-                    out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
-                }
+                renderAttribute(out, request, fieldErrors, attr);
             }
+        }
+    }
+
+    public void renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attr) throws IOException {
+        request.setAttribute("content", content);
+        request.setAttribute("attribute", attr);
+        request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
+
+        try {
+            if (fieldErrors.get(attr.getName()) != null) {
+                out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
+            } else {
+                out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
+            }
+            out.print("<div class=\"heading\">" + attr.getTitle());
+            if (attr.isMandatory()) {
+                out.print("<span class=\"mandatory\">*</span>");
+            }
+            out.print("</div>");
+            String helptext = attr.getHelpText();
+            if (helptext != null && helptext.length() > 0) {
+                out.print("<div class=\"ui-state-highlight\">" + helptext + "</div>\n");
+            }
+            String script = attr.getScript();
+            if (script != null && script.length() > 0) {
+                out.print("<script type=\"text/javascript\">\n" + script+ "\n</script>\n");
+            }
+            if (attr.inheritsFromAncestors()) {
+                String inheritText = LocaleLabels.getLabel("aksess.editcontent.inheritsfromancestors", Aksess.getDefaultAdminLocale());
+                out.print("<div class=\"ui-state-highlight\">" + inheritText + "</div>\n");
+            }
+            pageContext.include("/admin/publish/attributes/" + attr.getRenderer() +".jsp");
+            out.print("\n");
+            out.print("</div>\n");
+        } catch (Exception e) {
+            out.print("</div>\n");
+            Log.error(SOURCE, e, null, null);
+            String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
+            out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
         }
     }
 

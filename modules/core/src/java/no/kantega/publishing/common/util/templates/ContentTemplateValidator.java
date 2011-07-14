@@ -29,6 +29,7 @@ import no.kantega.commons.exception.InvalidFileException;
 import java.util.List;
 import java.util.ArrayList;
 
+import no.kantega.publishing.common.factory.AttributeFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
@@ -45,6 +46,7 @@ import javax.xml.transform.TransformerException;
  */
 public class ContentTemplateValidator {
     private ResourceLoader contentTemplateResourceLoader;
+    private AttributeFactory attributeFactory;
 
     /**
      * Validates attributes in contenttemplate
@@ -87,20 +89,14 @@ public class ContentTemplateValidator {
                         foundUrl = true;
                     }
                     String type = attr.getAttribute("type");
-                    if (type == null) {
-                        type = "text";
-                    }
-
-                    if (type.length() > 0) {
-                        type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length()).toLowerCase();
-
+                    if (type != null) {
                         if (type.equalsIgnoreCase("form")) {
                             foundForm = true;
                         }
 
                         Attribute attribute = null;
                         try {
-                            attribute = (Attribute)Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + type + "Attribute").newInstance();
+                            attribute = attributeFactory.newAttribute(type);
                         } catch (ClassNotFoundException e) {
                             errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.classnotfound", type + "(" + name + ")"));
                         } catch (Exception e) {
@@ -134,5 +130,9 @@ public class ContentTemplateValidator {
 
     public void setContentTemplateResourceLoader(ResourceLoader contentTemplateResourceLoader) {
         this.contentTemplateResourceLoader = contentTemplateResourceLoader;
+    }
+
+    public void setAttributeFactory(AttributeFactory attributeFactory) {
+        this.attributeFactory = attributeFactory;
     }
 }

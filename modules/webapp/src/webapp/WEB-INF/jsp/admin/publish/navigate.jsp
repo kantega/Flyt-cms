@@ -37,33 +37,23 @@
          * Notifies the ContentStateHandler of the currently viewed page in order for this to be stored in the session.
          */
         function setContentupdateTrigger() {
-            $("#Contentmain").load(function() {
-                var currentUrl = openaksess.navigate.getCurrentLocation().href;
-                openaksess.common.debug("setContentupdateTrigger(): contentmain load event. currentUrl: " + currentUrl);
-                openaksess.content.triggerContentUpdateEvent(currentUrl);
-            });
+            var currentUrl = "";
+
+            function checkUrlUpdate() {
+                try {
+                    var iframeUrl = openaksess.navigate.getCurrentLocation().href;
+                    if (iframeUrl != currentUrl) {
+                        currentUrl = iframeUrl;
+                        openaksess.common.debug("setContentupdateTrigger(): contentmain url changed. currentUrl: " + currentUrl);
+                        openaksess.content.triggerContentUpdateEvent(currentUrl);
+                    }
+                } catch (e) {
+                    // External link
+                }
+            }
+
+            setInterval(checkUrlUpdate, 200);
         }
-
-
-        /**
-         * Changes the content of the contentmain iframe.
-         * Such a change will trigger a contentupdate trigger if not suppressNavigatorUpdate is explicitly set to true
-         *
-         * Overrides the default implementation. See navigate.js
-         *
-         * @param id
-         * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
-         */
-        openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
-            openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
-            if (suppressNavigatorUpdate) {
-                suppressNavigatorUpdate = true;
-            }
-            var iframe = document.getElementById("Contentmain");
-            if (iframe) {
-                iframe.contentWindow.document.location.href = openaksess.common.getContentUrlFromAssociationId(id);
-            }
-        };
 
 
     </script>

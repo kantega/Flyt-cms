@@ -18,15 +18,10 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob">
-        <property name="contentEventNotifier">
-            <ref bean="contentListenerNotifier"/>
-        </property>
-    </bean>
-
+    <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
 
     <bean id="contentStateChangeJobDetail"
-        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
             <ref bean="contentStateChangeJob"/>
         </property>
@@ -52,7 +47,9 @@
     <bean name="expireContentAlertJob" class="no.kantega.publishing.jobs.alerts.ExpireContentAlertJob">
         <property name="listeners">
             <list>
-                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener"/>
+                <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
+                    <property name="mailFrom" value="${mail.from}"/>
+                </bean>
             </list>
         </property>
     </bean>
@@ -84,6 +81,7 @@
             <list>
                 <bean class="no.kantega.publishing.jobs.alerts.ContentEmailAlertListener">
                     <property name="mailTemplate" value="revisioncontent.vm"/>
+                    <property name="mailFrom" value="${mail.from}"/>
                 </bean>
             </list>
         </property>
@@ -127,7 +125,7 @@
                 <entry key="interval">
                     <value>immediate</value>
                 </entry>
-              <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
@@ -217,6 +215,7 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="linkDao" value-ref="aksessLinkDao"/>
+                <entry key="multimediaUsageDao" value-ref="aksessMultimediaUsageDao"/>
             </map>
         </property>
     </bean>
@@ -235,7 +234,7 @@
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
     <bean name="linkEmitter" class="no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter"/>
-    
+
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
         <property name="checker">
             <ref bean="linkCheckJob"/>
@@ -266,6 +265,46 @@
         </property>
     </bean>
 
+    <bean id="brokenLinkEventListeners" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="brokenLinksEditorMailer" class="no.kantega.publishing.modules.linkcheck.check.BrokenLinksEditorMailer"/>
+
+    <bean id="brokenLinkNotifierJob" class="no.kantega.publishing.modules.linkcheck.check.BrokenLinkNotifierJob">
+        <property name="listeners" ref="brokenLinkEventListeners" />
+        <property name="sortBy" value="url" />
+    </bean>
+
+    <bean id="brokenLinkEventTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail">
+            <ref bean="brokenLinkJobDetail"/>
+        </property>
+        <property name="cronExpression">
+            <!-- Hver mandag klokka ti over fire  -->
+            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
+            <value>0 10 4 ? * MON</value>
+
+        </property>
+    </bean>
+
+    <bean id="brokenLinkJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="brokenLinkNotifierJob"/>
+        </property>
+        <property name="targetMethod">
+            <value>execute</value>
+        </property>
+        <property name="concurrent">
+            <value>false</value>
+        </property>
+    </bean>
+
+
 
     <bean name="contentImportJob" class="no.kantega.publishing.jobs.contentimport.ContentImportJob"/>
 
@@ -290,7 +329,9 @@
         </property>
     </bean>
 
-    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob"/>
+    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
+        <property name="indexManager" ref="indexManager"/>
+    </bean>
 
     <bean id="rebuildSearchIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
         <property name="targetObject">
@@ -328,6 +369,7 @@
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="rebuildSearchIndexJobTrigger"/>
+                <ref local="brokenLinkEventTrigger" />
             </list>
         </property>
     </bean>

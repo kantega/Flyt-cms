@@ -39,6 +39,8 @@ public class SiteMapEntry extends NavigationMapEntry {
     private String ownerPerson = null;
     public ContentType type = ContentType.PAGE;
     private boolean isSearchable = true;
+    private int contentTemplateId;
+    private int displayTemplateId;
 
     public SiteMapEntry() {
     }
@@ -96,10 +98,10 @@ public class SiteMapEntry extends NavigationMapEntry {
 
      public boolean isAncestorFor(int childId){
         boolean result = false;
-        if (getChildren()!=null){
-            for (int i=0;i<getChildren().size(); i++){
+        if (getChildren() != null) {
+            for (int i=0;i<getChildren().size(); i++) {
                 SiteMapEntry child = (SiteMapEntry) getChildren().get(i);
-                if (child.getId()==childId) return true;
+                if (child.getId() == childId) return true;
                 result = child.isAncestorFor(childId);
                 if (result) break;
             }
@@ -202,5 +204,21 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public void setSearchable(boolean searchable) {
         isSearchable = searchable;
+    }
+
+    public int getContentTemplateId() {
+        return contentTemplateId;
+    }
+
+    public void setContentTemplateId(int contentTemplateId) {
+        this.contentTemplateId = contentTemplateId;
+    }
+
+    public int getDisplayTemplateId() {
+        return displayTemplateId;
+    }
+
+    public void setDisplayTemplateId(int displayTemplateId) {
+        this.displayTemplateId = displayTemplateId;
     }
 }

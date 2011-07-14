@@ -200,6 +200,18 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Label for confirmation, needs bundle</description>
+            <name>confirmationlabel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Bundle to load confirmationlabel from</description>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Creates a form tag for submitting input to MiniAksess. Should contain a &lt;mini:inputscreen/&gt;-tag</description>
@@ -217,7 +229,17 @@
             <name>allowdraft</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
         </attribute>
+        <attribute>
+            <description>Set to true to prevent form tag for generating info messages</description>
+            <name>hideinfomessages</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+
+
     </tag>
     <tag>
         <description>Renders the input screen for MiniAksess. Must be used within a &lt;mini:form/&gt;-tag</description>

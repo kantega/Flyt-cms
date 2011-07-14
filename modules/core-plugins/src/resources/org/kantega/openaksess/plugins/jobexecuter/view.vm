@@ -1,0 +1,46 @@
+###setTitle('jobexecuter.title')
+
+#section("content")
+    #box()
+           <h2>#pluginMessage('jobexecuter.jobs.heading')</h2>
+
+            <table class="fullWidth">
+                <tr>
+                    <th><strong>#pluginMessage('jobexecuter.jobname')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.cronexpression')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.job.previousrun')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.job.nextrun')</strong></th>
+                    <th>&nbsp;</th>
+                </tr>
+                #foreach($trigger in $triggers)
+                    <tr>
+                        <td>$trigger.jobName</td>
+                        <td>$!{trigger.cronExpression}</td>
+                        <td>#if (!$trigger.previousFireTime)
+                                #pluginMessage('jobexecuter.job.neverrun')
+                            #else
+                                $dateTool.format("yyyy-MM-dd HH:mm", $trigger.previousFireTime)
+                            #end
+                        </td>
+                        <td>$dateTool.format("yyyy-MM-dd HH:mm", $trigger.nextFireTime)</td>
+                        <td><a href="?runJobName=$trigger.jobName&runGroupName=$trigger.jobGroup">#pluginMessage('jobexecuter.job.execute')</a></td>
+                    </tr>
+                #end
+            </table>
+            <h2>#pluginMessage('jobexecuter.job.runningjobs')</h2>
+
+        <table class="fullWidth">
+            <tr>
+                <th><strong>#pluginMessage('jobexecuter.jobname')</strong></th>
+                <th><strong>#pluginMessage('jobexecuter.job.runningjobs.startedtime')</strong></th>
+            </tr>
+            #foreach($exec in $currentlyExecuting)
+                <tr>
+                    <td>$exec.trigger.jobName</td>
+                    <td>$exec.trigger.previousFireTime</td>
+                </tr>
+            #end
+        </table>
+    #end
+#end
+#applyAdminLayout()

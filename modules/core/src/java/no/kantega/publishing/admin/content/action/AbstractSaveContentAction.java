@@ -23,10 +23,8 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -94,30 +92,25 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 // Error on page, send user back to correct error
                 model.put("errors", errors);
                 model.put("isEditing", Boolean.TRUE);
-                setRequestVariables(request, content, aksessService, model);                
+                setRequestVariables(request, content, aksessService, model);
                 return new ModelAndView(getView(), model);
             } else {
                 if (status != -1 && errors.getLength() == 0) {
                     content = aksessService.checkInContent(content, status);
-                    if(content.getStatus() == ContentStatus.HEARING) {
-                        String changeDescription = content.getChangeDescription();
-                        saveHearing(aksessService, content, request);
-                    }
-
                     message = null;
                     status = content.getStatus();
                     switch (status) {
                         case ContentStatus.DRAFT:
-                            message += "draft";
+                            message = "draft";
                             break;
                         case ContentStatus.PUBLISHED:
-                            message += "published";
+                            message = "published";
                             break;
                         case ContentStatus.WAITING_FOR_APPROVAL:
-                            message += "waiting";
+                            message = "waiting";
                             break;
                         case ContentStatus.HEARING:
-                            message += "hearing";
+                            message = "hearing";
                             break;
                     }
                     model.put("message", message);
@@ -149,26 +142,8 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         } else {
             // No submit
             model.put("isEditing", Boolean.TRUE);
-            setRequestVariables(request, content, aksessService, model);            
+            setRequestVariables(request, content, aksessService, model);
             return new ModelAndView(getView(), model);
-        }
-    }
-
-
-    private void saveHearing(ContentManagementService service, Content content, HttpServletRequest request) throws SystemException {
-        Hearing hearing = (Hearing) request.getSession().getAttribute(SaveHearingAction.HEARING_KEY);
-        List invitees  = (List) request.getSession().getAttribute(SaveHearingAction.HEARING_INVITEES_KEY);
-        request.getSession().removeAttribute(SaveHearingAction.HEARING_INVITEES_KEY);
-        request.getSession().removeAttribute(SaveHearingAction.HEARING_KEY);
-
-        hearing.setContentVersionId(content.getVersionId());
-
-        int hearingId = HearingAO.saveOrUpdate(hearing);
-
-        for (int i = 0; i < invitees.size(); i++) {
-            HearingInvitee invitee = (HearingInvitee) invitees.get(i);
-            invitee.setHearingId(hearingId);
-            HearingAO.saveOrUpdate(invitee);
         }
     }
 
@@ -194,7 +169,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
         if (content.getPublishDate() != null && content.getExpireDate() != null) {
             if (content.getExpireDate().getTime() < content.getPublishDate().getTime()) {
-                errors.add(null, "aksess.error.expirebeforepublish");                
+                errors.add(null, "aksess.error.expirebeforepublish");
             }
         }
 
@@ -284,7 +259,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                         }
 
                     }
-                    
+
                 }
             }
         }

@@ -15,15 +15,8 @@
   ~ limitations under the License.
   -->
 
-<!DOCTYPE database SYSTEM "http://db.apache.org/torque/dtd/database.dtd">
-<database name="aksess_db">
-    <table name="associationcategory">
-        <column name="AssociationId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="AssociationName" required="false" type="VARCHAR" size="64"/>
-        <column name="Description" required="false" type="CLOB" size="2147483647"/>
-        <column name="PublicId" required="false" type="VARCHAR" size="255"/>
-        <column name="LastModified" required="false" type="TIMESTAMP" size="23,3"/>
-    </table>
+<database name="aksess_db" xmlns="http://db.apache.org/ddlutils/schema/1.1">
+
     <table name="associations">
         <column name="UniqueId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="AssociationId" required="false" type="INTEGER" size="10"/>
@@ -268,12 +261,29 @@
         <column name="UsageInfo" required="false" type="CLOB" size="2147483647"/>
         <column name="ProfileImageUserId" required="false" type="VARCHAR" size="64"/>
         <column name="NoFiles" required="false" type="INTEGER" size="10"/>
-        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>        
+        <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>
+        <column name="OriginalDate" required="false" type="TIMESTAMP" size="23,3"/>
+        <column name="CameraMake" required="false" type="VARCHAR" size="255"/>
+        <column name="CameraModel" required="false" type="VARCHAR" size="255"/>
+        <column name="GPSLatitudeRef" required="false" type="VARCHAR" size="1"/>
+        <column name="GPSLatitude" required="false" type="VARCHAR" size="32"/>
+        <column name="GPSLongitudeRef" required="false" type="VARCHAR" size="1"/>
+        <column name="GPSLongitude" required="false" type="VARCHAR" size="32"/>
+        <column name="HasImageMap" required="false" type="INTEGER" size="10"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>
     </table>
-
+    <table name="multimediaexifdata">
+        <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="MultimediaId" required="true" type="INTEGER" size="10"/>
+        <column name="Directory" required="true" type="VARCHAR" size="255"/>
+        <column name="ValueKey" required="true" type="VARCHAR" size="255"/>
+        <column name="Value" required="false" type="CLOB" size="2147483647"/>
+        <index name="idx_multimediaexifdata">
+            <index-column name="MultimediaId"/>
+        </index>
+    </table>
     <table name="multimediaimagemap">
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="MultimediaId" required="true" type="INTEGER" size="10"/>
@@ -403,6 +413,7 @@
         <column name="SiteId" required="false" type="INTEGER" size="10"/>
 	    <column name="RefererHost" required="false" type="VARCHAR" size="255"/>
 	    <column name="RefererQuery" required="false" type="VARCHAR" size="255"/>
+        <column name="UserAgent" required="false" type="VARCHAR" size="255"/>
         <column name="IsSpider" required="true" type="INTEGER" size="10" default="0"/>
         <index name="idx_trafficlog_contentid">
             <index-column name="ContentId"/>
@@ -423,5 +434,14 @@
         <column name="Id" primaryKey="true" required="true" type="VARCHAR" size="64"/>
         <column name="Data" required="true" type="CLOB" size="2147483647"/>
         <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
+    </table>
+    <table name="pluginconfiguration">
+        <column name="pluginNamespace" required="true" type="VARCHAR" size="255"/>
+        <column name="configName" required="true" type="VARCHAR" size="512"/>
+        <column name="configValue" required="true" type="CLOB" size="2147483647"/>
+    </table>
+    <table name="oa_db_migrations">
+        <column name="dbnamespace" type="VARCHAR" size="255" required="true"/>
+        <column name="version" type="VARCHAR" size="255" required="true"/>
     </table>
 </database>

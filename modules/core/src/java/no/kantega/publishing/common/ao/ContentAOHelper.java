@@ -22,6 +22,7 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -120,7 +121,7 @@ public class ContentAOHelper {
 
         Attribute attribute = null;
         try {
-            attribute = (Attribute)Class.forName(Aksess.ATTRIBUTE_CLASS_PATH + attrType + "Attribute").newInstance();
+            attribute = (Attribute)Class.forName(ClassNameAttributeFactory.ATTRIBUTE_CLASS_PATH + attrType + "Attribute").newInstance();
         } catch (Exception e) {
             throw new SystemException("Feil ved oppretting av klasse for attributt" +  attrType, SOURCE, e);
         }

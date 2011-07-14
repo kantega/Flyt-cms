@@ -26,7 +26,8 @@
         int rid = (Integer) request.getAttribute("attachmentId");
         if (id == -1 && rid > -1) id = rid;
     }
-
+    String mimeType = (request.getAttribute("mimeType") != null)? ((String) request.getAttribute("mimeType")).replaceAll("(\\.|/)", "-") : "";
+    String fileExtension = (request.getAttribute("fileExtension") != null)? (String) request.getAttribute("fileExtension") : "";
     boolean insertLink = param.getBoolean("insertlink");
 %>
 <kantega:section id="head">
@@ -47,12 +48,16 @@
         <%
             if (insertLink) {
         %>
-            var url = "<%=URLHelper.getRootURL(request)%>attachment.ap?id=<%=id%>";
-            openaksess.editcontext.insertLink({'href': url});
+            var url = "<%=URLHelper.getRootURL(request)%>attachment.ap?id=<%=id%>",
+            clz = 'file <%=fileExtension%> <%=mimeType%>';
+
+            openaksess.editcontext.insertLink({'href': url, 'class': clz});
             closeWindow();
         <%
             } else {
+
         %>
+            window.onbeforeunload = null;
             p.location.reload();
         <%
             }

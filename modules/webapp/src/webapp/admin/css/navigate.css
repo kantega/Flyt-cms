@@ -2,7 +2,8 @@
 #Navigation {
     position: relative;
     float: left;
-    width: 190px;
+    width: 17.273em; /*190px*/
+    /*width: 190px;*/
     padding-right: 10px;/*Framesplit.width*/
     background: #ffffff;
 }
@@ -31,16 +32,19 @@ body.popup #Navigator{
 }
 
 /* Frame resize handle */
-.ui-resizable-handle.ui-resizable-e {
+.framesplit .framesplitDrag {
     position: absolute;
     height: 17px;
     width: 10px;
     right: 0;
     top: 50%;
     cursor: e-resize;
-    background: transparent url("../bitmaps/sprite-common.png") no-repeat -250px 0;
+    background: transparent url("../bitmaps/sprite-repeat-y.png") no-repeat -80px 0;
 }
 
+#Navigation .ui-resizable-e {
+    right: 0;
+}
 
 #MainPane iframe {
     border: none;
@@ -54,6 +58,7 @@ body.popup #Navigator{
     border-bottom: 1px solid #cccccc;
     padding: 0 10px;
     position: relative;
+    overflow: hidden;/* Prevents the bar contents from wrapping */
 }
 
 #MainPane .supportMenu a {

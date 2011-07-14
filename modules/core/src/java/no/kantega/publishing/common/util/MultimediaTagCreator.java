@@ -141,7 +141,7 @@ public class MultimediaTagCreator {
             }
             tag.append(" src=\"" + url + "\"");
 
-            if (!skipImageMap) {
+            if (!skipImageMap && mm.hasImageMap()) {
                 try {
                     MultimediaImageMap mim = MultimediaImageMapAO.loadImageMap(mm.getId());
                     if (mim.getCoordUrlMap().length > 0) {

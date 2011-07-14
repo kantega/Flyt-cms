@@ -27,8 +27,8 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/reset.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/base.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.4.2.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.2.custom.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.5.1.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-ui-1.8.14.custom.min.js"></script>
     <style type="text/css">
         #contentWrapper {
             width: 600px;

@@ -38,6 +38,35 @@
         <property name="sqlDialect" ref="sqlDialect"/>
     </bean>
 
+    <bean id="aksessMultimediaDao" class="no.kantega.publishing.common.ao.JdbcMultimediaDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="sqlDialect" ref="sqlDialect"/>
+        <property name="multimediaUsageDao" ref="aksessMultimediaUsageDao"/>
+    </bean>
+
+    <bean id="aksessMultimediaUsageDao" class="no.kantega.publishing.common.ao.JdbcMultimediaUsageDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="aksessTopicMapDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicMapDao">
+        <property name="dataSource"  ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="aksessTopicUsageCounter" class="no.kantega.publishing.topicmaps.ao.TopicUsageCounter">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="aksessTopicDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="topicUsageCounter" ref="aksessTopicUsageCounter"/>
+    </bean>
+
+    <bean id="aksessTopicAssociationDao" class="no.kantega.publishing.topicmaps.ao.JdbcTopicAssociationDao">
+        <property name="dataSource" ref="aksessDataSource"/>
+        <property name="topicUsageCounter" ref="aksessTopicUsageCounter"/>
+    </bean>
+
+
     <bean id="aksessNotesDao" class="no.kantega.publishing.common.ao.JdbcNotesDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

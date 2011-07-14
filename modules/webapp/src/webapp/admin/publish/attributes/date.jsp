@@ -24,8 +24,11 @@
 
     DateAttribute attribute = (DateAttribute)request.getAttribute("attribute");
 
-    attribute.setFormat(df);
+
     String value = attribute.getValue();
+    if (value == null) {
+        value = "";
+    }
 %>
 <script type="text/javascript">
     $(function() {

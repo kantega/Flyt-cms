@@ -85,12 +85,13 @@
             saveContent(<%=ContentStatus.DRAFT%>);
         });
         $("#EditContentButtons input.hearing").click(function(){
-            openaksess.common.debug("publishModesAndButtonsJS.hearing");
-            saveContent(<%=ContentStatus.HEARING%>);
+            openaksess.common.debug("publishModesAndButtonsJS.savedraft");
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.hearing.title"/>', iframe:true, href: '${pageContext.request.contextPath}/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});
         });
         $("#EditContentButtons input.cancel").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.cancel");
             if (confirmCancel()) {
+                window.onbeforeunload = null;
                 window.location.href = 'CancelEdit.action';
             }
         });

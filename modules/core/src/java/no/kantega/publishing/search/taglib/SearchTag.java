@@ -161,9 +161,8 @@ public class SearchTag extends TagSupport {
                 if(doctypes != null && !"".equals(doctypes.trim())) {
                     String[] types = doctypes.split(",");
                     BooleanQuery or = new BooleanQuery();
-                    for (int i = 0; i < types.length; i++) {
-                        String type = types[i];
-                        if(type.trim().equals("") == false) {
+                    for (String type : types) {
+                        if (!type.trim().equals("")) {
                             or.add(new TermQuery(new Term(Fields.DOCTYPE, type)), BooleanClause.Occur.SHOULD);
                         }
                     }
@@ -175,7 +174,7 @@ public class SearchTag extends TagSupport {
                     BooleanQuery or = new BooleanQuery();
                     bq.add(new TermQuery(new Term(Fields.CONTENT_PARENTS, Integer.toString(parent))), BooleanClause.Occur.MUST);
                     queryString += "&parent=" + parent;
-                    map.put("parent", new Integer(parent));
+                    map.put("parent", parent);
                 }
 
                 if (lang >= 0) {
@@ -271,7 +270,7 @@ public class SearchTag extends TagSupport {
                     }
                 }
                 
-                map.put("numhits", new Integer(hits.length()));
+                map.put("numhits", hits.length());
 
                 if(hits.length() < numhitsforsuggestion && suggestionbase != null) {
                     Directory spellDirectory = readerManager.getReader("spelling").directory();
@@ -313,7 +312,7 @@ public class SearchTag extends TagSupport {
                 List searchPageUrls = new ArrayList();
                 int pageNo = 1;
                 for (int i = 0; i < hits.length(); i += hitsPerPage) {
-                    indices.add(new Integer(i));
+                    indices.add(i);
                     // Legger inn liste med URL til de ulike sidene kun dersom det finnes flere sider
                     if (hits.length() > hitsPerPage) {
                         searchPageUrls.add(url + "&idx=" + i);
@@ -331,11 +330,11 @@ public class SearchTag extends TagSupport {
                     startIndex = 0;
                 }
 
-                map.put("startIndex", new Integer(startIndex));
+                map.put("startIndex", startIndex);
 
                 if (startIndex > 0) {
                     int prevIndex = (startIndex - hitsPerPage >= 0) ? startIndex - hitsPerPage : 0;
-                    map.put("prevIndex", new Integer(prevIndex));
+                    map.put("prevIndex", prevIndex);
                     map.put("prevSearchPageUrl", url + "&idx=" + prevIndex);
                 }
 
@@ -344,14 +343,14 @@ public class SearchTag extends TagSupport {
                 if (endIndex >= hits.length() - 1) {
                     endIndex = hits.length() - 1;
                 } else {
-                    map.put("nextIndex", new Integer(startIndex + hitsPerPage));
+                    map.put("nextIndex", startIndex + hitsPerPage);
                     map.put("nextSearchPageUrl", url + "&idx=" + (startIndex + hitsPerPage));
                 }
 
-                map.put("endIndex", new Integer(endIndex));
+                map.put("endIndex", endIndex);
 
-                map.put("firstHit", new Integer(startIndex + 1));
-                map.put("lastHit", new Integer(endIndex + 1));
+                map.put("firstHit", startIndex + 1);
+                map.put("lastHit", endIndex + 1);
 
                 map.put("searchHits", buildHitList(bq, analyzer, request, hits, startIndex, endIndex, selector));
                 map.put("hits", hits); // Kompabilitet med eldre versjoner

@@ -4,6 +4,9 @@
 <%@ page import="no.kantega.publishing.common.data.Content"%>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.security.data.enums.Privilege" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -27,6 +30,7 @@
     String value = attribute.getValue();
 %>
 <div class="inputs">
+    <admin:box>
     <div id="form_EditableForm">
         <div id="form_FormElements">
             <%=value%>
@@ -76,7 +80,7 @@
                             </select>
                         </td>
                     </tr>
-                    <tr class="form_params_text" style="display:none;">
+                    <tr class="form_validatorparams_regularexpression" style="display:none;">
                         <td><label for="form_RegEx"><kantega:label key="aksess.formeditor.fieldregex"/></label></td>
                         <td>
                             <input type="text" id="form_RegEx" name="form_RegEx">
@@ -109,6 +113,15 @@
                     </tr>
                     <tr>
                         <td colspan="2">
+                            <c:set var="mailconfirmationEnabled"><aksess:getconfig key="formengine.mailconfirmation.enabled" default="false"/></c:set>
+                            <c:if test="${mailconfirmationEnabled}">
+                                <div class="form_validatorparams_email" style="display:none;">
+                                    <input type="checkbox" name="form_IsRecipientEmail" id="form_IsRecipientEmail"><label for="form_IsRecipientEmail"><kantega:label key="aksess.formeditor.isrecipientemail"/></label><br>
+                                </div>
+                            </c:if>
+                            <div class="form_params_select" style="display:none;">
+                                <input type="checkbox" name="form_FirstValueBlank" id="form_FirstValueBlank"><label for="form_FirstValueBlank"><kantega:label key="aksess.formeditor.firstvalueblank"/></label><br>
+                            </div>
                             <input type="checkbox" name="form_FieldMandatory" id="form_FieldMandatory"><label for="form_FieldMandatory"><kantega:label key="aksess.formeditor.mandatory"/></label><br>
                             <input type="checkbox" name="form_NoBreak" id="form_NoBreak"><label for="form_NoBreak"><kantega:label key="aksess.formeditor.nobreak"/></label><br>
                             <input type="checkbox" name="form_FieldReadonly" id="form_FieldReadonly" checked="checked"><label for="form_FieldReadonly"><kantega:label key="aksess.formeditor.readonly"/></label>
@@ -123,6 +136,7 @@
                 </table>
             </div>
         </div>
+
         <div id="form_TextPlaceHolder" style="display:none;">
             <div id="EditFormText">
                 <input type="hidden" id="form_TextChildNo" value="">
@@ -142,16 +156,42 @@
                 </table>
             </div>
         </div>
+
+        <div id="form_SectionPlaceHolder" style="display: none;">
+            <div id="EditFormSection">
+                <input type="hidden" id="form_SectionChildNo" value="">
+                <table>
+                    <tr valign="top">
+                        <td><label for="form_SectionTitle" ><kantega:label key="aksess.formeditor.section.title"/></label></td>
+                        <td>
+                            <input type="text" id="form_SectionTitle" size="30" maxlength="128" name="form_SectionTitle">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="right">
+                            <input type="button" id="form_SaveFormSection" value="<kantega:label key="aksess.button.save"/>">
+                            <input type="button" id="form_CancelFormSection" value="<kantega:label key="aksess.button.cancel"/>">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
     <div>
         <textarea name="<%=fieldName%>" rows="4" cols="20" style="display:none;" id="form_Value"></textarea>
     </div>
+        </admin:box>
+</div>
+<div class="buttonGroup">
+    <a href="form_NewElement" id="form_NewElement" class="button"><span class="add"><kantega:label key="aksess.formeditor.newfield"/></span></a>
+    <a href="form_NewText" id="form_NewText" class="button"><span class="add"><kantega:label key="aksess.formeditor.newtext"/></span></a>
+    <a href="form_NewSection" id="form_NewSection" class="button"><span class="add"><kantega:label key="aksess.formeditor.newsection"/></span></a>
 </div>
 <div class="buttonGroup">
     <%
         if (!content.isNew()) {
     %>
-    <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
+    <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" target="_new" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
     <%
         if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.APPROVE_CONTENT)) {
     %>
@@ -160,6 +200,4 @@
             }
         }
     %>
-    <a href="form_NewElement" id="form_NewElement" class="button"><span class="add"><kantega:label key="aksess.formeditor.newfield"/></span></a>
-    <a href="form_NewText" id="form_NewText" class="button"><span class="add"><kantega:label key="aksess.formeditor.newtext"/></span></a>
 </div>

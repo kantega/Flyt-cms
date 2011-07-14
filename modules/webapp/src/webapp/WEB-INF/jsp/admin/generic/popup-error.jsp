@@ -2,8 +2,6 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -20,7 +18,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-
+    <kantega:label key="aksess.popup.error"/>
 </kantega:section>
 
 <kantega:section id="body">

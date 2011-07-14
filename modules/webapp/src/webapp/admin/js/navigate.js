@@ -82,13 +82,16 @@ openaksess.navigate = {
     navigatorResizeOnStop : function(){},
     navigatorResizeOnResize : function(){},
 
+    getClipBoardHandler : function() {
+        return null;
+    },
 
     /**
      * Defines actions for clicks in the navigator.
      */
     bindNavigatorClickEvents : function () {
         $("#Navigator, #Breadcrumbs, #Statusbar .statusDetails .breadcrumbs").live('click', function(event) {
-            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): click" + event.target.tagName);
+            openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): clicked tag: " + event.target.tagName);
             if (event.target.tagName == 'A') {
                 event.preventDefault();
 
@@ -122,7 +125,7 @@ openaksess.navigate = {
                 }
             }
 
-        });        
+        });
     },
 
     /**
@@ -154,14 +157,16 @@ openaksess.navigate = {
         }
         params.expand = expand;
 
-        // TODO: Cant check contentclipboard handler -- what about mediaarchive?
         $("#Navigator").load(openaksess.navigate.getNavigatorAction(), params, function() {
             openaksess.common.debug("openaksess.navigate.updateNavigator(): response from " + openaksess.navigate.getNavigatorAction() + " received");
-            if (typeof ContentClipboardHandler == "object") {
-                ContentClipboardHandler.isClipboardEmpty(function(clipboardEmpty){
+
+            var clipBoardHandler = openaksess.navigate.getClipBoardHandler();
+
+            if (typeof clipBoardHandler == "object") {
+                clipBoardHandler.isClipboardEmpty(function(clipboardEmpty){
                     openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
                     openaksess.navigate.setContextMenus(clipboardEmpty);
-                });                
+                });
             }
         });
     },
@@ -198,11 +203,6 @@ openaksess.navigate = {
      * @param disabledOptions Array of disabled options. Must be the href-value in the menu's a-element, without the leading hash (#).
      */
     setContextMenu : function(type, disabledOptions) {
-        //$("#Navigator").
-
-
-        //This menu performs so badly, must replace with our own
-
         $("#Navigator").contextMenu(
             {
                 itemClass: type,
@@ -248,7 +248,7 @@ openaksess.navigate = {
 
     setFolderOpen : function (id) {
         var newList = $("#NavigatorState .openFolders").html();
-        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList + ", id: " + id);
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): current list: " + newList + ", id: " + id);
 
         var openList = newList.split(",");
         for (var i = 0; i < openList.length; i++) {
@@ -264,7 +264,7 @@ openaksess.navigate = {
             newList = newList + "," + id;
         }
 
-        openaksess.common.debug("openaksess.navigate.setFolderOpen(): newList: " + newList);
+        openaksess.common.debug("openaksess.navigate.setFolderOpen(): new list: " + newList);
         openaksess.navigate.setOpenFolders(newList);
         openaksess.common.triggerEvent("navigatorOpen", [id, newList]);
     },
@@ -324,7 +324,7 @@ openaksess.search = {
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
             var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
-            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false}).infoslider('toggle', this, content);
+            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false}).infoslider('open', document.getElementById("SearchForm"), content);
         }
     },
 

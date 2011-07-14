@@ -1,3 +1,4 @@
+#section("content")
 <script type="text/javascript">
     window.onload = function() {
         document.getElementById("groovycode").focus();
@@ -10,13 +11,14 @@
     }
 </script>
 
+#box()
 <h1>Groovy console</h1>
 
 <p>
     Enter some Groovy code:
 </p>
 <form method="post" id="groovyform">
-    <textarea style="width:800px;height:200px" id="groovycode" name="code"
+    <textarea style="width:600px;height:200px" id="groovycode" name="code"
               onkeydown="handleKey(event, this)">$!{code}</textarea>
     <br/>
     <input type="submit" value="Run!"/>
@@ -45,3 +47,7 @@
         #end
     </table>
 #end
+#end
+#end
+
+#applyAdminLayout()

@@ -7,6 +7,7 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import no.kantega.publishing.webdav.resources.AksessMediaFileResource;
 import no.kantega.publishing.webdav.resources.AksessMediaFolderResource;
 import no.kantega.commons.log.Log;
@@ -24,6 +25,7 @@ import java.util.List;
 public class WebDavMultimediaHelper {
     private WebDavSecurityHelper webDavSecurityHelper;
     private ImageEditor imageEditor;
+    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
 
 
     public Resource getRootFolder() {
@@ -35,6 +37,10 @@ public class WebDavMultimediaHelper {
 
     public void setImageEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;
+    }
+
+    public void setMultimediaMetadataExtractors(List<MultimediaMetadataExtractor> multimediaMetadataExtractors) {
+        this.multimediaMetadataExtractors = multimediaMetadataExtractors;
     }
 
     public Resource createNewFile(Multimedia parent, String fileName, InputStream inputStream, Long length) throws IOException {
@@ -62,8 +68,11 @@ public class WebDavMultimediaHelper {
         file.setData(data);
         file.setName(name);
 
-        // Update dimensions from file
-        MultimediaHelper.updateMediaDimensions(file);
+        for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
+            if (extractor.supportsMimeType(file.getMimeType().getType())) {
+                file = extractor.extractMetadata(file);
+            }
+        }
 
         // Resize large images
         if (file.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {

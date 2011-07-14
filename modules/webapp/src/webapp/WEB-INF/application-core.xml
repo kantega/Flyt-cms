@@ -18,6 +18,8 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
+    <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
+
     <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
         <property name="resource" value="${templateconfig.location}"/>
     </bean>
@@ -34,6 +36,7 @@
 
     <bean id="aksessTemplateValidator" class="no.kantega.publishing.common.util.templates.ContentTemplateValidator">
         <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
+        <property name="attributeFactory" ref="aksessAttributeFactory"/>
     </bean>
 
     <bean id="aksessTemplateConfigurationCache" class="no.kantega.publishing.common.cache.TemplateConfigurationCache">
@@ -55,6 +58,7 @@
                 <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
                     <property name="exposedBeanNames">
                         <list>
+                            <value>adminRoleInterceptor</value>
                         </list>
                     </property>
                 </bean>
@@ -127,12 +131,34 @@
         </property>
     </bean>
 
+    <bean id="aksessExifMetadataExtractor" class="no.kantega.publishing.multimedia.metadata.exif.DrewNoakesExifMetadataExtractor"/>
+
+    <bean id="aksessImageWidthAndHeightExtractor" class="no.kantega.publishing.multimedia.metadata.ImageWidthAndHeightExtractor"/>
+    <bean id="aksessJpegImageMetadataExtractor" class="no.kantega.publishing.multimedia.metadata.JpegImageMetadataExtractor">
+        <property name="exifMetadataExtractor" ref="aksessExifMetadataExtractor"/>
+    </bean>
+
+    <bean id="aksessMultimediaMetadataExtractors" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <ref bean="aksessImageWidthAndHeightExtractor"/>
+                <ref bean="aksessJpegImageMetadataExtractor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="aksessMultimediaUploadHandler" class="no.kantega.publishing.multimedia.DefaultMultimediaUploadHandler">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
+    </bean>
+
     <!-- Webdav support -->
     <bean id="aksessWebDavSecurityHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper"/>
 
     <bean id="aksessWebDavMultimediaHelper" class="no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper">
         <property name="imageEditor" ref="aksessImageEditor"/>
         <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
+        <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
     </bean>
 
 
@@ -156,10 +182,25 @@
 
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 
-    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
+    <bean id="cacheManager" class="no.kantega.publishing.cache.CacheManagerFactory"/>
 
-    <bean id="pluginConfigProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
-        <constructor-arg value="${appDir}/plugins/config/"/>
+    <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
+        <property name="dataSource" ref="aksessDataSource"/>
     </bean>
     
+    <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
+
+    <bean id="uiServices" class="no.kantega.publishing.ui.DefaultUIServices"/>
+
+    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
+
+    <bean id="pluginConfigurationDao" class="no.kantega.publishing.common.ao.JdbcPluginConfigurationAO">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean id="pluginConfigurationProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
+        <constructor-arg value="${appDir}/conf/plugins"/>
+        <constructor-arg ref="pluginConfigurationDao"/>
+    </bean>
+
 </beans>

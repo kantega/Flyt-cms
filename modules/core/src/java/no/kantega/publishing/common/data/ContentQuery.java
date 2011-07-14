@@ -71,6 +71,7 @@ public class ContentQuery {
     private boolean showExpired = false;
     private String onHearingFor = null;
     private SortOrder sortOrder = null;
+    private boolean includeDrafts = false;
 
     private int maxRecords = -1;
     private int offset = 0;
@@ -83,6 +84,33 @@ public class ContentQuery {
     }
 
     public PreparedStatement getPreparedStatement(Connection c) throws SQLException {
+
+        QueryWithParameters qp = getQueryWithParameters();
+        //QueryWithParameters is null when there is no content found 
+        if (qp == null){
+            return null;
+        }
+        String query = qp.getQuery();
+        List<Object> parameters= qp.getParams();
+
+        //Log.debug(SOURCE, "Query:" + query, null, null);
+        PreparedStatement st = c.prepareStatement(query);
+        for (int i = 0; i < parameters.size(); i++) {
+            Object o = parameters.get(i);
+            //Log.debug(SOURCE, "Parameter:" + (i+1) + ":" + o, null, null);
+            if (o instanceof Date) {
+                Date d = (Date)o;
+                st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
+            } else {
+                st.setObject(i + 1, o);
+            }
+        }
+
+        return st;
+
+    }
+
+    public QueryWithParameters getQueryWithParameters() {
         boolean useSqlSort = useSqlSort();
 
         List parameters = new ArrayList();
@@ -119,10 +147,12 @@ public class ContentQuery {
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
         query.append("and contentversion.Status IN (");
+        query.append(ContentStatus.PUBLISHED);
         if(onHearingFor != null) {
-            query.append(ContentStatus.PUBLISHED + "," + ContentStatus.HEARING);
-        } else {
-            query.append(ContentStatus.PUBLISHED);
+            query.append("," + ContentStatus.HEARING);
+        }
+        if (includeDrafts) {
+            query.append("," + ContentStatus.DRAFT);
         }
 
         query.append(") and content.ContentId = associations.ContentId");
@@ -130,17 +160,17 @@ public class ContentQuery {
         if (associatedId != null) {
             if (associatedId.getAssociationId() != -1) {
                 query.append(" and associations.ParentAssociationId = ?");
-                parameters.add(new Integer(associatedId.getAssociationId()));
+                parameters.add(associatedId.getAssociationId());
             }
             if (associatedId.getSiteId() != -1) {
                 query.append(" and associations.SiteId = ?");
-                parameters.add(new Integer(associatedId.getSiteId()));
+                parameters.add(associatedId.getSiteId());
             }
 
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
                 query.append(" and associations.Category = ?");
-                parameters.add(new Integer(associationCategory.getId()));
+                parameters.add(associationCategory.getId());
             }
         } else if (contentList != null && contentList.length > 0) {
             query.append(" and associations.UniqueId in (");
@@ -150,7 +180,7 @@ public class ContentQuery {
                         query.append(",");
                     }
                     query.append("?");
-                    parameters.add(new Integer(contentList[i].getAssociationId()));
+                    parameters.add(contentList[i].getAssociationId());
                 }
             }
             query.append(") and associations.Type <> " + AssociationType.SHORTCUT);
@@ -169,7 +199,7 @@ public class ContentQuery {
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
                 query.append(" and associations.Category = ?");
-                parameters.add(new Integer(associationCategory.getId()));
+                parameters.add(associationCategory.getId());
             }
         } else if (excludedPathElementIds != null) {
             for (int i=0; i<excludedPathElementIds.length; i++){
@@ -177,7 +207,7 @@ public class ContentQuery {
                     // exclude all published under given id
                     query.append(" and associations.Path not like ? and associations.AssociationId <> ? ");
                     parameters.add("/%" + excludedPathElementIds[i].getAssociationId() + "/%");
-                    parameters.add(new Integer(excludedPathElementIds[i].getAssociationId()));
+                    parameters.add(excludedPathElementIds[i].getAssociationId());
                 }
             }
         } else if (sql != null) {
@@ -188,22 +218,22 @@ public class ContentQuery {
             query.append(sql);
         } else if (attributes == null) {
             query.append(" and associations.Type = ?");
-            parameters.add(new Integer(AssociationType.DEFAULT_POSTING_FOR_SITE));
+            parameters.add(AssociationType.DEFAULT_POSTING_FOR_SITE);
         }
 
         if (siteId != -1) {
             query.append(" and associations.SiteId = ?");
-            parameters.add(new Integer(siteId));
+            parameters.add(siteId);
         }
 
         if (language != -1) {
             query.append(" and contentversion.Language = ?");
-            parameters.add(new Integer(language));
+            parameters.add(language);
         }
 
         if (contentType != null) {
             query.append(" and content.Type = ?");
-            parameters.add(new Integer(contentType.getTypeAsInt()));
+            parameters.add(contentType.getTypeAsInt());
         }
 
         if (documentType != null && documentType.length > 0) {
@@ -213,7 +243,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(documentType[i]));
+                parameters.add(documentType[i]);
             }
             query.append(") ");
         }
@@ -225,7 +255,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(excludedDocumentTypes[i]));
+                parameters.add(excludedDocumentTypes[i]);
             }
             query.append(") ");
         }
@@ -238,7 +268,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(contentTemplate[i]));
+                parameters.add(contentTemplate[i]);
             }
             query.append(") ");
         }
@@ -250,7 +280,7 @@ public class ContentQuery {
                     query.append(",");
                 }
                 query.append("?");
-                parameters.add(new Integer(displayTemplate[i]));
+                parameters.add(displayTemplate[i]);
             }
             query.append(") ");
         }
@@ -272,7 +302,7 @@ public class ContentQuery {
         if (expireDateTo != null) {
             query.append(" and content.ExpireDate <= ?");
             parameters.add(expireDateTo);
-            showExpired = true; 
+            showExpired = true;
         }
 
         // Fetch archived pages if specified
@@ -355,7 +385,7 @@ public class ContentQuery {
                         query.append(" and ct2topic.contentId in (select ct2topic.contentId from ct2topic where ");
                     }
                     query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(new Integer(topic.getTopicMapId()));
+                    parameters.add(topic.getTopicMapId());
                     parameters.add(topic.getId());
                     if (i > 0){
                         query.append(")");
@@ -371,7 +401,7 @@ public class ContentQuery {
                         query.append(" or ");
                     }
                     query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(new Integer(topic.getTopicMapId()));
+                    parameters.add(topic.getTopicMapId());
                     parameters.add(topic.getId());
                 }
                 query.append(") ");
@@ -380,15 +410,15 @@ public class ContentQuery {
 
         if (topicMapId != -1) {
             query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ?");
-            parameters.add(new Integer(topicMapId));
+            parameters.add(topicMapId);
         }
 
         if (topicType != null) {
             query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ? and TopicId in (select tmtopic.TopicId from tmtopic where InstanceOf = ?))");
-            parameters.add(new Integer(topicType.getTopicMapId()));
+            parameters.add(topicType.getTopicMapId());
             parameters.add(topicType.getId());
         }
-        
+
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
@@ -427,30 +457,38 @@ public class ContentQuery {
         if (attributes != null) {
             try {
                 // M� gj�res tungvint siden MySQL 4.0 ikke st�tter subqueryes
-                PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
-                for (int i = 0; i < attributes.size(); i++) {
-                    Attribute a = (Attribute)attributes.get(i);
-                    st.setString(1, a.getName());
-                    st.setString(2, a.getValue());
+                Connection c = null;
+                try {
+                    c = dbConnectionFactory.getConnection();
+                    PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+                    for (int i = 0; i < attributes.size(); i++) {
+                        Attribute a = (Attribute)attributes.get(i);
+                        st.setString(1, a.getName());
+                        st.setString(2, a.getValue());
 
-                    int noFound = 0;
-                    ResultSet rs = st.executeQuery();
-                    query.append(" and content.ContentId in (");
-                    while(rs.next()) {
-                        if (noFound > 0) {
-                            query.append(",");
+                        int noFound = 0;
+                        ResultSet rs = st.executeQuery();
+                        query.append(" and content.ContentId in (");
+                        while(rs.next()) {
+                            if (noFound > 0) {
+                                query.append(",");
+                            }
+                            int id = rs.getInt("ContentId");
+                            query.append("?");
+                            parameters.add(id);
+                            noFound++;
                         }
-                        int id = rs.getInt("ContentId");
-                        query.append("?");
-                        parameters.add(new Integer(id));
-                        noFound++;
+                        query.append(")");
+                        if (noFound == 0) {
+                            return null;
+                        }
                     }
-                    query.append(")");
-                    if (noFound == 0) {
-                        return null;
+                    st.close();
+                } finally {
+                    if(c != null) {
+                        c.close();
                     }
                 }
-                st.close();
             } catch (SQLException e) {
                 Log.error(SOURCE, e, null, null);
             }
@@ -467,21 +505,7 @@ public class ContentQuery {
             query.append(" limit ").append(maxRecords + offset);
         }
 
-        //Log.debug(SOURCE, "Query:" + query, null, null);
-        PreparedStatement st = c.prepareStatement(query.toString());
-        for (int i = 0; i < parameters.size(); i++) {
-            Object o = parameters.get(i);
-            //Log.debug(SOURCE, "Parameter:" + (i+1) + ":" + o, null, null);
-            if (o instanceof Date) {
-                Date d = (Date)o;
-                st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
-            } else {
-                st.setObject(i + 1, o);
-            }
-        }
-
-        return st;
-
+        return new QueryWithParameters(query.toString(), parameters);
     }
 
 
@@ -763,5 +787,54 @@ public class ContentQuery {
 
     public int getOffset() {
         return offset;
+    }
+
+    public boolean isIncludeDrafts() {
+        return includeDrafts;
+    }
+
+    public void setIncludeDrafts(boolean includeDrafts) {
+        this.includeDrafts = includeDrafts;
+    }
+
+    /**
+     * Class representing an instance of a query, that is the query string and the parameters to be set.
+     */
+    public class QueryWithParameters {
+        private final String query;
+        private final List<Object> params;
+
+        QueryWithParameters(String query, List<Object> params) {
+            this.query = query;
+            this.params = params;
+        }
+
+        public String getQuery() {
+            return query;
+        }
+
+        public List<Object> getParams() {
+            return params;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            QueryWithParameters that = (QueryWithParameters) o;
+
+            if (!params.equals(that.params)) return false;
+            if (!query.equals(that.query)) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = query.hashCode();
+            result = 31 * result + params.hashCode();
+            return result;
+        }
     }
 }

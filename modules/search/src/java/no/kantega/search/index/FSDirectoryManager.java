@@ -21,6 +21,7 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import no.kantega.search.index.config.LuceneConfiguration;
+import org.apache.lucene.util.Version;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,9 +44,9 @@ public class FSDirectoryManager implements DirectoryManager {
 
         try {
             final boolean exists = iFile.exists();
-            final FSDirectory directory = FSDirectory.getDirectory(iFile);
+            final FSDirectory directory = FSDirectory.open(iFile);
             if(!exists) {
-                new IndexWriter(directory, new StandardAnalyzer(), true, IndexWriter.MaxFieldLength.UNLIMITED).close();
+                new IndexWriter(directory, new StandardAnalyzer(Version.LUCENE_29), true, IndexWriter.MaxFieldLength.UNLIMITED).close();
             }
             return directory;
         } catch (IOException e) {

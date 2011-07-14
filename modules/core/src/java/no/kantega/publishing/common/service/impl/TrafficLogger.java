@@ -28,6 +28,8 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.net.URL;
@@ -57,52 +59,72 @@ public class TrafficLogger {
         botsAndSpiders.add("YodaoBot");
     }
 
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
+
+
     public static void log(Content content, HttpServletRequest request) throws SystemException {
         HttpSession session = request.getSession(false);
+        final long time = new Date().getTime();
+        final int id = content.getId();
+        final int language = content.getLanguage();
+        final String remoteAddr = request.getRemoteAddr();
+        final String fullReferer = request.getHeader("Referer");
+        final String sessionId = session != null ? session.getId() : "";
+        final int siteId = content.getAssociation().getSiteId();
+        final String userAgent = request.getHeader("User-Agent");
+
         if (!HttpHelper.isAdminMode(request)) {
 
-            Connection c = null;
-            try {
+            // Run logging async on separate thread
+            executor.execute( new Runnable() {
+                public void run() {
 
-                c = dbConnectionFactory.getConnection();
-                PreparedStatement st = c.prepareStatement("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider) values(?,?,?,?,?,?,?,?,?,?)");
-                st.setTimestamp(1, new java.sql.Timestamp(new Date().getTime()));
-                st.setInt(2, content.getId());
-                st.setInt(3, content.getLanguage());
-                st.setString(4, request.getRemoteAddr());
-                String referer = request.getHeader("Referer");
-                RefererInfo refInfo = getRefererInfo(referer);
-                if (referer != null && referer.length() > 255) {
-                    referer = referer.substring(0, 254);
-                }
-
-                st.setString(5, referer);
-                st.setString(6, session != null ? session.getId() : "");
-                st.setInt(7, content.getAssociation().getSiteId());
-                st.setString(8, refInfo == null ? null  : refInfo.getHost());
-                st.setString(9, refInfo == null ? null : refInfo.getQuery());
-                st.setInt(10, isBotOrSpider(request) ? 1:0);
-
-                st.execute();
-                st.close();
-            } catch (SQLException e) {
-                // Logger at logging feilet, ikke kritisk
-                Log.error(SOURCE, e, null, null);
-            } finally {
-                if(c != null) {
+                    Connection c = null;
                     try {
-                        c.close();
-                    } catch (SQLException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                }
-            }
 
+                        c = dbConnectionFactory.getConnection();
+                        PreparedStatement st = c.prepareStatement("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider, UserAgent) values(?,?,?,?,?,?,?,?,?,?,?)");
+                        st.setTimestamp(1, new java.sql.Timestamp(time));
+                        st.setInt(2, id);
+                        st.setInt(3, language);
+                        st.setString(4, remoteAddr);
+
+                        RefererInfo refInfo = getRefererInfo(fullReferer);
+                        String referer = fullReferer;
+                        if (referer != null && referer.length() > 255) {
+                            referer = referer.substring(0, 254);
+                        }
+
+                        st.setString(5, referer);
+                        st.setString(6, sessionId);
+                        st.setInt(7, siteId);
+                        st.setString(8, refInfo == null ? null  : refInfo.getHost());
+                        st.setString(9, refInfo == null ? null : refInfo.getQuery());
+                        st.setInt(10, isBotOrSpider(userAgent) ? 1:0);
+                        st.setString(11, userAgent != null && userAgent.length() > 255 ? userAgent.substring(0,255) : userAgent);
+
+                        st.execute();
+                        st.close();
+                    } catch (SQLException e) {
+                        // Logger failed, not critical
+                        Log.error(SOURCE, e, null, null);
+                    } finally {
+                        if(c != null) {
+                            try {
+                                c.close();
+                            } catch (SQLException e) {
+                                Log.error(SOURCE, e, null, null);
+                            }
+                        }
+                    }
+
+                }
+            });
         }
     }
 
-    private static boolean isBotOrSpider(HttpServletRequest request) {
-        String userAgent = request.getHeader("User-Agent");
+    private static boolean isBotOrSpider(String userAgent) {
+
         if (userAgent != null) {
             for (int i = 0; i < botsAndSpiders.size(); i++) {
                 String bot = (String)botsAndSpiders.get(i);
@@ -161,11 +183,7 @@ public class TrafficLogger {
             return null;
         }
 
-
-        
         RefererInfo info = new RefererInfo(referer);
-
-
         info.setHost(url.getHost());
 
         for(Iterator i = searchEnginePatterns.iterator(); i.hasNext();) {
@@ -177,8 +195,6 @@ public class TrafficLogger {
                 break;
             }
         }
-
-
         return info;
     }
 }

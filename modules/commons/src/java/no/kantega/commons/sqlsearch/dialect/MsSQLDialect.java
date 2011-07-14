@@ -36,4 +36,7 @@ public class MsSQLDialect implements SQLDialect {
         return "'" + df.format(date) + "'";
     }
 
+    public boolean searchIsCaseSensitive() {
+        return false;
+    }
 }

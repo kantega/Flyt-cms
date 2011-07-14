@@ -108,6 +108,8 @@ public class Content extends BaseObject {
     // Comments
     private int numberOfComments = 0;
 
+    private Hearing hearing = new Hearing();
+
     public Content() {
         lastModified = new Date();
     }
@@ -760,5 +762,13 @@ public class Content extends BaseObject {
             lastMajorChangeBy = lastMajorChangeBy.substring(0, 63);
         }
         this.lastMajorChangeBy = lastMajorChangeBy;
+    }
+
+    public Hearing getHearing() {
+        return hearing;
+    }
+
+    public void setHearing(Hearing hearing) {
+        this.hearing = hearing;
     }
 }

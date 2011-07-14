@@ -18,7 +18,7 @@
   ~ limitations under the License.
   --%>
 <kantega:section id="title">
-    <kantega:label key="aksess.search.title"/>
+    <kantega:label key="aksess.search.rebuild.title"/>
 </kantega:section>
 
 <kantega:section id="content">

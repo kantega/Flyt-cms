@@ -21,8 +21,10 @@ import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -119,7 +121,8 @@ public class SetVariableTag extends TagSupport {
             cmd.setWidth(width);
             cmd.setHeight(height);
 
-            String result = AttributeTagHelper.getAttribute(contentObject, cmd, inheritFromAncestors);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+            String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
             ServletRequest request = pageContext.getRequest();
             if (defaultValue != null && (result == null || result.length() == 0)) {
                 result = defaultValue;

@@ -2,7 +2,6 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.data.ContentIdentifier,
                  no.kantega.publishing.common.data.Content,
-                 no.kantega.publishing.common.data.attributes.Attribute,
                  no.kantega.publishing.common.service.ContentManagementService"%>
 <%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
@@ -49,19 +48,22 @@
         contentname = LocaleLabels.getLabel("aksess.insertlink.internal.hint", Aksess.getDefaultAdminLocale());
     }
 
+    Content content = (Content)request.getAttribute("content");
 %>
 <div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>" id="<%=fieldName%>">
     <input type="text" name="<%=fieldName%>text" id="<%=fieldName%>text" value="<%=contentname%>" onFocus="this.select()" class="fullWidth">
     <script type="text/javascript">
-        $("#<%=fieldName%>text").oaAutocomplete({
-            defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
-            source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
-            select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+        $(document).ready(function() {
+            $("#<%=fieldName%>text").oaAutocomplete({
+                defaultValue: '<kantega:label key="aksess.insertlink.internal.hint"/>',
+                source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action",
+                select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+            });
         });
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId()%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId(content)%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

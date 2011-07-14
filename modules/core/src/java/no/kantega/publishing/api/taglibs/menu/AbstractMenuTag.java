@@ -210,9 +210,9 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     private void addToSiteMap(SecuritySession securitySession, SiteMapEntry sitemap, int currentDepth) {
         sitemap.setDepth(currentDepth);
 
-        if (sitemap.getId() == currentId) {
-            sitemap.setSelected(true);
-        }
+        sitemap.setSelected(sitemap.getId() == currentId);
+
+        sitemap.setOpen(sitemap.getId() == currentId || currentPath.contains("/" + sitemap.getId() + "/"));
 
         if (currentDepth == 0 && includeRoot) {
             currentDepth++;
@@ -229,13 +229,12 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
                 boolean isOpen = false;
-                if(child.getParentId() == 0 || child.getParentId() == currentId || currentPath.indexOf("/" + child.getParentId() + "/") != -1 || child.getParentId() == defaultOpenId || defaultOpenPath.indexOf("/" + child.getParentId() + "/") != -1){
+                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.contains("/" + child.getParentId() + "/") || child.getParentId() == defaultOpenId || defaultOpenPath.contains("/" + child.getParentId() + "/")){
                     isOpen = true;
                 }
                 if (expandAll || isOpen) {
-                    if(isOpen){
-                        sitemap.setOpen(true);
-                    }
+                    sitemap.setOpen(isOpen);
+
                     // We get one more level than we need, don't display all
                     int maxDepth = depth - Math.max(startDepth, 0);
                     if (depth == -1 || currentDepth < maxDepth) {
@@ -353,7 +352,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             if(var != null) {
                 pageContext.setAttribute(var, status.getCurrent());
             }
-            pageContext.setAttribute("aksess_menu_offset" + name, new Integer(status.getIndex()));
+            pageContext.setAttribute("aksess_menu_offset" + name, status.getIndex());
 
             // Current status
             if (varStatus != null) {

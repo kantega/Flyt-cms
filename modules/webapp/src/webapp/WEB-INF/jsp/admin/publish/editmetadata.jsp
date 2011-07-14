@@ -36,7 +36,7 @@
         InputScreenRenderer screen = new InputScreenRenderer(pageContext, (Content)session.getAttribute("currentContent"), AttributeDataType.META_DATA);
         Content current = (Content)session.getAttribute("currentContent");
     %>    
-        <%@ include file="fragments/infobox.jsp" %>
+        <%@ include file="../layout/fragments/infobox.jsp" %>
         <c:if test="${fn:length(documentTypes) > 1}">
             <div class="contentAttribute">
                 <div class="heading"><kantega:label key="aksess.contentproperty.doctype"/></div>

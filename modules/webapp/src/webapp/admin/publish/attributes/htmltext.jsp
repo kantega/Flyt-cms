@@ -6,7 +6,7 @@
                  no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
 <%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
-<%@ page import="no.kantega.publishing.admin.content.util.HTMLEditorHelper"%>
+<%@ page import="no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>
@@ -36,8 +36,6 @@
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
     Content   content   = (Content)request.getAttribute("content");
     String    fieldName = (String)request.getAttribute("fieldName");
-    int height = attribute.getHeight();
-    int width = attribute.getWidth();
     String value = attribute.getValue();
     HTMLEditorHelper helper = new HTMLEditorHelper();
     value = helper.preEditFilter(value, URLHelper.getRootURL(request));
@@ -88,20 +86,33 @@
         hasHtmlEditorRole = securitySession.isUserInRole(htmlEditorRole);
     }
 
-    // Let etter /css/site/editor.css og /site/css/editor.css
+    // Let etter /css/site/editor.css og /site/css/editor.css og /css/editor.css
     String cssPath = "/css" + site.getAlias() + attribute.getCss();
 
     if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = site.getAlias() + "css/" + attribute.getCss();
     }
+    if (pageContext.getServletContext().getResource(cssPath) == null) {
+        cssPath = "css/" + attribute.getCss();
+    }
+
     request.setAttribute("cssPath", cssPath);
+
+    int width = attribute.getWidth();
+    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", 600);
+    request.setAttribute("attributeWidth", width);
+
+    int height = attribute.getHeight();
+    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 350);
+    request.setAttribute("attributeHeight", height);
+
 %>
 <script type="text/javascript">
     var miniAdminMode = <%=isMiniAdminMode%>;
 </script>
 
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attribute.width}; height: ${attribute.height}"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}px; height: ${attributeHeight}px"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({
@@ -113,11 +124,13 @@
         });
     </script>
 
+    <aksess:getconfig key="editor.custom.javascript"/>
+
     <script type="text/javascript">
         var plugins = '<%=plugins%>';
         var buttonRows = [];
         <% for (String row : buttonRows) { %>
-            buttonRows.push('<%=row%>');
+        buttonRows.push('<%=row%>');
         <% } %>
 
         var options = {
@@ -132,11 +145,10 @@
             button_tile_map : true,
             plugins : plugins,
 
-            // TODO: decide desired elements and attributes
             valid_elements : '<%=valid_elements%>',
 
-            width : "${attribute.width}",
-            height : "${attribute.height}",
+            width : "${attributeWidth}",
+            height : "${attributeHeight}",
 
             // Theme options
             theme_advanced_toolbar_location : "top",
@@ -156,7 +168,7 @@
             <%
                 }
             %>
-
+            <aksess:getconfig key="editor.custom.tinymceparameters"/>
             // Path to editor.css
             content_css : "${pageContext.request.contextPath}${cssPath}"
         };

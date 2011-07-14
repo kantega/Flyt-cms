@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -56,56 +57,34 @@ public class TopicAttribute  extends Attribute {
     }
 
     public Topic getValueAsTopic() {
-        List<Topic> topics = getValueAsTopics();
-        if (topics.size() == 0) {
-            return null;
-        } else {
-            return topics.get(0);
-        }
+        return TopicAttributeValueParser.getValueAsTopic(value);
     }
 
     public List<Topic> getValueAsTopics() {
-        List<Topic> topicList = new ArrayList<Topic>();
-
-        if (value == null || value.indexOf("") == -1) {
-            return topicList;
-        }
-
-        String[] topics = getValue().split(",");
-        for (int i = 0; i < topics.length; i++) {
-            String[] topicStrings = topics[i].split(":");
-            if(topicStrings.length == 2) {
-                int topicMapId = Integer.parseInt(topicStrings[0]);
-                String topicId = topicStrings[1];
-                Topic topic = TopicAO.getTopic(topicMapId, topicId);
-                if (topic != null) {
-                    topicList.add(topic);
-                }
-            }
-        }
-        return topicList;
+        return TopicAttributeValueParser.getValueAsTopics(value);
     }
 
     public String getTopicId() {
-        Topic topic = getValueAsTopic();
-        if (topic == null) {
-            return null;
-        } else {
-            return topic.getId();
-        }
+        return TopicAttributeValueParser.getTopicId(value);
     }
 
     public int getTopicMapId() {
-        Topic topic = getValueAsTopic();
-        if (topic == null) {
-            return -1;
-        } else {
-            return topic.getTopicMapId();
-        }
+        return TopicAttributeValueParser.getTopicMapId(value);
     }
 
     public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
         return new MapTopicAttributeValueToContentPropertyBehaviour();
-    }    
+    }
+
+    @Override
+    public String getProperty(String property) {
+        if (property.equalsIgnoreCase(AttributeProperty.TOPICID)) {
+            return getTopicId();
+        } else if (property.equalsIgnoreCase(AttributeProperty.TOPICMAPID)) {
+            return "" + getTopicMapId();
+        } else {
+            return super.getProperty(property);
+        }
+    }
 }
 

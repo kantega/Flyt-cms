@@ -4,6 +4,8 @@
 <%@ page import="no.kantega.publishing.event.ContentEventListener" %>
 <%@ page import="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener" %>
 <%@ page import="no.kantega.publishing.event.ContentEvent" %>
+<%@ page import="no.kantega.publishing.spring.RootContext" %>
+<%@ page import="no.kantega.publishing.common.ao.MultimediaUsageDao" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%--
@@ -29,7 +31,8 @@
   <%
         ContentAO.forAllContentObjects(new ContentHandler() {
             public void handleContent(Content content) {
-                ContentEventListener eventListenertener = new MultimediaUsageListener();
+                MultimediaUsageListener eventListenertener = new MultimediaUsageListener();
+                eventListenertener.setMultimediaUsageDao((MultimediaUsageDao)RootContext.getInstance().getBean("aksessMultimediaUsageDao"));
                 eventListenertener.contentSaved(new ContentEvent().setContent(content));
             }
         }, new ContentAO.ContentHandlerStopper() {

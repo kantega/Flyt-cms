@@ -1,16 +1,13 @@
-#ModesMenu .buttonGroup .button.last {
-    background: url("../bitmaps/default/framework/modus_btn_right.png") right center no-repeat
-}
 /* Fix because ie7 can't handle floats properly */
 #TopMenu a.menuitem.logout, #TopMenu a.menuitem.help { position:relative; top:-29px }
 
 
 .navigator .icon a {
-    top:0 !important;
+    top: 0 !important;
 }
 
 .navigator .openState a {
-    top:0 !important;
+    top: -3px !important;
 }
 
 div.row label {

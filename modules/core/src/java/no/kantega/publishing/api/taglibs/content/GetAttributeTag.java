@@ -136,16 +136,25 @@ public class GetAttributeTag extends TagSupport {
                 if (contentObject == null) {
                     contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
                 }
-                String result = AttributeTagHelper.getAttribute(contentObject, cmd, inheritFromAncestors);
+
+                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+                String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
 
                 if (defaultValue != null && (result == null || result.length() == 0)) {
                     result = defaultValue;
                 }
 
-                if (result != null) {
+                if (result != null && result.length() > 0) {
                     if (transform != null) {
                         if ("lowercase".equalsIgnoreCase(transform)) result = result.toLowerCase();
                         if ("uppercase".equalsIgnoreCase(transform)) result = result.toUpperCase();
+                        if ("capitalize".equalsIgnoreCase(transform)) {
+                            String tmp = result.substring(0,1).toUpperCase();
+                            if (result.length() > 1) {
+                                tmp += result.substring(1, result.length());
+                            }
+                            result = tmp;
+                        }
                     }
                     out.write(result);
                 }

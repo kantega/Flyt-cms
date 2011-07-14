@@ -4,7 +4,7 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.profile.Profile;
@@ -21,6 +21,8 @@ public class ProfileImageController extends AbstractUserAdminController {
 
     private int imgPreviewMaxHeight = 200;
     private int imgPreviewMaxWidth = 200;
+
+    private MultimediaUploadHandler multimediaUploadHandler;
 
     @Override
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -63,7 +65,7 @@ public class ProfileImageController extends AbstractUserAdminController {
                 MultipartFile file = params.getFile("profileImage");
                 if (file != null) {
                     profileImage = new Multimedia();
-                    MultimediaHelper.updateMultimediaFromData(profileImage, file.getBytes(), file.getOriginalFilename());
+                    multimediaUploadHandler.updateMultimediaWithData(profileImage, file.getBytes(), file.getOriginalFilename(), true);
                     if (profileImage.getMimeType().getType().startsWith("image")) {
 
                         profileImage.setName(name);
@@ -100,5 +102,9 @@ public class ProfileImageController extends AbstractUserAdminController {
 
     public void setImgPreviewMaxWidth(int imgPreviewMaxWidth) {
         this.imgPreviewMaxWidth = imgPreviewMaxWidth;
+    }
+
+    public void setMultimediaUploadHandler(MultimediaUploadHandler multimediaUploadHandler) {
+        this.multimediaUploadHandler = multimediaUploadHandler;
     }
 }

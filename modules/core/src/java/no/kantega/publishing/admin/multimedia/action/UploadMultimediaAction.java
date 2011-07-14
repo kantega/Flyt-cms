@@ -16,45 +16,41 @@
 
 package no.kantega.publishing.admin.multimedia.action;
 
+import com.glaforge.i18n.io.CharsetToolkit;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
-import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.multimedia.MultimediaUploadHandler;
+import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipFile;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.multipart.MultipartFile;
-import org.apache.tools.zip.ZipFile;
-import org.apache.tools.zip.ZipEntry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.util.zip.ZipException;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.*;
+import java.util.zip.ZipException;
 
-import com.glaforge.i18n.io.CharsetToolkit;
-/**
- *
- */
 public class UploadMultimediaAction extends AdminController {
+
+    private MultimediaUploadHandler multimediaUploadHandler;
     private ImageEditor imageEditor;
+    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestParameters param = new RequestParameters(request, "utf-8");
+        RequestParameters parameters = new RequestParameters(request, "utf-8");
 
         MultimediaService mediaService = new MultimediaService(request);
 
-        int parentId = param.getInt("parentId");
+        int parentId = parameters.getInt("parentId");
 
         // Save image or other file
         Multimedia parent = null;
@@ -62,91 +58,83 @@ public class UploadMultimediaAction extends AdminController {
             parent = mediaService.getMultimedia(parentId);
         }
 
-        String name = param.getString("name");
-        String altName = param.getString("altname");
-        String author = param.getString("author");
+        boolean preserveImageSize = parameters.getBoolean("preserveImageSize", false);
 
-        List<Multimedia> multimedia = getUploadedFiles(param);
+        List<Multimedia> uploadedFiles = getUploadedFiles(parameters, preserveImageSize);
 
-        for (Multimedia m : multimedia) {
-
-            if (m.isNew()) {
+        for (Multimedia file : uploadedFiles) {
+            if (file.isNew()) {
                 // New file
                 if (parent != null) {
-                    m.setSecurityId(parent.getSecurityId());
-                    m.setParentId(parentId);
+                    file.setSecurityId(parent.getSecurityId());
+                    file.setParentId(parentId);
                 } else {
-                    m.setSecurityId(0);
+                    file.setSecurityId(0);
                 }
-                if (multimedia.size() == 1) {
+                if (uploadedFiles.size() == 1) {
+                    String name = parameters.getString("name");
                     if (name != null && name.length() > 0) {
-                        m.setName(name);
+                        file.setName(name);
                     }
-                    m.setAltname(altName);
-                    m.setAuthor(author);
+                    file.setAltname(parameters.getString("altname"));
                 }
-            }
-
-            MultimediaHelper.updateMediaDimensions(m);
-            boolean preserveImageSize = param.getBoolean("preserveImageSize", false);
-            if (!preserveImageSize) {
-                m = resizeMultimedia(m);
+                file.setAuthor(parameters.getString("author"));
             }
 
             // Save object
-            int newId = mediaService.setMultimedia(m);
-            m.setId(newId);
+            int newId = mediaService.setMultimedia(file);
+            file.setId(newId);
         }
 
 
-        if (multimedia.size() == 1) {
+        if (uploadedFiles.size() == 1) {
             Map model = new HashMap();
-            model.put("id", multimedia.get(0).getId());
+            model.put("id", uploadedFiles.get(0).getId());
             return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
         } else {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
     }
 
-    private List<Multimedia> getUploadedFiles(RequestParameters param) throws IOException {
-        List<Multimedia> multimedia = new ArrayList<Multimedia>();
-        String filename = "";
-        String fileExtension = "";
+    private List<Multimedia> getUploadedFiles(RequestParameters parameters, boolean preserveImageSize) throws IOException, InvalidImageFormatException {
+        List<Multimedia> multimediaList = new ArrayList<Multimedia>();
 
-        MultipartFile file = param.getFile("file");
-        if (file != null) {
-            filename = file.getOriginalFilename();
-            fileExtension = filename.substring(filename.length() - 3, filename.length());
-            if ("zip".equalsIgnoreCase(fileExtension)) {
-                // Upload of multiple files
-                return getZipFiles(file);
-            } else {
-                // Upload of single file - new or replace existing
-                if(filename.contains("/")) {
-                    filename = filename.substring(filename.lastIndexOf("/")+1);
-                }
+        List<MultipartFile> multipartFiles = parameters.getFiles("file");
 
-                Multimedia mm = null;
-                int id = param.getInt("id");
-                if (id != -1) {
-                    MultimediaService mediaService = new MultimediaService(param.getRequest());
-                    mm = mediaService.getMultimedia(id);
+        for (MultipartFile multipartFile : multipartFiles) {
+            if (multipartFile != null && !AttachmentBlacklistHelper.isFileTypeInBlacklist(multipartFile)) {
+                if (isZipFile(multipartFile)) {
+                    multimediaList.addAll(createMultimediaFromZipArchive(multipartFile, preserveImageSize));
+                } else {
+                    multimediaList.add(createMultimediaFromNormalFile(parameters, multipartFile, preserveImageSize));
                 }
-                if (mm == null) {
-                    mm = new Multimedia();
-                    String name;
-                    if (filename.indexOf(".") != -1) {
-                        name = filename.substring(0, filename.lastIndexOf('.'));
-                    } else {
-                        name = filename;
-                    }
-                    mm.setName(name);
-                }
-                mm.setData(file.getBytes());
-                mm.setFilename(filename);
-                multimedia.add(mm);
             }
         }
+
+        return multimediaList;
+    }
+
+    private boolean isZipFile(MultipartFile multipartFile) {
+        String filename = multipartFile.getOriginalFilename();
+        return filename.toLowerCase().endsWith(".zip");
+    }
+
+    private Multimedia createMultimediaFromNormalFile(RequestParameters parameters, MultipartFile multipartFile, boolean preserveImageSize) throws IOException, InvalidImageFormatException {
+        String filename = multipartFile.getOriginalFilename();
+
+        // Upload of single file - new or replace existing
+        filename = removeDirectoryFromFilename(filename);
+
+        Multimedia multimedia = null;
+        int id = parameters.getInt("id");
+        if (id != -1) {
+            MultimediaService mediaService = new MultimediaService(parameters.getRequest());
+            multimedia = mediaService.getMultimedia(id);
+        } else {
+            multimedia = new Multimedia();
+        }
+
+        multimediaUploadHandler.updateMultimediaWithData(multimedia, multipartFile.getBytes(), filename, preserveImageSize);
 
         return multimedia;
     }
@@ -157,7 +145,7 @@ public class UploadMultimediaAction extends AdminController {
      * @return
      * @throws IOException
      */
-    private List getZipFiles(MultipartFile file) throws IOException {
+    private List<Multimedia> createMultimediaFromZipArchive(MultipartFile file, boolean preserveImageSize) throws IOException, InvalidImageFormatException {
         List<Multimedia> files = new ArrayList<Multimedia>();
         File temp = File.createTempFile("multimedia", ".zip");
         file.transferTo(temp);
@@ -200,41 +188,12 @@ public class UploadMultimediaAction extends AdminController {
             List<ZipEntry> entries = Collections.list(zipFile.getEntries());
             for(ZipEntry entry : entries) {
                 if (isValidEntry(entry)) {
-
-                    InputStream zis = zipFile.getInputStream(entry);
-                    Multimedia mm = new Multimedia();
-
-
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = zis.read(buf)) > 0) {
-                        bos.write(buf, 0, len);
-                    }
-
-                    byte[] data = bos.toByteArray();
-                    mm.setData(data);
-
-                    bos.close();
-
-
+                    Multimedia multimedia = new Multimedia();
                     // Create name from filename
-                    String name = "";
-                    String entryFilename = entry.getName();
-                    entryFilename = normalize(entryFilename);
-                    if(entryFilename.contains("/")) {
-                        entryFilename = entryFilename.substring(entryFilename.lastIndexOf("/")+1);
-                    }
-                    if (entryFilename.indexOf(".") != -1) {
-                        name = entryFilename.substring(0, entryFilename.lastIndexOf('.'));
-                    } else {
-                        name = entryFilename;
-                    }
-                    mm.setName(name);
-                    mm.setFilename(entryFilename);
+                    String entryFilename = getFileNameFromZipEntry(entry);
 
-                    files.add(mm);
+                    multimediaUploadHandler.updateMultimediaWithData(multimedia, getDataFromZipFileEntry(zipFile, entry), entryFilename, preserveImageSize);
+                    files.add(multimedia);
                 }
 
             }
@@ -246,7 +205,37 @@ public class UploadMultimediaAction extends AdminController {
         return files;
     }
 
-    private String normalize(String entryfilename) {
+    private String getFileNameFromZipEntry(ZipEntry entry) {
+        String entryFilename = entry.getName();
+        entryFilename = normalizeFilename(entryFilename);
+        entryFilename = removeDirectoryFromFilename(entryFilename);
+        return entryFilename;
+    }
+
+    private byte[] getDataFromZipFileEntry(ZipFile zipFile, ZipEntry entry) throws IOException {
+        InputStream zis = zipFile.getInputStream(entry);
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = zis.read(buf)) > 0) {
+            bos.write(buf, 0, len);
+        }
+
+        byte[] data = bos.toByteArray();
+        bos.close();
+        return data;
+    }
+
+    private String removeDirectoryFromFilename(String entryFilename) {
+        if(entryFilename.contains("/")) {
+            entryFilename = entryFilename.substring(entryFilename.lastIndexOf("/")+1);
+        }
+        return entryFilename;
+    }
+
+    private String normalizeFilename(String entryfilename) {
         // Replace composed unicode norwegian aring with the single byte aring
         return entryfilename.replaceAll("\u0061\u030a", "\u00e5");
     }
@@ -255,22 +244,7 @@ public class UploadMultimediaAction extends AdminController {
         return !entry.isDirectory() && !entry.getName().startsWith("__MACOSX");
     }
 
-    public Multimedia resizeMultimedia(Multimedia multimedia) throws InvalidImageFormatException {
-        if (multimedia.getType() == MultimediaType.MEDIA && multimedia.getData() != null ) {
-            if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                    try {
-                        multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                    } catch (IOException e) {
-                        throw new SystemException(this.getClass().getName(), "IOException", e);
-                    }
-                }
-            }
-        }
-        return multimedia;
-    }
-
-    public void setImageEditor(ImageEditor imageEditor) {
-        this.imageEditor = imageEditor;
+    public void setMultimediaUploadHandler(MultimediaUploadHandler multimediaUploadHandler) {
+        this.multimediaUploadHandler = multimediaUploadHandler;
     }
 }

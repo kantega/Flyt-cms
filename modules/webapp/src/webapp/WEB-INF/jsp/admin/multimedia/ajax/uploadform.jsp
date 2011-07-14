@@ -24,15 +24,31 @@
         if (document.uploadForm.elements['file'].value == "") {
             alert('<kantega:label key="aksess.multimedia.uploadfile.missing" escapeJavascript="true"/>');
             return false;
+        } else {
+            <%-- Check if the file type is black-listed. If so, cancel the upload and display an error message --%>
+            var fileName = document.uploadForm.elements['file'].value;
+            var blacklistedFileTypes = new Array();
+            <c:forEach var="fileType" items="${blacklistedFileTypes}" varStatus="status">
+                blacklistedFileTypes[${status.index}] = ".${fileType}";
+            </c:forEach>
+            for (i = 0; i < blacklistedFileTypes.length; i++) {
+                var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
+                var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
+                if ((indexOfMatch != -1) && (indexOfMatch == expectedIndexOfMatch)) {
+                    alert('<kantega:label key="${blacklistedErrorMessage}" escapeJavascript="true"/>');
+                    return false;
+                }
+            }
         }
-    <c:if test="${id == -1}">
-    <c:if test="${altNameRequired}">
-        if (document.uploadForm.elements['altname'].value == "") {
-            alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
-            return false;
-        }
-    </c:if>
-    </c:if>
+
+        <c:if test="${id == -1}">
+            <c:if test="${altNameRequired}">
+                if (document.uploadForm.elements['altname'].value == "") {
+                    alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
+                    return false;
+                }
+            </c:if>
+        </c:if>
 
         $("#UploadFormButtons").hide();
         $("#UploadStatus").show();
@@ -56,7 +72,7 @@
                 <label><kantega:label key="aksess.multimedia.uploadfile"/></label>
             </div>
             <div class="inputs">
-                <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()">
+                <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()" <c:if test="${id == -1}">multiple</c:if>>
                 <c:if test="${allowPreserveImageSize}"><br>
                     <input type="checkbox" id="PreserveImageSize" name="preserveImageSize" value="true"><label for="PreserveImageSize"><kantega:label key="aksess.multimedia.preserveimagesize"/></label>
                 </c:if>

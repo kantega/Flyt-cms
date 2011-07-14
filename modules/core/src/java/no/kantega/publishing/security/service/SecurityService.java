@@ -41,6 +41,11 @@ public class SecurityService {
      * @throws SystemException
      */
     public static boolean isAuthorized(Role role, BaseObject object, int privilege) throws SystemException {
+        if (object instanceof Content) {
+            Content c = (Content)object;
+            object = c.getAssociation();
+        }
+
         List permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
             // Ingen rettigheter definert for dette privilegium, ok
@@ -228,13 +233,13 @@ public class SecurityService {
      * @return
      * @throws SystemException
      */
-    public static List getPermissions(BaseObject object) throws SystemException {
+    public static List<Permission> getPermissions(BaseObject object) throws SystemException {
         if (object instanceof Content) {
             Content c = (Content)object;
             object = c.getAssociation();
         }
 
-        List permissions = new ArrayList();
+        List<Permission> permissions = new ArrayList<Permission>();
 
         // Klone liste i tilfelle den blir endret
         List tmp = PermissionsCache.getPermissions(object);

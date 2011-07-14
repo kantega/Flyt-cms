@@ -55,7 +55,7 @@
 
         function selectContent() {
             openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 380, height:450});
+            openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.popup.selectcontent"/>', iframe:true, href: "popups/SelectContent.action",width: 400, height:450});
         }
 
         function showTemplateInfo(i, defaultCategory) {
@@ -75,8 +75,11 @@
             var categoryinfo = document.getElementById('categoryinfo');
             var categorydesc = document.getElementById('categorydesc');
 
-            categorydesc.innerHTML = document.getElementById('categoryinfo' + id).innerHTML;
-            categoryinfo.style.display = 'block';
+            var category = document.getElementById('categoryinfo' + id);
+            if (category != null) {
+                categorydesc.innerHTML = document.getElementById('categoryinfo' + id).innerHTML;
+                categoryinfo.style.display = 'block';
+            }
         }
 
         function doSelectTemplate() {
@@ -249,6 +252,7 @@
                             }
                         }
                         name = name.replace('*', ' ');
+                        if (desc == null) desc = "";
                 %>
                 <div class="row">
                     <input id="template_<%=type%>_<%=id%>" type="radio" class="radio" name="templateId" value="<%=type%>_<%=id%>" onClick="showTemplateInfo(<%=i%>, <%=defaultAssociationCategoryForTemplate%>)" <% if(isDefault) out.write("checked");%>>
@@ -278,14 +282,14 @@
                                 AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
                                 out.write("<div class=\"row\">");
                                 if (defaultAssociationCategory == tmp.getId()) {
-                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
+                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\" checked>");
                                     foundDefault = true;
                                     defaultText ="<b>" + tmp.getName() + "</b><br>" + tmp.getDescription();
                                 } else {
-                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category_" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
+                                    out.write("<input type=\"radio\" class=\"radio\" name=\"associationCategory\" id=\"category" + tmp.getId() + "\" value=\"" + tmp.getId() + "\" onClick=\"showCategoryInfo(" + tmp.getId() + ")\">");
                                 }
                         %>
-                        <label for="category_<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label>
+                        <label for="category<%=tmp.getId()%>" class="radio"><%=tmp.getName()%></label>
                         <div class="clearing"></div>
                         <%
                             out.write("</div>");

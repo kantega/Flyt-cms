@@ -23,6 +23,7 @@ import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.Aksess;
@@ -33,17 +34,21 @@ import no.kantega.search.index.Fields;
 import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.provider.DocumentProviderHandler;
 import no.kantega.search.index.rebuild.ProgressReporter;
+import no.kantega.search.result.QueryInfo;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
 import no.kantega.publishing.search.model.AksessSearchHit;
 import no.kantega.publishing.search.model.AksessSearchHitContext;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.highlight.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,9 +105,28 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                 }
                 searchHit.setMimeType(MimeTypes.getMimeType(searchHit.getFileName() + "." + searchHit.getFileExtension()));
             }
-            
+
             if (searchHit.getTitle() == null || searchHit.getTitle().length() == 0) {
                 searchHit.setTitle(doc.get(Fields.ATTACHMENT_FILE_NAME));
+            }
+
+            searchHit.setAllText(doc.get(Fields.CONTENT));
+            if (StringUtils.isNotEmpty(searchHit.getAllText())) {
+                QueryInfo queryInfo = context.getQueryInfo();
+                if (queryInfo != null) {
+                    // Add text to show where hit was found
+                    Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
+                    Scorer scorer = new QueryScorer(queryInfo.getQuery());
+                    Highlighter highlighter = new Highlighter(formatter, scorer);
+                    try {
+                        String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
+                        searchHit.setContextText(frag);
+                    } catch (IOException e) {
+                        Log.error(SOURCE, e, null, null);
+                    }  catch (InvalidTokenOffsetsException e) {
+                        Log.error(SOURCE, e, null, null);
+                    }
+                }
             }
 
             try {
@@ -122,8 +146,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter) {
         try {
             int i = -1;
-            int c=0;
-            i = aksessDao.getNextActiveAttachmentId(i);
+            int c = 0;
             int total = aksessDao.countActiveAttachmentIds();
             while((i = aksessDao.getNextActiveAttachmentId(i)) > 0) {
                 if(handler.isStopRequested()) {
@@ -131,14 +154,16 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                     break;
                 }
                 try {
-                        Attachment a = AttachmentAO.getAttachment(i);
-                        Document d = getAttachmentDocument(a);
+                    Attachment a = AttachmentAO.getAttachment(i);
+                    Document d = getAttachmentDocument(a);
+                    if (d != null) {
                         handler.handleDocument(d);
-                        reporter.reportProgress(++c, "aksess-vedlegg", total);
+                    }
+                    reporter.reportProgress(++c, "aksess-vedlegg", total);
 
                 } catch (Throwable e) {
-                        Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
-                        Log.error(SOURCE, e, null, null);
+                    Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
+                    Log.error(SOURCE, e, null, null);
                 }
             }
         } catch (SQLException e) {
@@ -154,7 +179,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (SystemException e) {
-            
+
         }
         return null;
     }
@@ -178,7 +203,16 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             return null;
         }
 
+        if (content.getType() == ContentType.FILE) {
+            // Text in files are indexed as part of content object, should not index here to get duplicate
+            return null;
+        }
+
         TextExtractor te = textExtractorSelector.select(a.getFilename());
+        if (te == null) {
+            return null;
+        }
+
         Document d = new Document();
 
         Field fTitle = new Field(Fields.TITLE, content.getTitle(), Field.Store.YES, Field.Index.ANALYZED);
@@ -199,7 +233,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
 
         Field fKeywords = new Field(Fields.KEYWORDS, content.getKeywords() == null ? "" : content.getKeywords(), Field.Store.NO, Field.Index.ANALYZED);
         fKeywords.setBoost(1.5f);
-        d.add(fKeywords);                    
+        d.add(fKeywords);
 
         d.add(new Field(Fields.TITLE_UNANALYZED, content.getTitle(), Field.Store.NO, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.DOCTYPE, Fields.TYPE_ATTACHMENT, Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -214,20 +248,20 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
         d.add(new Field(Fields.CONTENT_STATUS, Integer.toString(content.getStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         d.add(new Field(Fields.CONTENT_PARENTS, getParents(content), Field.Store.YES, Field.Index.ANALYZED));
-        d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        if (content.getDocumentTypeId() > 0) {
+            d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+        }
         d.add(new Field(Fields.ATTACHMENT_FILE_SIZE, Integer.toString(a.getSize()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-        
+
 
         String text = "";
-        if (te != null) {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            AttachmentAO.streamAttachmentData(a.getId(), new InputStreamHandler(bos));
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        AttachmentAO.streamAttachmentData(a.getId(), new InputStreamHandler(bos));
 
-            text = te.extractText(new ByteArrayInputStream(bos.toByteArray()));
-            d.add(new Field(Fields.CONTENT, text, Field.Store.NO, Field.Index.ANALYZED));
-            String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
-            d.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NOT_ANALYZED));
-        }
+        text = te.extractText(new ByteArrayInputStream(bos.toByteArray()), a.getFilename());
+        d.add(new Field(Fields.CONTENT, text, Field.Store.YES, Field.Index.ANALYZED));
+        String summary = text.substring(0, (text.length() > Fields.SUMMARY_LENGTH) ? Fields.SUMMARY_LENGTH : text.length())  + (text.length() > Fields.SUMMARY_LENGTH  ? "..." : "");
+        d.add(new Field(Fields.SUMMARY, summary, Field.Store.YES, Field.Index.NOT_ANALYZED));
         return d;
     }
 

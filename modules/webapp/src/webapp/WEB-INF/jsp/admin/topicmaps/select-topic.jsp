@@ -3,8 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -20,7 +18,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<kantega:section id="title"><kantega:label key="aksess.p"/></kantega:section>
 
 <kantega:section id="head">
     <script type="text/javascript">

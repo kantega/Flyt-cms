@@ -16,9 +16,9 @@
   -->
 
 <taglib xmlns="http://java.sun.com/xml/ns/j2ee"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
-         version="2.0">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
     <description>Aksess CMS Main Taglib API</description>
     <tlib-version>2.0</tlib-version>
     <short-name>aksess</short-name>
@@ -42,7 +42,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Print todays date</description>
+        <description>Print today's date</description>
         <name>getdate</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.GetDateTag</tag-class>
         <body-content>empty</body-content>
@@ -219,7 +219,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
             <name>obj</name>
@@ -299,7 +299,7 @@
                             </aksess:exists>
                         </aksess:getcollection>
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Print body if specified attribute not exists or is empty</description>
@@ -382,7 +382,7 @@
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>
         </attribute>
-        
+
     </tag>
     <tag>
         <description>Print body if current page is within path of specified contentid</description>
@@ -444,7 +444,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images)</description>
+            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images), parentid (for images), description (for images)</description>
             <name>property</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
@@ -610,7 +610,7 @@
             <name>attributetype</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Name to use for stored request attribute</description>
             <name>name</name>
@@ -690,7 +690,7 @@
                         <aksess:getsitemap name="sitemap" depth="${depth}" associationcategory="Global menu"/>
                         <aksess:printsitemap name="sitemap"/>
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Prints body if user is authorized to edit this page</description>
@@ -1069,6 +1069,12 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
             <name>owner</name>
             <required>false</required>
@@ -1166,7 +1172,7 @@
                         
 
             ]]>
-        </example>        
+        </example>
     </tag>
     <tag>
         <description>Performs a query for pages and print body if collection of pages is not empty</description>
@@ -1238,7 +1244,7 @@
             <name>excludeddocumenttypes</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
@@ -1379,6 +1385,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
@@ -1491,7 +1503,7 @@
             <name>excludeddocumenttypes</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Find only pages with specified display template</description>
             <name>displaytemplate</name>
@@ -1632,6 +1644,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
             <description>Get pages with specified owner (organizational unit)</description>
@@ -1835,6 +1853,45 @@
         </attribute>
     </tag>
     <tag>
+        <description>Print body if role is authorized for operation</description>
+        <name>roleisauthorized</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.RoleIsAuthorizedTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Role</description>
+            <name>role</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if role not has access</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Privilege to check, default is Privilege.READ</description>
+            <name>privilege</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
         <description>Include JSP mini view for display of object (for portlet like view)</description>
         <name>miniview</name>
         <tag-class>no.kantega.publishing.api.taglibs.content.MiniViewTag</tag-class>
@@ -1845,6 +1902,36 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <description>Include JSP search view for customized display of object in search result</description>
+        <name>searchview</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.SearchViewTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of request variable to store searchHit in</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>searchhit</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify default view for search hits that are normal content pages</description>
+            <name>defaultviewcontent</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify view for search hits that are not content pages (eg attachments)</description>
+            <name>otherview</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
     <tag>
         <description>Get sitemap and save as request attribute</description>
         <name>getsitemap</name>
@@ -2228,11 +2315,17 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Id of topic map to get</description>
+            <description>Id of topicmap to get</description>
             <name>topicmapid</name>
             <required>false</required>
-            <rtexprvalue>false</rtexprvalue>
+            <rtexprvalue>true</rtexprvalue>
             <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
             <description>Name of collection of pages, use getcollection with gettopics=true instead</description>
@@ -2271,6 +2364,12 @@
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
         </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Iterate over the topics for the given topic type</description>
@@ -2297,13 +2396,19 @@
             <type>int</type>
         </attribute>
         <attribute>
+            <description>Name of topicmap</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Id of topictype</description>
             <name>topictypeid</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>java.lang.String</type>
         </attribute>
-    </tag>    
+    </tag>
     <tag>
         <description>Transform and display XML document in cache with given xslt</description>
         <name>transformxml</name>
@@ -2400,7 +2505,7 @@
             <name>varStatus</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
     </tag>
     <tag>
         <description>Set specified content as current page temporarily</description>
@@ -2463,7 +2568,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-              <example>
+        <example>
             <![CDATA[
                     Display the name of unit with id 24:
                         <aksess:getorgunit orgunitid="24" name="unit"/>
@@ -2501,6 +2606,77 @@
                     </aksess:stripmakup>
                     Will produce output like this:
                         Example of markup where tags will be stripped.
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Create pagination of a given collection</description>
+        <name>paginate</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.paginate.PaginateCollectionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of collection to paginate</description>
+            <name>collection</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for previous link. Leave blank to not use</description>
+            <name>prevlabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for next link. Leave blank to not use</description>
+            <name>nextlabel</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Number of results per page. Default is 25</description>
+            <name>resultsperpage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the ul element. Default is paginate</description>
+            <name>ulclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the previous element. Default is prev</description>
+            <name>prevclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the next element. Default is next</description>
+            <name>nextclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the current selected element. Default is current</description>
+            <name>currentclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the gap elements. Default is gap</description>
+            <name>gapclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <aksess:ifcollectionnotempty name="myCollection">
+                        <aksess:paginate collection="myCollection" prevlabel="Previous" nextlabel="Next"/>
+                        <aksess:getcollection name="myCollection">
+                            ....
+                        </aksess:getcollection>
+                     </aksess:ifcollectionnotempty>
             ]]>
         </example>
     </tag>

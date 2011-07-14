@@ -58,6 +58,7 @@
             contentChangeFrom : '<kantega:label key="aksess.contentproperty.changefrom" escapeJavascript="true"/>',
             contentExpireDate : '<kantega:label key="aksess.contentproperty.expiredate" escapeJavascript="true"/>',
             contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson" escapeJavascript="true"/>',
+            contentOwner : '<kantega:label key="aksess.contentproperty.owner" escapeJavascript="true"/>',
             contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate" escapeJavascript="true"/>',
             associations : '<kantega:label key="aksess.infoslider.associations" escapeJavascript="true"/>'
         };
@@ -145,7 +146,7 @@
             </div>
             <div class="infoslider"></div>
             <div id="Navigator"></div>
-            <div id="Framesplit" class="framesplit navigate"></div>
+            <div id="Framesplit" class="framesplit navigate"><div class="framesplitDrag"></div></div>
         </div>
 
 

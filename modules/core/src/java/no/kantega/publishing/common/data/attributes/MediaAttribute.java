@@ -35,27 +35,10 @@ import java.util.Map;
 public class MediaAttribute extends Attribute {
     private MultipartFile importFile = null;
 
-    protected int maxWidth = -1;
-    protected int maxHeight = -1;
-    protected String cssClass = null;
     protected String defaultMediaFolder = null;
-
-    private Multimedia mm = null; // Cacher bildet
-
+    private Multimedia cachedMultimediaObj = null; // Cacher bildet
 
     protected String filter = null;
-
-    public void setMaxWidth(int maxWidth) {
-        this.maxWidth = maxWidth;
-    }
-
-    public void setMaxHeight(int maxHeight) {
-        this.maxHeight = maxHeight;
-    }
-
-    public void setCssclass(String cssClass) {
-        this.cssClass = cssClass;
-    }
 
     public void setConfig(Element config, Map model) throws InvalidTemplateException {
         super.setConfig(config, model);
@@ -73,30 +56,21 @@ public class MediaAttribute extends Attribute {
         if (AttributeProperty.URL.equalsIgnoreCase(property)) {
             return Aksess.getContextPath() + "/multimedia.ap?id=" + value;
         } else if (AttributeProperty.HTML.equalsIgnoreCase(property)
-                   || AttributeProperty.WIDTH.equalsIgnoreCase(property)
-                   || AttributeProperty.HEIGHT.equalsIgnoreCase(property)
-                   || AttributeProperty.NAME.equalsIgnoreCase(property)
-                   || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
-                   || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
-                   || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
-                   || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
+                || AttributeProperty.WIDTH.equalsIgnoreCase(property)
+                || AttributeProperty.HEIGHT.equalsIgnoreCase(property)
+                || AttributeProperty.NAME.equalsIgnoreCase(property)
+                || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
+                || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
+                || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
+                || AttributeProperty.LATITUDE.equalsIgnoreCase(property)
+                || AttributeProperty.LONGITUDE.equalsIgnoreCase(property)
+                || AttributeProperty.PARENTID.equalsIgnoreCase(property)
+                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
             try {
-                int id;
-
-                if (mm == null) {
-                    try {
-                        id = Integer.parseInt(value);
-                    } catch (NumberFormatException e) {
-                        return "";
-                    }
-                    mm = MultimediaAO.getMultimedia(id);
-                    if (mm == null) {
-                        return "";
-                    }
-                }
+                Multimedia mm = getMultimedia();
 
                 if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
-                    return MultimediaTagCreator.mm2HtmlTag(mm, null, maxWidth, maxHeight, cssClass);
+                    return MultimediaTagCreator.mm2HtmlTag(mm, null, -1, -1, null);
                 } else if (AttributeProperty.WIDTH.equalsIgnoreCase(property)) {
                     return "" + mm.getWidth();
                 } else if (AttributeProperty.HEIGHT.equalsIgnoreCase(property)) {
@@ -109,6 +83,12 @@ public class MediaAttribute extends Attribute {
                     return "" + mm.getAltname();
                 } else if (AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)) {
                     return "" + mm.getDescription();
+                } else if (AttributeProperty.PARENTID.equalsIgnoreCase(property)) {
+                    return "" + mm.getParentId();
+                } else if (AttributeProperty.LATITUDE.equalsIgnoreCase(property)) {
+                    return Double.toString(mm.getGpsLatitudeAsDouble());
+                } else if (AttributeProperty.LONGITUDE.equalsIgnoreCase(property)) {
+                    return Double.toString(mm.getGpsLongitudeAsDouble());
                 } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
                     return "" + mm.getMimeType().getType();
                 }
@@ -127,6 +107,18 @@ public class MediaAttribute extends Attribute {
         this.importFile = importFile;
     }
 
+    public Multimedia getMultimedia() {
+        int id;
+        if (cachedMultimediaObj == null) {
+            try {
+                id = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+            cachedMultimediaObj = MultimediaAO.getMultimedia(id);
+        }
+        return cachedMultimediaObj;
+    }
 
     public String getFilter() {
         return filter;

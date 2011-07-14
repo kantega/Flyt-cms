@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2009-2011 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,16 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapTopiclistAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.common.data.ListOption;
+import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.search.index.Fields;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
@@ -37,11 +41,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 3, 2007
- * Time: 11:47:47 AM
- */
 public class TopiclistAttribute extends ListAttribute {
     private int topicMapId = -1;
     private String instanceOf = null;
@@ -53,7 +52,12 @@ public class TopiclistAttribute extends ListAttribute {
         if (config != null) {
             String topicmapid = config.getAttribute("topicmapid");
             if (topicmapid != null && topicmapid.length() > 0) {
-                this.topicMapId = Integer.parseInt(topicmapid, 10);
+                if (StringHelper.isNumeric(topicmapid)) {
+                    this.topicMapId = Integer.parseInt(topicmapid, 10);
+                } else {
+                    this.topicMapId = TopicMapAO.getTopicMapByName(topicmapid).getId();
+                }
+
             }
             this.instanceOf = config.getAttribute("topicinstanceof");
         }
@@ -104,7 +108,11 @@ public class TopiclistAttribute extends ListAttribute {
     }
 
     public int getTopicMapId() {
-        return topicMapId;
+        if (value != null && value.length() > 0) {
+            return TopicAttributeValueParser.getTopicMapId(value);
+        } else {
+            return topicMapId;
+        }
     }
 
     public String getInstanceOf() {
@@ -126,7 +134,7 @@ public class TopiclistAttribute extends ListAttribute {
                                 d.add(new Field(Fields.TM_TOPICS, " " +baseName.getBaseName(), Field.Store.NO, Field.Index.ANALYZED));
                             }
                         } else {
-                            log.debug("Fant ikke topic: " + topicStrings, null);
+                            log.debug("Fant ikke topic: " + topicStrings[1], null);
                         }
                     } catch (SystemException e) {
                         log.error(e.getMessage(), e);
@@ -136,24 +144,26 @@ public class TopiclistAttribute extends ListAttribute {
         }
     }
 
-    
+    public Topic getValueAsTopic() {
+        return TopicAttributeValueParser.getValueAsTopic(value);
+    }
+
     public List<Topic> getValueAsTopics() {
-        List<Topic> topicList = new ArrayList<Topic>();
+        return TopicAttributeValueParser.getValueAsTopics(value);
+    }
 
-        if (value == null || value.indexOf("") == -1) {
-            return topicList;
-        }
+    public String getTopicId() {
+        return TopicAttributeValueParser.getTopicId(value);
+    }
 
-        String[] topics = getValue().split(",");
-        for (int i = 0; i < topics.length; i++) {
-            String[] topicStrings = topics[i].split(":");
-            if(topicStrings.length == 2) {
-                int topicMapId = Integer.parseInt(topicStrings[0]);
-                String topicId = topicStrings[1];
-                Topic topic = new Topic(topicId, topicMapId);
-                topicList.add(topic);
-            }
+    @Override
+    public String getProperty(String property) {
+        if (property.equalsIgnoreCase(AttributeProperty.TOPICID)) {
+            return getTopicId();
+        } else if (property.equalsIgnoreCase(AttributeProperty.TOPICMAPID)) {
+            return "" + getTopicMapId();
+        } else {
+            return super.getProperty(property);
         }
-        return topicList;
     }
 }

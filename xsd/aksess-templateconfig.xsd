@@ -89,6 +89,7 @@
                 <xs:element name="description" type="xs:string" minOccurs="0"/>
                 <xs:element name="view" type="xs:string"/>
                 <xs:element name="miniView" type="xs:string" minOccurs="0"/>
+                <xs:element name="rssView" type="xs:string" minOccurs="0"/>
                 <xs:element name="controllers" minOccurs="0">
                     <xs:complexType>
                         <xs:sequence>
@@ -107,6 +108,18 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="properties" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="property" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="name" use="required" type="xs:string"/>
+                                    <xs:attribute name="value" use="required" type="xs:string"/>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
             </xs:all>
             <xs:attribute name="allowMultipleUsages" type="xs:boolean"/>
             <xs:attribute name="databaseId" use="required" type="xs:integer"/>
@@ -119,6 +132,7 @@
         <xs:complexType>
             <xs:all>
                 <xs:element name="name" type="xs:string" minOccurs="0"/>
+                <xs:element name="description" type="xs:string" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="databaseId" type="xs:integer"/>
             <xs:attribute name="id" use="required" type="xs:string"/>
@@ -167,6 +181,7 @@
                         <xs:attribute name="id" use="required" type="xs:string"/>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="defaultPageUrlAlias" type="xs:string"/>
             </xs:all>
             <xs:attribute name="contentType">
                 <xs:simpleType>
@@ -184,6 +199,7 @@
             <xs:attribute name="keepVersions" type="xs:integer"/>
             <xs:attribute name="expireAction" type="xs:integer"/>
             <xs:attribute name="expireMonths" type="xs:integer"/>
+            <xs:attribute name="isSearchable" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 </xs:schema>

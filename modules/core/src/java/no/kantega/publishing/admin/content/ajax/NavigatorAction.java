@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.commons.log.Log;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import no.kantega.publishing.common.service.SiteManagementService;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -62,8 +62,6 @@ public class NavigatorAction implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        HttpSession session = request.getSession();
         SiteManagementService siteService = new SiteManagementService(request);
         ContentManagementService cms = new ContentManagementService(request);
 
@@ -107,7 +105,16 @@ public class NavigatorAction implements Controller {
                 }
             }
             if (startId != -1) {
-                openFoldersList += "," + startId;
+                ContentIdentifier cid = new ContentIdentifier();
+                cid.setAssociationId(startId);
+                if (!openFoldersList.contains(Integer.toString(startId))) {
+                    try {
+                        Content startContent = cms.getContent(cid);
+                        openFoldersList += startContent.getAssociation().getPath().replaceAll("/", ",") + startId;
+                    } catch (Exception e) {
+                        Log.error(getClass().getSimpleName(), e, null, null);
+                    }
+                }
             }
         }
 
@@ -139,6 +146,7 @@ public class NavigatorAction implements Controller {
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.THIS_ID, currentId);
         model.put(AdminRequestParameters.START_ID, startId);
+        model.put(AdminRequestParameters.HIGHLIGHT_CURRENT, params.getBoolean(AdminRequestParameters.HIGHLIGHT_CURRENT, true));
 
         return new ModelAndView(view, model);
     }

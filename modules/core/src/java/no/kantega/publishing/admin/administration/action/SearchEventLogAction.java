@@ -16,16 +16,15 @@
 
 package no.kantega.publishing.admin.administration.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.client.util.RequestParameters;
 
 /**
  *
@@ -43,7 +42,15 @@ public class SearchEventLogAction extends AdminController {
             RequestParameters p = new RequestParameters(request, "utf-8");
 
             Date from = p.getDate("from_date", Aksess.getDefaultDateFormat());
-            Date end  = p.getDate("end_date", Aksess.getDefaultDateFormat());
+
+            // Dates inclusive
+            Date end = p.getDate("end_date", Aksess.getDefaultDateFormat());
+            if (end != null) {
+                GregorianCalendar endInclusive  = new GregorianCalendar();
+                endInclusive.setTime(end);
+                endInclusive.add(Calendar.DATE, 1);
+                end.setTime(endInclusive.getTimeInMillis());
+            }
             List events = cms.searchEventLog(from, end, p.getString("userid"), p.getString("subject"), p.getString("event"));
             model.put("events", events);
 

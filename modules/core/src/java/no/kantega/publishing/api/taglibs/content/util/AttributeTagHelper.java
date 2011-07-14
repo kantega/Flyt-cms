@@ -25,19 +25,19 @@ import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
-import no.kantega.publishing.common.data.attributes.MediaAttribute;
-import no.kantega.publishing.common.data.attributes.TextAttribute;
+import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -98,15 +98,15 @@ public final class AttributeTagHelper {
                             ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
                             if (cid != null) {
                                 // Next or previous page found
-                            content = cs.getContent(cid, false);
-                            if (collection == null) {
+                                content = cs.getContent(cid, false);
+                                if (collection == null) {
                                     request.setAttribute(getCacheKeyPrefix(request) + contentId, content);
-                            }
+                                }
                             } else {
                                 // Page was not found
                                 content = null;
+                            }
                         }
-                    }
                     }
                 } catch (NotAuthorizedException e) {
                     // Viser ikke elementet dersom brukeren ikke har tilgang til det
@@ -169,7 +169,22 @@ public final class AttributeTagHelper {
      * @throws SystemException
      * @throws NotAuthorizedException
      */
+    @Deprecated
     public static String getAttribute(Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
+        return getAttribute(SecuritySession.createNewAdminInstance(), content, cmd, inheritFromAncestors);
+    }
+
+    /**
+     * Henter en attributt for angitt objekt, b�de faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde p� innhold hvis n�dvendig etc.
+     * Leter etter attributt p� alle niv�ene overfor hvis inheritFromAncestors = true
+     * @param content
+     * @param cmd
+     * @return
+     * @throws SystemException
+     * @throws NotAuthorizedException
+     */
+    public static String getAttribute(SecuritySession securitySession, Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
         String value = getAttribute(content, cmd);
         if ((value == null || value.length() == 0) && (content != null && inheritFromAncestors)) {
             // Fant ikke verdi p� dette niv�et, pr�ver � lete lengre opp
@@ -180,8 +195,8 @@ public final class AttributeTagHelper {
 
                 ContentQuery query = new ContentQuery();
                 query.setContentList(contentList);
-
-                List parents = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), true);
+                ContentManagementService cms = new ContentManagementService(securitySession);
+                List parents = cms.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), true, false);
                 for (int i = parents.size() - 1; i >= 0 ; i--) {
                     Content parent =  (Content)parents.get(i);
                     value = getAttribute(parent, cmd);
@@ -193,6 +208,7 @@ public final class AttributeTagHelper {
         }
         return value;
     }
+
 
 
     /**
@@ -214,29 +230,34 @@ public final class AttributeTagHelper {
         int height = cmd.getHeight();
         String cssClass = cmd.getCssClass();
 
-        if (cmd.getFormat() == null) {
-            cmd.setFormat(Aksess.getDefaultDateFormat());
-        }
-
         if (content != null) {
             Attribute attr = content.getAttribute(name, cmd.getAttributeType());
             if (attr != null && attr.getValue() != null && attr.getValue().length() > 0) {
                 if (attr instanceof DateAttribute) {
+                    if (cmd.getFormat() == null) {
+                        cmd.setFormat(Aksess.getDefaultDateFormat());
+                    }
                     Locale locale = Language.getLanguageAsLocale(content.getLanguage());
                     DateAttribute date = (DateAttribute)attr;
                     result = date.getValue(cmd.getFormat(), locale);
-                } else if(attr instanceof MediaAttribute) {
+                } else if(attr instanceof NumberAttribute) {
+                    NumberAttribute number = (NumberAttribute)attr;
+                    if (cmd.getFormat() != null && cmd.getFormat().length() > 0) {
+                        result = number.getValue(cmd.getFormat());
+                    } else {
+                        result = number.getValue();
+                    }
+                } else if(attr instanceof MediaAttribute || attr instanceof ImageAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
-                    if (width != -1) {
-                        media.setMaxWidth(width);
+
+                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
+                        Multimedia mm = media.getMultimedia();
+                        if (mm != null) {
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                        }
+                    } else {
+                        result = media.getProperty(cmd.getProperty());
                     }
-                    if (height != -1) {
-                        media.setMaxHeight(height);
-                    }
-                    if (cssClass != null) {
-                        media.setCssclass(cssClass);
-                    }
-                    result = media.getProperty(cmd.getProperty());
 
                     // Angi om bilde / medieobjekt skal vises inline eller lastes ned
                     if (cmd.getContentDisposition() != null && AttributeProperty.URL.equalsIgnoreCase(cmd.getProperty())) {
@@ -258,7 +279,7 @@ public final class AttributeTagHelper {
                 } else if (name.equals(ContentProperty.CONTENTID)) {
                     result = "" + content.getId();
                 } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
-                    result = "" + content.getAssociation().getNumberOfViews();                    
+                    result = "" + content.getAssociation().getNumberOfViews();
                 } else if (name.equals(ContentProperty.URL)) {
                     result = content.getUrl();
                 } else if (name.equals(ContentProperty.ALIAS)) {
@@ -277,20 +298,22 @@ public final class AttributeTagHelper {
                     result = content.getKeywords();
                     isTextAttribute = true;
                 } else if (name.equals(ContentProperty.IMAGE)) {
-                    MediaAttribute ma = new MediaAttribute();
-                    if (width != -1) {
-                        ma.setMaxWidth(width);
+                    MediaAttribute media = new MediaAttribute();
+                    media.setValue(content.getImage());
+                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
+                        Multimedia mm = media.getMultimedia();
+                        if (mm != null) {
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                        }
+                    } else {
+                        result = media.getProperty(cmd.getProperty());
                     }
-                    if (height != -1) {
-                        ma.setMaxHeight(height);
-                    }
-                    if (cssClass != null) {
-                        ma.setCssclass(cssClass);
-                    }
-                    ma.setValue(content.getImage());
-                    result = ma.getProperty(cmd.getProperty());
                 } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE) || name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
                     Date date = null;
+                    if (cmd.getFormat() == null) {
+                        cmd.setFormat(Aksess.getDefaultDateFormat());
+                    }
+
                     if (name.equals(ContentProperty.PUBLISH_DATE)) {
                         date = content.getPublishDate();
                     } else if (name.equals(ContentProperty.EXPIRE_DATE)) {
@@ -385,7 +408,7 @@ public final class AttributeTagHelper {
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             if (url.indexOf("$SITE") != -1 || url.indexOf("$LANGUAGE") != -1) {
                 String site = "";
-                Integer language = new Integer(Language.NORWEGIAN_BO);
+                Integer language = Language.NORWEGIAN_BO;
 
                 Content c = AttributeTagHelper.getContent(pageContext, null, null);
                 if (c != null) {
@@ -398,7 +421,7 @@ public final class AttributeTagHelper {
                     }
                 }
 
-                String lang = Language.getLanguageAsISOCode(language.intValue());
+                String lang = Language.getLanguageAsISOCode(language);
 
                 url = url.replaceAll("\\$SITE", site.substring(0, site.length() - 1));
                 url = url.replaceAll("\\$LANGUAGE", lang);

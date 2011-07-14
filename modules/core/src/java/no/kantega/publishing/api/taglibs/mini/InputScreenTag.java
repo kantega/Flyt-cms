@@ -46,7 +46,7 @@ public class InputScreenTag extends SimpleTagSupport {
         Content currentEditContent = (Content) request.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         try {
-            pageContext.include("/WEB-INF/jsp/admin/publish/fragments/infobox.jsp");
+            pageContext.include("/WEB-INF/jsp/admin/layout/fragments/infobox.jsp");
 
             InputScreenRenderer screenRenderer = new InputScreenRenderer(pageContext, currentEditContent, AttributeDataType.CONTENT_DATA);
             screenRenderer.generateInputScreen();

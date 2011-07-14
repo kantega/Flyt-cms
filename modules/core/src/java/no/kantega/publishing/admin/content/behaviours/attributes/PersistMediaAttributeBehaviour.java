@@ -16,36 +16,33 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.MediaAttribute;
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.io.IOException;
-import java.io.FileNotFoundException;
-import java.io.ByteArrayInputStream;
-import java.util.List;
-
-import no.kantega.publishing.multimedia.ImageEditor;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.MediaAttribute;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
+import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
  */
 public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
+
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (attribute instanceof MediaAttribute) {
             MediaAttribute mediaAttr = (MediaAttribute)attribute;
@@ -70,11 +67,6 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     if (multimedia == null) {
                         multimedia = new Multimedia();
 
-                        if (filename.length() > 255) {
-                            filename = filename.substring(filename.length() - 255, filename.length());
-                        }
-                        multimedia.setName(filename);
-
                         int mediaFolderId = -1;
                         String mediaFolder = mediaAttr.getDefaultMediaFolder();
                         if (mediaFolder != null) {
@@ -89,56 +81,15 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                         }
 
                         if (mediaFolderId == -1) {
-                            String defaultFolderName = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
-                            if (mediaFolder == null || mediaFolder.length() == 0) {
-                                mediaFolder = defaultFolderName;
-                            }
-                            // Find folder with this name
-                            List<Multimedia> folders = MultimediaAO.getMultimediaList(0);
-                            for (Multimedia m : folders) {
-                                if (m.getType() == MultimediaType.FOLDER && m.getName().equalsIgnoreCase(mediaFolder)) {
-                                    mediaFolderId = m.getId();
-                                }
-                            }
-
-                            if (mediaFolderId == -1) {
-                                // Folder does not exists create one
-                                Multimedia folder = new Multimedia();
-                                folder.setName(defaultFolderName);
-                                folder.setType(MultimediaType.FOLDER);
-                                mediaFolderId = MultimediaAO.setMultimedia(folder);
-                            }
+                            mediaFolderId = createMediaFolder(mediaFolderId, mediaFolder);
                         }
 
                         multimedia.setParentId(mediaFolderId);
                     }
-                    byte[] data = importFile.getBytes();
-                    multimedia.setData(data);
 
-                    MimeType mimeType = MimeTypes.getMimeType(filename);
-                    if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
-                        // For images and Flash we can find the dimensions
-                        ImageInfo ii = new ImageInfo();
-                        ii.setInput(new ByteArrayInputStream(multimedia.getData()));
-                        if (ii.check()) {
-                            multimedia.setWidth(ii.getWidth());
-                            multimedia.setHeight(ii.getHeight());
-                            if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
-                                if (multimedia.getWidth() > Aksess.getMaxMediaWidth() ||  multimedia.getHeight() > Aksess.getMaxMediaHeight()) {
-                                    try {
-                                        ImageEditor editor = (ImageEditor)RootContext.getInstance().getBean("aksessImageEditor");
-                                        multimedia = editor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
-                                    } catch (Exception e) {
-                                        Log.error(this.getClass().getName(), e, null, null);
-                                    }
-                                }
-                            }                                                    
-                        }
-                    } else if (mimeType.isDimensionRequired() && (multimedia.getWidth() <= 0 || multimedia.getHeight() <= 0)) {
-                        multimedia.setWidth(Aksess.getDefaultMediaWidth());
-                        multimedia.setHeight(Aksess.getDefaultMediaHeight());
-                    }
-                    multimedia.setFilename(filename);
+                    MultimediaUploadHandler multimediaUploadHandler = (MultimediaUploadHandler)RootContext.getInstance().getBean("aksessMultimediaUploadHandler");
+
+                    multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
 
                     int id = MultimediaAO.setMultimedia(multimedia);
                     mediaAttr.setValue("" + id);
@@ -150,10 +101,35 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                 throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
             } catch (IOException e) {
                 throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
+            } catch (InvalidImageFormatException e) {
+                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
             }
         }
 
         PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
-        saveSimple.persistAttribute(c, content, attribute);        
+        saveSimple.persistAttribute(c, content, attribute);
+    }
+
+    private int createMediaFolder(int mediaFolderId, String mediaFolder) {
+        String defaultFolderName = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
+        if (mediaFolder == null || mediaFolder.length() == 0) {
+            mediaFolder = defaultFolderName;
+        }
+        // Find folder with this name
+        List<Multimedia> folders = MultimediaAO.getMultimediaList(0);
+        for (Multimedia m : folders) {
+            if (m.getType() == MultimediaType.FOLDER && m.getName().equalsIgnoreCase(mediaFolder)) {
+                mediaFolderId = m.getId();
+            }
+        }
+
+        if (mediaFolderId == -1) {
+            // Folder does not exists create one
+            Multimedia folder = new Multimedia();
+            folder.setName(mediaFolder);
+            folder.setType(MultimediaType.FOLDER);
+            mediaFolderId = MultimediaAO.setMultimedia(folder);
+        }
+        return mediaFolderId;
     }
 }

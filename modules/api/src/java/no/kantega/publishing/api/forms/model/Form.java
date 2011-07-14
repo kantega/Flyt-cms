@@ -16,9 +16,12 @@
 
 package no.kantega.publishing.api.forms.model;
 
+import java.util.List;
+
 public interface Form {
     public int getId();
     public String getTitle();
     public String getFormDefinition();
     public String getEmail();
+    public List<String> getFieldNames();
 }

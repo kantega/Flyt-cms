@@ -235,7 +235,7 @@ openaksess.editcontext = function()  {
         selectContentUrl : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = true;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 280, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 400, height:450});
         },
 
 
@@ -263,7 +263,7 @@ openaksess.editcontext = function()  {
             } else {
                 openaksess.editcontext.focusField = formElement;
                 openaksess.editcontext.doInsertTag = false;
-                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId,width: 280, height:450});
+                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId,width: 400, height:450});
             }
         },
 
@@ -423,6 +423,10 @@ openaksess.editcontext = function()  {
             }
         },
 
+        insertMultimedia: function(metadata) {
+            openaksess.editcontext.insertValueAndNameIntoForm(metadata.id, metadata.name);
+        },
+
 
         /*
          * Remove id and value from form
@@ -520,7 +524,6 @@ openaksess.editcontext = function()  {
                 field.value = defaultValue;
             }
         }
-
     };
 }();
 

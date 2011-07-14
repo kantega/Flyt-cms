@@ -3,7 +3,7 @@
     <xs:element name="template">
         <xs:complexType>
             <xs:all minOccurs="0">
-                <xs:element ref="helptext" maxOccurs="1"/>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0"/>
                 <xs:element ref="attributes" maxOccurs="1" minOccurs="1"/>
             </xs:all>
         </xs:complexType>
@@ -18,9 +18,9 @@
     <xs:element name="attribute">
         <xs:complexType>
             <xs:all minOccurs="0">
-                <xs:element ref="helptext" maxOccurs="1"/>
-                <xs:element ref="options" maxOccurs="1"/>
-                <xs:element ref="script" maxOccurs="1"/>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="options" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="script" maxOccurs="1" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="contenttemplate" type="xs:string"/>
             <xs:attribute name="documenttype" type="xs:string"/>
@@ -77,6 +77,8 @@
             <xs:attribute name="site" type="xs:string"/>
             <xs:attribute name="showinsites" type="xs:string"/>
             <xs:attribute name="title" type="xs:string"/>
+            <xs:attribute name="topicmapid" type="xs:string"/>
+            <xs:attribute name="topicinstanceof" type="xs:string"/>
             <xs:attribute name="type" use="required">
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
@@ -108,9 +110,10 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="startid" type="xs:string"/>
         </xs:complexType>
     </xs:element>
-    <xs:element name="helptext" type="xs:string"/>
+    <xs:element name="helptext" type="xs:string" />
     <xs:element name="script" type="xs:string"/>
     <xs:element name="options">
         <xs:complexType>

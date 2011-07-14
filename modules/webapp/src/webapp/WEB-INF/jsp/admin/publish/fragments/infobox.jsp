@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 
 <%--
+    TODO: Delete this file
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");

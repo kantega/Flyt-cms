@@ -2,7 +2,7 @@
 <%@ page import="no.kantega.commons.util.URLHelper"%>
 <%@ page import="java.io.BufferedReader"%>
 <%@ page import="java.io.InputStream"%>
-<%@ page import="java.io.InputStreamReader"%><%@ page import="java.io.IOException"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="java.util.List"%>
+<%@ page import="java.io.InputStreamReader"%><%@ page import="java.io.IOException"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="java.util.List"%><%@ page import="no.kantega.publishing.common.Aksess"%><%@ page import="no.kantega.commons.configuration.Configuration"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
@@ -56,6 +56,15 @@
             out.println("Disallow: " + excludedPage.getUrl());
         }
     }
+
+    Configuration conf = Aksess.getConfiguration();
+    String[] disallowUrls = conf.getStrings("robots.disallow");
+    if (disallowUrls != null) {
+        for (String disallowUrl : disallowUrls) {
+            out.println("Disallow: " + disallowUrl);
+        }
+    }
+
     out.println("Disallow: /admin/");
     out.println("Disallow: /login/");
     out.println("Disallow: /Login.action");

@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.WorkList;
 import no.kantega.publishing.common.service.ContentManagementService;
 
@@ -40,10 +41,10 @@ public class GetDraftsForUserTag  extends LoopTagSupport {
 
     protected void prepare() throws JspTagException {
         ContentManagementService cms = new ContentManagementService((HttpServletRequest)pageContext.getRequest());
-        List<WorkList> worklist = cms.getMyContentList();
+        List<WorkList<Content>> worklist = cms.getMyContentList();
 
-        List content = new ArrayList();
-        for (WorkList w : worklist) {
+        List<Content> content = new ArrayList<Content>();
+        for (WorkList<Content> w : worklist) {
             if (w.getDescription().equalsIgnoreCase("draft")) {
                 content = w;
             }

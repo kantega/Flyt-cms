@@ -35,7 +35,7 @@
             <c:if test="${updateNavigator}">
                 getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
             </c:if>
-
+            getParent().openaksess.navigate.updateMainPane();
             setTimeout('closePopup()', 3000);
         });
 

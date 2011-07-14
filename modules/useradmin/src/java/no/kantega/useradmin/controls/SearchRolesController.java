@@ -48,7 +48,7 @@ public class SearchRolesController extends AbstractUserAdminController {
         if (config != null) {
             model.put("domain", config.getDomain());
             model.put("roleConfigurations", getRoleConfiguration());
-            model.put("numRoleConfigurations", new Integer(getRoleConfiguration().size()));
+            model.put("numRoleConfigurations", getRoleConfiguration().size());
             RoleManager manager = config.getRoleManager();
 
             if (config.getRoleUpdateManager() != null) {

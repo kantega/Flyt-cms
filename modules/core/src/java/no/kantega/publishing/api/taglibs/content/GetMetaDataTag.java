@@ -99,7 +99,8 @@ public class GetMetaDataTag  extends TagSupport {
                 cmd.setAttributeType(AttributeDataType.META_DATA);
                 cmd.setFormat(format);
 
-                String result = AttributeTagHelper.getAttribute(contentObject, cmd, inheritFromAncestors);
+                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+                String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
                 if (result != null) {
                     out.write(result);
                 }

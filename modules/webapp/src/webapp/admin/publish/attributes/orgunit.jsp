@@ -50,9 +50,11 @@
             <input type="hidden" name="${fieldName}" id="${fieldName}" value="<%=value%>">
             <input type="text" name="${fieldName}text" id="${fieldName}text" value="<%= name != null && !name.equals("") ? name : value%>" maxlength="512" class="fullWidth" tabindex="${attribute.tabIndex}">
             <script type="text/javascript">
-                $("#${fieldName}text").oaAutocomplete({
-                    source: "${pageContext.request.contextPath}/ajax/AutocompleteOrgUnits.action",
-                    select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                $(document).ready(function() {
+                    $("#${fieldName}text").oaAutocomplete({
+                        source: "${pageContext.request.contextPath}/ajax/AutocompleteOrgUnits.action",
+                        select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                    });
                 });
             </script>
 
@@ -68,8 +70,8 @@
     if (manager != null) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.selectOrgunit(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectOrgunit(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
     }

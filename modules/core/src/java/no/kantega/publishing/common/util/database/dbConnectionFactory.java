@@ -21,7 +21,6 @@ import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.formengine.integration.FormSubmissionDao;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
@@ -68,8 +67,8 @@ public class dbConnectionFactory {
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
 
-    public static int openedConnections = 0;
-    public static int closedConnections = 0;
+    private static int openedConnections = 0;
+    private static int closedConnections = 0;
     public static Map connections  = Collections.synchronizedMap(new HashMap());
 
     private static boolean debugConnections = false;
@@ -121,6 +120,12 @@ public class dbConnectionFactory {
             }
 
 
+            DriverManagerDataSource rawDataSource = new DriverManagerDataSource();
+            rawDataSource.setDriverClassName(dbDriver);
+            rawDataSource.setUrl(dbUrl);
+            rawDataSource.setUsername(dbUsername);
+            rawDataSource.setPassword(dbPassword);
+
             if (dbEnablePooling) {
                 // Enable DBCP pooling
                 BasicDataSource bds = new BasicDataSource();
@@ -135,19 +140,29 @@ public class dbConnectionFactory {
                 bds.setUsername(dbUsername);
                 bds.setPassword(dbPassword);
                 bds.setUrl(dbUrl);
+
+                if(dbCheckConnections) {
+                    // Gj�r at connections frigj�res ved lukking fra database/brannmur
+                    bds.setValidationQuery("SELECT max(ContentId) from content");
+                    bds.setTimeBetweenEvictionRunsMillis(1000*60*2);
+                    bds.setMinEvictableIdleTimeMillis(1000*60*5);
+                    bds.setNumTestsPerEvictionRun(dbMaxConnections);
+                    if (dbRemoveAbandonedTimeout > 0) {
+                        bds.setRemoveAbandoned(true);
+                        bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
+                        bds.setLogAbandoned(true);
+                    }
+                }
+
                 ds = bds;
             } else {
-                DriverManagerDataSource dmds = new DriverManagerDataSource();
-                dmds.setDriverClassName(dbDriver);
-                dmds.setUrl(dbUrl);
-                dmds.setUsername(dbUsername);
-                dmds.setPassword(dbPassword);
-                ds = dmds;
+                ds = rawDataSource;
             }
 
-            ensureDatabaseExists(ds);
+            // Use non-pooled datasource for table creation since validation query might fail
+            ensureDatabaseExists(rawDataSource);
             if(shouldMigrateDatabase) {
-                migrateDatabase(servletContext, ds);
+                migrateDatabase(servletContext, rawDataSource);
             }
 
             dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
@@ -155,20 +170,6 @@ public class dbConnectionFactory {
                 Log.info(SOURCE, "Using transactions, remember to set database isolation level to avoid blocking");
             } else {
                 Log.info(SOURCE, "Not using transactions", null, null);
-            }
-            
-            if(dbEnablePooling && dbCheckConnections) {
-                BasicDataSource bds = (BasicDataSource) ds;
-                // Gj�r at connections frigj�res ved lukking fra database/brannmur
-                bds.setValidationQuery("SELECT max(ContentId) from content");
-                bds.setTimeBetweenEvictionRunsMillis(1000*60*2);
-                bds.setMinEvictableIdleTimeMillis(1000*60*5);
-                bds.setNumTestsPerEvictionRun(dbMaxConnections);
-                if (dbRemoveAbandonedTimeout > 0) {
-                    bds.setRemoveAbandoned(true);
-                    bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout*1000);
-                    bds.setLogAbandoned(true);
-                }
             }
 
             if(debugConnections) {
@@ -283,14 +284,9 @@ public class dbConnectionFactory {
             throw new RuntimeException("Unknow database product " + productName +", can't create database tables");
         }
 
-        final URL aksessDb = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
-        final URL formDb = FormSubmissionDao.class.getClassLoader().getResource("dbschema/formengine-" + dbType + ".sql");
+        final URL resource = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
 
-        createTablesFromSchema(dataSource, aksessDb);
-        createTablesFromSchema(dataSource, formDb);
-    }
 
-    private static void createTablesFromSchema(DataSource dataSource, URL resource) {
         if(resource != null) {
             Log.info(SOURCE, "Creating tables from schema definition " + resource, null, null);
             final InputStream schema;
@@ -416,6 +412,26 @@ public class dbConnectionFactory {
     public static void setServletContext(ServletContext servletContext) {
         dbConnectionFactory.servletContext = servletContext;
     }
+
+    public static synchronized void incrementOpenConnections() {
+        openedConnections++;
+    }
+
+    public static synchronized void incrementClosedConnections() {
+        closedConnections++;
+    }
+
+    public static synchronized int getOpenedConnections() {
+        return openedConnections;
+    }
+
+    public static synchronized int getClosedConnections() {
+        return closedConnections;
+    }
+
+    public static synchronized Map<Connection, StackTraceElement[]> getConnections() {
+        return new HashMap<Connection, StackTraceElement[]>(connections); 
+    }
 }
 
  class DataSourceWrapper implements InvocationHandler {
@@ -429,10 +445,9 @@ public class dbConnectionFactory {
             if(method.getName().equalsIgnoreCase("getConnection")) {
                 //System.out.println("ds: o/c: " +dbConnectionFactory.openedConnections +"/" + dbConnectionFactory.closedConnections +"(" +(dbConnectionFactory.openedConnections - dbConnectionFactory.closedConnections) +")");
                 Connection c = (Connection)method.invoke(dataSource, objects);
-                dbConnectionFactory.openedConnections++;
                 StackTraceElement[] stacktrace = new Throwable().getStackTrace();
                 dbConnectionFactory.connections.put(c, stacktrace);
-
+                dbConnectionFactory.incrementOpenConnections();
                 c = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, new ConnectionWrapper(c));
                 return c;
             } else {
@@ -457,7 +472,7 @@ class ConnectionWrapper implements InvocationHandler {
                         System.out.println(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
                     }
                 } else {
-                    dbConnectionFactory.closedConnections++;
+                    dbConnectionFactory.incrementClosedConnections();
                     dbConnectionFactory.connections.remove(wrapped);
                 }
             }

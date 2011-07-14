@@ -17,6 +17,7 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
+import no.kantega.publishing.admin.topicmaps.action.util.TopicMapHelper;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import no.kantega.publishing.common.data.enums.ContentProperty;
@@ -117,7 +118,7 @@ public class EditTopicAction extends AdminController {
         String name = param.getString("name");
         topic.setBaseName(name);
         if (topic.getId() == null) {
-            topic.setId(createTopicIdFromName(name));
+            topic.setId(TopicMapHelper.createTopicIdFromName(name));
             if (topicMapService.getTopic(topic.getTopicMapId(), topic.getId()) != null) {
                 // Topic id exists
                 return handleView(topic, request, response);
@@ -142,15 +143,6 @@ public class EditTopicAction extends AdminController {
         model.put("topicId", topic.getId());
         
         return new ModelAndView(new RedirectView("ViewTopic.action"), model);
-    }
-
-    private String createTopicIdFromName(String name) throws RegExpSyntaxException {
-        String id = name.toLowerCase();
-        id = id.replace('æ', 'e');
-        id = id.replace('ø', 'o');
-        id = id.replace('å', 'a');
-        id = RegExp.replace("[^a-z0-9]", id, "");
-        return id;
     }
 
     private Topic createNewTopic(int topicMapId) {

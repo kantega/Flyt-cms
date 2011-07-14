@@ -1,5 +1,7 @@
 package no.kantega.publishing.api.web.servlet.support;
 
+import java.util.List;
+
 /**
  *
  */
@@ -31,4 +33,33 @@ public interface PluginRequestContext {
      * @return the message
      */
 	public String getMessage(String code, Object[] args, boolean htmlEscape);
+
+
+    /**
+     * Return a message for the given code and arguments
+     * @param code code of the message
+     * @param args arguments
+     * @param htmlEscape HTML escape the message?
+     * @return the message
+     */
+	public String getMessage(String code, List args, boolean htmlEscape);
+
+    /**
+     * Return a message for the given code and arguments
+     * @param code code of the message
+     * @param args arguments
+     * @return the message
+     */
+	public String getMessage(String code, Object[] args);
+
+
+    /**
+     * Return a message for the given code and arguments
+     * @param code code of the message
+     * @param args arguments
+     * @return the message
+     */
+	public String getMessage(String code, List args);
+
+
 }

@@ -36,6 +36,10 @@ public class ContentTemplate implements PublicIdObject {
     private String name;
     private String templateFile;
 
+    // This needs to be a Boolean, not boolean, else if will get a default value of false after serialization
+    private Boolean isSearchable;
+    private String defaultPageUrlAlias = null;
+
     private Integer expireMonths;
     private Integer expireAction;
 
@@ -164,7 +168,6 @@ public class ContentTemplate implements PublicIdObject {
         this.keepVersions = keepVersions;
     }
 
-
     public AssociationCategory getDefaultAssociationCategory() {
         return defaultAssociationCategory;
     }
@@ -231,5 +234,21 @@ public class ContentTemplate implements PublicIdObject {
 
     public void setPropertyElements(List<Element> propertyElements) {
         this.propertyElements = propertyElements;
+    }
+
+    public boolean isSearchable() {
+        return isSearchable == null || isSearchable;
+    }
+
+    public void setSearchable(boolean searchable) {
+        this.isSearchable = searchable;
+    }
+
+    public String getDefaultPageUrlAlias() {
+        return defaultPageUrlAlias;
+    }
+
+    public void setDefaultPageUrlAlias(String defaultPageUrlAlias) {
+        this.defaultPageUrlAlias = defaultPageUrlAlias;
     }
 }

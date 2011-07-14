@@ -77,7 +77,6 @@ public class MailSubscriptionAgent {
 
         for (String email : subscribers.keySet()) {
             // Send email to this user
-            Map<String, Object> param = new HashMap<String, Object>();
             List<Content> subscriberContent = subscribers.get(email);
             if (subscriberContent != null && subscriberContent.size() > 0) {
                 try {

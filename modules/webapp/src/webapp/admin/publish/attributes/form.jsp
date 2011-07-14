@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.data.Content,
-                 no.kantega.publishing.common.data.attributes.FormAttribute"%>
+<%@ page import="no.kantega.publishing.common.data.attributes.FormAttribute"%>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -18,13 +17,12 @@
   ~ limitations under the License.
   --%>
 <%
-    Content content = (Content)request.getAttribute("content");
     FormAttribute attribute = (FormAttribute)request.getAttribute("attribute");
-    String fieldName = (String)request.getAttribute("fieldName");
+    String formFieldName = (String)request.getAttribute("fieldName");
 %>
 <div class="inputs">
     <%@include file="listoptions.jsf"%>
 </div>
 <div class="buttonGroup">
-    <a href="Javascript:editForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="edit"><kantega:label key="aksess.button.edit"/></span></a>
+    <a href="#" onclick="editForm(document.myform.<%=formFieldName%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="edit"><kantega:label key="aksess.button.edit"/></span></a>
 </div>

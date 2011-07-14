@@ -37,11 +37,7 @@ public class RuntimeModeFactoryBean extends AbstractFactoryBean implements Servl
 
         if(System.getProperty("development") != null) {
             return RuntimeMode.DEVELOPMENT;
-        }
-        else if(servletContext.getInitParameter("no.kantega.publishing.setup.SetupServlet.CONFIG_SOURCE") !=  null) {
-            return RuntimeMode.DEVELOPMENT;
-        }
-        else {
+        } else {
             return RuntimeMode.PRODUCTION;
         }
     }

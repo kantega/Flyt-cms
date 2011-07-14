@@ -21,7 +21,7 @@
     <thead>
     <tr>
         <th></th>
-        <th><kantega:label key="aksess.contentstatistics.count"/></th>
+        <th class="number"><kantega:label key="aksess.contentstatistics.count"/></th>
     </tr>
     </thead>
     <tbody>

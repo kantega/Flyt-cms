@@ -38,6 +38,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import no.kantega.publishing.org.OrgUnit;
 
 /**
  *
@@ -376,6 +377,42 @@ public class ContentAO {
         }
     }
 
+    /**
+     * Looks up the published page associated with a User's {@link OrgUnit}.
+     *
+     * @param orgUnit Organization unit belonging to a user.
+     * @return Content object of the organization unit page; {@code null} if it does not exist.
+     * @throws SystemException
+     */
+    public static Content getContent(OrgUnit orgUnit) throws SystemException {
+        Content content = null;
+
+        Connection conn = null;
+        try {
+            conn = dbConnectionFactory.getConnection();
+            PreparedStatement ps = conn.prepareStatement("select ContentId, ContentTemplateId from content where Owner = ? and (ContentTemplateId = 7 or ContentTemplateId = 13) order by ContentTemplateId");
+            ps.setString(1, orgUnit.getId());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int contentId = rs.getInt("ContentId");
+                ContentIdentifier contentIdentifier = new ContentIdentifier();
+                contentIdentifier.setContentId(contentId);
+                content = ContentAO.getContent(contentIdentifier, true);
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                
+            }
+        }
+
+        return content;
+    }
 
     public static String getTitleByAssociationId(int associationId) {
         String title = null;
@@ -408,22 +445,22 @@ public class ContentAO {
 
     }
 
-    public static List<WorkList> getMyContentList(User user) throws SystemException {
-        List<WorkList> workList = new ArrayList<WorkList>();
+    public static List<WorkList<Content>> getMyContentList(User user) throws SystemException {
+        List<WorkList<Content>> workList = new ArrayList<WorkList<Content>>();
 
-        WorkList draft = new WorkList();
+        WorkList<Content> draft = new WorkList<Content>();
         draft.setDescription("draft");
 
-        WorkList waiting = new WorkList();
+        WorkList<Content> waiting = new WorkList<Content>();
         waiting.setDescription("waiting");
 
-        WorkList rejected = new WorkList();
+        WorkList<Content> rejected = new WorkList<Content>();
         rejected.setDescription("rejected");
 
-        WorkList lastpublished = new WorkList();
+        WorkList<Content> lastpublished = new WorkList<Content>();
         lastpublished.setDescription("lastpublished");
 
-        WorkList remind = new WorkList();
+        WorkList<Content> remind = new WorkList<Content>();
         remind.setDescription("remind");
 
         Connection c = null;
@@ -431,11 +468,12 @@ public class ContentAO {
         try {
             c = dbConnectionFactory.getConnection();
             // Get drafts, pages waiting for approval and rejected pages
-            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? order by contentversion.Status, contentversion.LastModified desc");
+            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
             st.setInt(1, ContentStatus.DRAFT);
             st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL);
             st.setInt(3, ContentStatus.REJECTED);
             st.setString(4, user.getId());
+            st.setInt(5, AssociationType.DEFAULT_POSTING_FOR_SITE);
             ResultSet rs = st.executeQuery();
 
             int prevContentId = -1;
@@ -575,21 +613,22 @@ public class ContentAO {
 
         final StringBuffer cvids = new StringBuffer();
 
+        doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
+            public void handleContent(Content content) {
+                contentList.add(content);
+                contentMap.put("" + content.getVersionId(), content);
+                if(cvids.length() != 0) {
+                    cvids.append(",");
+                }
+                cvids.append(content.getVersionId());
+            }
+        });
+
+
         Connection c = null;
 
         try {
             c = dbConnectionFactory.getConnection();
-
-            doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
-                public void handleContent(Content content) {
-                    contentList.add(content);
-                    contentMap.put("" + content.getVersionId(), content);
-                    if(cvids.length() != 0) {
-                        cvids.append(",");
-                    }
-                    cvids.append(content.getVersionId());
-                }
-            });
 
 
             int listSize = contentList.size();
@@ -1047,7 +1086,7 @@ public class ContentAO {
                 lockSt.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
                 lockSt.executeUpdate();
             } catch (SQLException e) {
-                throw new TransactionLockException(SOURCE, "Error locking contentId:" + -1, e);
+                throw new TransactionLockException(SOURCE, "Error locking contentId:" + contentId, e);
             }
         }
     }
@@ -1094,7 +1133,7 @@ public class ContentAO {
             query = "update content set " + field + " = ? where ContentId in (" + whereClause + ")";
             PreparedStatement cp = c.prepareStatement(query);
             cp.setString(1, newValue);
-            int i = cp.executeUpdate();
+            cp.executeUpdate();
             cp.close();
         }
     }
@@ -1264,7 +1303,11 @@ public class ContentAO {
         try {
             long now = new Date().getTime() + 1000*60*1;
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE ((PublishDate < ? AND VisibilityStatus = ?) OR (ContentId IN (SELECT ContentId FROM contentversion WHERE Status = ? AND ChangeFrom < ?))) AND ContentId > ? ORDER BY ContentId");
+            PreparedStatement p = c.prepareStatement("SELECT DISTINCT content.ContentId FROM content,contentversion " +
+                    "WHERE content.contentId=contentversion.contentid " +
+                    "AND ((PublishDate < ? AND VisibilityStatus = ?) " +
+                    "OR (Status = ? AND ChangeFrom < ?)) AND content.ContentId > ? " +
+                    "ORDER BY content.ContentId");
             p.setTimestamp(1, new Timestamp(now));
             p.setInt(2, ContentVisibilityStatus.WAITING);
             p.setInt(3, ContentStatus.PUBLISHED_WAITING);

@@ -47,7 +47,7 @@ public class RequestHelper {
             Site site = SiteCache.getSiteById(siteId);
             String alias = site.getAlias();
             request.setAttribute("aksess_locale", (Language.getLanguageAsLocale(content.getLanguage())));
-            request.setAttribute("aksess_language", new Integer(content.getLanguage()));
+            request.setAttribute("aksess_language", content.getLanguage());
             request.setAttribute("aksess_site", alias);
             request.setAttribute("aksess_this", content);
         }

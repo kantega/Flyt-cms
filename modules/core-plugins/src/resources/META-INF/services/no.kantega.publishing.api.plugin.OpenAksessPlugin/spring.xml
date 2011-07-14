@@ -19,8 +19,19 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <import resource="groovyconsole.xml"/>
     <import resource="groovyscripts.xml"/>
+    <import resource="groovyconsole.xml"/>
     <import resource="databaseformdelivery.xml"/>
-    <import resource="emailformdelivery.xml"/>
+    <import resource="pdf-and-emailformdelivery.xml"/>
+    <import resource="dbdiff.xml"/>
+    <import resource="jobexecuter.xml"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:org/kantega/openaksess/plugins/dbdiff/dbdiff</value>
+                <value>classpath:org/kantega/openaksess/plugins/jobexecuter/jobexecuter</value>
+            </list>
+        </property>
+    </bean>
 </beans>

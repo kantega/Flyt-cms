@@ -45,7 +45,7 @@
             document.deleteversion.submit();
         }
     </script>
-        <%@ include file="fragments/infobox.jsp" %>
+        <%@ include file="../layout/fragments/infobox.jsp" %>
         <table border="0" cellspacing="0" cellpadding="0" width="100%">
             <thead>
             <tr>

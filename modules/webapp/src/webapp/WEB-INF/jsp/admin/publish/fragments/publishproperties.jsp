@@ -91,6 +91,15 @@
                 $("#LockedHelp").hide();
             }
         });
+        $("#EndDateAction input[name=expireaction]").change(function() {
+            var expireAction = $(this).val();
+            if (expireAction == <%=ExpireAction.DELETE%>) {
+                $("#ExpireActionDeleteWarning").show();
+            } else {
+                $("#ExpireActionDeleteWarning").hide();
+            }
+        });
+
         // Load topics
         var params = new Object();
         openaksess.editcontext.updateTopics(params);
@@ -140,6 +149,7 @@
                         <td><label for="ExpireActionDelete"><kantega:label key="aksess.publishinfo.period.action.delete"/></label></td>
                     </tr>
                 </table>
+                <div class="ui-state-error" id="ExpireActionDeleteWarning" <%if (expireAction != ExpireAction.DELETE) out.write(" style=\"display:none\"");%>><kantega:label key="aksess.publishinfo.period.action.delete.warning"/></div>
             </div>
         </fieldset>
     </div>
@@ -213,10 +223,17 @@
 <div class="sidebarFieldset">
     <fieldset>
         <legend><kantega:label key="aksess.publishinfo.otherproperties"/></legend>
-        <div class="row">
-            <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
-            <div class="clearing"></div>
-        </div>
+        <c:choose>
+            <c:when test="${toogleSearchableEnabled}">
+                <div class="row">
+                    <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
+                    <div class="clearing"></div>
+                </div>
+            </c:when>
+            <c:otherwise>
+                <input type="hidden" name="searchable" value="false">
+            </c:otherwise>
+        </c:choose>
         <c:if test="${isDeveloper}">
             <div class="row">
                 <input type="checkbox" class="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="Locked"><label for="Locked" class="checkbox"><kantega:label key="aksess.publishinfo.locked"/></label>

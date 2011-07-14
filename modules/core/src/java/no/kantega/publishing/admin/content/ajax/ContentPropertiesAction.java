@@ -40,8 +40,11 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.org.OrgUnit;
+import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.ServletRequestDataBinder;
@@ -59,16 +62,10 @@ import java.util.*;
  */
 public class ContentPropertiesAction implements Controller {
 
-    @Autowired
-    private SiteCache aksessSiteCache;
-
-    @Autowired
-    private LinkDao aksessLinkDao;
-
+    @Autowired private SiteCache aksessSiteCache;
+    @Autowired private LinkDao aksessLinkDao;
+    @Autowired private UserPreferencesManager userPreferencesManager;
     private View aksessJsonView;
-
-    @Autowired
-    private UserPreferencesManager userPreferencesManager;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -103,15 +100,18 @@ public class ContentPropertiesAction implements Controller {
 
 
                 //Broken links
-                model.put("links", aksessLinkDao.getLinksforContentId(content.getId()));
+                model.put("links",  aksessLinkDao.getBrokenLinksforContentId(content.getId()));
 
 
                 //Associations
                 List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
+                        //Retrieve the path down to this association
                         List<PathEntry> paths = cms.getPathByAssociation(association);
-                        paths.add(current);
+                        //Add the association itself to the path. 
+                        PathEntry leaf = new PathEntry(association.getId(), content.getTitle());
+                        paths.add(leaf);
                         associations.add(paths);
                     }
                 }
@@ -157,11 +157,37 @@ public class ContentPropertiesAction implements Controller {
                 enabledButtons.add("PrivilegesButton");
             }
 
+            Map<String, Object> contentProperties = new HashMap<String, Object>();
+            contentProperties.put("title", content.getTitle());
+            contentProperties.put("alias", content.getAlias());
+            contentProperties.put("lastModified", formatDateTime(content.getLastModified()));
+            contentProperties.put("lastModifiedBy", content.getLastMajorChangeBy());
+            contentProperties.put("approvedBy", content.getApprovedBy());
+            contentProperties.put("changeFromDate", formatDateTime(content.getChangeFromDate()));
+            contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
+            contentProperties.put("ownerperson", content.getOwnerPerson());
+            String owner = content.getOwner();
+            if (owner != null && owner.trim().length() > 0) {
+                Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
+                if (orgManagers != null && orgManagers.size() > 0) {
+                    OrganizationManager orgManager = (OrganizationManager) orgManagers.values().iterator().next();
+                    try {
+                        OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
+                        if (ownerUnit != null) {
+                            owner = ownerUnit.getName();
+                        }
+                    } catch (Exception e) {
+                        Log.info(this.getClass().getName(), "Unable to resolve OrgUnit for orgUnitId: " + owner);
+                    }
+                }
+            }
+            contentProperties.put("owner", owner);
+            contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
+
             model.put("showApproveButtons", showApproveButtons);
             model.put("enabledButtons", enabledButtons);
 
-            model.put("content", content);
-            model.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
+            model.put("contentProperties", contentProperties);
             model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
 
@@ -184,10 +210,22 @@ public class ContentPropertiesAction implements Controller {
         this.aksessJsonView = aksessJsonView;
     }
 
-    protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
-        binder.registerCustomEditor(Date.class, editor);
+    private String formatDateTime(Date date) {
+        return format(date, Aksess.getDefaultDatetimeFormat());
     }
 
+    private String format(Date date, String dateFormat) {
+        if (date == null) {
+            return null;
+        }
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            return sdf.format(date);
+        } catch (Exception e) {
+            Log.info(this.getClass().getName(), "Unparseable date: " + date, null, null);
+            return "";
+        }
+    }
 }
+

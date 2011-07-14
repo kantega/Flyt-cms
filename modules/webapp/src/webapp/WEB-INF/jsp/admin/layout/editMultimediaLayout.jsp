@@ -1,6 +1,7 @@
 <%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page buffer="none" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -17,6 +18,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
+<kantega:section id="bodyclass">mediaArchive</kantega:section>
+
 <kantega:section id="head">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
@@ -44,6 +47,8 @@
     </script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/swfobject.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksessmultimedia.jjs"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             bindToolButtons();
@@ -118,7 +123,37 @@
                 <input type="hidden" name="changed" value="false">
                 <input type="hidden" name="insert" value="false">
                 <input type="hidden" id="MaxWidth" name="maxWidth" value="-1">
-                </c:if>
+            </c:if>
+                <div class="sidebarFieldset">
+                    <fieldset>
+                        <legend><kantega:label key="aksess.multimedia.properties" /></legend>
+                        <c:if test="${media.height > 0 && media.width > 0}">
+                            <kantega:label key="aksess.multimedia.size" />: ${media.width}x${media.height}<br>
+                        </c:if>
+                        <kantega:label key="aksess.multimedia.filetype" />: ${media.fileType}<br>
+                        <c:if test="${media.size > 1024}">
+                            <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br>
+                        </c:if>
+                        <kantega:label key="aksess.multimedia.lastmodified" />: <admin:formatdate date="${media.lastModified}" /> (<kantega:label key="aksess.multimedia.lastmodified.by" /> "${media.modifiedBy}")<br>
+
+                        <c:if test="${media.originalDate != null}">
+                            <kantega:label key="aksess.multimedia.originaldate" />: <admin:formatdate date="${media.originalDate}" /><br>
+                        </c:if>
+
+                        <c:if test="${media.cameraMake != null && media.cameraMake != ''}">
+                            <kantega:label key="aksess.multimedia.camera" />: ${media.cameraMake}
+                            <c:if test="${media.cameraModel != null}">
+                                - ${media.cameraModel}
+                            </c:if>
+                            <br>
+                        </c:if>
+
+                        <c:if test="${media.gpsLatitudeAsDouble != -1 && media.gpsLongitudeAsDouble != -1}">
+                            <br><a class="textlink" href="http://maps.google.com/?t=h&q=loc:${media.gpsLatitudeAsDouble},${media.gpsLongitudeAsDouble}&z=15"><kantega:label key="aksess.multimedia.showlocation" /></a>
+                        </c:if>
+
+                    </fieldset>
+                </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.medianame"/></legend>
@@ -174,7 +209,7 @@
                             <ul id="MultimediaPagesUsing">
                                 <c:forEach items="${usages}" var="page">
                                     <li>
-                                        <a href="${page.url}" target="_new">${page.title}</a>
+                                        <a href="${page.url}" class="textlink" target="_new">${page.title}</a>
                                     </li>
                                 </c:forEach>
                             </ul>
@@ -182,8 +217,8 @@
                     </div>
                 </c:if>
                 <c:if test="${isPropertyPaneEditable}">
-            </form>
-            </c:if>
+                </form>
+                </c:if>
         </div>
 
         <div id="Framesplit" class="framesplit metadata"></div>

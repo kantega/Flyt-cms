@@ -9,7 +9,7 @@ html#Popup {
 
 body {
     font-family: Arial, sans-serif;
-    font-size: 11px;
+    font-size: 68.8%; /* 11px */
     color: #000000;
     background-color: #f7f7f7;
     height: 100%;
@@ -28,6 +28,11 @@ a {
 
 a.disabled {
     color:#5e5e5e;
+}
+
+a.textlink, .ui-state-highlight a.textlink {
+    color: #1780B9;
+    font-weight: bold;
 }
 
 input[type=submit] {
@@ -107,7 +112,11 @@ table.noborder td, table.noborder th {
 
 /************** Layout **************/
 #Top {
-    min-width: 850px;
+    min-width: 982px;
+}
+
+body.mediaArchive #Top {
+    min-width: 500px;
 }
 
 #TopMenu {
@@ -298,7 +307,7 @@ table.fullWidth {
     margin-right: 15px;
 }
 
-#TopMenu a.menuitem { color: #fff; font-size: 12px; }
+#TopMenu a.menuitem { color: #fff; font-size: 1.091em; /* 12px */ }
 #TopMenu a.menuitem:hover { color: #ffffff; }
 #TopMenu a.menuitem.selected { color: #ffffff; font-weight: bold; }
 
@@ -312,13 +321,12 @@ table.fullWidth {
 }
 
 #ModesMenu .search input[type=text]{
-    width: 200px;
+    width: 150px;
     height: 26px;
     line-height: 26px;
     border: none;
-    color: #dddddd;
     font-size: 14px;
-    margin-top:6px;
+    margin-top: 7px;
     padding:0 0 0 25px;
     background: url("../bitmaps/sprite-buttons.png") no-repeat left -234px;
     float: left;
@@ -335,13 +343,14 @@ table.fullWidth {
 }
 
 #ModesMenu .buttonGroup {
-    font-size: 0;/*Collapses all whitespace between buttons. Enables buttons to be defined on separate lines in the html.*/
+    white-space: nowrap;
     margin-right: 10px;
     float: left;
 }
 
 #ModesMenu .buttonGroup .button {
-    font-size: 12px;
+    font-size: 1.091em;  /*12px */
+    float: left;
     color: #ffffff;
     display: inline-block;
     height: 37px;
@@ -374,13 +383,17 @@ table.fullWidth {
     padding-right: 4px;
     margin-left: 4px;
     display: block;
+    overflow: hidden;
 }
 
 #ModesMenu .buttonGroup .button.last.active {
     background: url("../bitmaps/sprite-buttons.png") no-repeat right -170px;
 }
 #ModesMenu .buttonGroup .buttonSeparator {
-    padding-left: 1px;
+    width: 1px;
+    height: 26px;
+    margin-top: 5px;
+    float: left;
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -1862px;
 }
 
@@ -504,6 +517,10 @@ table.fullWidth {
 }
 
 #EditContentButtons .barButton input.savedraft {
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
+}
+
+#EditContentButtons input.hearing {
     background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
 }
 

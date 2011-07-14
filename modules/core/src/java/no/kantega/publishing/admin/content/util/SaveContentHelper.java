@@ -26,12 +26,13 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.publishing.security.SecuritySession;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class SaveContentHelper {
-    private static final String SOURCE = "aksess.admin.SaveContentHelper";
 
     private HttpServletRequest request = null;
     private Content content = null;
@@ -51,7 +52,7 @@ public class SaveContentHelper {
 
         for (int i = 0; i < attrlist.size(); i++) {
             Attribute attr = (Attribute)attrlist.get(i);
-            if(attr.isEditable() && !attr.isHidden(content)) {
+            if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
                 UpdateAttributeFromRequestBehaviour updater = attr.getUpdateFromRequestBehaviour();
 
                 // Oppdaterer attribut objektet med riktige verdier fra requesten
@@ -72,5 +73,14 @@ public class SaveContentHelper {
         }
 
         return errors;
+    }
+
+    private boolean roleCanEdit(Attribute attr, ServletRequest request) {
+        String[] roles = attr.getEditableByRoles();
+        if (roles != null && roles.length > 0) {
+            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
+        }
+
+        return true;
     }
 }

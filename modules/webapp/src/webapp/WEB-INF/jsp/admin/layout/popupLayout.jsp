@@ -22,8 +22,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html id="Popup">
 <head>
-    <title><kantega:getsection id="title"/></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><kantega:getsection id="title"/></title>
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-popuplayout.css"/>">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -78,6 +78,13 @@
             }
         }
 
+        $(document).ready(function(){
+            var title = $("title").text();
+            //Use the iframe page's title as modal window title if set.
+            if (!window.opener && $.trim(title).length > 0) {
+                parent.openaksess.common.modalWindow.setTitle(title);
+            }
+        });
     </script>
     <kantega:getsection id="head"/>
 </head>

@@ -48,7 +48,7 @@ public class ContentIdHelper {
      */
 
     public static ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
-        if (context == null && expr == null) {
+        if (context == null || expr == null) {
             return null;
         }
 
@@ -154,18 +154,18 @@ public class ContentIdHelper {
         int language = Language.NORWEGIAN_BO;
 
         if (url == null) {
-            throw new ContentNotFoundException(url, SOURCE);
+            throw new ContentNotFoundException("", SOURCE);
         }
 
-        if (url.indexOf("#") > 0) {
+        if (url.indexOf('#') > 0) {
             url = url.substring(0, url.indexOf("#"));
         }
 
         url = url.toLowerCase();
-        if (url.indexOf("://") != -1) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
             url = url.substring(url.indexOf("://") + 3, url.length());
-            if (url.indexOf("/") != -1) {
-               url = url.substring(url.indexOf("/"), url.length());
+            if (url.indexOf('/') != -1) {
+               url = url.substring(url.indexOf('/'), url.length());
             }
 
             String contextPath = Aksess.getContextPath().toLowerCase();
@@ -195,7 +195,7 @@ public class ContentIdHelper {
         int aIdPos = url.indexOf(aIdToken);
         if (aIdPos != -1) {
             String idStr = url.substring(aIdPos + aIdToken.length(), url.length());
-            int end = idStr.indexOf("&");
+            int end = idStr.indexOf('&');
             if (end != -1) {
                 idStr = idStr.substring(0, end);
             }
@@ -211,7 +211,7 @@ public class ContentIdHelper {
             int idPos = url.indexOf(idToken);
             if (idPos != -1) {
                 String idStr = url.substring(idPos + idToken.length(), url.length());
-                int end = idStr.indexOf("&");
+                int end = idStr.indexOf('&');
                 if (end != -1) {
                     idStr = idStr.substring(0, end);
                 }
@@ -227,7 +227,7 @@ public class ContentIdHelper {
         int languagePos = url.indexOf(languageToken);
         if (languagePos != -1) {
             String languageStr = url.substring(languagePos + languageToken.length(), url.length());
-            int end = languageStr.indexOf("&");
+            int end = languageStr.indexOf('&');
             if (end != -1) {
                 languageStr = languageStr.substring(0, end);
             }
@@ -242,7 +242,7 @@ public class ContentIdHelper {
         int versionPos = url.indexOf(versionToken);
         if (versionPos != -1) {
             String versionStr = url.substring(versionPos + versionToken.length(), url.length());
-            int end = versionStr.indexOf("&");
+            int end = versionStr.indexOf('&');
             if (end != -1) {
                 versionStr = versionStr.substring(0, end);
             }
@@ -268,7 +268,7 @@ public class ContentIdHelper {
 
             return cid;
         } else {
-            int end = url.indexOf("?");
+            int end = url.indexOf('?');
             if (end != -1) {
                 url = url.substring(0, end);
             }            
@@ -422,11 +422,5 @@ public class ContentIdHelper {
         }
 
         return siteId;
-    }
-
-    public static void main(String[] args) {
-        String epath = "..";
-
-        String[] elem = epath.split("\\.\\.");
     }
 }

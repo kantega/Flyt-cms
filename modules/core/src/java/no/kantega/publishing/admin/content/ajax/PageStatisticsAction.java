@@ -84,11 +84,11 @@ public class PageStatisticsAction extends SimpleAdminController {
                     extSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
                     sumSessions = intSessions + extSessions;
 
-                    model.put("intHits", sumHits);
-                    model.put("intSessions", sumSessions);
+                    model.put("intHits", intHits);
+                    model.put("intSessions", intSessions);
 
-                    model.put("extHits", sumHits);
-                    model.put("extSessions", sumSessions);
+                    model.put("extHits", extHits);
+                    model.put("extSessions", extSessions);
 
                     model.put("sumHits", sumHits);
                     model.put("sumSessions", sumSessions);

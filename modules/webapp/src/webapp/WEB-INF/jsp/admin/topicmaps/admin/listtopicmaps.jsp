@@ -49,7 +49,8 @@
                     </td>
                     <td>
                         <a href="EditTopicMap.action?id=${topicMap.id}" class="button edit"><kantega:label key="aksess.button.edit"/></a>
-                        <a href="Javascript:deleteTopicMap(${topicMap.id}, '${topicMap.name}')" class="button delete"><kantega:label key="aksess.button.delete"/>
+                        <a href="Javascript:deleteTopicMap(${topicMap.id}, '${topicMap.name}')" class="button delete"><kantega:label key="aksess.button.delete"/></a>
+                        <a href="ListTopicTypes.action?topicMapId=${topicMap.id}"><kantega:label key="aksess.topicmaps.admin.topictypes"/></a>
                     </td>
                 </tr>
             </c:forEach>

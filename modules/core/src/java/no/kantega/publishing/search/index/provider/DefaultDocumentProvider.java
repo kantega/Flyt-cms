@@ -20,19 +20,21 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.PathEntry;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.dao.AksessDao;
+import no.kantega.publishing.search.extraction.TextExtractor;
+import no.kantega.publishing.search.extraction.TextExtractorSelector;
 import no.kantega.publishing.search.index.boost.ContentBooster;
 import no.kantega.publishing.search.index.model.TmBaseName;
 import no.kantega.publishing.search.model.AksessSearchHit;
@@ -46,6 +48,7 @@ import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.QueryInfo;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
+import org.apache.log4j.pattern.LogEvent;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -56,6 +59,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
@@ -75,6 +80,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     private String sourceId;
     private List<SearchField> customSearchFields;
 
+    private TextExtractorSelector textExtractorSelector;
 
     /**
      * {@inheritDoc}
@@ -108,45 +114,56 @@ public class DefaultDocumentProvider implements DocumentProvider {
         }
         cid.setContentId(contentId);
         try {
-            Content c = ContentAO.getContent(cid, true);
-            SecuritySession session = aContext != null ? aContext.getSecuritySession() : null;
-            if (session != null) {
-                if (!session.isAuthorized(c, Privilege.VIEW_CONTENT)) {
-                    throw new NotAuthorizedException("", SOURCE);
-                }
+            if (aContext != null && aContext.isShouldGetContentObject()) {
+                addValuesFromContentDocument(context, aContext, searchHit, cid);
+
+                List<PathEntry> path = PathWorker.getPathByContentId(cid);
+                searchHit.setPathElements(path);
+                searchHit.setUrl(Aksess.getContextPath() + "/content.ap?thisId=" + cid.getAssociationId());
+            } else {
+                searchHit.setUrl(Aksess.getContextPath() + "/content.ap?contentId=" + contentId);
             }
 
-            if (c != null) {
-                searchHit.setAllText(getArticleText(c));
-
-                QueryInfo queryInfo = context.getQueryInfo();
-                if (searchHit.getAllText().length() > 0 && queryInfo != null) {
-                    // Add text to show where hit was found
-                    Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
-                    Scorer scorer = new QueryScorer(queryInfo.getQuery());
-                    Highlighter highlighter = new Highlighter(formatter, scorer);
-                    try {
-                        String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
-                        searchHit.setContextText(frag);
-                    } catch (IOException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }  catch (InvalidTokenOffsetsException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                }
-
-                if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
-                    searchHit.setDoOpenInNewWindow(true);
-                }
-                
-                searchHit.setId(c.getAssociation().getAssociationId());
-            }
-
-            List<PathEntry> path = PathWorker.getPathByContentId(cid);
-            searchHit.setPathElements(path);
-            searchHit.setUrl(Aksess.getContextPath() + "/content.ap?thisId=" + cid.getAssociationId());
         } catch (SystemException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void addValuesFromContentDocument(SearchHitContext context, AksessSearchHitContext aContext, AksessSearchHit searchHit, ContentIdentifier cid) throws SystemException, NotAuthorizedException {
+        Content c = ContentAO.getContent(cid, true);
+        SecuritySession session = aContext != null ? aContext.getSecuritySession() : null;
+        if (session != null) {
+            if (!session.isAuthorized(c, Privilege.VIEW_CONTENT)) {
+                throw new NotAuthorizedException("", SOURCE);
+            }
+        }
+
+        if (c != null) {
+            searchHit.setAllText(getArticleText(c));
+
+            QueryInfo queryInfo = context.getQueryInfo();
+            if (searchHit.getAllText().length() > 0 && queryInfo != null) {
+                // Add text to show where hit was found
+                Formatter formatter = new SimpleHTMLFormatter("<span class=\"highlight\">", "</span>");
+                Scorer scorer = new QueryScorer(queryInfo.getQuery());
+                Highlighter highlighter = new Highlighter(formatter, scorer);
+                try {
+                    String frag = highlighter.getBestFragment(queryInfo.getAnalyzer(), Fields.CONTENT, searchHit.getAllText());
+                    searchHit.setContextText(frag);
+                } catch (IOException e) {
+                    Log.error(SOURCE, e, null, null);
+                }  catch (InvalidTokenOffsetsException e) {
+                    Log.error(SOURCE, e, null, null);
+                }
+            }
+
+            if (c.isOpenInNewWindow() || Aksess.doOpenLinksInNewWindow() && c.isExternalLink()) {
+                searchHit.setDoOpenInNewWindow(true);
+            }
+
+            searchHit.setId(c.getAssociation().getAssociationId());
+
+            searchHit.setContentObject(c);
         }
     }
 
@@ -286,6 +303,12 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             allText += getArticleText(content);
 
+            if (content.getType() == ContentType.FILE) {
+                allText += getAttachmentText(content);
+            }
+
+
+
             d.add(new Field(Fields.TITLE_UNANALYZED, title, Field.Store.NO, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.SITE_ID, siteId, Field.Store.YES, Field.Index.ANALYZED));
             d.add(new Field(Fields.CONTENT, allText, Field.Store.NO, Field.Index.ANALYZED));
@@ -293,7 +316,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             Field fKeywords = new Field(Fields.KEYWORDS, content.getKeywords() == null ? "" : content.getKeywords(), Field.Store.NO, Field.Index.ANALYZED);
             fKeywords.setBoost(1.5f);
-            d.add(fKeywords);            
+            d.add(fKeywords);
 
             d.add(new Field(Fields.LAST_MODIFIED, DateTools.dateToString(content.getLastModified(), DateTools.Resolution.MINUTE), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.LANGUAGE, Integer.toString(content.getLanguage()), Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -312,7 +335,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
             d.add(new Field(Fields.CONTENT_TEMPLATE_ID, Integer.toString(content.getContentTemplateId()), Field.Store.NO, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_STATUS, Integer.toString(content.getStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_VISIBILITY_STATUS, Integer.toString(content.getVisibilityStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            if (content.getDocumentTypeId() > 0) {
+                d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
+            }
+            d.add(new Field(Fields.ASSOCIATION_ID, getAssociations(content), Field.Store.YES, Field.Index.ANALYZED));
 
             addAttributeFields(content, d);
             addOtherFields(content, d);
@@ -322,7 +348,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
                     searchField.addToIndex(content, d);
                 }
             }
-            
+
             return d;
         } catch(Throwable e) {
             Log.error(getClass().getName(), "Exception creating index document for content id " + content.getId() +": " + e.getMessage(), null, null);
@@ -330,6 +356,28 @@ public class DefaultDocumentProvider implements DocumentProvider {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String getAttachmentText(Content content) {
+        String text = "";
+
+        try {
+            int attachmentId = Integer.parseInt(content.getLocation());
+
+            Attachment attachment = AttachmentAO.getAttachment(attachmentId);
+
+            TextExtractor te = textExtractorSelector.select(attachment.getFilename());
+            if (te != null) {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(bos));
+                text = te.extractText(new ByteArrayInputStream(bos.toByteArray()), attachment.getFilename());
+            }
+
+        } catch (Exception e) {
+            Log.error(getClass().getName(), e);
+        }
+
+        return text;
     }
 
     protected void addOtherFields(Content content, Document d) {
@@ -438,6 +486,18 @@ public class DefaultDocumentProvider implements DocumentProvider {
         return sb.toString();
     }
 
+    private String getAssociations(Content content) {
+        StringBuffer sb = new StringBuffer();
+        List <Association> associations = content.getAssociations();
+        for (int i = 0; i < associations.size(); i++) {
+            sb.append(associations.get(i).getAssociationId());
+            if (i < associations.size() - 1) {
+                sb.append(" ");
+            }
+        }
+        return sb.toString();
+    }
+
     private float calculateBoost(Content content) {
         float boost = 1;
         for (Iterator iterator = boosters.iterator(); iterator.hasNext();) {
@@ -453,6 +513,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
     public void setBoosters(List boosters) {
         this.boosters = boosters;
+    }
+
+    public void setTextExtractorSelector(TextExtractorSelector textExtractorSelector) {
+        this.textExtractorSelector = textExtractorSelector;
     }
 }
 

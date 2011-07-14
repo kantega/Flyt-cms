@@ -25,11 +25,21 @@
 
 <kantega:section id="body">
     <script type="text/javascript">
-        function buttonOkPressed() {
-            // TODO: Send event, dont reload page
-            getParent().location.href = "Navigate.action";
-            return false;
+        function closePopup() {
+            buttonOkPressed();
+            closeWindow();
         }
+
+        function buttonOkPressed() {
+            return true;
+        }
+
+        $(document).ready(function() {
+            getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
+            getParent().openaksess.navigate.updateMainPane(getParent().openaksess.navigate.getCurrentItemIdentifier(), false);
+        });
+
+        setTimeout('closePopup()', 3000);
     </script>
     <admin:box>
         <kantega:label key="${message}"/>

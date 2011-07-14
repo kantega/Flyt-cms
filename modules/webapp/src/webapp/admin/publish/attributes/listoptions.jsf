@@ -1,5 +1,6 @@
 <%@ page import="no.kantega.publishing.common.data.ListOption"%>
 <%@ page import="java.util.List"%>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -47,10 +48,11 @@
     {
         Content content = (Content)request.getAttribute("content");
         String fieldName = (String) request.getAttribute("fieldName");
+        Boolean alwaysUseSelectList = (Boolean) request.getAttribute("alwaysUseSelectList");
         
         String value = attribute.getValue();
         List options = attribute.getListOptions(content.getLanguage());
-        if (attribute.getMultiple()) {
+        if (attribute.getMultiple() && alwaysUseSelectList == null) {
             out.write("<div class=\"inpSelectList\">");
             out.write("<table border=\"0\">");
             if (options != null) {
@@ -82,6 +84,9 @@
             out.write("<select class=\"fullWidth\"");
             out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
             out.write(" id=\"" + fieldName + "\"");
+            if (attribute.getMultiple()) {
+                out.write(" multiple size=\"8\"");
+            }
             out.write(" name=\"" + fieldName + "\">");
             if (options != null) {
                 for (int i = 0; i < options.size(); i++) {

@@ -86,6 +86,11 @@ public class MultimediaImageMapAO {
                 ps.setInt(5, coordUrlMapArray[i].isOpenInNewWindow() ? 1 : 0);
                 ps.execute();
             }
+
+            PreparedStatement hasImageMapSt = c.prepareStatement("UPDATE multimedia SET hasImageMap=? WHERE Id=?");
+            hasImageMapSt.setInt(1, coordUrlMapArray.length > 0 ? 1 : 0);
+            hasImageMapSt.setInt(2, mim.getMultimediaId());
+            hasImageMapSt.execute();
         } catch (SQLException e) {
             Log.error(MultimediaImageMapAO.SOURCE, e, null, null);
             throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL error saving imagemap", e);

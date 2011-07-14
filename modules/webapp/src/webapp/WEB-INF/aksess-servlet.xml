@@ -66,6 +66,7 @@
                 <prop key="/admin/mypage/plugins/PropertySearch.action">propertySearchAction</prop>
                 <prop key="/admin/mypage/plugins/GoogleAnalytics.action">googleAnalyticsAction</prop>
                 <prop key="/admin/mypage/plugins/ContentStatistics.action">contentStatisticsAction</prop>
+                <prop key="/admin/mypage/plugins/OrgUnitStatistics.action">orgUnitStatisticsAction</prop>
                 <prop key="/admin/mypage/plugins/UserInfo.action">userInfoAction</prop>
 
                 <!-- Publish navigator -->
@@ -103,7 +104,6 @@
                 <prop key="/admin/publish/ConfirmCopyPaste.action">ConfirmCopyPasteContentAction</prop>
                 <prop key="/admin/publish/CopyPasteContent.action">CopyPasteContentAction</prop>
                 <prop key="/admin/publish/DeleteAttachment.action">DeleteAttachmentAction</prop>
-                <prop key="/admin/publish/SaveHearing.action">SaveHearingAction</prop>
                 <prop key="/admin/publish/DeleteAssociation.action">DeleteAssociationAction</prop>
                 <prop key="/admin/publish/DeleteVersion.action">DeleteVersionAction</prop>
                 <prop key="/admin/publish/EditContent.action">EditContentAction</prop>
@@ -118,6 +118,7 @@
                 <prop key="/admin/publish/SimpleDeleteContent.action">SimpleDeleteContentAction</prop>
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
                 <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
+
                 <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
@@ -133,6 +134,7 @@
                 <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
                 <prop key="/admin/publish/OrgUnitNavigator.action">orgUnitNavigatorAjaxAction</prop>
                 <prop key="/admin/publish/popups/Lix.action">LixAction</prop>
+                <prop key="/admin/publish/popups/SaveHearing.action">SaveHearingAction</prop>
 
                 <!-- Multimedia naviagator -->
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
@@ -186,13 +188,12 @@
                 <!-- Information -->
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
 
-                <prop key="/SmokeTestPages.action">SmokeTestPagesAction</prop>
+                <prop key="/TestPages.action">testPagesAction</prop>
             </props>
         </property>
     </bean>
 
-    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor" id="adminRoleInterceptor"/>
-
+    
     <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
@@ -222,6 +223,9 @@
                 <prop key="/admin/administration/topicmaps/DeleteTopicMap.action">deleteTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/EditTopicMap.action">editTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/ListTopicMaps.action">listTopicMapsAction</prop>
+                <prop key="/admin/administration/topicmaps/ListTopicTypes.action">listTopicTypesAction</prop>
+                <prop key="/admin/administration/topicmaps/EditTopicType.action">editTopicTypeAction</prop>
+                <prop key="/admin/administration/topicmaps/DeleteTopicType.action">deleteTopicTypeAction</prop>
                 <!-- Site config controllers -->
                 <prop key="/admin/administration/ListSites.action">listSitesAction</prop>
                 <prop key="/admin/administration/EditDomainNames.action">EditDomainNamesAction</prop>
@@ -383,6 +387,9 @@
     <bean class="no.kantega.publishing.admin.mypage.plugins.ContentStatisticsAction" id="contentStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/contentstatistics.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.mypage.plugins.OrgUnitStatisticsAction" id="orgUnitStatisticsAction">
+        <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/orgunitstatistics.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.mypage.plugins.UserInfoAction" id="userInfoAction">
         <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/userinfo.jsp"/>
         <property name="gravatarUrl" value="http://www.gravatar.com/avatar/"/>
@@ -495,20 +502,16 @@
     <bean class="no.kantega.publishing.admin.content.action.DeleteVersionAction" id="DeleteVersionAction"/>
     <bean class="no.kantega.publishing.admin.content.action.EndAdminModeAction" id="EndAdminModeAction"/>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.SaveHearingAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveHearingAction</value>
-        </property>
+    <bean class="no.kantega.publishing.admin.content.action.SaveHearingAction" id="SaveHearingAction">
+        <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
+        <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingCommentAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.SaveHearingCommentAction</value>
         </property>
         <property name="servletName">
-            <value>SaveHearingAction</value>
+            <value>SaveHearingCommentAction</value>
         </property>
     </bean>
 
@@ -606,8 +609,9 @@
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
-        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>
     </bean>
+
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
@@ -694,6 +698,13 @@
     <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicMapsAction" id="listTopicMapsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopicmaps.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ListTopicTypesAction" id="listTopicTypesAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listtopictypes.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicTypeAction" id="editTopicTypeAction">
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopictype.jsp"/>
+    </bean>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicTypeAction" id="deleteTopicTypeAction"/>
     <!-- Site config -->
     <bean class="no.kantega.publishing.admin.administration.action.ListSitesAction" id="listSitesAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listsites.jsp"/>
@@ -743,7 +754,7 @@
     </bean>
 
 
-    <bean class="no.kantega.publishing.controls.smoketest.SmokeTestPagesController" id="SmokeTestPagesAction">
+    <bean class="no.kantega.publishing.controls.smoketest.TestPagesController" id="testPagesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
     </bean>
 
@@ -776,6 +787,13 @@
         <property name="prefix" value=""/>
         <property name="suffix" value=".vm"/>
         <property name="contentType" value="text/html;charset=utf-8"/>
+        <property name="attributesMap">
+            <map>
+                <entry key="dateTool">
+                    <bean class="org.apache.velocity.tools.generic.DateTool"/>
+                </entry>
+            </map>
+        </property>
     </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -783,6 +801,8 @@
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
+
+    <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
 
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
 

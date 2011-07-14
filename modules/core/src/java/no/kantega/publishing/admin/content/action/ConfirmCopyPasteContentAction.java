@@ -77,7 +77,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         Content selectedContent = (Content)clipboard.getItems().get(0);
         
-        int uniqueId = selectedContent.getAssociation().getId();
+        int selectedPageAssociationId = selectedContent.getAssociation().getId();
         String selectedContentTitle = selectedContent.getTitle();
         if (selectedContentTitle.length() > 30) selectedContentTitle = selectedContentTitle.substring(0, 27) + "...";
 
@@ -121,8 +121,11 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
-        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + uniqueId + "/") != -1)) {
+        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1)) {
             // Will lead to recursion
+            error = "aksess.copypaste.recursion";
+        } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {
+            // Do not allow a page to be pasted onto itself.
             error = "aksess.copypaste.recursion";
         } else if (allowedAssociations == null || allowedAssociations.size() == 0) {
             // Not allowed to publish here
@@ -136,7 +139,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
             model.put("isCopy", isCopy);
             model.put("pasteShortCut", pasteShortCut);
-            model.put("uniqueId", uniqueId);
+            model.put("uniqueId", selectedPageAssociationId);
             model.put("newParentId", newParentCid.getAssociationId());
             model.put("selectedContent", selectedContent);
             model.put("selectedContentTitle", selectedContentTitle);

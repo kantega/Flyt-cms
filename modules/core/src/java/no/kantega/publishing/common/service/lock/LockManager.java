@@ -32,7 +32,7 @@ public class LockManager {
     public static ContentLock peekAtLock(int contentId) {
         ContentLock lock;
         synchronized(locks) {
-            lock = (ContentLock) locks.get(new Integer(contentId));
+            lock = (ContentLock) locks.get(contentId);
         }
         // No lock
         if(lock == null) {
@@ -46,7 +46,7 @@ public class LockManager {
             if(expired) {
                 // Remove lock and return false (not locked anymore)
                 synchronized(locks) {
-                    locks.remove(new Integer(contentId));
+                    locks.remove(contentId);
                     return null;
                 }
             } else {
@@ -67,7 +67,7 @@ public class LockManager {
 
             ContentLock lock = new ContentLock(owner, contentId);
             synchronized(locks) {
-                locks.put(new Integer(contentId), lock);
+                locks.put(contentId, lock);
             }
             return true;
         }
@@ -75,7 +75,7 @@ public class LockManager {
 
     public static void releaseLock(int contentId) {
         synchronized(locks) {
-            locks.remove(new Integer(contentId));
+            locks.remove(contentId);
         }
     }
 
@@ -85,7 +85,7 @@ public class LockManager {
             while (i.hasNext()) {
                 ContentLock contentLock = (ContentLock) i.next();
                 if(contentLock.getOwner().equals(owner)) {
-                    locks.remove(new Integer(contentLock.getContentId()));
+                    locks.remove(contentLock.getContentId());
                 }
             }
         }
@@ -97,7 +97,7 @@ public class LockManager {
             Iterator i = LockManager.getLocks().keySet().iterator();
             while (i.hasNext()) {
                 Integer id = (Integer) i.next();
-                LockManager.peekAtLock(id.intValue());
+                LockManager.peekAtLock(id);
             }
         }
     }

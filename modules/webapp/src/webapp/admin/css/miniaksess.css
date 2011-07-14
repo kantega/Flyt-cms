@@ -150,3 +150,7 @@
 #EditContentForm .button .view {
     background: url("../bitmaps/common/icons/small/navigate.png");
 }
+
+iframe#externalSite {
+    padding: 0;
+}

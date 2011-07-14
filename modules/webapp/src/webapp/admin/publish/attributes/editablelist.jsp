@@ -22,16 +22,19 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%
     EditablelistAttribute attribute = (EditablelistAttribute) request.getAttribute("attribute");
+    request.setAttribute("alwaysUseSelectList", Boolean.TRUE);
 %>
 <div class="inputs">
 <%@include file="listoptions.jsf"%>
 </div>
 <%
+    request.removeAttribute("alwaysUseSelectList");
+
     if (SecuritySession.getInstance(request).isUserInRole(attribute.getEditableBy())) {
 %>
 <div class="buttonGroup">
-    <a href="Javascript:openaksess.editcontext.addListOption(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex}"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
-    <a href="Javascript:openaksess.editcontext.removeOptionFromList(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex + 1}"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.addListOption(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex}"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeOptionFromList(document.myform.${fieldName}, '${attribute.key}', ${content.language})" class="button" tabindex="${attribute.tabIndex + 1}"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>
 <%
     }

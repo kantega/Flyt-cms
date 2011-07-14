@@ -206,7 +206,7 @@ public class GetRandomTag  extends BodyTagSupport {
         int size = collection.size();
         if (offset < size) {
             pageContext.setAttribute("aksess_collection_" + name, (Content)collection.get(offset));
-            pageContext.setAttribute("aksess_collection_offset" + name, new Integer(offset));
+            pageContext.setAttribute("aksess_collection_offset" + name, offset);
             offset++;
             return EVAL_BODY_TAG;
         } else {

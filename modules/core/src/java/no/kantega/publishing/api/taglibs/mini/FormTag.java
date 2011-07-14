@@ -40,6 +40,7 @@ import java.util.Locale;
 public class FormTag extends BodyTagSupport {
 
     private boolean allowDraft = false;
+    private boolean hideInfoMessages = false;
 
     private String action;
 
@@ -47,6 +48,8 @@ public class FormTag extends BodyTagSupport {
     public int doAfterBody() throws JspException {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         Content currentEditContent = (Content) request.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+
+        Boolean hearingEnabled = (Boolean)request.getAttribute("hearingEnabled");
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
         boolean canApprove = securitySession.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
@@ -57,6 +60,7 @@ public class FormTag extends BodyTagSupport {
         }
 
         String redirectUrl = request.getParameter("redirectUrl");
+        String draftRedirectUrl = request.getParameter("draftRedirectUrl");
         String cancelUrl = request.getParameter("cancelUrl");
         if (cancelUrl == null) {
             cancelUrl = redirectUrl;
@@ -80,20 +84,25 @@ public class FormTag extends BodyTagSupport {
             out.write("}\n");
             out.write("</script>\n");
 
-            if (!canApprove) {
-                out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
-            }
+            if (!hideInfoMessages) {
+                if (!canApprove) {
+                    out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
+                }
 
-            if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
-                out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
+                if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
+                    out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
+                }
             }
 
             out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">");
             out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
             out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
             out.write("    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">");
-            if (redirectUrl != null && redirectUrl.trim().length() > 0 ) {
+            if (allowDraft && redirectUrl != null && redirectUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
+            }
+            if (draftRedirectUrl != null && draftRedirectUrl.trim().length() > 0 ) {
+                out.write("    <input type=\"hidden\" name=\"draftRedirectUrl\" value=\"" + draftRedirectUrl + "\">");
             }
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"cancelUrl\" value=\"" + cancelUrl + "\">");
@@ -106,6 +115,10 @@ public class FormTag extends BodyTagSupport {
             if (allowDraft) {
                 out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"saveContent(" + ContentStatus.DRAFT + ")\">");
             }
+            if (hearingEnabled != null && hearingEnabled) {
+                String url = "openaksess.common.modalWindow.open({title:'" + LocaleLabels.getLabel("aksess.hearing.title", locale) + "', iframe:true, href: '" + request.getContextPath() + "/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});";
+                out.write("    <input class=\"editContentButton hearing\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.hearing", locale)+"\" onclick=\"" + url + "\">");
+            }            
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 cancelAction = cancelAction+"?redirectUrl="+cancelUrl;
@@ -128,6 +141,10 @@ public class FormTag extends BodyTagSupport {
 
     public void setAllowdraft(boolean allowDraft) {
         this.allowDraft = allowDraft;
+    }
+
+    public void setHideinfomessages(boolean hideInfoMessages) {
+        this.hideInfoMessages = hideInfoMessages;
     }
 }
 

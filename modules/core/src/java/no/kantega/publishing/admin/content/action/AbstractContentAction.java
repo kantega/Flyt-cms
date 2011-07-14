@@ -33,7 +33,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractContentAction  extends AdminController {
+public abstract class AbstractContentAction extends AdminController {
     protected void setRequestVariables(HttpServletRequest request, Content current, ContentManagementService aksessService, Map<String, Object> model) {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
@@ -48,6 +48,10 @@ public abstract class AbstractContentAction  extends AdminController {
         ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(current.getContentTemplateId());
         if (contentTemplate.isHearingEnabled() && current.getStatus() != ContentStatus.HEARING) {
             model.put("hearingEnabled", Boolean.TRUE);
+        }
+
+        if (contentTemplate.isSearchable()) {
+            model.put("toogleSearchableEnabled", Boolean.TRUE);
         }
 
         int saveStatus = ContentStatus.WAITING_FOR_APPROVAL;

@@ -16,10 +16,13 @@
 
 package no.kantega.publishing.controls;
 
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SpringAksessControllerAdapter implements AksessController {
@@ -29,7 +32,14 @@ public class SpringAksessControllerAdapter implements AksessController {
     private String description;
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        return controller.handleRequest(request, response).getModel();
+        ModelAndView modelAndView = controller.handleRequest(request, response);
+        if (modelAndView.getView() instanceof RedirectView) {
+            RedirectView view = (RedirectView)modelAndView.getView();
+            response.sendRedirect(view.getUrl());
+            return new HashMap();
+        } else {
+            return modelAndView.getModel();
+        }
     }
 
     public void setController(Controller controller) {

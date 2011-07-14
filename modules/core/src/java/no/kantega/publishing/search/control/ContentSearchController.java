@@ -109,7 +109,7 @@ public class ContentSearchController implements AksessController, InitializingBe
         return model;
     }
 
-    private SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
+    protected SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
         SearchServiceQuery query = new SearchServiceQuery(request, customSearchFields);
         RequestParameters params = new RequestParameters(request);
         if (content != null) {
@@ -311,6 +311,10 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     public void setCustomSearchFields(List<SearchField> customSearchFields) {
         this.customSearchFields = customSearchFields;
+    }
+
+    public List<SearchField> getCustomSearchFields() {
+        return customSearchFields;
     }
 
     public void afterPropertiesSet() throws Exception {

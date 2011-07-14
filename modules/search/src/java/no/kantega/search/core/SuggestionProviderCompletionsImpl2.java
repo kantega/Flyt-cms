@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * SuggestionProvider som tilbyr forslag til autocompletions av ord. Støtter også flere ord.
- * Denne implementasjonen gir ord basert på hvilke termer som finnes ofte i samme dokument som den gitte frasen. 
- * Basert på forslag fra Eirik.
+ * SuggestionProvider som tilbyr forslag til autocompletions av ord. Stï¿½tter ogsï¿½ flere ord.
+ * Denne implementasjonen gir ord basert pï¿½ hvilke termer som finnes ofte i samme dokument som den gitte frasen.
+ * Basert pï¿½ forslag fra Eirik.
  *
  * Date: Jan 20, 2009
  * Time: 6:58:27 AM
@@ -89,53 +89,61 @@ public class SuggestionProviderCompletionsImpl2 implements SuggestionProvider {
 
 
         long begin = System.currentTimeMillis();
-        // lage et array med booleans som sier om dokumentet inneholder de første ordene
-        IndexReader r = indexManager.getIndexReaderManager().getReader("aksess");
-        final boolean[] bits = new boolean[r.maxDoc()];
-        HitCollector collector = new HitCollector() {
-            @Override
-            public void collect(int doc, float score) {
-                bits[doc] = true;
+        // lage et array med booleans som sier om dokumentet inneholder de fï¿½rste ordene
+        IndexReader r = null;
+
+        try {
+            r = indexManager.getIndexReaderManager().getReader("aksess");
+            final boolean[] bits = new boolean[r.maxDoc()];
+            HitCollector collector = new HitCollector() {
+                @Override
+                public void collect(int doc, float score) {
+                    bits[doc] = true;
+                }
+            };
+
+            // TODO booleanQuery?
+            for (String word : completedWords) {
+                new IndexSearcher(r).search(new TermQuery(new Term(Fields.CONTENT_UNSTEMMED, word)), collector);
             }
-        };
 
-        // TODO booleanQuery?
-        for (String word : completedWords) {
-            new IndexSearcher(r).search(new TermQuery(new Term (Fields.CONTENT_UNSTEMMED, word)), collector);
-        }
+            PriorityQueue<TermFreqMatch> q = new PriorityQueue<TermFreqMatch>(100, new Comparator<TermFreqMatch>() {
+                public int compare(TermFreqMatch termFreqMatch, TermFreqMatch termFreqMatch1) {
+                    return termFreqMatch1.getFreq() - termFreqMatch.getFreq();
+                }
+            });
 
-        PriorityQueue<TermFreqMatch> q = new PriorityQueue<TermFreqMatch>(100, new Comparator<TermFreqMatch>() {
-            public int compare(TermFreqMatch termFreqMatch, TermFreqMatch termFreqMatch1) {
-                return termFreqMatch1.getFreq() - termFreqMatch.getFreq();
-            }
-        });
+            WildcardTermEnum termEnum = new WildcardTermEnum(r, new Term(Fields.CONTENT_UNSTEMMED, incompleteWord + "*"));
 
-        WildcardTermEnum termEnum = new WildcardTermEnum(r, new Term(Fields.CONTENT_UNSTEMMED, incompleteWord + "*"));
+            final TermDocs docs = r.termDocs();
 
-        final TermDocs docs = r.termDocs();
+            for (; termEnum.term() != null && termEnum.term().field() == Fields.CONTENT_UNSTEMMED; termEnum.next()) {
 
-        for ( ; termEnum.term() != null && termEnum.term().field() == Fields.CONTENT_UNSTEMMED; termEnum.next())  {
-
-            if(!contains(completedWords, termEnum.term().text())) {
-                docs.seek(termEnum.term());
-                int i = 0;
-                while(docs.next()) {
-                    if(bits[docs.doc()]) {
-                        i+= docs.freq();
+                if (!contains(completedWords, termEnum.term().text())) {
+                    docs.seek(termEnum.term());
+                    int i = 0;
+                    while (docs.next()) {
+                        if (bits[docs.doc()]) {
+                            i += docs.freq();
+                        }
+                    }
+                    if (i > 0) {
+                        q.offer(new TermFreqMatch(termEnum.term(), i));
                     }
                 }
-                if(i > 0) {
-                    q.offer(new TermFreqMatch(termEnum.term(), i));
-                }
+            }
+
+            String prePhrase = prePhraseBuilder.toString();
+            for (int i = 0; i < query.getMax() && q.size() > 0; i++) {
+                TermFreqMatch f = q.poll();
+                suggestions.add(new Suggestion(f.getTerm().text(), prePhrase + f.getTerm().text(), f.getFreq()));
+            }
+        } finally {
+            if (r != null) {
+                r.close();
             }
         }
 
-        String prePhrase = prePhraseBuilder.toString();
-        for (int i = 0; i < query.getMax() && q.size() > 0; i++) {
-            TermFreqMatch f = q.poll();
-            suggestions.add(new Suggestion(f.getTerm().text(), prePhrase + f.getTerm().text(), f.getFreq()));
-        }
-        
         return suggestions;
     }
 

@@ -56,7 +56,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
     private ConfigurationLoader configurationLoader;
     private Logger log = Logger.getLogger(getClass());
     private ServletContextEvent event;
-    private boolean setupOk;
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
@@ -84,32 +83,18 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
     }
 
     public synchronized void initContext() {
-        // Re-read properties
-        properties = configurationLoader.loadConfiguration();
-        if(isRequiredPropertiesPresentAndValid(properties)) {
-            super.contextInitialized(event);;
-            setupOk  = true;
-        } else {
-            log.info("Database is not yet configured, application context startup is postponed");
+        checkThatRequiredPropertiesPresentAndValid(this.properties);
+        super.contextInitialized(event);
+    }
+
+    private void checkThatRequiredPropertiesPresentAndValid(Properties properties) {
+        checkDatabaseConfigured(properties);
+        if(!properties.containsKey("location.contextpath")) {
+            throw new IllegalStateException("Required configuration property 'location.contextpath' not found.");
         }
-
     }
 
-    private boolean isRequiredPropertiesPresentAndValid(Properties properties) {
-        return isDatabaseConfigured(properties) && properties.containsKey("location.contextpath");
-    }
-
-    private File getDataDirectory(ServletContext context) {
-        File dataDirectory = (File) context.getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
-
-        if(dataDirectory == null) {
-            throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
-                    +" was not set");
-        }
-        return dataDirectory;
-    }
-
-    private boolean isDatabaseConfigured(Properties properties) {
+    private void checkDatabaseConfigured(Properties properties) {
         log.debug("Determining if database is configured");
         List<String> missingProperties = new ArrayList<String>();
 
@@ -131,17 +116,20 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             missingProperties.add("database.password");
         }
 
-        // All properties are missing
-        if(missingProperties.size() == 4) {
-            log.info("The following database configuration properties are missing " + missingProperties);
-            return false;
-        }
         // Some properties are missing
         if(missingProperties.size() > 0) {
             throw new IllegalStateException("OpenAksess could not be started. The following database configuration properties are missing: " + missingProperties);
         }
+    }
 
-        return true;
+    private File getDataDirectory(ServletContext context) {
+        File dataDirectory = (File) context.getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
+
+        if(dataDirectory == null) {
+            throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
+                    +" was not set");
+        }
+        return dataDirectory;
     }
 
 
@@ -170,9 +158,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     }
 
-    public boolean isSetupNeeded() {
-        return !setupOk;
-    }
 
     class OpenAksessContextLoader extends ContextLoader {
 

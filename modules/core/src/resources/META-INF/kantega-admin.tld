@@ -24,27 +24,6 @@
     <short-name>admin</short-name>
     <uri>http://www.kantega.no/aksess/tags/admin</uri>
     <tag>
-        <description>Create a locale specific button</description>
-        <name>button</name>
-        <tag-class>no.kantega.publishing.admin.taglib.ButtonTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>button</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>href</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>title</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
-    <tag>
         <description>Format a date using admin locale</description>
         <name>formatdate</name>
         <tag-class>no.kantega.publishing.admin.taglib.FormatDateTag</tag-class>
@@ -88,7 +67,13 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>int</type>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <name>highlightCurrent</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Prints a navigator for multimedia</description>
@@ -125,7 +110,54 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-
+    <tag>
+        <description>Renders a attribute manually</description>
+        <name>renderattribute</name>
+        <tag-class>no.kantega.publishing.admin.taglib.RenderAttributeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>type</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>titlekey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>helptext</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>maxlength</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>attribute</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.attributes.Attribute</type>
+        </attribute>
+    </tag>
 
     <tag>
         <description>Print a box</description>

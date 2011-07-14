@@ -21,7 +21,9 @@ import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
+import no.kantega.publishing.security.SecuritySession;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
@@ -69,7 +71,8 @@ public class AttributeIfEqualsTag  extends ConditionalTagSupport {
             cmd.setName(name);
             cmd.setProperty(AttributeProperty.VALUE);
 
-            String result = AttributeTagHelper.getAttribute(content, cmd, inheritFromAncestors);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+            String result = AttributeTagHelper.getAttribute(session, content, cmd, inheritFromAncestors);
             if (result != null && result.equalsIgnoreCase(value)) {
                 return (!negate);
             }
