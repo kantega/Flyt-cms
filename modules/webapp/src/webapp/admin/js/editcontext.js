@@ -523,6 +523,16 @@ openaksess.editcontext = function()  {
             if (field.value == '') {
                 field.value = defaultValue;
             }
+        },
+
+        addRepeaterRow : function(repeaterPath) {
+            $("#AddRepeaterRow").val(repeaterPath);
+            saveContent("");
+        },
+
+        deleteRepeaterRow : function(repeaterPath) {
+            $("#DeleteRepeaterRow").val(repeaterPath);
+            saveContent("");
         }
     };
 }();

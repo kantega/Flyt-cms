@@ -31,7 +31,7 @@ import java.io.IOException;
 public class UpdateFileAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         try {
-            String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+            String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
             FileAttribute fileAttribute = (FileAttribute)attribute;
             MultipartFile importFile = param.getFile(inputField);

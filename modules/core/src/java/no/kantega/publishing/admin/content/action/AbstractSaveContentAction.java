@@ -23,6 +23,7 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -63,10 +64,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Submit from user
 
-            int status = param.getInt("status");
-            String action = param.getString("action");
             boolean isModified = param.getBoolean("isModified");
-            String message  = "";
 
             // Id of page being edited, checked towards session to prevent problems with multiple edits at the same time
             int currentId = param.getInt("currentId");
@@ -78,74 +76,129 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             //  This flag is only a signal for user that content is modified, content is always saved when user requests a save
             content.setIsModified(isModified);
 
-            ValidationErrors errors = new ValidationErrors();
+            int status = param.getInt("status");
+            String action = param.getString("action");
 
-            if (updatePublishProperties) {
-                // Get publish information, must be done first
-                errors.addAll(savePublishProperties(content, param, aksessService));
-            }
+            ValidationErrors errors = updateSubmittedValues(aksessService, content, param);
 
-            // Get tab specific parameters
-            errors.addAll(saveRequestParameters(content, param, aksessService));
-
-            if (errors.getLength() > 0) {
-                // Error on page, send user back to correct error
-                model.put("errors", errors);
-                model.put("isEditing", Boolean.TRUE);
-                setRequestVariables(request, content, aksessService, model);
-                return new ModelAndView(getView(), model);
+            String addRepeaterRow = param.getString("addRepeaterRow");
+            String deleteRepeaterRow = param.getString("deleteRepeaterRow");
+            if (addRepeaterRow != null && addRepeaterRow.length() > 0) {
+                addRepeaterRow(content, addRepeaterRow);
+                model.put("scrollTo", getScrollTo(addRepeaterRow));
+                return goBackToEditPage(request, aksessService, content, model);
+            } else if (deleteRepeaterRow != null && deleteRepeaterRow.length() > 0) {
+                deleteRepeaterRow(content, deleteRepeaterRow);
+                model.put("scrollTo", getScrollTo(deleteRepeaterRow));
+                return goBackToEditPage(request, aksessService, content, model);
             } else {
-                if (status != -1 && errors.getLength() == 0) {
-                    content = aksessService.checkInContent(content, status);
-                    message = null;
-                    status = content.getStatus();
-                    switch (status) {
-                        case ContentStatus.DRAFT:
-                            message = "draft";
-                            break;
-                        case ContentStatus.PUBLISHED:
-                            message = "published";
-                            break;
-                        case ContentStatus.WAITING_FOR_APPROVAL:
-                            message = "waiting";
-                            break;
-                        case ContentStatus.HEARING:
-                            message = "hearing";
-                            break;
-                    }
-                    model.put("message", message);
-
-                    if (!content.hasDisplayTemplate()) {
-                        // Go to parent page when finished for files, annoying to get a file download dialogue
-                        ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
-                        Content parent = aksessService.getContent(parentCid, false);
-                        if (parent != null) {
-                            session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, parent);
-                        }
-                    } else {
-                        // Go to this page when finished
-                        session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
-                    }
-                    return new ModelAndView(new RedirectView("Navigate.action"));
-                }
-                session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
-                if (action == null || action.length() == 0) {
-                    // Go back to current tab
-                    model.put("isEditing", Boolean.TRUE);
-                    setRequestVariables(request, content, aksessService, model);
-                    return new ModelAndView(getView(), model);
-                } else {
-                    // Go to another tab
-                    return new ModelAndView(new RedirectView(action));
-                }
+                return handleSaveFromUser(request, aksessService, session, content, model, status, action, errors);
             }
+
         } else {
-            // No submit
-            model.put("isEditing", Boolean.TRUE);
-            setRequestVariables(request, content, aksessService, model);
-            return new ModelAndView(getView(), model);
+            return goBackToEditPage(request, aksessService, content, model);
         }
     }
+
+    private String getScrollTo(String rowPath) {
+        if (rowPath.contains("[")) {
+            rowPath = rowPath.substring(0, rowPath.indexOf("["));
+        }
+        return AttributeHelper.getInputContainerName(rowPath);
+    }
+
+
+    private ValidationErrors updateSubmittedValues(ContentManagementService aksessService, Content content, RequestParameters param) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+        ValidationErrors errors = new ValidationErrors();
+
+        if (updatePublishProperties) {
+            // Get publish information, must be done first
+            errors.addAll(savePublishProperties(content, param, aksessService));
+        }
+
+        // Get tab specific parameters
+        errors.addAll(saveRequestParameters(content, param, aksessService));
+        return errors;
+    }
+
+    private ModelAndView handleSaveFromUser(HttpServletRequest request, ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status, String action, ValidationErrors errors) throws NotAuthorizedException {
+        if (errors.getLength() > 0) {
+            return showErrorsToUser(request, aksessService, content, model, errors);
+        } else {
+            if (status != -1 && errors.getLength() == 0) {
+                return saveContentInDb(aksessService, session, content, model, status);
+            }
+            session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+            if (action == null || action.length() == 0) {
+                // Go back to current tab
+                return goBackToEditPage(request, aksessService, content, model);
+            } else {
+                // Go to another tab
+                return new ModelAndView(new RedirectView(action));
+            }
+        }
+    }
+
+
+    protected void addRepeaterRow(Content content, String addRepeaterRow) {
+        // Does nothing as default, but can be overriden
+    }
+
+    protected void deleteRepeaterRow(Content content, String deleteRepeaterRow) {
+        // Does nothing as default, but can be overriden
+    }
+
+
+    private ModelAndView goBackToEditPage(HttpServletRequest request, ContentManagementService aksessService, Content content, Map<String, Object> model) {
+        // No submit
+        model.put("isEditing", Boolean.TRUE);
+        setRequestVariables(request, content, aksessService, model);
+        return new ModelAndView(getView(), model);
+    }
+
+
+    private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status) throws NotAuthorizedException {
+        String message;
+        content = aksessService.checkInContent(content, status);
+        message = null;
+        status = content.getStatus();
+        switch (status) {
+            case ContentStatus.DRAFT:
+                message = "draft";
+                break;
+            case ContentStatus.PUBLISHED:
+                message = "published";
+                break;
+            case ContentStatus.WAITING_FOR_APPROVAL:
+                message = "waiting";
+                break;
+            case ContentStatus.HEARING:
+                message = "hearing";
+                break;
+        }
+        model.put("message", message);
+
+        if (!content.hasDisplayTemplate()) {
+            // Go to parent page when finished for files, annoying to get a file download dialogue
+            ContentIdentifier parentCid = aksessService.getParent(content.getContentIdentifier());
+            Content parent = aksessService.getContent(parentCid, false);
+            if (parent != null) {
+                session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, parent);
+            }
+        } else {
+            // Go to this page when finished
+            session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, content);
+        }
+        return new ModelAndView(new RedirectView("Navigate.action"));
+    }
+
+
+    private ModelAndView showErrorsToUser(HttpServletRequest request, ContentManagementService aksessService, Content content, Map<String, Object> model, ValidationErrors errors) {
+        // Error on page, send user back to correct error
+        model.put("errors", errors);
+        return goBackToEditPage(request, aksessService, content, model);
+    }
+
 
     private ValidationErrors savePublishProperties(Content content, RequestParameters param, ContentManagementService aksessService) {
         ValidationErrors errors = new ValidationErrors();

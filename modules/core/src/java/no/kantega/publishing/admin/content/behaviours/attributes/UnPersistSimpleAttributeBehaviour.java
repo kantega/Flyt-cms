@@ -30,7 +30,6 @@ import java.sql.SQLException;
  */
 public class UnPersistSimpleAttributeBehaviour implements UnPersistAttributeBehaviour{
     public void unpersistAttribute(ResultSet rs, Attribute attribute) throws SQLException, SystemException {
-        attribute.setName(rs.getString("Name"));
         String value = rs.getString("Value");
         if (attribute instanceof ListAttribute && value != null && value.length() > 0) {
             // Lists are stored with , to make them more searchable

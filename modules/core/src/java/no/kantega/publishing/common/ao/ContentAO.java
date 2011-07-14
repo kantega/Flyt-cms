@@ -24,6 +24,7 @@ import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
@@ -407,7 +408,7 @@ public class ContentAO {
                     conn.close();
                 }
             } catch (SQLException e) {
-                
+
             }
         }
 
@@ -1248,16 +1249,18 @@ public class ContentAO {
         return content;
     }
 
-    private static void insertAttributes(Connection c, Content content, int type) throws SQLException, SystemException {
-        // Get all attributes and save them
-        List attributes = content.getAttributes(type);
-        if (attributes != null) {
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute attr = (Attribute)attributes.get(i);
+    private static void insertAttributes(final Connection c, final Content content, final int type) throws SQLException, SystemException {
+        content.doForEachAttribute(type, new AttributeHandler() {
+            public void handleAttribute(Attribute attr) {
                 PersistAttributeBehaviour attributeSaver = attr.getSaveBehaviour();
-                attributeSaver.persistAttribute(c, content, attr);
+                try {
+                    attributeSaver.persistAttribute(c, content, attr);
+                } catch (SQLException e) {
+                    Log.error(SOURCE, e, null, null);
+                    throw new SystemException("Error saving attribute", this.getClass().getName(), e);
+                }
             }
-        }
+        });
     }
 
     public static int getNextExpiredContentId(int after) throws SystemException {

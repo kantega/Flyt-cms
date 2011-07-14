@@ -25,6 +25,7 @@ import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
@@ -186,27 +187,27 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
         ContentAO.forAllContentObjects(new ContentHandler() {
 
-            public void handleContent(Content content) {
+                    public void handleContent(Content content) {
 
-                //log.debug("Next active contentId is " +i);
-                try {
-                    Document d = getContentDocument(content);
-                    if(d != null) {
-                        float boost = calculateBoost(content);
-                        d.setBoost(boost);
-                        handler.handleDocument(d);
-                        //Log.debug(SOURCE, "Handled document " + content.getContentId(), null, null);
-                        c.increment();
-                        reporter.reportProgress(c.getI(), "aksess-document", getTotalDocumentCount());
+                        //log.debug("Next active contentId is " +i);
+                        try {
+                            Document d = getContentDocument(content);
+                            if(d != null) {
+                                float boost = calculateBoost(content);
+                                d.setBoost(boost);
+                                handler.handleDocument(d);
+                                //Log.debug(SOURCE, "Handled document " + content.getContentId(), null, null);
+                                c.increment();
+                                reporter.reportProgress(c.getI(), "aksess-document", getTotalDocumentCount());
+                            }
+                        } catch (Throwable e) {
+                            Log.error(SOURCE, "Caught throwable during indexing of document #" +c.getI() +" (id: " +content.getId() +")", null, null);
+                            Log.error(SOURCE, e, null, null);
+                        }
+
                     }
-                } catch (Throwable e) {
-                    Log.error(SOURCE, "Caught throwable during indexing of document #" +c.getI() +" (id: " +content.getId() +")", null, null);
-                    Log.error(SOURCE, e, null, null);
-                }
 
-            }
-
-        }, new ContentAO.ContentHandlerStopper() {
+                }, new ContentAO.ContentHandlerStopper() {
 
             public boolean isStopRequested() {
                 return handler.isStopRequested();
@@ -388,13 +389,12 @@ public class DefaultDocumentProvider implements DocumentProvider {
         return aksessDao;
     }
 
-    private void addAttributeFields(Content content, Document d) {
-        List attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-        for (int i = 0; i < attributes.size(); i++) {
-            Attribute attribute = (Attribute) attributes.get(i);
-            attribute.addIndexFields(d);
-        }
-
+    private void addAttributeFields(Content content, final Document d) {
+        content.doForEachAttribute(AttributeDataType.CONTENT_DATA, new AttributeHandler() {
+            public void handleAttribute(Attribute attribute) {
+                attribute.addIndexFields(d);
+            }
+        });
     }
 
     private String stripHtml(String html) {

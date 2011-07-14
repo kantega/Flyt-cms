@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
@@ -63,6 +64,20 @@ public class SaveMetadataAction extends AbstractSaveContentAction {
     public String getView() {
         return view;
     }
+
+    protected void addRepeaterRow(Content content, String addRepeaterRows) {
+        try {
+            EditContentHelper.addRepeaterRow(content, addRepeaterRows, AttributeDataType.META_DATA);
+        } catch (InvalidTemplateException e) {
+            throw new SystemException("Failed adding repeater rows", this.getClass().getName(), e);
+        }
+    }
+
+
+    protected void deleteRepeaterRow(Content content, String addRepeaterRow) {
+        EditContentHelper.deleteRepeaterRow(content, addRepeaterRow, AttributeDataType.META_DATA);
+    }
+
 
     Map<String, Object> getModel(Content content, HttpServletRequest request) {
         Map<String, Object> model =  new HashMap<String, Object>();

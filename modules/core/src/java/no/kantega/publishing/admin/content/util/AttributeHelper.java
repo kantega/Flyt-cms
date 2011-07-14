@@ -20,9 +20,13 @@ import no.kantega.commons.util.RegExp;
 import no.kantega.commons.exception.RegExpSyntaxException;
 
 public class AttributeHelper {
+    private static final String REGEXP = "[^a-zA-Z0-9\\$]";
+
+
     public static String getInputFieldName(String name) {
         try {
-            return "attributeValue_" + RegExp.replace("[^a-zA-Z0-9]", name, "_");
+            name = name.replace(".", "$");
+            return "attributeValue_" + RegExp.replace(REGEXP, name, "_");
         } catch (RegExpSyntaxException e) {
             return "attributeValue_" + name;
         }
@@ -30,7 +34,8 @@ public class AttributeHelper {
 
     public static String getInputContainerName(String name) {
         try {
-            return "contentAttribute_" + RegExp.replace("[^a-zA-Z0-9]", name, "_");
+            name = name.replace(".", "$");
+            return "contentAttribute_" + RegExp.replace(REGEXP, name, "_");
         } catch (RegExpSyntaxException e) {
             return "contentAttribute_" + name;
         }

@@ -3,11 +3,11 @@
     margin-bottom: 1em;
 }
 
-#EditContentForm .contentAttribute .heading {
+#EditContentForm .contentAttribute .heading, .contentAttributeRepeater .heading {
     font-weight: bold;
 }
 
-#EditContentForm .contentAttribute .buttonGroup, .formElement .buttonGroup {
+#EditContentForm .contentAttribute .buttonGroup, #EditContentForm .contentAttributeRepeater .buttonGroup, .formElement .buttonGroup {
     margin-left:15px;
     padding-top:2px;
     text-align:right;

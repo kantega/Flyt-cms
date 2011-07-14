@@ -46,6 +46,8 @@ import java.util.*;
 public abstract class Attribute {
     private final String FILE_TOKEN = "file:";
 
+    protected Attribute parent = null;
+
     protected String name = null;  // Navn p� attributt, lagres i databasen, og refereres med getattribute
     protected String title = null; // Tittel, vises for brukeren i skjermbilder, valgfritt
     protected String field = null; // Mapping til content felt, f.eks title, description, image etc
@@ -86,6 +88,10 @@ public abstract class Attribute {
             name = config.getAttribute("name");
             if (name == null) {
                 throw new InvalidTemplateException("name mangler i mal fil", "", null);
+            }
+
+            if (name.contains("[") || name.contains("]")) {
+                throw new InvalidTemplateException("[ og ] er ikke tillatt i navn på attributter", "", null);
             }
 
             editable = !(config.getAttribute("editable").equals("false"));
@@ -185,6 +191,38 @@ public abstract class Attribute {
             script= XPathHelper.getString(config, "script");
         }
     }
+
+
+    public Attribute getParent() {
+        return parent;
+    }
+
+
+    public void setParent(Attribute parent) {
+        this.parent = parent;
+    }
+
+
+    public String getNameIncludingPath() {
+        String id = name;
+
+        if (parent != null) {
+            int offset = parent.getOffset(this);
+            if (offset != -1) {
+                id = parent.getNameIncludingPath() + "[" + offset + "]." + name;
+            } else {
+                id = parent.getNameIncludingPath() + "." + name;
+            }
+        }
+
+        return id;
+    }
+
+
+    public int getOffset(Attribute a) {
+        return -1;
+    }
+
 
     public String getName() {
         return name;

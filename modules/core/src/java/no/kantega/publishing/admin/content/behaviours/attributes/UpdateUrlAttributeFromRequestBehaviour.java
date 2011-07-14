@@ -30,7 +30,7 @@ public class UpdateUrlAttributeFromRequestBehaviour  implements UpdateAttributeF
         HttpServletRequest request = param.getRequest();
         String rootUrl = URLHelper.getRootURL(request);
 
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         String value = param.getString(inputField);
         if (value == null) {

@@ -41,7 +41,7 @@
                             String field = errors.getField(i);
                             if (field != null) {
                                 field = AttributeHelper.getInputFieldName(field);
-                                out.write("<LI>" + errors.getMessage(i, Aksess.getDefaultAdminLocale()) + "&nbsp;[<A href=\"Javascript:document.myform." + field + ".focus()\">" + LocaleLabels.getLabel("aksess.feil.highlightfield", Aksess.getDefaultAdminLocale()) + "</A>]</LI>");
+                                out.write("<LI>" + errors.getMessage(i, Aksess.getDefaultAdminLocale()) + "&nbsp;[<A href=\"Javascript:document.myform[" + field + "].focus()\">" + LocaleLabels.getLabel("aksess.feil.highlightfield", Aksess.getDefaultAdminLocale()) + "</A>]</LI>");
                             } else {
                                 out.write("<LI>" + errors.getMessage(i, Aksess.getDefaultAdminLocale()) + "</LI>");
                             }

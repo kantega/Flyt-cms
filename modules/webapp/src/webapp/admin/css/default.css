@@ -719,11 +719,11 @@ table.fullWidth {
 
 /************** Form elements and content attributes **************/
 
-.contentAttribute, .formElement {
+.contentAttribute, .contentAttributeRepeater .formElement {
     margin-bottom: 14px;
 }
 
-.contentAttribute .heading, .formElement .heading {
+.contentAttribute .heading, .contentAttributeRepeater .heading, .formElement .heading {
     font-weight: bold;
 }
 
@@ -731,7 +731,7 @@ table.fullWidth {
     color: #ff0000;
 }
 
-#Content .contentAttribute .buttonGroup, .formElement .buttonGroup {
+#Content .contentAttribute .buttonGroup, #Content .contentAttributeRepeater .buttonGroup, .formElement .buttonGroup {
     padding-top: 2px;
     text-align: right;
     margin-left: 15px;
@@ -739,6 +739,21 @@ table.fullWidth {
 
 .contentAttribute .inputs, .formElement .inputs, .contentAttribute .content, .formElement .content {
     clear: both;
+}
+
+
+#Content .contentAttributeRepeaterRow .repeaterButtons {
+    text-align: right;
+    cursor: pointer;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons .delete {
+    background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
+    display: inline-block;
+    padding: 5px 5px 5px 20px;
+    font-weight: normal;
+    font-size: 12px;
+    color: #0030ff;
 }
 
 .inline .formElement .inputs {

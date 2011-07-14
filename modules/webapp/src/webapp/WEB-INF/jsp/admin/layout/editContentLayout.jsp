@@ -40,8 +40,15 @@
 
         $(document).ready(function(){
             bindToolbarButtons();
-            // Set focus to first input field
-            $("#EditContentForm input[type='text']:first").focus();
+            <c:choose>
+                <c:when test="${scrollTo != null}">
+                    // TODO: Scroll correct element into view
+                </c:when>
+                <c:otherwise>
+                    // Set focus to first input field in form
+                    $("#EditContentForm input[type='text']:first").focus();
+                </c:otherwise>
+            </c:choose>
         });
 
         function bindToolbarButtons() {
@@ -141,6 +148,8 @@
         </div>
         <input type="hidden" id="ContentStatus" name="status" value="">
         <input type="hidden" name="action" value="">
+        <input type="hidden" id="AddRepeaterRow" name="addRepeaterRow" value="">
+        <input type="hidden" id="DeleteRepeaterRow" name="deleteRepeaterRow" value="">
         <input type="hidden" name="currentId" value="${currentContent.id}">
         <input type="hidden" id="ContentIsModified" name="isModified" value="${currentContent.modified}">
     </form>

@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.common.data.attributes.AttributeHandler;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.Aksess;
@@ -469,7 +471,7 @@ public class Content extends BaseObject {
         this.expireAction = expireAction;
     }
 
-    public List getAttributes(int type) {
+    public List<Attribute> getAttributes(int type) {
         if (type == AttributeDataType.CONTENT_DATA) {
             return contentAttributes;
         } else {
@@ -533,6 +535,21 @@ public class Content extends BaseObject {
         if (name == null || name.length() == 0) {
             return null;
         }
+        List<Attribute> list = getAttributeList(name, type);
+
+        if (name.contains("[") && name.contains("].")) {
+            name = name.substring(name.indexOf("].") + 2, name.length());
+        }
+
+        for (Attribute attr : list) {
+            if (attr.getName().equalsIgnoreCase(name)) {
+                return attr;
+            }
+        }
+        return null;
+    }
+
+    private List<Attribute> getAttributeList(String name, int type) {
         List<Attribute> list;
         if (type == AttributeDataType.CONTENT_DATA) {
             list = contentAttributes;
@@ -544,12 +561,25 @@ public class Content extends BaseObject {
             list.addAll(metaAttributes);
         }
 
-        for (Attribute attr : list) {
-            if (attr.getName().equalsIgnoreCase(name)) {
-                return attr;
+        if (name.contains("[") && name.contains("].")) {
+            String rowStr = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+            int row = Integer.parseInt(rowStr, 10);
+
+            name = name.substring(0, name.indexOf("["));
+
+            for (Attribute attr : list) {
+                if (attr.getName().equalsIgnoreCase(name) && attr instanceof RepeaterAttribute) {
+                    RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
+                    if (repeaterAttribute.getNumberOfRows() >= row) {
+                        return repeaterAttribute.getRow(row);
+                    }
+                }
             }
+            return new ArrayList<Attribute>();
         }
-        return null;
+
+
+        return list;
     }
 
     public void addAttribute(Attribute attr, int type) {
@@ -577,6 +607,7 @@ public class Content extends BaseObject {
             Attribute attr = (Attribute)list.get(i);
             if (attr.getName().equalsIgnoreCase(name)) {
                 list.remove(attr);
+                break;
             }
         }
     }
@@ -770,5 +801,27 @@ public class Content extends BaseObject {
 
     public void setHearing(Hearing hearing) {
         this.hearing = hearing;
+    }
+
+    public void doForEachAttribute(int attributeType, AttributeHandler handler) {
+        List<Attribute> attributes = getAttributes(attributeType);
+        for (Attribute attribute : attributes) {
+            doForAttribute(handler, attribute);
+        }
+    }
+
+    private void doForAttribute(AttributeHandler handler, Attribute attribute) {
+        if (attribute instanceof RepeaterAttribute) {
+            RepeaterAttribute repeater = (RepeaterAttribute)attribute;
+            int rows = repeater.getNumberOfRows();
+            for (int rowNo = 0; rowNo < rows; rowNo ++) {
+                List<Attribute> attributes = repeater.getRow(rowNo);
+                for (Attribute childAttribute : attributes) {
+                    doForAttribute(handler, childAttribute);
+                }
+            }
+        } else {
+            handler.handleAttribute(attribute);
+        }
     }
 }

@@ -40,7 +40,7 @@ public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAt
 
 
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         String value = param.getString(inputField);
         if (value == null) {

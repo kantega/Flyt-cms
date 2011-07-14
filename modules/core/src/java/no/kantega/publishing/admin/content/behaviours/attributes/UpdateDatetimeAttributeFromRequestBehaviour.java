@@ -33,7 +33,7 @@ public class UpdateDatetimeAttributeFromRequestBehaviour implements UpdateAttrib
 
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
 
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         DatetimeAttribute datetimeAttribute = (DatetimeAttribute) attribute;
 

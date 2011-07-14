@@ -46,7 +46,7 @@ public class PersistDateAttributeBehaviour implements PersistAttributeBehaviour 
 
         st.setString(2, clsName);
         st.setInt(3, attribute.getType());
-        st.setString(4, attribute.getName());
+        st.setString(4, attribute.getNameIncludingPath());
 
         String value = attribute.getValue();
         if (attribute instanceof DateAttribute) {

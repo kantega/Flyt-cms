@@ -31,7 +31,7 @@ public class UpdateFormAttributeFromRequestBehaviour implements UpdateAttributeF
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         FormAttribute formAttribute = (FormAttribute)attribute;
 
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         String value = param.getString(inputField);
         if (value == null) {

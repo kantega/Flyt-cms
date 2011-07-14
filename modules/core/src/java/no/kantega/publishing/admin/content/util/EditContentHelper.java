@@ -20,6 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
@@ -31,7 +32,6 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -44,6 +44,11 @@ import no.kantega.publishing.security.SecuritySession;
 import java.util.*;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import sun.java2d.pipe.AATextRenderer;
+
+import javax.annotation.Nullable;
 
 public class EditContentHelper {
     private static final String SOURCE = "aksess.admin.EditContentHelper";
@@ -186,6 +191,53 @@ public class EditContentHelper {
         return content;
     }
 
+    public static void addRepeaterRow(Content content, String rowPath, int attributeType) throws InvalidTemplateException {
+        ContentTemplate template = null;
+
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
+            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+        } else {
+            if (content.getMetaDataTemplateId() != -1) {
+                template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
+            } else {
+                // Set to empty list if no template specified
+                content.setAttributes(new ArrayList<Attribute>(), attributeType);
+            }
+        }
+
+        if (template == null) {
+            return;
+        }
+
+        Attribute attr = getAttributeByName(content.getAttributes(attributeType), rowPath);
+        if (attr != null &&  attr instanceof RepeaterAttribute) {
+            RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
+
+            List<Attribute> newAttributes = new ArrayList<Attribute>();
+            repeaterAttribute.addRow(newAttributes);
+
+            List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
+
+            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, null, newAttributes, new ArrayList<Attribute>(), xmlElements);
+        }
+    }
+
+    private static List<Element> getXMLElementsForRepeater(String rowPath, ContentTemplate template) {
+        List<Element> xmlElements = new ArrayList<Element>();
+        for (Element xmlElement : template.getAttributeElements()) {
+            String name = xmlElement.getAttribute("name");
+            if (name != null && name.equals(rowPath)) {
+                NodeList nodes = xmlElement.getChildNodes();
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Node n = nodes.item(i);
+                    if (n instanceof Element) {
+                        xmlElements.add((Element)n);
+                    }
+                }
+            }
+        }
+        return xmlElements;
+    }
 
     public static void updateAttributesFromTemplate(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
         updateAttributesFromTemplate(content, null);
@@ -203,7 +255,6 @@ public class EditContentHelper {
             defaultValues = new HashMap<String, String>();
         }
 
-        int templateId = -1;
         if (attributeType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
@@ -211,7 +262,7 @@ public class EditContentHelper {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
-                content.setAttributes(new ArrayList(), attributeType);
+                content.setAttributes(new ArrayList<Attribute>(), attributeType);
             }
         }
 
@@ -219,51 +270,41 @@ public class EditContentHelper {
             return;
         }
 
+        List<Attribute> newAttributes = new ArrayList<Attribute>();
+
+        addAttributes(template, attributeType, defaultValues, null, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
+
+        addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
+
+        content.setAttributes(newAttributes, attributeType);
+    }
+
+    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List newAttributes) throws InvalidTemplateException {
         // Some attributes are mapped to specific properties in the Content object, search for these
+        // These are always located at root level, never inside a repeater
         String titleField = null;
         String descField = null;
         String imageField = null;
 
-        List<Element> attributes = template.getAttributeElements();
-        List newAttributes = new ArrayList();
-        for (Element attr : attributes) {
-            String name = attr.getAttribute("name");
-            String type = attr.getAttribute("type");
+        for (Element xmlAttribute : attributes) {
+            String name = xmlAttribute.getAttribute("name");
 
-            AttributeFactory attributeFactory = new ClassNameAttributeFactory();
-
-            Attribute attribute = null;
-            try {
-                attribute = attributeFactory.newAttribute(type);
-            } catch (ClassNotFoundException e) {
-                throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
-            } catch (Exception e) {
-                throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+            String field = xmlAttribute.getAttribute("mapto");
+            if (field == null) {
+                field = xmlAttribute.getAttribute("field");
             }
 
-            attribute.setType(attributeType);
-
-            attribute.setConfig(attr, defaultValues);
-
-            String field = attribute.getField();
             if (field != null && field.length() > 0) {
                 field = field.toLowerCase();
                 if (field.indexOf(ContentProperty.TITLE) != -1) {
-                    titleField = attribute.getName();
+                    titleField = name;
                 } else if (field.indexOf(ContentProperty.DESCRIPTION) != -1) {
-                    descField = attribute.getName();
+                    descField = name;
                 } else if (field.indexOf(ContentProperty.IMAGE) != -1) {
-                    imageField = attribute.getName();
+                    imageField = name;
                 }
             }
 
-            // Save old values
-            Attribute oldAttribute = content.getAttribute(name, attributeType);
-            if (oldAttribute != null) {
-                attribute.cloneValue(oldAttribute);
-            }
-
-            newAttributes.add(attribute);
         }
 
 
@@ -305,8 +346,128 @@ public class EditContentHelper {
                 }
             }
         }
+    }
 
-        content.setAttributes(newAttributes, attributeType);
+    /**
+     * Create attributes recursively
+     * @param attributeType - type of attributes to create, content or metadata
+     * @param defaultValues - used to initialize attributes with default values
+     * @param newParentAttribute - parent of attributes
+     * @param oldParentAttribute - parent of oldattributes
+     * @param newAttributes - list with new attributes
+     * @param oldAttributes - list with old attributes
+     * @param xmlAttributes - XML element with definition
+     * @throws SystemException -
+     * @throws InvalidTemplateException -
+     */
+    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, @Nullable RepeaterAttribute oldParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
+        for (Element xmlAttribute : xmlAttributes) {
+
+            String name = xmlAttribute.getAttribute("name");
+            String type;
+            if (xmlAttribute.getTagName().equalsIgnoreCase("repeater")) {
+                type = "repeater";
+            } else {
+                type = xmlAttribute.getAttribute("type");
+            }
+
+            AttributeFactory attributeFactory = new ClassNameAttributeFactory();
+
+            Attribute attribute = null;
+            try {
+                attribute = attributeFactory.newAttribute(type);
+            } catch (ClassNotFoundException e) {
+                throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
+            } catch (Exception e) {
+                throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+            }
+
+            attribute.setName(name);
+            attribute.setType(attributeType);
+
+            attribute.setConfig(xmlAttribute, defaultValues);
+
+            if (newParentAttribute != null) {
+                attribute.setParent(newParentAttribute);
+            }
+
+            if (attribute instanceof RepeaterAttribute) {
+                /*
+                   RepeaterAttribute is a rowset of repeatable attributes
+                */
+                RepeaterAttribute repeater = (RepeaterAttribute)attribute;
+
+                RepeaterAttribute oldRepeater = null;
+                if (oldAttributes != null) {
+                    Attribute tmpAttr = getAttributeByName(oldAttributes, repeater.getName());
+                    if (tmpAttr != null && tmpAttr instanceof RepeaterAttribute) {
+                        oldRepeater = (RepeaterAttribute)tmpAttr;
+                    }
+                }
+
+                int maxRows = repeater.getMinOccurs();
+                if (oldRepeater != null) {
+                    maxRows = getMaxNumberOfRows(oldRepeater, repeater);
+                }
+
+                for (int rowNumber = 0; rowNumber < maxRows; rowNumber++) {
+                    List<Attribute> newRowAttributes = new ArrayList<Attribute>();
+                    List<Attribute> oldRowAttributes = null;
+
+                    if (oldAttributes != null && oldRepeater != null) {
+                        if (rowNumber < oldRepeater.getNumberOfRows()) {
+                            oldRowAttributes = oldRepeater.getRow(rowNumber);
+                        }
+                    }
+
+                    addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                    repeater.addRow(newRowAttributes);
+                }
+            }
+
+            newAttributes.add(attribute);
+
+            // Copy value from old attribute
+            if (oldAttributes != null) {
+                Attribute oldAttribute = getAttributeByName(oldAttributes, attribute.getName());
+                if (oldAttribute != null) {
+                    attribute.cloneValue(oldAttribute);
+                }
+            }
+        }
+    }
+
+    private static List<Element> getChildrenAsList(Element xmlAttribute) {
+        List<Element> xmlChildren = new ArrayList<Element>();
+        NodeList tmpChildren = xmlAttribute.getChildNodes();
+        for (int childNo = 0; childNo < tmpChildren.getLength(); childNo++) {
+            Node node = tmpChildren.item(childNo);
+            if (node instanceof Element) {
+                xmlChildren.add((Element)node);
+            }
+        }
+        return xmlChildren;
+    }
+
+    private static Attribute getAttributeByName(List<Attribute> attributes, String name) {
+        for (Attribute a : attributes) {
+            if (a.getName().equals(name)) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    private static int getMaxNumberOfRows(RepeaterAttribute oldParentAttribute, RepeaterAttribute repeater) {
+        int maxRows;
+        if (repeater.getMaxOccurs() == -1) {
+            // Unlimited number of rows
+            maxRows = Math.max(oldParentAttribute.getNumberOfRows(), 1);
+        } else {
+            // Limited number of rows
+            maxRows = Math.min(oldParentAttribute.getNumberOfRows(), repeater.getMaxOccurs());
+        }
+        return maxRows;
     }
 
 
@@ -359,6 +520,22 @@ public class EditContentHelper {
             ContentTemplate template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
+            }
+        }
+    }
+
+    public static void deleteRepeaterRow(Content content, String rowPath, int attributeType) {
+        List<Attribute> attributes = content.getAttributes(attributeType);
+
+        if (rowPath.contains("[")) {
+            String repeaterName = rowPath.substring(0, rowPath.indexOf("["));
+            int rowNo = Integer.parseInt(rowPath.substring(rowPath.indexOf("[") + 1, rowPath.indexOf("]")));
+            Attribute attribute = getAttributeByName(attributes, repeaterName);
+            if (attribute instanceof RepeaterAttribute) {
+                RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attribute;
+                if (repeaterAttribute.getNumberOfRows() > 1) {
+                    repeaterAttribute.removeRow(rowNo);
+                }
             }
         }
     }

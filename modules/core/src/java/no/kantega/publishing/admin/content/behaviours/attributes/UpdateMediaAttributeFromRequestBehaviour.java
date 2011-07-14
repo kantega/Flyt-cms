@@ -28,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public class UpdateMediaAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         MediaAttribute fattr = (MediaAttribute)attribute;
         MultipartFile file = param.getFile(inputField + "_upload");

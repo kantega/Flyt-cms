@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.content;
 
+import com.apple.eawt.AppEvent;
 import no.kantega.commons.client.util.ValidationError;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
@@ -32,6 +33,7 @@ import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
@@ -80,7 +82,7 @@ public class InputScreenRenderer {
                         errorsForField = new ArrayList<ValidationError>();
                         fieldErrors.put(error.getField(), errorsForField);
                     }
-                    errorsForField.add(error);                    
+                    errorsForField.add(error);
                 }
             }
         }
@@ -101,36 +103,77 @@ public class InputScreenRenderer {
             out.print("<div id=\"TemplateGlobalHelpText\" class=\"ui-state-highlight\">" + globalHelpText + "</div>");
         }
 
+        request.setAttribute("content", content);
+
         int tabIndex = 100; // Tab index for attribute
-        List attrlist = content.getAttributes(attributeType);
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
+        List<Attribute> attributes = content.getAttributes(attributeType);
+        for (Attribute attribute : attributes) {
+            renderAttribute(out, request, fieldErrors, attribute, tabIndex);
+            tabIndex += 10;
+        }
+    }
 
-            if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
-                String value = attr.getValue();
-                if (value == null || value.length() == 0) {
-                    attr.setValue("");
-                }
+    private void renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attribute, int tabIndex) throws IOException {
+        if (attribute.isEditable() && !attribute.isHidden(content) && roleCanEdit(attribute, request)) {
+            String value = attribute.getValue();
+            if (value == null || value.length() == 0) {
+                attribute.setValue("");
+            }
 
-                // Print field by including JSP for attribute
-                attr.setTabIndex(tabIndex);
-                tabIndex += 10;
+            tabIndex += 10;
 
-                renderAttribute(out, request, fieldErrors, attr);
+            // Print field by including JSP for attribute
+            attribute.setTabIndex(tabIndex);
+
+            if (attribute instanceof RepeaterAttribute) {
+                renderRepeaterAttribute(out, request, fieldErrors, attribute);
+            } else {
+                renderNormalAttribute(out, request, fieldErrors, attribute);
             }
         }
     }
 
-    public void renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attr) throws IOException {
-        request.setAttribute("content", content);
+    private void renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute repeaterAttribute) throws IOException {
+
+        try {
+            out.print("\n<div class=\"contentAttributeRepeater\" id=\"" + AttributeHelper.getInputContainerName(repeaterAttribute.getNameIncludingPath()) + "\">\n");
+            request.setAttribute("repeater", repeaterAttribute);
+            request.setAttribute("repeaterFieldName", AttributeHelper.getInputFieldName(repeaterAttribute.getNameIncludingPath()));
+
+            RepeaterAttribute repeater = (RepeaterAttribute)repeaterAttribute;
+            int numberOfRows = repeater.getNumberOfRows();
+            for (int rowNo = 0; rowNo < numberOfRows; rowNo++) {
+                out.print("<div class=\"contentAttributeRepeaterRow");
+                if (rowNo == 0) {
+                    out.print(" first");
+                }
+                out.print("\">\n");
+                request.setAttribute("repeaterRowNo", rowNo);
+                pageContext.include("/admin/publish/attributes/repeater_row_start.jsp");
+                List<Attribute> attributes = repeater.getRow(rowNo);
+                for (Attribute attribute : attributes) {
+                    renderAttribute(out, request, fieldErrors, attribute, repeaterAttribute.getTabIndex());
+                }
+                pageContext.include("/admin/publish/attributes/repeater_row_end.jsp");
+                out.print("</div>\n");
+            }
+            out.print("</div>");
+        } catch (Exception e) {
+            Log.error(SOURCE, e, null, null);
+            String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
+            out.print("<div class=\"errorText\">" + errorMessage + ":" + repeaterAttribute.getTitle() + "</div>\n");
+        }
+    }
+
+    public void renderNormalAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attr) throws IOException {
         request.setAttribute("attribute", attr);
-        request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getName()));
+        request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getNameIncludingPath()));
 
         try {
             if (fieldErrors.get(attr.getName()) != null) {
-                out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
+                out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getNameIncludingPath()) + "\">\n");
             } else {
-                out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getName()) + "\">\n");
+                out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getNameIncludingPath()) + "\">\n");
             }
             out.print("<div class=\"heading\">" + attr.getTitle());
             if (attr.isMandatory()) {
@@ -163,7 +206,7 @@ public class InputScreenRenderer {
     private boolean roleCanEdit(Attribute attr, ServletRequest request) {
         String[] roles = attr.getEditableByRoles();
         if (roles != null && roles.length > 0) {
-            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);            
+            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
         }
 
         return true;

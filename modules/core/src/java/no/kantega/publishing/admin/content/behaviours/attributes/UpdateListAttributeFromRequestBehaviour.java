@@ -23,7 +23,7 @@ import no.kantega.publishing.admin.content.util.AttributeHelper;
 
 public class UpdateListAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
-        String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+        String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
         String value = "";
         String values[] = param.getStrings(inputField);

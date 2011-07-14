@@ -12,6 +12,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="attribute" minOccurs="1"/>
+                <xs:element maxOccurs="unbounded" ref="repeater" minOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -113,6 +114,17 @@
             <xs:attribute name="startid" type="xs:string"/>
         </xs:complexType>
     </xs:element>
+    <xs:element name="repeater">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="attribute" minOccurs="1"/>
+            </xs:sequence>
+            <xs:attribute name="name" use="required" type="xs:string"/>
+            <xs:attribute name="minoccurs" type="xs:integer"/>
+            <xs:attribute name="maxoccurs" type="xs:integer"/>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="helptext" type="xs:string" />
     <xs:element name="script" type="xs:string"/>
     <xs:element name="options">

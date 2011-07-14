@@ -109,7 +109,7 @@ public class RenderAttributeTag extends TagSupport {
                 }
 
                 InputScreenRenderer renderer = new InputScreenRenderer(pageContext, content, AttributeDataType.CONTENT_DATA);
-                renderer.renderAttribute(pageContext.getOut(), request, fieldErrors, attribute);
+                renderer.renderNormalAttribute(pageContext.getOut(), request, fieldErrors, attribute);
 
             } catch (IOException e) {
                 throw new JspException(e);

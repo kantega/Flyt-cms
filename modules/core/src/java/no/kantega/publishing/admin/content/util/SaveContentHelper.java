@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -45,32 +46,35 @@ public class SaveContentHelper {
     }
 
 
-    public ValidationErrors getHttpParameters(ValidationErrors errors) throws RegExpSyntaxException {
-        RequestParameters param = new RequestParameters(request, "utf-8");
+    public ValidationErrors getHttpParameters(final ValidationErrors errors) throws RegExpSyntaxException {
+        final RequestParameters param = new RequestParameters(request, "utf-8");
 
-        List attrlist = content.getAttributes(attributeType);
+        content.doForEachAttribute(attributeType, new AttributeHandler() {
 
-        for (int i = 0; i < attrlist.size(); i++) {
-            Attribute attr = (Attribute)attrlist.get(i);
-            if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
-                UpdateAttributeFromRequestBehaviour updater = attr.getUpdateFromRequestBehaviour();
+            public void handleAttribute(Attribute attr) {
+                if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
+                    UpdateAttributeFromRequestBehaviour updater = attr.getUpdateFromRequestBehaviour();
 
-                // Oppdaterer attribut objektet med riktige verdier fra requesten
-                updater.updateAttribute(param, content, attr);
+                    updater.updateAttribute(param, content, attr);
 
-                // Mapper attributter til bestemte contentproperties
-                MapAttributeValueToContentPropertyBehaviour mapper = attr.getMapAttributeValueToContentPropertyBehaviour();
-                if (mapper != null && attr.getField() != null) {
-                    String fieldNames = attr.getField();
-                    String[] fields = fieldNames.split(",");
-                    for (int j = 0; j < fields.length; j++) {
-                        String field = fields[j];
-                        mapper.mapAttributeValue(param, content, attr, field, errors);
+                    // Map values to fixed content properties, such as publish date, title etc
+                    MapAttributeValueToContentPropertyBehaviour mapper = attr.getMapAttributeValueToContentPropertyBehaviour();
+                    if (mapper != null && attr.getField() != null) {
+                        String fieldNames = attr.getField();
+                        String[] fields = fieldNames.split(",");
+                        for (int j = 0; j < fields.length; j++) {
+                            String field = fields[j];
+                            mapper.mapAttributeValue(param, content, attr, field, errors);
+                        }
                     }
                 }
+                try {
+                    attr.validate(errors);
+                } catch (RegExpSyntaxException e) {
+                    Log.error(this.getClass().getName(), e);
+                }
             }
-            attr.validate(errors);
-        }
+        });
 
         return errors;
     }

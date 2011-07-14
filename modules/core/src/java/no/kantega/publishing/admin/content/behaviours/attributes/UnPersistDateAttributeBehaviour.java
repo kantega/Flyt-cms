@@ -33,7 +33,6 @@ import java.text.ParseException;
  */
 public class UnPersistDateAttributeBehaviour implements UnPersistAttributeBehaviour{
     public void unpersistAttribute(ResultSet rs, Attribute attribute) throws SQLException, SystemException {
-        attribute.setName(rs.getString("Name"));
         String value = rs.getString("Value");
         DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
         try {

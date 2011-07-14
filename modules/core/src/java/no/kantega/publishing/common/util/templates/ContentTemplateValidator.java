@@ -83,6 +83,11 @@ public class ContentTemplateValidator {
                     if (name == null) {
                         errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingname", null));
                     }
+
+                    if (name.contains("[") || name.contains("]")) {
+                        errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.invalidname", null));
+                    }
+
                     String field = attr.getAttribute("field");
                     String mapto = attr.getAttribute("mapto");
                     if ("url".equalsIgnoreCase(field) || "url".equalsIgnoreCase(mapto)) {

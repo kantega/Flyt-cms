@@ -51,7 +51,7 @@ public class MapSimpleAttributeValueToContentPropertyBehaviour implements MapAtt
             content.setAltTitle(value);
         } else if (field.equalsIgnoreCase(ContentProperty.URL)) {
             content.setLocation(value);
-            String inputField = AttributeHelper.getInputFieldName(attribute.getName());
+            String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
             content.setDoOpenInNewWindow(param.getBoolean(inputField + "_newwindow"));
         } else if (field.equalsIgnoreCase(ContentProperty.OWNER)) {
             content.setOwner(value);
