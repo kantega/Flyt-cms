@@ -1,10 +1,7 @@
 <%@ page import="no.kantega.publishing.common.data.WorkList" %>
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
 <%@ page import="java.text.DecimalFormat" %>
-<%@ page import="java.util.Properties" %>
-<%@ page import="java.util.Enumeration" %>
-<%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.Map" %>
+<%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -115,11 +112,20 @@
                 <tbody>
                 <%
                     Properties configProperties = (Properties)request.getAttribute("configProperties");
+
                     Iterator properties = configProperties.entrySet().iterator();
+
+                    SortedSet<String> sortedProperties= new TreeSet<String>();
+
                     while (properties.hasNext()) {
                         Map.Entry entry = (Map.Entry) properties.next();
                         String key = entry.getKey().toString();
-                        String value = entry.getValue().toString();
+                        sortedProperties.add(key);
+                    }
+                    Iterator it = sortedProperties.iterator();
+                    while (it.hasNext()) {
+                        String key = (String)it.next();
+                        String value = configProperties.getProperty(key);
                         if (key.contains("password")) {
                             value = "******";
                         }
