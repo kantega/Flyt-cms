@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.admin.content;
 
-import com.apple.eawt.AppEvent;
 import no.kantega.commons.client.util.ValidationError;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
@@ -27,12 +26,9 @@ import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.MetadataTemplateCache;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -43,9 +39,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

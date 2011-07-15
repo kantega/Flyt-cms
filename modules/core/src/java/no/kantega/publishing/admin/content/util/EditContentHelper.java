@@ -16,39 +16,36 @@
 
 package no.kantega.publishing.admin.content.util;
 
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.AssociationHelper;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.MetadataTemplateCache;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ImageAttribute;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.AssociationHelper;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
-import no.kantega.publishing.common.cache.MetadataTemplateCache;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.security.SecuritySession;
-
-import java.util.*;
-
+import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.data.Topic;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import sun.java2d.pipe.AATextRenderer;
 
 import javax.annotation.Nullable;
+import java.util.*;
 
 public class EditContentHelper {
     private static final String SOURCE = "aksess.admin.EditContentHelper";
