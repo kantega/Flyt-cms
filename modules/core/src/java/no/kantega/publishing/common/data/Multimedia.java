@@ -24,6 +24,7 @@ import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -145,6 +146,13 @@ public class Multimedia extends BaseObject {
 
     public int getSize() {
         return size;
+    }
+
+    public String getReadableFileSize() {
+        if(size <= 0) return "0";
+        final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
     public void setSize(int size) {
