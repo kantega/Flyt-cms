@@ -30,7 +30,7 @@ public class MimeTypes {
 
         // Div
         mimetypes.add(new MimeType("zip", "application/zip", "ZIP komprimert fil"));
-        mimetypes.add(new MimeType("pdf", "application/pdf", "Adobe Acrobat"));
+        mimetypes.add(new MimeType("pdf", "application/pdf", "PDF"));
         mimetypes.add(new MimeType("rtf", "application/rtf", "Rik tekst"));
 
         // Images
