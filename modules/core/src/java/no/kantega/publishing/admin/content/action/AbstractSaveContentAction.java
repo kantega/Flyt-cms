@@ -24,6 +24,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
+import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -205,6 +206,10 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         try {
             Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
             content.setPublishDate(startDate);
+
+            if (startDate == null && (!content.isNew()) && ContentAO.hasBeenPublished(content.getId())) {
+                errors.add(null, "aksess.error.publishdatenotset");
+            }
         } catch(Exception e) {
             Map<String, Object> objects = new HashMap<String, Object>();
             objects.put("dateFormat", Aksess.getDefaultDateFormat());

@@ -326,6 +326,11 @@ public class ContentManagementService {
                     content.setPublishDate(currentTime);
                 }
             }
+        } else {
+            if ((!content.isNew()) && (ContentAO.hasBeenPublished(content.getId()))) {
+                // If page has been published before, publish date must be set
+                content.setPublishDate(new Date());
+            }
         }
 
         if (content.getPublishDate() != null && content.getPublishDate().getTime() > new Date().getTime()) {
