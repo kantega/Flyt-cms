@@ -19,6 +19,7 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
@@ -73,6 +74,10 @@ public class AddContentAction extends AdminController {
         List<AssociationCategory> allowedAssociations = helper.getAllowedAssociationCategories(parentTemplate);
         if (allowedAssociations.size() == 0) {
             throw new ChildContentNotAllowedException();
+        }
+
+        if (!securitySession.isAuthorized(parent, Privilege.UPDATE_CONTENT)) {
+            throw new NotAuthorizedException("Not authorized to edit:" + parent.getTitle(), this.getClass().getName());
         }
 
         model.put("allowedAssociations", allowedAssociations);
