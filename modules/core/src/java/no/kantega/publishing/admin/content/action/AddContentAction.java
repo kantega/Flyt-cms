@@ -19,6 +19,7 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
@@ -32,6 +33,7 @@ import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -63,6 +65,10 @@ public class AddContentAction extends AdminController {
         Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
+        }
+
+        if (!securitySession.isAuthorized(parent, Privilege.UPDATE_CONTENT)) {
+            throw new NotAuthorizedException("Not authorized to edit:" + parent.getTitle(), this.getClass().getName());
         }
 
         model.put("parent", parent);
