@@ -145,11 +145,15 @@ public class MailSubscriptionAgent {
                 Role everyone = new Role();
                 everyone.setId(Aksess.getEveryoneRole());
 
+                boolean sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
+
                 for (int i = 0; i < allContentList.size(); i++) {
                     Content content = (Content) allContentList.get(i);
-                    if (SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
+                    if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
                         contentList.add(content);
-                        Log.debug(SOURCE, "New content:" + content.getTitle(), null, null);
+                        Log.debug(SOURCE, "New content:" + content.getTitle());
+                    } else {
+                        Log.info(SOURCE, "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
                     }
                 }
 
