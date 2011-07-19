@@ -42,7 +42,8 @@
             bindToolbarButtons();
             <c:choose>
                 <c:when test="${scrollTo != null}">
-                    // TODO: Scroll correct element into view
+                    // This fails if a delay is not added
+                    setTimeout(scrollTo, 500);
                 </c:when>
                 <c:otherwise>
                     // Set focus to first input field in form
@@ -50,6 +51,10 @@
                 </c:otherwise>
             </c:choose>
         });
+
+        function scrollTo() {
+            $("#EditContentMain").scrollTop($("#${scrollTo} .buttonGroup:last").offset().top);
+        }
 
         function bindToolbarButtons() {
         <c:if test="${!contentActive}">
@@ -157,7 +162,7 @@
     <form name="activeversion" action="UseVersion.action" method="post">
         <input type="hidden" name="version" value="-1">
     </form>
-    
+
     <form name="deleteversion" action="DeleteVersion.action" method="post">
         <input type="hidden" name="version" value="-1">
     </form>
