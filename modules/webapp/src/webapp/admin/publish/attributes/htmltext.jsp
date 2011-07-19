@@ -87,10 +87,14 @@
     }
 
     // Let etter /css/site/editor.css og /site/css/editor.css og /css/editor.css
-    String cssPath = "/css" + site.getAlias() + attribute.getCss();
+    String siteAlias = site.getAlias();
+    if (!siteAlias.endsWith("/")) {
+        siteAlias += "/";
+    }
+    String cssPath = "/css" + siteAlias + attribute.getCss();
 
     if (pageContext.getServletContext().getResource(cssPath) == null) {
-        cssPath = site.getAlias() + "css/" + attribute.getCss();
+        cssPath = siteAlias + "css/" + attribute.getCss();
     }
     if (pageContext.getServletContext().getResource(cssPath) == null) {
         cssPath = "css/" + attribute.getCss();
