@@ -24,10 +24,12 @@
 <div class="inputs">
     <input type="file" class="fullWidth" name="${fieldName}" id="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}">
     <input type="hidden" name="delete_${fieldName}" value="0">
+<% if (value != null && value.length() > 0) {%>
+    <br><a href="<%=attribute.getProperty(AttributeProperty.URL)%>" class="textlink" target="_new"><%=attribute.getProperty(AttributeProperty.NAME)%></a>
+<%}%>
 </div>
 <% if (value != null && value.length() > 0) {%>
 <div class="buttonGroup">
-    <a href="<%=attribute.getProperty(AttributeProperty.URL)%>" target="_new" class="button"><span class="show"><kantega:label key="aksess.button.showfile"/></span></a>
     <a href="#" onclick="openaksess.editcontext.removeAttachment(document.myform.${fieldName})" class="button"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
 </div>
 <%}%>
