@@ -31,11 +31,12 @@
             if (note == "") {
                 alert("<kantega:label key="aksess.reject.missingvalue"/>");
             } else {
-                $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {reject: true, note:note, url: ${url}}, function(data) {
+                $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {reject: true, note:note, url: "${url}"}, function(data) {
                     openaksess.common.debug("reject note");
                     getParent().ContentStatus.showApproveOrReject(false);
                     setTimeout("closeWindow()", 10);
                 });
+                return true;
             }
             return false;
         }
