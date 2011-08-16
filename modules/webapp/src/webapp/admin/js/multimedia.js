@@ -92,17 +92,17 @@ openaksess.multimedia = {
      */
     bindToolButtons : function() {
         $("#UploadButton").click(function() {
-            if ($(this).not(".disabled")) {
+            if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.showUploadForm();
             }
         });
         $("#NewFolderButton").click(function() {
-            if ($(this).not(".disabled")) {
+            if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.createMediaFolder();
             }
         });
         $("#DeleteFolderButton").click(function() {
-            if ($(this).not(".disabled")) {
+            if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.tools.deleteItem(currentItemIdentifier);
             }
         });
