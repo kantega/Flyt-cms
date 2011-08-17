@@ -83,7 +83,6 @@ openaksess.navigate = {
     navigatorResizeOnResize : function(){},
 
     getClipBoardHandler : function() {
-        return null;
     },
 
     /**
