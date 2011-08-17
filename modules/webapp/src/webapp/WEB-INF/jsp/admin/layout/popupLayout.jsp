@@ -62,7 +62,7 @@
             });
             var title = $("title").text();
             //Use the iframe page's title as modal window title if set.
-            if (!window.opener && $.trim(title).length > 0 && typeof parent.openaksess != undefined) {
+            if (!window.opener && $.trim(title).length > 0 && typeof parent.openaksess != "undefined") {
                 parent.openaksess.common.modalWindow.setTitle(title);
             }
         });
