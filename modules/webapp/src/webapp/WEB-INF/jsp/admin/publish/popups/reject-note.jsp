@@ -24,7 +24,7 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <script type="text/javascript" language="Javascript">
+    <script type="text/javascript">
 
         function buttonOkPressed() {
             var note = $("#Note").val();
@@ -33,7 +33,7 @@
             } else {
                 $.post("${pageContext.request.contextPath}/admin/publish/ApproveOrReject.action", {reject: true, note:note, url: "${url}"}, function(data) {
                     openaksess.common.debug("reject note");
-                    getParent().ContentStatus.showApproveOrReject(false);
+                    getParent().openaksess.content.contentstatus.showApproveOrReject(false);
                     setTimeout("closeWindow()", 10);
                 });
                 return true;
