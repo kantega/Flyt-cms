@@ -35,41 +35,47 @@ public class ExpiresResourceUrlTag extends TagSupport {
 
     private ResourceKeyProvider defaultExpiresSettings = new DefaultExpiresResourceKeyProvider();
 
+    private boolean includeContextPath = true;
+
     private String url;
 
     @Override
     public int doStartTag() throws JspException {
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        HttpServletResponse response= (HttpServletResponse) pageContext.getResponse();
+        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
         ResourceKeyProvider provider = defaultExpiresSettings;
 
         {
             WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
             Map<String, ResourceKeyProvider> beans = context.getBeansOfType(ResourceKeyProvider.class);
-            if(beans.size() > 0) {
+            if (beans.size() > 0) {
                 provider = beans.values().iterator().next();
             }
 
         }
         try {
-            pageContext.getOut().write(request.getContextPath() + "/expires/" + provider.getUniqueKey(request, response, url) + url);
+            String expireUrl = "/expires/" + provider.getUniqueKey(request, response, url) + url;
+            if (includeContextPath) {
+                expireUrl = request.getContextPath() + expireUrl;
+            }
+            pageContext.getOut().write(expireUrl);
         } catch (IOException e) {
             throw new JspException(e);
         }
         return SKIP_BODY;
     }
 
-
     public int doEndTag() throws JspException {
-         return EVAL_PAGE;
+        return EVAL_PAGE;
     }
 
     /**
      * Simple key provider that just returns the time of last restart.
      */
     class DefaultExpiresResourceKeyProvider implements ResourceKeyProvider {
+
         public String getUniqueKey(HttpServletRequest request, HttpServletResponse response, String url) {
             return Long.toString(ManagementFactory.getRuntimeMXBean().getStartTime());
         }
@@ -77,5 +83,9 @@ public class ExpiresResourceUrlTag extends TagSupport {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setIncludecontextpath(boolean includeContextPath) {
+        this.includeContextPath = includeContextPath;
     }
 }
