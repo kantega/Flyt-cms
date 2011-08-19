@@ -25,9 +25,9 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
+import sun.rmi.rmic.iiop.IDLNames;
 
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,6 +35,7 @@ public class IsInPathTag extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsInPathTag";
 
     private String contentId = null;
+    private Content contentObject = null;
     private boolean negate = false;
 
     public void setContentid(String contentId) {
@@ -45,6 +46,10 @@ public class IsInPathTag extends ConditionalTagSupport {
         this.negate = negate;
     }
 
+    public void setObj(Content contentObject) {
+        this.contentObject = contentObject;
+    }
+
     protected boolean condition() {
         try {
             HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();
@@ -52,7 +57,8 @@ public class IsInPathTag extends ConditionalTagSupport {
 
             if (contentId != null) {
                 try {
-                    Content content = (Content)request.getAttribute("aksess_this");
+
+                    Content content = contentObject != null ? contentObject :  (Content)request.getAttribute("aksess_this");
 
                     if (content == null) {
                         // Ikke hentet side
@@ -80,7 +86,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                     String path = association.getPath();
                     if (content.getAssociation().getId() == cid.getAssociationId() || path.indexOf("/" + cid.getAssociationId() + "/") != -1) {
                         return !negate;
-                    }                   
+                    }
 
                 } catch (NotAuthorizedException e) {
                     SecuritySession session = SecuritySession.getInstance(request);

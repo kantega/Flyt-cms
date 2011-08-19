@@ -396,6 +396,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>ContentObject who owns the path. if omitted, current page is used.</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Inverts statement, eg check if contentId is NOT in path</description>
             <name>negate</name>
             <required>false</required>
