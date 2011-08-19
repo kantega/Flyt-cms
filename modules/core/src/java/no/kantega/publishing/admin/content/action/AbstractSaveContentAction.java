@@ -203,26 +203,30 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
     private ValidationErrors savePublishProperties(Content content, RequestParameters param, ContentManagementService aksessService) {
         ValidationErrors errors = new ValidationErrors();
-        try {
-            Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
-            content.setPublishDate(startDate);
 
-            if (startDate == null && (!content.isNew()) && ContentAO.hasBeenPublished(content.getId())) {
-                errors.add(null, "aksess.error.publishdatenotset");
+        if (dateFieldExists(param, "from")) {
+            try {
+                Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
+                content.setPublishDate(startDate);
+                if (startDate == null && (!content.isNew()) && ContentAO.hasBeenPublished(content.getId())) {
+                    errors.add(null, "aksess.error.publishdatenotset");
+                }
+            } catch(Exception e) {
+                Map<String, Object> objects = new HashMap<String, Object>();
+                objects.put("dateFormat", Aksess.getDefaultDateFormat());
+                errors.add(null, "aksess.error.date", objects);
             }
-        } catch(Exception e) {
-            Map<String, Object> objects = new HashMap<String, Object>();
-            objects.put("dateFormat", Aksess.getDefaultDateFormat());
-            errors.add(null, "aksess.error.date", objects);
         }
 
-        try {
-            Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());
-            content.setExpireDate(expireDate);
-        } catch (Exception e) {
-            Map<String, Object> objects = new HashMap<String, Object>();
-            objects.put("dateFormat", Aksess.getDefaultDateFormat());
-            errors.add(null, "aksess.error.date", objects);
+        if (dateFieldExists(param, "end")) {
+            try {
+                Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());
+                content.setExpireDate(expireDate);
+            } catch (Exception e) {
+                Map<String, Object> objects = new HashMap<String, Object>();
+                objects.put("dateFormat", Aksess.getDefaultDateFormat());
+                errors.add(null, "aksess.error.date", objects);
+            }
         }
 
         if (content.getPublishDate() != null && content.getExpireDate() != null) {
@@ -323,6 +327,10 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         }
 
         return errors;
+    }
+
+    private boolean dateFieldExists(RequestParameters param, String field) {
+        return param.getString(field + "_date") != null;
     }
 
     public void setUpdatePublishProperties(boolean updatePublishProperties) {
