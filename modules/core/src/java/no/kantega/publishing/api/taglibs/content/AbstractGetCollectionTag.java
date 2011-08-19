@@ -25,7 +25,6 @@ import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
@@ -192,8 +191,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 query.setTopics(topics);
                 useAssociatedId = false;
             } else if (topicId != null && topicId.trim().length() > 0 && topicMapId != -1) {
-                TopicMapService topicService = new TopicMapService(request);
-                query.setTopic(topicService.getTopic(topicMapId, topicId));
+                query.setTopic(new Topic(topicId, topicMapId));
                 useAssociatedId = false;
             }
 
