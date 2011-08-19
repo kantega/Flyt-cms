@@ -25,7 +25,6 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.NotAuthorizedException;
-import sun.rmi.rmic.iiop.IDLNames;
 
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.http.HttpServletRequest;
