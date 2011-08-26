@@ -1355,4 +1355,24 @@ public class ContentManagementService {
             return Arrays.hashCode(cacheKey);
         }
     }
+
+    /**
+     * Returns the current site's front page
+     * @return Content frontPage
+     *
+     * @throws NotAuthorizedException
+     */
+
+   public Content getFrontPage() throws NotAuthorizedException{
+       Content thisContent = (Content)request.getAttribute("aksess_this");
+
+       List pathList = getPathByContentId(thisContent.getContentIdentifier());
+       if (pathList == null || pathList.size() == 0) return thisContent;  // thisContent is front page
+
+       PathEntry frontPagePathEntry = (PathEntry) pathList.get(0);
+       ContentIdentifier frontPageIdentifier = new ContentIdentifier();
+       frontPageIdentifier.setAssociationId(frontPagePathEntry.getId());
+
+       return getContent(frontPageIdentifier);
+   }
 }
