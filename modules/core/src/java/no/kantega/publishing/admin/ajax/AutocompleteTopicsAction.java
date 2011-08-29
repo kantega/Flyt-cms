@@ -44,7 +44,7 @@ public class AutocompleteTopicsAction implements Controller {
                 for (Topic topic : topics) {
                     for (TopicMap topicMap : topicMaps) {
                         if (topicMap.getId() == topic.getTopicMapId()) {
-                            topic.setBaseName(topic.getBaseName() + " ( " + tms.getTopicMap(topic.getTopicMapId()).getName() + " )");
+                            topic.setBaseName(topic.getBaseName() + " (" + tms.getTopicMap(topic.getTopicMapId()).getName() + ")");
                             break;
                         }
                     }
