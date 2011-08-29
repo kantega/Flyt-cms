@@ -75,23 +75,16 @@ html, body {
 }
 
 #SelectTopics {
-    float: left;
     clear: left;
-}
-
-#TopicInputContainer {
     float: left;
+    width: 235px;
 }
-
 #TopicInput {
-    width: 120px;
+    width: 229px;
 }
-
-
-
 #ChooseTopicButton {
-    margin-left: 4px;
-    float: left;
+    margin-top: 4px;
+    float: right;
 }
 
 .buttonRow {
