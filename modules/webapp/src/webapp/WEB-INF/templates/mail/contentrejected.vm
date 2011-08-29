@@ -1,6 +1,6 @@
 <html>
 <body>
-<p>Endringene du gjorde på siden
+<p>Endringene du gjorde p&aring; siden
 <a href="$contenturl">$title</a> har blitt avvist av en redakt&oslash;r.</p>
 <p>
 Melding fra redakt&oslash;ren: $note
