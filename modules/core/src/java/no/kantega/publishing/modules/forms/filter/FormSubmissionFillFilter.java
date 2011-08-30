@@ -25,13 +25,15 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     private FormElementValidatorFactory formElementValidatorFactory;
     private boolean capture = false;
     private StringBuilder validatorArg = new StringBuilder();
+    private boolean shouldAddParametersNotInForm = true;
 
-    public FormSubmissionFillFilter(Map<String, String[]> params, Form form) {
+    public FormSubmissionFillFilter(Map<String, String[]> params, Form form, boolean shouldAddParametersNotInForm) {
         this.params = params;
         this.formSubmission = new DefaultFormSubmission();
         formSubmission.setForm(form);
         this.errors = new ArrayList<FormError>();
         currentFieldIndex = 0;
+        this.shouldAddParametersNotInForm = shouldAddParametersNotInForm;
     }
 
     public void setFormElementValidatorFactory(FormElementValidatorFactory formElementValidatorFactory) {
@@ -156,7 +158,9 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     }
 
     public void endDocument() throws SAXException {
-        addCustomParametersNotInForm();
+        if (shouldAddParametersNotInForm) {
+            addCustomParametersNotInForm();
+        }
     }
 
     private void addCustomParametersNotInForm() {

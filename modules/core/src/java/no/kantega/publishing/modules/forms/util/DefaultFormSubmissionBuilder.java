@@ -15,7 +15,11 @@ import java.io.StringWriter;
  */
 public class DefaultFormSubmissionBuilder implements FormSubmissionBuilder {
     public FormSubmission buildFormSubmission(Map<String, String[]> values, Form form) {
-        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(values, form);
+        return buildFormSubmission(values, form, true);
+    }
+
+    public FormSubmission buildFormSubmission(Map<String, String[]> values, Form form, boolean shouldAddParametersNotInForm) {
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(values, form, shouldAddParametersNotInForm);
 
         FilterPipeline pipeline = new FilterPipeline();
 

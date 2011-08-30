@@ -22,7 +22,7 @@ public class DefaultFormSubmissionValidator implements FormSubmissionValidator {
             values.put(value.getName(), value.getValues());
         }
 
-        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(values, formSubmission.getForm());
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(values, formSubmission.getForm(), true);
         filter.setFormElementValidatorFactory(formElementValidatorFactory);
 
         FilterPipeline pipeline = new FilterPipeline();

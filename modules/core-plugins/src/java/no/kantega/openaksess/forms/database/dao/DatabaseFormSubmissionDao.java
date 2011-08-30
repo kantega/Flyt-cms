@@ -81,10 +81,22 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         int id = form.getFormSubmissionId();
 
         JdbcTemplate template = new JdbcTemplate(dataSource);
+
+        String auth = "";
+        Identity identity = form.getAuthenticatedIdentity();
+        if (identity != null) {
+            if (identity.getDomain() != null && identity.getDomain().length() > 0) {
+                auth = identity.getDomain() + ":";
+            }
+            auth += identity.getUserId();
+        }
+
+        final String userId = auth;
+
         if (form.getFormSubmissionId() > 0) {
             // Update
             template.update("UPDATE formsubmission SET SubmittedBy = ?, AuthenticatedIdentity = ?, Password = ?, Email = ?, SubmittedDate = ? WHERE FormSubmissionId = ?",
-                    new Object[] {form.getSubmittedByName(), form.getAuthenticatedIdentity(), form.getPassword(), form.getSubmittedByEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId()});
+                    new Object[] {form.getSubmittedByName(), userId, form.getPassword(), form.getSubmittedByEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId()});
 
             // Delete old form values
             template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", new Object[] {form.getFormSubmissionId()});
@@ -97,16 +109,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
                     PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, form.getForm().getId());
                     p.setString(2, form.getSubmittedByName());
-
-                    String auth = "";
-                    Identity identity = form.getAuthenticatedIdentity();
-                    if (identity != null) {
-                        if (identity.getDomain() != null && identity.getDomain().length() > 0) {
-                            auth = identity.getDomain() + ":";
-                        }
-                        auth += identity.getUserId();
-                    }
-                    p.setString(3, auth);
+                    p.setString(3, userId);
                     p.setString(4, form.getPassword());
                     p.setString(5, form.getSubmittedByEmail());
                     p.setTimestamp(6, new Timestamp(new Date().getTime()));

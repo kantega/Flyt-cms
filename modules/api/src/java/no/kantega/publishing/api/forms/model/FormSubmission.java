@@ -26,10 +26,12 @@ import java.util.*;
 public interface FormSubmission {
     public int getFormSubmissionId();
     public Form getForm();
+    public void setForm(Form form);
     public String getSubmittedByName();
     public String getSubmittedByEmail();
     public Identity getAuthenticatedIdentity();
     public String getPassword();
+    public void setPassword();
     public Date getSubmissionDate();
     public List<FormValue> getValues();
     public void setAuthenticatedIdentity(Identity identity);

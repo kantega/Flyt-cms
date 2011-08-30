@@ -9,5 +9,6 @@ import java.util.Map;
  *
  */
 public interface FormSubmissionBuilder {
+    public FormSubmission buildFormSubmission(Map<String, String[]> values, Form form, boolean shouldAddParametersNotInForm);
     public FormSubmission buildFormSubmission(Map<String, String[]> values, Form form);
 }

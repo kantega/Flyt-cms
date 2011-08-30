@@ -55,7 +55,7 @@ public class SaveFormSubmissionController implements AksessController {
                 Map<String, String[]> values = new LinkedHashMap<String, String[]>(request.getParameterMap());
                 addValues(values, request);
 
-                FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form);
+                FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form, true);
 
                 // Validate formsubmission
                 List<FormError> errors = formSubmissionValidator.validate(formSubmission);
@@ -91,7 +91,7 @@ public class SaveFormSubmissionController implements AksessController {
                 Map<String, String[]> prefillValues = new HashMap<String, String[]>();
                 prefill(prefillValues, request);
                 if (prefillValues.size() > 0) {
-                    FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form);
+                    FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form, true);
                     if (formSubmission.getValues() != null) {
                         form = filledFormBuilder.buildFilledForm(formSubmission, null);
                     }

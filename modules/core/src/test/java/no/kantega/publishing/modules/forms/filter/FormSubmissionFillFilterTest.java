@@ -55,7 +55,7 @@ public class FormSubmissionFillFilterTest extends TestCase {
             }
         };
 
-        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form, true);
 
         pipeline.addFilter(filter);
 
@@ -112,7 +112,7 @@ public void testShouldPickupValueForRecipientEmail() throws SystemException {
             }
         };
 
-        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form);
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form, true);
 
         pipeline.addFilter(filter);
 
