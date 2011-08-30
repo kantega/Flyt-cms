@@ -7,6 +7,17 @@ import java.util.List;
  *
  */
 public class UIContributionAdapter implements UIContribution {
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<MenuItem> getRootMenuItems() {
+        return Collections.emptyList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public List<MenuItem> getAdminMenuItems() {
         return Collections.emptyList();
     }

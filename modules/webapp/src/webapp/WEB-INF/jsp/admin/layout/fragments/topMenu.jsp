@@ -3,6 +3,14 @@
 <%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page import="no.kantega.publishing.security.service.SecurityService" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
+<%@ page import="no.kantega.publishing.api.plugin.OpenAksessPlugin" %>
+<%@ page import="no.kantega.publishing.spring.PluginMessageSource" %>
+<%@ page import="org.kantega.jexmec.PluginManager" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="no.kantega.publishing.api.ui.UIContribution" %>
+<%@ page import="no.kantega.publishing.api.ui.MenuItem" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -25,6 +33,26 @@
 <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="menuitem ${publishSelected}"><kantega:label key="aksess.menu.publish"/></a>
 <a href="${pageContext.request.contextPath}/admin/multimedia/Navigate.action" class="menuitem ${multimediaSelected}"><kantega:label key="aksess.menu.multimedia"/></a>
 <a href="${pageContext.request.contextPath}/admin/topicmaps/Topics.action" class="menuitem ${topicMapsSelected}"><kantega:label key="aksess.menu.topicmaps"/></a>
+<%
+    //Menu items contributed by plugins.
+    PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext()).getBean("pluginManager");
+    Locale locale = RequestContextUtils.getLocale(request);
+    for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+        PluginMessageSource source = new PluginMessageSource(plugin);
+        for(UIContribution contrib : plugin.getUIContributions()) {
+            for(MenuItem rootMenuItems : contrib.getRootMenuItems()) {
+                for(MenuItem item : rootMenuItems.getChildMenuItems()) {
+%>
+                    <a href="${pageContext.request.contextPath}<%=item.getHref()%>" class="menuitem"><%=source.getMessage(item.getLabel(), null, locale)%></a>
+<%
+                }
+
+            }
+
+        }
+    }
+%>
+
 <% if (SecuritySession.getInstance(request).isUserInRole(Aksess.getAdminRole())) { %>
 <a href="${pageContext.request.contextPath}/admin/administration/ViewSystemInformation.action" class="menuitem ${administrationSelected}"><kantega:label key="aksess.menu.administration"/></a>
 <%}%>
