@@ -28,6 +28,8 @@ public class PrintListMenuTag extends AbstractMenuTag {
     private String selectedClass = null;
     private String openClass = null;
     private String depthClass = null;
+    private String firstChildClass = null;
+    private String lastChildClass = null;
 
     private int prevDepth = -1;
     private int nrul = 0;
@@ -41,7 +43,6 @@ public class PrintListMenuTag extends AbstractMenuTag {
         this.ulClass = ulClass;
     }
 
-
     public void setSelectedclass(String selectedClass) {
         this.selectedClass = selectedClass;
     }
@@ -52,6 +53,14 @@ public class PrintListMenuTag extends AbstractMenuTag {
 
     public void setDepthclass(String depthClass) {
         this.depthClass = depthClass;
+    }
+
+    public void setFirstchildclass(String firstClass) {
+        this.firstChildClass = firstClass;
+    }
+
+    public void setLastchildclass(String lastClass) {
+        this.lastChildClass = lastClass;
     }
 
     protected void printBody() throws IOException {
@@ -84,7 +93,6 @@ public class PrintListMenuTag extends AbstractMenuTag {
         String body = bodyContent.getString();
         JspWriter out = bodyContent.getEnclosingWriter();
 
-
         if (prevDepth == -1) {
             prevDepth = currentItem.getDepth();
             out.write(ulStartElem);
@@ -101,6 +109,17 @@ public class PrintListMenuTag extends AbstractMenuTag {
         } else if (currentItem.getDepth() == prevDepth && status.getIndex() > 0){
             out.write("</li>\n");    
         }
+
+        if (firstChildClass != null && currentItem.isFirstChild()) {
+            if (clz.length()  > 0) clz.append(" ");
+            clz.append(firstChildClass);
+        }
+
+        if (lastChildClass != null && currentItem.isLastChild()) {
+            if (clz.length()  > 0) clz.append(" ");
+            clz.append(lastChildClass);
+        }
+
 
         out.write("\t<li");
         if (clz.length() > 0) {

@@ -207,6 +207,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         this.expandAll = expandAll;
     }
 
+
     private void addToSiteMap(SecuritySession securitySession, SiteMapEntry sitemap, int currentDepth) {
         sitemap.setDepth(currentDepth);
 
@@ -228,6 +229,10 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         if (children != null) {
             for (int i = 0; i < children.size(); i++) {
                 SiteMapEntry child = (SiteMapEntry)children.get(i);
+
+                child.setFirstChild(i == 0);
+                child.setLastChild(i == children.size() - 1);
+
                 boolean isOpen = false;
                 if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.contains("/" + child.getParentId() + "/") || child.getParentId() == defaultOpenId || defaultOpenPath.contains("/" + child.getParentId() + "/")){
                     isOpen = true;

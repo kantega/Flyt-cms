@@ -239,6 +239,18 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>CSS class for first-child li tags</description>
+            <name>firstchildclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class for last-child li tags</description>
+            <name>lastchildclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Set to true to check is user is authorized to view each page. If user is not authorized to view page, page will not be printed in menu</description>
             <name>checkauthorization</name>
             <required>false</required>

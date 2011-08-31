@@ -30,6 +30,8 @@ public abstract class NavigationMapEntry extends BaseObject {
     protected boolean isOpen = false;
     protected boolean isSelected = false;
     protected boolean hasChildren = false;
+    protected boolean isLastChild = false;
+    protected boolean isFirstChild = false;
 
     public NavigationMapEntry() {
     }
@@ -90,5 +92,21 @@ public abstract class NavigationMapEntry extends BaseObject {
 
     public void setHasChildren(boolean hasChildren) {
         this.hasChildren = hasChildren;
+    }
+
+    public boolean isLastChild() {
+        return isLastChild;
+    }
+
+    public void setLastChild(boolean lastChild) {
+        isLastChild = lastChild;
+    }
+
+    public boolean isFirstChild() {
+        return isFirstChild;
+    }
+
+    public void setFirstChild(boolean firstChild) {
+        isFirstChild = firstChild;
     }
 }
