@@ -51,7 +51,7 @@
 
             // Add content
             $("#AddExistingTopic input").autocomplete({
-                source: properties.contextPath + "/ajax/AutocompleteTopics.action",
+                source: properties.contextPath + "/ajax/AutocompleteTopics.action?topicMapId=${topic.topicMapId}",
                 select: function(event, ui){
                     var topicName = ui.item.name,
                     topic = ui.item.id.split(":"),
