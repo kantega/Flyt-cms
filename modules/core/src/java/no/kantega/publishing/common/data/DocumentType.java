@@ -24,6 +24,8 @@ public class DocumentType implements PublicIdObject {
     private int id = -1;
     private String publicId = "";
 
+    public DocumentType() {}
+
     public DocumentType(int id) {
         this.id = id;
     }
