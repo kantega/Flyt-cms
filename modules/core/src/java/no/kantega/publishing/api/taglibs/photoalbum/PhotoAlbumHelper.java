@@ -16,16 +16,17 @@
 
 package no.kantega.publishing.api.taglibs.photoalbum;
 
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.service.MultimediaService;
+import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.jsp.PageContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.servlet.jsp.PageContext;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoAlbumHelper {
     private static final String SOURCE = "aksess.PhotoAlbumHelper";
@@ -33,9 +34,10 @@ public class PhotoAlbumHelper {
     public static List getPhotos(PageContext pageContext, int albumId) {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
-        if (albumId == -1){
+        String photoalbum = (String) request.getAttribute("photoalbum");
+        if (albumId == -1 && StringUtils.isBlank(photoalbum)){
             try {
-                albumId = Integer.parseInt((String)request.getAttribute("photoalbum"));
+                albumId = Integer.parseInt(photoalbum);
             } catch (NumberFormatException e){
                 e.printStackTrace();
                 return null;
@@ -44,15 +46,14 @@ public class PhotoAlbumHelper {
 
         if (albumId == -1) return null;
 
-        List photos = (List)request.getAttribute("aksess_photos_" + albumId);
+        List<Multimedia> photos = (List)request.getAttribute("aksess_photos_" + albumId);
         if (photos == null) {
-            photos = new ArrayList();
+            photos = new ArrayList<Multimedia>();
 
             try {
                 MultimediaService mediaService = new MultimediaService(request);
-                List tmp = mediaService.getMultimediaList(albumId);
-                for (int i = 0; i < tmp.size(); i++) {
-                    Multimedia multimedia = (Multimedia) tmp.get(i);
+                List<Multimedia> tmp = mediaService.getMultimediaList(albumId);
+                for (Multimedia multimedia : tmp) {
                     if (multimedia.getType() == MultimediaType.MEDIA) {
                         photos.add(multimedia);
                     }
