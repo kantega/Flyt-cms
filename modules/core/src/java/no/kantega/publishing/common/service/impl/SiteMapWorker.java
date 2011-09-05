@@ -66,7 +66,7 @@ public class SiteMapWorker {
         List tmpentries = new ArrayList();
 
         StringBuilder query = new StringBuilder();
-        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
+        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = " + ContentStatus.PUBLISHED);
@@ -105,6 +105,7 @@ public class SiteMapWorker {
                 int displayTemplateId = rs.getInt(p++);
                 int status  = rs.getInt(p++);
                 String title = rs.getString(p++);
+                String altTitle = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);
 
                 int uniqueId = rs.getInt(p++);
@@ -118,10 +119,19 @@ public class SiteMapWorker {
                     type = ContentType.SHORTCUT;
                 }
                 if ((rootId == -1 && parentId == 0 && type != ContentType.SHORTCUT) || (rootId == uniqueId && type != ContentType.SHORTCUT)) {
-                    sitemap = new SiteMapEntry(uniqueId, currentId, parentId, type, status, visibilityStatus, title, numberOfNotes);
+                    sitemap = new SiteMapEntry();
+                    sitemap.setUniqueId(uniqueId);
+                    sitemap.setCurrentId(currentId);
+                    sitemap.setParentId(parentId);
+                    sitemap.setType(type);
+                    sitemap.setStatus(status);
+                    sitemap.setVisibilityStatus(visibilityStatus);
+                    sitemap.setTitle(title);
+                    sitemap.setNumberOfNotes(numberOfNotes);
                     if (alias != null && alias.length() > 0) {
                         sitemap.setAlias(alias);
                     }
+                    sitemap.setAltTitle(altTitle);
                     sitemap.setAssociationCategory(aCategory);
   	                sitemap.setGroupId(groupId);
                     sitemap.setContentId(contentId);
@@ -133,7 +143,16 @@ public class SiteMapWorker {
                     sitemap.setContentTemplateId(contentTemplateId);
                     sitemap.setDisplayTemplateId(displayTemplateId);
                 } else {
-                    SiteMapEntry entry = new SiteMapEntry(uniqueId, currentId, parentId, type, status, visibilityStatus, title, numberOfNotes);
+                    SiteMapEntry entry = new SiteMapEntry();
+                    entry.setUniqueId(uniqueId);
+                    entry.setCurrentId(currentId);
+                    entry.setParentId(parentId);
+                    entry.setType(type);
+                    entry.setStatus(status);
+                    entry.setVisibilityStatus(visibilityStatus);
+                    entry.setTitle(title);
+                    entry.setAltTitle(altTitle);
+                    entry.setNumberOfNotes(numberOfNotes);
                     if (alias != null && alias.length() > 0) {
                         entry.setAlias(alias);
                     }

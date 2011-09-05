@@ -39,6 +39,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     private String ownerPerson = null;
     public ContentType type = ContentType.PAGE;
     private boolean isSearchable = true;
+    private String altTitle = null;
     private int contentTemplateId;
     private int displayTemplateId;
 
@@ -179,7 +180,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     }
 
     public String getOwner() {
-        return null;
+        return owner;
     }
 
     public void setOwner(String owner) {
@@ -187,7 +188,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     }
 
     public String getOwnerPerson() {
-        return null;
+        return ownerPerson;
     }
 
     public void setOwnerPerson(String ownerPerson) {
@@ -220,5 +221,33 @@ public class SiteMapEntry extends NavigationMapEntry {
 
     public void setDisplayTemplateId(int displayTemplateId) {
         this.displayTemplateId = displayTemplateId;
+    }
+
+    public String getAltTitle() {
+        return altTitle;
+    }
+
+    public void setAltTitle(String altTitle) {
+        this.altTitle = altTitle;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setType(ContentType type) {
+        this.type = type;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setVisibilityStatus(int visibilityStatus) {
+        this.visibilityStatus = visibilityStatus;
+    }
+
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
     }
 }
