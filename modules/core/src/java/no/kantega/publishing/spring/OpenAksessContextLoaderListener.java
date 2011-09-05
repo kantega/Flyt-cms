@@ -104,15 +104,18 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             missingProperties.add("database.driver");
         }
         String url = properties.getProperty("database.url");
+
         if(StringUtils.isEmpty(url)) {
             missingProperties.add("database.url");
         }
+
+        boolean useNTML = Boolean.parseBoolean(properties.getProperty("database.useNTMLauthentication", "false"));
         String username = properties.getProperty("database.username");
-        if(StringUtils.isEmpty(username)) {
+        if(StringUtils.isEmpty(username) && !useNTML) {
             missingProperties.add("database.username");
         }
         String password = properties.getProperty("database.password");
-        if(StringUtils.isEmpty(password)) {
+        if(StringUtils.isEmpty(password) && !useNTML) {
             missingProperties.add("database.password");
         }
 

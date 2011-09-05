@@ -43,9 +43,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- *
- */
 public class dbConnectionFactory {
     private static final String SOURCE = "aksess.DataBaseConnectionFactory";
 
@@ -67,6 +64,8 @@ public class dbConnectionFactory {
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
 
+    private static boolean dbNTMLAuthentication = false;
+
     private static int openedConnections = 0;
     private static int closedConnections = 0;
     public static Map connections  = Collections.synchronizedMap(new HashMap());
@@ -76,49 +75,23 @@ public class dbConnectionFactory {
     private static Configuration configuration;
     private static ServletContext servletContext;
     private static Logger log = Logger.getLogger(dbConnectionFactory.class);
+    private static boolean shouldMigrateDatabase;
 
     public static void loadConfiguration() {
         try {
 
-            dbDriver = configuration.getString("database.driver", "com.mysql.jdbc.Driver");
-            dbUrl = configuration.getString("database.url");
-            dbUsername = configuration.getString("database.username", "root");
-            dbPassword = configuration.getString("database.password", "");
-            dbMaxConnections = configuration.getInt("database.maxconnections", 50);
-            dbMaxIdleConnections = configuration.getInt("database.maxidleconnections", 16);
-            dbMinIdleConnections = configuration.getInt("database.minidleconnections", 8);
-            dbMaxWait = configuration.getInt("database.maxwait", 30);
-            dbRemoveAbandonedTimeout = configuration.getInt("database.removeabandonedtimeout", -1);
-            dbEnablePooling = configuration.getBoolean("database.enablepooling", true);
-            dbCheckConnections = configuration.getBoolean("database.checkconnections", true);
-            debugConnections = configuration.getBoolean("database.debugconnections", false);
-            boolean shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
-            if (dbUrl == null || dbUsername == null || dbPassword == null) {
+            setConfiguration();
 
-                String message = "Database configuration is not complete. The following settings are missing: ";
+            verifyCompleteDatabaseConfiguration();
 
-                List<String> props = new ArrayList<String>();
-                if(dbUrl == null) {
-                    props.add("database.url");
-                }
-                if(dbUsername == null) {
-                    props.add("database.username");
-                }
-                if(dbPassword == null) {
-                    props.add("database.password");
-                }
+            DriverManagerDataSource rawDataSource = new DriverManagerDataSource();
+            rawDataSource.setDriverClassName(dbDriver);
+            rawDataSource.setUrl(dbUrl);
 
-                for(int i = 0; i < props.size(); i++) {
-                    message +=props.get(i);
-                    if(i != props.size()-1) {
-                        message +=", ";
-                    } else {
-                        message +=".";
-                    }
-                }
-                throw new ConfigurationException(message, SOURCE);
+            if (!dbNTMLAuthentication) {
+                rawDataSource.setUsername(dbUsername);
+                rawDataSource.setPassword(dbPassword);
             }
-
 
             DriverManagerDataSource rawDataSource = new DriverManagerDataSource();
             rawDataSource.setDriverClassName(dbDriver);
@@ -137,8 +110,10 @@ public class dbConnectionFactory {
                 }
 
                 bds.setDriverClassName(dbDriver);
-                bds.setUsername(dbUsername);
-                bds.setPassword(dbPassword);
+                if (!dbNTMLAuthentication) {
+                    bds.setUsername(dbUsername);
+                    bds.setPassword(dbPassword);
+                }
                 bds.setUrl(dbUrl);
 
                 if(dbCheckConnections) {
@@ -183,6 +158,51 @@ public class dbConnectionFactory {
         }
     }
 
+    private static void setConfiguration() throws ConfigurationException {
+        dbDriver = configuration.getString("database.driver", "com.mysql.jdbc.Driver");
+        dbUrl = configuration.getString("database.url");
+        dbUsername = configuration.getString("database.username", "root");
+        dbPassword = configuration.getString("database.password", "");
+        dbMaxConnections = configuration.getInt("database.maxconnections", 50);
+        dbMaxIdleConnections = configuration.getInt("database.maxidleconnections", 16);
+        dbMinIdleConnections = configuration.getInt("database.minidleconnections", 8);
+        dbMaxWait = configuration.getInt("database.maxwait", 30);
+        dbRemoveAbandonedTimeout = configuration.getInt("database.removeabandonedtimeout", -1);
+        dbEnablePooling = configuration.getBoolean("database.enablepooling", true);
+        dbCheckConnections = configuration.getBoolean("database.checkconnections", true);
+        debugConnections = configuration.getBoolean("database.debugconnections", false);
+        shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
+        dbNTMLAuthentication = configuration.getBoolean("database.useNTLMauthentication", false);
+    }
+
+    private static void verifyCompleteDatabaseConfiguration() throws ConfigurationException {
+        if (dbUrl == null || ((dbUsername == null || dbPassword == null) && !dbNTMLAuthentication)) {
+
+            String message = "Database configuration is not complete. The following settings are missing: ";
+
+            List<String> props = new ArrayList<String>();
+            if(dbUrl == null) {
+                props.add("database.url");
+            }
+            if(dbUsername == null) {
+                props.add("database.username");
+            }
+            if(dbPassword == null) {
+                props.add("database.password");
+            }
+
+            for(int i = 0; i < props.size(); i++) {
+                message +=props.get(i);
+                if(i != props.size()-1) {
+                    message +=", ";
+                } else {
+                    message +=".";
+                }
+            }
+            throw new ConfigurationException(message, SOURCE);
+        }
+    }
+
     public static void migrateDatabase(ServletContext servletContext, DataSource dataSource) {
         DbMigrate migrate = new DbMigrate();
 
@@ -194,7 +214,7 @@ public class dbConnectionFactory {
         }
         String root = "/WEB-INF/dbmigrate/";
         ServletContextScriptSource scriptSource = new ServletContextScriptSource(servletContext, root);
-                        
+
         Set<String> domainPaths = servletContext.getResourcePaths(root);
         List<String> domains = new ArrayList<String>();
         // We want the oa domain first
@@ -223,14 +243,14 @@ public class dbConnectionFactory {
         try {
             c = dataSource.getConnection();
 
-             boolean hasTables = true;
+            boolean hasTables = true;
 
-             try {
-                 c.createStatement().execute("SELECT max(ContentId) from content");
-             } catch (SQLException e) {
-                 hasTables = false;
+            try {
+                c.createStatement().execute("SELECT max(ContentId) from content");
+            } catch (SQLException e) {
+                hasTables = false;
 
-             }
+            }
 
             if(!hasTables) {
                 createTables(dataSource);
@@ -369,19 +389,12 @@ public class dbConnectionFactory {
     }
 
     public static boolean isMySQL() {
-        if (dbDriver.indexOf("mysql") != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return dbDriver.contains("mysql");
+
     }
 
     public static boolean isOracle() {
-        if (dbDriver.indexOf("oracle") != -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return dbDriver.contains("oracle");
     }
 
     public static boolean useTransactions() {
@@ -430,53 +443,53 @@ public class dbConnectionFactory {
     }
 
     public static synchronized Map<Connection, StackTraceElement[]> getConnections() {
-        return new HashMap<Connection, StackTraceElement[]>(connections); 
+        return new HashMap<Connection, StackTraceElement[]>(connections);
     }
 }
 
- class DataSourceWrapper implements InvocationHandler {
-        DataSource dataSource;
+class DataSourceWrapper implements InvocationHandler {
+    DataSource dataSource;
 
-        public DataSourceWrapper(DataSource dataSource) {
-            this.dataSource = dataSource;
-        }
-
-        public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-            if(method.getName().equalsIgnoreCase("getConnection")) {
-                //System.out.println("ds: o/c: " +dbConnectionFactory.openedConnections +"/" + dbConnectionFactory.closedConnections +"(" +(dbConnectionFactory.openedConnections - dbConnectionFactory.closedConnections) +")");
-                Connection c = (Connection)method.invoke(dataSource, objects);
-                StackTraceElement[] stacktrace = new Throwable().getStackTrace();
-                dbConnectionFactory.connections.put(c, stacktrace);
-                dbConnectionFactory.incrementOpenConnections();
-                c = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, new ConnectionWrapper(c));
-                return c;
-            } else {
-                return method.invoke(dataSource, objects);
-            }
-
-        }
+    public DataSourceWrapper(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
+
+    public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+        if(method.getName().equalsIgnoreCase("getConnection")) {
+            //System.out.println("ds: o/c: " +dbConnectionFactory.openedConnections +"/" + dbConnectionFactory.closedConnections +"(" +(dbConnectionFactory.openedConnections - dbConnectionFactory.closedConnections) +")");
+            Connection c = (Connection)method.invoke(dataSource, objects);
+            StackTraceElement[] stacktrace = new Throwable().getStackTrace();
+            dbConnectionFactory.connections.put(c, stacktrace);
+            dbConnectionFactory.incrementOpenConnections();
+            c = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, new ConnectionWrapper(c));
+            return c;
+        } else {
+            return method.invoke(dataSource, objects);
+        }
+
+    }
+}
 
 class ConnectionWrapper implements InvocationHandler {
     Connection wrapped;
     ConnectionWrapper(Connection c) {
         wrapped = c;
     }
-        public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-            if(method.getName().equalsIgnoreCase("close")) {
-                if(dbConnectionFactory.connections.get(wrapped) == null) {
-                    StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
-                    System.out.println("WOOOPS: Connection.close was already called!");
-                    for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
-                        StackTraceElement e = stackTraceElement[i];
-                        System.out.println(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
-                    }
-                } else {
-                    dbConnectionFactory.incrementClosedConnections();
-                    dbConnectionFactory.connections.remove(wrapped);
+    public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+        if(method.getName().equalsIgnoreCase("close")) {
+            if(dbConnectionFactory.connections.get(wrapped) == null) {
+                StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
+                System.out.println("WOOOPS: Connection.close was already called!");
+                for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
+                    StackTraceElement e = stackTraceElement[i];
+                    System.out.println(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
                 }
+            } else {
+                dbConnectionFactory.incrementClosedConnections();
+                dbConnectionFactory.connections.remove(wrapped);
             }
-            return method.invoke(wrapped, objects);
+        }
+        return method.invoke(wrapped, objects);
     }
 
 }
