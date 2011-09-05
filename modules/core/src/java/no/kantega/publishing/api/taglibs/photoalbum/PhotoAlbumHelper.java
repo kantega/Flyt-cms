@@ -35,7 +35,7 @@ public class PhotoAlbumHelper {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         String photoalbum = (String) request.getAttribute("photoalbum");
-        if (albumId == -1 && StringUtils.isBlank(photoalbum)){
+        if (albumId == -1 && !StringUtils.isBlank(photoalbum)){
             try {
                 albumId = Integer.parseInt(photoalbum);
             } catch (NumberFormatException e){
