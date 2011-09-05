@@ -93,12 +93,6 @@ public class dbConnectionFactory {
                 rawDataSource.setPassword(dbPassword);
             }
 
-            DriverManagerDataSource rawDataSource = new DriverManagerDataSource();
-            rawDataSource.setDriverClassName(dbDriver);
-            rawDataSource.setUrl(dbUrl);
-            rawDataSource.setUsername(dbUsername);
-            rawDataSource.setPassword(dbPassword);
-
             if (dbEnablePooling) {
                 // Enable DBCP pooling
                 BasicDataSource bds = new BasicDataSource();
