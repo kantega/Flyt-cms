@@ -65,7 +65,10 @@ public class LocaleLabels {
             Iterator paramNames = parameters.keySet().iterator();
             while (paramNames.hasNext()) {
                 String pName = (String)paramNames.next();
-                msg = msg.replaceAll("\\$\\{" + pName + "\\}", parameters.get(pName).toString());
+                Object pValue = parameters.get(pName);
+                if (pValue != null) {
+                    msg = msg.replaceAll("\\$\\{" + pName + "\\}", pValue.toString());
+                }
             }
         }
         return msg;
