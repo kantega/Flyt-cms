@@ -50,8 +50,9 @@
         <table border="0" cellspacing="0" cellpadding="0" class="fullWidth">
             <thead>
             <tr>
-                <th><kantega:label key="useradmin.searchroles.rolename"/></th>
-                <th></th>
+                <th width="70%"><kantega:label key="useradmin.searchroles.rolename"/></th>
+                <th width="15%"></th>
+                <th width="15%"></th>
             </tr>
             </thead>
             <tbody>
@@ -59,11 +60,11 @@
                 <tr class="tableRow<c:out value="${status.index mod 2}"/>">
                     <td><a href="Javascript:doAction('edit', '${role.domain}', '${role.id}')">${role.name}</a></td>
                     <td>
-                        <c:if test="${canEdit}">
+                        <c:if test="${canEdit && role.id != adminRole}">
                             <a href="Javascript:doAction('delete', '${role.domain}', '${role.id}')" class="button delete"><span><kantega:label key="useradmin.searchroles.delete"/></span></a>
                         </c:if>
-                        <a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')" class="button users"><span><kantega:label key="useradmin.searchroles.users"/></a></span></td>
                     </td>
+                    <td><a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')" class="button users"><span><kantega:label key="useradmin.searchroles.users"/></a></span></td></td>
                 </tr>
             </c:forEach>
             </tbody>

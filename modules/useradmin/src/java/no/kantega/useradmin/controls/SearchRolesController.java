@@ -16,6 +16,7 @@
 
 package no.kantega.useradmin.controls;
 
+import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -63,6 +64,8 @@ public class SearchRolesController extends AbstractUserAdminController {
                 model.put("roles", manager.getAllRoles());
             }
         }
+
+        model.put("adminRole", Aksess.getAdminRole());
 
         return new ModelAndView("/role/search", model);
     }
