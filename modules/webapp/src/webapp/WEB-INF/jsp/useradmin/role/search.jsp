@@ -64,7 +64,7 @@
                             <a href="Javascript:doAction('delete', '${role.domain}', '${role.id}')" class="button delete"><span><kantega:label key="useradmin.searchroles.delete"/></span></a>
                         </c:if>
                     </td>
-                    <td><a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')" class="button users"><span><kantega:label key="useradmin.searchroles.users"/></a></span></td></td>
+                    <td><a href="Javascript:doAction('userswithrole', '${role.domain}', '${role.id}')" class="button users"><span><kantega:label key="useradmin.searchroles.users"/></span></a></td></td>
                 </tr>
             </c:forEach>
             </tbody>
