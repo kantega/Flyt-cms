@@ -1,10 +1,12 @@
 package org.kantega.openaksess.plugins.jobexecuter;
 
 import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.AksessLocaleResolver;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.lang.StringUtils;
+import org.kantega.jexmec.PluginManager;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
@@ -22,6 +24,9 @@ import java.util.*;
  *
  */
 public class ListJobsController extends AdminController {
+
+    private PluginManager<OpenAksessPlugin> openAksessPluginPluginManager;
+
     /**
      * ListJobsController is used to find all jobs that are scheduled using a quartz scheduler.
      * Both jobs specified in a local projects and jobs specified by OpenAksess in application-jobs.xml
@@ -49,6 +54,7 @@ public class ListJobsController extends AdminController {
         ApplicationContext rootcontext = RootContext.getInstance();
         List <Scheduler> schedulers = new ArrayList<Scheduler>();
         schedulers.addAll(rootcontext.getBeansOfType(Scheduler.class).values());
+        addSchedulersFromPlugins(schedulers);
 
         if (StringUtils.isNotEmpty(runJob) && StringUtils.isNotEmpty(runGroupName)) {
             for (Scheduler scheduler : schedulers) {
@@ -111,6 +117,20 @@ public class ListJobsController extends AdminController {
             }
             return filtered;
         }
+    }
+
+    private void addSchedulersFromPlugins(List <Scheduler> schedulers){
+        List<OpenAksessPlugin> plugins = openAksessPluginPluginManager.getPlugins();
+        for (OpenAksessPlugin plugin : plugins) {
+            Scheduler scheduler = plugin.getScheduler();
+            if (scheduler != null) {
+                schedulers.add(scheduler);
+            }
+        }
+    }
+
+    public void setOpenAksessPluginPluginManager(PluginManager<OpenAksessPlugin> openAksessPluginPluginManager) {
+        this.openAksessPluginPluginManager = openAksessPluginPluginManager;
     }
 }
 

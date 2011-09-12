@@ -40,6 +40,6 @@
     </bean>
 
     <bean id="listJobsController" class="org.kantega.openaksess.plugins.jobexecuter.ListJobsController">
-
+         <property name="openAksessPluginPluginManager" ref="pluginManager" />
     </bean>
 </beans>
