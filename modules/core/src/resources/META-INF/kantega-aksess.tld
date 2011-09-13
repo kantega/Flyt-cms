@@ -2722,6 +2722,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Name of offset parameter. default offset</description>
+            <name>offsetparam</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
         <example>
             <![CDATA[
                     <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
