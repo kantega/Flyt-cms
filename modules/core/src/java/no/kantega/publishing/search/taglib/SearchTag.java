@@ -355,7 +355,6 @@ public class SearchTag extends TagSupport {
                 map.put("searchHits", buildHitList(bq, analyzer, request, hits, startIndex, endIndex, selector));
                 map.put("hits", hits); // Kompabilitet med eldre versjoner
 
-                map.put("hits", hits);
                 map.put("indices", indices);
 
 
