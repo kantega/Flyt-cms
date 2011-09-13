@@ -150,6 +150,7 @@ public class PaginateCollectionTag extends TagSupport {
         nextclass = "next";
         currentclass = "current";
         gapclass = "gap";
+        beforeandafterlinks = 3;
         return EVAL_PAGE;
     }
 }

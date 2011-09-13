@@ -2675,6 +2675,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Number of links before and after the gap</description>
+            <name>beforeandafterlinks</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
         <example>
             <![CDATA[
                     <aksess:ifcollectionnotempty name="myCollection">
@@ -2710,8 +2716,17 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Number of links before and after the gap</description>
+            <name>beforeandafterlinks</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
         <example>
             <![CDATA[
+                    <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
+                    <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
+
                     <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
                     <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
             ]]>
