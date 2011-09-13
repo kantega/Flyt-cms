@@ -63,21 +63,6 @@ public class Paginator {
                     gapWasAdded = true;
                 }
             }
-
-
-
-            /*
-
-            1. skal alltid printes
-
-            2. de beforeAndAfterLinks f¿r current page skal printes
-
-            3. de beforeAndAfterLinks etter current page skal printes
-
-             */
-
-
-
         }
 
         return pages;

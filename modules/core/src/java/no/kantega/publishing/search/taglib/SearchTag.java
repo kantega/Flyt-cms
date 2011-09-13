@@ -86,7 +86,7 @@ public class SearchTag extends TagSupport {
     private String sortfield;
 
     private boolean sortreversed;
-    
+
     public int doStartTag() throws JspException {
 
         Map map = new HashMap();
@@ -252,129 +252,123 @@ public class SearchTag extends TagSupport {
 
 
             IndexSearcher searcher = null;
-            try {
-                int startIndex = 0;
-                int endIndex = 0;
 
-                searcher = manager.getSearcher("aksess");
+            int startIndex = 0;
+            int endIndex = 0;
 
-                Sort sort = sortfield != null ? new Sort(sortfield, sortreversed) : Sort.RELEVANCE;
-                Hits hits = searcher.search(bq, sort);
+            searcher = manager.getSearcher("aksess");
 
-                if (Aksess.isSearchLogEnabled() && words.toString().length() > 0) {
-                    // Register number of hits for this query
-                    try {
-                        SearchAO.registerSearch(words.toString(), bq.toString(), siteId, hits.length());
-                    } catch (Exception e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                }
-                
-                map.put("numhits", hits.length());
+            Sort sort = sortfield != null ? new Sort(sortfield, sortreversed) : Sort.RELEVANCE;
+            Hits hits = searcher.search(bq, sort);
 
-                if(hits.length() < numhitsforsuggestion && suggestionbase != null) {
-                    Directory spellDirectory = readerManager.getReader("spelling").directory();
-                    final SpellChecker spellChecker = new SpellChecker(spellDirectory);
-
-                    final IndexReader reader = searcher.getIndexReader();
-
-                    final List suggestionList = new ArrayList();
-                    QueryParser suggestingParser = new QueryParser(Fields.CONTENT, analyzer) {
-
-                        protected Query getFieldQuery(String field, String text) throws org.apache.lucene.queryParser.ParseException {
-                            if(Fields.CONTENT.equals(field))  {
-                                try {
-                                    if(reader.docFreq(new Term(field, text)) < 5) {
-                                        String[] suggestions = spellChecker.suggestSimilar(text, 10, reader, Fields.CONTENT_UNSTEMMED, true);
-                                        if(suggestions.length > 0) {
-                                            suggestionList.add(suggestions[0]);
-                                            return new TermQuery(new Term(field, "<i>" +suggestions[0] +"</i>"));
-                                        }
-                                    }
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                            return super.getFieldQuery(field, text);
-                        }
-                    };
-
-                    Query suggestion = suggestingParser.parse(suggestionbase);
-                    if(suggestionList.size()> 0) {
-                        String s = suggestion.toString(Fields.CONTENT).replaceAll("\\+", "");
-                        map.put("suggestionHtml", s);
-                        map.put("suggestion", s.replaceAll("<i>", "").replaceAll("</i>", ""));
-                    }
-                }
-                
-                List indices = new ArrayList();
-
-                List searchPageUrls = new ArrayList();
-                int pageNo = 1;
-                for (int i = 0; i < hits.length(); i += hitsPerPage) {
-                    indices.add(i);
-                    // Legger inn liste med URL til de ulike sidene kun dersom det finnes flere sider
-                    if (hits.length() > hitsPerPage) {
-                        searchPageUrls.add(url + "&idx=" + i);
-                    }
-                }
-
-                map.put("searchPageUrls", searchPageUrls);
-
+            if (Aksess.isSearchLogEnabled() && words.toString().length() > 0) {
+                // Register number of hits for this query
                 try {
-                    startIndex = Integer.parseInt(pageContext.getRequest().getParameter("idx"));
+                    SearchAO.registerSearch(words.toString(), bq.toString(), siteId, hits.length());
                 } catch (Exception e) {
-                    startIndex = 0;
+                    Log.error(SOURCE, e, null, null);
                 }
-                if (startIndex < 0 || startIndex >= hits.length()) {
-                    startIndex = 0;
-                }
-
-                map.put("startIndex", startIndex);
-
-                if (startIndex > 0) {
-                    int prevIndex = (startIndex - hitsPerPage >= 0) ? startIndex - hitsPerPage : 0;
-                    map.put("prevIndex", prevIndex);
-                    map.put("prevSearchPageUrl", url + "&idx=" + prevIndex);
-                }
-
-                endIndex = startIndex + hitsPerPage - 1;
-
-                if (endIndex >= hits.length() - 1) {
-                    endIndex = hits.length() - 1;
-                } else {
-                    map.put("nextIndex", startIndex + hitsPerPage);
-                    map.put("nextSearchPageUrl", url + "&idx=" + (startIndex + hitsPerPage));
-                }
-
-                map.put("endIndex", endIndex);
-
-                map.put("firstHit", startIndex + 1);
-                map.put("lastHit", endIndex + 1);
-
-                map.put("searchHits", buildHitList(bq, analyzer, request, hits, startIndex, endIndex, selector));
-                map.put("hits", hits); // Kompabilitet med eldre versjoner
-
-                map.put("indices", indices);
-
-
-                Iterator i = map.keySet().iterator();
-                while (i.hasNext()) {
-                    String k = (String) i.next();
-                    pageContext.getRequest().setAttribute(k, map.get(k));
-                }
-
-                if (view != null && view.length() > 0) {
-                    pageContext.include(view);
-                    return SKIP_BODY;
-                }
-
-
-            } finally {
-//                if (searcher != null) {
-//                    searcher.close();
-//                }
             }
+
+            map.put("numhits", hits.length());
+
+            if(hits.length() < numhitsforsuggestion && suggestionbase != null) {
+                Directory spellDirectory = readerManager.getReader("spelling").directory();
+                final SpellChecker spellChecker = new SpellChecker(spellDirectory);
+
+                final IndexReader reader = searcher.getIndexReader();
+
+                final List suggestionList = new ArrayList();
+                QueryParser suggestingParser = new QueryParser(Fields.CONTENT, analyzer) {
+
+                    protected Query getFieldQuery(String field, String text) throws org.apache.lucene.queryParser.ParseException {
+                        if(Fields.CONTENT.equals(field))  {
+                            try {
+                                if(reader.docFreq(new Term(field, text)) < 5) {
+                                    String[] suggestions = spellChecker.suggestSimilar(text, 10, reader, Fields.CONTENT_UNSTEMMED, true);
+                                    if(suggestions.length > 0) {
+                                        suggestionList.add(suggestions[0]);
+                                        return new TermQuery(new Term(field, "<i>" +suggestions[0] +"</i>"));
+                                    }
+                                }
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        return super.getFieldQuery(field, text);
+                    }
+                };
+
+                Query suggestion = suggestingParser.parse(suggestionbase);
+                if(suggestionList.size()> 0) {
+                    String s = suggestion.toString(Fields.CONTENT).replaceAll("\\+", "");
+                    map.put("suggestionHtml", s);
+                    map.put("suggestion", s.replaceAll("<i>", "").replaceAll("</i>", ""));
+                }
+            }
+
+            List indices = new ArrayList();
+
+            List searchPageUrls = new ArrayList();
+            int pageNo = 1;
+            for (int i = 0; i < hits.length(); i += hitsPerPage) {
+                indices.add(i);
+                // Legger inn liste med URL til de ulike sidene kun dersom det finnes flere sider
+                if (hits.length() > hitsPerPage) {
+                    searchPageUrls.add(url + "&idx=" + i);
+                }
+            }
+
+            map.put("searchPageUrls", searchPageUrls);
+
+            try {
+                startIndex = Integer.parseInt(pageContext.getRequest().getParameter("idx"));
+            } catch (Exception e) {
+                startIndex = 0;
+            }
+            if (startIndex < 0 || startIndex >= hits.length()) {
+                startIndex = 0;
+            }
+
+            map.put("startIndex", startIndex);
+
+            if (startIndex > 0) {
+                int prevIndex = (startIndex - hitsPerPage >= 0) ? startIndex - hitsPerPage : 0;
+                map.put("prevIndex", prevIndex);
+                map.put("prevSearchPageUrl", url + "&idx=" + prevIndex);
+            }
+
+            endIndex = startIndex + hitsPerPage - 1;
+
+            if (endIndex >= hits.length() - 1) {
+                endIndex = hits.length() - 1;
+            } else {
+                map.put("nextIndex", startIndex + hitsPerPage);
+                map.put("nextSearchPageUrl", url + "&idx=" + (startIndex + hitsPerPage));
+            }
+
+            map.put("endIndex", endIndex);
+
+            map.put("firstHit", startIndex + 1);
+            map.put("lastHit", endIndex + 1);
+
+            map.put("searchHits", buildHitList(bq, analyzer, request, hits, startIndex, endIndex, selector));
+            map.put("hits", hits); // Kompabilitet med eldre versjoner
+
+            map.put("indices", indices);
+
+            Iterator i = map.keySet().iterator();
+            while (i.hasNext()) {
+                String k = (String) i.next();
+                pageContext.getRequest().setAttribute(k, map.get(k));
+            }
+
+            if (view != null && view.length() > 0) {
+                pageContext.include(view);
+                return SKIP_BODY;
+            }
+
+
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspException(e);

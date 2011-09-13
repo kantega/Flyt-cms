@@ -27,15 +27,12 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.util.List;
 
-/**
- *
- */
 public class PaginateCollectionTag extends TagSupport {
-    private static final String SOURCE = "aksess.SetVariableTag";
+    private static final String SOURCE = "aksess.PaginateCollectionTag";
 
     private String collection = null;
-    private String prevlabel = null;
-    private String nextlabel = null;
+    private String prevlabel = "previous";
+    private String nextlabel = "next";
 
     private String offsetparam = "offset";
     private int beforeandafterlinks = 3;
@@ -104,7 +101,6 @@ public class PaginateCollectionTag extends TagSupport {
                 printPagination(pages, offset, numberOfPages);
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
@@ -113,12 +109,9 @@ public class PaginateCollectionTag extends TagSupport {
     }
 
     private void printPagination(List<PaginatePage> pages, int offset, int numberOfPages) throws IOException {
-        String url = "";
-
-
         JspWriter out = pageContext.getOut();
         out.write("<ul class=\"" + ulclass + "\">");
-        if (prevlabel != null && prevlabel.length() > 0 && offset > 0) {
+        if (offset > 0) {
             out.write("<li class=\"" + prevclass + "\">");
             out.write("<a href=\"?" + offsetparam + "=" + (offset - 1) + "\">" + prevlabel + "</a>");
             out.write("</li>");
@@ -138,7 +131,7 @@ public class PaginateCollectionTag extends TagSupport {
             }
         }
 
-        if (nextlabel != null && nextlabel.length() > 0 && offset + 1 < numberOfPages) {
+        if (offset + 1 < numberOfPages) {
             out.write("<li class=\"" + nextclass + "\">");
             out.write("<a href=\"?" + offsetparam + "=" + (offset + 1) + "\">" + nextlabel + "</a>");
             out.write("</li>");
@@ -147,12 +140,11 @@ public class PaginateCollectionTag extends TagSupport {
         out.write("</ul>");
     }
 
-
     public int doEndTag() throws JspException {
         offsetparam = "offset";
         collection = null;
-        prevlabel = null;
-        nextlabel = null;
+        prevlabel = "previous";
+        nextlabel = "next";
         ulclass = "paginate";
         prevclass = "prev";
         nextclass = "next";
