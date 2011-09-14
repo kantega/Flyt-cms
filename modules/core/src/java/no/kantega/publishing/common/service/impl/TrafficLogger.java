@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.common.service.impl;
 
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.commons.exception.SystemException;
@@ -39,6 +42,7 @@ public class TrafficLogger {
     private static final String SOURCE = "aksess.TrafficLogger";
     private static List searchEnginePatterns = new ArrayList();
     private static List botsAndSpiders = new ArrayList();
+    private static String[] trafficLogIgnoreIPs;
 
     static {
         searchEnginePatterns.add(Pattern.compile("http://.*google.*/search.*[\\?&]q=([^&$]*).*"));
@@ -59,6 +63,19 @@ public class TrafficLogger {
         botsAndSpiders.add("YodaoBot");
     }
 
+    static {
+        try {
+            Configuration c = Aksess.getConfiguration();
+            trafficLogIgnoreIPs = c.getStrings("trafficlog.ignoreips");
+        } catch (SystemException e) {
+            Log.error("", e, null, null);
+        } catch (ConfigurationException e) {
+            Log.error("", e, null, null);
+        } catch (Exception e) {
+            Log.error("", e, null, null);
+        }
+    }
+
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
@@ -73,7 +90,7 @@ public class TrafficLogger {
         final int siteId = content.getAssociation().getSiteId();
         final String userAgent = request.getHeader("User-Agent");
 
-        if (!HttpHelper.isAdminMode(request)) {
+        if (!HttpHelper.isAdminMode(request) && !ignoreIP(remoteAddr)) {
 
             // Run logging async on separate thread
             executor.execute( new Runnable() {
@@ -129,6 +146,18 @@ public class TrafficLogger {
             for (int i = 0; i < botsAndSpiders.size(); i++) {
                 String bot = (String)botsAndSpiders.get(i);
                 if (userAgent.indexOf(bot) != -1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean ignoreIP(String remoteAddress) {
+        if (remoteAddress != null && trafficLogIgnoreIPs != null) {
+            for (int i = 0; i < trafficLogIgnoreIPs.length; i++) {
+                if (remoteAddress.equals(trafficLogIgnoreIPs[i])) {
                     return true;
                 }
             }
