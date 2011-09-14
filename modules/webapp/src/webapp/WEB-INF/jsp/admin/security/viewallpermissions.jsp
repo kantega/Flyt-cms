@@ -40,8 +40,8 @@
             <select name="objectType" onchange="document.permissions.submit()">
                 <option value="-1"></option>
                 <option value="<%=ObjectType.ASSOCIATION%>" ${associationSelected}><kantega:label key="aksess.objecttype.content"/></option>
-                <option value="<%=ObjectType.MULTIMEDIA%>" ${multimediaSelected} ><kantega:label key="aksess.objecttype.multimedia"/></option>
-                <option value="<%=ObjectType.TOPICMAP%> ${topicMapSelected}"><kantega:label key="aksess.objecttype.topicmap"/></option>
+                <option value="<%=ObjectType.MULTIMEDIA%>" ${multimediaSelected}><kantega:label key="aksess.objecttype.multimedia"/></option>
+                <option value="<%=ObjectType.TOPICMAP%>" ${topicMapSelected}><kantega:label key="aksess.objecttype.topicmap"/></option>
             </select>
 
             <table class="fullWidth">
