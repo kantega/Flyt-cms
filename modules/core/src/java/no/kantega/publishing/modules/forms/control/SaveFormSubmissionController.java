@@ -63,6 +63,7 @@ public class SaveFormSubmissionController implements AksessController {
                     // errrors
                     model.put("hasErrors", Boolean.TRUE);
                     model.put("formSubmission", formSubmission);
+                    model.put("formErrors", errors);
                     form = filledFormBuilder.buildFilledForm(formSubmission, errors);
                 } else {
                     addUserInformation(formSubmission, request);
