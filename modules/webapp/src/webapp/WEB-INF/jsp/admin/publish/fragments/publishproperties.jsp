@@ -154,7 +154,7 @@
         </fieldset>
     </div>
 </c:if>
-<c:if test="${!currentContent.new  && canPublish}">
+<c:if test="${!currentContent['new']  && canPublish}">
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
