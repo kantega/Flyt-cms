@@ -59,7 +59,6 @@
                     <property name="exposedBeanNames">
                         <list>
                             <value>adminRoleInterceptor</value>
-                            <value>pluginManager</value>
                         </list>
                     </property>
                 </bean>

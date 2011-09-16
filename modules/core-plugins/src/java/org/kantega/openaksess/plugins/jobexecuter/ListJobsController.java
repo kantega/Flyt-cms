@@ -10,7 +10,9 @@ import org.kantega.jexmec.PluginManager;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.Trigger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,6 +27,7 @@ import java.util.*;
  */
 public class ListJobsController extends AdminController {
 
+    @Autowired
     private PluginManager<OpenAksessPlugin> openAksessPluginPluginManager;
 
     /**
@@ -53,8 +56,8 @@ public class ListJobsController extends AdminController {
 
         ApplicationContext rootcontext = RootContext.getInstance();
         List <Scheduler> schedulers = new ArrayList<Scheduler>();
-        schedulers.addAll(rootcontext.getBeansOfType(Scheduler.class).values());
-        addSchedulersFromPlugins(schedulers);
+        schedulers.addAll(getSchedulersFromContext(rootcontext));
+        schedulers.addAll(getSchedulersFromPlugins());
 
         if (StringUtils.isNotEmpty(runJob) && StringUtils.isNotEmpty(runGroupName)) {
             for (Scheduler scheduler : schedulers) {
@@ -119,14 +122,26 @@ public class ListJobsController extends AdminController {
         }
     }
 
-    private void addSchedulersFromPlugins(List <Scheduler> schedulers){
+    private Collection<Scheduler> getSchedulersFromContext(ApplicationContext rootcontext) {
+        return rootcontext.getBeansOfType(Scheduler.class).values();
+    }
+
+    private Collection <Scheduler> getSchedulersFromPlugins(){
+        List<Scheduler> schedulers = new ArrayList<Scheduler>();
+
         List<OpenAksessPlugin> plugins = openAksessPluginPluginManager.getPlugins();
         for (OpenAksessPlugin plugin : plugins) {
-            Scheduler scheduler = plugin.getScheduler();
-            if (scheduler != null) {
-                schedulers.add(scheduler);
+            // OK, this is a hack, but at least its in a plugin, not in the API
+            for(MessageSource messageSource : plugin.getMessageSources()) {
+                if(messageSource instanceof ApplicationContext) {
+                    ApplicationContext ctx = (ApplicationContext) messageSource;
+
+                    schedulers.addAll(getSchedulersFromContext(ctx));
+                }
             }
+
         }
+        return schedulers;
     }
 
     public void setOpenAksessPluginPluginManager(PluginManager<OpenAksessPlugin> openAksessPluginPluginManager) {

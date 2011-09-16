@@ -19,7 +19,6 @@ package no.kantega.publishing.api.plugin;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import no.kantega.publishing.api.ui.UIContribution;
-import org.quartz.Scheduler;
 import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -41,8 +40,6 @@ public interface OpenAksessPlugin {
     List<Filter> getRequestFilters();
 
     List<UIContribution> getUIContributions();
-
-    Scheduler getScheduler();
 
     String getPluginUid();
 }
