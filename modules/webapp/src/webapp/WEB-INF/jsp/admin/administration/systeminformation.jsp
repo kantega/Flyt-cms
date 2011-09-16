@@ -46,6 +46,13 @@
             </div>
 
             <div class="formElement">
+                <div class="heading"><kantega:label key="aksess.systeminfo.servletengine"/></div>
+                <div class="content">
+                    <%=getServletConfig().getServletContext().getServerInfo()%>
+                </div>
+            </div>
+
+            <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.installdir"/></div>
                 <div class="content">${installDir}</div>
             </div>
