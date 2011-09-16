@@ -7,6 +7,7 @@ import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
 import no.kantega.publishing.api.ui.UIServices;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.profile.ProfileManager;
+import org.kantega.jexmec.PluginManager;
 
 import javax.sql.DataSource;
 
@@ -28,6 +29,8 @@ public interface OpenAksessServices {
     public SystemConfiguration getSystemConfiguration();
 
     public PluginConfigProvider getPluginConfigProvider();
+
+    public PluginManager<OpenAksessPlugin> getPluginManager();
 
     public UIServices getUIServices();
 
