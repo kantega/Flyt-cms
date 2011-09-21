@@ -29,7 +29,8 @@
     <dwr:configuration>
         <dwr:convert type="bean" class="no.kantega.publishing.admin.preferences.UserPreference" />
     </dwr:configuration>
-    <dwr:annotation-config/>
+    <!-- Add id to make Spring happy -->
+    <dwr:annotation-config id="oa-annot-config"/>
     <dwr:url-mapping/>
     <dwr:controller id="dwrController" debug="true"/>
 

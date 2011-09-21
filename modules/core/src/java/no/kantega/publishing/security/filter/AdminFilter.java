@@ -152,6 +152,11 @@ public class AdminFilter implements Filter {
             return false;
         }
 
+        // DWR has it's own CSRF detection
+        if("/admin/dwr".equals(request.getServletPath()))  {
+            return false;
+        }
+
         // It's impossible to add the X-Requested-With parameter or the csrfkey to the first DWR request, so we must manually skip this URL
         if (request.getPathInfo() != null && request.getPathInfo().endsWith("System.pageLoaded.dwr")) {
             return false;
