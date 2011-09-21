@@ -54,6 +54,11 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     private QueryStringGenerator queryStringGenerator;
 
+    private String modelParametersPrefix = "";
+
+    private Integer includedContentTemplateId = null;
+    private Integer excludedContentTemplateId = null;
+
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
@@ -85,25 +90,25 @@ public class ContentSearchController implements AksessController, InitializingBe
             model.put("error", INVALIDQUERY);
         } else{
 
-            model.put("result", result);
+            model.put(modelParametersPrefix + "result", result);
 
             Map<String, Object> links = new HashMap<String, Object>();
             // QueryStrings for drilldown
-            links.put("hitcounts", getHitCountUrls(urlPrefix, query, result));
+            links.put(modelParametersPrefix + "hitcounts", getHitCountUrls(urlPrefix, query, result));
 
             // QueryString to previous and next page
             String prevPageUrl = getPrevPageUrl(query, result);
             if (prevPageUrl != null) {
-                links.put("prevPageUrl", urlPrefix + prevPageUrl);
+                links.put(modelParametersPrefix + "prevPageUrl", urlPrefix + prevPageUrl);
             }
             String nextPageUrl = getNextPageUrl(query, result);
             if (nextPageUrl != null) {
-                links.put("nextPageUrl", urlPrefix + nextPageUrl);
+                links.put(modelParametersPrefix + "nextPageUrl", urlPrefix + nextPageUrl);
             }
 
             // QueryStrings for pages
-            links.put("pageUrls", createPageUrls(urlPrefix, query, result));
-            model.put("links", links);
+            links.put(modelParametersPrefix + "pageUrls", createPageUrls(urlPrefix, query, result));
+            model.put(modelParametersPrefix + "links", links);
 
         }
         return model;
@@ -120,6 +125,16 @@ public class ContentSearchController implements AksessController, InitializingBe
             }
             query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
         }
+
+        if (includedContentTemplateId != null) {
+            query.putSearchParam(SearchServiceQuery.PARAM_CONTENT_TEMPLATE, includedContentTemplateId.toString());
+        }
+
+        if (excludedContentTemplateId != null) {
+            query.putSearchParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_TEMPLATE, excludedContentTemplateId.toString());
+        }
+
+
         return query;
     }
 
@@ -315,6 +330,18 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     public List<SearchField> getCustomSearchFields() {
         return customSearchFields;
+    }
+
+    public void setModelParametersPrefix(String modelParametersPrefix) {
+        this.modelParametersPrefix = modelParametersPrefix;
+    }
+
+    public void setIncludedContentTemplateId(Integer includedContentTemplateId) {
+        this.includedContentTemplateId = includedContentTemplateId;
+    }
+
+    public void setExcludedContentTemplateId(Integer excludedContentTemplateId) {
+        this.excludedContentTemplateId = excludedContentTemplateId;
     }
 
     public void afterPropertiesSet() throws Exception {

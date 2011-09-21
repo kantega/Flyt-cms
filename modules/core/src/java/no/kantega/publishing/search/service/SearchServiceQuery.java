@@ -44,6 +44,7 @@ public class SearchServiceQuery {
     public static final String PARAM_SEARCH_PHRASE = "q";
     public static final String PARAM_DOCUMENT_TYPE = Fields.DOCUMENT_TYPE_ID;
     public static final String PARAM_CONTENT_TEMPLATE = Fields.CONTENT_TEMPLATE_ID;
+    public static final String PARAM_EXCLUDED_CONTENT_TEMPLATE = "Excluded" + Fields.CONTENT_TEMPLATE_ID;
     public static final String PARAM_DOCTYPE = Fields.DOCTYPE;
     public static final String PARAM_CONTENT_PARENT = Fields.CONTENT_PARENTS;
     public static final String PARAM_EXCLUDED_CONTENT_PARENT = "Excluded" + Fields.CONTENT_PARENTS;
@@ -76,6 +77,7 @@ public class SearchServiceQuery {
         paramNames.add(PARAM_SEARCH_PHRASE);
         paramNames.add(PARAM_DOCUMENT_TYPE);
         paramNames.add(PARAM_CONTENT_TEMPLATE);
+        paramNames.add(PARAM_EXCLUDED_CONTENT_TEMPLATE);
         paramNames.add(PARAM_DOCTYPE);
         paramNames.add(PARAM_CONTENT_PARENT);
         paramNames.add(PARAM_EXCLUDED_CONTENT_PARENT);

@@ -297,6 +297,17 @@ public class SearchServiceImpl implements SearchService {
             criterionList.add(c);
         }
 
+        /**
+         * Excluded Content Template (unntatte innholdsmal)
+         */
+        if (query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_TEMPLATE) != null) {
+            Integer contentTemplate = query.getIntegerParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_TEMPLATE);
+            ContentTemplateCriterion ct = new ContentTemplateCriterion(contentTemplate);
+            ct.setOperator(BooleanClause.Occur.MUST_NOT);
+            criterionList.add(ct);
+        }
+
+
         /*
          * DocType (som regel content eller attachment)
          */
