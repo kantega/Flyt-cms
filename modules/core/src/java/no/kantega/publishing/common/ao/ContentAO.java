@@ -30,6 +30,7 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
@@ -39,7 +40,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-import no.kantega.publishing.org.OrgUnit;
 
 /**
  *
@@ -71,7 +71,15 @@ public class ContentAO {
             st.close();
 
             // Slett innholdsattributter
-            st = c.prepareStatement("delete from contentattributes where ContentVersionId in (select ContentVersionId from contentversion where ContentId = ?)");
+
+
+            String deleteAttributesSql = "delete from contentattributes where ContentVersionId in (select ContentVersionId from contentversion where ContentId = ?)";
+
+            if(dbConnectionFactory.isMySQL()) {
+                deleteAttributesSql = "delete contentattributes from contentattributes,contentversion where contentattributes.contentversionid=contentversion.contentversionid and contentversion.contentid=?";
+            }
+
+            st = c.prepareStatement(deleteAttributesSql);
             st.setInt(1, id);
             st.execute();
             st.close();
