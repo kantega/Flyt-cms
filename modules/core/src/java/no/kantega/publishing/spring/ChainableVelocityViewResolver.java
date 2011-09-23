@@ -12,7 +12,12 @@ public class ChainableVelocityViewResolver extends VelocityViewResolver {
     @Override
     public View resolveViewName(String viewName, Locale locale) throws Exception {
         try {
-            if(viewName.startsWith(REDIRECT_URL_PREFIX) || getClass().getClassLoader().getResource(getPrefix() + viewName + getSuffix()) != null) {
+            String path = getPrefix() + viewName + getSuffix();
+            // Strip leading "/". Works on Jetty, but not on Tomcat.
+            while(path.startsWith("/")) {
+                path = path.substring(1);
+            }
+            if(viewName.startsWith(REDIRECT_URL_PREFIX) || getClass().getClassLoader().getResource(path) != null) {
                 return super.resolveViewName(viewName, locale);
             } else {
                 return null;
