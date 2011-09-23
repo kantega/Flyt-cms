@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class AutoSuggestController {
 
     @RequestMapping("/autosuggest")
     public @ResponseBody String search(@RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) throws UnsupportedEncodingException {
-        List<Suggestion> suggestionList = suggest(term, limit);
+        List<Suggestion> suggestionList = suggest(decodeTerm(term), limit);
         return printSuggestions(suggestionList);
     }
 
@@ -44,6 +45,14 @@ public class AutoSuggestController {
             builder.append('\n');
         }
       return builder.toString();
+    }
+
+    private String decodeTerm(String term) throws UnsupportedEncodingException {
+        if (term != null) {
+            term = URLDecoder.decode(term, "UTF-8");
+            term = term.toLowerCase();
+        }
+        return term;
     }
 
     @Autowired
