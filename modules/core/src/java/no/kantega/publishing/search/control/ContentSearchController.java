@@ -94,20 +94,20 @@ public class ContentSearchController implements AksessController, InitializingBe
 
             Map<String, Object> links = new HashMap<String, Object>();
             // QueryStrings for drilldown
-            links.put(modelParametersPrefix + "hitcounts", getHitCountUrls(urlPrefix, query, result));
+            links.put("hitcounts", getHitCountUrls(urlPrefix, query, result));
 
             // QueryString to previous and next page
             String prevPageUrl = getPrevPageUrl(query, result);
             if (prevPageUrl != null) {
-                links.put(modelParametersPrefix + "prevPageUrl", urlPrefix + prevPageUrl);
+                links.put("prevPageUrl", urlPrefix + prevPageUrl);
             }
             String nextPageUrl = getNextPageUrl(query, result);
             if (nextPageUrl != null) {
-                links.put(modelParametersPrefix + "nextPageUrl", urlPrefix + nextPageUrl);
+                links.put("nextPageUrl", urlPrefix + nextPageUrl);
             }
 
             // QueryStrings for pages
-            links.put(modelParametersPrefix + "pageUrls", createPageUrls(urlPrefix, query, result));
+            links.put("pageUrls", createPageUrls(urlPrefix, query, result));
             model.put(modelParametersPrefix + "links", links);
 
         }
