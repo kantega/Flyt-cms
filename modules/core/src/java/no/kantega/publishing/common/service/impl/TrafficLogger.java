@@ -166,6 +166,12 @@ public class TrafficLogger {
         return false;
     }
 
+    public static void shutdownExecutor() {
+        if(executor != null) {
+            executor.shutdown();
+        }
+    }
+
     public static class RefererInfo {
         private String referer;
         private String host;

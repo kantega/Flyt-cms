@@ -20,6 +20,7 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationLoader;
 import no.kantega.commons.configuration.DefaultConfigurationLoader;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.impl.TrafficLogger;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -80,6 +81,12 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
         initContext();
 
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        TrafficLogger.shutdownExecutor();
+        super.contextDestroyed(event);
     }
 
     public synchronized void initContext() {
