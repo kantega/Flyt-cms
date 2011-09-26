@@ -18,15 +18,15 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.publishing.common.Aksess;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -44,6 +44,7 @@ public class DateAttribute extends Attribute {
     }
 
     public DateAttribute(String name, String value) {
+        this();
         this.name  = name;
         setValue(value);
     }
