@@ -382,7 +382,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     protected void addOtherFields(Content content, Document d) {
-        // Default implementasjon er tom - kan overrides for å legge til egendefinerte felt.
+        // Default implementasjon er tom - kan overrides for ï¿½ legge til egendefinerte felt.
     }
 
     protected AksessDao getAksessDao() {
@@ -437,10 +437,9 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     private String getSiteId(Content content) {
-        StringBuffer siteId = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder siteId = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
                 if (siteId.length() > 0) siteId.append(" ");
                 siteId.append(a.getSiteId());
@@ -450,10 +449,9 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     private String getCategory(Content content) {
-        StringBuffer category = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder category = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (category.length() > 0) category.append(" ");
             category.append(a.getCategory().getId());
         }
@@ -461,10 +459,9 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     private String getParents(Content content) {
-        StringBuffer parents = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder parents = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (parents.length() > 0) parents.append(" ");
             String path = a.getPath();
             path = path.replace('/', ' ');
@@ -474,7 +471,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     private String getTopics(int contentId) throws SQLException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         TmBaseName[] baseNames = aksessDao.getTmBaseNames(contentId);
         for (int i = 0; i < baseNames.length; i++) {
             TmBaseName baseName = baseNames[i];
@@ -487,7 +484,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     private String getAssociations(Content content) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         List <Association> associations = content.getAssociations();
         for (int i = 0; i < associations.size(); i++) {
             sb.append(associations.get(i).getAssociationId());

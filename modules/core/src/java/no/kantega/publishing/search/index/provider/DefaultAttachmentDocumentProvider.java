@@ -97,7 +97,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             String fileName = doc.get(Fields.ATTACHMENT_FILE_NAME);
             if (fileName != null) {
                 fileName = fileName.toLowerCase();
-                if (fileName.indexOf(".") != -1) {
+                if (fileName.contains(".")) {
                     String fileExtension = fileName.substring(fileName.lastIndexOf("."), fileName.length());
                     fileName = fileName.substring(0,fileName.lastIndexOf("."));
                     searchHit.setFileExtension(fileExtension);
@@ -266,10 +266,9 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     }
 
     private String getSiteId(Content content) {
-        StringBuffer siteId = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder siteId = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
                 if (siteId.length() > 0) siteId.append(" ");
                 siteId.append(a.getSiteId());
@@ -279,10 +278,9 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     }
 
     private String getCategory(Content content) {
-        StringBuffer category = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder category = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (category.length() > 0) category.append(" ");
             category.append(a.getCategory().getId());
         }
@@ -290,10 +288,9 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     }
 
     private String getParents(Content content) {
-        StringBuffer parents = new StringBuffer();
-        List associations = content.getAssociations();
-        for (int i = 0; i < associations.size(); i++) {
-            Association a = (Association)associations.get(i);
+        StringBuilder parents = new StringBuilder();
+        List<Association> associations = content.getAssociations();
+        for (Association a : associations) {
             if (parents.length() > 0) parents.append(" ");
             String path = a.getPath();
             path = path.replace('/', ' ');
@@ -312,7 +309,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
 
     private String getSuffix(String filename) {
 
-        if(filename != null && filename.indexOf(".") >= 0) {
+        if(filename != null && filename.contains(".")) {
             return filename.substring(filename.lastIndexOf(".") +(filename.endsWith(".") ? 0 : 1));
         } else {
             return "";
