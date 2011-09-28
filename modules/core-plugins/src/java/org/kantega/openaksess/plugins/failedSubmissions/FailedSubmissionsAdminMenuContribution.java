@@ -1,4 +1,5 @@
-package org.kantega.openaksess.plugins.failedEmailSubmissions;
+package org.kantega.openaksess.plugins.failedSubmissions;
+
 
 import no.kantega.publishing.api.ui.MenuItem;
 import no.kantega.publishing.api.ui.UIContributionAdapter;
@@ -8,13 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 
-public class FailedEmailSubmissionsAdminMenuContribution extends UIContributionAdapter {
+public class FailedSubmissionsAdminMenuContribution extends UIContributionAdapter {
     private final List<MenuItem> menuItems;
 
     @Autowired
-    public FailedEmailSubmissionsAdminMenuContribution(UIServices uiServices) {
+    public FailedSubmissionsAdminMenuContribution(UIServices uiServices) {
         MenuItem item = uiServices.createMenu();
-        item.addLink("failedEmailSubmissions.title", "/oap/administration/failedEmailSubmissions");
+        item.addLink("failedSubmissions.title", "/oap/administration/failedSubmissions");
         menuItems = Collections.singletonList(item);
     }
 

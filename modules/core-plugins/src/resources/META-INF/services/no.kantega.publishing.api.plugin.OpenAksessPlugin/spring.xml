@@ -32,7 +32,7 @@
             <list>
                 <value>classpath:org/kantega/openaksess/plugins/dbdiff/dbdiff</value>
                 <value>classpath:org/kantega/openaksess/plugins/jobexecuter/jobexecuter</value>
-                <value>classpath:org/kantega/openaksess/plugins/failedEmailSubmissions/failedemailsubmissions</value>
+                <value>classpath:org/kantega/openaksess/plugins/failedSubmissions/failedsubmissions</value>
             </list>
         </property>
     </bean>

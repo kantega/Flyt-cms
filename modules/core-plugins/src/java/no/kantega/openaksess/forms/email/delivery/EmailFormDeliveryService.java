@@ -22,6 +22,8 @@ import no.kantega.openaksess.forms.xml.XMLFormsubmissionConverter;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 
 import javax.activation.DataHandler;
@@ -65,6 +67,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
 
             sendEmail(formSubmission, from, to, param);
         } catch (Exception e) {
+            EventLog.log("System", null, Event.FAILED_FORM_SUBMISSION, "Form Id: " + formSubmission.getForm().getId(), null);
             Log.error("Delivering form by email failed. Form Id: " + formSubmission.getForm().getId(), e, null, null);
         }
 

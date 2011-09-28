@@ -20,21 +20,21 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
-        <constructor-arg value="org.kantega.openaksess.plugins.failedemailsubmissions"/>
+        <constructor-arg value="org.kantega.openaksess.plugins.failedsubmissions"/>
         <property name="handlerMappings">
             <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
                 <property name="alwaysUseFullPath" value="true"/>
                 <property name="mappings">
-                    <value>/oap/administration/failedEmailSubmissions=failedEmailSubmissionsController</value>
+                    <value>/oap/administration/failedSubmissions=failedSubmissionsController</value>
                 </property>
             </bean>
         </property>
         <property name="UIContributions">
-            <bean class="org.kantega.openaksess.plugins.failedEmailSubmissions.FailedEmailSubmissionsAdminMenuContribution"/>
+            <bean class="org.kantega.openaksess.plugins.failedSubmissions.FailedSubmissionsAdminMenuContribution"/>
         </property>
     </bean>
 
-    <bean id="failedEmailSubmissionsController" class="org.kantega.openaksess.plugins.failedEmailSubmissions.FailedEmailSubmissionsController">
+    <bean id="failedSubmissionsController" class="org.kantega.openaksess.plugins.failedSubmissions.FailedSubmissionsController">
         <property name="eventLogAO">
             <bean class="no.kantega.publishing.common.ao.EventLogAO">
                 <property name="dataSource" ref="aksessDataSource"/>

@@ -1,0 +1,4 @@
+#foreach($failed in $failedSubmissions)
+$dateTool.format("yyyy-MM-dd HH:mm", $failed.time)
+$failed.subjectName
+#end
