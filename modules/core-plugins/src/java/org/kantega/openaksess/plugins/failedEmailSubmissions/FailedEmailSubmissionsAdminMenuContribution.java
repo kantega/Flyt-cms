@@ -14,7 +14,7 @@ public class FailedEmailSubmissionsAdminMenuContribution extends UIContributionA
     @Autowired
     public FailedEmailSubmissionsAdminMenuContribution(UIServices uiServices) {
         MenuItem item = uiServices.createMenu();
-        item.addLink("failedEmailSubmissions.title", "/admin/oap/administration/failedEmailSubmissions");
+        item.addLink("failedEmailSubmissions.title", "/oap/administration/failedEmailSubmissions");
         menuItems = Collections.singletonList(item);
     }
 

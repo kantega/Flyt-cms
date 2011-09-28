@@ -25,10 +25,7 @@
             <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
                 <property name="alwaysUseFullPath" value="true"/>
                 <property name="mappings">
-                    <value>/admin/oap/administration/failedEmailSubmissions=failedEmailSubmissionsController</value>
-                </property>
-                <property name="interceptors">
-                    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor"/>
+                    <value>/oap/administration/failedEmailSubmissions=failedEmailSubmissionsController</value>
                 </property>
             </bean>
         </property>
