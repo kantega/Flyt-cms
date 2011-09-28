@@ -10,8 +10,6 @@ import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.forms.model.AksessContentForm;
 import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
@@ -122,16 +120,11 @@ public class SaveFormSubmissionController implements AksessController {
             try {
                 MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
             } catch (SystemException e) {
-                logException(formsubmission, e);
+                Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
             } catch (ConfigurationException e) {
-                logException(formsubmission, e);
+                Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
             }
         }
-    }
-
-    private void logException(FormSubmission formsubmission, Exception e) {
-        Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
-        EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
     }
 
     public String getDescription() {

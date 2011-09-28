@@ -19,8 +19,6 @@ package no.kantega.publishing.api.taglibs.mail;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.log4j.Logger;
 
@@ -59,19 +57,14 @@ public class SendMailTag extends BodyTagSupport {
             MailSender.send(from, to, subject, sw.toString());
 
         } catch (IOException e) {
-            logException(e);
+            log.error(e.getMessage(), e);
         } catch (SystemException e) {
-            logException(e);
+            log.error(e.getMessage(), e);
         } catch (ConfigurationException e) {
-            logException(e);
+            log.error(e.getMessage(), e);
         }
 
         return SKIP_BODY;
-    }
-
-    private void logException(Exception e) {
-        log.error(e.getMessage(), e);
-        EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
     }
 
     public void setFrom(String from) {

@@ -3,8 +3,6 @@ package no.kantega.publishing.security.action;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.Identity;
@@ -75,7 +73,6 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         try {
             MailSender.send(mailFrom, userProfile.getEmail(), mailSubject, mailTemplate, mailParam);
         } catch (Exception e) {
-            EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
             model.put("error", "aksess.resetpassword.email-failed");
             return new ModelAndView(requestResetPasswordView, model);
         }

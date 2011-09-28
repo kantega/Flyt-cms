@@ -7,8 +7,6 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 
 import java.util.HashMap;
@@ -62,7 +60,6 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
                 MailSender.send(from, recipient, subject, template, param);
             } catch (Exception e) {
                 Log.error(this.getClass().getName(), e, null, null);
-                EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
             }
         }
     }

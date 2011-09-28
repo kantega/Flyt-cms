@@ -20,8 +20,6 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.data.User;
 
@@ -57,15 +55,10 @@ public class ContentEmailAlertListener implements ContentAlertListener {
 
             MailSender.send(mailFrom, recipient, mailSubject, mailTemplate, param);
         } catch (SystemException e) {
-            logException(e);
+            Log.error(SOURCE, e, null, null);
         } catch (ConfigurationException e) {
-            logException(e);
+            Log.error(SOURCE, e, null, null);
         }
-    }
-
-    private void logException(Exception e) {
-        Log.error(SOURCE, e, null, null);
-        EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
     }
 
     public void setMailSubject(String mailSubject) {

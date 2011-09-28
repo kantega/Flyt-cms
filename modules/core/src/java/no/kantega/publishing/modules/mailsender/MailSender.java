@@ -21,6 +21,8 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.VelocityContext;
@@ -169,6 +171,8 @@ public class MailSender {
             // Logg sending
             Log.debug(SOURCE, "Sending email to " + to + " with subject " + subject, null, null);
         } catch (MessagingException e) {
+            String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
+            EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
             throw new SystemException("Error sending email to : " + to + " with subject " + subject, SOURCE, e);
         }
     }

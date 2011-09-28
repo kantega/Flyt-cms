@@ -18,16 +18,13 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
@@ -95,15 +92,7 @@ public class ApproveOrRejectAction implements Controller {
         String messageBody = MailSender.createStringFromVelocityTemplate("contentrejected.vm", param);
         String subject = LocaleLabels.getLabel("aksess.reject.mailsubject", Aksess.getDefaultLocale());
         if (StringUtils.isNotBlank(to)) {
-            try {
-                MailSender.send(from, to, subject, messageBody);
-            } catch (ConfigurationException e) {
-                EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
-                throw e;
-            } catch (SystemException e) {
-                EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
-                throw e;
-            }
+            MailSender.send(from, to, subject, messageBody);
         }
     }
 
