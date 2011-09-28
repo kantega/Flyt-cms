@@ -16,18 +16,14 @@
 
 package no.kantega.publishing.security.interceptors;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.exception.NotAuthorizedException;
-
-/**
- *
- */
 public class AdminRoleInterceptor extends HandlerInterceptorAdapter {
 
     @Override

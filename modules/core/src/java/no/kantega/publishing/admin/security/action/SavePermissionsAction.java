@@ -16,30 +16,28 @@
 
 package no.kantega.publishing.admin.security.action;
 
-import no.kantega.publishing.security.data.Permission;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.security.data.enums.NotificationPriority;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.service.SecurityService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.admin.security.action.EditPermissionsAction;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Permission;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.data.enums.NotificationPriority;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.data.enums.RoleType;
+import no.kantega.publishing.security.service.SecurityService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Enumeration;
 import java.util.ArrayList;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
+import java.util.Enumeration;
+import java.util.List;
 
 public class SavePermissionsAction extends AbstractController {
     private String view;
@@ -56,7 +54,7 @@ public class SavePermissionsAction extends AbstractController {
             String name = (String)params.nextElement();
             int priv = param.getInt(name);
 
-            if (priv != -1 && name.indexOf("role_") != -1) {
+            if (priv != -1 && name.contains("role_")) {
                 Permission permission = new Permission();
                 permission.setPrivilege(priv);
 
@@ -85,17 +83,18 @@ public class SavePermissionsAction extends AbstractController {
 
         BaseObject object = (BaseObject)session.getAttribute(EditPermissionsAction.PERMISSIONS_OBJECT);
         if (object != null) {
-            // Set updated permissions
-            if (object != null) {
-                EventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
-                SecurityService.setPermissions(object, permissions);
-            }
+            setUpdatedPermissions(request, permissions, object);
         }
 
         session.removeAttribute(EditPermissionsAction.PERMISSIONS_OBJECT);
         session.removeAttribute(EditPermissionsAction.PERMISSIONS_LIST);
 
         return new ModelAndView(view);
+    }
+
+    private void setUpdatedPermissions(HttpServletRequest request, List permissions, BaseObject object) {
+        EventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
+        SecurityService.setPermissions(object, permissions);
     }
 
     public void setView(String view) {

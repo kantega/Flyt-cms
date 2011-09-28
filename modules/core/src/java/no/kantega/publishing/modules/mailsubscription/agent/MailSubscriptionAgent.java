@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.modules.mailsubscription.agent;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
@@ -25,7 +24,6 @@ import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -59,7 +57,7 @@ public class MailSubscriptionAgent {
 
         for (MailSubscription subscription : subscriptions) {
             String email = subscription.getEmail();
-            if (email.indexOf("@") != -1) {
+            if (email.contains("@")) {
                 List<Content> subscriberContent = subscribers.get(email);
                 if (subscriberContent == null) {
                     subscriberContent = new ArrayList<Content>();
@@ -119,11 +117,8 @@ public class MailSubscriptionAgent {
             return false;
         }
         // A specified document type should match
-        if(subscription.getDocumenttype() > 0 && subscription.getDocumenttype() != c.getDocumentTypeId()) {
-            return false;
-        }
+        return !(subscription.getDocumenttype() > 0 && subscription.getDocumenttype() != c.getDocumentTypeId());
 
-        return true;
     }
 
 
@@ -138,7 +133,7 @@ public class MailSubscriptionAgent {
                     query.setSiteId(site.getId());
                 }
 
-                List allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
+                List<Content> allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
 
                 // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
                 List<Content> contentList = new ArrayList<Content>();
@@ -147,8 +142,7 @@ public class MailSubscriptionAgent {
 
                 boolean sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
 
-                for (int i = 0; i < allContentList.size(); i++) {
-                    Content content = (Content) allContentList.get(i);
+                for (Content content : allContentList) {
                     if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
                         contentList.add(content);
                         Log.debug(SOURCE, "New content:" + content.getTitle());

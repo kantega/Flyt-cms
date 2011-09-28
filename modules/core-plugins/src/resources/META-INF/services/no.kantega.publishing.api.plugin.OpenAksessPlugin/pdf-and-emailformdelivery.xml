@@ -27,9 +27,7 @@
         <property name="handlerMappings">
             <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
                 <property name="mappings">
-                    <value>
-                        /pdf/FormSubmissionExport.pdf=formSubmissionExportPDFAction
-                    </value>
+                    <value>/pdf/FormSubmissionExport.pdf=formSubmissionExportPDFAction</value>
                 </property>
             </bean>
         </property>

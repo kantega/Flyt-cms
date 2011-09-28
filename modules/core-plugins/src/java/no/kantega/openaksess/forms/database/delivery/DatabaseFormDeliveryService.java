@@ -4,9 +4,6 @@ import no.kantega.openaksess.forms.database.dao.FormSubmissionDao;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 
-/**
- *
- */
 public class DatabaseFormDeliveryService implements FormDeliveryService {
     private FormSubmissionDao formSubmissionDao;
 

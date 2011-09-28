@@ -1,10 +1,8 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="no.kantega.publishing.common.data.EventLogEntry" %>
 <%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
-<%@ page import="no.kantega.publishing.common.util.PrettyURLEncoder" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -62,7 +60,7 @@
 
                     String eventInfo = "";
                     String eventName = event.getEventName();
-                    if (eventName.indexOf(":") != -1) {
+                    if (eventName.contains(":")) {
                         // If eventname contains :, the text after : is additional info
                         eventInfo = ": " + eventName.substring(eventName.indexOf(":"), eventName.length());
                         eventName = eventName.substring(0, eventName.indexOf(":"));

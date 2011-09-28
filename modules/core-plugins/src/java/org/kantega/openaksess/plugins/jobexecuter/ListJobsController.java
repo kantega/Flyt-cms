@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.kantega.jexmec.PluginManager;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -69,6 +70,12 @@ public class ListJobsController extends AdminController {
         }
 
 
+        putTriggersAndCurrentlyExecuting(jobs, model, schedulers);
+
+        return new ModelAndView ("org/kantega/openaksess/plugins/jobexecuter/view", model);
+    }
+
+    private void putTriggersAndCurrentlyExecuting(String[] jobs, Map<String, Object> model, List<Scheduler> schedulers) throws SchedulerException {
         List<JobExecutionContext> currentyExecuting = new ArrayList<JobExecutionContext>();
 
         List<Trigger> triggers = new ArrayList<Trigger>();
@@ -91,8 +98,6 @@ public class ListJobsController extends AdminController {
 
         model.put("currentlyExecuting", currentyExecuting);
         model.put("triggers", triggers);
-
-        return new ModelAndView ("org/kantega/openaksess/plugins/jobexecuter/view", model);
     }
 
     private List<Trigger> sortJobs(List<Trigger> triggers) {

@@ -16,22 +16,21 @@
 
 package no.kantega.openaksess.forms.email.delivery;
 
+import no.kantega.commons.log.Log;
 import no.kantega.openaksess.forms.pdf.PDFGenerator;
 import no.kantega.openaksess.forms.xml.XMLFormsubmissionConverter;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.FormSubmission;
-import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
-
-import java.util.*;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.modules.mailsender.MailSender;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
+import java.util.*;
 
 
 /**
@@ -56,7 +55,8 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         }
         try {
             String from = formSubmission.getSubmittedByEmail();
-            if (from == null || from.indexOf("@") == -1) {
+            boolean notEmailAddress = from == null || !from.contains("@");
+            if (notEmailAddress) {
                 // Use default sender
                 from = Aksess.getConfiguration().getString("mail.from");
             }
@@ -66,12 +66,9 @@ public class EmailFormDeliveryService implements FormDeliveryService {
             param.put("form", formSubmission);
 
             sendEmail(formSubmission, from, to, param);
-        } catch (SystemException e) {
-            Log.error("", e, null, null);
-        } catch (ConfigurationException e) {
-            Log.error("", e, null, null);
         } catch (Exception e) {
-            Log.error("", e, null, null);
+            Log.error("Delivering form by email failed. Form Id: " + formSubmission.getForm().getId(), e, null, null);
+            EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, "Form Id: " + formSubmission.getForm().getId(), null);
         }
 
     }

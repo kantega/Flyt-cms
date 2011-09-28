@@ -15,16 +15,18 @@
  */
 package no.kantega.publishing.modules.linkcheck.check;
 
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.modules.mailsender.MailSender;
+import org.apache.log4j.Logger;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.modules.mailsender.MailSender;
-import org.apache.log4j.Logger;
 
 public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 
@@ -50,7 +52,9 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 		if(exists(mailEditor) && exists(mailFrom)){
 			MailSender.send(mailFrom, mailEditor, "Brukne lenker", "brokenlinks.vm", params);
 		} else{
-            log.error("finner ikke mailEditor eller mailFrom i config, kan ikke sende mail om brukne lenker");
+            String message = "finner ikke mailEditor eller mailFrom i config, kan ikke sende mail om brukne lenker";
+            log.error(message);
+            EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, message, null);
         }
 	}
 

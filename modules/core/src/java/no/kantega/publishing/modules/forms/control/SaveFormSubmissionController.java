@@ -2,16 +2,20 @@ package no.kantega.publishing.modules.forms.control;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.modules.forms.util.FormSubmissionBuilder;
-import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
-import no.kantega.publishing.modules.forms.model.AksessContentForm;
-import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.controls.AksessController;
+import no.kantega.publishing.modules.forms.model.AksessContentForm;
+import no.kantega.publishing.modules.forms.util.FilledFormBuilder;
+import no.kantega.publishing.modules.forms.util.FormSubmissionBuilder;
 import no.kantega.publishing.modules.forms.validate.FormError;
 import no.kantega.publishing.modules.forms.validate.FormSubmissionValidator;
 import no.kantega.publishing.modules.mailsender.MailSender;
@@ -21,10 +25,10 @@ import org.kantega.jexmec.PluginManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -114,8 +118,20 @@ public class SaveFormSubmissionController implements AksessController {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("currentPage", currentPage);
             params.put("form", formsubmission);
-            MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
+
+            try {
+                MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
+            } catch (SystemException e) {
+                logException(formsubmission, e);
+            } catch (ConfigurationException e) {
+                logException(formsubmission, e);
+            }
         }
+    }
+
+    private void logException(FormSubmission formsubmission, Exception e) {
+        Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
+        EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, e.getMessage(), null);
     }
 
     public String getDescription() {

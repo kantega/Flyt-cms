@@ -25,12 +25,14 @@
     <import resource="pdf-and-emailformdelivery.xml"/>
     <import resource="dbdiff.xml"/>
     <import resource="jobexecuter.xml"/>
+    <import resource="failedemailsubmission.xml"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list>
                 <value>classpath:org/kantega/openaksess/plugins/dbdiff/dbdiff</value>
                 <value>classpath:org/kantega/openaksess/plugins/jobexecuter/jobexecuter</value>
+                <value>classpath:org/kantega/openaksess/plugins/failedEmailSubmissions/failedemailsubmissions</value>
             </list>
         </property>
     </bean>

@@ -1,9 +1,3 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="no.kantega.publishing.common.data.EventLogEntry" %>
-<%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
 <%@ page import="no.kantega.publishing.common.data.enums.Event" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>

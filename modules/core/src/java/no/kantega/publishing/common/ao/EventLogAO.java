@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.common.data.EventLogEntry;
-import org.apache.log4j.Logger;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -26,8 +25,6 @@ import java.util.Date;
 import java.util.List;
 
 public class EventLogAO {
-
-    private Logger log = Logger.getLogger(getClass());
 
     private DataSource dataSource;
 
@@ -132,7 +129,7 @@ public class EventLogAO {
                     st.setInt(p++, subjectType);
                 }
                 if (eventName != null && eventName.length() > 0) {
-                    st.setString(p++, "%" + eventName + "%");
+                    st.setString(p, "%" + eventName + "%");
                 }
                 ResultSet rs = st.executeQuery();
                 while (rs.next()) {

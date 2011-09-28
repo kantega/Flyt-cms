@@ -22,12 +22,12 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RootContext;
+import org.apache.commons.io.IOUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.commons.io.IOUtils;
 import org.apache.velocity.tools.generic.DateTool;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -127,7 +127,8 @@ public class MailSender {
 
             // I noen tilfeller �nsker vi at all epost skal g� til en testadresse
             String catchAllTo = config.getString("mail.catchall.to");
-            if (catchAllTo != null && catchAllTo.indexOf("@") != -1) {
+            boolean catchallExists = catchAllTo != null && catchAllTo.contains("@");
+            if (catchallExists) {
                 subject = " (original recipient: " + to + ") " + subject;
                 to = catchAllTo;
             }
@@ -157,8 +158,7 @@ public class MailSender {
             message.setSentDate(new Date());
 
             Multipart mp = new MimeMultipart();
-            for (int i = 0; i < bodyParts.length; i++) {
-                MimeBodyPart bodyPart = bodyParts[i];
+            for (MimeBodyPart bodyPart : bodyParts) {
                 mp.addBodyPart(bodyPart);
             }
             message.setContent(mp);
@@ -216,7 +216,7 @@ public class MailSender {
     public static MimeBodyPart createMimeBodyPartFromStringMessage(String content) throws SystemException {
         try {
             MimeBodyPart bp = new MimeBodyPart();
-            if (content.indexOf("<html>") != -1 || content.indexOf("<HTML>") != -1) {
+            if (content.toLowerCase().contains("<html>")) {
                 bp.setContent(content, "text/html; charset=iso-8859-1");
             } else {
                 bp.setText(content, "ISO-8859-1");
