@@ -63,7 +63,7 @@
 
 <kantega:section id="content">
 
-    <iframe name="contentmain" id="Contentmain" src="${currentUrl}" frameborder="0" height="100%" width="100%"></iframe>
+    <div id="ContentmainContainer"><iframe name="contentmain" id="Contentmain" src="${currentUrl}" frameborder="0" height="100%" width="100%"></iframe></div>
 
 </kantega:section>
 

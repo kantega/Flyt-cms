@@ -94,6 +94,13 @@ openaksess.content = {
             }, "json");
         });
 
+        $("#ContentmainContainer").bind("contentupdate", function(e, url){
+            // Fix iframe scrolling on iPad - wait 3 sec to allow iframe to start loading
+            setTimeout(function() {
+                openaksess.common.addTouchScrollToIFrame("#Contentmain", "#ContentmainContainer");
+            }, 3000);
+        });
+
 //    New listeners can be added here:
 //    $([element listening to event]).bind("contentupdate", function(e, url) {
 //        [perform actions]
@@ -596,7 +603,7 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $mainPaneContent = $("#MainPaneContent"),
     mainPaneContentPaddingTop = 0,
     mainPaneContentPaddingBottom = 0;
-    var $mainContentIframe = $("#Contentmain");
+    var $mainContentIframeContainer = $("#ContentmainContainer");
 
     if ($mainPaneContent.size() > 0) {
         mainPaneContentPaddingTop = parseInt($mainPaneContent.css("paddingTop"));
@@ -627,8 +634,8 @@ openaksess.admin.setLayoutSpecificSizes = function (elementProperties){
     $navigator.height(elementProperties.window.height-elementProperties.top.height-filteroptionsHeight-parseInt(navigatorPaddingTop)-parseInt(navigatorPaddingBottom));
     $content.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight);
     $mainPane.height(mainPaneHeight).width(mainPaneWidth);
-    if ($mainContentIframe.size() > 0) {
-        $mainContentIframe.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
+    if ($mainContentIframeContainer.size() > 0) {
+        $mainContentIframeContainer.height(elementProperties.window.height-elementProperties.top.height-statusbarHeight-buttonsHeight-contentHintsHeight).width(mainPaneWidth);
     }
 
     if ($mainPaneContent.size() > 0) {

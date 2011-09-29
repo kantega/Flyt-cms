@@ -50,6 +50,11 @@ body.popup #Navigator{
     border: none;
 }
 
+#ContentmainContainer {
+    /* Used to fix scrolling on iPad / iPhone */
+    overflow: hidden;
+}
+
 /************** Content frame (right column) **************/
 #MainPane #Statusbar {
     height: 2em;

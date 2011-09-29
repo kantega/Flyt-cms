@@ -104,11 +104,11 @@ openaksess.common = {
 
         var $content = '';
         var $overlay = $("<div/>").css({
-                position : 'absolute',
-                background : '#ffffff',
-                opacity: '0'
-            })
-            .attr("id", "Contentoverlay");
+                    position : 'absolute',
+                    background : '#ffffff',
+                    opacity: '0'
+                })
+                .attr("id", "Contentoverlay");
         var $iframe = $('<iframe id="externalSite" frameborder="0" src="" />');
 
         var config = {
@@ -277,7 +277,7 @@ openaksess.common = {
      * Known openaksess events are:
      * - openaksess.navigatorSelect: When an item in the navigator is selected.
      * - openaksess.navigatorOpen: When a navigator folder is opened.
-     * - openaksess.navigatorClose: When a navigator folder is closed. 
+     * - openaksess.navigatorClose: When a navigator folder is closed.
      *
      * @param eventName - Name of the event to trigger, without prefix
      * @param data - Arbitrary data to send with the event.
@@ -302,6 +302,34 @@ openaksess.common = {
             suffix = "...";
         }
         return str.substring(0, maxlen) + suffix;
+    },
+
+    addTouchScrollToIFrame: function (iFrame, container) {
+        if(!navigator.userAgent.match(/iPad|iPhone/i)) {
+            return;
+        }
+
+        var mouseY = 0;
+        var mouseX = 0;
+
+        var iframeBody = $(iFrame).get(0).contentWindow.document.body;
+
+        if (iframeBody) {
+            iframeBody.addEventListener('touchstart', function(e) {
+                mouseY = e.targetTouches[0].pageY;
+                mouseX = e.targetTouches[0].pageX;
+            });
+
+            //update scroll position based on initial drag position
+            iframeBody.addEventListener('touchmove', function(e) {
+                e.preventDefault(); //prevent whole page dragging
+
+                var mask = $(container);
+                mask.scrollLeft(mask.scrollLeft() + mouseX-e.targetTouches[0].pageX);
+                mask.scrollTop(mask.scrollTop() + mouseY-e.targetTouches[0].pageY);
+            });
+
+        }
     }
 };
 
