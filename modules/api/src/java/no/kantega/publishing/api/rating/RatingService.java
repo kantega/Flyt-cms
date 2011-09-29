@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.api.rating;
 
-import no.kantega.publishing.api.rating.Rating;
-
 import java.util.List;
 
 public interface RatingService {
@@ -30,6 +28,15 @@ public interface RatingService {
      * @return - All ratings for the object
      */
     public List<Rating> getRatingsForObject(String objectId, String context);
+
+    /**
+     * Retrieves all ratings for all given objects in a context
+     *
+     * @param objectIds - E.g. a list of contentIds or forumPostIds.
+     * @param context - Object context identifier
+     * @return - All ratings for the object
+     */
+    public List<Rating> getRatingsForObjects(List<String> objectIds, String context);
 
     /**
      * Deletes all ratins for a given object in a context.

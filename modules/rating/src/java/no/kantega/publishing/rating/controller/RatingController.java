@@ -10,6 +10,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -60,6 +61,18 @@ public class RatingController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView getRatings(
+            @RequestParam(value = "objectId", required = true) String objectId,
+            @RequestParam(value = "context", required = true) String context,
+            ModelMap model ) {
+
+        List<Rating> allRatings = ratingService.getRatingsForObject(objectId, context);
+        model.put("objectId", objectId);
+        model.put("ratings", allRatings);
+        return new ModelAndView("wall/likeslist", model);
+    }
+
     private boolean hasRated(HttpServletRequest request, String objectId, String context) {
         for (Cookie cookie : request.getCookies()) {
             //The user has already rated if she has a cookie for this object.
@@ -93,5 +106,9 @@ public class RatingController {
 
     public void setJsonView(View jsonView) {
         this.jsonView = jsonView;
+    }
+
+    public void setRatingService(RatingService ratingService) {
+        this.ratingService = ratingService;
     }
 }

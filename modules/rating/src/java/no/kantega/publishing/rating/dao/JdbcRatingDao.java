@@ -1,19 +1,15 @@
 package no.kantega.publishing.rating.dao;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
+import no.kantega.publishing.api.rating.Rating;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import javax.sql.DataSource;
-
-import no.kantega.publishing.api.rating.Rating;
-
-import java.util.List;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -22,6 +18,18 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     private RatingRowMapper ratingRowMapper = new RatingRowMapper();
 
     @SuppressWarnings("unchecked")
+
+    public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
+        StringBuilder objectIdList = new StringBuilder();
+        for (int i = 0, objectIdsSize = objectIds.size(); i < objectIdsSize; i++) {
+            if (i > 0){
+                objectIdList.append(",");
+            }
+            objectIdList.append(objectIds.get(i));
+        }
+        return getJdbcTemplate().query("select * from ratings where Context = ? AND ObjectId IN(" + objectIdList.toString() + ") order by RatingDate desc",new Object[] {context}, ratingRowMapper);
+    }
+
     public List<Rating> getRatingsForObject(String objectId, String context) {
         return getJdbcTemplate().query("select * from ratings where ObjectId = ? and Context = ? order by RatingDate desc", new Object[] {objectId, context}, ratingRowMapper);
     }

@@ -45,6 +45,13 @@ public class RatingServiceImpl implements RatingService, ApplicationContextAware
         return ratingDao.getRatingsForObject(objectId, context);
     }
 
+    /**
+     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObjects(List<String>, String)
+     */
+    public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
+        return ratingDao.getRatingsForObjects(objectIds, context);
+    }
+
 
     /**
      * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObject(String, String)
