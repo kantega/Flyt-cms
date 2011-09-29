@@ -43,6 +43,7 @@ public class GetMetaDataTag  extends TagSupport {
     private String format = null;
     private String property = AttributeProperty.HTML;
     private Content contentObject = null;
+    private String repeater = null;
 
     private boolean inheritFromAncestors = false;
 
@@ -82,6 +83,10 @@ public class GetMetaDataTag  extends TagSupport {
         this.inheritFromAncestors = inheritFromAncestors;
     }
 
+    public void setRepeater(String repeater) {
+        this.repeater = repeater;
+    }
+
     public int doStartTag() throws JspException {
         JspWriter out;
 
@@ -89,11 +94,11 @@ public class GetMetaDataTag  extends TagSupport {
             out = pageContext.getOut();
             try {
                 if (contentObject == null) {
-                    contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
+                    contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
                 }
 
                 GetAttributeCommand cmd = new GetAttributeCommand();
-                cmd.setName(name);
+                cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
                 cmd.setProperty(property);
                 cmd.setMaxLength(maxlen);
                 cmd.setAttributeType(AttributeDataType.META_DATA);
@@ -133,6 +138,7 @@ public class GetMetaDataTag  extends TagSupport {
         property = AttributeProperty.HTML;
         inheritFromAncestors = false;
         contentObject = null;
+        repeater = null;
 
         return EVAL_PAGE;
     }

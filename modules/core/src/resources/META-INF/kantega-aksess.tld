@@ -252,6 +252,18 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>Inverts statement, eg check if attribute not exists</description>
             <name>negate</name>
             <required>false</required>
@@ -321,6 +333,12 @@
         <attribute>
             <description>Id or alias of other page to get attribute from</description>
             <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -444,6 +462,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>For DateAttribute specifies date format, using SimpleDateFormat</description>
             <name>format</name>
             <required>false</required>
@@ -545,6 +569,12 @@
         <attribute>
             <description>Id or alias of other page to print attribute from</description>
             <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
@@ -2704,7 +2734,7 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-       <attribute>
+        <attribute>
             <description>Label for previous link. Leave blank to not use</description>
             <name>prevlabel</name>
             <required>false</required>
@@ -2735,6 +2765,56 @@
 
                     <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
                     <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Iterate through repeatable attributes</description>
+        <name>repeatattributes</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.RepeatAttributesTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of repeater attributes</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find repeater attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get repeater attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if exists: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Show a photos inside a repeaterattribute
+
+                    <aksess:repeatattributes name="photos">
+                        <p>
+                        <aksess:getattribute name="photo" repeater="photos"/><br>
+                        <aksess:getattribute name="photocaption" repeater="photos"/>
+                        </p>
+                    </aksess:repeatattributes>
             ]]>
         </example>
     </tag>

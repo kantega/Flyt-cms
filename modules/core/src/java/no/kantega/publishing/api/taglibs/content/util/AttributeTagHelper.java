@@ -51,14 +51,26 @@ import java.util.Locale;
  *
  */
 public final class AttributeTagHelper {
+    public final static String COLLECTION_PAGE_VAR = "aksess_collection_";
+    public final static String REPEATER_CONTENT_OBJ_PAGE_VAR = "aksess_repeater_contentObj_";
+    public final static String REPEATER_OFFSET_PAGE_VAR = "aksess_repeater_offset_";
+
+
     public static Content getContent(PageContext pageContext, String collection, String contentId) throws SystemException, NotAuthorizedException {
+        return getContent(pageContext, collection, contentId, null);
+    }
+    public static Content getContent(PageContext pageContext, String collection, String contentId, String repeaterName) throws SystemException, NotAuthorizedException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         Content content = null;
 
         try {
             if (contentId == null) {
-                if (collection == null) {
+                if (collection != null) {
+                    content = (Content)pageContext.getAttribute(COLLECTION_PAGE_VAR + collection);
+                } else if (repeaterName != null) {
+                    content = (Content)pageContext.getAttribute(REPEATER_CONTENT_OBJ_PAGE_VAR + repeaterName);
+                } else {
                     ContentManagementService cs = new ContentManagementService(request);
 
                     // Normalt sett vil denne ligge i requesten
@@ -68,8 +80,7 @@ public final class AttributeTagHelper {
                         content = cs.getContent(new ContentIdentifier(request), true);
                         RequestHelper.setRequestAttributes(request, content);
                     }
-                } else {
-                    content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
+
                 }
 
             } else if (contentId.indexOf("..") == 0 || contentId.equalsIgnoreCase("group") || contentId.equalsIgnoreCase("next") || contentId.equalsIgnoreCase("previous") || contentId.startsWith("/+")) {
@@ -90,7 +101,7 @@ public final class AttributeTagHelper {
                                 RequestHelper.setRequestAttributes(request, content);
                             }
                         } else {
-                            content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
+                            content = (Content)pageContext.getAttribute(COLLECTION_PAGE_VAR + collection);
                         }
 
                         if (content != null) {
@@ -119,7 +130,7 @@ public final class AttributeTagHelper {
                         // Det er angitt en contentid som m� sl�s opp
                         ContentIdentifier cid = new ContentIdentifier();
                         try {
-                            if (contentId.indexOf(",") != -1) {
+                            if (contentId.contains(",")) {
                                 String contentIds[] = contentId.split(",");
                                 if (contentIds.length > 0) {
                                     int random = (int)Math.floor((contentIds.length*Math.random()));
@@ -438,5 +449,21 @@ public final class AttributeTagHelper {
             key = key + tmp.getId();
         }
         return key;
+    }
+
+
+    public static String getAttributeName(PageContext pageContext, String attributeName, String repeaterName) {
+        String name = attributeName;
+        if (repeaterName != null) {
+            Integer offset = (Integer)pageContext.getAttribute(REPEATER_OFFSET_PAGE_VAR + repeaterName);
+            if (offset == null) {
+                Log.error("AttributeTagHelper", "Returning first element - <aksess:getattribute repeater=" + repeaterName + "> must be used inside a <aksess:repeatattributes name=" + repeaterName + "> tag");
+                name = repeaterName + "[0]." + attributeName;
+            } else {
+                name = repeaterName + "[" + offset + "]." + attributeName;
+            }
+
+        }
+        return name;
     }
 }

@@ -38,6 +38,7 @@ public class AttributeNotExistsTag extends ConditionalTagSupport {
     private String collection = null;
     private int attributeType = AttributeDataType.CONTENT_DATA;
     private Content contentObject = null;
+    private String repeater = null;
 
     private boolean inheritFromAncestors = false;
 
@@ -72,14 +73,18 @@ public class AttributeNotExistsTag extends ConditionalTagSupport {
         this.inheritFromAncestors = inheritFromAncestors;
     }
 
+    public void setRepeater(String repeater) {
+        this.repeater = repeater;
+    }
+
     protected boolean condition()  {
         try {
             if (contentObject == null) {
-                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
+                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
             }
 
             GetAttributeCommand cmd = new GetAttributeCommand();
-            cmd.setName(name);
+            cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
             cmd.setAttributeType(attributeType);
             cmd.setProperty(AttributeProperty.VALUE);
 
@@ -105,6 +110,7 @@ public class AttributeNotExistsTag extends ConditionalTagSupport {
         attributeType = AttributeDataType.CONTENT_DATA;
         inheritFromAncestors = false;
         contentObject = null;
+        repeater = null;
 
         return super.doEndTag();
     }    

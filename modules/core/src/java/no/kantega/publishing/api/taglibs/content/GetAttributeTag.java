@@ -40,6 +40,7 @@ public class GetAttributeTag extends TagSupport {
     private String name = null;
     private String contentId = null;
     private String collection = null;
+    private String repeater = null;
     private String cssClass = null;
     private String format = null;
     private String property = AttributeProperty.HTML;
@@ -116,6 +117,10 @@ public class GetAttributeTag extends TagSupport {
         this.contentDisposition = contentDisposition;
     }
 
+    public void setRepeater(String repeater) {
+        this.repeater = repeater;
+    }
+
     public int doStartTag() throws JspException {
         JspWriter out;
 
@@ -123,7 +128,7 @@ public class GetAttributeTag extends TagSupport {
             out = pageContext.getOut();
             try {
                 GetAttributeCommand cmd = new GetAttributeCommand();
-                cmd.setName(name);
+                cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
                 cmd.setProperty(property);
                 cmd.setMaxLength(maxlen);
                 cmd.setAttributeType(AttributeDataType.CONTENT_DATA);
@@ -134,7 +139,7 @@ public class GetAttributeTag extends TagSupport {
                 cmd.setContentDisposition(contentDisposition);
 
                 if (contentObject == null) {
-                    contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
+                    contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
                 }
 
                 SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
@@ -194,6 +199,7 @@ public class GetAttributeTag extends TagSupport {
         inheritFromAncestors = false;
         contentDisposition = null;
         contentObject = null;
+        repeater = null;
 
         return EVAL_PAGE;
     }
