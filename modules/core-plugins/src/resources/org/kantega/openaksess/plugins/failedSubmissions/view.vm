@@ -1,4 +1,5 @@
-#foreach($failed in $failedSubmissions)
-$dateTool.format("yyyy-MM-dd HH:mm", $failed.time)
-$failed.subjectName
+#if($failedSubmissions.size() > 0)
+    $failedSubmissions.size() #pluginMessage('failedSubmissions.title')
+#else
+    OK
 #end
