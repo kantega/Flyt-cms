@@ -327,7 +327,7 @@ public class ContentManagementService {
                 }
             }
         } else {
-            if ((!content.isNew()) && (ContentAO.hasBeenPublished(content.getId()))) {
+            if ((!content.isNew()) && (ContentAO.hasBeenPublished(content.getId())) && content.getPublishDate() == null) {
                 // If page has been published before, publish date must be set
                 content.setPublishDate(new Date());
             }
