@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,12 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     @SuppressWarnings("unchecked")
 
     public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
+        if (objectIds.size() == 0) {
+            return new ArrayList<Rating>();
+        }
+
         StringBuilder objectIdList = new StringBuilder();
+
         for (int i = 0, objectIdsSize = objectIds.size(); i < objectIdsSize; i++) {
             if (i > 0){
                 objectIdList.append(",");
