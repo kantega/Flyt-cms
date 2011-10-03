@@ -16,18 +16,17 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.InvalidTemplateReferenceException;
-import no.kantega.commons.exception.SystemException;
-
-import java.util.List;
-import java.util.ArrayList;
-
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -82,10 +81,22 @@ public class TemplateHelper {
         List<ContentTemplate> contentTemplates = ContentTemplateCache.getTemplates();
         for (ContentTemplate ct : contentTemplates) {
             if (isAllowedChild(ct, parentContentTemplateId) && ct.getContentType() != ContentType.PAGE) {
-                templates.add(ct);
+                if (contentTemplateDoesNotHaveDisplayTemplate(ct, displayTemplates)) {
+                    templates.add(ct);
+                }
+
             }
         }
         return templates;
+    }
+
+    private static boolean contentTemplateDoesNotHaveDisplayTemplate(ContentTemplate ct, List<DisplayTemplate> displayTemplates) {
+        for (DisplayTemplate dt : displayTemplates) {
+            if (dt.getContentTemplate().getId() == ct.getId()){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

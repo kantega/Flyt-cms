@@ -1,9 +1,7 @@
-<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="java.util.List" %>
-<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
-<%@ page import="no.kantega.publishing.common.data.*" %>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache" %>
+<%@ page import="no.kantega.publishing.common.data.*" %>
+<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
@@ -244,7 +242,7 @@
                         }
                         boolean isDefault = false;
                         if (!foundDefault) {
-                            if (name.indexOf("*") != -1 || allowedTemplates.size() == 1) {
+                            if (name.contains("*") || allowedTemplates.size() == 1) {
                                 isDefault = true;
                                 defaultText = "<b>" + name + "</b><br>" + desc;
                                 foundDefault = true;
