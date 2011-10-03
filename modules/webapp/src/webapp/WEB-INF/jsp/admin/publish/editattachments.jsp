@@ -51,6 +51,7 @@
 
     function deleteAttachment(id) {
         if (confirm("<kantega:label key="aksess.attachments.confirmdelete"/>")) {
+            window.onbeforeunload = null;
             window.location.href = "DeleteAttachment.action?attachmentId=" + id;
         }
     }

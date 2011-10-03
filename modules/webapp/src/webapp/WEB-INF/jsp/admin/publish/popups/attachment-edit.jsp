@@ -45,8 +45,9 @@
                         return false;
                     }
                 }
-                
+
                 hasSubmitted = true;
+                getParent().onbeforeunload = null;
                 document.myform.submit();
             }
             return false;
