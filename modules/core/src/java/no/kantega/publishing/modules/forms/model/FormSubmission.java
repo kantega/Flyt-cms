@@ -75,6 +75,9 @@ public class FormSubmission {
     }
 
     public List<FormValue> getValues() {
+        if (values == null) {
+            values = new ArrayList<FormValue>();
+        }
         return values;
     }
 
@@ -91,7 +94,7 @@ public class FormSubmission {
     }
 
 
-    
+
 
     public void addValue(FormValue value) {
         if (values == null) {
