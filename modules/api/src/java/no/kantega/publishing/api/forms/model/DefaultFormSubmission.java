@@ -94,6 +94,9 @@ public class DefaultFormSubmission implements FormSubmission {
     }
 
     public List<FormValue> getValues() {
+        if (values == null) {
+            values = new ArrayList<FormValue>();
+        }
         return values;
     }
 

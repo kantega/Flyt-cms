@@ -107,6 +107,8 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
             setRecipientMailIfExists(formValue, attributes);
 
             formSubmission.addValue(formValue);
+        } else if (mandatory) {
+            errors.add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
         }
 
         mandatory = false;
