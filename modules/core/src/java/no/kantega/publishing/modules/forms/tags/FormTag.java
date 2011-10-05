@@ -54,7 +54,7 @@ public class FormTag extends BodyTagSupport {
                     html.append("<ul>");
                     // Display error messages
                     for (FormError error : errors) {
-                        html.append("<li>" + error.getField() + " " + LocaleLabels.getLabel(error.getMessage(), locale) + "</li>");
+                        html.append("<li>").append(error.getField()).append(" ").append(LocaleLabels.getLabel(error.getMessage(), locale)).append("</li>");
                     }
                     html.append("</ul></div>");
                 }
