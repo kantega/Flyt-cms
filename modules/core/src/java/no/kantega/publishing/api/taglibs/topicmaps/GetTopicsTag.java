@@ -21,13 +21,11 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.apache.log4j.Logger;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -70,7 +68,7 @@ public class GetTopicsTag extends LoopTagSupport {
                     throw new JspTagException("topicmapid must be specified when topicid is specified");
                 }
                 Topic t = topicService.getTopic(topicmapid, topicid);
-                List list = new ArrayList();
+                List<Topic> list = new ArrayList<Topic>();
                 if(t != null) {
                     list.add(t);
                 }
@@ -96,10 +94,9 @@ public class GetTopicsTag extends LoopTagSupport {
                 if (topiclist.length() > 0) {
                     String[] topics = topiclist.split(",");
 
-                    List l = new ArrayList();
-                    for (int j = 0; j < topics.length; j++) {
-                        String topicStr = topics[j];
-                        if (topicStr.indexOf(":") != -1) {
+                    List<Topic> l = new ArrayList<Topic>();
+                    for (String topicStr : topics) {
+                        if (topicStr.contains(":")) {
                             String topicMapId = topicStr.substring(0, topicStr.indexOf(":"));
                             String topicId = topicStr.substring(topicStr.indexOf(":") + 1, topicStr.length());
                             Topic t = topicService.getTopic(Integer.parseInt(topicMapId), topicId);
@@ -153,12 +150,11 @@ public class GetTopicsTag extends LoopTagSupport {
     }
 
     private List clean(List associations, String ignore) {
-        List ignoreList = new ArrayList();
+        List<String> ignoreList = new ArrayList<String>();
         if(ignore != null) {
             String[] ignoreIds = ignore.split(",");
-            for (int j = 0; j < ignoreIds.length; j++) {
-                String ignoreId = ignoreIds[j];
-                if(ignoreId != "") {
+            for (String ignoreId : ignoreIds) {
+                if (!ignoreId.equals("")) {
                     ignoreList.add(ignoreId);
                 }
             }

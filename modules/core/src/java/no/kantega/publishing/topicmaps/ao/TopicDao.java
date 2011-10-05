@@ -56,4 +56,11 @@ public interface TopicDao {
     List<Topic> getTopicsForSecurityIdentifier(SecurityIdentifier sid);
     List<Topic> getTopicsByNameAndTopicMapId(String topicName, int topicMapId);
     List<Topic> getTopicsByNameAndTopicInstance(String topicName, Topic instance);
+
+    /**
+     * @param contentId - ID of root
+     * @param topicMapId - ID of topicmap to find topics from
+     * @return Topics that are used on children of content with contentId
+     */
+    List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId);
 }

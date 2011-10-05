@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.commons.exception.SystemException;
 
 import java.util.List;
 
@@ -131,5 +131,10 @@ public class TopicAO {
 
     private static TopicDao getTopicDao() {
         return (TopicDao) RootContext.getInstance().getBean(AKSESS_TOPIC_DAO);
+    }
+
+    public static List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId) {
+       TopicDao topicDao = getTopicDao();
+       return topicDao.getTopicsInUseByChildrenOf(contentId, topicMapId);
     }
 }

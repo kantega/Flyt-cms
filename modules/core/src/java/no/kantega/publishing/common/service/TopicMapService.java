@@ -17,19 +17,19 @@
 package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicAssociation;
-import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicAssociation;
+import no.kantega.publishing.topicmaps.data.TopicMap;
+import no.kantega.publishing.topicmaps.data.TopicOccurence;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -138,7 +138,7 @@ public class TopicMapService {
             return;
         }
 
-        // En knytning mellom to emner (topics) går alltid begge veier, dette blir representert som to innslag i basen
+        // En knytning mellom to emner (topics) gï¿½r alltid begge veier, dette blir representert som to innslag i basen
         TopicAssociation association1 = new TopicAssociation();
         TopicAssociation association2 = new TopicAssociation();
 
@@ -236,5 +236,9 @@ public class TopicMapService {
      */
     public void removeTopicSIDAssociation(Topic topic, SecurityIdentifier securityIdentifier) throws SystemException {
         TopicAO.removeTopicSIDAssociation(topic, securityIdentifier);
+    }
+
+    public List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId) {
+        return TopicAO.getTopicsInUseByChildrenOf(contentId, topicMapId);
     }
 }

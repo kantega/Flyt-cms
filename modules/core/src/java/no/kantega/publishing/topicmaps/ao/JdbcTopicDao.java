@@ -26,8 +26,12 @@ import no.kantega.publishing.topicmaps.ao.rowmapper.TopicRowMapper;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -297,6 +301,24 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         topicUsageCounter.updateTopicUsageCount(topics);
 
         return topics;
+    }
+
+    public List<Topic> getTopicsInUseByChildrenOf(int contentId, final int topicMapId) {
+        String sql = "SELECT DISTINCT t.topicid,b.topicmapid,b.basename,tp.instanceof FROM associations a RIGHT JOIN content c ON a.contentid=c.contentid RIGHT JOIN ct2topic t ON a.contentid=t.contentid JOIN tmtopic tp ON t.topicid=tp.topicid AND t.topicmapid=tp.topicmapid RIGHT JOIN tmbasename b ON t.topicid=b.topicid AND t.topicmapid=b.topicmapid WHERE c.expiredate > ? AND t.topicmapid=? AND a.isdeleted=0 AND a.path like ? ORDER BY t.topicid";
+        SimpleJdbcTemplate template = getSimpleJdbcTemplate();
+        return template.query(sql, new RowMapper<Topic>() {
+            public Topic mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Topic t = new Topic();
+                t.setId(rs.getString("topicid"));
+                t.setBaseName(rs.getString("basename"));
+                Topic instanceOf = new Topic();
+                instanceOf.setId(rs.getString("instanceof"));
+                instanceOf.setTopicMapId(topicMapId);
+                t.setInstanceOf(instanceOf);
+                t.setTopicMapId(topicMapId);
+                return t;
+            }
+        }, new Date(), topicMapId, "%/" + contentId + "/%");
     }
 
     public void setTopicUsageCounter(TopicUsageCounter topicUsageCounter) {
