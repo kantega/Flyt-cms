@@ -36,7 +36,11 @@ public class LocaleLabels {
                     if (locArr.length > 2) {
                         bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1], locArr[2]));
                     } else {
-                        bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1]));
+                        try {
+                            bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1]));
+                        } catch (MissingResourceException mre) {
+                            bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0]));
+                        }
                     }
                     bundles.put(bundleName + "_" + locale, bundle);
                 } catch (MissingResourceException e) {
