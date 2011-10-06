@@ -174,7 +174,8 @@
             %>
             <aksess:getconfig key="editor.custom.tinymceparameters"/>
             // Path to editor.css
-            content_css : "${pageContext.request.contextPath}${cssPath}"
+            content_css : "${pageContext.request.contextPath}${cssPath}",
+            template_external_list_url : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp"
         };
 
         for (var i = 0, n = buttonRows.length; i < n; i++) {
