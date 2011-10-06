@@ -10,11 +10,11 @@ var tinyMCETemplateList = [
     boolean first = true;
     while (it.hasNext()) {
         String file = (String)it.next();
-        if (file.contains(".html")) {
+        if (file.endsWith(".html")) {
             if (!first) {
                 out.write(",");
-                first = false;
             }
+            first = false;
             if (file.contains("/")) {
                 file = file.substring(file.lastIndexOf("/") + 1, file.length());
             }
