@@ -41,6 +41,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 public class EditContentAction implements Controller {
     private static String SOURCE = "aksess.EditContentAction";
+    private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
@@ -90,10 +91,14 @@ public class EditContentAction implements Controller {
 
         Map model = new HashMap();
         if (infomessage.length() > 0) {
-            model.put("infomessage", infomessage);            
+            model.put("infomessage", infomessage);
         }
-
         session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
+
+        Boolean shouldRedirectToMetadata = new Boolean(request.getParameter(REDIRECT_TO_METADATA_PARAM));
+        if(shouldRedirectToMetadata){
+            return new ModelAndView(new RedirectView("SaveMetadata.action"), model);
+        }
 
         return new ModelAndView(new RedirectView("SaveContent.action"), model);
     }
