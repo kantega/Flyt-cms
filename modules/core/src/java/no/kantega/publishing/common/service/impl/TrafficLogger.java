@@ -66,12 +66,12 @@ public class TrafficLogger {
         botsAndSpiders.add("Baiduspider");
         botsAndSpiders.add("Ezooms");
         botsAndSpiders.add("Eurobot");
-        botsAndSpiders.add("msnbot");
-        botsAndSpiders.add("MJ12bot");
         botsAndSpiders.add("MJ12bot");
         botsAndSpiders.add("SEOkicks-Robot");
         botsAndSpiders.add("lssbot");
         botsAndSpiders.add("TurnitinBot");
+        botsAndSpiders.add("Exabot");
+        botsAndSpiders.add("AhrefsBot");
     }
 
     static {
