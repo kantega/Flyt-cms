@@ -10,7 +10,7 @@ var tinyMCETemplateList = [
     boolean first = true;
     while (it.hasNext()) {
         String file = (String)it.next();
-        if (file.endsWith(".html")) {
+        if (file.endsWith(".html") || file.endsWith(".jsp")) {
             if (!first) {
                 out.write(",");
             }
