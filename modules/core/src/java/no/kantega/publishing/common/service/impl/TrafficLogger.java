@@ -54,13 +54,24 @@ public class TrafficLogger {
     }
 
     static {
-        botsAndSpiders.add("Gogglebot");
+        botsAndSpiders.add("Googlebot");
         botsAndSpiders.add("Yahoo! Slurp");
         botsAndSpiders.add("msnbot");
         botsAndSpiders.add("Ask Jeeves");
         botsAndSpiders.add("IPCheck Server Monitor");
         botsAndSpiders.add("Twiceler");
         botsAndSpiders.add("YodaoBot");
+        botsAndSpiders.add("bingbot");
+        botsAndSpiders.add("YandexBot");
+        botsAndSpiders.add("Baiduspider");
+        botsAndSpiders.add("Ezooms");
+        botsAndSpiders.add("Eurobot");
+        botsAndSpiders.add("msnbot");
+        botsAndSpiders.add("MJ12bot");
+        botsAndSpiders.add("MJ12bot");
+        botsAndSpiders.add("SEOkicks-Robot");
+        botsAndSpiders.add("lssbot");
+        botsAndSpiders.add("TurnitinBot");
     }
 
     static {
