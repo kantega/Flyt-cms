@@ -16,14 +16,12 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -134,7 +132,7 @@ public class ContentIdentifier {
 
 
     public ContentIdentifier(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
-        int siteId = ContentIdHelper.getSiteIdFromRequest(request);
+        int siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
         ContentIdentifier cid = ContentIdHelper.findContentIdentifier(siteId, url);
         this.contentId = cid.contentId;
         this.associationId = cid.associationId;

@@ -131,7 +131,7 @@ public class ContentIdHelper {
                 }
             }
             return null;
-            
+
         } else {
             return findContentIdentifier(context.getAssociation().getSiteId(), expr);
         }
@@ -165,7 +165,7 @@ public class ContentIdHelper {
         if (url.startsWith("http://") || url.startsWith("https://")) {
             url = url.substring(url.indexOf("://") + 3, url.length());
             if (url.indexOf('/') != -1) {
-               url = url.substring(url.indexOf('/'), url.length());
+                url = url.substring(url.indexOf('/'), url.length());
             }
 
             String contextPath = Aksess.getContextPath().toLowerCase();
@@ -188,7 +188,7 @@ public class ContentIdHelper {
                 associationId = Integer.parseInt(idStr);
             } catch (NumberFormatException e) {
                 // Do nothing
-            }            
+            }
         }
 
         String aIdToken = "thisid=";
@@ -271,7 +271,7 @@ public class ContentIdHelper {
             int end = url.indexOf('?');
             if (end != -1) {
                 url = url.substring(0, end);
-            }            
+            }
 
             end = url.lastIndexOf(Aksess.CONTENT_REQUEST_HANDLER);
             if (end != -1) {
@@ -395,8 +395,11 @@ public class ContentIdHelper {
         return contentId;
     }
 
-
     public static int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
+        return getSiteIdFromRequest(request, null);
+    }
+
+    public static int getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
         int siteId = -1;
         if (request.getParameter("siteId") != null) {
             try {
@@ -409,6 +412,22 @@ public class ContentIdHelper {
             Content content = (Content)request.getAttribute("aksess_this");
             if (content != null) {
                 siteId = content.getAssociation().getSiteId();
+            }
+        }
+
+        if (siteId == -1 && url != null) {
+            int siteIdPos = url.indexOf("siteId=");
+            if (siteIdPos != -1) {
+                String siteIdStr = url.substring(siteIdPos + "siteId=".length(), url.length());
+                int siteIdEndPos = siteIdStr.indexOf("&");
+                if (siteIdEndPos != -1) {
+                    siteIdStr = siteIdStr.substring(0, siteIdEndPos);
+                }
+                try {
+                    siteId = Integer.parseInt(siteIdStr);
+                } catch (NumberFormatException e) {
+
+                }
             }
         }
 
