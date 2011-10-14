@@ -18,19 +18,20 @@ package no.kantega.search.core;
 
 import no.kantega.commons.log.Log;
 import no.kantega.search.index.IndexManager;
-import no.kantega.search.query.SuggestionQuery;
 import no.kantega.search.query.AlternativeQuery;
+import no.kantega.search.query.SuggestionQuery;
 import no.kantega.search.result.Suggestion;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.spell.SpellChecker;
 import org.apache.lucene.store.Directory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Arrays;
 
 /**
  * Date: Jan 15, 2009
@@ -80,7 +81,12 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
         SpellChecker spellChecker = new SpellChecker(spellDirectory);
         spellChecker.setAccuracy(accuracy);
 
-        String[] suggestions = spellChecker.suggestSimilar(text, numSuggestions, reader, field, true);
+        String[] suggestions = {};
+        try {
+            suggestions = spellChecker.suggestSimilar(text, numSuggestions, reader, field, true);
+        } catch (BooleanQuery.TooManyClauses e) {
+            Log.error(getClass().getName(), e);
+        }
         List<Suggestion> suggestionsByDocFreq = new ArrayList<Suggestion>();
         int textTermDocFreq = reader.docFreq(new Term(field, text));
         Term factoryTerm = new Term(field);

@@ -20,20 +20,9 @@ import no.kantega.commons.log.Log;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.SearchQuery;
-import no.kantega.search.result.DocumentHit;
-import no.kantega.search.result.DocumentHitImpl;
-import no.kantega.search.result.QueryInfo;
-import no.kantega.search.result.SearchResult;
-import no.kantega.search.result.SearchResultDefaultImpl;
+import no.kantega.search.result.*;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.CachingWrapperFilter;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.QueryWrapperFilter;
-import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -101,14 +90,18 @@ public class SearchHandlerDefaultImpl implements SearchHandler {
     protected Query getQueryFromCriteria(List<Criterion> criteria) {
         BooleanQuery query = new BooleanQuery();
         for (Criterion criterion : criteria) {
-            query.add(criterion.getQuery(), criterion.getOperator());
+            try {
+                query.add(criterion.getQuery(), criterion.getOperator());
+            } catch (BooleanQuery.TooManyClauses e) {
+                break;
+            }
         }
         return query;
     }
 
 
     /**
-     * Gjør det samme som getQueryFromCriteria(List<Criterion>), men returnerer null hvis lista er tom.
+     * Gjï¿½r det samme som getQueryFromCriteria(List<Criterion>), men returnerer null hvis lista er tom.
      *
      * @param criteria en liste med Criterion-objekter
      * @return et org.apache.lucene.search.Query-objekt, eller null hvis den gitte lista var tom
