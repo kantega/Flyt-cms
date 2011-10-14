@@ -11,6 +11,8 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.content.util.AttributeHelper;
+import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -20,7 +22,6 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
@@ -85,7 +86,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Save page
-            return saveContent(request, response);
+            return handleSubmit(request, response);
         } else {
             // Edit page
             Content content = getContentForEdit(request);
@@ -144,12 +145,13 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         return new ModelAndView(getView(), null);
     }
 
-    private ModelAndView saveContent(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
+    private ModelAndView handleSubmit(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
         ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
 
         Content content = (Content) session.getAttribute("currentContent");
+
 
         if (content != null) {
             // Page in session, save
@@ -158,32 +160,61 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             ValidationErrors errors = new ValidationErrors();
             errors = helper.getHttpParameters(errors);
 
-            if (errors.getLength() == 0) {
-                // No errors, save
-                int status = param.getInt("status");
-                if (status == -1) {
-                    status = ContentStatus.PUBLISHED;
-                }
-
-                boolean isNew = content.isNew();
-
-                content = cms.checkInContent(content, status);
-                session.removeAttribute("currentContent");
-
-
-
-                session.removeAttribute("adminMode");
-
-                return postSaveContent(request, response, content, isNew);
-            } else {
-                request.setAttribute("errors", errors);
+            String addRepeaterRow = param.getString("addRepeaterRow");
+            String deleteRepeaterRow = param.getString("deleteRepeaterRow");
+            if (addRepeaterRow != null && addRepeaterRow.length() > 0) {
+                addRepeaterRow(content, addRepeaterRow);
+                request.setAttribute("scrollTo", getScrollTo(addRepeaterRow));
                 return showEditForm(request, content);
+            } else if (deleteRepeaterRow != null && deleteRepeaterRow.length() > 0) {
+                deleteRepeaterRow(content, deleteRepeaterRow);
+                request.setAttribute("scrollTo", getScrollTo(deleteRepeaterRow));
+                return showEditForm(request, content);
+            } else {
+                if (errors.getLength() == 0) {
+                    // No errors, save
+                    int status = param.getInt("status");
+                    if (status == -1) {
+                        status = ContentStatus.PUBLISHED;
+                    }
+
+                    boolean isNew = content.isNew();
+
+                    content = cms.checkInContent(content, status);
+                    session.removeAttribute("currentContent");
+
+                    session.removeAttribute("adminMode");
+
+                    return postSaveContent(request, response, content, isNew);
+                } else {
+                    request.setAttribute("errors", errors);
+                    return showEditForm(request, content);
+                }
             }
         }
 
         session.removeAttribute("adminMode");
 
         return new ModelAndView(new RedirectView(Aksess.getContextPath()));
+    }
+
+    protected void addRepeaterRow(Content content, String addRepeaterRow) {
+        try {
+            EditContentHelper.addRepeaterRow(content, addRepeaterRow, AttributeDataType.CONTENT_DATA);
+        } catch (InvalidTemplateException e) {
+            throw new SystemException("Failed adding repeater rows", this.getClass().getName(), e);
+        }
+    }
+
+    protected void deleteRepeaterRow(Content content, String addRepeaterRow) {
+        EditContentHelper.deleteRepeaterRow(content, addRepeaterRow, AttributeDataType.CONTENT_DATA);
+    }
+
+    private String getScrollTo(String rowPath) {
+        if (rowPath.contains("[")) {
+            rowPath = rowPath.substring(0, rowPath.indexOf("["));
+        }
+        return AttributeHelper.getInputContainerName(rowPath);
     }
 
     protected void addCustomRequestAttributes(HttpServletRequest request, Content content) {

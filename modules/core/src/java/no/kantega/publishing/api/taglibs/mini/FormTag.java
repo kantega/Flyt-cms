@@ -98,6 +98,8 @@ public class FormTag extends BodyTagSupport {
             out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
             out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
             out.write("    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">");
+            out.write("    <input type=\"hidden\" id=\"AddRepeaterRow\" name=\"addRepeaterRow\" value=\"\">");
+            out.write("    <input type=\"hidden\" id=\"DeleteRepeaterRow\" name=\"deleteRepeaterRow\" value=\"\">");
             if (allowDraft && redirectUrl != null && redirectUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
             }
