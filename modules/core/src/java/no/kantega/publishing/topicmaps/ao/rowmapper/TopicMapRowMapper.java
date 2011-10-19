@@ -28,6 +28,7 @@ public class TopicMapRowMapper implements RowMapper<TopicMap> {
         topicMap.setId(rs.getInt("Id"));
         topicMap.setSecurityId(topicMap.getId());
         topicMap.setName(rs.getString("Name"));
+        topicMap.setUrl(rs.getString("Url"));
         topicMap.setEditable(rs.getInt("IsEditable") == 1);
         topicMap.setWSOperation(rs.getString("WSOperation"));
         topicMap.setWSSoapAction(rs.getString("WSSoapAction"));

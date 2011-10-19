@@ -17,19 +17,19 @@
 package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
-import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import no.kantega.publishing.common.exception.ObjectInUseException;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -50,6 +50,10 @@ public class TopicMapService {
 
     public void deleteTopicMap(int id) throws SystemException, ObjectInUseException {
         TopicMapAO.deleteTopicMap(id);
+    }
+
+    public void importTopicMap(int id) throws SystemException {
+        TopicMapAO.importTopicMap(id);
     }
 
     public TopicMap getTopicMap(int id) throws SystemException {

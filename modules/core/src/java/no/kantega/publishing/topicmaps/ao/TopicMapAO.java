@@ -51,4 +51,9 @@ public class TopicMapAO {
         TopicMapDao dao = (TopicMapDao)RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
         dao.deleteTopicMap(id);
     }
+
+    public static void importTopicMap(int id) throws SystemException {
+        TopicMapDao dao = (TopicMapDao)RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
+        dao.importTopicMap(id);
+    }
 }
