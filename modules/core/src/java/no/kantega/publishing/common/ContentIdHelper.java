@@ -178,7 +178,7 @@ public class ContentIdHelper {
         }
 
         int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
-        if (contentPos != -1) {
+        if (contentPos != -1 && url.length() > Aksess.CONTENT_URL_PREFIX.length() + 1) {
             String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
             int end = idStr.indexOf("/");
             if (end != -1) {
