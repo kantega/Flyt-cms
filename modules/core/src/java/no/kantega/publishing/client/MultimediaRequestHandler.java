@@ -25,6 +25,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
+import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
@@ -82,7 +83,7 @@ public class MultimediaRequestHandler implements Controller {
                 return null;
             }
 
-            Log.debug(SOURCE, "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
+            Log.debug(this.getClass().getSimpleName(), "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")");
 
             String contentDisposition = param.getString("contentdisposition");
             if (!"attachment".equals(contentDisposition)) {
@@ -96,8 +97,10 @@ public class MultimediaRequestHandler implements Controller {
 
             int width = dimensions.getWidth();
             int height = dimensions.getHeight();
+            Cropping cropping   = Cropping.getCroppingAsEnum(param.getString("cropping"));
+            if (width == -1 || height == -1) cropping = Cropping.CONTAIN; // default
 
-            String key = mmId + "-" + width + "-" + height + "-" + mm.getLastModified().getTime();
+            String key = mmId + "-" + width + "-" + height + "-" + cropping.getTypeAsString() + "-"  + mm.getLastModified().getTime();
 
             if (HttpHelper.isInClientCache(request, response, key, mm.getLastModified())) {
                 // Exists in browser cache
@@ -116,13 +119,9 @@ public class MultimediaRequestHandler implements Controller {
             if ((mimetype.indexOf("image") != -1) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
                 byte[] bytes = null;
 
-                //String imageFormat = Aksess.getOutputImageFormat();
-                //if (width*height <= Aksess.getPngPixelLimit()) {
-                //    imageFormat = "png";
-                //}
-
                 try {
                     bytes = (byte[]) thumbnailCache.getFromCache(key);
+                    throw new NeedsRefreshException(bytes);
                 } catch (NeedsRefreshException e) {
                     try {
                         Log.debug(SOURCE, "Resizing image (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
@@ -131,13 +130,14 @@ public class MultimediaRequestHandler implements Controller {
                         mediaService.streamMultimediaData(mmId, new InputStreamHandler(bos));
                         mm.setData(bos.toByteArray());
 
-                        // Shrink image
-                        mm = imageEditor.resizeMultimedia(mm, width, height);
+                        // shrink
+                        mm = imageEditor.resizeMultimedia(mm, width, height, cropping);
+                        // crop
+                        mm = imageEditor.cropMultimedia(mm, width, height, cropping);
+
                         bytes = mm.getData();
                         thumbnailCache.putInCache(key, bytes, new String[]{Integer.toString(mmId)});
 
-                        // Hmmm?
-                        // thumbnailCache.flushGroup(Integer.toString(mmId));
                     } catch (IOException ie) {
                         // User has cancelled download
                         thumbnailCache.cancelUpdate(key);
@@ -211,6 +211,11 @@ public class MultimediaRequestHandler implements Controller {
             height = newHeight > 0 ? (int) newHeight: (int) mmHeight;
             width = newWidth > 0 ? (int) newWidth: (int) mmWidth;
         }
+
+        // clamp - ensure no enlarging
+        if (height > mm.getHeight()) height = mm.getHeight();
+        if (width > mm.getWidth()) width = mm.getWidth();
+
 
         return new MultimediaDimensions(width, height);
     }

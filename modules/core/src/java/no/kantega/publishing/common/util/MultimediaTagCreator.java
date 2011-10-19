@@ -27,6 +27,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaImageMapAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaImageMap;
+import no.kantega.publishing.common.data.enums.Cropping;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -60,12 +61,21 @@ public class MultimediaTagCreator {
         return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cssClass, false);
     }
 
+    public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH, Cropping cropping, String cssClass) {
+        return mm2HtmlTag(Aksess.getContextPath(), mm, align, maxW, maxH, cropping, cssClass, false);
+    }
+
     // TODO: Cleanup and delete methods not needed
     public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass) {
         return mm2HtmlTag(baseUrl, mm, align, maxW, maxH, cssClass, false);
     }
 
-    public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int maxW, int maxH, String cssClass, boolean skipImageMap) {
+    public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int resizeWidth, int resizeHeight, String cssClass, boolean skipImageMap) {
+        return mm2HtmlTag(baseUrl, mm, align, resizeWidth, resizeHeight, Cropping.CONTAIN, cssClass, skipImageMap);
+
+    }
+
+    public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int resizeWidth, int resizeHeight, Cropping cropping, String cssClass, boolean skipImageMap) {
         StringBuffer tag = new StringBuffer();
 
         String url = mm.getUrl();
@@ -114,15 +124,23 @@ public class MultimediaTagCreator {
             int width  = mm.getWidth();
             int height = mm.getHeight();
 
-            if ((maxW != -1 && maxW < width) || (maxH != -1 && maxH < height)) {
-                if (maxW != -1) {
+            if ((resizeWidth != -1 && resizeWidth < width) || (resizeHeight != -1 && resizeHeight < height)) {
+                if (resizeWidth != -1) {
                     url += url.indexOf("?") == -1 ? "?" : "&amp;";
-                    url += "width=" + maxW;
+                    url += "width=" + resizeWidth;
                 }
-                if (maxH != -1) {
+                if (resizeHeight != -1) {
                     url += url.indexOf("?") == -1 ? "?" : "&amp;";
-                    url += "height=" + maxH;
+                    url += "height=" + resizeHeight;
                 }
+
+                if (cropping != Cropping.CONTAIN){
+                    url +="&cropping=" + cropping.getTypeAsString();
+                }
+
+
+
+
             } else {
                 // Image will not be resised, specify dimensions in tag
                 if (width > 0) {
@@ -159,7 +177,7 @@ public class MultimediaTagCreator {
                             }
 
                             // Henter eventuelle resizede koordinater
-                            String coord = mim.getCoordUrlMap()[i].getResizedCoord(maxW, width, maxH, height);
+                            String coord = mim.getCoordUrlMap()[i].getResizedCoord(resizeWidth, width, resizeHeight, height);
                             if (coord != null) {
                                 String target = "";
                                 if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
@@ -220,12 +238,12 @@ public class MultimediaTagCreator {
             tag.append("</OBJECT>");
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
             int width  = Aksess.getDefaultMediaWidth();
-            if (maxW > 0) {
-                width = maxW;
+            if (resizeWidth > 0) {
+                width = resizeWidth;
             }
             int height = Aksess.getDefaultMediaHeight();
-            if (maxH > 0) {
-                height = maxH;
+            if (resizeHeight > 0) {
+                height = resizeHeight;
             }
             String playerUrl = Aksess.getFlashVideoPlayerUrl();
             String movieUrl = mm.getUrl();

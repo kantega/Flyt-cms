@@ -19,6 +19,7 @@ package no.kantega.publishing.api.taglibs.content;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.Cropping;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -35,6 +36,7 @@ public class GetAttributeCommand {
     int width = -1;
     int height = -1;
     String contentDisposition = null;
+    Cropping cropping = Cropping.CONTAIN;
 
     public String getName() {
         return name;
@@ -106,5 +108,13 @@ public class GetAttributeCommand {
 
     public void setContentDisposition(String contentDisposition) {
         this.contentDisposition = contentDisposition;
+    }
+
+    public void setCropping(Cropping cropping) {
+        this.cropping = cropping;
+    }
+
+    public Cropping getCropping() {
+        return cropping;
     }
 }

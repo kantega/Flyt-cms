@@ -32,6 +32,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -264,7 +265,7 @@ public final class AttributeTagHelper {
                     if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
                         Multimedia mm = media.getMultimedia();
                         if (mm != null) {
-                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCropping(), cmd.getCssClass());
                         }
                     } else {
                         result = media.getProperty(cmd.getProperty());

@@ -526,6 +526,13 @@
             <rtexprvalue>true</rtexprvalue>
             <type>no.kantega.publishing.common.data.Content</type>
         </attribute>
+        <attribute>
+            <description>Used with images. Contain is default, and ensures the whole image is contained within values supplied. Center is center weighted cropping</description>
+            <name>cropping</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.enums.Cropping</type>
+        </attribute>
         <example>
             <![CDATA[
                     Get attribute with name "text":
@@ -533,17 +540,16 @@
 
 
                     Get attribute with name "phonenumber" from frontpage:
-
                         Phonenumber: <aksess:getattribute name="phonenumber" contentid="/"/>
 
-
                     Get attribute with name "picture" and shrink it if wider than 100 pixels:
-
                         <aksess:getattribute name="picture" width="100"/>
+
+                    Get attribute with name "picture" and shrink it to just cover an area of 100 by 100 pixels, cropping from center of image
+                        <aksess:getattribute name="picture" width="100" height="100" cropping="CENTERED"/>
 
 
                     Get width of image attribute with name "picture":
-
                         <aksess:getattribute name="picture" property="width"/>
 
             ]]>

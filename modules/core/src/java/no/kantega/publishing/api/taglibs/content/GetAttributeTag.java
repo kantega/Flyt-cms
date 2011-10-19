@@ -27,6 +27,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
@@ -54,6 +55,7 @@ public class GetAttributeTag extends TagSupport {
     private int height = -1;
     private int width  = -1;
     private int maxlen = -1;
+    private Cropping cropping = Cropping.CONTAIN;
 
     public void setName(String name) {
         this.name = name.toLowerCase();
@@ -121,6 +123,10 @@ public class GetAttributeTag extends TagSupport {
         this.repeater = repeater;
     }
 
+    public void setCropping(Cropping cropping) {
+        this.cropping = cropping;
+    }
+
     public int doStartTag() throws JspException {
         JspWriter out;
 
@@ -137,6 +143,7 @@ public class GetAttributeTag extends TagSupport {
                 cmd.setWidth(width);
                 cmd.setHeight(height);
                 cmd.setContentDisposition(contentDisposition);
+                cmd.setCropping(cropping);
 
                 if (contentObject == null) {
                     contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
@@ -200,7 +207,10 @@ public class GetAttributeTag extends TagSupport {
         contentDisposition = null;
         contentObject = null;
         repeater = null;
+        cropping = Cropping.CONTAIN;
 
         return EVAL_PAGE;
     }
+
+
 }
