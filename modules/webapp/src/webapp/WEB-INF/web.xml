@@ -297,10 +297,6 @@
         <session-timeout>15</session-timeout>
     </session-config>
 
-    <mime-mapping>
-        <extension>jjs</extension>
-        <mime-type>text/javascript</mime-type>
-    </mime-mapping>
     <error-page>
         <error-code>404</error-code>
         <location>/content.ap</location>
