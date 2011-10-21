@@ -53,7 +53,6 @@
     }
     request.setAttribute("value", value);
 %>
-${attribute.useMediaArchive}
 
 <c:choose>
     <c:when test="${(miniAksessMediaArchive != null && !miniAksessMediaArchive) || !attribute.useMediaArchive}">
