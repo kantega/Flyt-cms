@@ -26,7 +26,7 @@
 
 <%
     MediaAttribute attribute = (MediaAttribute)request.getAttribute("attribute");
-    String    fieldName = (String)request.getAttribute("fieldName");
+    String fieldName = (String)request.getAttribute("fieldName");
 
     String value = attribute.getValue();
     String mmname = "";
@@ -53,9 +53,10 @@
     }
     request.setAttribute("value", value);
 %>
+${attribute.useMediaArchive}
 
 <c:choose>
-    <c:when test="${miniAksessMediaArchive != null && !miniAksessMediaArchive}">
+    <c:when test="${(miniAksessMediaArchive != null && !miniAksessMediaArchive) || !attribute.useMediaArchive}">
         <div class="inputs">
             <!-- For users without access to mediaarchive - simple file upload -->
             <c:if test="${fn:length(value) != 0}">

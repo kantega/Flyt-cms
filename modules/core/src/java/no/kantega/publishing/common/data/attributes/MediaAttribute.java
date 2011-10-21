@@ -36,6 +36,7 @@ public class MediaAttribute extends Attribute {
     private MultipartFile importFile = null;
 
     protected String defaultMediaFolder = null;
+    protected boolean useMediaArchive = true;
     private Multimedia cachedMultimediaObj = null; // Cacher bildet
 
     protected String filter = null;
@@ -44,6 +45,10 @@ public class MediaAttribute extends Attribute {
         super.setConfig(config, model);
         if (config != null) {
             this.defaultMediaFolder = config.getAttribute("mediafolder");
+            String useMediaArchive = config.getAttribute("usemediaarchive");
+            if ("false".equals(useMediaArchive)) {
+                this.useMediaArchive = false;
+            }
         }
     }
 
@@ -139,4 +144,9 @@ public class MediaAttribute extends Attribute {
     public String getDefaultMediaFolder() {
         return defaultMediaFolder;
     }
+
+    public boolean getUseMediaArchive() {
+        return useMediaArchive;
+    }
+
 }

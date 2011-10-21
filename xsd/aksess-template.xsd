@@ -112,6 +112,7 @@
                 </xs:simpleType>
             </xs:attribute>
             <xs:attribute name="startid" type="xs:string"/>
+            <xs:attribute name="usemediaarchive" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="repeater">
