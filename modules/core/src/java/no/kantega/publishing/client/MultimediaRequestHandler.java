@@ -29,6 +29,7 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -97,7 +98,7 @@ public class MultimediaRequestHandler implements Controller {
 
             int width = dimensions.getWidth();
             int height = dimensions.getHeight();
-            Cropping cropping   = Cropping.getCroppingAsEnum(param.getString("cropping"));
+            Cropping cropping   = Cropping.valueOf(ServletRequestUtils.getStringParameter(request, "cropping", "contain"));
             if (width == -1 || height == -1) cropping = Cropping.CONTAIN; // default
 
             String key = mmId + "-" + width + "-" + height + "-" + cropping.getTypeAsString() + "-"  + mm.getLastModified().getTime();
