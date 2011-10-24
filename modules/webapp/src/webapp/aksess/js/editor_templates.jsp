@@ -1,6 +1,6 @@
-<%@ page import="java.util.Set" %>
 <%@ page import="java.util.Iterator" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page import="java.util.Set" %>
+<%@ page contentType="application/javascript;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 var tinyMCETemplateList = [
 <%
