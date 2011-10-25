@@ -98,7 +98,7 @@ public class MultimediaRequestHandler implements Controller {
 
             int width = dimensions.getWidth();
             int height = dimensions.getHeight();
-            Cropping cropping   = Cropping.valueOf(ServletRequestUtils.getStringParameter(request, "cropping", "contain"));
+            Cropping cropping   = Cropping.getCroppingAsEnum(ServletRequestUtils.getStringParameter(request, "cropping", "contain"));
             if (width == -1 || height == -1) cropping = Cropping.CONTAIN; // default
 
             String key = mmId + "-" + width + "-" + height + "-" + cropping.getTypeAsString() + "-"  + mm.getLastModified().getTime();
@@ -117,7 +117,7 @@ public class MultimediaRequestHandler implements Controller {
             HttpHelper.addCacheControlHeaders(response, expire);
 
 
-            if ((mimetype.indexOf("image") != -1) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
+            if ((mimetype.contains("image")) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
                 byte[] bytes = null;
 
                 try {
