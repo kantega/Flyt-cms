@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.commons.exception.SystemException;
 
 import java.util.List;
 
@@ -50,10 +50,5 @@ public class TopicMapAO {
     public static void deleteTopicMap(int id) throws SystemException, ObjectInUseException {
         TopicMapDao dao = (TopicMapDao)RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
         dao.deleteTopicMap(id);
-    }
-
-    public static void importTopicMap(int id) throws SystemException {
-        TopicMapDao dao = (TopicMapDao)RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
-        dao.importTopicMap(id);
     }
 }

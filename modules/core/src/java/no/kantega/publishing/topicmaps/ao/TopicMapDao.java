@@ -26,6 +26,5 @@ public interface TopicMapDao {
     TopicMap getTopicMapById(int topicMapId);
     TopicMap saveOrUpdateTopicMap(TopicMap topicMap);
     void deleteTopicMap(int topicMapId) throws ObjectInUseException;
-    void importTopicMap(int topicMapId);
     TopicMap getTopicMapByName(String name);
 }

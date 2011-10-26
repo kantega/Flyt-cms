@@ -378,7 +378,6 @@
     <table name="tmmaps">
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Name" required="true" type="VARCHAR" size="64"/>
-        <column name="Url" required="true" type="VARCHAR" size="255"/>
         <column name="IsEditable" required="false" type="INTEGER" size="10"/>
         <column name="WSOperation" required="false" type="VARCHAR" size="64"/>
         <column name="WSSoapAction" required="false" type="VARCHAR" size="255"/>

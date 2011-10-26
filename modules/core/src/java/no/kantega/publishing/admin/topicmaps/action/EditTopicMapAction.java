@@ -16,27 +16,18 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicBaseName;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 /**
@@ -68,7 +59,6 @@ public class EditTopicMapAction extends AdminController {
         if (request.getMethod().equalsIgnoreCase("post")) {
 
             topicMap.setName(param.getString("name", 40));
-            topicMap.setUrl(param.getString("url", 255));
             topicMap.setEditable(param.getBoolean("iseditable"));
 
             topicMap = topicService.setTopicMap(topicMap);

@@ -1,1 +1,0 @@
-alter table tmmaps add url varchar(255);

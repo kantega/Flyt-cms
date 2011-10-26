@@ -52,20 +52,12 @@
             </div>
 
             <div class="formElement">
-                <div class="heading"><label for="name"><kantega:label key="aksess.topicmaps.admin.url"/></label></div>
-                <div class="inputs">
-                    <input type="text" name="url" id="url" title="<kantega:label key="aksess.topicmaps.admin.url"/>" size="64" maxlength="64" value="${topicMap.url}">
-                </div>
-            </div>
-
-            <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.topicmaps.admin.iseditable"/></div>
                 <div class="inputs">
                     <input name="iseditable" id="iseditable" type="radio" value="true" <c:if test="${topicMap.editable}"> checked</c:if>><label for="iseditable"><kantega:label key="aksess.text.ja"/><br></label>
                     <input name="iseditable" id="isnoteditable" type="radio" value="false" <c:if test="${!topicMap.editable}"> checked</c:if>><label for="isnoteditable"><kantega:label key="aksess.text.nei"/></label>
                 </div>
             </div>
-
             <div class="buttonGroup">
                 <span class="button"><input type="submit" class="save" value="<kantega:label key="aksess.button.save"/>"></span>
                 <span class="button"><input type="button" class="cancel" onclick="window.location.href='ListTopicMaps.action'" value="<kantega:label key="aksess.button.cancel"/>"></span>

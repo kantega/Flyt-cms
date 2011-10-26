@@ -19,12 +19,11 @@ package no.kantega.publishing.topicmaps.data;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.ObjectType;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TopicMap extends BaseObject {
     private String name = "";
-    private String url = "";
     private String defaultTopicInstance = "";
     private boolean isEditable = true;
     private String wSOperation = "";
@@ -45,14 +44,6 @@ public class TopicMap extends BaseObject {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public boolean isEditable() {
