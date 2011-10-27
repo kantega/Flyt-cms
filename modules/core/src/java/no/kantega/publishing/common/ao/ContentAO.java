@@ -1231,7 +1231,7 @@ public class ContentAO {
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
                     tmp.setInt(1, newStatus);
                     tmp.setInt(2, cid.getContentId());
-                    tmp.setInt(3, cid.getVersion());
+                    tmp.setInt(3, cid.getVersion() == -1 ? version : cid.getVersion());
                     tmp.execute();
                     tmp.close();
                     tmp = null;
