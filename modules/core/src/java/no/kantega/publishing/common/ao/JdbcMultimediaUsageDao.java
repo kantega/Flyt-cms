@@ -20,8 +20,6 @@ public class JdbcMultimediaUsageDao extends SimpleJdbcDaoSupport implements Mult
 
     public void addUsageForContentId(int contentId, int multimediaId) {
         SimpleJdbcTemplate template = getSimpleJdbcTemplate();
-        if (template.queryForInt("select count(*) from multimediausage where ContentId = ?", contentId) == 0) {
-            template.update("insert into multimediausage values (?,?)", contentId, multimediaId);
-        }
+        template.update("insert into multimediausage values (?,?)", contentId, multimediaId);
     }
 }
