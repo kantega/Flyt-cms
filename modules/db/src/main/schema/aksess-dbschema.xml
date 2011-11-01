@@ -262,6 +262,7 @@
         <column name="ProfileImageUserId" required="false" type="VARCHAR" size="64"/>
         <column name="NoFiles" required="false" type="INTEGER" size="10"/>
         <column name="NoSubFolders" required="false" type="INTEGER" size="10"/>
+        <column name="NoUsages" required="false" type="INTEGER" size="10"/>
         <column name="OriginalDate" required="false" type="TIMESTAMP" size="23,3"/>
         <column name="CameraMake" required="false" type="VARCHAR" size="255"/>
         <column name="CameraModel" required="false" type="VARCHAR" size="255"/>

@@ -85,7 +85,8 @@
                         <c:if test="${media.height > 0 && media.width > 0}">
                             <kantega:label key="aksess.multimedia.filesize" />: <fmt:formatNumber type="number" maxFractionDigits="0" value="${media.size / 1024}" /> kB<br>
                         </c:if>
-                        <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/>
+                        <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/><br />
+                        <kantega:label key="aksess.multimedia.nousages" />: ${media.noUsages}
                     </div>
                 </div>
             </div>

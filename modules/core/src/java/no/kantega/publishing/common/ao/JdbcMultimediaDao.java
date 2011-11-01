@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages";
 
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
@@ -258,6 +258,9 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             updateNoSubFoldersAndFiles( multimedia.getParentId());
         }
 
+        // Update usage count
+        updateNumberOfUsages(multimedia.getId());
+
         return multimedia.getId();
     }
 
@@ -367,6 +370,10 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         getSimpleJdbcTemplate().update("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?", noFiles, noSubFolders, parentId);
     }
 
+    private void updateNumberOfUsages(int multimediaId) {
+        int noUsages = getSimpleJdbcTemplate().queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
+        getSimpleJdbcTemplate().update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
+    }
 
     public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
         this.multimediaUsageDao = multimediaUsageDao;
@@ -405,6 +412,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             mm.setProfileImageUserId(rs.getString("ProfileImageUserId"));
             mm.setNoFiles(rs.getInt("NoFiles"));
             mm.setNoSubFolders(rs.getInt("NoSubFolders"));
+            mm.setNoUsages(rs.getInt("NoUsages"));
             mm.setHasImageMap(rs.getInt("HasImageMap") > 0);
 
             return mm;

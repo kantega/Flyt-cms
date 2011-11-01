@@ -62,6 +62,7 @@ public class Multimedia extends BaseObject {
 
     private int noFiles = 0; // Number of files in folder
     private int noSubFolders = 0; // Number of sub folders in folder
+    private int noUsages = 0; // Number of usages
 
     private boolean hasImageMap = false;
 
@@ -251,6 +252,14 @@ public class Multimedia extends BaseObject {
 
     public void setNoSubFolders(int noSubFolders) {
         this.noSubFolders = noSubFolders;
+    }
+
+    public int getNoUsages() {
+        return noUsages;
+    }
+
+    public void setNoUsages(int noUsages) {
+        this.noUsages = noUsages;
     }
 
     public Date getOriginalDate() {
