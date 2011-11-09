@@ -22,6 +22,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,6 +37,10 @@ public class ContentIdentifier {
     private int language = Language.NORWEGIAN_BO;
     private int version = -1;
     private int status = -1;
+    private final int defaultContentID = -1;
+    private final int defaultSiteId = -1;
+    private final int defaultContextId = -1;
+    private final int defaultVersion = -1;
 
     public ContentIdentifier() {
     }
@@ -64,48 +70,19 @@ public class ContentIdentifier {
             this.version = current.getVersion();
         } else  if (request.getParameter("contentId") != null || request.getParameter("thisId") != null) {
             if (request.getParameter("contentId") != null) {
-                try {
-                    this.contentId = Integer.parseInt(request.getParameter("contentId"));
-                } catch (NumberFormatException e) {
-                    throw new ContentNotFoundException(request.getParameter("contentId"), SOURCE);
-                }
-                if (request.getParameter("siteId") != null) {
-                    try {
-                        this.siteId = Integer.parseInt(request.getParameter("siteId"));
-                    } catch (NumberFormatException e) {
-                    }
-                }
-                if (request.getParameter("contextId") != null) {
-                    try {
-                        this.contextId = Integer.parseInt(request.getParameter("contextId"));
-                    } catch (NumberFormatException e) {
-                    }
-                }
+                this.contentId = ServletRequestUtils.getIntParameter(request, "contentId", defaultContentID);
+                this.siteId = ServletRequestUtils.getIntParameter(request, "siteId", defaultSiteId);
+                this.contextId = ServletRequestUtils.getIntParameter(request, "contextId", defaultContextId);
             } else {
                 try {
-                    this.associationId = Integer.parseInt(request.getParameter("thisId"));
-                } catch (NumberFormatException e) {
+                    this.associationId = ServletRequestUtils.getIntParameter(request, "thisId");
+                } catch (ServletRequestBindingException e) {
                     throw new ContentNotFoundException(request.getParameter("thisId"), SOURCE);
                 }
             }
 
-            try {
-                String lang = request.getParameter("language");
-                if (lang != null) {
-                    this.language = Integer.parseInt(request.getParameter("language"));
-                }
-            } catch (NumberFormatException e) {
-                // Bruk standard spr�k
-            }
+            this.language = ServletRequestUtils.getIntParameter(request, "language", Language.NORWEGIAN_BO);
 
-            try {
-                String ver = request.getParameter("version");
-                if (ver != null) {
-                    this.version = Integer.parseInt(request.getParameter("version"));
-                }
-            } catch (NumberFormatException e) {
-                // Bruk default versjon
-            }
         } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf("/") == 0) {
             try {
                 int slashIndex = path.indexOf("/", 1);
@@ -128,6 +105,8 @@ public class ContentIdentifier {
             this.associationId = cid.associationId;
             this.language = cid.language;
         }
+
+        this.version = ServletRequestUtils.getIntParameter(request, "version", defaultVersion);
     }
 
 
