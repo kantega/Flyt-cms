@@ -18,30 +18,32 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.sql.PreparedStatement;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import java.net.URL;
-import java.net.MalformedURLException;
+import java.util.regex.Pattern;
 
 public class TrafficLogger {
     private static final String SOURCE = "aksess.TrafficLogger";
-    private static List searchEnginePatterns = new ArrayList();
-    private static List botsAndSpiders = new ArrayList();
+    private static List<Pattern> searchEnginePatterns = new ArrayList<Pattern>();
+    private static List<String> botsAndSpiders = new ArrayList<String>();
     private static String[] trafficLogIgnoreIPs;
 
     static {
@@ -154,9 +156,8 @@ public class TrafficLogger {
     private static boolean isBotOrSpider(String userAgent) {
 
         if (userAgent != null) {
-            for (int i = 0; i < botsAndSpiders.size(); i++) {
-                String bot = (String)botsAndSpiders.get(i);
-                if (userAgent.indexOf(bot) != -1) {
+            for (String botsAndSpider : botsAndSpiders) {
+                if (userAgent.contains(botsAndSpider)) {
                     return true;
                 }
             }
@@ -167,8 +168,8 @@ public class TrafficLogger {
 
     private static boolean ignoreIP(String remoteAddress) {
         if (remoteAddress != null && trafficLogIgnoreIPs != null) {
-            for (int i = 0; i < trafficLogIgnoreIPs.length; i++) {
-                if (remoteAddress.equals(trafficLogIgnoreIPs[i])) {
+            for (String trafficLogIgnoreIP : trafficLogIgnoreIPs) {
+                if (remoteAddress.equals(trafficLogIgnoreIP)) {
                     return true;
                 }
             }
@@ -232,10 +233,9 @@ public class TrafficLogger {
         RefererInfo info = new RefererInfo(referer);
         info.setHost(url.getHost());
 
-        for(Iterator i = searchEnginePatterns.iterator(); i.hasNext();) {
-            Pattern p = (Pattern) i.next();
-            Matcher matcher = p.matcher(referer);
-            if(matcher.matches()) {
+        for (Pattern searchEnginePattern : searchEnginePatterns) {
+            Matcher matcher = searchEnginePattern.matcher(referer);
+            if (matcher.matches()) {
                 String q = matcher.group(1);
                 info.setQuery(q);
                 break;

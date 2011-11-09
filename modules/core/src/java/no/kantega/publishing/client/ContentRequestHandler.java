@@ -42,6 +42,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
@@ -73,7 +75,7 @@ public class ContentRequestHandler extends AbstractController {
                 // Called via 404 mechanism, eg. could be a page alias
                 // request_uri contains contextpath, must remove contextpath
                 String contextPath = Aksess.getContextPath();
-                if (contextPath != null && contextPath.length() != 0 && originalUri.indexOf(contextPath) != -1) {
+                if (isNotBlank(contextPath) && originalUri.contains(contextPath)) {
                     originalUri = originalUri.substring(contextPath.length(), originalUri.length());
                 }
                 cid = new ContentIdentifier(request, originalUri);
