@@ -137,7 +137,7 @@ public class dbConnectionFactory {
             }
 
             if (dbUseTransactions) {
-                Log.info(SOURCE, "Using transactions, remember to set database isolation level to avoid blocking");
+                Log.info(SOURCE, "Using transactions, database transaction isolation level set to " + dbTransactionIsolationLevel);
             } else {
                 Log.info(SOURCE, "Not using transactions", null, null);
             }
@@ -147,7 +147,7 @@ public class dbConnectionFactory {
             }
 
         } catch (Exception e) {
-            Log.debug(SOURCE, "********* Klarte ikke � lese aksess.conf **********", null, null);
+            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
             System.out.println("error:" + e);
         }
