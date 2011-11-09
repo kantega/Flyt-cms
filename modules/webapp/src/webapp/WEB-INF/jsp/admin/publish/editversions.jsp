@@ -1,14 +1,9 @@
-<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
-<%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.text.DateFormat" %>
-<%@ page import="java.util.Date" %>
 <%@ page import="no.kantega.publishing.admin.AdminSessionAttributes" %>
 <%@ page import="no.kantega.publishing.security.data.enums.Privilege" %>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ page import="java.text.DateFormat" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
@@ -88,7 +83,14 @@
                 <td><input type="checkbox" name="cb<%=i%>" disabled="true" <%if (c.isMinorChange()) out.write("checked");%>></td>
                 <td><kantega:label key="<%=statusKey%>"/></td>
                 <td>
-                    <a href="<%=current.getUrl()%>&version=<%=c.getVersion()%>" target="_new" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>
+                    <a href="<%
+                    String url = current.getUrl();
+                    if(url.contains("?")){  //url is on form thisId=xx
+                        out.write(url + "&");
+                    }else{ //url is on form Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
+                        out.write(url + "?");
+                    }
+                    %>version=<%=c.getVersion()%>" target="_new" class="button show"><span><kantega:label key="aksess.button.show"/></span></a>
                     <a href="Javascript:selectVersion(<%=c.getVersion()%>)" class="button edit"><span><kantega:label key="aksess.button.edit"/></span></a>
                     <% if (c.getStatus() != ContentStatus.PUBLISHED && securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {%>
                     <a href="Javascript:deleteVersion(<%=c.getVersion()%>)" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a>
