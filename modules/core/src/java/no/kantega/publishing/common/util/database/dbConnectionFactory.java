@@ -58,6 +58,7 @@ public class dbConnectionFactory {
     private static int dbMinIdleConnections = -1;
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
+    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
 
     private static boolean dbUseTransactions = false;
 
@@ -109,9 +110,10 @@ public class dbConnectionFactory {
                     bds.setPassword(dbPassword);
                 }
                 bds.setUrl(dbUrl);
+                bds.setDefaultTransactionIsolation(dbTransactionIsolationLevel);
 
                 if(dbCheckConnections) {
-                    // Gj�r at connections frigj�res ved lukking fra database/brannmur
+                    // Gjør at connections frigjøres ved lukking fra database/brannmur
                     bds.setValidationQuery("SELECT max(ContentId) from content");
                     bds.setTimeBetweenEvictionRunsMillis(1000*60*2);
                     bds.setMinEvictableIdleTimeMillis(1000*60*5);
@@ -134,7 +136,6 @@ public class dbConnectionFactory {
                 migrateDatabase(servletContext, rawDataSource);
             }
 
-            dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
             if (dbUseTransactions) {
                 Log.info(SOURCE, "Using transactions, remember to set database isolation level to avoid blocking");
             } else {
@@ -167,6 +168,8 @@ public class dbConnectionFactory {
         debugConnections = configuration.getBoolean("database.debugconnections", false);
         shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
         dbNTMLAuthentication = configuration.getBoolean("database.useNTLMauthentication", false);
+        dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
+        dbTransactionIsolationLevel = configuration.getInt("database.transactionisolationlevel", dbUseTransactions ? Connection.TRANSACTION_READ_UNCOMMITTED : Connection.TRANSACTION_NONE);
     }
 
     private static void verifyCompleteDatabaseConfiguration() throws ConfigurationException {
