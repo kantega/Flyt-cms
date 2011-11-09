@@ -59,12 +59,6 @@ public class HtmlFilterHelper {
             }
         }
 
-        System.out.println("VALUE:" + subAttributeValue);
-
         return subAttributeValue;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getSubAttributeValue("WIDTH: 222px; HEIGHT:120px", "width"));
     }
 }
