@@ -110,7 +110,10 @@ public class dbConnectionFactory {
                     bds.setPassword(dbPassword);
                 }
                 bds.setUrl(dbUrl);
-                bds.setDefaultTransactionIsolation(dbTransactionIsolationLevel);
+
+                if (dbUseTransactions) {
+                    bds.setDefaultTransactionIsolation(dbTransactionIsolationLevel);
+                }
 
                 if(dbCheckConnections) {
                     // Gjør at connections frigjøres ved lukking fra database/brannmur
@@ -169,7 +172,7 @@ public class dbConnectionFactory {
         shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
         dbNTMLAuthentication = configuration.getBoolean("database.useNTLMauthentication", false);
         dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
-        dbTransactionIsolationLevel = configuration.getInt("database.transactionisolationlevel", dbUseTransactions ? Connection.TRANSACTION_READ_UNCOMMITTED : Connection.TRANSACTION_NONE);
+        dbTransactionIsolationLevel = configuration.getInt("database.transactionisolationlevel", Connection.TRANSACTION_READ_UNCOMMITTED);
     }
 
     private static void verifyCompleteDatabaseConfiguration() throws ConfigurationException {
