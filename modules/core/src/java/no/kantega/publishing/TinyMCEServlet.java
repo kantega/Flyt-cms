@@ -7,19 +7,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
+
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
  * Compressor for TinyMCE JavaScript files.
@@ -77,12 +72,6 @@ public class TinyMCEServlet extends HttpServlet {
         cachePath = getCachePath(request, "."); // Cache path, this is where the .gz files will be stored
         expiresOffset = 3600 * 24; // Cache for 1 days in browser cache
 
-        // Custom extra javascripts to pack
-        String custom[] = {/*
-		"some custom .js file",
-		"some custom .js file"
-	    */};
-
         // Headers
         response.setContentType("text/javascript");
         response.addHeader("Vary", "Accept-Encoding"); // Handle proxies
@@ -99,10 +88,6 @@ public class TinyMCEServlet extends HttpServlet {
         if (diskCache) {
             cacheKey = getParam(request, "plugins", "") + getParam(request, "languages", "") + getParam(request, "themes", "");
 
-            for (i=0; i<custom.length; i++) {
-                cacheKey += custom[i];
-            }
-
             cacheKey = md5(cacheKey);
 
             if (compress) {
@@ -117,15 +102,15 @@ public class TinyMCEServlet extends HttpServlet {
         enc = request.getHeader("Accept-Encoding");
         if (enc != null) {
             enc = enc.replaceAll("\\s+", "").toLowerCase();
-            supportsGzip = enc.indexOf("gzip") != -1 || request.getHeader("---------------") != null;
-            enc = enc.indexOf("x-gzip") != -1 ? "x-gzip" : "gzip";
+            supportsGzip = enc.contains("gzip") || request.getHeader("---------------") != null;
+            enc = enc.contains("x-gzip") ? "x-gzip" : "gzip";
         }
 
         URL coreUrl = null;
         if (core) {
             coreUrl = mapUrl(request, "tiny_mce" + suffix + ".js");
         }
-        List<URL> urls = getUrlList(request, languages, themes, plugins, custom, suffix);
+        List<URL> urls = getUrlList(request, languages, themes, plugins, suffix);
 
         // Use cached file disk cache
         if (diskCache && supportsGzip && new File(cacheFile).exists()) {
@@ -168,7 +153,7 @@ public class TinyMCEServlet extends HttpServlet {
             if (compress)
                 response.addHeader("Content-Encoding", enc);
 
-            if (diskCache && cacheKey != "") {
+            if (diskCache && isNotBlank(cacheKey)) {
                 bos = new ByteArrayOutputStream();
 
                 // Gzip compress
@@ -192,9 +177,8 @@ public class TinyMCEServlet extends HttpServlet {
                 }
 
                 // Write to stream
-                OutputStream responseOutputStream = outputStream;
-                responseOutputStream.write(bos.toByteArray());
-                responseOutputStream.close();
+                outputStream.write(bos.toByteArray());
+                outputStream.close();
             } else {
                 gzipStream = new GZIPOutputStream(outputStream);
                 gzipStream.write(content.getBytes("iso-8859-1"));
@@ -204,37 +188,41 @@ public class TinyMCEServlet extends HttpServlet {
             outputStream.write(content.getBytes());
     }
 
-    private List<URL> getUrlList(HttpServletRequest request, String[] languages, String[] themes, String[] plugins, String[] custom, String suffix) {
+    private List<URL> getUrlList(HttpServletRequest request, String[] languages, String[] themes, String[] plugins, String suffix) {
         List<URL> urls = new ArrayList<URL>();
 
-        // Add core languages
-        for (int x = 0; x < languages.length; x++) {
-            urls.add(mapUrl(request, "langs/" + languages[x] + ".js"));
-        }
+        addLanguages(request, languages, urls);
 
-        // Add themes
-        for (int i = 0; i < themes.length; i++) {
-            urls.add(mapUrl(request, "themes/" + themes[i] + "/editor_template" + suffix + ".js"));
+        addThemes(request, languages, themes, suffix, urls);
 
-            for (int x = 0; x < languages.length; x++) {
-                urls.add(mapUrl(request, "themes/" + themes[i] + "/langs/" + languages[x] + ".js"));
-            }
-        }
-
-        // Add plugins
-        for (int i = 0; i < plugins.length; i++) {
-            urls.add(mapUrl(request, "plugins/" + plugins[i] + "/editor_plugin" + suffix + ".js"));
-
-            for (int x = 0; x < languages.length; x++) {
-                urls.add(mapUrl(request, "plugins/" + plugins[i] + "/langs/" + languages[x] + ".js"));
-            }
-        }
-
-        // Add custom files
-        for (int i = 0; i < custom.length; i++) {
-            urls.add(mapUrl(request, custom[i]));
-        }
+        addPlugins(request, languages, plugins, suffix, urls);
         return urls;
+    }
+
+    private void addPlugins(HttpServletRequest request, String[] languages, String[] plugins, String suffix, List<URL> urls) {
+        for (String plugin : plugins) {
+            urls.add(mapUrl(request, "plugins/" + plugin + "/editor_plugin" + suffix + ".js"));
+
+            for (String language : languages) {
+                urls.add(mapUrl(request, "plugins/" + plugin + "/langs/" + language + ".js"));
+            }
+        }
+    }
+
+    private void addThemes(HttpServletRequest request, String[] languages, String[] themes, String suffix, List<URL> urls) {
+        for (String theme : themes) {
+            urls.add(mapUrl(request, "themes/" + theme + "/editor_template" + suffix + ".js"));
+
+            for (String language : languages) {
+                urls.add(mapUrl(request, "themes/" + theme + "/langs/" + language + ".js"));
+            }
+        }
+    }
+
+    private void addLanguages(HttpServletRequest request, String[] languages, List<URL> urls) {
+        for (String language : languages) {
+            urls.add(mapUrl(request, "langs/" + language + ".js"));
+        }
     }
 
     private boolean isOutdated(String cacheFile, URL coreUrl, List<URL> urls) {
@@ -281,7 +269,7 @@ public class TinyMCEServlet extends HttpServlet {
                 is.read(basdas);
                 retVal = new String(basdas);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.info(getClass().getName(), e.getMessage());
             }
         }
         return retVal;
@@ -290,7 +278,7 @@ public class TinyMCEServlet extends HttpServlet {
     private String getCachePath(HttpServletRequest request, String s) {
         String tempdir = System.getProperty("java.io.tmpdir");
         if (!(tempdir.endsWith("/") || tempdir.endsWith("\\"))) {
-            tempdir = tempdir + File.pathSeparator;
+            tempdir = tempdir + File.separator;
         }
         return tempdir;
     }
@@ -301,9 +289,9 @@ public class TinyMCEServlet extends HttpServlet {
         try {
             url = request.getSession().getServletContext().getResource(relPath);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            Log.info(getClass().getName(), e.getMessage());
         }
-        System.out.println("url='" + url + "' for path='" + path + "' (translated to: '" + relPath + ").");
+        Log.info(getClass().getName(), "url='" + url + "' for path='" + path + "' (translated to: '" + relPath + ").");
         return url;
     }
 
@@ -318,10 +306,10 @@ public class TinyMCEServlet extends HttpServlet {
                 byteArray[i] = (byte) charArray[i];
 
             byte[] md5Bytes = md5.digest(byteArray);
-            StringBuffer hexValue = new StringBuffer();
+            StringBuilder hexValue = new StringBuilder();
 
-            for (int i=0; i<md5Bytes.length; i++) {
-                int val = ((int) md5Bytes[i] ) & 0xff;
+            for (byte md5Byte : md5Bytes) {
+                int val = ((int) md5Byte) & 0xff;
 
                 if (val < 16)
                     hexValue.append("0");
