@@ -189,6 +189,8 @@
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
 
                 <prop key="/TestPages.action">testPagesAction</prop>
+
+                <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
             </props>
         </property>
     </bean>
@@ -756,6 +758,10 @@
 
     <bean class="no.kantega.publishing.controls.smoketest.TestPagesController" id="testPagesAction">
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.controls.plugin.PluginDeploymentController" id="pluginDeploymentController">
+
     </bean>
 
     <bean id="PluginStaticContentController" class="no.kantega.publishing.spring.PluginStaticContentController">

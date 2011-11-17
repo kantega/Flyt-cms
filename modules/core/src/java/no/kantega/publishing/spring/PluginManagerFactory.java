@@ -1,6 +1,7 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import org.kantega.jexmec.PluginClassLoaderProvider;
 import org.kantega.jexmec.PluginLoader;
 import org.kantega.jexmec.PluginManager;
 import org.kantega.jexmec.ServiceLocator;
@@ -30,11 +31,9 @@ import java.util.List;
 public class PluginManagerFactory extends AbstractFactoryBean implements ApplicationContextAware, ServletContextAware, ApplicationListener {
 
     private ApplicationContext applicationContext;
-    private File pluginsDirectory;
-    private File pluginsWorkDirectory;
     private ServletContext servletContext;
-    private ServiceLocator serviceLocator;
     private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
+    private List<PluginClassLoaderProvider> pluginClassLoaderProviders;
     private List<BeanFactoryPostProcessor> postProcessors;
     private Class servicesClass;
     private Class pluginClass;
@@ -95,7 +94,13 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         final DefaultPluginManager manager = new DefaultPluginManager(pluginClass);
         manager.addServiceLocator(serviceLocator);
         manager.addPluginClassLoader(applicationContext.getClassLoader());
+        if(pluginClassLoaderProviders != null) {
+            for (PluginClassLoaderProvider provider : pluginClassLoaderProviders) {
+                manager.addPluginClassLoaderProvider(provider);
+            }
+        }
         manager.addPluginLoader(spring);
+
         return manager;
     }
 
@@ -105,10 +110,6 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
-    }
-
-    public void setServiceLocator(ServiceLocator serviceLocator) {
-        this.serviceLocator = serviceLocator;
     }
 
     public void setPostProcessors(List<BeanFactoryPostProcessor> postProcessors) {
@@ -132,6 +133,10 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
 
     public void setPluginClass(Class pluginClass) {
         this.pluginClass = pluginClass;
+    }
+
+    public void setPluginClassLoaderProviders(List<PluginClassLoaderProvider> pluginClassLoaderProviders) {
+        this.pluginClassLoaderProviders = pluginClassLoaderProviders;
     }
 
     /**

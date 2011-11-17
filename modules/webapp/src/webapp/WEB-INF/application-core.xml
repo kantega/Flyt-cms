@@ -65,6 +65,15 @@
                 <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
             </list>
         </property>
+        <property name="pluginClassLoaderProviders">
+            <list>
+                <ref bean="hotDepoyProvider"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hotDepoyProvider" class="no.kantega.publishing.spring.PluginHotDepoyProvider">
+        <property name="pluginWorkDirectory" value="${appDir}/plugins/work"/>
     </bean>
 
     <bean name="aksessJsonWriter"  class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">

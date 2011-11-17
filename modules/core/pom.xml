@@ -81,6 +81,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kantega.jexmec</groupId>
+            <artifactId>jexmec-jarfiles-clp</artifactId>
+            <version>${jexmec.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
