@@ -3,7 +3,6 @@ package no.kantega.publishing.spring;
 import org.apache.log4j.Logger;
 import org.kantega.jexmec.PluginClassLoaderProvider;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
-import org.springframework.beans.factory.BeanClassLoaderAware;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,13 +18,13 @@ import static java.util.Collections.singleton;
 /**
  *
  */
-public class PluginHotDepoyProvider implements PluginClassLoaderProvider, BeanClassLoaderAware {
+public class PluginHotDepoyProvider implements PluginClassLoaderProvider {
 
     private Registry registry;
-    private ClassLoader classLoader;
     private File pluginWorkDirectory;
     private Map<String, ClassLoader> loaders = new HashMap<String, ClassLoader>();
     private Logger logger = Logger.getLogger(getClass());
+    private ClassLoader parentClassLoader;
 
     public void deploy(File jarFile, File resourceDirectory) throws IOException {
         if(loaders.containsKey(jarFile.getAbsolutePath())) {
@@ -38,7 +37,7 @@ public class PluginHotDepoyProvider implements PluginClassLoaderProvider, BeanCl
         connection.setDefaultUseCaches(false);
 
 
-        ClassLoader loader = new EmbeddedLibraryPluginClassLoader(jarFile, classLoader, pluginWorkDirectory);
+        ClassLoader loader = new EmbeddedLibraryPluginClassLoader(jarFile, parentClassLoader, pluginWorkDirectory);
         if (resourceDirectory != null && resourceDirectory.exists() && resourceDirectory.isDirectory()) {
             loader = new ResourceDirectoryPreferringClassLoader(loader, resourceDirectory);
         }
@@ -47,17 +46,13 @@ public class PluginHotDepoyProvider implements PluginClassLoaderProvider, BeanCl
     }
     public void start(Registry registry, ClassLoader parentClassLoader) {
         this.registry = registry;
+        this.parentClassLoader = parentClassLoader;
     }
 
     public void stop() {
         registry.remove(loaders.values());
         loaders.clear();
     }
-
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
     public void setPluginWorkDirectory(File pluginWorkDirectory) {
         this.pluginWorkDirectory = pluginWorkDirectory;
     }
