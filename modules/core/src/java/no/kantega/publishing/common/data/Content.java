@@ -16,14 +16,14 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.*;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.commons.util.HttpHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -42,7 +42,14 @@ public class Content extends BaseObject {
 
     private int groupId = 0;
 
+    /**
+     * ownerunit, ansvarlig org
+     */
     private String owner = "";
+
+    /**
+     * ansvarlig person, brukerid
+     */
     private String ownerPerson = "";
 
     private String location = null;

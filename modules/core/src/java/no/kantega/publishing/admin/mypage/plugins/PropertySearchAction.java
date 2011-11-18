@@ -16,23 +16,20 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.client.util.RequestParameters;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- *
- */
 public class PropertySearchAction  implements Controller {
     private String formView;
     private String resultsView;

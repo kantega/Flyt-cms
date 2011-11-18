@@ -16,17 +16,17 @@
 
 package no.kantega.publishing.common;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.cache.ContentIdentifierCache;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.cache.ContentIdentifierCache;
+import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -52,7 +52,7 @@ public class ContentIdHelper {
             return null;
         }
 
-        if (expr.indexOf("..") != -1) {
+        if (expr.contains("..")) {
             // Hent fra N niv�er lengre opp
             if (expr.charAt(expr.length() - 1) != '/') {
                 expr += "/";

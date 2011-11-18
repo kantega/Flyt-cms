@@ -17,21 +17,20 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.SortOrder;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.List;
 
 /**
  *
@@ -67,9 +66,6 @@ public class ViewTopicAction extends AdminController {
 
         // Associated topics
         model.put("associations", topicMapService.getTopicAssociations(topic));
-
-        // Associated roles
-        
 
         return new ModelAndView(view, model);
     }

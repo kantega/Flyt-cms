@@ -16,25 +16,31 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.*;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.TextAttribute;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
-import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.org.OrganizationManager;
-import no.kantega.publishing.org.OrgUnit;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
+import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.TextAttribute;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.org.OrgUnit;
+import no.kantega.publishing.org.OrganizationManager;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.topicmaps.data.Topic;
 
-import java.util.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class ContentQuery {
     private static final String SOURCE = "aksess.ContentQuery";
@@ -63,7 +69,7 @@ public class ContentQuery {
     private String keyword = null;
     private String owner   = null;
     private String ownerPerson = null;
-    private List topics = null;
+    private List<Topic> topics = null;
     private int topicMapId = -1;
     private Topic topicType = null;
     private String sql = null;
@@ -72,11 +78,12 @@ public class ContentQuery {
     private String onHearingFor = null;
     private SortOrder sortOrder = null;
     private boolean includeDrafts = false;
+    private boolean includeWaitingForApproval = false;
 
     private int maxRecords = -1;
     private int offset = 0;
 
-    private List attributes  = null;
+    private List<Attribute> attributes  = null;
 
     private boolean intersectingTopics = false;
 
@@ -115,11 +122,11 @@ public class ContentQuery {
 
         List parameters = new ArrayList();
 
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
 
         String driver = dbConnectionFactory.getDriverName();
 
-        List joinTables = new ArrayList();
+        List<String> joinTables = new ArrayList<String>();
         joinTables.add("content");
         joinTables.add("contentversion");
         joinTables.add("associations");
@@ -127,7 +134,7 @@ public class ContentQuery {
             joinTables.add("ct2topic");
         }
 
-        if (maxRecords != -1 && useSqlSort && driver.indexOf("jtds") != -1 && joinTables.size() == 0) {
+        if (maxRecords != -1 && useSqlSort && driver.contains("jtds") && joinTables.size() == 0) {
             // Only limit if not using join
             query.append("select top ").append(maxRecords + offset);
         } else {
@@ -137,7 +144,7 @@ public class ContentQuery {
         query.append(" content.*, contentversion.*, associations.* from ");
 
         for (int i = 0; i < joinTables.size(); i++) {
-            String table = (String) joinTables.get(i);
+            String table = joinTables.get(i);
             if (i > 0) {
                 query.append(",");
             }
@@ -153,6 +160,9 @@ public class ContentQuery {
         }
         if (includeDrafts) {
             query.append("," + ContentStatus.DRAFT);
+        }
+        if(includeWaitingForApproval){
+            query.append("," + ContentStatus.WAITING_FOR_APPROVAL);
         }
 
         query.append(") and content.ContentId = associations.ContentId");
@@ -344,10 +354,10 @@ public class ContentQuery {
 
         if (keyword != null) {
             // Keyword given, search title and alternative title
-            if (keyword.indexOf("%") == -1) {
+            if (!keyword.contains("%")) {
                 keyword = "%" + keyword + "%";
             }
-            if ((driver.indexOf("oracle") != -1) || (driver.indexOf("postgresql") !=-1)) {
+            if ((driver.contains("oracle")) || (driver.contains("postgresql"))) {
                 // Oracle and PostgreSQL is case sensitive
                 keyword = keyword.toLowerCase();
                 query.append(" and (lower(contentversion.Title) like ? or lower(contentversion.AltTitle) like ?)");
@@ -374,7 +384,7 @@ public class ContentQuery {
         if(topics != null && topics.size() > 0) {
             if (intersectingTopics) {
                 // Cannot be done via join, potensially slow method
-                if (driver.indexOf("mysql") != -1) {
+                if (driver.contains("mysql")) {
                     Log.info(SOURCE, "Using query with intersectingTopics is slow on MySQL", null, null);
                 }
 
@@ -461,15 +471,14 @@ public class ContentQuery {
                 try {
                     c = dbConnectionFactory.getConnection();
                     PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
-                    for (int i = 0; i < attributes.size(); i++) {
-                        Attribute a = (Attribute)attributes.get(i);
+                    for (Attribute a : attributes) {
                         st.setString(1, a.getName());
                         st.setString(2, a.getValue());
 
                         int noFound = 0;
                         ResultSet rs = st.executeQuery();
                         query.append(" and content.ContentId in (");
-                        while(rs.next()) {
+                        while (rs.next()) {
                             if (noFound > 0) {
                                 query.append(",");
                             }
@@ -500,7 +509,7 @@ public class ContentQuery {
             query.append(" order by ContentVersionId ");
         }
 
-        if (maxRecords != -1 && useSqlSort && driver.indexOf("mysql") != -1 && joinTables.size() == 0) {
+        if (maxRecords != -1 && useSqlSort && driver.contains("mysql") && joinTables.size() == 0) {
             // Only limit if not using join
             query.append(" limit ").append(maxRecords + offset);
         }
@@ -606,10 +615,7 @@ public class ContentQuery {
     }
 
     public boolean useSqlSort() {
-        if (sortOrder != null && sortOrder.getSqlSort() != null) {
-            return true;
-        }
-        return false;
+        return sortOrder != null && sortOrder.getSqlSort() != null;
     }
 
     public void setContentType(String contentType) throws SystemException {
@@ -698,7 +704,7 @@ public class ContentQuery {
         a.setName(name);
         a.setValue(value);
         if (attributes == null) {
-            attributes = new ArrayList();
+            attributes = new ArrayList<Attribute>();
         }
         attributes.add(a);
     }
@@ -709,12 +715,12 @@ public class ContentQuery {
 
     public void setTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList();
+            topics = new ArrayList<Topic>();
         }
         topics.add(topic);
     }
 
-    public void setTopics(List topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 
@@ -795,6 +801,14 @@ public class ContentQuery {
 
     public void setIncludeDrafts(boolean includeDrafts) {
         this.includeDrafts = includeDrafts;
+    }
+
+    public boolean isIncludeWaitingForApproval() {
+        return includeWaitingForApproval;
+    }
+
+    public void setIncludeWaitingForApproval(boolean includeWaitingForApproval) {
+        this.includeWaitingForApproval = includeWaitingForApproval;
     }
 
     /**

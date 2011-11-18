@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
@@ -27,7 +28,6 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +66,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     protected Date expireToDate = null;
     protected Date revisionDateTo = null;
     protected Date revisionDateFrom = null;
-    protected List topics = null;
+    protected List<Topic> topics = null;
     protected Topic topic = null;
     protected String topicId = null;
     protected int topicMapId = -1;
@@ -344,7 +344,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         this.topic = topic;
     }
 
-    public void setTopics(List topics) {
+    public void setTopics(List<Topic> topics) {
         this.topics = topics;
     }
 

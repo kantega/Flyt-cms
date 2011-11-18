@@ -17,8 +17,8 @@
 package no.kantega.publishing.jobs.alerts;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -91,7 +91,7 @@ public class ExpireContentAlertJob {
 
                     if (content.getExpireAction() == ExpireAction.REMIND) {
                         String userId;
-                        if (defaultUserEmail != null && defaultUserEmail.indexOf("@") != -1) {
+                        if (defaultUserEmail != null && defaultUserEmail.contains("@")) {
                             userId = defaultUserEmail;
                         } else {
                             if (content.getOwnerPerson() != null && content.getOwnerPerson().length() > 0) {
@@ -119,7 +119,7 @@ public class ExpireContentAlertJob {
                     List userContentList = (List)users.get(userId);
 
                     User user = null;
-                    if (userId.indexOf("@") != -1) {
+                    if (userId.contains("@")) {
                         user = new User();
                         user.setId(userId);
                         user.setEmail(userId);

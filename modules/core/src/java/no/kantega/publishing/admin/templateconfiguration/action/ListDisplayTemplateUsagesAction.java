@@ -16,20 +16,16 @@
 
 package no.kantega.publishing.admin.templateconfiguration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.ContentQuery;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.client.util.RequestParameters;
-
-/**
- */
 public class ListDisplayTemplateUsagesAction extends AdminController {
     private String view;
 

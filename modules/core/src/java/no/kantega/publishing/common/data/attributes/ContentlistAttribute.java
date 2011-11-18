@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class ContentlistAttribute extends ListAttribute {
     private static String SOURCE = "aksess.ContentlistAttribute";
 
@@ -67,7 +69,7 @@ public class ContentlistAttribute extends ListAttribute {
     public List getListOptions(int language) {
         int requestedSiteId = -1;
         ContentQuery query = new ContentQuery();
-        if (contentTemplateId != null && contentTemplateId != ""){
+        if (isNotBlank(contentTemplateId)){
             query.setContentTemplate(contentTemplateId);
         }
         if (documentTypeId != -1) {
@@ -97,9 +99,8 @@ public class ContentlistAttribute extends ListAttribute {
 
         List options = new ArrayList();
         try {
-            List all = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false),  false);
-            for (int i = 0; i < all.size(); i++) {
-                Content c = (Content) all.get(i);
+            List<Content> all = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false),  false);
+            for (Content c : all) {
                 String id = "" + c.getAssociation().getId();
                 ListOption option = new ListOption();
                 option.setText(c.getTitle());

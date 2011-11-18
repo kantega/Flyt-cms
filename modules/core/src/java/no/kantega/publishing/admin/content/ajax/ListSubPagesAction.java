@@ -16,30 +16,24 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.model.MenuList;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
-import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
-import no.kantega.publishing.admin.model.MenuList;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
-/**
- *
- */
 public class ListSubPagesAction extends SimpleAdminController {
 
     private TemplateConfigurationCache templateConfigurationCache;

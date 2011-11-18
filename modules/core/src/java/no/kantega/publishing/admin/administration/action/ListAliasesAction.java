@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -38,7 +37,7 @@ public class ListAliasesAction extends AdminController {
         ContentQuery query = new ContentQuery();
         query.setShowExpired(true);
         String driver = dbConnectionFactory.getDriverName().toLowerCase();
-        if (driver.indexOf("oracle") != -1) {
+        if (driver.contains("oracle")) {
             query.setSql(" and content.Alias is not null and associations.Type = 1");
         } else {
             query.setSql(" and content.Alias is not null and content.Alias <> '' and associations.Type = 1");
