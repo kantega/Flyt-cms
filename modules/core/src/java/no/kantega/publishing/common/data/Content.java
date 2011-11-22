@@ -34,28 +34,31 @@ import java.util.*;
 public class Content extends BaseObject {
     // Information not versionable
     private ContentType type = ContentType.PAGE;
-    private int contentTemplateId = 0;  // Id til mal for innhold (m� settes)
-    private int metaDataTemplateId = 0; // Id til mal metadata
-    private int displayTemplateId = 0;  // Id til visningsmal (m� settes)
+    private int contentTemplateId = 0;
+    private int metaDataTemplateId = 0;
+    private int displayTemplateId = 0;
     private int documentTypeId = 0;
-    private int documentTypeIdForChildren = 0; //Dokumenttype for undersider til denne.
+    private int documentTypeIdForChildren = 0;
 
     private int groupId = 0;
 
     /**
-     * ownerunit, ansvarlig org
+     * The department owning the content, or blank.
      */
     private String owner = "";
 
     /**
-     * ansvarlig person, brukerid
+     * Person owning the content
      */
     private String ownerPerson = "";
 
     private String location = null;
     private boolean openInNewWindow = false;
 
-    private String alias = null; // Brukervennlig URL, settes til "/" for startsida
+    /**
+     * User friendly url. "/" for the front page.
+     */
+    private String alias = null;
     private Date createDate = new Date();
     private Date publishDate = null;
     private Date expireDate  = null;
