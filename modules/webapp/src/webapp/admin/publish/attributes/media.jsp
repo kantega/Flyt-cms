@@ -60,7 +60,7 @@
             <!-- For users without access to mediaarchive - simple file upload -->
             <c:if test="${fn:length(value) != 0}">
                 <div id="${fieldName}_media">
-                    <aksess:getattribute name="${attribute.name}" obj="${content}" width="270" cssclass="contentMedia"/>
+                    <aksess:getattribute name="${attribute.nameIncludingPath}" obj="${content}" width="270" cssclass="contentMedia"/>
                 </div>
             </c:if>        
             <input type="hidden" name="${fieldName}" value="${value}">
