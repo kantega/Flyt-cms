@@ -347,9 +347,16 @@ public class ContentManagementService {
             content.setVisibilityStatus(ContentVisibilityStatus.ACTIVE);
         }
 
+        boolean isNewContent = content.isNew();
+        if (!isNewContent &&content.getDisplayTemplateId() > 0) {
+            DisplayTemplate displayTemplate = getDisplayTemplate(content.getDisplayTemplateId());
+            if (displayTemplate.isNewGroup()) {
+                content.setGroupId(content.getId());
+            }
+        }
+
         ContentListenerUtil.getContentNotifier().beforeContentSave(new ContentEvent().setContent(content));
 
-        boolean isNewContent = content.isNew();
         Content c = ContentAO.checkInContent(content, newStatus);
 
         if (c.getStatus() == ContentStatus.HEARING) {
