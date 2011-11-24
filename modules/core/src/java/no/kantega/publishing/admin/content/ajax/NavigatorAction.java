@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +64,9 @@ public class NavigatorAction implements Controller {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SiteManagementService siteService = new SiteManagementService(request);
-        ContentManagementService cms = new ContentManagementService(request);
+
+        // Users should be able to navigate to all pages, must act as admin
+        ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
 
         RequestParameters params = new RequestParameters(request);
 
