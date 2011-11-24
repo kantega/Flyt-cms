@@ -52,21 +52,24 @@ public class InsertLinkAction extends AdminController {
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("linkType", linkType);
-
         RequestParameters param = new RequestParameters(request);
         String url = param.getString("url");
         if (url != null) {
-            if (url.indexOf("@") != -1) {
+            if (url.contains("@")) {
                 linkType = LINKTYPE_EMAIL;
             }
+            if (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER) || url.contains("/attachment/")) {
+                linkType = LINKTYPE_ATTACHMENT;
+            }
         }
+        model.put("linkType", linkType);
 
         if (url == null || url.length() == 0) {
             if (linkType.equals("external")) {
                 url = "http://";
             }
         }
+
 
         model.put("url", url);
 

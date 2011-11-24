@@ -40,8 +40,10 @@
     <script type="text/javascript">
         function buttonOkPressed() {
             var attribs = getUrlAttributes();
-            openaksess.editcontext.insertLink(attribs);
-            getParent().openaksess.common.modalWindow.close();
+            if (attribs != null) {
+                openaksess.editcontext.insertLink(attribs);
+                getParent().openaksess.common.modalWindow.close();
+            }
         }
     </script>
     <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">

@@ -15,6 +15,7 @@
     </div>
     <div class="inputs">
         <select name="url" class="fullWidth" id="url">
+            <option></option>
         </select>
     </div>
     <div class="buttonGroup">
@@ -40,10 +41,10 @@
     function getUrlAttributes() {
         var frm = document.linkform;
 
-        if (frm.url.selectedIndex < 0) {
+        if (frm.url.selectedIndex <= 0) {
             alert("<kantega:label key="aksess.insertlink.nourl"/>");
             frm.url.focus();
-            return undefined;
+            return null;
         }
         var url = attachments[frm.url.selectedIndex].url;
         var clz = attachments[frm.url.selectedIndex].clz;
@@ -75,19 +76,29 @@
                 // New page, attachments have no content-id yet
                 attachments = current.getAttachments();
             }
+
+            String url = (String)request.getAttribute("url");
             if (attachments != null) {
                 for (Attachment a : attachments) {
                     String filename = a.getFilename();
                     if (filename.length() > 40) {
                         filename = filename.substring(0, 37) + "...";
                     }
+
+                    String selected = "";
+                    if (url != null && (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
+                        || url.endsWith(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId())
+                        || url.contains("/attachment/" + a.getId()))) {
+                        selected = " selected";
+                    }
+
                     %>
                     var mimeType = '<%=a.getMimeType().getType()%>'.replace(/(\.|\/)/g, '-');
                     attachments.push({
                         url: '<%= Aksess.getContextPath() + "/attachment.ap?id=" + a.getId() %>',
                         clz: 'file <%=a.getMimeType().getFileExtension()%> ' + mimeType
                     });
-                    select.append("<option><%=filename%></option>");
+                    select.append("<option<%=selected%>><%=filename%></option>");
                     <%
                 }
             }
