@@ -24,6 +24,7 @@ public class DefaultForm implements Form {
     private String formDefinition;
     private String email;
     private List<String> fieldNames;
+    private String url;
 
     public int getId() {
         return id;
@@ -63,5 +64,13 @@ public class DefaultForm implements Form {
 
     public void setFieldNames(List<String> fieldNames) {
         this.fieldNames = fieldNames;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

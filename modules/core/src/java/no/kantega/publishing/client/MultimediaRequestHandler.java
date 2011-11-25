@@ -23,6 +23,7 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.data.enums.Cropping;
@@ -94,15 +95,10 @@ public class MultimediaRequestHandler implements Controller {
             String mimetype = mm.getMimeType().getType();
             ServletOutputStream out = response.getOutputStream();
 
-            MultimediaDimensions dimensions = calculateDimensions(param, mm);
+            ImageResizeParameters resizeParams = new ImageResizeParameters(param);
 
-            int width = dimensions.getWidth();
-            int height = dimensions.getHeight();
-            Cropping cropping   = Cropping.getCroppingAsEnum(ServletRequestUtils.getStringParameter(request, "cropping", "contain"));
-            if (width == -1 || height == -1) cropping = Cropping.CONTAIN; // default
 
-            String key = mmId + "-" + width + "-" + height + "-" + cropping.getTypeAsString() + "-"  + mm.getLastModified().getTime();
-
+            String key = mmId + "-" + resizeParams + "-"  + mm.getLastModified().getTime();
             if (HttpHelper.isInClientCache(request, response, key, mm.getLastModified())) {
                 // Exists in browser cache
                 response.setContentType(mimetype);
@@ -116,8 +112,7 @@ public class MultimediaRequestHandler implements Controller {
             int expire = config.getInt("multimedia.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
 
-
-            if ((mimetype.contains("image")) && (width != -1 || height != -1) && (mm.getWidth() != width || (mm.getHeight() != height))) {
+            if ((mimetype.contains("image")) && !resizeParams.skipResize()) {
                 byte[] bytes = null;
 
                 try {
@@ -132,9 +127,7 @@ public class MultimediaRequestHandler implements Controller {
                         mm.setData(bos.toByteArray());
 
                         // shrink
-                        mm = imageEditor.resizeMultimedia(mm, width, height, cropping);
-                        // crop
-                        mm = imageEditor.cropMultimedia(mm, width, height, cropping);
+                        mm = imageEditor.resizeMultimedia(mm, resizeParams);
 
                         bytes = mm.getData();
                         thumbnailCache.putInCache(key, bytes, new String[]{Integer.toString(mmId)});
@@ -172,54 +165,6 @@ public class MultimediaRequestHandler implements Controller {
         return null;
     }
 
-    /**
-     * Calculates dimensions for multimedia resizing based on get-parameters
-     * use of minheight and minwidth parameters ensures that the resized image is never smaller than either of the parameters
-     * while height and width parameters ensures that the resized image is never bigger than either of the parameters.
-     * when combined, min* parameters takes presedence.
-     * @param param
-     * @param mm
-     * @return
-     */
-    private MultimediaDimensions calculateDimensions(RequestParameters param, Multimedia mm) {
-
-        int     width       = param.getInt("width");
-        int     height      = param.getInt("height");
-        double  minWidth    = param.getInt("minwidth");
-        double  minHeight   = param.getInt("minheight");
-
-        if (minWidth > 0 || minHeight > 0){
-
-            double mmWidth = mm.getWidth();
-            double mmHeight = mm.getHeight();
-
-            double newWidth = -1;
-            double newHeight = -1;
-
-            if (minWidth > mmWidth) minWidth = mmWidth;
-            if (minHeight > mmHeight) minHeight = mmHeight;
-
-            double aspectRatio = (mmWidth / mmHeight);
-
-            if (newWidth < minWidth && minWidth > 0){
-                newHeight = (int) Math.ceil(minWidth / aspectRatio);
-                newWidth = (int) Math.ceil(( aspectRatio * newHeight));
-            }
-            if (newHeight < minHeight && minHeight > 0){
-                newWidth = (int) Math.ceil(( aspectRatio * minHeight));
-                newHeight = (int) Math.ceil(newWidth / aspectRatio);
-            }
-            height = newHeight > 0 ? (int) newHeight: (int) mmHeight;
-            width = newWidth > 0 ? (int) newWidth: (int) mmWidth;
-        }
-
-        // clamp - ensure no enlarging
-        if (height > mm.getHeight()) height = mm.getHeight();
-        if (width > mm.getWidth()) width = mm.getWidth();
-
-
-        return new MultimediaDimensions(width, height);
-    }
 
     public void setImageEditor(ImageEditor imageEditor) {
         this.imageEditor = imageEditor;

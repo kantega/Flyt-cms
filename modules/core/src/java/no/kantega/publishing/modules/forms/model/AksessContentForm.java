@@ -22,7 +22,7 @@ public class AksessContentForm extends DefaultForm {
         setEmail(form.getEmail());
         setFormDefinition(form.getFormDefinition());
         setFieldNames(getFieldNamesFromDefinition(form.getFormDefinition()));
-
+        setUrl(form.getUrl());
     }
 
     public AksessContentForm(Content content) {
@@ -38,6 +38,7 @@ public class AksessContentForm extends DefaultForm {
         }
         setId(content.getId());
         setTitle(content.getTitle());
+        setUrl(content.getUrl());
     }
 
     private List<String> getFieldNamesFromDefinition(String formDefinition) {

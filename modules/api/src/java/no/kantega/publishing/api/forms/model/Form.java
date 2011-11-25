@@ -24,4 +24,5 @@ public interface Form {
     public String getFormDefinition();
     public String getEmail();
     public List<String> getFieldNames();
+    public String getUrl();
 }

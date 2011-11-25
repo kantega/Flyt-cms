@@ -1,6 +1,7 @@
 package no.kantega.publishing.multimedia;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.data.enums.Cropping;
@@ -30,81 +31,6 @@ public class DefaultImageEditor implements ImageEditor {
 
     public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException {
         return resizeAndCropMultimedia(multimedia, targetWidth, targetHeight, -1, -1, -1, -1);
-    }
-
-    /**
-     * Resize a multimedia object, and prepare it for cropping
-     * use Cropping.CONTAIN for standard resize without cropping.
-     * If cropping operations are to be performed on the multimediaobject afterwards, targetWidth and targetHeight should be the same as the desired width and height
-     * of the final resised and cropped media object.
-     * For best results, the original media object should be larger than the resized object in both width and height.
-     * Cropping.CONTAIN is standard, and will resize the object to ensure that the whole image fits inside the box specified by targetWidth and targetHeight
-     * Cropping.TOPLEFT and Cropping.CENTERED will resize the object down, but ensure the image completely covers the box specified by targetWidth and targetHeight
-     * @param multimedia - multimedia object
-     * @param targetWidth - desired width
-     * @param targetHeight - desired height
-     * @param cropping - desired cropping method to prepare for.
-     * @return resized multimedia object
-     * @throws IOException
-     * @throws InvalidImageFormatException
-     */
-    public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, Cropping cropping) throws IOException, InvalidImageFormatException {
-        BufferedImage image = getImageFromMultimedia(multimedia);
-        BufferedImage img = resizeImage(image, targetWidth, targetHeight, cropping);
-        multimedia = updateMultimedia(img, multimedia);
-        return multimedia;
-    }
-
-    /**
-     * Crop multimedia object, using desired cropping method.
-     * @param mm - Multimedia object
-     * @param cropWidth - width of bounding box
-     * @param cropHeight - height of bounding box
-     * @param cropping - cropping method. TOPLEFT crops from top left corner. CENTERED crops from media object center. CONTAIN is the same as TOPLEFT if used isolated,
-     * and is superflous if media object is alredy resized using CONTAIN method.
-     * @return
-     * @throws IOException
-     * @throws InvalidImageFormatException
-     */
-    public Multimedia cropMultimedia(Multimedia mm, int cropWidth, int cropHeight, Cropping cropping) throws IOException, InvalidImageFormatException {
-
-        switch (cropping){
-            case CONTAIN:{
-                if (cropWidth < mm.getWidth() || cropHeight < mm.getHeight()){
-                    mm = cropMultimedia(mm, 0, 0, cropWidth, cropHeight);
-                }
-                break;
-            }
-            case TOPLEFT:
-                mm = cropMultimedia(mm, 0, 0, cropWidth, cropHeight); break;
-            case CENTERED:
-                mm = cropMultimedia(mm, (mm.getWidth() - cropWidth) / 2, (mm.getHeight() - cropHeight) / 2, cropWidth, cropHeight); break;
-            default:
-                if (cropWidth < mm.getWidth() || cropHeight < mm.getHeight()){
-                    mm = cropMultimedia(mm, 0, 0, cropWidth, cropHeight);
-                }
-                break;
-        }
-        return mm;
-    }
-
-    /**
-     * Crop a multimedia object.
-     *
-     * @param multimedia
-     * @param cropX
-     * @param cropY
-     * @param cropW
-     * @param cropH
-     * @return
-     * @throws InvalidImageFormatException
-     * @throws IOException
-     */
-    public Multimedia cropMultimedia(Multimedia multimedia, int cropX, int cropY, int cropW, int cropH) throws InvalidImageFormatException, IOException {
-        BufferedImage image = getImageFromMultimedia(multimedia);
-        image = cropImage(image, cropX, cropY, cropW, cropH);
-        multimedia = updateMultimedia(image, multimedia);
-        return multimedia;
     }
 
     /**
@@ -150,8 +76,7 @@ public class DefaultImageEditor implements ImageEditor {
         return image;
     }
 
-    public Multimedia updateMultimedia(BufferedImage image, Multimedia mm) throws IOException {
-        //Multimedia multimedia = new Multimedia();
+    private Multimedia updateMultimedia(BufferedImage image, Multimedia mm) throws IOException {
         // Determine output format
         String imageFormat = getDefaultImageFormat();
         if (mm.getMimeType().getType().contains("jpeg")) {
@@ -184,7 +109,7 @@ public class DefaultImageEditor implements ImageEditor {
 
         // Update filename and data
         String filename = mm.getFilename();
-        if (filename.indexOf(".") != -1) {
+        if (filename.contains(".")) {
             filename = filename.substring(0, filename.lastIndexOf("."));
         }
         filename += "." + imageFormat;
@@ -196,7 +121,7 @@ public class DefaultImageEditor implements ImageEditor {
 
     }
 
-    public BufferedImage getImageFromMultimedia(Multimedia multimedia) throws InvalidImageFormatException{
+    private BufferedImage getImageFromMultimedia(Multimedia multimedia) throws InvalidImageFormatException{
         if (multimedia.getType() == MultimediaType.MEDIA) {
             if (multimedia.getMimeType() != null && multimedia.getMimeType().getType().contains("image")) {
                 BufferedImage image;
@@ -215,16 +140,8 @@ public class DefaultImageEditor implements ImageEditor {
     }
 
     public BufferedImage resizeImage(BufferedImage image, int targetWidth, int targetHeight, Cropping cropping) throws InvalidImageFormatException {
-
-
-        // Make sure target-size is valid
-        int w = image.getWidth();
-        int h = image.getHeight();
-
-
-
         // Get resized image dimensions with correct aspect ratio
-        MultimediaDimensions d = getResizedImageDimensions(w, h, targetWidth, targetHeight, cropping);
+        MultimediaDimensions d = getResizedImageDimensions(image.getWidth(), image.getHeight(), targetWidth, targetHeight, cropping);
         targetWidth = d.getWidth();
         targetHeight = d.getHeight();
 
@@ -279,9 +196,6 @@ public class DefaultImageEditor implements ImageEditor {
         }
 
         return new MultimediaDimensions( (int) Math.ceil(newWidth), (int) Math.ceil(newHeight));
-
-
-
     }
 
     /**
@@ -293,9 +207,82 @@ public class DefaultImageEditor implements ImageEditor {
      * @return - MultimediaDimensions - dimensions of resized image
      */
     public MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight) {
-
         return getResizedImageDimensions(originalWidth, originalHeight, targetWidth, targetHeight, Cropping.CONTAIN);
+    }
 
+    /**
+     * Resize a multimedia object, and prepare it for cropping
+     * use Cropping.CONTAIN for standard resize without cropping.
+     * If cropping operations are to be performed on the multimediaobject afterwards, targetWidth and targetHeight should be the same as the desired width and height
+     * of the final resised and cropped media object.
+     * For best results, the original media object should be larger than the resized object in both width and height.
+     * Cropping.CONTAIN is standard, and will resize the object to ensure that the whole image fits inside the box specified by targetWidth and targetHeight
+     * Cropping.TOPLEFT and Cropping.CENTERED will resize the object down, but ensure the image completely covers the box specified by targetWidth and targetHeight
+     * @param multimedia - multimedia object
+     * @param resizeParameters - ImageResizeParameters
+     * @return resized multimedia object
+     * @throws IOException
+     * @throws InvalidImageFormatException
+     */
+    public Multimedia resizeMultimedia(Multimedia multimedia, ImageResizeParameters resizeParameters) throws IOException, InvalidImageFormatException {
+        BufferedImage image = getImageFromMultimedia(multimedia);
+
+        int targetWidth = resizeParameters.getMaxWidth();
+        int targetHeight = resizeParameters.getMaxHeight();
+
+        if ((targetWidth < 3 && targetHeight < 3)) {
+            Log.error(this.getClass().getSimpleName(), "Minimum resize dimensions are 3x3. Values below threshold will be adjusted");
+            if (targetWidth < 3 && targetWidth != -1) targetWidth = 3;
+            if (targetHeight < 3 && targetHeight != -1) targetHeight = 3;
+        }
+
+        Cropping cropping = resizeParameters.getCropping();
+        if (targetWidth == -1 || targetHeight == -1) {
+            cropping = Cropping.CONTAIN;
+        }
+
+        if (targetHeight < image.getHeight() && targetHeight != -1 || targetWidth < image.getWidth() && targetWidth != -1) {
+            BufferedImage resizedImage = resizeImage(image, targetWidth, targetHeight, cropping);
+            BufferedImage croppedImage = cropImage(resizedImage, targetWidth, targetHeight, cropping);
+            updateMultimedia(croppedImage, multimedia);
+        }
+        return multimedia;
+    }
+
+    /**
+     * Crop multimedia object, using desired cropping method.
+     * @param image - BufferedImage
+     * @param cropWidth - width of bounding box
+     * @param cropHeight - height of bounding box
+     * @param cropping - cropping method. TOPLEFT crops from top left corner. CENTERED crops from media object center. CONTAIN is the same as TOPLEFT if used isolated,
+     * and is superflous if media object is alredy resized using CONTAIN method.
+     * @return
+     * @throws IOException
+     * @throws InvalidImageFormatException
+     */
+    private BufferedImage cropImage(BufferedImage image, int cropWidth, int cropHeight, Cropping cropping) throws IOException, InvalidImageFormatException {
+        BufferedImage croppedImage = image;
+
+        switch (cropping){
+            case CONTAIN:{
+                if (cropWidth < image.getWidth() || cropHeight < image.getHeight()){
+                    croppedImage = cropImage(image, 0, 0, cropWidth, cropHeight);
+                }
+                break;
+            }
+            case TOPLEFT:
+                croppedImage = cropImage(image, 0, 0, cropWidth, cropHeight);
+                break;
+            case CENTERED:
+                croppedImage = cropImage(image, (image.getWidth() - cropWidth) / 2, (image.getHeight() - cropHeight) / 2, cropWidth, cropHeight);
+                break;
+            default:
+                if (cropWidth < image.getWidth() || cropHeight < image.getHeight()){
+                    croppedImage = cropImage(image, 0, 0, cropWidth, cropHeight);
+                }
+                break;
+        }
+        return croppedImage;
     }
 
     public void setImageResizeAlgorithm(ImageResizeAlgorithm imageResizeAlgorithm) {

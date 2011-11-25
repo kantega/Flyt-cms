@@ -53,6 +53,10 @@ public class FormSubmissionFillFilterTest extends TestCase {
             public List<String> getFieldNames() {
                 return null;
             }
+
+            public String getUrl() {
+                return "http://www.valid.url";
+            }
         };
 
         FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form, true);
@@ -80,7 +84,7 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
     }
 
-public void testShouldPickupValueForRecipientEmail() throws SystemException {
+    public void testShouldPickupValueForRecipientEmail() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
         Map<String, String[]> params = new HashMap<String, String[]>();
@@ -109,6 +113,10 @@ public void testShouldPickupValueForRecipientEmail() throws SystemException {
 
             public List<String> getFieldNames() {
                 return null;
+            }
+
+            public String getUrl() {
+                return "http://www.valid.url";
             }
         };
 

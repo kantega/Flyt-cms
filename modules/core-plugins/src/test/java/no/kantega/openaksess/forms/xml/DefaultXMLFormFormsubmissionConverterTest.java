@@ -45,6 +45,10 @@ public class DefaultXMLFormFormsubmissionConverterTest {
             public List<String> getFieldNames() {
                 return null;
             }
+
+            public String getUrl() {
+                return null;
+            }
         };
 
         formSubmission.setForm(form);
@@ -65,6 +69,10 @@ public class DefaultXMLFormFormsubmissionConverterTest {
         fv.setName("test");
         fv.setValue("A test with & &x; special chars <br>");
         formSubmission.addValue(fv);
+
+        DefaultFormValue url = new DefaultFormValue();
+        url.setName("url");
+        url.setValue("http://www.valid.url");
 
         return formSubmission;
     }

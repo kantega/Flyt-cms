@@ -2,9 +2,6 @@ package no.kantega.publishing.common.data.enums;
 
 import no.kantega.commons.log.Log;
 
-/**
- * Espen Hjertø / Kantega AS / 10/13/11
- */
 public enum Cropping {
     CONTAIN("contain"),
     TOPLEFT("topleft"),
