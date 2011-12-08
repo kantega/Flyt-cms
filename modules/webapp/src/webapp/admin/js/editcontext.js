@@ -144,7 +144,7 @@ openaksess.editcontext = function()  {
          */
         updateTopics : function (params) {
             var ths = this;
-            $("#TopicList").load("../topicmaps/HandleContentTopics.action", params, function() {
+            $("#TopicList").load(properties.contextPath + "/admin/topicmaps/HandleContentTopics.action", params, function() {
                 $(".topic > .buttonGroup > a.delete").click(function(event){
                     event.preventDefault();
                     var topicMapId = openaksess.common.getQueryParam("topicMapId", $(this).attr("href"));
@@ -206,7 +206,7 @@ openaksess.editcontext = function()  {
          */
         selectTopic : function (formElement, multiple) {
             openaksess.editcontext.focusField = formElement;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selecttopic, iframe:true, href: "../topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selecttopic, iframe:true, href: properties.contextPath + "/admin/topicmaps/SelectTopics.action?refresh=" + getRefresh(),width: 300, height:400});
         },
 
         /**
@@ -375,7 +375,7 @@ openaksess.editcontext = function()  {
          * Remove list option from list
          */
         removeOptionFromList : function removeOptionFromList(formElement, attributeKey, language) {
-            $.post("../publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
+            $.post(properties.contextPath + "/admin/publish/RemoveListOption.action", {value:formElement.value, attributeKey: attributeKey, language:language}, function(data) {
                 openaksess.common.debug("editable list - option remove:" + formElement.value);
                 for (var i=0; i < formElement.options.length; i++) {
                     if (formElement.options[i].selected) {
