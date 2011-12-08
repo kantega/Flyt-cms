@@ -21,6 +21,11 @@
 <kantega:section id="bodyclass">mediaArchive</kantega:section>
 
 <kantega:section id="head">
+    <style type="text/css">
+        body {
+            overflow: hidden;
+        }
+    </style>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
