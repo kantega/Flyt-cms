@@ -1299,6 +1299,34 @@ public class ContentAO {
         }
     }
 
+    public static int getNextWaitingContentId(int after) throws SystemException {
+
+        Connection c = null;
+        try {
+            c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE PublishDate > ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
+            p.setTimestamp(1, new Timestamp(new Date().getTime()));
+            p.setInt(2, ContentVisibilityStatus.ACTIVE);
+            p.setInt(3, after);
+            ResultSet rs = p.executeQuery();
+            if(!rs.next()) {
+                return -1;
+            } else {
+                return rs.getInt("ContentId");
+            }
+        } catch (SQLException e) {
+            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+        } finally {
+            if(c != null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                    // Could not close connection, probably closed already
+                }
+            }
+        }
+    }
+
 
     /**
      * Return the id of the next content id which should be activated
@@ -1317,13 +1345,18 @@ public class ContentAO {
             PreparedStatement p = c.prepareStatement("SELECT DISTINCT content.ContentId FROM content,contentversion " +
                     "WHERE content.contentId=contentversion.contentid " +
                     "AND ((PublishDate < ? AND VisibilityStatus = ?) " +
-                    "OR (Status = ? AND ChangeFrom < ?)) AND content.ContentId > ? " +
+                    "OR (VisibilityStatus IN (?,?) AND (ExpireDate IS NULL OR ExpireDate > ?)) " +
+                    "OR (Status = ? AND ChangeFrom < ?)) " +
+                    "AND content.ContentId > ? " +
                     "ORDER BY content.ContentId");
             p.setTimestamp(1, new Timestamp(now));
             p.setInt(2, ContentVisibilityStatus.WAITING);
-            p.setInt(3, ContentStatus.PUBLISHED_WAITING);
-            p.setTimestamp(4, new Timestamp(now));
-            p.setInt(5, after);
+            p.setInt(3, ContentVisibilityStatus.ARCHIVED);
+            p.setInt(4, ContentVisibilityStatus.EXPIRED);
+            p.setTimestamp(5, new Timestamp(now));
+            p.setInt(6, ContentStatus.PUBLISHED_WAITING);
+            p.setTimestamp(7, new Timestamp(now));
+            p.setInt(8, after);
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
                 return -1;

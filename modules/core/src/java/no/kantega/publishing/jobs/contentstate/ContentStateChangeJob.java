@@ -16,65 +16,14 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ExpireAction;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.security.SecuritySession;
 
-/**
- *
- */
 public class ContentStateChangeJob  {
     private static String SOURCE = "ContentStateChangeJob";
 
     public void execute() {
-        ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
+        ContentStateUpdater stateUpdater = new ContentStateUpdater();
 
-        try {
-            Log.info(SOURCE, "Looking for content that has expired", null, null);
-            int i = 0;
-            while((i = ContentAO.getNextExpiredContentId(i)) > 0) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(i);
-                Content content = ContentAO.getContent(cid, false);
-                if (content != null) {
-                    int newVisibilityStatus = ContentVisibilityStatus.EXPIRED;
-                    if (content.getExpireAction() == ExpireAction.ARCHIVE) {
-                        newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
-                    }
-                    cms.setContentVisibilityStatus(content, newVisibilityStatus);
-
-                }
-            }
-            Log.info(SOURCE, "Looking for content that needs activation", null, null);
-            i = 0;
-            while((i = ContentAO.getNextActivationContentId(i)) > 0) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(i);
-                Content content = ContentAO.getContent(cid, true);
-                if (content != null) {
-                    if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
-                        Log.debug(SOURCE, content.getTitle() + " page was made visible due to publish date", null, null);
-                        cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE);
-                    } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
-                        Log.debug(SOURCE, content.getTitle() + " new version was activated due to change from date", null, null);
-                        cms.setContentStatus(cid, ContentStatus.PUBLISHED, "");
-                    }
-                }
-            }
-
-        } catch (SystemException e) {
-            Log.error(SOURCE, e);
-        } catch (NotAuthorizedException e) {
-            Log.error(SOURCE, e);
-        }
-
+        stateUpdater.expireContent();
+        stateUpdater.publishContent();
     }
 }

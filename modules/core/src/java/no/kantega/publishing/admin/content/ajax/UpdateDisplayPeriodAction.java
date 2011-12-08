@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
@@ -61,6 +62,11 @@ public class UpdateDisplayPeriodAction implements Controller {
 
                 if (publishDate != null) {
                     cms.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
+
+                    // Update state of content immediately to not confuse user
+                    ContentStateUpdater stateUpdater = new ContentStateUpdater();
+                    stateUpdater.expireContent();
+                    stateUpdater.publishContent();
 
                     // Update content objects stored in session so user is not confused
                     HttpSession session = request.getSession();

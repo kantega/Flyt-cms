@@ -64,6 +64,7 @@
                         if (data.error) {
                             alert('<kantega:label key="aksess.error.generic" escapeJavascript="true"/>');
                         } else {
+                            getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
                             setTimeout("closeWindow()", 10);
                         }
 
