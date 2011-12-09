@@ -8,6 +8,7 @@ import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 import org.kantega.jexmec.PluginManager;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
 
 /**
@@ -23,7 +24,7 @@ public class VelocityPluginResourceLoader extends ResourceLoader {
 
     public InputStream getResourceStream(String source) throws ResourceNotFoundException {
 
-        OpenAksessPlugin plugin = (OpenAksessPlugin) AksessRequestFilter.getRequest().getAttribute(PluginDelegatingHandlerMapping.DELEGATED_PLUGIN_ATTR);
+        OpenAksessPlugin plugin = getPlugin();
         if(plugin != null) {
             final ClassLoader loader = pluginManager.getClassLoader(plugin);
             final InputStream stream = loader.getResourceAsStream(source);
@@ -33,6 +34,12 @@ public class VelocityPluginResourceLoader extends ResourceLoader {
             return stream;
         }
         throw new ResourceNotFoundException ("No resource found");
+    }
+
+    private OpenAksessPlugin getPlugin() {
+        HttpServletRequest request = AksessRequestFilter.getRequest();
+
+        return request == null ? null : (OpenAksessPlugin) request.getAttribute(PluginDelegatingHandlerMapping.DELEGATED_PLUGIN_ATTR);
     }
 
 
