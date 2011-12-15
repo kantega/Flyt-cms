@@ -55,13 +55,13 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             Calendar cal = null;
             cal = new GregorianCalendar();
 
-            // Slette vedlegg som har blitt liggende igjen
+            // Delete attachments with no connections to content
             cal.add(Calendar.DATE, -1);
             PreparedStatement st = c.prepareStatement("delete from attachments where ContentId = -1 AND LastModified < ?");
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
 
-            // Slett trafikk log
+            // Delete traffic log
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getTrafficLogMaxAge());
 
@@ -71,14 +71,14 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
 
-            // Oppdater antall visninger i loggen
+            // Update number of views based on trafficlog
             Log.info(SOURCE, "Updating number of views based on trafficlog", null, null);
 
             st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId)");
             st.execute();
 
 
-            // Slett event log
+            // Delete old entries from event log
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getEventLogMaxAge());
 
@@ -88,7 +88,17 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
 
-            // Slett ting fra trash som er eldre enn N mnd
+            // Delete entries from searchlog older than 1 month
+            cal = new GregorianCalendar();
+            cal.add(Calendar.MONTH, -1);
+
+            Log.info(SOURCE, "Deleting search log entries older than 1 month", null, null);
+
+            st = c.prepareStatement("delete from searchlog where Time < ?");
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+
+            // Delete old items from trash
             cal = new GregorianCalendar();
             cal.add(Calendar.MONTH, -Aksess.getDeletedItemsMaxAge());
 
@@ -98,11 +108,11 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
 
-            // Slett knytninger som ikke finnes i trash lenger
+            // Delete associations that have been removed from trash
             st = c.prepareStatement("delete from associations where IsDeleted = 1 and DeletedItemsId not in (select Id from deleteditems)");
             st.execute();
 
-            // Slett sider som ikke har knytninger lenger
+            // Delete pages with no associations
             st = c.prepareStatement("select ContentId from content where ContentId not in (select ContentId from associations)");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
@@ -116,11 +126,11 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 ContentAO.deleteContent(cid);
             }
 
-            // Slett emneknytning til innhold som ikke finnes
+            // Delete mappings between topics and content for deleted content
             st = c.prepareStatement("delete from ct2topic where ContentId not in (select ContentId from content)");
             st.execute();
 
-            // Slett lenker i lenkesjekkeren
+            // Remove links from linkchecker
             st = c.prepareStatement("delete from link where Id not in (select distinct LinkId from linkoccurrence)");
             st.executeUpdate();
 

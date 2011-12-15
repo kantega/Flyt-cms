@@ -45,7 +45,7 @@ public class ViewSearchLogAction extends AdminController {
         int siteId = param.getInt("siteId");
         if (siteId == -1) {
             if (sites.size() > 0) {
-                siteId = ((Site)sites.get(0)).getId();
+                siteId = ((Site) sites.get(0)).getId();
             }
         }
 
@@ -55,13 +55,12 @@ public class ViewSearchLogAction extends AdminController {
         Date before = cal.getTime();
 
         model.put("last30min", SearchAO.getSearchCountForPeriod(before, now, siteId));
-        model.put("sumAllTime", SearchAO.getSearchCountForPeriod(null,null, siteId));
+        model.put("sumLastMonth", SearchAO.getSearchCountForPeriod(null, null, siteId));
 
-        List mostPopular  = SearchAO.getMostPopularQueries(siteId);
+        List mostPopular = SearchAO.getMostPopularQueries(siteId);
         model.put("most", mostPopular);
-        List leastHits= SearchAO.getQueriesWithLeastHits(siteId);
+        List leastHits = SearchAO.getQueriesWithLeastHits(siteId);
         model.put("least", leastHits);
-
 
         model.put("sites", sites);
         model.put("selectedSiteId", siteId);

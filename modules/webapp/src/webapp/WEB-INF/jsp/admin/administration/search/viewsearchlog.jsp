@@ -48,7 +48,7 @@
             </tr>
             <tr class="tableRow0">
                 <td><kantega:label key="aksess.search.log.summary.lastmonth"/></td>
-                <td class="number">${sumAllTime}</td>
+                <td class="number">${sumLastMonth}</td>
             </tr>
             </tbody>
         </table>
