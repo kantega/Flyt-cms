@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.publishing.api.model.Site;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.data.Site;
+
 import no.kantega.publishing.common.ao.SearchAO;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
@@ -39,13 +39,13 @@ public class ViewSearchLogAction extends AdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
-        List sites = siteCache.getSites();
+        List<Site> sites = siteCache.getSites();
 
         RequestParameters param = new RequestParameters(request, "utf-8");
         int siteId = param.getInt("siteId");
         if (siteId == -1) {
             if (sites.size() > 0) {
-                siteId = ((Site) sites.get(0)).getId();
+                siteId = sites.get(0).getId();
             }
         }
 
