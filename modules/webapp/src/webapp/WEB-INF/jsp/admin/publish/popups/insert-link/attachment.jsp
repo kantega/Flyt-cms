@@ -46,8 +46,8 @@
             frm.url.focus();
             return null;
         }
-        var url = attachments[frm.url.selectedIndex].url;
-        var clz = attachments[frm.url.selectedIndex].clz;
+        var url = attachments[frm.url.selectedIndex-1].url;
+        var clz = attachments[frm.url.selectedIndex-1].clz;
 
         var anchor = frm.anchor.value;
         if (anchor != "") {
