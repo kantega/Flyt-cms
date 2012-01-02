@@ -1,5 +1,7 @@
 package org.kantega.openaksess.plugins.dbdiff;
 
+import org.apache.ddlutils.DatabaseOperationException;
+import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformInfo;
 import org.apache.ddlutils.alteration.ModelChange;
@@ -17,14 +19,16 @@ public class OaDatabaseSchema {
     private final List<ModelChange> changes;
     private final Platform platform;
     private final String resourcePath;
+    private final DdlUtilsException exception;
 
-    public OaDatabaseSchema(String resourcePath, Database actual, Database wanted, String sql, List<ModelChange> changes, Platform platform) {
+    public OaDatabaseSchema(String resourcePath, Database actual, Database wanted, String sql, List<ModelChange> changes, Platform platform, DdlUtilsException exception) {
         this.resourcePath = resourcePath;
         this.actual = actual;
         this.wanted = wanted;
         this.sql = sql;
         this.changes = changes;
         this.platform = platform;
+        this.exception = exception;
     }
 
     public Database getActual() {   
@@ -49,5 +53,9 @@ public class OaDatabaseSchema {
 
     public String getResourcePath() {
         return resourcePath;
+    }
+
+    public DdlUtilsException getException() {
+        return exception;
     }
 }

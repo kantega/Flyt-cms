@@ -1,5 +1,8 @@
 package org.kantega.openaksess.plugins.dbdiff;
 
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import org.apache.ddlutils.DatabaseOperationException;
+import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.alteration.ModelChange;
@@ -8,6 +11,7 @@ import org.apache.ddlutils.model.CloneHelper;
 import org.apache.ddlutils.model.Database;
 import org.apache.ddlutils.model.Table;
 import org.apache.ddlutils.platform.mssql.MSSqlPlatform;
+import org.kantega.jexmec.PluginManager;
 import org.kantega.openaksess.plugins.dbdiff.transform.ModelTransformer;
 import org.kantega.openaksess.plugins.dbdiff.transform.MyISAMForeginKeyTransformer;
 import org.kantega.openaksess.plugins.dbdiff.transform.MsSqlDoubleAsFloatTransformer;
@@ -35,7 +39,8 @@ public class DbDiffController {
     @Qualifier("aksessDataSource")
     private DataSource aksessDataSource;
 
-    private final ClassLoader loader = getClass().getClassLoader();
+    @Autowired
+    private PluginManager<OpenAksessPlugin> pluginManager;
 
     @RequestMapping(method = RequestMethod.GET)
     public String view(ModelMap model) throws IOException {
@@ -64,9 +69,11 @@ public class DbDiffController {
 
         Database actual = platform.readModelFromDatabase(name, catalog, schema, tableTypes);
 
-        for (String resourcePath : getSchemaResoucePaths()) {
+        Map<URL, String> schemaResourcePaths = getSchemaResourcePaths();
+        for (URL resourcePath : schemaResourcePaths.keySet()) {
+            String path = schemaResourcePaths.get(resourcePath);
 
-            InputStream stream = loader.getResourceAsStream(resourcePath);
+            InputStream stream = resourcePath.openStream();
 
             if (stream != null) {
                 Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
@@ -90,11 +97,18 @@ public class DbDiffController {
 
                 final List<ModelChange> changes = platform.getChanges(actualCopy, wanted);
 
-                String sql = platform.getAlterModelSql(actualCopy, wanted);
+                String sql = null;
 
-                schemas.add(new OaDatabaseSchema(resourcePath, actualCopy, wanted, sql, changes, platform));
+                try {
+                    sql = platform.getAlterModelSql(actualCopy, wanted);
+                    schemas.add(new OaDatabaseSchema(path, actualCopy, wanted, sql, changes, platform, null));
+                } catch (DdlUtilsException e) {
+                    schemas.add(new OaDatabaseSchema(path, actualCopy, wanted, sql, changes, platform, e));
+                }
 
-            }
+
+
+        }
         }
 
         Collections.sort(schemas, new Comparator<OaDatabaseSchema>() {
@@ -135,28 +149,42 @@ public class DbDiffController {
         }
     }
 
-    private List<String> getSchemaResoucePaths() throws IOException {
-
-        List<String> resourcePaths = new ArrayList<String>();
-
-        // OpenAksess
-        resourcePaths.add("org/kantega/openaksess/db/openaksess-dbschema.xml");
+    private Map<URL, String> getSchemaResourcePaths() throws IOException {
 
 
-        // Plugins etc:
-        final Enumeration<URL> schemaListResources = loader.getResources("META-INF/services/openaksess-dbschemas.txt");
+        Map<ClassLoader, ClassLoader> classLoaders = new IdentityHashMap<ClassLoader, ClassLoader>();
 
-        for (URL listUrl : Collections.list(schemaListResources)) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.length() > 0) {
-                    resourcePaths.add(line);
+        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+            ClassLoader classLoader = pluginManager.getClassLoader(plugin);
+            classLoaders.put(classLoader, classLoader);
+        }
+
+        classLoaders.put(getClass().getClassLoader(), getClass().getClassLoader());
+
+
+        Map<URL, String> resourcePaths = new LinkedHashMap<URL, String>();
+
+
+        for(ClassLoader classLoader : classLoaders.keySet()) {
+
+            final Enumeration<URL> schemaListResources = classLoader.getResources("META-INF/services/openaksess-dbschemas.txt");
+
+            for (URL listUrl : Collections.list(schemaListResources)) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")));
+                String line = null;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.length() > 0) {
+                        URL resource = classLoader.getResource(line);
+                        if(resource == null) {
+                            throw new IllegalArgumentException("File " + listUrl + " specifies schema file which could not be found: " + line);
+                        }
+                        resourcePaths.put(resource, line);
+                    }
                 }
-            }
 
-            br.close();
+                br.close();
+            }
         }
         return resourcePaths;
     }

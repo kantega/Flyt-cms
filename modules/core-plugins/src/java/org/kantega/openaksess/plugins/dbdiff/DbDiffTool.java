@@ -1,5 +1,6 @@
 package org.kantega.openaksess.plugins.dbdiff;
 
+import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.alteration.AddColumnChange;
 import org.apache.ddlutils.alteration.ModelChange;
@@ -24,15 +25,25 @@ import java.util.List;
 public class DbDiffTool {
 
     public String getAlterString(Database actual, ModelChange change, Platform platform) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        final Database database = new CloneHelper().clone(actual);
-        final StringWriter sw = new StringWriter();
-        platform.getSqlBuilder().setWriter(sw);
-        final Class<PlatformImplBase> clazz = PlatformImplBase.class;
-        final Method method = clazz.getDeclaredMethod("processChanges", Database.class, Collection.class, CreationParameters.class);
-        method.setAccessible(true);
-        method.invoke(platform, database, Collections.singletonList(change), null);
+        final StringWriter sw;
+        try {
+            final Database database = new CloneHelper().clone(actual);
+            sw = new StringWriter();
+            platform.getSqlBuilder().setWriter(sw);
+            final Class<PlatformImplBase> clazz = PlatformImplBase.class;
+            final Method method = clazz.getDeclaredMethod("processChanges", Database.class, Collection.class, CreationParameters.class);
+            method.setAccessible(true);
+            method.invoke(platform, database, Collections.singletonList(change), null);
+            return sw.toString();
+        } catch (Exception e) {
+            String message = e.getMessage();
+            if(e.getCause() instanceof DdlUtilsException) {
+                message = e.getCause().getMessage();
+            }
+            return "SQL generation failed with exception: " + message;
+        }
 
-        return sw.toString();
+
 
     }
 
