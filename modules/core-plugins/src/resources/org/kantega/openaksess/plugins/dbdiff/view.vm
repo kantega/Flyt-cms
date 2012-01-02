@@ -154,8 +154,13 @@
         #if(!$dbDiffTool.canMigrateData($schema.changes))
             #pluginMessage("dbdiff.details.dataloss")
         #end
-    <textarea style="width:100%;height: 80px">${schema.sql}</textarea>
-
+        #if($schema.exception)
+            <p>
+                #pluginArgMessage("dbdiff.details.exception", $schema.exception.message)
+            </p>
+        #else
+            <textarea style="width:100%;height: 80px">${schema.sql}</textarea>
+        #end
     <h3>#pluginMessage("dbdiff.details.label")</h3>
 
     <table width="100%" style="table-layout:fixed;">
