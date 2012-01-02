@@ -1,7 +1,10 @@
 package no.kantega.publishing.spring;
 
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import org.apache.log4j.Logger;
 import org.kantega.jexmec.PluginClassLoaderProvider;
+import org.kantega.jexmec.PluginManagerListener;
+import org.kantega.jexmec.events.PluginLoadingExceptionEvent;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
 
 import java.io.File;
@@ -41,6 +44,7 @@ public class PluginHotDepoyProvider implements PluginClassLoaderProvider {
         if (resourceDirectory != null && resourceDirectory.exists() && resourceDirectory.isDirectory()) {
             loader = new ResourceDirectoryPreferringClassLoader(loader, resourceDirectory);
         }
+
         registry.add(singleton(loader));
         loaders.put(jarFile.getAbsolutePath(), loader);
     }
