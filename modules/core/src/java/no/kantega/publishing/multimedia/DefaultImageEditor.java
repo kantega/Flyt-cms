@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Locale;
 
+
 public class DefaultImageEditor implements ImageEditor {
     ImageResizeAlgorithm imageResizeAlgorithm;
 
@@ -34,19 +35,8 @@ public class DefaultImageEditor implements ImageEditor {
     }
 
     /**
-     * Legcy method used in crop and resize batch operations from the admin GUI
-     * @param multimedia
-     * @param targetWidth
-     * @param targetHeight
-     * @param cropX
-     * @param cropY
-     * @param cropWidth
-     * @param cropHeight
-     * @return
-     * @throws IOException
-     * @throws InvalidImageFormatException
+     * {@inheritDoc}
      */
-    @Deprecated
     public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropX, int cropY, int cropWidth, int cropHeight) throws IOException, InvalidImageFormatException {
 
         BufferedImage image = getImageFromMultimedia(multimedia);
@@ -63,9 +53,16 @@ public class DefaultImageEditor implements ImageEditor {
         return mm;
     }
 
-
+    /**
+     * Crop Image
+     * @param image
+     * @param cropX
+     * @param cropY
+     * @param cropWidth
+     * @param cropHeight
+     * @return
+     */
     public BufferedImage cropImage(BufferedImage image, int cropX, int cropY, int cropWidth, int cropHeight){
-        // Crop image
         if (cropWidth > 0 && cropHeight > 0){
             BufferedImage cropImage = new BufferedImage(cropWidth, cropHeight, BufferedImage.TYPE_INT_RGB);
             Graphics2D graphics2D = cropImage.createGraphics();
@@ -76,10 +73,17 @@ public class DefaultImageEditor implements ImageEditor {
         return image;
     }
 
-    private Multimedia updateMultimedia(BufferedImage image, Multimedia mm) throws IOException {
+    /**
+     * Updates a multimedia object with supplied Image
+     * @param image
+     * @param multimedia
+     * @return
+     * @throws IOException
+     */
+    private Multimedia updateMultimedia(BufferedImage image, Multimedia multimedia) throws IOException {
         // Determine output format
         String imageFormat = getDefaultImageFormat();
-        if (mm.getMimeType().getType().contains("jpeg")) {
+        if (multimedia.getMimeType().getType().contains("jpeg")) {
             imageFormat = "jpg";
         }
 
@@ -108,19 +112,25 @@ public class DefaultImageEditor implements ImageEditor {
 
 
         // Update filename and data
-        String filename = mm.getFilename();
+        String filename = multimedia.getFilename();
         if (filename.contains(".")) {
             filename = filename.substring(0, filename.lastIndexOf("."));
         }
         filename += "." + imageFormat;
-        mm.setWidth(image.getWidth());
-        mm.setHeight(image.getHeight());
-        mm.setFilename(filename);
-        mm.setData(bout.toByteArray());
-        return mm;
+        multimedia.setWidth(image.getWidth());
+        multimedia.setHeight(image.getHeight());
+        multimedia.setFilename(filename);
+        multimedia.setData(bout.toByteArray());
+        return multimedia;
 
     }
 
+    /**
+     * Extracts BufferedImage from multimedia object
+     * @param multimedia
+     * @return
+     * @throws InvalidImageFormatException
+     */
     private BufferedImage getImageFromMultimedia(Multimedia multimedia) throws InvalidImageFormatException{
         if (multimedia.getType() == MultimediaType.MEDIA) {
             if (multimedia.getMimeType() != null && multimedia.getMimeType().getType().contains("image")) {
@@ -130,7 +140,6 @@ public class DefaultImageEditor implements ImageEditor {
                     image = ImageIO.read(new ByteArrayInputStream(multimedia.getData()));
                 } catch (IOException e) {
                     Log.error(this.getClass().getName(), "Failed converting image, probably CMYK, install Java Advanced Imaging API on server");
-                    // CMYK image
                     throw new InvalidImageFormatException(this.getClass().getName(), "", e);
                 }
                 return image;
@@ -139,15 +148,23 @@ public class DefaultImageEditor implements ImageEditor {
         return null;
     }
 
+
+    /**
+     * Resize Image with supplied cropping method
+     * @param image
+     * @param targetWidth
+     * @param targetHeight
+     * @param cropping
+     * @return
+     * @throws InvalidImageFormatException
+     */
     public BufferedImage resizeImage(BufferedImage image, int targetWidth, int targetHeight, Cropping cropping) throws InvalidImageFormatException {
         // Get resized image dimensions with correct aspect ratio
         MultimediaDimensions d = getResizedImageDimensions(image.getWidth(), image.getHeight(), targetWidth, targetHeight, cropping);
         targetWidth = d.getWidth();
         targetHeight = d.getHeight();
 
-        BufferedImage resizedImage = imageResizeAlgorithm.resizeImage(image, targetWidth, targetHeight);
-
-        return resizedImage;
+        return imageResizeAlgorithm.resizeImage(image, targetWidth, targetHeight);
     }
 
     /**

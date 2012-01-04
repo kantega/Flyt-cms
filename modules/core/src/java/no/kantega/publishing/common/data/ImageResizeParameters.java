@@ -2,11 +2,9 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.enums.Cropping;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.ServletRequestUtils;
 
-/**
- * Espen Hjertø / Kantega AS / 11/25/11
- */
 public class ImageResizeParameters {
 
     private int maxHeight;
@@ -18,7 +16,7 @@ public class ImageResizeParameters {
         maxWidth  = param.getInt("width");
         maxHeight = param.getInt("height");
         String croppingString = param.getString("cropping");
-        cropping   = Cropping.getCroppingAsEnum(croppingString == null ? "contain" : croppingString);
+        cropping   = Cropping.getCroppingAsEnum(StringUtils.isBlank(croppingString) ? "contain" : croppingString);
     }
 
     @Override
