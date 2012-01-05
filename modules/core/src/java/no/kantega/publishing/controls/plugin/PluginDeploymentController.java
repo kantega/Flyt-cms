@@ -50,13 +50,14 @@ public class PluginDeploymentController {
             return;
         }
         response.setContentType("text/plain");
+        String id = request.getParameter("id");
         String file = request.getParameter("file");
         String resourceDirectory = request.getParameter("resourceDirectory");
 
         File pluginFile = new File(file);
         pluginLoadingException.remove();
         try {
-            provider.deploy(pluginFile, resourceDirectory == null ? null : new File(resourceDirectory));
+            provider.deploy(id, pluginFile, resourceDirectory == null ? null : new File(resourceDirectory));
             Throwable throwable = pluginLoadingException.get();
             if(throwable != null) {
                 log.error("Error occured loading plugins from " + file, throwable);
@@ -64,7 +65,7 @@ public class PluginDeploymentController {
                 response.getWriter().println("Exception loading plugin(s) from file " + file +": " + throwable.getMessage());
                 throwable.printStackTrace(response.getWriter());
             } else {
-                response.getWriter().write("Plugin loaded: " + pluginFile.getName());
+                response.getWriter().write("Plugin loaded: " + id);
             }
         } finally {
             pluginLoadingException.remove();

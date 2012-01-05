@@ -29,24 +29,28 @@ public class PluginHotDepoyProvider implements PluginClassLoaderProvider {
     private Logger logger = Logger.getLogger(getClass());
     private ClassLoader parentClassLoader;
 
-    public void deploy(File jarFile, File resourceDirectory) throws IOException {
-        if(loaders.containsKey(jarFile.getAbsolutePath())) {
-            logger.info("Removing already present classloader for plugin " + jarFile.getAbsolutePath());
-            registry.remove(singleton(loaders.get(jarFile.getAbsolutePath())));
+    public void deploy(String id, File fileOrDirectory, File resourceDirectory) throws IOException {
+        if(loaders.containsKey(id)) {
+            logger.info("Removing already present classloader for plugin " + id);
+            registry.remove(singleton(loaders.get(id)));
         }
-        logger.info("Adding classloader for plugin " + jarFile.getAbsolutePath());
+        logger.info("Adding classloader for plugin " + id +" from source " + fileOrDirectory.getAbsolutePath());
 
-        URLConnection connection = getClass().getResource(getClass().getSimpleName() + ".class").openConnection();
-        connection.setDefaultUseCaches(false);
+        if(fileOrDirectory.isFile()) {
+            URLConnection connection = getClass().getResource(getClass().getSimpleName() + ".class").openConnection();
+            connection.setDefaultUseCaches(false);
+        }
 
 
-        ClassLoader loader = new EmbeddedLibraryPluginClassLoader(jarFile, parentClassLoader, pluginWorkDirectory);
+        ClassLoader loader = fileOrDirectory.isFile() ?
+                new EmbeddedLibraryPluginClassLoader(fileOrDirectory, parentClassLoader, pluginWorkDirectory) :
+                new EmbeddedLibraryPluginClassLoader(fileOrDirectory, parentClassLoader);
         if (resourceDirectory != null && resourceDirectory.exists() && resourceDirectory.isDirectory()) {
             loader = new ResourceDirectoryPreferringClassLoader(loader, resourceDirectory);
         }
 
         registry.add(singleton(loader));
-        loaders.put(jarFile.getAbsolutePath(), loader);
+        loaders.put(id, loader);
     }
     public void start(Registry registry, ClassLoader parentClassLoader) {
         this.registry = registry;
