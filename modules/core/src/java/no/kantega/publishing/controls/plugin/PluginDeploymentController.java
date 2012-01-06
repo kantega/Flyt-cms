@@ -1,7 +1,7 @@
 package no.kantega.publishing.controls.plugin;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import no.kantega.publishing.spring.PluginHotDepoyProvider;
+import no.kantega.publishing.spring.PluginHotDeployProvider;
 import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.log4j.Logger;
 import org.kantega.jexmec.PluginManager;
@@ -27,7 +27,7 @@ public class PluginDeploymentController {
     private RuntimeMode runtimeMode;
 
     @Autowired
-    private PluginHotDepoyProvider provider;
+    private PluginHotDeployProvider provider;
 
 
     private ThreadLocal<Throwable> pluginLoadingException = new ThreadLocal<Throwable>();
