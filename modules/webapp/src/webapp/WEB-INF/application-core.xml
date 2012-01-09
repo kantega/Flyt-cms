@@ -72,9 +72,13 @@
         </property>
     </bean>
 
-    <bean id="hotDepoyProvider" class="no.kantega.publishing.spring.PluginHotDeployProvider">
+    <bean id="hotDepoyProvider" class="no.kantega.publishing.plugin.provider.PluginHotDeployProvider">
         <property name="pluginWorkDirectory" value="${appDir}/plugins/work"/>
         <property name="installedPluginsDirectory" value="${appDir}/plugins/installed"/>
+    </bean>
+
+    <bean id="threadLocalPluginLoadingErrors" class="no.kantega.publishing.plugin.provider.ThreadLocalPluginLoaderErrors">
+        <property name="pluginManager" ref="pluginManager"/>
     </bean>
 
     <bean name="aksessJsonWriter"  class="org.springframework.web.servlet.view.json.writer.sojo.SojoJsonStringWriter">
