@@ -16,23 +16,17 @@
 
 package no.kantega.publishing.security.action;
 
-import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.LockManager;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.commons.exception.SystemException;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.Date;
 
 public class LogoutAction extends HttpServlet {
     private static String SOURCE = "aksess.LogoutAction";

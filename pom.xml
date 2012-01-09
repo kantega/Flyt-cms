@@ -239,9 +239,9 @@
         <lucene.version>2.9.3</lucene.version>
         <log4j.version>1.2.16</log4j.version>
         <nekohtml.version>1.9.14</nekohtml.version>
-        <tika.version>0.9</tika.version>
+        <tika.version>1.0</tika.version>
         <poi.version>3.7</poi.version>
-        <springframework.version>3.0.6.RELEASE</springframework.version>
+        <springframework.version>3.0.7.RELEASE</springframework.version>
         <securityapi.version>2.6</securityapi.version>
         <securityapi.openimpl.version>2.7</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>

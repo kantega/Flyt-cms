@@ -15,9 +15,10 @@
   ~ limitations under the License.
   -->
 
-<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-<beans>
     <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
 
     <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
@@ -180,7 +181,7 @@
         <property name="webDavMultimediaHelper" ref="aksessWebDavMultimediaHelper"/>
         <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
     </bean>
-    
+
     <bean id="aksessWebDavRootResourceHandler" class="no.kantega.publishing.webdav.resourcehandlers.AksessWebDavRootResourceHandler">
         <property name="webDavSecurityHelper" ref="aksessWebDavSecurityHelper"/>
         <property name="resourceHandlers">
@@ -201,7 +202,7 @@
     <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
-    
+
     <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
 
     <bean id="uiServices" class="no.kantega.publishing.ui.DefaultUIServices"/>
