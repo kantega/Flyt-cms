@@ -269,6 +269,11 @@
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/sitemap.xml</url-pattern>
     </servlet-mapping>
