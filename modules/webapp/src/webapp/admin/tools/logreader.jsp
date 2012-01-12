@@ -72,6 +72,7 @@
             src = null;
         %>
     </table>
-</body>
 </form>
+</body>
+
 </html>
