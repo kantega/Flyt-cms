@@ -17,7 +17,10 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
 
     <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
 
@@ -216,6 +219,28 @@
     <bean id="pluginConfigurationProvider" class="no.kantega.publishing.plugin.config.DefaultPluginConfigProvider">
         <constructor-arg value="${appDir}/conf/plugins"/>
         <constructor-arg ref="pluginConfigurationDao"/>
+    </bean>
+
+
+
+    <bean id="velocityConfig" class="no.kantega.publishing.spring.CustomVelocityConfigurer">
+        <property name="resourceLoaderPath" value="classpath:"/>
+        <property name="velocityProperties">
+            <value>
+                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective,no.kantega.publishing.admin.taglib.BoxDirective
+                eventhandler.include.class=org.apache.velocity.app.event.implement.IncludeRelativePath
+            </value>
+        </property>
+    </bean>
+
+    <bean id="velocityEngine" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="velocityConfig"/>
+        <property name="targetMethod" value="getVelocityEngine"/>
+    </bean>
+
+    <bean id="templateRenderer" class="no.kantega.publishing.templating.DefaultTemplateRenderer">
+        <property name="defaultEncoding" value="iso-8859-1"/>
+        <property name="velocityEngine" ref="velocityEngine"/>
     </bean>
 
 </beans>

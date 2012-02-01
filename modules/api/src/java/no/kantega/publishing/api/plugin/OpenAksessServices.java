@@ -4,6 +4,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.forms.service.FormService;
 import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
+import no.kantega.publishing.api.templating.TemplateRenderer;
 import no.kantega.publishing.api.ui.UIServices;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.profile.ProfileManager;
@@ -33,6 +34,8 @@ public interface OpenAksessServices {
     public PluginManager<OpenAksessPlugin> getPluginManager();
 
     public UIServices getUIServices();
+
+    public TemplateRenderer getTemplateRenderer();
 
     enum DataSourceName {
         aksessDataSource

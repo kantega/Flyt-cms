@@ -777,15 +777,6 @@
 
 
 
-    <bean id="velocityConfig" class="no.kantega.publishing.spring.CustomVelocityConfigurer">
-        <property name="resourceLoaderPath" value="classpath:"/>
-        <property name="velocityProperties">
-            <value>
-                userdirective=no.kantega.publishing.velocity.SectionDirective,no.kantega.publishing.velocity.DispatchDirective,no.kantega.publishing.admin.taglib.BoxDirective
-                eventhandler.include.class=org.apache.velocity.app.event.implement.IncludeRelativePath
-            </value>
-        </property>
-    </bean>
 
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>
