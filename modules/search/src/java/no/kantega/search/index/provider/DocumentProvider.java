@@ -23,10 +23,13 @@ import no.kantega.search.result.SearchHitContext;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 
+import java.util.Map;
+
 public interface DocumentProvider {
     public String getSourceId();
     public String getDocumentType();
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter);
+    public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter, Map options);
     public Document provideDocument(String id);
     public Term getDeleteTerm(String id);
     public Term getDeleteAllTerm();

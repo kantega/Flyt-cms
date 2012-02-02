@@ -676,9 +676,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
     </bean>
     <bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
-        <property name="indexManager">
-            <ref bean="indexManager"/>
-        </property>
+        <property name="indexManager" ref="indexManager" />
         <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
         <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
     </bean>

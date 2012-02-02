@@ -16,22 +16,20 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
+import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
+import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
+import no.kantega.search.index.IndexManager;
+import no.kantega.search.index.provider.DocumentProvider;
+import no.kantega.search.index.rebuild.ProgressReporter;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
-
-import no.kantega.search.index.IndexManager;
-import no.kantega.search.index.IndexSearcherManager;
-import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
-import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
-import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.search.index.rebuild.ProgressReporter;
+import java.util.*;
 
 
 public class RebuildIndexAction extends AdminController {
@@ -53,8 +51,11 @@ public class RebuildIndexAction extends AdminController {
                 String rebuild = request.getParameter("rebuild");
                 String spellCheck = request.getParameter("spelling");
                 String optimize = request.getParameter("optimize");
+
                 if(rebuild != null) {
-                    startIndex();
+                    int numberOfConcurrentIndexers = ServletRequestUtils.getIntParameter(request, RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS, 1);
+                    List<String> providersToExclude = Arrays.asList(ServletRequestUtils.getStringParameters(request, "providersToExclude"));
+                    startIndex(providersToExclude, numberOfConcurrentIndexers);
                 }
                 if(optimize != null) {
                     indexManager.addIndexJob(new OptimizeIndexJob());
@@ -67,7 +68,11 @@ public class RebuildIndexAction extends AdminController {
                 map.put("total", total);
                 return new ModelAndView(new RedirectView("RebuildIndex.action"));
             } else {
-                return new ModelAndView(formView);
+                List<String> providers = new ArrayList<String>();
+                for (DocumentProvider provider : indexManager.getDocumentProviderSelector().getAllProviders()) {
+                    providers.add(provider.getClass().getName());                    
+                }
+                return new ModelAndView(formView, Collections.singletonMap("providers", providers));
             }
         } else {
             map.put("current", current);
@@ -77,7 +82,7 @@ public class RebuildIndexAction extends AdminController {
         }
     }
 
-    private synchronized void startIndex() {
+    private synchronized void startIndex(List<String> providersToExclude, int numberOfConcurrentJobs) {
         current = 0;
         ProgressReporter p = new ProgressReporter() {
 
@@ -94,7 +99,7 @@ public class RebuildIndexAction extends AdminController {
         };
 
 
-        indexManager.addIndexJob(new RebuildIndexJob(p));
+        indexManager.addIndexJob(new RebuildIndexJob(p, providersToExclude, numberOfConcurrentJobs));
 
     }
 

@@ -30,15 +30,27 @@ import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RebuildIndexJob extends IndexJob {
+    public static final String NUMBEROFCONCURRENTHANDLERS = "numberOfConcurrentHandlers";
     private ProgressReporter progressReporter;
 
     private Logger log = Logger.getLogger(getClass());
+    private List<String> providersToUse;
+    private int numberOfConcurrentJobs;
 
     public RebuildIndexJob(ProgressReporter progressReporter) {
         this.progressReporter = progressReporter;
+        numberOfConcurrentJobs = 1;
+        providersToUse = Collections.emptyList();
+    }
+
+    public RebuildIndexJob(ProgressReporter p, List<String> providersToExclude, int numberOfConcurrentJobs) {
+        this(p);
+        this.providersToUse = providersToExclude;
+        this.numberOfConcurrentJobs = numberOfConcurrentJobs;
     }
 
 
@@ -108,8 +120,11 @@ public class RebuildIndexJob extends IndexJob {
             }
 
             for (DocumentProvider provider : providers) {
-                log.info("Adding documents from provider " + provider.getClass());
-                provider.provideDocuments(handler, getProgressReporter());
+                boolean shouldNotExclude = !providersToUse.contains(provider.getClass().getName());
+                if (shouldNotExclude) {
+                    log.info("Adding documents from provider " + provider.getClass());
+                    provider.provideDocuments(handler, getProgressReporter(), Collections.singletonMap(NUMBEROFCONCURRENTHANDLERS, numberOfConcurrentJobs));
+                }
             }
 
 

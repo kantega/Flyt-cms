@@ -19,8 +19,8 @@ package no.kantega.search.index;
 import no.kantega.commons.log.Log;
 import no.kantega.search.index.jobs.IndexJob;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Date: Jan 5, 2009
@@ -32,7 +32,7 @@ public class IndexJobManager implements Runnable {
 
     private static final String SOURCE = IndexJobManager.class.getName();
 
-    private List indexJobQueue = new ArrayList();
+    private final List<IndexJob> indexJobQueue = new ArrayList<IndexJob>();
     private Thread thread;
     private boolean shutdownHint = false;
 
@@ -46,22 +46,22 @@ public class IndexJobManager implements Runnable {
     public void destroy() {
         shutdownHint = true;
         synchronized (indexJobQueue) {
-            System.out.println("destroy() notifying all threads");
+            Log.info(SOURCE, "destroy() notifying all threads");
             indexJobQueue.notifyAll();
         }
 
         if(thread.isAlive()) {
             long maxWait = 30000;
             long start = System.currentTimeMillis();
-            System.out.println("Waiting for IndexManager thread to shut down");
+            Log.info(SOURCE, "Waiting for IndexManager thread to shut down");
 
             while(thread.isAlive()) {
                 if(System.currentTimeMillis() - start > maxWait) {
-                    System.out.println("IndexManager thread did not shut down in " +maxWait +" ms, returning forcefully");
+                    Log.info(SOURCE, "IndexManager thread did not shut down in " + maxWait + " ms, returning forcefully");
                     return;
                 } else {
                     try {
-                        System.out.print(".");
+                        Log.info(SOURCE, ".");
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -69,7 +69,7 @@ public class IndexJobManager implements Runnable {
                 }
             }
         }
-        System.out.println("IndexManager thread shut down OK");
+        Log.info(SOURCE, "IndexManager thread shut down OK");
     }
 
     public void run() {
@@ -89,7 +89,7 @@ public class IndexJobManager implements Runnable {
                     Log.info(SOURCE, "Someone wants us to shut down, search update thread returning", null, null);
                     return;
                 }
-                job = (IndexJob) indexJobQueue.get(0);
+                job = indexJobQueue.get(0);
                 Log.debug(SOURCE, "Index updater thread got woken up, getting first job from queue: " + job, null, null);
             }
             try {

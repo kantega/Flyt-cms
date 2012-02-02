@@ -37,6 +37,7 @@ import no.kantega.publishing.search.dao.AksessDao;
 import no.kantega.publishing.search.extraction.TextExtractor;
 import no.kantega.publishing.search.extraction.TextExtractorSelector;
 import no.kantega.publishing.search.index.boost.ContentBooster;
+import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
 import no.kantega.publishing.search.index.model.TmBaseName;
 import no.kantega.publishing.search.model.AksessSearchHit;
 import no.kantega.publishing.search.model.AksessSearchHitContext;
@@ -65,7 +66,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -179,8 +182,17 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     public void provideDocuments(final DocumentProviderHandler handler, final ProgressReporter reporter) {
+        provideDocuments(handler, reporter, Collections.emptyMap());
+    }
+
+    public void provideDocuments(final DocumentProviderHandler handler, final ProgressReporter reporter, Map options) {
         final Counter c = new Counter();
 
+        Integer numberOfConcurrentHandlers = 1;
+        if(options.containsKey(RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS)){
+            numberOfConcurrentHandlers = (Integer) options.get(RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS);
+        }
+        
         ContentAO.forAllContentObjects(new ContentHandler() {
 
                     public void handleContent(Content content) {
@@ -208,8 +220,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
                 return handler.isStopRequested();
             }
 
-        });
-
+        }, numberOfConcurrentHandlers);    
     }
 
     public Document provideDocument(String id) {

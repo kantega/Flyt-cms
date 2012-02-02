@@ -52,6 +52,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     private AksessDao aksessDao;
@@ -204,6 +205,9 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                 Log.error(SOURCE, e, null, null);
             }    
         }
+    }
+
+    public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter, Map options) {
     }
 
     public Document provideDocument(String id) {

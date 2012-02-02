@@ -20,9 +20,6 @@ import no.kantega.search.index.IndexReaderManager;
 import no.kantega.search.index.IndexWriterManager;
 import no.kantega.search.index.provider.DocumentProviderSelector;
 
-/**
- *
- */
 public interface JobContext {
 
 

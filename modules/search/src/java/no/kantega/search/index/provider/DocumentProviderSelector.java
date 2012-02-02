@@ -22,6 +22,7 @@ import java.util.List;
 
 public class DocumentProviderSelector {
     private List<DocumentProvider> providers = new ArrayList<DocumentProvider>();
+
     public DocumentProvider select(String sourceId) {
         if(sourceId != null) {
             for (DocumentProvider provider : providers) {
