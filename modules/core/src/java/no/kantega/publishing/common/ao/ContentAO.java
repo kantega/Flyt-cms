@@ -40,6 +40,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.google.common.collect.Lists.partition;
 
 /**
  *
@@ -132,7 +138,36 @@ public class ContentAO {
         return parent;
     }
 
-    public static void forAllContentObjects(final ContentHandler contentHandler, ContentHandlerStopper stopper) {
+    public static void forAllContentObjects(final ContentHandler contentHandler, final ContentHandlerStopper stopper, int numberOfConcurrentHandlers) {
+        try {
+            log.info("Starting forAllContentObjects, number of concurrent handlers: " + numberOfConcurrentHandlers);
+            ExecutorService pool = Executors.newFixedThreadPool(numberOfConcurrentHandlers);
+            List<ContentIdentifier> allContentIdentifiers = getAllContentIdentifiers();
+            int partitionSize = (allContentIdentifiers.size() / numberOfConcurrentHandlers) + 1;
+            List<List<ContentIdentifier>> contentIdentifiersPartition = partition(allContentIdentifiers, partitionSize);
+
+            CyclicBarrier cyclicBarrier = new CyclicBarrier(contentIdentifiersPartition.size() + 1);
+            for(List<ContentIdentifier> identifiers : contentIdentifiersPartition){
+                pool.submit(new ContentHandlerWorker(stopper, contentHandler, identifiers, cyclicBarrier));
+            }
+            cyclicBarrier.await();
+            log.info("All threads done executing handlers");
+        } catch (SystemException e) {
+            log.error(e);
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            log.error("Interrupted", e);
+        } catch (BrokenBarrierException e) {
+            log.error("Broken barrier", e);
+        }
+    }
+
+    public static void forAllContentObjects(final ContentHandler contentHandler, final ContentHandlerStopper stopper) {
+        forAllContentObjects(contentHandler, stopper, 1);
+    }
+
+    private static List<ContentIdentifier> getAllContentIdentifiers(){
+        List<ContentIdentifier> contentIdentifiers = new ArrayList<ContentIdentifier>();
 
         Connection c = null;
         try {
@@ -140,30 +175,13 @@ public class ContentAO {
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content");
 
             ResultSet resultSet = p.executeQuery();
-
-            while(resultSet.next() && !stopper.isStopRequested()) {
-
+            while (resultSet.next()){
                 ContentIdentifier contentIdentifier = new ContentIdentifier();
                 contentIdentifier.setContentId(resultSet.getInt("ContentId"));
-
-                Content content = null;
-                try {
-                    content = ContentAO.getContent(contentIdentifier, false);
-                } catch (Exception ex) {
-                    log.error(ex);
-                }
-
-                if(content != null) {
-                    contentHandler.handleContent(content);
-                }
+                contentIdentifiers.add(contentIdentifier);
             }
-
-        } catch (SystemException e) {
-            log.error(e);
-            throw new RuntimeException(e);
         } catch (SQLException e) {
-            log.error(e);
-            throw new RuntimeException(e);
+            log.error(e.getMessage(), e);
         } finally {
             try {
                 if (c != null) {
@@ -173,9 +191,49 @@ public class ContentAO {
                 Log.error(SOURCE, e, null, null);
             }
         }
-
+        return contentIdentifiers;
     }
+                                    
+    private static class ContentHandlerWorker implements Runnable {
+        final ContentHandler contentHandler;
+        private final List<ContentIdentifier> contentIdentifiers;
+        private final CyclicBarrier cyclicBarrier;
+        final ContentHandlerStopper stopper;
+        
+        public ContentHandlerWorker(ContentHandlerStopper stopper, ContentHandler contentHandler, List<ContentIdentifier> contentIdentifiers, CyclicBarrier cyclicBarrier) {
+            this.stopper = stopper;
+            this.contentHandler = contentHandler;
 
+            this.contentIdentifiers = contentIdentifiers;
+            this.cyclicBarrier = cyclicBarrier;
+        }
+
+        public void run() {
+            for (ContentIdentifier contentIdentifier : contentIdentifiers) {
+                if(stopper.isStopRequested()){
+                    break;
+                }
+                Content content = null;
+                try {
+                    content = ContentAO.getContent(contentIdentifier, false);
+                } catch (Exception ex) {
+                    log.error(ex);
+                }
+
+                if (content != null) {
+                    contentHandler.handleContent(content);
+                }
+            }
+            try {
+                log.info("Thread done handling content");
+                cyclicBarrier.await();
+            } catch (InterruptedException e) {
+                log.error("Worker interupted", e);
+            } catch (BrokenBarrierException e) {
+                log.error("Barrier error", e);
+            }
+        }
+    }
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
         int id = cid.getContentId();
@@ -302,11 +360,11 @@ public class ContentAO {
             }
 
 
-            StringBuffer query = new StringBuffer();
+            StringBuilder query = new StringBuilder();
             query.append("select * from content, contentversion where content.ContentId = contentversion.ContentId");
             if (contentVersionId != -1) {
                 // Hent angitt versjon
-                query.append(" and contentversion.ContentVersionId = " + contentVersionId);
+                query.append(" and contentversion.ContentVersionId = ").append(contentVersionId);
             } else {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");

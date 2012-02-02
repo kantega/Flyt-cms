@@ -210,7 +210,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.1-alpha-2</version>
+                <version>2.1.1</version>
                 <configuration>
                     <warSourceDirectory>${basedir}/src/webapp</warSourceDirectory>
                     <packagingExcludes>WEB-INF/lib/**</packagingExcludes>
@@ -219,7 +219,7 @@
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>aksess-maven-plugin</artifactId>
-                <version>1.9</version>
+                <version>1.25</version>
                 <configuration>
                     <versionFile>${project.build.outputDirectory}/aksess-version.properties</versionFile>
                 </configuration>

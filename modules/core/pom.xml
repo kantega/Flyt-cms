@@ -424,10 +424,9 @@
             <version>2.1</version>
         </dependency>
         <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>google-collect</artifactId>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
             <version>1.0</version>
-            <classifier>rc1</classifier>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>

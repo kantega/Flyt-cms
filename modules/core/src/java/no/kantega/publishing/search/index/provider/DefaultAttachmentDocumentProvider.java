@@ -19,17 +19,19 @@ package no.kantega.publishing.search.index.provider;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.service.impl.PathWorker;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.search.dao.AksessDao;
 import no.kantega.publishing.search.extraction.TextExtractor;
 import no.kantega.publishing.search.extraction.TextExtractorSelector;
+import no.kantega.publishing.search.model.AksessSearchHit;
+import no.kantega.publishing.search.model.AksessSearchHitContext;
 import no.kantega.search.index.Fields;
 import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.provider.DocumentProviderHandler;
@@ -37,8 +39,6 @@ import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.QueryInfo;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
-import no.kantega.publishing.search.model.AksessSearchHit;
-import no.kantega.publishing.search.model.AksessSearchHitContext;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
@@ -171,15 +171,49 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             e.printStackTrace();
         }
     }
+    
+    private class worker implements Runnable {
+        private DocumentProviderHandler handler;
+        private ProgressReporter reporter;
+        
+        private int total;
+        private int i;
+
+        public worker(DocumentProviderHandler handler, ProgressReporter reporter, int i, int total) {
+            this.handler = handler;
+            this.reporter = reporter;
+            this.i = i;
+            this.total = total;
+        }
+
+        public void run() {
+            if(handler.isStopRequested()) {
+                Log.info(SOURCE, "provideDocuments returning since were told to after " + total + " attachments", null, null);
+                return;
+            }
+            try {
+                Attachment a = AttachmentAO.getAttachment(i);
+                Document d = getAttachmentDocument(a);
+                if (d != null) {
+                    handler.handleDocument(d);
+                }
+                reporter.reportProgress(i, "aksess-vedlegg", total);
+
+            } catch (Throwable e) {
+                Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
+                Log.error(SOURCE, e, null, null);
+            }    
+        }
+    }
 
     public Document provideDocument(String id) {
         try {
             int i = Integer.parseInt(id);
             return getAttachmentDocument(AttachmentAO.getAttachment(i));
         } catch (SQLException e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         } catch (SystemException e) {
-
+            Log.error(SOURCE, e);
         }
         return null;
     }

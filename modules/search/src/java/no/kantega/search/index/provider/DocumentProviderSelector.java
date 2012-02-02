@@ -16,22 +16,16 @@
 
 package no.kantega.search.index.provider;
 
-import no.kantega.search.index.provider.DocumentProvider;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- *
- */
 public class DocumentProviderSelector {
-    private List providers = new ArrayList();
+    private List<DocumentProvider> providers = new ArrayList<DocumentProvider>();
     public DocumentProvider select(String sourceId) {
         if(sourceId != null) {
-            for (int i = 0; i < providers.size(); i++) {
-                DocumentProvider provider = (DocumentProvider) providers.get(i);
-                if(sourceId.equals(provider.getSourceId())) {
+            for (DocumentProvider provider : providers) {
+                if (sourceId.equals(provider.getSourceId())) {
                     return provider;
                 }
             }
@@ -41,9 +35,8 @@ public class DocumentProviderSelector {
 
     public DocumentProvider selectByDocumentType(String doctype) {
             if(doctype != null) {
-                for (int i = 0; i < providers.size(); i++) {
-                    DocumentProvider provider = (DocumentProvider) providers.get(i);
-                    if(doctype.equals(provider.getDocumentType())) {
+                for (DocumentProvider provider : providers) {
+                    if (doctype.equals(provider.getDocumentType())) {
                         return provider;
                     }
                 }
@@ -53,11 +46,11 @@ public class DocumentProviderSelector {
 
 
 
-    public Collection getAllProviders() {
+    public Collection<DocumentProvider> getAllProviders() {
         return providers;
     }
 
-    public void setProviders(List providers) {
+    public void setProviders(List<DocumentProvider> providers) {
         this.providers = providers;
     }
 }

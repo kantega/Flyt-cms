@@ -49,7 +49,6 @@ import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.QueryInfo;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
-import org.apache.log4j.pattern.LogEvent;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -66,7 +65,6 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -75,7 +73,7 @@ import java.util.List;
 public class DefaultDocumentProvider implements DocumentProvider {
 
     private AksessDao aksessDao;
-    private List boosters = new ArrayList();
+    private List<ContentBooster> boosters = new ArrayList<ContentBooster>();
     private int docCount = -1;
     private final String SOURCE = "aksess.DefaultDocumentProvider";
     private String sourceId;
@@ -181,22 +179,19 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     public void provideDocuments(final DocumentProviderHandler handler, final ProgressReporter reporter) {
-        int i = -1;
         final Counter c = new Counter();
-        //log.debug("First active ContentId is: " +i);
 
         ContentAO.forAllContentObjects(new ContentHandler() {
 
                     public void handleContent(Content content) {
 
-                        //log.debug("Next active contentId is " +i);
                         try {
                             Document d = getContentDocument(content);
                             if(d != null) {
                                 float boost = calculateBoost(content);
                                 d.setBoost(boost);
                                 handler.handleDocument(d);
-                                //Log.debug(SOURCE, "Handled document " + content.getContentId(), null, null);
+
                                 c.increment();
                                 reporter.reportProgress(c.getI(), "aksess-document", getTotalDocumentCount());
                             }
@@ -232,7 +227,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
             return d;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         }
         return null;
     }
@@ -382,7 +377,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     protected void addOtherFields(Content content, Document d) {
-        // Default implementasjon er tom - kan overrides for � legge til egendefinerte felt.
+        // Default implementasjon er tom - kan overrides for ? legge til egendefinerte felt.
     }
 
     protected AksessDao getAksessDao() {
@@ -497,8 +492,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
     private float calculateBoost(Content content) {
         float boost = 1;
-        for (Iterator iterator = boosters.iterator(); iterator.hasNext();) {
-            ContentBooster booster = (ContentBooster) iterator.next();
+        for (ContentBooster booster : boosters) {
             boost += booster.getBoost(content);
         }
         return boost;
@@ -508,7 +502,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
         this.aksessDao = aksessDao;
     }
 
-    public void setBoosters(List boosters) {
+    public void setBoosters(List<ContentBooster> boosters) {
         this.boosters = boosters;
     }
 

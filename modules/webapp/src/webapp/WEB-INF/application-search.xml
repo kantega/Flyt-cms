@@ -96,12 +96,8 @@
     <bean id="beanexporter" class="org.springframework.web.context.support.ServletContextAttributeExporter">
         <property name="attributes">
             <map>
-                <entry key="spring_search_index_manager">
-                    <ref bean="indexManager"/>
-                </entry>
-                <entry key="spring_search_searcher_manager">
-                    <ref bean="indexSearcherManager"/>
-                </entry>
+                <entry key="spring_search_index_manager" value-ref="indexManager"/>
+                <entry key="spring_search_searcher_manager" value-ref="indexSearcherManager"/>
             </map>
         </property>
     </bean>
@@ -128,48 +124,24 @@
         </property>
     </bean>
 
+    <bean id="tikaTextExtractor" class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
+
     <bean id="textExtractorSelector" class="no.kantega.publishing.search.extraction.TextExtractorSelector">
         <property name="extractors">
             <map>
-                <entry key="doc">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="docx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="xls">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="xlsx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="ppt">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="pptx">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="pdf">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="rtf">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="odt">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="ods">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="odp">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="html">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
-                <entry key="xhtml">
-                    <bean class="no.kantega.publishing.search.extraction.impl.TikaTextExtractor"/>
-                </entry>
+                <entry key="doc" value-ref="tikaTextExtractor"/>
+                <entry key="docx" value-ref="tikaTextExtractor"/>
+                <entry key="xls" value-ref="tikaTextExtractor"/>
+                <entry key="xlsx" value-ref="tikaTextExtractor"/>
+                <entry key="ppt" value-ref="tikaTextExtractor"/>
+                <entry key="pptx" value-ref="tikaTextExtractor"/>
+                <entry key="pdf" value-ref="tikaTextExtractor"/>
+                <entry key="rtf" value-ref="tikaTextExtractor"/>
+                <entry key="odt" value-ref="tikaTextExtractor"/>
+                <entry key="ods" value-ref="tikaTextExtractor"/>
+                <entry key="odp" value-ref="tikaTextExtractor"/>
+                <entry key="html" value-ref="tikaTextExtractor"/>
+                <entry key="xhtml" value-ref="tikaTextExtractor"/>
             </map>
         </property>
     </bean>

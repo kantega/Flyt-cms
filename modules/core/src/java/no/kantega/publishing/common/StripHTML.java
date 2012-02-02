@@ -126,7 +126,7 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
     }
 
     private String getAttributes(AttributeSet attributes) {
-        StringBuffer retValue = new StringBuffer();
+        StringBuilder retValue = new StringBuilder();
         Enumeration e = attributes.getAttributeNames();
         while (e.hasMoreElements()) {
             Object name = e.nextElement();
@@ -135,31 +135,5 @@ public class StripHTML extends HTMLEditorKit.ParserCallback {
         }
 
         return retValue.toString();
-    }
-
-    public static void main(String args[]) {
-        StripHTML parser = new StripHTML();
-
-        String html = "<p><a href=\"#\">link</a></p>";
-        
-        parser.tag = "p";
-        parser.all = false;
-        System.out.println(parser.convert(html));
-
-        html = "<p>Dette er en test<br><ul class=\"klassebold klasseselected\"><li>1</li><li>2</li></ul><p>paragraf</p></p>";
-
-        parser.clear();
-        parser.tag = "p";
-        parser.all = false;
-        System.out.println(parser.convert(html));
-
-        parser.clear();
-        parser.all = true;
-        System.out.println(parser.convert(html));
-
-        parser.clear();
-        parser.all = false;
-        parser.setSkipTags(false);
-        System.out.println(parser.convert(html));
     }
 }

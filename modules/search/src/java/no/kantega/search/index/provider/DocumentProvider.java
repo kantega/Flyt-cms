@@ -16,16 +16,13 @@
 
 package no.kantega.search.index.provider;
 
-import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.search.index.rebuild.ProgressReporter;
 import no.kantega.search.result.SearchHit;
 import no.kantega.search.result.SearchHitContext;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 
-/**
- *
- */
 public interface DocumentProvider {
     public String getSourceId();
     public String getDocumentType();

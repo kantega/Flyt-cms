@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.search.index.jobs;
 
-import no.kantega.search.index.jobs.context.JobContext;
 import no.kantega.search.index.jobs.IndexJob;
+import no.kantega.search.index.jobs.context.JobContext;
 import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.provider.DocumentProviderHandler;
 import no.kantega.search.index.rebuild.ProgressReporter;
@@ -26,6 +26,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
+import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ public class RebuildIndexJob extends IndexJob {
     }
 
     public void executeJob(final JobContext context) {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
         try {
             boolean createIndex = true;
 
@@ -97,15 +100,14 @@ public class RebuildIndexJob extends IndexJob {
                 }
             };
 
-            List providers = new ArrayList();
+            List<DocumentProvider> providers = new ArrayList<DocumentProvider>();
             if(getSource() == null) {
                 providers.addAll(context.getDocumentProviderSelector().getAllProviders());
             } else {
                 providers.add(context.getDocumentProviderSelector().select(getSource()));
             }
 
-            for (int i = 0; i < providers.size(); i++) {
-                DocumentProvider provider = (DocumentProvider) providers.get(i);
+            for (DocumentProvider provider : providers) {
                 log.info("Adding documents from provider " + provider.getClass());
                 provider.provideDocuments(handler, getProgressReporter());
             }
@@ -121,7 +123,8 @@ public class RebuildIndexJob extends IndexJob {
                 log.error(e);
             }
             getProgressReporter().reportFinished();
-            log.info("Finished rebuilding index");
+            stopWatch.stop();
+            log.info("Finished rebuilding index. Used " + stopWatch.getTotalTimeSeconds() + " seconds");
         }
 
 
