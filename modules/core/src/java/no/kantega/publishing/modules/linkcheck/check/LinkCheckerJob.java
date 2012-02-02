@@ -16,33 +16,34 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
-import no.kantega.publishing.common.ao.*;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.util.Counter;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
-import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.sqlsearch.SearchTerm;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.UnknownHostException;
-import java.net.ConnectException;
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public class LinkCheckerJob implements InitializingBean {
     private Logger log = Logger.getLogger(getClass());

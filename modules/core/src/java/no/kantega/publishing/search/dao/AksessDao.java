@@ -155,4 +155,20 @@ public class AksessDao {
             }
         }
     }
+
+    public List<Integer> getAttachmentIds() throws SQLException {
+        List<Integer> attachmentIds = new ArrayList<Integer>();
+        Connection c = dataSource.getConnection();
+        try {
+            PreparedStatement p = c.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0 ORDER BY attachments.id");
+            ResultSet rs = p.executeQuery();
+
+            while (rs.next()) {
+                attachmentIds.add(rs.getInt("Id"));
+            }
+        } finally {
+            c.close();
+        }
+        return attachmentIds;
+    }
 }

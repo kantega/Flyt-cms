@@ -70,7 +70,7 @@ public class RebuildIndexAction extends AdminController {
             } else {
                 List<String> providers = new ArrayList<String>();
                 for (DocumentProvider provider : indexManager.getDocumentProviderSelector().getAllProviders()) {
-                    providers.add(provider.getClass().getName());                    
+                    providers.add(provider.getClass().getSimpleName());
                 }
                 return new ModelAndView(formView, Collections.singletonMap("providers", providers));
             }

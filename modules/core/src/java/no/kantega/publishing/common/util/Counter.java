@@ -16,26 +16,25 @@
 
 package no.kantega.publishing.common.util;
 
-/**
- *
- */
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Counter {
-    private int i = 0;
+    private AtomicInteger integer = new AtomicInteger();
 
 
     public void increment() {
-        i++;
+        integer.incrementAndGet();
     }
 
     public void increment(int i) {
-        i += i;
+        integer.addAndGet(i);
     }
 
     public int getI() {
-        return i;
+        return integer.get();
     }
 
     public void setI(int i) {
-        this.i = i;
+        integer.set(i);
     }
 }

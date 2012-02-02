@@ -26,10 +26,12 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.impl.PathWorker;
+import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.search.dao.AksessDao;
 import no.kantega.publishing.search.extraction.TextExtractor;
 import no.kantega.publishing.search.extraction.TextExtractorSelector;
+import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
 import no.kantega.publishing.search.model.AksessSearchHit;
 import no.kantega.publishing.search.model.AksessSearchHitContext;
 import no.kantega.search.index.Fields;
@@ -51,8 +53,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.google.common.collect.Lists.partition;
 
 public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     private AksessDao aksessDao;
@@ -145,69 +154,80 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     }
 
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter) {
-        try {
-            int i = -1;
-            int c = 0;
-            int total = aksessDao.countActiveAttachmentIds();
-            while((i = aksessDao.getNextActiveAttachmentId(i)) > 0) {
-                if(handler.isStopRequested()) {
-                    Log.info(SOURCE, "provideDocuments returning since were told to after " + c + " attachments", null, null);
-                    break;
-                }
-                try {
-                    Attachment a = AttachmentAO.getAttachment(i);
-                    Document d = getAttachmentDocument(a);
-                    if (d != null) {
-                        handler.handleDocument(d);
-                    }
-                    reporter.reportProgress(++c, "aksess-vedlegg", total);
-
-                } catch (Throwable e) {
-                    Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
-                    Log.error(SOURCE, e, null, null);
-                }
-            }
-        } catch (SQLException e) {
-            Log.error(SOURCE, "Exception getting next attachment, index rebuild failed", null, null);
-            e.printStackTrace();
-        }
+        provideDocuments(handler, reporter, Collections.emptyMap());        
     }
     
     private class worker implements Runnable {
+
         private DocumentProviderHandler handler;
         private ProgressReporter reporter;
-        
-        private int total;
-        private int i;
+        private Counter counter;
+        private CyclicBarrier cyclicBarrier;
+        private List<Integer> identifiers;
+        private int totalNumberAttachments;
 
-        public worker(DocumentProviderHandler handler, ProgressReporter reporter, int i, int total) {
+        public worker(DocumentProviderHandler handler, ProgressReporter reporter, Counter c, CyclicBarrier cyclicBarrier, List<Integer> identifiers, int size) {
             this.handler = handler;
             this.reporter = reporter;
-            this.i = i;
-            this.total = total;
+            counter = c;
+            this.cyclicBarrier = cyclicBarrier;
+            this.identifiers = identifiers;
+            totalNumberAttachments = size;
         }
 
         public void run() {
-            if(handler.isStopRequested()) {
-                Log.info(SOURCE, "provideDocuments returning since were told to after " + total + " attachments", null, null);
-                return;
-            }
-            try {
-                Attachment a = AttachmentAO.getAttachment(i);
-                Document d = getAttachmentDocument(a);
-                if (d != null) {
-                    handler.handleDocument(d);
+            for (Integer identifier : identifiers) {
+                if(handler.isStopRequested()) {
+                    Log.info(SOURCE, "provideDocuments returning since stop where requested", null, null);
+                    return;
                 }
-                reporter.reportProgress(i, "aksess-vedlegg", total);
 
-            } catch (Throwable e) {
-                Log.error(SOURCE, "Caught throwable during indexing of attachment " +i, null, null);
-                Log.error(SOURCE, e, null, null);
-            }    
+                try {
+                    Attachment a = AttachmentAO.getAttachment(identifier);
+                    Document d = getAttachmentDocument(a);
+                    if (d != null) {
+                        handler.handleDocument(d);
+                    }                                     
+                    counter.increment();
+                    reporter.reportProgress(counter.getI(), "aksess-vedlegg", totalNumberAttachments);
+
+                } catch (Throwable e) {
+                    Log.error(SOURCE, "Caught throwable during indexing of attachment " +identifier, null, null);
+                    Log.error(SOURCE, e, null, null);
+                }
+            }
         }
     }
 
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter, Map options) {
+        final Counter c = new Counter();
+
+        Integer numberOfConcurrentHandlers = 1;
+        if(options.containsKey(RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS)){
+            numberOfConcurrentHandlers = (Integer) options.get(RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS);
+        }
+
+        try {
+            List<Integer> attachmentIds = aksessDao.getAttachmentIds();
+            int partitionSize = (attachmentIds.size() / numberOfConcurrentHandlers) + 1;
+            List<List<Integer>> attachmentIdsPartition = partition(attachmentIds, partitionSize);
+            CyclicBarrier cyclicBarrier = new CyclicBarrier(attachmentIds.size() + 1);
+
+            Log.info(SOURCE, "Starting provideDocuments, number of concurrent handlers: " + numberOfConcurrentHandlers);
+            ExecutorService pool = Executors.newFixedThreadPool(numberOfConcurrentHandlers);
+
+            for(List<Integer> identifiers : attachmentIdsPartition){
+                pool.submit(new worker(handler, reporter, c, cyclicBarrier, identifiers, attachmentIds.size()));
+            }
+            cyclicBarrier.await();
+            Log.info(SOURCE, "All threads done executing handlers");
+        } catch (SQLException e) {
+            Log.debug(SOURCE, e.getMessage());
+        } catch (InterruptedException e) {
+            Log.debug(SOURCE, e.getMessage());
+        } catch (BrokenBarrierException e) {
+            Log.debug(SOURCE, e.getMessage());
+        }
     }
 
     public Document provideDocument(String id) {

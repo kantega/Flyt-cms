@@ -46,7 +46,7 @@
                 <div class="clearing"></div>
             </div>
             <div class="row">
-                <label for="numberOfConcurrentHandlers" class="checkbox"><kantega:label key="aksess.search.rebuild.numberOfConcurrentHandlers"/></label><input type="text" class="text" name="numberOfConcurrentHandlers" id="numberOfConcurrentHandlers">
+                <label for="numberOfConcurrentHandlers" class="checkbox"><kantega:label key="aksess.search.rebuild.numberOfConcurrentHandlers"/></label><input type="text" class="text" name="numberOfConcurrentHandlers" id="numberOfConcurrentHandlers" value="1">
                 <div class="clearing"></div>
             </div>
             <div class="buttonGroup">
