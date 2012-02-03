@@ -427,18 +427,20 @@ public class DefaultDocumentProvider implements DocumentProvider {
     }
 
     @SuppressWarnings("unchecked")
-    private String getArticleText(Content content) {
+    private String getArticleText(final Content content) {
         final StringBuilder page = new StringBuilder();
 
-        List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-        for (Attribute attribute : attributes) {
-            if(attribute.getValue() != null && attribute.isSearchable()) {
-                // Ikke legg til tittelen her heller
-                if (content.getTitle() == null || !content.getTitle().equals(attribute.getValue())) {
-                    page.append(stripHtml(attribute.getValue())).append(" ");
+        content.doForEachAttribute(AttributeDataType.CONTENT_DATA, new AttributeHandler() {
+            public void handleAttribute(Attribute attribute) {
+                if(attribute.getValue() != null && attribute.isSearchable()) {
+                    // Dont add title twice
+                    if (content.getTitle() == null || !content.getTitle().equals(attribute.getValue())) {
+                        page.append(stripHtml(attribute.getValue())).append(" ");
+                    }
                 }
             }
-        }
+        });
+
         return page.toString();
     }
 
