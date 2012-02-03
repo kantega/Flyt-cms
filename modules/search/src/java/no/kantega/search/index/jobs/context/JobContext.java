@@ -20,6 +20,12 @@ import no.kantega.search.index.IndexReaderManager;
 import no.kantega.search.index.IndexWriterManager;
 import no.kantega.search.index.provider.DocumentProviderSelector;
 
+/**
+ * A bean holding references to the searchcontext.
+ * I.e. for reading and writing to the index, as well
+ * as the different methods of accessing the providers that convert
+ * content do Lucene Documents.
+ */
 public interface JobContext {
 
 

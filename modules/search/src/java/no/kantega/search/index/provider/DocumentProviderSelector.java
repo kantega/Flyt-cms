@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * An object holding references to the document providers available.
+ */
 public class DocumentProviderSelector {
     private List<DocumentProvider> providers = new ArrayList<DocumentProvider>();
 
@@ -35,17 +38,15 @@ public class DocumentProviderSelector {
     }
 
     public DocumentProvider selectByDocumentType(String doctype) {
-            if(doctype != null) {
-                for (DocumentProvider provider : providers) {
-                    if (doctype.equals(provider.getDocumentType())) {
-                        return provider;
-                    }
+        if(doctype != null) {
+            for (DocumentProvider provider : providers) {
+                if (doctype.equals(provider.getDocumentType())) {
+                    return provider;
                 }
             }
-            return null;
         }
-
-
+        return null;
+    }
 
     public Collection<DocumentProvider> getAllProviders() {
         return providers;

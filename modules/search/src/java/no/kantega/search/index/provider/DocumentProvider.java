@@ -25,6 +25,10 @@ import org.apache.lucene.index.Term;
 
 import java.util.Map;
 
+/**
+ * A DocumentProvider converts some type of content into a
+ * Lucene Document.
+ */
 public interface DocumentProvider {
     public String getSourceId();
     public String getDocumentType();
