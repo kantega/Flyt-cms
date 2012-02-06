@@ -35,6 +35,7 @@ ul.ui-tabs-nav li {
     border:0;
     margin:0;
 }
+.ui-widget-overlay { background: url(images/transparent-overlay.png) 50% 50% repeat;}
 
 #MainPaneContent>div.ui-state-highlight {
     margin: 0 20px;
