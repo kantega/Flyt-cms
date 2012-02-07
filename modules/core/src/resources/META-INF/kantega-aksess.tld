@@ -753,7 +753,7 @@
         </attribute>
         <attribute>
             <description>Name to use for stored request attribute</description>
-            <name>name</name>
+            <name>var</name>
             <required>true</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

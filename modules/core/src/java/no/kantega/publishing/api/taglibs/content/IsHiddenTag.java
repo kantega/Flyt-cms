@@ -6,18 +6,15 @@ import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsHiddenTag extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsHiddenTag";
 
-    private String name = null;
+    private String attribute = null;
     private String contentId = null;
     private String collection = null;
     private boolean negate = false;
@@ -25,8 +22,8 @@ public class IsHiddenTag extends ConditionalTagSupport {
     private Content contentObject = null;
     private String repeater;
 
-    public void setName(String name) {
-        this.name = name.toLowerCase();
+    public void setAttribute(String attribute) {
+        this.attribute = attribute.toLowerCase();
     }
 
     public void setCollection(String collection) {
@@ -71,7 +68,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
                     EditContentHelper.updateAttributesFromTemplate(contentObject);
                 }
 
-                String attributeName = AttributeTagHelper.getAttributeName(pageContext, name, repeater);
+                String attributeName = AttributeTagHelper.getAttributeName(pageContext, attribute, repeater);
 
                 Attribute attribute = contentObject.getAttribute(attributeName, attributeType);
 
@@ -93,7 +90,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
 
     public int doEndTag() throws JspException {
         contentId = null;
-        name = null;
+        attribute = null;
         collection = null;
         attributeType = AttributeDataType.CONTENT_DATA;
         negate = false;
