@@ -735,6 +735,49 @@
         </example>
     </tag>
     <tag>
+        <description>Check if a attribute is hidden for current site (NB: Causes content template to be read)</description>
+        <name>ishiddenforsite</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IsHiddenTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of page (content/metadata) attribute to save as request attribute</description>
+            <name>attribute</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if is hidden: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name to use for stored request attribute</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to get page attribute from, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+    </tag>
+    <tag>
         <description>Prints body if user is authorized to edit this page</description>
         <name>iseditablebyuser</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.IsEditableByUserTag</tag-class>

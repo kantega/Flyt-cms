@@ -122,6 +122,8 @@ public class Content extends BaseObject {
 
     private Hearing hearing = new Hearing();
 
+    private boolean attributesAreUpdatedFromTemplate = false;
+
     public Content() {
         lastModified = new Date();
     }
@@ -833,5 +835,13 @@ public class Content extends BaseObject {
         } else {
             handler.handleAttribute(attribute);
         }
+    }
+
+    public boolean attributesAreUpdatedFromTemplate() {
+        return attributesAreUpdatedFromTemplate;
+    }
+
+    public void setAttributesAreUpdatedFromTemplate(boolean attributesAreUpdatedFromTemplate) {
+        this.attributesAreUpdatedFromTemplate = attributesAreUpdatedFromTemplate;
     }
 }

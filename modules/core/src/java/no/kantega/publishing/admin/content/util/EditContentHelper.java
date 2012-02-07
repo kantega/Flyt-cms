@@ -237,10 +237,12 @@ public class EditContentHelper {
     }
 
     public static void updateAttributesFromTemplate(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
+        content.setAttributesAreUpdatedFromTemplate(true);
         updateAttributesFromTemplate(content, null);
     }
 
     public static void updateAttributesFromTemplate(Content content, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
+        content.setAttributesAreUpdatedFromTemplate(true);
         updateAttributesFromTemplate(content, AttributeDataType.CONTENT_DATA, defaultValues);
         updateAttributesFromTemplate(content, AttributeDataType.META_DATA, defaultValues);
     }

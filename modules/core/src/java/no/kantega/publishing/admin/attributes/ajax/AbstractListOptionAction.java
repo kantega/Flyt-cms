@@ -58,7 +58,7 @@ public abstract class AbstractListOptionAction implements Controller {
     private AbstractView view = new AbstractView() {
         protected void renderMergedOutputModel(Map map, HttpServletRequest request, HttpServletResponse response) throws Exception {
             String success = (map.get("success") != null)? ""+map.get("success"): "fail";
-            response.getWriter().print(success);
+            response.getWriter().print("{success:'" + success + "'}");
         }
 
         public String getContentType() {
