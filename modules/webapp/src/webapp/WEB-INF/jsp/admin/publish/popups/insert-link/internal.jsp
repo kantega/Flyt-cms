@@ -58,7 +58,7 @@
         if (frm.smartlink.checked) {
             url += "?selectContentId=true";
         }
-        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=400,height=450,resizable=yes,scrollbars=yes");
+        var contentwin = window.open(url, "openAksessPopup", "toolbar=no,width=400,height=500,resizable=yes,scrollbars=yes");
         contentwin.focus();
     }
 

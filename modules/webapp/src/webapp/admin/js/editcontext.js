@@ -235,14 +235,14 @@ openaksess.editcontext = function()  {
         selectContentUrl : function (formElement) {
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = true;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 400, height:450});
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 400, height:500});
         },
 
 
         /*
          *  Popup vindu for selecting a page id
          */
-        selectContent : function (formElement, maxItems, startId) {
+        selectContent : function (formElement, maxItems, startId, multiple) {
             var items = 0;
 
             if (arguments.length < 2) {
@@ -261,9 +261,13 @@ openaksess.editcontext = function()  {
             if (items >= maxItems) {
                 alert(properties.editcontext.labels.warningMaxchoose + ' ' + maxItems + ' ' + properties.editcontext.labels.warningElements);
             } else {
+                var selectContentUrl = properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId;
+                if(typeof multiple != "undefined" && multiple){
+                    selectContentUrl += "&multiple="+multiple;
+                }
                 openaksess.editcontext.focusField = formElement;
                 openaksess.editcontext.doInsertTag = false;
-                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId,width: 400, height:450});
+                openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: selectContentUrl ,width: 400, height:500});
             }
         },
 

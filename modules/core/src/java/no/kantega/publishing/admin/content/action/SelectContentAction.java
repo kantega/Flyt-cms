@@ -40,6 +40,8 @@ public class SelectContentAction implements Controller {
             model.put("selectContentId", Boolean.TRUE);
         }
 
+        model.put("multiple", param.getBoolean("multiple", false));
+
         int currentId = -1;
         Content currentContent = (Content)request.getSession().getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (currentContent != null) {

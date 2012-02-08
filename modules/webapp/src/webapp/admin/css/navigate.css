@@ -24,6 +24,14 @@ body.popup #Navigator{
     background:#fff;
 }
 
+body.popup #AddedContent{
+    width:100%;
+    line-height: 20px;
+    border: 1px solid #cccccc;
+    clear: left;
+    margin-top: 5px;
+}
+
 .framesplit.navigate{
     position: absolute;
     top: 0;
