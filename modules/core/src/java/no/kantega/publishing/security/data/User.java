@@ -20,11 +20,14 @@ import no.kantega.publishing.security.data.enums.RoleType;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.security.api.identity.Identity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * Represents a user with name, email, department, roles and some other properties.
+ */
 public class User extends SecurityIdentifier {
 
     private Identity identity;
@@ -107,11 +110,10 @@ public class User extends SecurityIdentifier {
             return;
         }
         if (topics == null) {
-            topics = new ArrayList();
+            topics = new ArrayList<Topic>();
         }
         boolean found = false;
-        for (int i = 0; i < topics.size(); i++) {
-            Topic t = (Topic)topics.get(i);
+        for (Topic t : topics) {
             if (t.getId().equalsIgnoreCase(topic.getId()) && t.getTopicMapId() == topic.getTopicMapId()) {
                 found = true;
                 break;

@@ -18,6 +18,8 @@ package no.kantega.publishing.security.data;
 
 import no.kantega.publishing.common.Aksess;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public abstract class SecurityIdentifier {
     public String id = null;
 
@@ -26,7 +28,7 @@ public abstract class SecurityIdentifier {
     }
     
     public String getId() {
-        if (id != null && id.length() > 0) {
+        if (isNotBlank(id)) {
             return id;
         } else {
             return getName();
@@ -44,7 +46,7 @@ public abstract class SecurityIdentifier {
 
     public boolean equals(String role) {
         String id = this.id;
-        if (role.indexOf(":") != -1 && id.indexOf(":") == -1) {
+        if (role.contains(":") && !id.contains(":")) {
             id = Aksess.getDefaultSecurityDomain() + ":" + id;
         }
 
