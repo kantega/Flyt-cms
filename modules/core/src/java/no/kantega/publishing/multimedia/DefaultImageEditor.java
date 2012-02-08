@@ -8,6 +8,7 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.resizers.ImageResizeAlgorithm;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -128,8 +129,8 @@ public class DefaultImageEditor implements ImageEditor {
     /**
      * Extracts BufferedImage from multimedia object
      * @param multimedia
-     * @return
-     * @throws InvalidImageFormatException
+     * @return BufferedImage representing the image in the multimedia object.
+     * @throws InvalidImageFormatException if unable to read the image.
      */
     private BufferedImage getImageFromMultimedia(Multimedia multimedia) throws InvalidImageFormatException{
         if (multimedia.getType() == MultimediaType.MEDIA) {

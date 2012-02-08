@@ -25,12 +25,9 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.MultimediaDimensions;
-import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -117,7 +114,6 @@ public class MultimediaRequestHandler implements Controller {
 
                 try {
                     bytes = (byte[]) thumbnailCache.getFromCache(key);
-                    throw new NeedsRefreshException(bytes);
                 } catch (NeedsRefreshException e) {
                     try {
                         Log.debug(SOURCE, "Resizing image (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
