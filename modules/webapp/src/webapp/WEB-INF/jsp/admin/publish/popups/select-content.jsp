@@ -124,7 +124,7 @@
     <div id="SelectPage">
 
         <c:if test="${multiple}">
-            <div id="AddedContent" class="hidden"></div>
+            <div id="AddedContent" class="hidden ui-state-highlight"></div>
         </c:if>
         <div id="ContentSelectorTabs">
             <ul>
