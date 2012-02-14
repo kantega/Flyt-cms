@@ -71,6 +71,10 @@ public class Content extends BaseObject {
     // Versionable information
     private int versionId = -1;
     private int version = 1;
+
+    /**
+     * The publishing status of this content. One of the values in ContentStatus
+     */
     private int status = -1;
     private int language = 0;
 
