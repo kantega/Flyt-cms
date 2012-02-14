@@ -65,13 +65,13 @@ public class DefaultMultimediaContentProvider implements DocumentProvider {
         try {
             List<Integer> multimediaIds = multimediaDao.getAllMultimediaIds();
             int partitionSize = (multimediaIds.size() / numberOfConcurrentHandlers) + 1;
-            List<List<Integer>> attachmentIdsPartition = partition(multimediaIds, partitionSize);
-            CyclicBarrier cyclicBarrier = new CyclicBarrier(multimediaIds.size() + 1);
+            List<List<Integer>> multimediaIdsPartition = partition(multimediaIds, partitionSize);
+            CyclicBarrier cyclicBarrier = new CyclicBarrier(multimediaIdsPartition.size() + 1);
 
             Log.info(SOURCE, "Starting provideDocuments, number of concurrent handlers: " + numberOfConcurrentHandlers);
             ExecutorService pool = Executors.newFixedThreadPool(numberOfConcurrentHandlers);
 
-            for(List<Integer> identifiers : attachmentIdsPartition){
+            for(List<Integer> identifiers : multimediaIdsPartition){
                 pool.submit(new worker(handler, reporter, c, cyclicBarrier, identifiers, multimediaIds.size()));
             }
             cyclicBarrier.await();
@@ -113,7 +113,6 @@ public class DefaultMultimediaContentProvider implements DocumentProvider {
                 InputStream data = multimediaDao.getDataForMultimedia(multimedia.getId());
                 String content = te.extractText(data, filename);
                 document.add(new Field(Fields.CONTENT, content, Field.Store.YES, Field.Index.ANALYZED));
-
             }
         }
 

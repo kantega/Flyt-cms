@@ -219,7 +219,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             List<Integer> attachmentIds = aksessDao.getAttachmentIds();
             int partitionSize = (attachmentIds.size() / numberOfConcurrentHandlers) + 1;
             List<List<Integer>> attachmentIdsPartition = partition(attachmentIds, partitionSize);
-            CyclicBarrier cyclicBarrier = new CyclicBarrier(attachmentIds.size() + 1);
+            CyclicBarrier cyclicBarrier = new CyclicBarrier(attachmentIdsPartition.size() + 1);
 
             Log.info(SOURCE, "Starting provideDocuments, number of concurrent handlers: " + numberOfConcurrentHandlers);
             ExecutorService pool = Executors.newFixedThreadPool(numberOfConcurrentHandlers);
