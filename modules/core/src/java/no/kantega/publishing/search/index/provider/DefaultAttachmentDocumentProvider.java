@@ -145,7 +145,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                 Log.error(SOURCE, "NumberFormatException occured while trying to parse filesize from index for attachment:"+searchHit.getId(), null, null);
             }
 
-            searchHit.setUrl(Aksess.getContextPath() + "/attachment.ap?id=" + attachmentId);
+            searchHit.setUrl(Aksess.getContextPath() + "/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=" + attachmentId);
         }
     }
 
@@ -154,9 +154,9 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
     }
 
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter) {
-        provideDocuments(handler, reporter, Collections.emptyMap());        
+        provideDocuments(handler, reporter, Collections.emptyMap());
     }
-    
+
     private class worker implements Runnable {
 
         private DocumentProviderHandler handler;
@@ -187,7 +187,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                     Document d = getAttachmentDocument(a);
                     if (d != null) {
                         handler.handleDocument(d);
-                    }                                     
+                    }
                     counter.increment();
                     reporter.reportProgress(counter.getI(), "aksess-vedlegg", totalNumberAttachments);
 
@@ -195,6 +195,14 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
                     Log.error(SOURCE, "Caught throwable during indexing of attachment " +identifier, null, null);
                     Log.error(SOURCE, e, null, null);
                 }
+            }
+            try {
+                Log.info(SOURCE, "Thread done handling content");
+                cyclicBarrier.await();
+            } catch (InterruptedException e) {
+                Log.error("Worker interupted", e);
+            } catch (BrokenBarrierException e) {
+                Log.error("Barrier error", e);
             }
         }
     }
@@ -310,7 +318,7 @@ public class DefaultAttachmentDocumentProvider implements DocumentProvider {
             d.add(new Field(Fields.DOCUMENT_TYPE_ID, Integer.toString(content.getDocumentTypeId()), Field.Store.YES, Field.Index.NOT_ANALYZED));
         }
         d.add(new Field(Fields.ATTACHMENT_FILE_SIZE, Integer.toString(a.getSize()), Field.Store.YES, Field.Index.NOT_ANALYZED));
-
+        d.add(new Field(Fields.URL, a.getUrl(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 
         String text = "";
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

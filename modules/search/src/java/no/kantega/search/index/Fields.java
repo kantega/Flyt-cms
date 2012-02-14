@@ -29,6 +29,7 @@ public interface Fields {
     public static final String DOCTYPE = "DocType";
     public static final String TYPE_CONTENT = "Content";
     public static final String TYPE_ATTACHMENT = "Attachment";
+    public static final String TYPE_MULTIMEDIA = "Multimedia";
     public static final String ATTACHMENT_FILE_NAME = "AttachmentFileName";
     public static final String SUMMARY = "Summary";
     public static final int SUMMARY_LENGTH = 200;
@@ -49,5 +50,5 @@ public interface Fields {
     public static final String ALIAS = "Alias";
     public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";    
     public static final String ASSOCIATION_ID = "AssociationId";
-
+    public static final String URL = "Url";
 }

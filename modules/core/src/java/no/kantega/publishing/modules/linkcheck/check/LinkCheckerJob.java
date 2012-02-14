@@ -51,7 +51,7 @@ public class LinkCheckerJob implements InitializingBean {
     public static final String CONTENT_AP = Aksess.VAR_WEB + "/content.ap?thisId=";
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
     private static final String MULTIMEDIA = Aksess.VAR_WEB + "/" + Aksess.MULTIMEDIA_URL_PREFIX;
-    private static final String ATTACHMENT_AP = Aksess.VAR_WEB +"/attachment.ap?id=";
+    private static final String ATTACHMENT_AP = Aksess.VAR_WEB +"/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=";
 
     private String webroot = "http://localhost";
     private String proxyHost;

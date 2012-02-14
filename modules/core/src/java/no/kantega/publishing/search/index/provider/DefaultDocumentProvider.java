@@ -127,7 +127,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
             }
 
         } catch (SystemException e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         }
     }
 
@@ -337,7 +337,7 @@ public class DefaultDocumentProvider implements DocumentProvider {
             fTopics.setBoost(1.5f);
             d.add(fTopics);
 
-
+            d.add(new Field(Fields.URL, content.getUrl(), Field.Store.YES, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_PARENTS, getParents(content), Field.Store.YES, Field.Index.ANALYZED));
             d.add(new Field(Fields.CONTENT_TEMPLATE_ID, Integer.toString(content.getContentTemplateId()), Field.Store.NO, Field.Index.NOT_ANALYZED));
             d.add(new Field(Fields.CONTENT_STATUS, Integer.toString(content.getStatus()), Field.Store.YES, Field.Index.NOT_ANALYZED));
@@ -360,7 +360,6 @@ public class DefaultDocumentProvider implements DocumentProvider {
         } catch(Throwable e) {
             Log.error(getClass().getName(), "Exception creating index document for content id " + content.getId() +": " + e.getMessage(), null, null);
             Log.error(getClass().getName(), e, null, null);
-            e.printStackTrace();
             return null;
         }
     }

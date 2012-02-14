@@ -16,12 +16,12 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.Language;
 
 import java.util.Date;
-import java.io.File;
 
 public class Attachment {
     private static final String SOURCE = "aksess.Attachment";
@@ -94,5 +94,9 @@ public class Attachment {
 
     public void setSize(int size) {
         this.size = size;
+    }
+    
+    public String getUrl(){
+        return Aksess.getContextPath() + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
     }
 }

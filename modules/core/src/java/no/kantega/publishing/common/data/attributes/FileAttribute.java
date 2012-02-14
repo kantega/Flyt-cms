@@ -41,7 +41,7 @@ public class FileAttribute extends Attribute {
             return "";
         }
         if (AttributeProperty.HTML.equalsIgnoreCase(property) || AttributeProperty.URL.equalsIgnoreCase(property)) {
-            return Aksess.getContextPath() + "/attachment.ap?id=" + value;
+            return Aksess.getContextPath() + "/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=" + value;
         } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
                 || AttributeProperty.NAME.equalsIgnoreCase(property)
                 || AttributeProperty.SIZE.equalsIgnoreCase(property)) {

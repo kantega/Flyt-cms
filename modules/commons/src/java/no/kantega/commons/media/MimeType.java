@@ -25,27 +25,17 @@ public class MimeType {
     private boolean shouldConvertImage = false;
 
     public MimeType(String fileExtension, String type, String desc) {
-        this.fileExtension = fileExtension;
-        this.type = type;
-        this.description = desc;
-        if (type.indexOf("video") != -1 || type.indexOf("image") != -1 || type.indexOf("flash") != -1) {
-            if (!type.equals("video/x-flv")) {
-                dimensionRequired = true;
-                if (type.indexOf("video") != -1) {
-                    userMustInputDimension = true;
-                }
-            }
-        }
+        this(fileExtension, type, desc, false);
     }
 
     public MimeType(String fileExtension, String type, String desc,  boolean shouldConvertImage) {
         this.fileExtension = fileExtension;
         this.type = type;
         this.description = desc;
-        if (type.indexOf("video") != -1 || type.indexOf("image") != -1 || type.indexOf("flash") != -1) {
+        if (type.contains("video") || type.contains("image") || type.contains("flash")) {
             if (!type.equals("video/x-flv")) {
                 dimensionRequired = true;
-                if (type.indexOf("video") != -1) {
+                if (type.contains("video")) {
                     userMustInputDimension = true;
                 }
             }
