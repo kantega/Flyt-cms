@@ -126,7 +126,8 @@ public class RebuildIndexJob extends IndexJob {
                     provider.provideDocuments(handler, getProgressReporter(), Collections.singletonMap(NUMBEROFCONCURRENTHANDLERS, numberOfConcurrentJobs));
                 }
             }
-
+            writer.optimize();
+            writer.commit();
 
         } catch (IOException e) {
             log.error("IOException rebuilding index: " +e.getMessage());
