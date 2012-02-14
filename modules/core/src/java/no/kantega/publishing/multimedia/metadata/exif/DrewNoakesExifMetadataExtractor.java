@@ -11,6 +11,7 @@ import no.kantega.publishing.common.data.ExifMetadata;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
@@ -32,9 +33,13 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
         List<ExifMetadata> exifMetadatas = new ArrayList<ExifMetadata>();
 
         Metadata metadata = JpegMetadataReader.readMetadata(inputStream);
+        Iterator directories = metadata.getDirectoryIterator();
 
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
+        while (directories.hasNext()) {
+            Directory directory = (Directory)directories.next();
+            Iterator tags = directory.getTagIterator();
+            while (tags.hasNext()) {
+                Tag tag = (Tag)tags.next();
                 try {
                     ExifMetadata exifMetadata = getMetadataFromTag(directory, tag);
                     if (exifMetadata != null) {
