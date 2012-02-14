@@ -120,8 +120,8 @@ public class RebuildIndexJob extends IndexJob {
             }
 
             for (DocumentProvider provider : providers) {
-                boolean shouldNotExclude = !providersToExclude.contains(provider.getClass().getSimpleName());
-                if (shouldNotExclude) {
+                boolean shouldInclude = !providersToExclude.contains(provider.getClass().getSimpleName());
+                if (shouldInclude) {
                     log.info("Adding documents from provider " + provider.getClass());
                     provider.provideDocuments(handler, getProgressReporter(), Collections.singletonMap(NUMBEROFCONCURRENTHANDLERS, numberOfConcurrentJobs));
                 }

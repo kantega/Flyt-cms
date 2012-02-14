@@ -19,9 +19,13 @@ package no.kantega.search.index.provider;
 import org.apache.lucene.document.Document;
 
 /**
- *
+ * A DocumentProviderHandler is responsible for persisting the Lucene documents to the index.
  */
 public interface DocumentProviderHandler {
+
+    /**
+     * @param document that is to be persisted to the index.
+     */
     public void handleDocument(Document document);
     public boolean isStopRequested();
 }

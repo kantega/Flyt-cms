@@ -31,12 +31,47 @@ import java.util.Map;
  */
 public interface DocumentProvider {
     public String getSourceId();
+
+    /**
+     * @return The type of document this provider provides
+     */
     public String getDocumentType();
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter);
+
+    /**
+     * Goes through all content this provider is responsible for, create Lucene documents for them
+     * and hand them over to the handler in order to be persisted in the index.
+     * @param handler responsible for persisting the documents given to it.
+     * @param reporter for reporting how many of the total number of documents has been processed.
+     * @param options to the DocumentProvider e.g. how many concurrent index workers should be used.
+     */
     public void provideDocuments(DocumentProviderHandler handler, ProgressReporter reporter, Map options);
+
+    /**
+     * @param id of the to be indexed document
+     * @return a Lucene document representing the document with the given id.
+     */
     public Document provideDocument(String id);
+
+    /**
+     * @param id for the document we want to remove from the index.
+     * @return a Term identifying the document with the given id in the index.
+     */
     public Term getDeleteTerm(String id);
+
+    /**
+     * @return a term identifying all documents provided by this DocumentProvider in the index.
+     */
     public Term getDeleteAllTerm();
     public SearchHit createSearchHit();
+
+    /**
+     * Populates the searchHit with data from Document.
+     * @param searchHit we want populated
+     * @param searchHitContext representing the current search context
+     * @param doc the lucene hit document we want to expose
+     * @throws NotAuthorizedException if the user in the searchContext does not have sufficient privilegies to
+     * read this particular document.
+     */
     public void processSearchHit(SearchHit searchHit, SearchHitContext searchHitContext, Document doc) throws NotAuthorizedException;
 }

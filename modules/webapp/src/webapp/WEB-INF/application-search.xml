@@ -115,11 +115,17 @@
         <property name="textExtractorSelector" ref="textExtractorSelector"/>
     </bean>
 
+    <bean id="defaultMultimediaContentProvider" class="no.kantega.publishing.search.index.provider.DefaultMultimediaContentProvider">
+        <property name="multimediaDao" ref="aksessMultimediaDao" />
+        <property name="sourceId" value="aksessMultimedia" />
+        <property name="textExtractorSelector" ref="textExtractorSelector"/>
+    </bean>
     <bean id="documentProviderSelector" class="no.kantega.search.index.provider.DocumentProviderSelector">
         <property name="providers">
             <list>
                 <ref bean="defaultDocumentProvider"/>
                 <ref bean="defaultAttachmentDocumentProvider"/>
+                <ref bean="defaultMultimediaContentProvider" />
             </list>
         </property>
     </bean>

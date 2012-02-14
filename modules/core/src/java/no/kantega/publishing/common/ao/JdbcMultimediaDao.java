@@ -10,15 +10,14 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.*;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -262,6 +261,22 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         updateNumberOfUsages(multimedia.getId());
 
         return multimedia.getId();
+    }
+
+    public List<Integer> getAllMultimediaIds() {
+        return getSimpleJdbcTemplate().query("SELECT id FROM multimedia", new SingleColumnRowMapper<Integer>());
+    }
+
+    public InputStream getDataForMultimedia(int id) {
+        return getJdbcTemplate().query("select Data from multimedia where Id = " + id, new ResultSetExtractor<InputStream>() {
+            public InputStream extractData(ResultSet rs) throws SQLException, DataAccessException {
+                if (!rs.next()) {
+                    return null;
+                }
+                Blob data = rs.getBlob("Data");
+                return data.getBinaryStream();
+            }
+        });
     }
 
     private PreparedStatementCreator getPreparedStatementCreator(final Multimedia multimedia) {

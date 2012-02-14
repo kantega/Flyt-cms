@@ -25,7 +25,7 @@ public class TextExtractorSelector {
 
     public TextExtractor select(String name) {
         String key = name;
-        if(key.indexOf(".") >= 0) {
+        if(key.contains(".")) {
             key = key.substring(name.lastIndexOf(".") +(key.endsWith(".") ? 0 : 1));
         }
 
