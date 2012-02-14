@@ -2,20 +2,15 @@ package no.kantega.publishing.multimedia.metadata.exif;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.imaging.jpeg.JpegProcessingException;
-import com.drew.lang.Rational;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
-import com.glaforge.i18n.io.CharsetToolkit;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.ExifMetadata;
 
 import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
@@ -37,13 +32,9 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
         List<ExifMetadata> exifMetadatas = new ArrayList<ExifMetadata>();
 
         Metadata metadata = JpegMetadataReader.readMetadata(inputStream);
-        Iterator directories = metadata.getDirectoryIterator();
 
-        while (directories.hasNext()) {
-            Directory directory = (Directory)directories.next();
-            Iterator tags = directory.getTagIterator();
-            while (tags.hasNext()) {
-                Tag tag = (Tag)tags.next();
+        for (Directory directory : metadata.getDirectories()) {
+            for (Tag tag : directory.getTags()) {
                 try {
                     ExifMetadata exifMetadata = getMetadataFromTag(directory, tag);
                     if (exifMetadata != null) {
