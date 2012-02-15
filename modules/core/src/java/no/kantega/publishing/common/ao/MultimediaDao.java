@@ -5,7 +5,6 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
 
-import java.io.InputStream;
 import java.util.List;
 
 public interface MultimediaDao {
@@ -85,16 +84,4 @@ public interface MultimediaDao {
 
 
     public int setMultimedia(Multimedia multimedia) throws SystemException;
-
-    /**
-     * @return a list containing ids for all the multimedia objects.
-     */
-    public List<Integer> getAllMultimediaIds();
-
-    /**
-     *
-     * @param id of the multimedia to get media from
-     * @return byte array containing the data for the multimedia object
-     */
-    InputStream getDataForMultimedia(int id);
 }
