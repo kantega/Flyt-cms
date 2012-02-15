@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.administration.action;
 
+import org.apache.commons.collections.list.SetUniqueList;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +26,7 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -5,6 +5,7 @@
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -27,6 +28,7 @@
 <kantega:section id="content">
     <admin:box>
         <h1><kantega:label key="aksess.mailsubscription.title"/></h1>
+        <div class="grayText rightFloat"><c:out value="${fn:length(subscriptions)}" /> <kantega:label key="aksess.mailsubscriptions.total.unique"/></div>
         <table class="fullWidth">
             <tr class="tableHeading">
                 <td><strong><kantega:label key="aksess.mailsubscription.email"/></strong></td>

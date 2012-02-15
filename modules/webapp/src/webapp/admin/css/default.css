@@ -176,6 +176,14 @@ table.fullWidth {
     width: 100%;
 }
 
+.grayText{
+    color: #888;
+}
+
+.rightFloat{
+    float: right;
+}
+
 /************** Specific content panes styles ********/
 
 #Content.publish #MainPane, #Content.multimedia #MainPane {
