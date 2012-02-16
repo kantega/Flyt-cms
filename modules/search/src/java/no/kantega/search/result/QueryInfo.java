@@ -16,14 +16,11 @@
 
 package no.kantega.search.result;
 
-import org.apache.lucene.search.Query;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.search.Query;
 
 /**
- * Date: Jan 7, 2009
- * Time: 8:52:29 AM
- *
- * @author Tarje Killingberg
+ * Contains reference to the current query and analyzer
  */
 public class QueryInfo {
 

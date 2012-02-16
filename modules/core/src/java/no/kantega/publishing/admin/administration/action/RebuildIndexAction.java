@@ -54,7 +54,7 @@ public class RebuildIndexAction extends AdminController {
 
                 if(rebuild != null) {
                     int numberOfConcurrentIndexers = ServletRequestUtils.getIntParameter(request, RebuildIndexJob.NUMBEROFCONCURRENTHANDLERS, 1);
-                    List<String> providersToExclude = Arrays.asList(ServletRequestUtils.getStringParameters(request, "providersToExclude"));
+                    List<String> providersToExclude = getProvidersToExclude(request);
                     startIndex(providersToExclude, numberOfConcurrentIndexers);
                 }
                 if(optimize != null) {
@@ -80,6 +80,16 @@ public class RebuildIndexAction extends AdminController {
             map.put("docType", docType);
             return new ModelAndView(statusView, map);
         }
+    }
+
+    private List<String> getProvidersToExclude(HttpServletRequest request) {
+        List<String> excludedProviders = new ArrayList<String>();
+        for (DocumentProvider provider : indexManager.getDocumentProviderSelector().getAllProviders()) {
+            if(ServletRequestUtils.getBooleanParameter(request, "exclude" + provider.getClass().getSimpleName(), false)){
+
+            }
+        }
+        return excludedProviders;
     }
 
     private synchronized void startIndex(List<String> providersToExclude, int numberOfConcurrentJobs) {

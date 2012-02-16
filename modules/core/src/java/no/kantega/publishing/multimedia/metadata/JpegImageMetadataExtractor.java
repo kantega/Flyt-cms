@@ -5,7 +5,6 @@ import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.multimedia.metadata.exif.ExifMetadataExtractor;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,11 +22,12 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     public Multimedia extractMetadata(Multimedia multimedia) {
         List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia.getData());
         for (ExifMetadata metadata : metadatas) {
-            if (metadata.getDirectory().equals(ExifMetadata.EXIF_DIRECTORY)) {
+            String directory = metadata.getDirectory();
+            if (directory.equals(ExifMetadata.EXIF_DIRECTORY) || directory.equals(ExifMetadata.EXIF_SUBDIRECTORY)) {
                 addExifMetadata(multimedia, metadata);
-            } else if (metadata.getDirectory().equals(ExifMetadata.GPS_DIRECTORY)) {
+            } else if (directory.equals(ExifMetadata.GPS_DIRECTORY)) {
                 addExifGPSMetadata(multimedia, metadata);
-            } else if (metadata.getDirectory().equals(ExifMetadata.IPTC_DIRECTORY)) {
+            } else if (directory.equals(ExifMetadata.IPTC_DIRECTORY)) {
                 addIptcMetadata(multimedia, metadata);
             }
         }

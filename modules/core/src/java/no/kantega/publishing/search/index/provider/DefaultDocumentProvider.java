@@ -71,7 +71,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
+ *  Provides indexing of Content objects.
  */
 public class DefaultDocumentProvider implements DocumentProvider {
 
