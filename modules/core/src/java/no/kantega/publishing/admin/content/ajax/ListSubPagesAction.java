@@ -79,6 +79,7 @@ public class ListSubPagesAction extends SimpleAdminController {
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(currentContent.getContentIdentifier());
             query.setShowExpired(true);
+            query.setIncludeDrafts(true);
             List<Content> subPages = cms.getContentSummaryList(query, -1, new SortOrder(ContentProperty.PRIORITY, false));
             for (Content subPage : subPages) {
                 int menuId = subPage.getAssociation().getCategory().getId();
