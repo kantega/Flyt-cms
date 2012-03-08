@@ -41,6 +41,7 @@ public class PageStatisticsAction extends SimpleAdminController {
     @Autowired
     TrafficLogDao trafficLogDao;
 
+    private boolean totalStatsEnabled;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -50,6 +51,8 @@ public class PageStatisticsAction extends SimpleAdminController {
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
         Map<String, Object> model = new HashMap<String, Object>();
+
+        model.put("totalStatsEnabled", totalStatsEnabled);
 
         // Extracting currently selected content from it's url
         ContentIdentifier cid = null;
@@ -119,6 +122,10 @@ public class PageStatisticsAction extends SimpleAdminController {
         }
 
         return new ModelAndView(getView(), model);
+    }
+
+    public void setTotalStatsEnabled(boolean totalStatsEnabled) {
+        this.totalStatsEnabled = totalStatsEnabled;
     }
 }
 

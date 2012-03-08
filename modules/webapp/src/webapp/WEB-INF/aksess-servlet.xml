@@ -444,6 +444,7 @@
     </bean>
     <bean id="PageStatisticsAction" class="no.kantega.publishing.admin.content.ajax.PageStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/pagestatistics.jsp"/>
+        <property name="totalStatsEnabled" value="${trafficlog.totalstats.enabled}"/>
     </bean>
     <bean id="TotalStatisticsAction" class="no.kantega.publishing.admin.content.ajax.TotalStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/totalstatistics.jsp"/>

@@ -20,10 +20,12 @@
 
 <admin:box>
     <div id="tabs" class="ui-tabs ui-widget ui-corner-all">
-        <ul class="ui-widget-header ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
-            <li class="ui-tabs-selected ui-state-active ui-corner-top"><a href="#" id="PageStatistics"><kantega:label key="aksess.statistics.page"/></a></li>
-            <li class="ui-state-default ui-corner-top"><a href="#" id="TotalStatistics"><kantega:label key="aksess.statistics.total"/></a></li>
-        </ul>
+        <c:if test="${totalStatsEnabled}">
+            <ul class="ui-widget-header ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-corner-all">
+                <li class="ui-tabs-selected ui-state-active ui-corner-top"><a href="#" id="PageStatistics"><kantega:label key="aksess.statistics.page"/></a></li>
+                <li class="ui-state-default ui-corner-top"><a href="#" id="TotalStatistics"><kantega:label key="aksess.statistics.total"/></a></li>
+            </ul>
+        </c:if>
         <div>
             <h1><kantega:label key="aksess.statistics.hits.title"/></h1>
             <table border="0" width="100%">
