@@ -7,6 +7,7 @@
 <%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.FileReader" %>
 <%@ page import="java.io.File" %>
+
 <%
     SecuritySession securitySession = SecuritySession.getInstance(request);
 %>
@@ -25,7 +26,8 @@
 <body>
 
 <%
-    String logfile = Configuration.getApplicationDirectory() + "/logs/aksess.log";
+    Configuration configuration = Aksess.getConfiguration();
+    String logfile = configuration.getString("logfile.path", configuration.getApplicationDirectory() + "/logs/aksess.log");
 
     RequestParameters param = new RequestParameters(request);
 
