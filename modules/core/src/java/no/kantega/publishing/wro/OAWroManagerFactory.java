@@ -4,9 +4,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
+import ro.isdc.wro.manager.factory.ServletContextAwareWroManagerFactory;
+import ro.isdc.wro.model.factory.FallbackAwareXmlModelFactory;
 import ro.isdc.wro.model.factory.WroModelFactory;
-import ro.isdc.wro.model.factory.XmlModelFactory;
 
 import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
@@ -27,7 +27,7 @@ import java.net.URL;
  *
  * @author tarkil
  */
-public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
+public class OAWroManagerFactory extends ServletContextAwareWroManagerFactory {
 
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/wro-oa.xml";
     private static final String PROJECT_XML_CONFIG_FILE = "/WEB-INF/wro-project.xml";
@@ -35,7 +35,7 @@ public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
 
     @Override
     protected WroModelFactory newModelFactory(final ServletContext servletContext) {
-        return new XmlModelFactory() {
+        return new FallbackAwareXmlModelFactory() {
             @Override
             protected InputStream getConfigResourceAsStream() {
                 try {
