@@ -22,6 +22,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.data.ContentIdentifier;
 
@@ -38,9 +39,24 @@ public class GetUrlTag extends TagSupport {
     private static String SOURCE = "aksess.GetUrlTag";
 
     String url = null;
+    String queryParams = null;
+    boolean addcontextpath = true;
+    boolean escapeurl = true;
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public void setQueryparams(String queryParams) {
+        this.queryParams = queryParams;
+    }
+
+    public void setAddcontextpath(boolean addcontextpath){
+       this.addcontextpath = addcontextpath;
+    }
+
+    public void setEscapeurl(boolean escapeurl) {
+        this.escapeurl = escapeurl;
     }
 
     public int doStartTag() throws JspException {
@@ -50,7 +66,8 @@ public class GetUrlTag extends TagSupport {
 
             url = AttributeTagHelper.replaceMacros(url, pageContext);
 
-            String absoluteurl = Aksess.getContextPath();
+            String absoluteurl = addcontextpath ? Aksess.getContextPath(): "";
+
             if (url != null && url.length() > 0) {
                 if (url.indexOf("http:") != -1 || url.indexOf("https:") != -1 ) {
                     absoluteurl = url;
@@ -79,6 +96,23 @@ public class GetUrlTag extends TagSupport {
                     }
                 }
 
+
+            }
+
+            if (queryParams != null) {
+                if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?")) && (!queryParams.startsWith("#"))) {
+                    if (absoluteurl.indexOf("?") == -1) {
+                        queryParams = "?" + queryParams;
+                    } else {
+                        queryParams = "&" + queryParams;
+                    }
+                }
+                queryParams = queryParams.replaceAll("&", "&amp;");
+                absoluteurl = absoluteurl + queryParams;
+            }
+
+            if ( !escapeurl ){
+                absoluteurl = absoluteurl.replaceAll("&amp;", "&");
             }
 
             out.write(absoluteurl);

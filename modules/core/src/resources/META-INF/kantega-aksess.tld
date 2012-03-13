@@ -64,6 +64,25 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Specifies wether to add context path to start of url or not. default is 'true'</description>
+            <name>addcontextpath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Extra query parameters which should be added to the generated URL</description>
+            <name>queryparams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Url have escaped &amp;s by default. Set to false to disable</description>
+            <name>escapeurl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
         <example>
             <![CDATA[
                     Print URL to root:
