@@ -52,10 +52,14 @@ public class ViewSearchLogAction extends AdminController {
         Calendar cal = new GregorianCalendar();
         Date now = cal.getTime();
         cal.add(Calendar.MINUTE, -30);
-        Date before = cal.getTime();
+        Date thirtyMinutesAgo = cal.getTime();
 
-        model.put("last30min", SearchAO.getSearchCountForPeriod(before, now, siteId));
-        model.put("sumLastMonth", SearchAO.getSearchCountForPeriod(null, null, siteId));
+        model.put("last30min", SearchAO.getSearchCountForPeriod(thirtyMinutesAgo, now, siteId));
+
+        cal = new GregorianCalendar();
+        cal.add(Calendar.MONTH, -1);
+        Date oneMonthAgo = cal.getTime();
+        model.put("sumLastMonth", SearchAO.getSearchCountForPeriod(oneMonthAgo, now, siteId));
 
         List mostPopular = SearchAO.getMostPopularQueries(siteId);
         model.put("most", mostPopular);
