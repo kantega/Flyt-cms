@@ -1,7 +1,6 @@
 package org.kantega.openaksess.plugins.dbdiff;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import org.apache.ddlutils.DatabaseOperationException;
 import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
@@ -13,8 +12,8 @@ import org.apache.ddlutils.model.Table;
 import org.apache.ddlutils.platform.mssql.MSSqlPlatform;
 import org.kantega.jexmec.PluginManager;
 import org.kantega.openaksess.plugins.dbdiff.transform.ModelTransformer;
-import org.kantega.openaksess.plugins.dbdiff.transform.MyISAMForeginKeyTransformer;
 import org.kantega.openaksess.plugins.dbdiff.transform.MsSqlDoubleAsFloatTransformer;
+import org.kantega.openaksess.plugins.dbdiff.transform.MyISAMForeginKeyTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -69,9 +68,10 @@ public class DbDiffController {
 
         Database actual = platform.readModelFromDatabase(name, catalog, schema, tableTypes);
 
-        Map<URL, String> schemaResourcePaths = getSchemaResourcePaths();
-        for (URL resourcePath : schemaResourcePaths.keySet()) {
-            String path = schemaResourcePaths.get(resourcePath);
+        Map<String, URL> schemaResourcePaths = getSchemaResourcePaths();
+        for (String  path : schemaResourcePaths.keySet()) {
+
+            URL resourcePath = schemaResourcePaths.get(path);
 
             InputStream stream = resourcePath.openStream();
 
@@ -149,7 +149,7 @@ public class DbDiffController {
         }
     }
 
-    private Map<URL, String> getSchemaResourcePaths() throws IOException {
+    private Map<String, URL> getSchemaResourcePaths() throws IOException {
 
 
         Map<ClassLoader, ClassLoader> classLoaders = new IdentityHashMap<ClassLoader, ClassLoader>();
@@ -162,7 +162,7 @@ public class DbDiffController {
         classLoaders.put(getClass().getClassLoader(), getClass().getClassLoader());
 
 
-        Map<URL, String> resourcePaths = new LinkedHashMap<URL, String>();
+        Map<String, URL> resourcePaths = new LinkedHashMap<String, URL>();
 
 
         for(ClassLoader classLoader : classLoaders.keySet()) {
@@ -179,7 +179,7 @@ public class DbDiffController {
                         if(resource == null) {
                             throw new IllegalArgumentException("File " + listUrl + " specifies schema file which could not be found: " + line);
                         }
-                        resourcePaths.put(resource, line);
+                        resourcePaths.put(line, resource);
                     }
                 }
 
