@@ -31,11 +31,13 @@
 <kantega:section id="content">
     <script language="Javascript" type="text/javascript">
         function selectVersion(version) {
+            window.onbeforeunload = null;
             document.activeversion.version.value = version;
             document.activeversion.submit();
         }
 
         function deleteVersion(version) {
+            window.onbeforeunload = null;
             document.deleteversion.version.value = version;
             document.deleteversion.submit();
         }
