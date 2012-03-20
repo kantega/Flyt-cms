@@ -54,6 +54,7 @@ public class UseVersionAction implements Controller {
                 cid.setVersion(version);
                 cid.setLanguage(content.getLanguage());
                 content = aksessService.checkOutContent(cid);
+                content.setIsModified(true);
 
                 // Reload attributes from XML template
                 EditContentHelper.updateAttributesFromTemplate(content);
