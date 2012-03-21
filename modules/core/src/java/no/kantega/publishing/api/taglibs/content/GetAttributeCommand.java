@@ -112,6 +112,7 @@ public class GetAttributeCommand {
 
     public void setCropping(Cropping cropping) {
         this.cropping = cropping;
+
     }
 
     public Cropping getCropping() {

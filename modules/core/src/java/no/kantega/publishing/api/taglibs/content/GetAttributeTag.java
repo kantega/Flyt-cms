@@ -123,8 +123,8 @@ public class GetAttributeTag extends TagSupport {
         this.repeater = repeater;
     }
 
-    public void setCropping(Cropping cropping) {
-        this.cropping = cropping;
+    public void setCropping(String cropping) {
+        this.cropping = Cropping.getCroppingAsEnum(cropping);
     }
 
     public int doStartTag() throws JspException {
@@ -177,7 +177,7 @@ public class GetAttributeTag extends TagSupport {
                 if (session.isLoggedIn()) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 } else {
-                    // Gå til loginside
+                    // Gï¿½ til loginside
                     session.initiateLogin(request, response);
                 }
             }
