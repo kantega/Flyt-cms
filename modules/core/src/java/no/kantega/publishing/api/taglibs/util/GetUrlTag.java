@@ -32,9 +32,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
-/**
- *
- */
 public class GetUrlTag extends TagSupport {
     private static String SOURCE = "aksess.GetUrlTag";
 
@@ -111,7 +108,7 @@ public class GetUrlTag extends TagSupport {
                 absoluteurl = absoluteurl + queryParams;
             }
 
-            if ( !escapeurl ){
+            if (!escapeurl) {
                 absoluteurl = absoluteurl.replaceAll("&amp;", "&");
             }
 
@@ -126,13 +123,19 @@ public class GetUrlTag extends TagSupport {
             // Do nothing
         }
 
-        url = null;
+        resetVars();
 
         return SKIP_BODY;
+    }
+
+    private void resetVars() {
+        url = null;
+        queryParams = null;
+        escapeurl = true;
+        addcontextpath = true;
     }
 
     public int doEndTag() throws JspException {
          return EVAL_PAGE;
     }
-
 }
