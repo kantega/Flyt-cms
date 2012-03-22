@@ -16,8 +16,10 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.topicmaps.ao.rowmapper.TopicBaseNameRowMapper;
@@ -97,18 +99,51 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         }
     }
 
+    public void deleteAllTopics(int topicMapId) {
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ?", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ?", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ?", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ?", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ?", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ?", topicMapId);
+
+    }
+
+    public void deleteAllImportedTopics(int topicMapId) {
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND imported = 1", topicMapId);
+
+        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND imported = 1", topicMapId);
+
+    }
+
     public void setTopic(Topic topic) {
         // Delete topic without support tables and reinsert
         deleteTopic(topic, false);
 
-        getSimpleJdbcTemplate().update("INSERT INTO tmtopic VALUES (?,?,?,?,?,?,?,?)",
+        getSimpleJdbcTemplate().update("INSERT INTO tmtopic VALUES (?,?,?,?,?,?,?,?,?)",
                 topic.getId(), topic.getTopicMapId(),
                 topic.getInstanceOf() == null ? null : topic.getInstanceOf().getId(),
                 topic.isTopicType() ? 1 : 0,
                 topic.isAssociation() ? 1 : 0,
                 new java.sql.Timestamp(new Date().getTime()),
                 topic.getSubjectIdentity(),
-                topic.isSelectable() ? 1 : 0);
+                topic.isSelectable() ? 1 : 0,
+                topic.isImported() ? 1 : 0);
 
         // Topics som andre er instans av merkes med et flagg
         if (topic.getInstanceOf() != null) {
@@ -211,8 +246,19 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     }
 
     public List<Topic> getTopicsByTopicMapId(int topicMapId) {
+        String defaultScope = null;
+        try {
+            Configuration config = Aksess.getConfiguration();
+            defaultScope = config.getString("topic.defaultscope");
+        } catch (Exception e) {
+            //No config found. Do nothing as there will be no scope added to sqlquery
+        }
         String sql = "";
         sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL AND tmtopic.TopicMapId = " + topicMapId;
+        if(defaultScope != null){
+            //There may be added multiple basenames to a topic where the scope sets a language.
+            sql += " AND (tmbasename.Scope like '%" + defaultScope + "%' OR tmbasename.Scope IS NULL)";
+        }
         sql += "   ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
@@ -291,7 +337,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     private List<Topic> getTopicsBySQLStatement(String whereClause) {
         String sql = "";
-        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
+        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation, tmtopic.imported";
         sql += "   FROM tmtopic";
         sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 

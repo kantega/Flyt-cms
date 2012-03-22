@@ -26,7 +26,12 @@ import java.util.List;
 public interface TopicDao {
 
     void deleteTopic(Topic topic);
+
     void deleteTopic(Topic topic, boolean deleteRelatedTables);
+
+    void deleteAllTopics(int topicMapId);
+
+    void deleteAllImportedTopics(int topicMapId);
 
     Topic getTopic(int topicMapId, String topicId);
 

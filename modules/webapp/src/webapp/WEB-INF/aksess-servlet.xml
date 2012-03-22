@@ -223,6 +223,8 @@
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
                 <prop key="/admin/administration/topicmaps/DeleteTopicMap.action">deleteTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/ImportTopicMap.action">importTopicMapAction</prop>
+                <prop key="/admin/administration/topicmaps/SaveImportedTopicMap.action">saveImportedTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/EditTopicMap.action">editTopicMapAction</prop>
                 <prop key="/admin/administration/topicmaps/ListTopicMaps.action">listTopicMapsAction</prop>
                 <prop key="/admin/administration/topicmaps/ListTopicTypes.action">listTopicTypesAction</prop>
@@ -693,6 +695,10 @@
         <property name="view" value="/WEB-INF/jsp/admin/administration/listcontentexpiration.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction" id="deleteTopicMapAction"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.SaveImportedTopicMapAction" id="saveImportedTopicMapAction"/>
+    <bean class="no.kantega.publishing.admin.topicmaps.action.ImportTopicMapAction" id="importTopicMapAction">
+         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listimportedtopicmap.jsp"/>
+    </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopicmap.jsp"/>
     </bean>

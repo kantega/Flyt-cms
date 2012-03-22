@@ -30,6 +30,7 @@ public class TopicMap extends BaseObject {
     private String wSSoapAction = "";
     private String wSEndPoint = "";
     private List<Topic> topicTypes = new ArrayList<Topic>();
+    private String url = "";
 
     public TopicMap() {
     }
@@ -100,5 +101,13 @@ public class TopicMap extends BaseObject {
 
     public void setTopicTypes(List<Topic> topicTypes) {
         this.topicTypes = topicTypes;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

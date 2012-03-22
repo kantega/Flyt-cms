@@ -37,6 +37,7 @@ public class Topic {
     private List<TopicOccurence> occurences = null;
 
     private int noUsages = 0;
+    private boolean imported;
 
     public Topic() {
     }
@@ -186,5 +187,13 @@ public class Topic {
 
     public void setNoUsages(int noUsages) {
         this.noUsages = noUsages;
+    }
+
+    public boolean isImported() {
+        return imported;
+    }
+
+    public void setImported(boolean imported) {
+        this.imported = imported;
     }
 }

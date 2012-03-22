@@ -25,10 +25,7 @@ import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao {
     private TopicMapRowMapper rowMapper = new TopicMapRowMapper();
@@ -42,8 +39,10 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
     }
 
     public TopicMap saveOrUpdateTopicMap(final TopicMap topicMap) {
-         Map<String, Object> params = new HashMap<String, Object>();
+
+        Map<String, Object> params = new HashMap<String, Object>();
         params.put("Name", topicMap.getName());
+        params.put("Url", topicMap.getUrl());
         params.put("IsEditable", topicMap.isEditable() ? 1 : 0);
         params.put("WSOperation", topicMap.getWSOperation());
         params.put("WSSoapAction", topicMap.getWSSoapAction());
@@ -57,7 +56,7 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
             topicMap.setId(number.intValue());
         }else{
              params.put("id", topicMap.getId());
-            String sql = "UPDATE tmmaps SET Name=:Name, IsEditable=:IsEditable, WSOperation=:WSOperation, WSSoapAction=:WSSoapAction, WSEndPoint=:WSEndPoint WHERE id=:id";
+            String sql = "UPDATE tmmaps SET Name=:Name, Url=:Url, IsEditable=:IsEditable, WSOperation=:WSOperation, WSSoapAction=:WSSoapAction, WSEndPoint=:WSEndPoint WHERE id=:id";
             getSimpleJdbcTemplate().update(sql, params);
         }
         return topicMap;

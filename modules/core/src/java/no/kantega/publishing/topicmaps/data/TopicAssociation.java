@@ -21,6 +21,7 @@ public class TopicAssociation {
     private Topic rolespec = null;
     private Topic topicRef = null;
     private Topic associatedTopicRef = null;
+    private boolean imported;
 
     public TopicAssociation() {
     }
@@ -55,5 +56,13 @@ public class TopicAssociation {
 
     public void setAssociatedTopicRef(Topic associatedTopicRef) {
         this.associatedTopicRef = associatedTopicRef;
+    }
+
+    public boolean isImported() {
+        return imported;
+    }
+
+    public void setImported(boolean imported) {
+        this.imported = imported;
     }
 }

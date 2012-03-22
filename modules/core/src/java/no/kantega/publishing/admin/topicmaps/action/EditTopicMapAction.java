@@ -59,6 +59,7 @@ public class EditTopicMapAction extends AdminController {
         if (request.getMethod().equalsIgnoreCase("post")) {
 
             topicMap.setName(param.getString("name", 40));
+            topicMap.setUrl(param.getString("url", 255));
             topicMap.setEditable(param.getBoolean("iseditable"));
 
             topicMap = topicService.setTopicMap(topicMap);

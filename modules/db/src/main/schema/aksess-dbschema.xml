@@ -359,6 +359,7 @@
         <column name="Rolespec" required="true" type="VARCHAR" size="255"/>
         <column name="TopicRef" required="true" type="VARCHAR" size="255"/>
         <column name="AssociatedTopicRef" required="true" type="VARCHAR" size="255"/>
+        <column name="imported" required="false" type="INTEGER" default="0"/>
         <index name="idx_tmassociation_associatedtopicref">
             <index-column name="AssociatedTopicRef"/>
         </index>
@@ -380,6 +381,7 @@
         <column name="Id" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="Name" required="true" type="VARCHAR" size="64"/>
         <column name="IsEditable" required="false" type="INTEGER" size="10"/>
+        <column name="url" required="false" type="VARCHAR" size="255"/>
         <column name="WSOperation" required="false" type="VARCHAR" size="64"/>
         <column name="WSSoapAction" required="false" type="VARCHAR" size="255"/>
         <column name="WSEndPoint" required="false" type="VARCHAR" size="255"/>
@@ -403,6 +405,7 @@
         <column name="LastUpdated" required="true" type="TIMESTAMP" size="23,3"/>
         <column name="SubjectIdentity" required="false" type="VARCHAR" size="255"/>
         <column name="IsSelectable" required="true" type="INTEGER" default="0"/>
+        <column name="imported" required="false" type="INTEGER" default="0"/>
     </table>
     <table name="trafficlog">
         <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>

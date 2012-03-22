@@ -36,8 +36,8 @@ public class TopicBaseName {
     }
 
     public void setBaseName(String baseName) {
-        if (baseName.length() > 64) {
-            baseName = baseName.substring(0, 63);
+        if (baseName.length() > 255) {
+            baseName = baseName.substring(0, 254);
         }        
         this.baseName = baseName;
     }

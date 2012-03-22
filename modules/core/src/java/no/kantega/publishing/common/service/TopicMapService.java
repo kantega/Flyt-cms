@@ -17,24 +17,38 @@
 package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.commons.log.Log;
+import no.kantega.commons.util.XMLHelper;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.topicmaps.ao.*;
+import no.kantega.publishing.topicmaps.data.*;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicAssociation;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
+import no.kantega.publishing.topicmaps.impl.XTMImportWorker;
+import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.transform.TransformerException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 public class TopicMapService {
+
+    private static final String AKSESS_TOPIC_DAO = "aksessTopicDao";
+    private static final String AKSESS_TOPIC_ASSOCIATION_DAO = "aksessTopicAssociationDao";
+    private static final String AKSESS_TOPIC_MAP_DAO = "aksessTopicMapDao";
+
+    TopicMapDao topicMapDao;
+
+    TopicDao topicDao;
+
+    TopicAssociationDao topicAssociationDao;
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;
@@ -42,14 +56,121 @@ public class TopicMapService {
     public TopicMapService(HttpServletRequest request) throws SystemException {
         this.request = request;
         this.securitySession = SecuritySession.getInstance(request);
+        initDao();
     }
+
 
     public TopicMapService(SecuritySession securitySession) throws SystemException {
         this.securitySession = securitySession;
+        initDao();
     }
+
+    private void initDao() {
+        topicAssociationDao = (TopicAssociationDao) RootContext.getInstance().getBean(AKSESS_TOPIC_ASSOCIATION_DAO);
+        topicDao = (TopicDao) RootContext.getInstance().getBean(AKSESS_TOPIC_DAO);
+        topicMapDao= (TopicMapDao) RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
+    }
+
 
     public void deleteTopicMap(int id) throws SystemException, ObjectInUseException {
         TopicMapAO.deleteTopicMap(id);
+    }
+
+    public ImportedTopicMap importTopicMap(int id) throws ImportTopicMapException {
+        TopicMap topicMap = topicMapDao.getTopicMapById(id);
+        XTMImportWorker importWorker = new XTMImportWorker(id);
+        Document document = openDocument(topicMap);
+        List<Topic> topics;
+        List<TopicAssociation> topicAssociations;
+        try {
+            topics = importWorker.getTopicsFromDocument(document);
+            topicAssociations = importWorker.getTopicAssociationsFromDocument(document);
+            for(TopicAssociation topicAssociation: topicAssociations){
+                Topic topicRef = topicAssociation.getTopicRef();
+                Topic associatedTopicRef = topicAssociation.getAssociatedTopicRef();
+                for(Topic topic:topics){
+                    if(topic.getSubjectIdentity() != null && topic.getSubjectIdentity().equalsIgnoreCase(topicRef.getId())){
+                        topicAssociation.setTopicRef(topic);
+                    }
+                    if(topic.getSubjectIdentity() != null && topic.getSubjectIdentity().equalsIgnoreCase(associatedTopicRef.getId())){
+                        topicAssociation.setAssociatedTopicRef(topic);
+                    }
+                }
+            }
+        } catch (TransformerException e) {
+            throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
+        }
+        ImportedTopicMap importedTopicMap = new ImportedTopicMap(topicMap,topics,topicAssociations);
+        return importedTopicMap;
+    }
+
+    public void saveImportedTopicMap(ImportedTopicMap importedTopicMap) throws ObjectInUseException {
+        int topicMapId = importedTopicMap.getTopicMap().getId();
+        topicDao.deleteAllImportedTopics(topicMapId);
+        for(Topic topic : importedTopicMap.getTopicList()){
+            saveImportedTopic(topicMapId, topic);
+        }
+        for(TopicAssociation topicAssociation: importedTopicMap.getTopicAssociationList()){
+            saveImportedAssociation(topicMapId, topicAssociation);
+
+        }
+    }
+
+    private void saveImportedAssociation(int topicMapId, TopicAssociation topicAssociation) {
+        Log.debug(this.getClass().getName(),"Saving imported assosication between " + topicAssociation.getTopicRef().getId() + " and " + topicAssociation.getAssociatedTopicRef().getId());
+        topicAssociationDao.addTopicAssociation(topicAssociation);
+        Topic instanceOf = topicAssociation.getInstanceOf();
+        instanceOf.setBaseName("er relatert til");
+        for(TopicBaseName topicBaseName: instanceOf.getBaseNames()){
+            topicBaseName.setScope(topicAssociation.getRolespec().getId());
+        }
+        /**
+         * When saving the instanceof the association, this may already be saved as the association is a bi-directional.
+         * The setTopic method deletes all basenames related to the topic.
+         * Therefore the basenames of the already saved instanceof must be added to this one.
+         */
+        Topic savedInstanceOf = topicDao.getTopic(instanceOf.getTopicMapId(),instanceOf.getId());
+        instanceOf.getBaseNames().addAll(savedInstanceOf.getBaseNames());
+
+        instanceOf.setImported(true);
+        instanceOf.setTopicMapId(topicMapId);
+        instanceOf.setIsTopicType(true);
+        topicDao.setTopic(instanceOf);
+    }
+
+    private void saveImportedTopic(int topicMapId, Topic topic) {
+        Log.debug(this.getClass().getName(),"Saving imported topic: " + topic.getBaseName());
+        for(TopicBaseName topicBaseName: topic.getBaseNames()){
+            topicBaseName.setScope(topic.getInstanceOf().getId());
+        }
+        topicDao.setTopic(topic);
+        Topic instanceOf = topic.getInstanceOf();
+        if(instanceOf != null){
+            Topic savedInstanceOf = topicDao.getTopic(topicMapId, instanceOf.getId());
+            if(savedInstanceOf == null){
+                if(instanceOf.getBaseName() == null || instanceOf.getBaseName().isEmpty()){
+                    instanceOf.setBaseName(instanceOf.getId());
+                }
+                instanceOf.setImported(true);
+                instanceOf.setTopicMapId(topicMapId);
+                instanceOf.setIsTopicType(true);
+                topicDao.setTopic(instanceOf);
+            }
+        }
+    }
+
+    private Document openDocument(TopicMap topicMap) throws ImportTopicMapException {
+        Document doc;
+        try {
+            doc = XMLHelper.openDocument(new URL(topicMap.getUrl()));
+        } catch (MalformedURLException e) {
+            throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
+        }
+        catch (SystemException e) {
+            throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
+        }
+
+        return doc;
     }
 
     public TopicMap getTopicMap(int id) throws SystemException {
@@ -95,7 +216,7 @@ public class TopicMapService {
         TopicAO.deleteTopic(topic);
         TopicAssociationAO.deleteTopicAssociations(topic);
     }
-    
+
 
     public List getTopicsByContentId(int contentId) throws SystemException {
         return TopicAO.getTopicsByContentId(contentId);

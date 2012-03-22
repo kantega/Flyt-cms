@@ -38,7 +38,7 @@ public class TopicAssociationRowMapper implements RowMapper<TopicAssociation> {
         instanceOf.setId(rs.getString("InstanceOf"));
         topicAssociation.setInstanceOf(instanceOf);
         topicAssociation.setTopicRef(topic);
-
+        topicAssociation.setImported(rs.getInt("imported") == 1);
 
         // Legg til tilknyttet topic
         Topic atopic = new Topic();

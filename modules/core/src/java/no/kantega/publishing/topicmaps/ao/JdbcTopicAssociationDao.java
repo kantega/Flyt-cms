@@ -54,12 +54,14 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
             instanceOf = association.getInstanceOf().getId();
         }
 
-        getSimpleJdbcTemplate().update("INSERT INTO tmassociation VALUES(?,?,?,?,?)",
+        getSimpleJdbcTemplate().update("INSERT INTO tmassociation VALUES(?,?,?,?,?,?)",
                 topicRef.getTopicMapId(),
                 instanceOf,
                 roleSpec.getId(),
                 topicRef.getId(),
-                associatedTopicRef.getId());
+                associatedTopicRef.getId(),
+                association.isImported() ? 1 : 0
+        );
 
         getSimpleJdbcTemplate().update("UPDATE tmtopic SET IsAssociation = 1 WHERE TopicId = ? AND TopicMapId = ?",
                 instanceOf,
@@ -93,7 +95,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
 
         String sql = "";
 
-        sql += " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmbasename.Basename, tmbasename.Scope FROM tmassociation";
+        sql += " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmassociation.imported, tmbasename.Basename, tmbasename.Scope FROM tmassociation";
         sql += "   INNER JOIN tmbasename ON (tmassociation.TopicMapId = tmbasename.TopicMapId) AND (tmassociation.InstanceOf = tmbasename.TopicId) AND (tmassociation.Rolespec = tmbasename.Scope)";
         sql += " WHERE (tmassociation.TopicRef = ? AND tmassociation.TopicMapId = ?) ORDER BY tmbasename.Basename";
 
@@ -124,7 +126,6 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
             }
         }
 
-
         // Update topics with usage count
         List<Topic> topics = new ArrayList<Topic>();
         for (TopicAssociation a : associations) {
@@ -132,7 +133,6 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
         }
 
         topicUsageCounter.updateTopicUsageCount(topics);
-
         return associations;
     }
 
@@ -143,8 +143,6 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
                 topic.getTopicMapId()
         );
     }
-
-
 
     public void setTopicUsageCounter(TopicUsageCounter topicUsageCounter) {
         this.topicUsageCounter = topicUsageCounter;
