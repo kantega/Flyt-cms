@@ -26,16 +26,21 @@
 <kantega:section id="body">
     <script type="text/javascript">
         $(document).ready(function() {
-            <c:if test="${currentPage != null}">
-                var iframe = getParent().document.getElementById("Contentmain");
-                if (iframe) {
-                    iframe.src = '${currentPage.url}';
-                }
-            </c:if>
-            <c:if test="${updateNavigator}">
-                getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
-            </c:if>
-            getParent().openaksess.navigate.updateMainPane();
+            <c:choose>
+                <c:when test="${currentPage != null}">
+                    var iframe = getParent().document.getElementById("Contentmain");
+                    if (iframe) {
+                        iframe.src = '${currentPage.url}';
+                    }
+                </c:when>
+                <c:otherwise>
+                    <c:if test="${updateNavigator}">
+                        getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
+                    </c:if>
+                    getParent().openaksess.navigate.updateMainPane();
+                </c:otherwise>
+            </c:choose>
+
             setTimeout('closePopup()', 3000);
         });
 
