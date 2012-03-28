@@ -129,7 +129,7 @@ public class TopicMapService {
          * The setTopic method deletes all basenames related to the topic.
          * Therefore the basenames of the already saved instanceof must be added to this one.
          */
-        Topic savedInstanceOf = topicDao.getTopic(instanceOf.getTopicMapId(),instanceOf.getId());
+        Topic savedInstanceOf = getSavedInstanceOf(instanceOf);
         instanceOf.getBaseNames().addAll(savedInstanceOf.getBaseNames());
 
         instanceOf.setImported(true);
@@ -137,6 +137,15 @@ public class TopicMapService {
         instanceOf.setIsTopicType(true);
         topicDao.setTopic(instanceOf);
     }
+
+    private Topic getSavedInstanceOf(Topic instanceOf){
+        Topic savedInstanceOf = topicDao.getTopic(instanceOf.getTopicMapId(),instanceOf.getId());
+        if(savedInstanceOf == null){
+            savedInstanceOf = instanceOf;
+        }
+        return savedInstanceOf;
+    }
+
 
     private void saveImportedTopic(int topicMapId, Topic topic) {
         Log.debug(this.getClass().getName(),"Saving imported topic: " + topic.getBaseName());
