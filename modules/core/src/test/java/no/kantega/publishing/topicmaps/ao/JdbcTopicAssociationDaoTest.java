@@ -25,6 +25,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class JdbcTopicAssociationDaoTest extends AbstractTestJdbcTopicMap {
@@ -98,5 +99,20 @@ public class JdbcTopicAssociationDaoTest extends AbstractTestJdbcTopicMap {
 
         List<TopicAssociation> topicAssociations = associationDao.getTopicAssociations(topic1);
         assertTrue("associationDao.getTopicAssociations(topic1).size == 1 after add", topicAssociations.size() == 1);
+    }
+
+    @Test
+    public void shouldHaveAssociation() throws Exception {
+        association1.setInstanceOf(instanceOf);
+        associationDao.addTopicAssociation(association1);
+        boolean topicAssociatedWithOther = associationDao.isTopicAssociatedWithInstanceOf(association1.getTopicRef().getId(), association1.getAssociatedTopicRef().getTopicMapId(),"topic");
+        assertTrue("TopicAssociation is added", topicAssociatedWithOther);
+    }
+
+    @Test
+    public void shouldHaveNoneAssociations() throws Exception {
+        associationDao.addTopicAssociation(association1);
+        boolean topicAssociatedWithOther = associationDao.isTopicAssociatedWithInstanceOf(association1.getTopicRef().getId(), association1.getAssociatedTopicRef().getTopicMapId(),"topic");
+        assertFalse("TopicAssociation is not added", topicAssociatedWithOther);
     }
 }

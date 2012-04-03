@@ -136,6 +136,11 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
         return associations;
     }
 
+    public boolean isTopicAssociatedWithInstanceOf(String topicId, int topicMapId, String instanceOf) {
+        String sql = "SELECT count(*) FROM tmassociation WHERE (topicref = ? OR associatedtopicref = ?) AND topicmapid = ? AND instanceof = ?";
+        return  getSimpleJdbcTemplate().queryForInt(sql,topicId,topicId,topicMapId, instanceOf) > 0;
+    }
+
     public void deleteTopicAssociations(Topic topic) {
         getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE (TopicRef = ? OR AssociatedTopicRef = ?) AND TopicMapId = ?",
                 topic.getId(),

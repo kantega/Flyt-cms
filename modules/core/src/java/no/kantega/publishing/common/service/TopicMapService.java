@@ -371,4 +371,8 @@ public class TopicMapService {
     public List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId) {
         return TopicAO.getTopicsInUseByChildrenOf(contentId, topicMapId);
     }
+    
+    public boolean isTopicAssociatedWithInstanceOf(Topic topic, String instanceOf){
+        return topicAssociationDao.isTopicAssociatedWithInstanceOf(topic.getId(), topic.getTopicMapId(),instanceOf);
+    }
 }

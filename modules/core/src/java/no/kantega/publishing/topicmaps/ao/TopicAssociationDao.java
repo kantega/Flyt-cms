@@ -26,5 +26,5 @@ public interface TopicAssociationDao {
     void deleteTopicAssociation(TopicAssociation association);
     void addTopicAssociation(TopicAssociation association);
     List<TopicAssociation> getTopicAssociations(Topic topic);
-
+    boolean isTopicAssociatedWithInstanceOf(String topicId, int topicMapId, String instanceOf);
 }
