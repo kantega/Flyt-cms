@@ -56,7 +56,7 @@
                     <label for="TopicName"><kantega:label key="aksess.topicmaps.name"/></label>
                 </div>
                 <div class="inputs">
-                    <input type="text" id="TopicName" name="name"  maxlength="62" value="${topic.baseName}">
+                    <input type="text" id="TopicName" name="name"  maxlength="250" value="${topic.baseName}">
                 </div>
             </div>
 
