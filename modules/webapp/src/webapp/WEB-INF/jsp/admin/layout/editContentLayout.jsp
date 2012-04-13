@@ -50,6 +50,8 @@
                     $("#EditContentForm input[type='text']:first").focus();
                 </c:otherwise>
             </c:choose>
+
+            openaksess.editcontext.bindFieldChangeListeners();
         });
 
         function scrollTo() {

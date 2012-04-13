@@ -105,12 +105,11 @@ openaksess.editcontext = function()  {
         },
 
 
-        editKeyPress : function (e) {
-            if (openaksess.editcontext.focusField != null) {
-                openaksess.editcontext.editIsModified = true;
-            }
-            return true;
+        bindFieldChangeListeners : function () {
+            openaksess.common.debug("bindFieldChangeListeners");
+            $("#EditContentForm :input").change(openaksess.editcontext.setIsModified);
         },
+
 
         /*
          *  Sets field as focused element
@@ -587,7 +586,3 @@ $.widget('ui.oaAutocompleteMultimedia', $.ui.oaAutocomplete, {
     }
 
 });
-
-
-document.onkeypress = openaksess.editcontext.editKeyPress;
-
