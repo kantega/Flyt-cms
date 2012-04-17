@@ -637,28 +637,22 @@ public class ContentAO {
     }
 
 
-    public static List<Content> getContentListForApproval() throws SystemException {
-        List<Content> contentList = new ArrayList<Content>();
+    public static List getContentListForApproval() throws SystemException {
+        List contentList = new ArrayList();
 
         Connection c = null;
 
         try {
             c = dbConnectionFactory.getConnection();
             // Hent content og contentversion
-            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 order by contentversion.ContentId");
+            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 order by contentversion.Title");
             st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL);
             ResultSet rs = st.executeQuery();
-            
-            Set<Integer> hasBeenAddedToApprovalList = new HashSet<Integer>();
-            
+            int prevContentId = -1;
             while (rs.next()) {
                 Content content = ContentAOHelper.getContentFromRS(rs, true);
-                Content publishedVersion = getContent(content.getContentIdentifier(), false);
-                boolean isnewer = newerThanPublishedVersion(content, publishedVersion);
-                boolean prevAdded = notPreviouslyAdded(hasBeenAddedToApprovalList, content);
-                if (isnewer
-                        && prevAdded) {
-                    hasBeenAddedToApprovalList.add(content.getId());
+                if (content.getId() != prevContentId) {
+                    prevContentId = content.getId();
                     contentList.add(content);
                 }
             }
@@ -674,14 +668,6 @@ public class ContentAO {
             }
         }
         return contentList;
-    }
-
-    private static boolean notPreviouslyAdded(Set<Integer> hasBeenAddedToApprovalList, Content content) {
-        return !hasBeenAddedToApprovalList.contains(content.getId());
-    }
-
-    private static boolean newerThanPublishedVersion(Content content, Content publishedVersion) {
-        return (publishedVersion == null || content.getVersion() > publishedVersion.getVersion());
     }
 
     public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
