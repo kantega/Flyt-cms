@@ -17,6 +17,7 @@
 package no.kantega.publishing.topicmaps.impl;
 
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -65,7 +66,11 @@ public class XTMImportWorker{
 
     private boolean shouldTopicBeImported(Topic topic) {
         //Ignore topics that don't have subjectidenty and instanceof
-        return topic.getInstanceOf() != null || topic.getSubjectIdentity() != null;
+        boolean shouldBeImported = topic.getInstanceOf() != null || topic.getSubjectIdentity() != null;
+        if( ! shouldBeImported){
+            Log.debug(this.getClass().getName(),"Skipping topics that don't have subjectidenty and instanceof: " + topic.getId());
+        }
+        return shouldBeImported;
     }
 
     private Topic getTopicFromElement(Element topicElement) throws TransformerException {
@@ -128,7 +133,6 @@ public class XTMImportWorker{
             Element elmBaseName = (Element)elmBaseNames.item(i);
             //TODO: Add support to query for mulitiple languages
             // skip nynorsk, samisk and english
-            getAttributeValue(elmBaseName, ATTRIBUTE_HREF, "scope/subjectIndicatorRef", "scope/topicRef");
             Element elmScope = (Element)XPathAPI.selectSingleNode(elmBaseName, "scope/subjectIndicatorRef");
             if (elmScope != null) {
                 String subjectIndRef = elmScope.getAttribute("xlink:href");

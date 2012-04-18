@@ -100,8 +100,7 @@ public class TopicMapService {
         } catch (TransformerException e) {
             throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
         }
-        ImportedTopicMap importedTopicMap = new ImportedTopicMap(topicMap,topics,topicAssociations);
-        return importedTopicMap;
+        return  new ImportedTopicMap(topicMap,topics,topicAssociations);
     }
 
     public void saveImportedTopicMap(ImportedTopicMap importedTopicMap) throws ObjectInUseException {
@@ -119,6 +118,7 @@ public class TopicMapService {
     private void saveImportedAssociation(int topicMapId, TopicAssociation topicAssociation) {
         Log.debug(this.getClass().getName(),"Saving imported assosication between " + topicAssociation.getTopicRef().getId() + " and " + topicAssociation.getAssociatedTopicRef().getId());
         topicAssociationDao.addTopicAssociation(topicAssociation);
+
         Topic instanceOf = topicAssociation.getInstanceOf();
         instanceOf.setBaseName("er relatert til");
         for(TopicBaseName topicBaseName: instanceOf.getBaseNames()){
@@ -127,25 +127,19 @@ public class TopicMapService {
         /**
          * When saving the instanceof the association, this may already be saved as the association is a bi-directional.
          * The setTopic method deletes all basenames related to the topic.
-         * Therefore the basenames of the already saved instanceof must be added to this one.
+         * Therefore the basenames of this instanceof must be added to the existing topic.
          */
-        Topic savedInstanceOf = getSavedInstanceOf(instanceOf);
-        instanceOf.getBaseNames().addAll(savedInstanceOf.getBaseNames());
-
-        instanceOf.setImported(true);
-        instanceOf.setTopicMapId(topicMapId);
-        instanceOf.setIsTopicType(true);
-        topicDao.setTopic(instanceOf);
-    }
-
-    private Topic getSavedInstanceOf(Topic instanceOf){
-        Topic savedInstanceOf = topicDao.getTopic(instanceOf.getTopicMapId(),instanceOf.getId());
-        if(savedInstanceOf == null){
-            savedInstanceOf = instanceOf;
+        Topic existingInstanceOf = topicDao.getTopic(instanceOf.getTopicMapId(),instanceOf.getId());
+        if (existingInstanceOf == null){
+            instanceOf.setImported(true);
+            instanceOf.setTopicMapId(topicMapId);
+            instanceOf.setIsTopicType(true);
+            topicDao.setTopic(instanceOf);
+        } else {
+            existingInstanceOf.getBaseNames().addAll(instanceOf.getBaseNames());
+            topicDao.setTopic(existingInstanceOf);
         }
-        return savedInstanceOf;
     }
-
 
     private void saveImportedTopic(int topicMapId, Topic topic) {
         Log.debug(this.getClass().getName(),"Saving imported topic: " + topic.getBaseName());
@@ -153,6 +147,10 @@ public class TopicMapService {
             topicBaseName.setScope(topic.getInstanceOf().getId());
         }
         topicDao.setTopic(topic);
+        createInstanceOf(topicMapId, topic);
+    }
+
+    private void createInstanceOf(int topicMapId, Topic topic) {
         Topic instanceOf = topic.getInstanceOf();
         if(instanceOf != null){
             Topic savedInstanceOf = topicDao.getTopic(topicMapId, instanceOf.getId());

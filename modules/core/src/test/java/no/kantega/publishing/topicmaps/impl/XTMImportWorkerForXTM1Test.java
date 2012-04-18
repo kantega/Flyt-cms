@@ -15,12 +15,12 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-public class XTMImportWorkerTest2 {
+public class XTMImportWorkerForXTM1Test {
     private Document document;
     XTMImportWorker xtmImportWorker;
     @Before
     public void setUp() throws Exception {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("no/kantega/topicmaps/sample-2.0.xtm");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("no/kantega/topicmaps/sample-1.0.xtm");
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = docFactory.newDocumentBuilder();
         document = builder.parse(is);
@@ -36,14 +36,14 @@ public class XTMImportWorkerTest2 {
     @Test
     public void shouldGetCorrectNumberOfAssociation() throws Exception {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
-        assertEquals(4, associationsFromDocument.size());
+        assertEquals(6, associationsFromDocument.size());
     }
 
     @Test
     public void verifyThatTopicHasCorrectInstanceOf() throws Exception {
         List<Topic> topicsFromDocument = xtmImportWorker.getTopicsFromDocument(document);
         Topic instanceOf = topicsFromDocument.get(0).getInstanceOf();
-        assertTrue("ID0E1D".equals(instanceOf.getId()));
+        assertTrue("http://psi.udir.no/kl06/hovedomraade".equals(instanceOf.getId()));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class XTMImportWorkerTest2 {
     public void verifyThatTopicHasCorrectSubjectIdentity() throws Exception {
         List<Topic> topicsFromDocument = xtmImportWorker.getTopicsFromDocument(document);
         Topic topic = topicsFromDocument.get(0);
-        assertTrue("uuid:dd797e2b-8160-4712-82ce-506998390751".equals(topic.getSubjectIdentity()));
+        assertTrue("uuid:cb3cbd2b-95d0-406c-8a19-ca25b41af2da".equals(topic.getSubjectIdentity()));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class XTMImportWorkerTest2 {
     public void verifyThatTopicOccurenceIsCorrect() throws Exception {
         List<Topic> topicsFromDocument = xtmImportWorker.getTopicsFromDocument(document);
         TopicOccurence topicOccurence = topicsFromDocument.get(0).getOccurences().get(0);
-        assertTrue(topicOccurence.getInstanceOf().getId().equals("ID0EDE"));
+        assertTrue(topicOccurence.getInstanceOf().getId().equals("http://psi.udir.no/kl06/beskrivelse"));
         assertTrue(topicOccurence.getResourceData().equals("Hovudomradet: tal og algebra"));
     }
 
@@ -80,8 +80,8 @@ public class XTMImportWorkerTest2 {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getInstanceOf().getId().equals("ID0EWGAG"));
-        assertTrue(topicAssociation2.getInstanceOf().getId().equals("ID0EWGAG"));
+        assertTrue(topicAssociation1.getInstanceOf().getId().equals("http://psi.udir.no/kl06/erstatter"));
+        assertTrue(topicAssociation2.getInstanceOf().getId().equals("http://psi.udir.no/kl06/erstatter"));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class XTMImportWorkerTest2 {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getRolespec().getId().equals("ID0E4GAG"));
-        assertTrue(topicAssociation2.getRolespec().getId().equals("ID0EDHAG"));
+        assertTrue(topicAssociation1.getRolespec().getId().equals("http://psi.udir.no/kl06/erstatning"));
+        assertTrue(topicAssociation2.getRolespec().getId().equals("http://psi.udir.no/kl06/erstattet"));
     }
 
     @Test
@@ -98,8 +98,8 @@ public class XTMImportWorkerTest2 {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getTopicRef().getId().equals("ID0E6GAG"));
-        assertTrue(topicAssociation2.getTopicRef().getId().equals("ID0EFHAG"));
+        assertTrue(topicAssociation1.getTopicRef().getId().equals("http://psi.udir.no/kl06/MAT1-03"));
+        assertTrue(topicAssociation2.getTopicRef().getId().equals("http://psi.udir.no/kl06/MAT1-02"));
     }
 
     @Test
@@ -107,8 +107,8 @@ public class XTMImportWorkerTest2 {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getAssociatedTopicRef().getId().equals("ID0EFHAG"));
-        assertTrue(topicAssociation2.getAssociatedTopicRef().getId().equals("ID0E6GAG"));
+        assertTrue(topicAssociation1.getAssociatedTopicRef().getId().equals("http://psi.udir.no/kl06/MAT1-02"));
+        assertTrue(topicAssociation2.getAssociatedTopicRef().getId().equals("http://psi.udir.no/kl06/MAT1-03"));
     }
 
 }
