@@ -231,6 +231,8 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     public List<Topic> getTopicsByContentId(int contentId) {
         String sql = "";
         sql += " INNER JOIN ct2topic ON (tmtopic.TopicId = ct2topic.TopicId) AND (tmtopic.TopicMapId = ct2topic.TopicMapId)";
+
+        //TODO: basename.scope could contain a value when executing a query by contentid.
         sql += "   WHERE ct2topic.ContentId = " + contentId + " AND tmbasename.Scope IS NULL";
         sql += "   ORDER BY tmbasename.Basename";
 

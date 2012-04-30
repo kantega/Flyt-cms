@@ -183,7 +183,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
     private static int checkLinkInserted(String link, PreparedStatement checkLinkStatement, PreparedStatement insLinkStatement) throws SQLException {
-        // Sjekk om linken er registrert fra f�r, legg til hvis ikke
+        // Check if link is registred, if not add the link.
         checkLinkStatement.setString(1, link);
         ResultSet rs = checkLinkStatement.executeQuery();
         int linkId;
@@ -202,7 +202,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
     private static void checkLinkOccurrenceInserted(int linkId, Content content, PreparedStatement checkOccurrenceStatement, PreparedStatement insOccurrenceStatement, String attributeName) throws SQLException {
-        // Legg til occurrence hvis ikke registrert hva f�r
+        // Add to occurrence if not registred before
         checkOccurrenceStatement.setInt(1, linkId);
         checkOccurrenceStatement.setInt(2, content.getId());
         if (attributeName != null) {

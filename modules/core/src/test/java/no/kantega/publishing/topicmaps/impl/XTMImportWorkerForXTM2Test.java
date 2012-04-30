@@ -80,8 +80,8 @@ public class XTMImportWorkerForXTM2Test {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getInstanceOf().getId().equals("ID0EWGAG"));
-        assertTrue(topicAssociation2.getInstanceOf().getId().equals("ID0EWGAG"));
+        assertTrue(topicAssociation1.getInstanceOf().getId().equals("#ID0EWGAG"));
+        assertTrue(topicAssociation2.getInstanceOf().getId().equals("#ID0EWGAG"));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class XTMImportWorkerForXTM2Test {
         List<TopicAssociation> associationsFromDocument = xtmImportWorker.getTopicAssociationsFromDocument(document);
         TopicAssociation topicAssociation1 = associationsFromDocument.get(0);
         TopicAssociation topicAssociation2 = associationsFromDocument.get(1);
-        assertTrue(topicAssociation1.getRolespec().getId().equals("ID0E4GAG"));
-        assertTrue(topicAssociation2.getRolespec().getId().equals("ID0EDHAG"));
+        assertTrue(topicAssociation1.getRolespec().getId().equals("#ID0E4GAG"));
+        assertTrue(topicAssociation2.getRolespec().getId().equals("#ID0EDHAG"));
     }
 
     @Test
