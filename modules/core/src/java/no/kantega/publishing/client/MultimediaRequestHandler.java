@@ -109,7 +109,7 @@ public class MultimediaRequestHandler implements Controller {
             int expire = config.getInt("multimedia.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
 
-            if ((mimetype.contains("image")) && !resizeParams.skipResize()) {
+            if ((mimetype.contains("image") && !mimetype.contains("svg")) && !resizeParams.skipResize()) {
                 byte[] bytes = null;
 
                 try {
