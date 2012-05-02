@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.media.MimeTypes;
-import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 
@@ -68,6 +68,7 @@ public class Multimedia extends BaseObject {
 
 
     private List<ExifMetadata> exifMetadata;
+    private static final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
 
     public Multimedia() {
 
@@ -151,7 +152,6 @@ public class Multimedia extends BaseObject {
 
     public String getReadableFileSize() {
         if(size <= 0) return "0";
-        final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
         int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }

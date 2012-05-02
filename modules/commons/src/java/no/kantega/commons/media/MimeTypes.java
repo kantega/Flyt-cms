@@ -16,11 +16,12 @@
 
 package no.kantega.commons.media;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MimeTypes {
     private static MimeType DEFAULT_MIMETYPE = new MimeType("bin", "application/octet-stream", "Ukjent filtype");
-    static Vector mimetypes = new Vector();
+    static List<MimeType> mimetypes = new ArrayList<MimeType>();
     static {
         // Audio
         mimetypes.add(new MimeType("mid", "audio/x-midi", "MIDI fil"));
@@ -34,15 +35,16 @@ public class MimeTypes {
         mimetypes.add(new MimeType("rtf", "application/rtf", "Rik tekst"));
 
         // Images
-        mimetypes.add(new MimeType("bmp", "image/bmp", "BMP bilde", true));
+        mimetypes.add(new MimeType("bmp", "image/bmp", "BMP bilde"));
         mimetypes.add(new MimeType("jpe", "image/jpeg", "JPG bilde"));
         mimetypes.add(new MimeType("jpeg", "image/jpeg", "JPG bilde"));
         mimetypes.add(new MimeType("jpg", "image/jpeg", "JPG bilde"));
         mimetypes.add(new MimeType("gif", "image/gif", "GIF bilde"));
         mimetypes.add(new MimeType("png", "image/png", "PNG bilde"));
         mimetypes.add(new MimeType("psd", "image/psd", "PhotoShop bilde"));
-        mimetypes.add(new MimeType("tif", "image/tiff", "TIFF bilde", true));
-        mimetypes.add(new MimeType("tiff", "image/tiff", "TIFF bilde", true));
+        mimetypes.add(new MimeType("tif", "image/tiff", "TIFF bilde"));
+        mimetypes.add(new MimeType("tiff", "image/tiff", "TIFF bilde"));
+        mimetypes.add(new MimeType("svg", "image/svg+xml", "SVG bilde"));
 
         // Video
         mimetypes.add(new MimeType("wmv", "video/x-ms-wmv", "Microsoft Windows Media File"));
@@ -100,10 +102,9 @@ public class MimeTypes {
         }
 
         String fileext = filename.toLowerCase();
-        for (int i = 0; i < mimetypes.size(); i++) {
-            MimeType m = (MimeType)mimetypes.get(i);
-            if (m.getFileExtension().equals(fileext)) {
-                return m;
+        for (MimeType mimetype : mimetypes) {
+            if (mimetype.getFileExtension().equals(fileext)) {
+                return mimetype;
             }
         }
 

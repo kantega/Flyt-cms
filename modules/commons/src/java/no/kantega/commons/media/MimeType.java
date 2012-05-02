@@ -17,70 +17,44 @@
 package no.kantega.commons.media;
 
 public class MimeType {
-    private String fileExtension = null;
-    private String type = null;
-    private String description = null;
-    private boolean dimensionRequired = false;
-    private boolean userMustInputDimension = false;
-    private boolean shouldConvertImage = false;
+    private final String fileExtension;
+    private final String type;
+    private final String description;
+    private final boolean dimensionRequired;
+    private final boolean userMustInputDimension;
 
+    /**
+     * @param fileExtension of the mime type, e.g. "png"
+     * @param type the mime type string, eg. "image/png"
+     * @param desc a human understandable description of the type, e.g. "PNG bilde"
+     */
     public MimeType(String fileExtension, String type, String desc) {
-        this(fileExtension, type, desc, false);
-    }
-
-    public MimeType(String fileExtension, String type, String desc,  boolean shouldConvertImage) {
         this.fileExtension = fileExtension;
         this.type = type;
         this.description = desc;
-        if (type.contains("video") || type.contains("image") || type.contains("flash")) {
-            if (!type.equals("video/x-flv")) {
-                dimensionRequired = true;
-                if (type.contains("video")) {
-                    userMustInputDimension = true;
-                }
-            }
-        }
-        this.shouldConvertImage = shouldConvertImage;
+
+        dimensionRequired = (type.contains("video") || type.contains("image") || type.contains("flash")) && !type.equals("video/x-flv");
+        userMustInputDimension = type.contains("video") && !type.equals("video/x-flv");
     }
 
     public String getFileExtension() {
         return fileExtension;
     }
 
-    public void setFileExtension(String fileExtension) {
-        this.fileExtension = fileExtension;
-    }
-
     public String getType() {
         return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String desc) {
-        this.description = desc;
-    }
-
     public boolean isDimensionRequired() {
         return dimensionRequired;
     }
 
-    public void setDimensionRequired(boolean dimensionRequired) {
-        this.dimensionRequired = dimensionRequired;
-    }
-
     public boolean userMustInputDimension() {
         return userMustInputDimension;
-    }
-
-    public boolean shouldConvertImage() {
-        return shouldConvertImage;
     }
 
     @Override
