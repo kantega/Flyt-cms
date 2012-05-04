@@ -136,6 +136,17 @@ public class Content extends BaseObject {
         return id;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Content content = (Content) o;
+
+        return id == content.id;
+    }
+        
+
     public int getObjectType() {
         return ObjectType.CONTENT;
     }
