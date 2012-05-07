@@ -138,7 +138,7 @@ public class MultimediaRequestHandler implements Controller {
                 }
 
                 response.setContentType(mm.getMimeType().getType());
-                response.addHeader("Content-Disposition", contentDisposition + "; filename=thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension());
+                response.addHeader("Content-Disposition", contentDisposition + "; filename=" + "\"thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension() + "\"");
                 response.addHeader("Content-Length", "" + bytes.length);
 
                 out.write(bytes);
@@ -149,7 +149,7 @@ public class MultimediaRequestHandler implements Controller {
                 if (mm.getSize() != 0) {
                     response.addHeader("Content-Length", "" + mm.getSize());
                 }
-                response.addHeader("Content-Disposition", contentDisposition + "; filename=" + mm.getFilename());
+                response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 mediaService.streamMultimediaData(mmId, new InputStreamHandler(out));
             }
 
