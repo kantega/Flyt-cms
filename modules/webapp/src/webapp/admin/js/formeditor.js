@@ -128,8 +128,14 @@ function formEditElement(element) {
 
     $("#form_SaveFormElement").unbind("click");
     $("#form_SaveFormElement").click(function() {
-        formSaveElement();
-        $("#EditFormElement").hide();
+        var fieldName = $("#form_FieldName").val();
+        if (fieldName == "") {
+            $("#form_FieldName").focus();
+        } else {
+            formSaveElement();
+            $("#EditFormElement").hide();
+
+        }
     });
 
     handler = formGetElementTypeHandler(type);
@@ -381,11 +387,11 @@ function getLastFormElementForAppend() {
 }
 
 function formSaveElement() {
-    fieldName = $("#form_FieldName").val();
-    type = $("#form_FieldType").val();
-    helpText = $("#form_HelpText").val();
+    var fieldName = $("#form_FieldName").val();
+    var type = $("#form_FieldType").val();
+    var helpText = $("#form_HelpText").val();
 
-    childNo = $("#form_ChildNo").val();
+    var childNo = $("#form_ChildNo").val();
 
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
