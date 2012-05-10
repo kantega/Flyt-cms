@@ -143,9 +143,25 @@ public class Content extends BaseObject {
 
         Content content = (Content) o;
 
-        return id == content.id;
+        Association a1 = content.getAssociation();
+        Association a2 = getAssociation();
+        if (a1 != null && a2 != null) {
+            if (a2.getId() == -1) {
+                return super.equals(o);
+            }
+            return a1.getId() == a2.getId();
+        }
+        return false;
     }
-        
+
+    @Override
+    public int hashCode() {
+        if (getAssociation() != null && getAssociation().getId() != -1) {
+            return getAssociation().getId();
+        } else {
+            return super.hashCode();
+        }
+    }
 
     public int getObjectType() {
         return ObjectType.CONTENT;
