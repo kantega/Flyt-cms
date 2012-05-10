@@ -161,6 +161,13 @@
             <type>boolean</type>
         </attribute>
         <attribute>
+            <description>Always includes current page and parents even when page in current associationCategory</description>
+            <name>alwaysincludecurrentpath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
             <description>Uses specified id as root instead of frontpage</description>
             <name>rootid</name>
             <required>false</required>

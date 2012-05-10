@@ -198,7 +198,7 @@ public class SiteMapWorker {
     }
 
 
-    public static SiteMapEntry getSiteMap(int siteId, int depth, int language, AssociationCategory associationCategory, int rootId, int currentId) throws SystemException {
+    public static SiteMapEntry getSiteMap(int siteId, int depth, int language, AssociationCategory associationCategory, int rootId, int[] currentPath) throws SystemException {
         StringBuilder query = new StringBuilder();
 
         if (depth != -1) {
@@ -210,8 +210,10 @@ public class SiteMapWorker {
         query.append(" and associations.SiteId = ").append(siteId);
         if (associationCategory != null) {
             query.append(" and (associations.Category = 0 or associations.Category = ").append(associationCategory.getId());
-            if (currentId != -1) {
-                query.append(" or associations.AssociationId = ").append(currentId);
+            for (int id : currentPath) {
+                if (id != -1) {
+                    query.append(" or associations.AssociationId = ").append(id);
+                }
             }
             if (rootId != -1) {
                 query.append(" or associations.AssociationId = ").append(rootId);
@@ -221,6 +223,12 @@ public class SiteMapWorker {
         }
 
         return getSiteMapBySQL(query, rootId, false, null);
+    }
+
+    public static SiteMapEntry getSiteMap(int siteId, int depth, int language, AssociationCategory associationCategory, int rootId, int currentId) throws SystemException {
+        int[] currentPath = {currentId};
+
+        return getSiteMap(siteId, depth, language, associationCategory, rootId, currentPath);
     }
 
     public static SiteMapEntry getPartialSiteMap(int siteId, int[] idList, String sort, boolean showExpired) throws SystemException {

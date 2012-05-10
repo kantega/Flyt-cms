@@ -19,6 +19,7 @@ package no.kantega.publishing.api.taglibs.menu;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.cache.SiteCache;
@@ -29,6 +30,7 @@ import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.impl.SiteMapWorker;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 
@@ -57,6 +59,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     protected String defaultOpenPath = "";
     protected boolean includeRoot = false;
     protected boolean alwaysIncludeCurrentId = false;
+    protected boolean alwaysIncludeCurrentPath = false;
     protected boolean ignoreLanguage = false;
     protected boolean checkAuthorization = false;
     String associationCategory = null;
@@ -187,6 +190,9 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         this.alwaysIncludeCurrentId = alwaysIncludeCurrentId;
     }
 
+    public void setAlwaysincludecurrentpath(boolean alwaysIncludeCurrentPath) {
+        this.alwaysIncludeCurrentPath = alwaysIncludeCurrentPath;
+    }
 
     public void setIgnorelanguage(boolean ignoreLanguage) {
         this.ignoreLanguage = ignoreLanguage;
@@ -324,6 +330,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             SiteMapEntry sitemap;
             if (alwaysIncludeCurrentId) {
                 sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, currentId);
+            } else if (alwaysIncludeCurrentPath && currentPath.length() > 0) {
+                sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, StringHelper.getInts(currentPath + "/" + currentId, "/"));
             } else {
                 sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, -1);
             }
@@ -401,6 +409,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         includeRoot = false;
         associationCategory = null;
         alwaysIncludeCurrentId = false;
+        alwaysIncludeCurrentPath = false;
         ignoreLanguage = false;
         startDepth = -1;
         checkAuthorization = false;

@@ -788,22 +788,44 @@ public class ContentManagementService {
         if (associationCategoryName != null) {
             category = AssociationCategoryCache.getAssociationCategoryByPublicId(associationCategoryName);
         }
-        return getSiteMapFromCache(siteId, depth, language, rootId, currentId, category);
+        int path[] = {currentId};
+
+        return getSiteMapFromCache(siteId, depth, language, rootId, path, category);
     }
 
-    private SiteMapEntry getSiteMapFromCache(int siteId, int depth, int language, int rootId, int currentId, AssociationCategory category) {
-        if(cachingEnabled) {
-            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, currentId, category.getId());
+        /**
+     * Hent sitemap
+     * @param siteId - Site det skal hentes for
+     * @param depth - Antall niv�er som skal hentes
+     * @param language - Spr�k det skal hentes for
+     * @param associationCategoryName - Spalte / knytning det skal hentes for.  (F.eks alt som er publisert i "venstremeny"
+     * @param rootId - Startpunkt for sitemap
+     * @param currentId - Id for side man st�r p�
+     * @return
+     * @throws SystemException
+     */
+    public SiteMapEntry getSiteMap(int siteId, int depth, int language, String associationCategoryName, int rootId, int[] path) throws SystemException {
+        AssociationCategory category = null;
+        if (associationCategoryName != null) {
+            category = AssociationCategoryCache.getAssociationCategoryByPublicId(associationCategoryName);
+        }
+        return getSiteMapFromCache(siteId, depth, language, rootId, path, category);
+    }
+
+
+    private SiteMapEntry getSiteMapFromCache(int siteId, int depth, int language, int rootId, int[] path, AssociationCategory category) {
+        if (cachingEnabled) {
+            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, path, category.getId());
 
             Element element = siteMapCache.get(key);
             if(element == null) {
-                element = new Element(key, SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, currentId));
+                element = new Element(key, SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, path));
                 siteMapCache.put(element);
             }
 
             return (SiteMapEntry) element.getObjectValue();
         } else {
-            return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, currentId);
+            return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, path);
         }
     }
 
