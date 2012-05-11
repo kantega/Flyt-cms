@@ -33,6 +33,7 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -81,7 +82,7 @@ public class ContentRequestHandler extends AbstractController {
                 cid = new ContentIdentifier(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
 
-                if (request instanceof MultipartHttpServletRequest) {
+                if (request instanceof MultipartHttpServletRequest || "true".equals(request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX))) {
                     Log.error(SOURCE, "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action", null, null);
                 }
             }

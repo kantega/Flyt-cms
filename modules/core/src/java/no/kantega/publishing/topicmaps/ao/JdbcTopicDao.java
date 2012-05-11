@@ -117,17 +117,17 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     public void deleteAllImportedTopics(int topicMapId) {
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE imported = 1)", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND imported = 1", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND imported = 1", topicMapId);
+        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
     }
 
@@ -339,7 +339,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     private List<Topic> getTopicsBySQLStatement(String whereClause) {
         String sql = "";
-        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation, tmtopic.imported";
+        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation, tmtopic.Imported";
         sql += "   FROM tmtopic";
         sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 

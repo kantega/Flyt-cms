@@ -95,7 +95,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
 
         String sql = "";
 
-        sql += " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmassociation.imported, tmbasename.Basename, tmbasename.Scope FROM tmassociation";
+        sql += " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmassociation.Imported, tmbasename.Basename, tmbasename.Scope FROM tmassociation";
         sql += "   INNER JOIN tmbasename ON (tmassociation.TopicMapId = tmbasename.TopicMapId) AND (tmassociation.InstanceOf = tmbasename.TopicId) AND (tmassociation.Rolespec = tmbasename.Scope)";
         sql += " WHERE (tmassociation.TopicRef = ? AND tmassociation.TopicMapId = ?) ORDER BY tmbasename.Basename";
 

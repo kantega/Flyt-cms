@@ -30,7 +30,7 @@ public class TopicRowMapper implements RowMapper<Topic> {
 
         topic.setId(rs.getString("TopicId"));
         topic.setTopicMapId(rs.getInt("TopicMapId"));
-        topic.setImported(rs.getInt("imported") == 1);
+        topic.setImported(rs.getInt("Imported") == 1);
 
         String instanceOf = rs.getString("InstanceOf");
         if (instanceOf != null) {
