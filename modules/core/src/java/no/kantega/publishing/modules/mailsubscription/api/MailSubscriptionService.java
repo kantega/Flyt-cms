@@ -16,23 +16,22 @@
 
 package no.kantega.publishing.modules.mailsubscription.api;
 
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.commons.util.RegExp;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MailSubscriptionService {
     private static final String SOURCE = "aksess.MailSubscriptionService";
@@ -103,6 +102,28 @@ public class MailSubscriptionService {
 
             }
         }
+    }
+
+    /**
+     * Retrieves all mail subscriptions for a given subscriber (email)
+     * @param email subscriber email.
+     * @return a list of all the mail subscriptions associated with the given email address.
+     */
+    public static List<MailSubscription> getMailSubscriptions(final String email) {
+        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query(
+                "SELECT * FROM mailsubscription WHERE Email=:email",
+                new HashMap<String, Object>(){{put("email", email);}},
+                new RowMapper<MailSubscription>() {
+                    public MailSubscription mapRow(ResultSet rs, int i) throws SQLException {
+                        MailSubscription mailSubscription = new MailSubscription();
+                        mailSubscription.setChannel(rs.getInt("Channel"));
+                        mailSubscription.setDocumenttype(rs.getInt("DocumentType"));
+                        mailSubscription.setEmail(email);
+                        mailSubscription.setInterval(rs.getString("MailInterval"));
+                        mailSubscription.setLanguage(rs.getInt("Language"));
+                        return mailSubscription;
+                    }
+                });
     }
 
     public static void removeMailSubscription(String email, int channel, int documenttype) throws SystemException, InvalidParameterException {
