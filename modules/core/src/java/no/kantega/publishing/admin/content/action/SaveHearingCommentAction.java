@@ -16,62 +16,78 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.HearingAO;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.HearingAO;
+import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.HearingComment;
+import no.kantega.publishing.common.data.Note;
+import no.kantega.publishing.security.SecuritySession;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServlet;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-
-import org.apache.log4j.Logger;
 
 
-public class SaveHearingCommentAction extends HttpServlet  {
+public class SaveHearingCommentAction{
 
-    private Logger log = Logger.getLogger(getClass());
-    public static final String HEARING_KEY = SaveHearingCommentAction.class.getName() + ".HearingKey";
-    public static final String HEARING_INVITEES_KEY = SaveHearingCommentAction.class.getName() +".HearingInviteeKey";
+	private Logger log = Logger.getLogger(getClass());
+	public static final String HEARING_KEY = SaveHearingCommentAction.class.getName() + ".HearingKey";
+	public static final String HEARING_INVITEES_KEY = SaveHearingCommentAction.class.getName() + ".HearingInviteeKey";
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestParameters param = new RequestParameters(request);
+	@Autowired
+	private NotesDao notesDao;
 
-        try {
-            String sourceurl = param.getString("sourceurl");
+	@RequestMapping("/aksess/hearing/SaveHearingComment.action")
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		RequestParameters param = new RequestParameters(request);
 
-            String username = SecuritySession.getInstance(request).getUser().getId();
+		try {
+			String sourceurl = param.getString("sourceurl");
 
-            String comment = param.getString("comment");
+			String username = SecuritySession.getInstance(request).getUser().getId();
 
-            int hearingID = param.getInt("hearingId");
+			String comment = param.getString("comment");
 
-            // TODO: Check if is hearing instance
+			int hearingID = param.getInt("hearingId");
 
-            if(comment != null && !comment.trim().equals("")) {
-                HearingComment hc = new HearingComment();
-                hc.setHearingId(hearingID);
-                hc.setComment(comment);
-                hc.setDate(new Date());
-                hc.setUserRef(username);
-                HearingAO.saveOrUpdate(hc);
-            }
-            response.sendRedirect(sourceurl);
-        } catch (SystemException e) {
-            throw new ServletException(e);
-        }
+			// TODO: Check if is hearing instance
 
-    }
+			if (comment != null && !comment.trim().equals("")) {
+				Content content = (Content) request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
+				String name = SecuritySession.getInstance(request).getUser().getName();
+
+				HearingComment hc = new HearingComment();
+				hc.setHearingId(hearingID);
+				hc.setComment(comment);
+				hc.setDate(new Date());
+				hc.setUserRef(username);
+				HearingAO.saveOrUpdate(hc);
+
+				Note note = new Note();
+				note.setText(comment);
+				note.setDate(new Date());
+				note.setContentId(content.getId());
+				note.setAuthor(name);
+				notesDao.addNote(note);
+				int count = notesDao.getNotesByContentId(content.getId()).size();
+				ContentAO.setNumberOfNotes(content.getId(), count);
+
+			}
+			response.sendRedirect(sourceurl);
+		} catch (SystemException e) {
+			throw new ServletException(e);
+		}
+
+	}
 
 }

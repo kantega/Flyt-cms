@@ -49,17 +49,7 @@ public class SaveHearingHelper  {
             errors.add("hearing_description", "aksess.feil.hearing.description.missing");
         }
 
-        String[] orgunits = param.getString("attributeValue_hearing_orgunits").split(",");
         List<HearingInvitee> invitees = new ArrayList<HearingInvitee>();
-        for (String orgunit : orgunits) {
-            if (!orgunit.equals("")) {
-                HearingInvitee invitee = new HearingInvitee();
-                invitee.setType(HearingInvitee.TYPE_ORGUNIT);
-                invitee.setReference(orgunit);
-                invitees.add(invitee);
-            }
-        }
-
         String[]  users = param.getString("attributeValue_hearing_users").split(",");
         for (String user : users) {
             if (!user.equals("")) {

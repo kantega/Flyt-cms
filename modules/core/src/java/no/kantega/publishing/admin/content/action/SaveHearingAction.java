@@ -39,38 +39,74 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.realm.SecurityRealm;
 import org.apache.log4j.Logger;
+import org.apache.poi.ss.formula.functions.CalendarFieldFunction;
 import org.springframework.web.servlet.ModelAndView;
 
 
 public class SaveHearingAction extends AdminController {
-    private String confirmView;
-    private String formView;
+	private String confirmView;
+	private String formView;
 
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Content content = (Content)request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+	public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Content content = (Content) request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+		setDeadlineIfNotPresent(content.getHearing());
+		addCurrentUserAsInvitee(request, content.getHearing());
 
-        if (request.getMethod().equalsIgnoreCase("POST")) {
-            SaveHearingHelper helper = new SaveHearingHelper(request, content);
-            ValidationErrors errors = new ValidationErrors();
-            helper.getHttpParameters(errors);
-            if (errors.getLength() == 0) {
-                // Save
-                return new ModelAndView(confirmView);
-            }
-            model.put("errors", errors);
-        }
+		Map<String, Object> model = new HashMap<String, Object>();
 
-        return new ModelAndView(formView, model);
-    }
+		if (request.getMethod().equalsIgnoreCase("POST")) {
 
-    public void setConfirmView(String confirmView) {
-        this.confirmView = confirmView;
-    }
+			SaveHearingHelper helper = new SaveHearingHelper(request, content);
+			ValidationErrors errors = new ValidationErrors();
+			helper.getHttpParameters(errors);
+			if (errors.getLength() == 0) {
+				// Save
 
-    public void setFormView(String formView) {
-        this.formView = formView;
-    }
+				return new ModelAndView(confirmView);
+			}
+			model.put("errors", errors);
+		}
+
+		return new ModelAndView(formView, model);
+	}
+
+	private void setDeadlineIfNotPresent(Hearing hearing) {
+		Date deadline = hearing.getDeadLine();
+		if (deadline == null) {
+			//Set deadline a week from now.
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, 7);
+			hearing.setDeadLine(cal.getTime());
+		}
+	}
+
+	public void addCurrentUserAsInvitee(HttpServletRequest request, Hearing hearing) {
+		String user = SecuritySession.getInstance(request).getUser().getId();
+		HearingInvitee invitee = new HearingInvitee();
+		invitee.setType(HearingInvitee.TYPE_PERSON);
+		invitee.setReference(user);
+		if (!contains(hearing.getInvitees(), invitee)) {
+			hearing.getInvitees().add(invitee);
+		}
+	}
+
+	private boolean contains(List<HearingInvitee> invitees, HearingInvitee invitee) {
+		for (HearingInvitee check : invitees) {
+			if (check.getReference().equals(invitee.getReference()))
+				return true;
+		}
+		return false;
+	}
+
+	public void setConfirmView(String confirmView) {
+		this.confirmView = confirmView;
+	}
+
+	public void setFormView(String formView) {
+		this.formView = formView;
+	}
 }

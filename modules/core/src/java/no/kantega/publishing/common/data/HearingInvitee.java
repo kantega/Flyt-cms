@@ -68,4 +68,6 @@ public class HearingInvitee {
     public void setHearingId(int hearingId) {
         this.hearingId = hearingId;
     }
+
+
 }

@@ -29,7 +29,8 @@
 
 <kantega:section id="head">
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksess-i18n.jjs"></script>
-    <script language="Javascript" type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
+    <script language="Javascript" type="text/javascript"
+            src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
     <script type="text/javascript">
         function buttonOkPressed() {
             // Prevent popup from closing
@@ -39,7 +40,7 @@
 </kantega:section>
 
 <kantega:section id="body">
-    
+
 
     <form action="" name="myform" method="POST">
         <%@ include file="../../layout/fragments/infobox.jsp" %>
@@ -47,37 +48,21 @@
 
             <div class="contentAttribute">
                 <fmt:formatDate var="deadline" value="${currentContent.hearing.deadLine}" pattern="dd.MM.yyyy"/>
-                <admin:renderattribute type="date" name="hearing_deadline" titlekey="aksess.hearing.deadline" value="${deadline}"/>
-                <admin:renderattribute type="text" name="hearing_changedescription" titlekey="aksess.hearing.changedescription" value="${currentContent.changeDescription}" maxlength="300"/>
+                <admin:renderattribute type="date" name="hearing_deadline" titlekey="aksess.hearing.deadline"
+                                       value="${deadline}"/>
+                <admin:renderattribute type="text" name="hearing_changedescription"
+                                       titlekey="aksess.hearing.changedescription"
+                                       value="${currentContent.changeDescription}" maxlength="300"/>
                 <%
-                    Hearing hearing = ((Content)session.getAttribute("currentContent")).getHearing();
+                      Hearing hearing = ((Content) session.getAttribute("currentContent")).getHearing();
                     {
-                        OrgunitAttribute orgunits = new OrgunitAttribute();
-                        orgunits.setMultiple(true);
-                        orgunits.setMoveable(false);
-                        orgunits.setValue("");
-                        if(hearing != null) {
-                            for (HearingInvitee invitee : hearing.getInvitees()) {
-                                if (invitee.getType() == HearingInvitee.TYPE_ORGUNIT) {
-                                    if (orgunits.getValue().length() > 0) {
-                                        orgunits.setValue(orgunits.getValue() + ",");
-                                    }
-                                    orgunits.setValue(orgunits.getValue() + invitee.getReference());
-                                }
-                            }
-                        }
-                        request.setAttribute("orgunits", orgunits);
-                    }
-                %>
-                <admin:renderattribute attribute="${orgunits}" name="hearing_orgunits" titlekey="aksess.hearing.orgunits"/>
-                <%
-                    {
+
                         UserAttribute users = new UserAttribute();
 
                         users.setMultiple(true);
                         users.setMoveable(false);
                         users.setValue("");
-                        if(hearing != null) {
+                        if (hearing != null) {
                             for (HearingInvitee invitee : hearing.getInvitees()) {
                                 if (invitee.getType() == HearingInvitee.TYPE_PERSON) {
                                     if (users.getValue().length() > 0) {
@@ -95,8 +80,10 @@
             </div>
 
             <div class="buttonGroup">
-                <span class="button"><input type="submit" class="insert" value="<kantega:label key="aksess.button.ok"/>"></span>
-                <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <span class="button"><input type="submit" class="insert"
+                                            value="<kantega:label key="aksess.button.ok"/>"></span>
+                <span class="button"><input type="button" class="cancel"
+                                            value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </div>
     </form>

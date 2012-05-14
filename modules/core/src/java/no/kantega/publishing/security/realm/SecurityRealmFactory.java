@@ -24,13 +24,13 @@ import org.springframework.context.ApplicationContext;
 public class SecurityRealmFactory {
     private static final String SOURCE = "aksess.SecurityRealmFactory";
 
-    public static SecurityRealm getInstance () throws SystemException {
+    public static SecurityRealm getInstance() throws SystemException {
         return getInstance(Aksess.getSecurityRealmName());
     }
 
     public static SecurityRealm getInstance(String realmName) throws SystemException {
         ApplicationContext context = RootContext.getInstance();
-        SecurityRealm realm = (SecurityRealm)context.getBean(realmName);
+        SecurityRealm realm = (SecurityRealm) context.getBean(realmName);
         if (realm == null) {
             throw new SystemException(SOURCE, "Realm with name" + realmName + " not found", null);
         }

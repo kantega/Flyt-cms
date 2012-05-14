@@ -459,6 +459,7 @@
     <bean id="ListNotesAction" class="no.kantega.publishing.admin.content.ajax.ListNotesAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/listnotes.jsp"/>
     </bean>
+    <bean id="SaveHearingCommentAction" name="SaveHearingCommentAction" class="no.kantega.publishing.admin.content.action.SaveHearingCommentAction"/>
     <bean id="AddNoteAction" class="no.kantega.publishing.admin.content.ajax.AddNoteAction"/>
     <bean id="DeleteNoteAction" class="no.kantega.publishing.admin.content.ajax.DeleteNoteAction"/>
 
@@ -511,6 +512,7 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
+    <!--
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingCommentAction">
         <property name="servletClass">
             <value>no.kantega.publishing.admin.content.action.SaveHearingCommentAction</value>
@@ -519,7 +521,8 @@
             <value>SaveHearingCommentAction</value>
         </property>
     </bean>
-
+-->
+    
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction">
         <property name="aksessJsonView" ref="aksessJsonView"/>
     </bean>
