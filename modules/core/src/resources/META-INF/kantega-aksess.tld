@@ -2886,4 +2886,21 @@
             ]]>
         </example>
     </tag>
+
+    <tag>
+        <description>Render body content as a Velocity template. All request attributes are available in velocity context</description>
+        <name>rendervelocitytext</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.RenderVelocityTextTag</tag-class>
+        <body-content>JSP</body-content>
+        <example>
+            <![CDATA[
+                    <aksess:setvariable name="givenName" attribute="givenName"/>
+
+                    <aksess:rendervelocitytext>
+                     Hi $givenName
+                    </aksess:rendervelocitytext>
+            ]]>
+        </example>
+    </tag>
+
 </taglib>
