@@ -59,6 +59,8 @@ public class ContentSearchController implements AksessController, InitializingBe
     private Integer includedContentTemplateId = null;
     private Integer excludedContentTemplateId = null;
 
+    private boolean searchAllSites = false;
+
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
@@ -117,13 +119,16 @@ public class ContentSearchController implements AksessController, InitializingBe
     protected SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
         SearchServiceQuery query = new SearchServiceQuery(request, customSearchFields);
         RequestParameters params = new RequestParameters(request);
-        if (content != null) {
-            query.putSearchParam("thisId", "" + content.getAssociation().getId());
-            int siteId = params.getInt(SearchServiceQuery.PARAM_SITE_ID);
-            if (siteId == -1) {
-                siteId = content.getAssociation().getSiteId();
+
+        if (!searchAllSites) {
+            if (content != null) {
+                query.putSearchParam("thisId", "" + content.getAssociation().getId());
+                int siteId = params.getInt(SearchServiceQuery.PARAM_SITE_ID);
+                if (siteId == -1) {
+                    siteId = content.getAssociation().getSiteId();
+                }
+                query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
             }
-            query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
         }
 
         if (includedContentTemplateId != null) {
@@ -360,5 +365,9 @@ public class ContentSearchController implements AksessController, InitializingBe
                 }
             }
         }
+    }
+
+    public void setSearchAllSites(boolean searchAllSites) {
+        this.searchAllSites = searchAllSites;
     }
 }
