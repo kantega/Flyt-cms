@@ -18,22 +18,18 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DatetimeAttribute;
 import no.kantega.publishing.common.data.attributes.DateAttribute;
+import no.kantega.publishing.common.data.attributes.DatetimeAttribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 24.jan.2008
  * Time: 12:15:01
  */

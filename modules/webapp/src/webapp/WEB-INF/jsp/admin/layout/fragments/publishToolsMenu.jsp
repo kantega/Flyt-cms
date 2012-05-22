@@ -1,9 +1,9 @@
 <%--
-  Author: Kristian Lier Selnæs, Kantega AS
+  Author: Kristian Lier SelnÃ¦s, Kantega AS
   Date: 27.jan.2010
   Time: 10:53:27
 --%>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <div class="buttonGroup">
     <a href="#" class="button disabled" id="NewSubpageButton"><span class="newSubpage"><kantega:label key="aksess.tools.newSubpage"/></span></a>
     <a href="#" class="button disabled" id="DeletePageButton"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>

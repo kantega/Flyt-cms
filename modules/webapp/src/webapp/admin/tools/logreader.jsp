@@ -1,12 +1,12 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.configuration.Configuration" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters" %>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
+<%@ page import="no.kantega.commons.configuration.Configuration" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
 
 <%@ page import="java.io.BufferedReader" %>
-<%@ page import="java.io.FileReader" %>
 <%@ page import="java.io.File" %>
+<%@ page import="java.io.FileReader" %>
 
 <%
     SecuritySession securitySession = SecuritySession.getInstance(request);

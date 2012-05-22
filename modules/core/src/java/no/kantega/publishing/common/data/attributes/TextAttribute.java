@@ -17,13 +17,13 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateTextAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.util.RegExp;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateTextAttributeFromRequestBehaviour;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class TextAttribute extends Attribute {
             return null;
         }
         if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
-            // Første linje er pga skrivefeil, kan ikke fjernes før evt databaser oppdateres
+            // FÃ¸rste linje er pga skrivefeil, kan ikke fjernes fÃ¸r evt databaser oppdateres
             returnValue = StringHelper.replace(returnValue, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
             returnValue = StringHelper.replace(returnValue, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
             returnValue = StringHelper.makeLinks(returnValue);

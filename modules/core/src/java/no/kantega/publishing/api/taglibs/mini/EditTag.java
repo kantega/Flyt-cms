@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.URLHelper;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -31,7 +31,7 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:05
  */

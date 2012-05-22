@@ -17,19 +17,18 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.util.StringHelper;
-import no.kantega.publishing.common.ao.EditableListAO;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.EditableListAO;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
+import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: Jun 11, 2007
  * Time: 10:40:44 AM
  */

@@ -120,7 +120,7 @@ public class EditProfileController extends AbstractUserAdminController {
                 redirectModel.put("userId", profile.getIdentity().getUserId());
                 return new ModelAndView(new RedirectView("../password/reset"), redirectModel);
             } else {
-                // Gå til brukeroversikt
+                // GÃ¥ til brukeroversikt
                 redirectModel.put("userId", profile.getIdentity().getUserId());                
                 redirectModel.put("message", "useradmin.profile.saved");
                 return new ModelAndView(new RedirectView("search"), redirectModel);

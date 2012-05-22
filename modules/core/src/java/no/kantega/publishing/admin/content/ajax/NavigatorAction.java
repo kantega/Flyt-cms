@@ -16,32 +16,36 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.preferences.UserPreference;
+import no.kantega.publishing.admin.preferences.UserPreferencesManager;
+import no.kantega.publishing.admin.util.NavigatorUtil;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.data.SiteMapEntry;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.SiteManagementService;
 import no.kantega.publishing.security.SecuritySession;
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.common.service.SiteManagementService;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.preferences.UserPreferencesManager;
-import no.kantega.publishing.admin.preferences.UserPreference;
-import no.kantega.publishing.admin.util.NavigatorUtil;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.util.StringHelper;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 03.jul.2009
  * Time: 14:13:45
  */
@@ -160,7 +164,7 @@ public class NavigatorAction implements Controller {
      * Determining the menu sort order
      *
      * @param request - The current HttpServletRequest
-     * @return - String representing the sort order, e.g. ContentProperty.PR�ORITY.
+     * @return - String representing the sort order, e.g. ContentProperty.PRIORITY.
      */
     private String getSort(HttpServletRequest request) {
         String sort = request.getParameter(AdminRequestParameters.NAVIGATION_SORT_ORDER);

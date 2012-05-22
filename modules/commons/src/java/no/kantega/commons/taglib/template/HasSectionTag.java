@@ -24,7 +24,7 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Benyttes for å hente ut en section som er lagret med put tidligere
+ * Benyttes for Ã¥ hente ut en section som er lagret med put tidligere
  */
 public class HasSectionTag  extends BodyTagSupport {
     private String id = null;

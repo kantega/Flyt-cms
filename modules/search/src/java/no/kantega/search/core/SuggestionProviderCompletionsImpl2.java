@@ -36,9 +36,9 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * SuggestionProvider som tilbyr forslag til autocompletions av ord. St�tter ogs� flere ord.
- * Denne implementasjonen gir ord basert p� hvilke termer som finnes ofte i samme dokument som den gitte frasen.
- * Basert p� forslag fra Eirik.
+ * SuggestionProvider som tilbyr forslag til autocompletions av ord. Støtter ogsø flere ord.
+ * Denne implementasjonen gir ord basert pø hvilke termer som finnes ofte i samme dokument som den gitte frasen.
+ * Basert pø forslag fra Eirik.
  *
  * Date: Jan 20, 2009
  * Time: 6:58:27 AM
@@ -89,7 +89,7 @@ public class SuggestionProviderCompletionsImpl2 implements SuggestionProvider {
 
 
         long begin = System.currentTimeMillis();
-        // lage et array med booleans som sier om dokumentet inneholder de f�rste ordene
+        // lage et array med booleans som sier om dokumentet inneholder de første ordene
         IndexReader r = null;
 
         try {

@@ -16,22 +16,22 @@
 
 package no.kantega.publishing.jobs.contentimport;
 
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.exception.TransactionLockException;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.exception.TransactionLockException;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.event.ContentImporter;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Iterator;
@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: May 23, 2007
  * Time: 11:12:15 AM
  */

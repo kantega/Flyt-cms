@@ -19,15 +19,12 @@ package no.kantega.search.criteria;
 import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 
 /**
- * Criterion som søker etter ett eller flere ord i et felt.
+ * Criterion som sÃ¸ker etter ett eller flere ord i et felt.
  *
  * Date: Dec 5, 2008
  * Time: 11:06:35 AM

@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SiteAO {
     private static final String SOURCE = "aksess.SiteAO";
@@ -139,7 +139,7 @@ public class SiteAO {
                 st.execute();
             }
 
-            // Legg inn tilhørende host for hvert domene, første er default
+            // Legg inn tilhÃ¸rende host for hvert domene, fÃ¸rste er default
             st = c.prepareStatement("insert into site2hostname values(?,?,?)");
             List hosts = site.getHostnames();
             for (int i = 0; i < hosts.size(); i++) {

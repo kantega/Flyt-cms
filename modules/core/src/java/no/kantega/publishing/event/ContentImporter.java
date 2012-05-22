@@ -21,7 +21,7 @@ import no.kantega.publishing.common.data.Content;
 import java.util.List;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: May 23, 2007
  * Time: 11:19:54 AM
  */

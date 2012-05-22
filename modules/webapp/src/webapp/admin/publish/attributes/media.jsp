@@ -1,13 +1,13 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
-<%@ page import="no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.data.Multimedia,
-                 no.kantega.publishing.common.data.attributes.MediaAttribute"%>
+<%@ page import="no.kantega.commons.util.LocaleLabels,
+                 no.kantega.publishing.common.Aksess,
+                 no.kantega.publishing.common.data.Multimedia"%>
+<%@ page import="no.kantega.publishing.common.data.attributes.MediaAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.MultimediaService"%>
-<%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

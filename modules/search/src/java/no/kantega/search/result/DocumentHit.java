@@ -19,7 +19,7 @@ package no.kantega.search.result;
 import org.apache.lucene.document.Document;
 
 /**
- * Interface som representerer et søketreff på et dokument i indeksen.
+ * Interface som representerer et sÃ¸ketreff pÃ¥ et dokument i indeksen.
  *
  * Date: Dec 8, 2008
  * Time: 9:25:33 AM

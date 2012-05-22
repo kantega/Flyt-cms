@@ -15,9 +15,9 @@
   --%>
 
 <%--
-  Author: Kristian Lier Selnæs, Kantega AS
+  Author: Kristian Lier SelnÃ¦s, Kantega AS
   Date: 07.jul.2009
   Time: 09:40:32
 --%>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 

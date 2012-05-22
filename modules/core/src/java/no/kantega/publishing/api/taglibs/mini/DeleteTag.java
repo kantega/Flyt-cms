@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:25
  */

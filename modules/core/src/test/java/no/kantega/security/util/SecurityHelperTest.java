@@ -17,21 +17,18 @@
 package no.kantega.security.util;
 
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.util.SecurityHelper;
 import no.kantega.security.api.profile.Profile;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 /**
- * User: Kristian Selnæs
+ * User: Kristian SelnÃ¦s
  * Date: 12.apr.2010
  * Time: 12:57:50
  */

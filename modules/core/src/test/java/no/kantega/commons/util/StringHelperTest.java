@@ -46,11 +46,11 @@ public class StringHelperTest extends TestCase{
 
     public void testMakeLinksFull(){
         String input = "Her er en tekst med alle 3 mulige link former www.db.no," +
-                       " kommer først, dernest så kommer http://kantega.no." +
-                       " Ev. spørsmål sendes til test@test.no";
+                       " kommer fÃ¸rst, dernest sÃ¥ kommer http://kantega.no." +
+                       " Ev. spÃ¸rsmÃ¥l sendes til test@test.no";
         String expected = "Her er en tekst med alle 3 mulige link former <a href=\"http://www.db.no\">www.db.no</a>," +
-                         " kommer først, dernest så kommer <a href=\"http://kantega.no\">http://kantega.no</a>." +
-                         " Ev. spørsmål sendes til <a href=\"mailto:test@test.no\">test@test.no</a>" ;
+                         " kommer fÃ¸rst, dernest sÃ¥ kommer <a href=\"http://kantega.no\">http://kantega.no</a>." +
+                         " Ev. spÃ¸rsmÃ¥l sendes til <a href=\"mailto:test@test.no\">test@test.no</a>" ;
         String result = StringHelper.makeLinks(input);
         assertEquals(expected,result);
     }

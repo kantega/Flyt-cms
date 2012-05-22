@@ -1,8 +1,7 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
                  no.kantega.commons.util.URLHelper"%>
-<%@ page import="java.text.ParseException" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

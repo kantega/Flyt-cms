@@ -32,7 +32,7 @@ import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
 /**
- * User: Kristian Selnæs
+ * User: Kristian SelnÃ¦s
  * Date: 23.mar.2010
  * Time: 12:22:03
  */

@@ -17,15 +17,15 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class AssociationAOHelper {
@@ -39,7 +39,7 @@ public class AssociationAOHelper {
 
             List sites = SiteCache.getSites();
 
-            // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
+            // MySQL stÃ¸tter ikke Ã¥ oppdatere tabeller som er med i subqueries, derfor denne tungvinte mÃ¥ten Ã¥ gjÃ¸re det pÃ¥
             String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + " AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
                             " (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
             PreparedStatement st = c.prepareStatement(query);
@@ -81,7 +81,7 @@ public class AssociationAOHelper {
             c = dbConnectionFactory.getConnection();
 
             if (dbConnectionFactory.isMySQL()) {
-                // MySQL støtter ikke å slette tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
+                // MySQL stÃ¸tter ikke Ã¥ slette tabeller som er med i subqueries, derfor denne tungvinte mÃ¥ten Ã¥ gjÃ¸re det pÃ¥
                 String query = "SELECT UniqueId FROM associations WHERE type = " + AssociationType.SHORTCUT + " AND AssociationId NOT IN (SELECT UniqueId FROM associations WHERE (IsDeleted IS NULL OR IsDeleted = 0)) AND (IsDeleted IS NULL OR IsDeleted = 0)";
                 PreparedStatement st = c.prepareStatement(query);
 

@@ -162,7 +162,7 @@ public class ContentManagementService {
         // Last attributter fra XML fil
         EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());
 
-        // Kj�r plugins        
+        // Kjør plugins
         ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(content));
 
         return content;
@@ -267,9 +267,9 @@ public class ContentManagementService {
 
     /**
      * Lagrer et innholdsobjekt med en gitt status. Oppretter i gitte tilfeller en ny versjon.
-     * Legger til objektet i s�keindeks dersom status = Publish
+     * Legger til objektet i søkeindeks dersom status = Publish
      * @param content - Endret objekt
-     * @param newStatus - Status som skal settes p� nytt objekt
+     * @param newStatus - Status som skal settes på nytt objekt
      * @return
      * @throws SystemException
      * @throws NotAuthorizedException
@@ -399,7 +399,7 @@ public class ContentManagementService {
 
 
     /**
-     * Tar et innholdsobjektet og en plassering og lagrer en kopi av objektet p� den nye plasseringen
+     * Tar et innholdsobjektet og en plassering og lagrer en kopi av objektet på den nye plasseringen
      * @param sourceContent - Endret objekt
      * @param target -
      * @param category -
@@ -431,12 +431,12 @@ public class ContentManagementService {
         if (sourceContent.getDisplayTemplateId() > 0) {
             DisplayTemplate displayTemplate = DisplayTemplateCache.getTemplateById(sourceContent.getDisplayTemplateId());
             if (displayTemplate.isNewGroup()) {
-                // Arver egenskaper fra sider over.  GroupId brukes til � lage ting som skal v�re spesielt for en struktur, f.eks meny
+                // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
                 sourceContent.setGroupId(destParent.getGroupId());
             }
         }
 
-        // Kj�r plugins
+        // Kjør plugins
         ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(sourceContent));
 
         // Legg til kopling til parent
@@ -474,8 +474,8 @@ public class ContentManagementService {
     }
 
     /**
-     * Setter ny status p� et objekt, f.eks ved godkjenning av en side.
-     * Legger til / fjerner objektet til/fra s�keindeks
+     * Setter ny status på et objekt, f.eks ved godkjenning av en side.
+     * Legger til / fjerner objektet til/fra søkeindeks
      * @param cid - ContentIdenfier for nytt objekt
      * @param newStatus - Ny status
      * @param note - melding
@@ -554,7 +554,7 @@ public class ContentManagementService {
             if (c != null) {
                 int priv = Privilege.UPDATE_CONTENT;
                 if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
-                    // Hvis siden er publisert eller versjon > 1 f�r ikke slettet uten godkjenningsrett
+                    // Hvis siden er publisert eller versjon > 1 før ikke slettet uten godkjenningsrett
                     priv = Privilege.APPROVE_CONTENT;
                 }
                 if (!securitySession.isAuthorized(c, priv)) {
@@ -612,9 +612,9 @@ public class ContentManagementService {
 
     /**
      * Henter en liste med innholdsobjekter fra basen
-     * @param query - S�k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkef�lge
+     * @param sort - Sorteringsrekkefølge
      * @param getAttributes - Hent attributter (true) for en side eller bare basisdata (false)
      * @param getTopics - Hent topics (true) for en side eller ikke (false) 
      * @return Liste med innholdsobjekter
@@ -668,9 +668,9 @@ public class ContentManagementService {
 
     /**
      * Henter en liste med innholdsobjekter fra basen med innholdsattributter
-     * @param query - S�k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkef�lge
+     * @param sort - Sorteringsrekkefølge
      * @return
      * @throws SystemException
      */
@@ -681,9 +681,9 @@ public class ContentManagementService {
 
     /**
      * Henter en liste med innholdsobjekter fra basen uten attributter
-     * @param query - S�k som angir hva som skal hentes
+     * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkef�lge
+     * @param sort - Sorteringsrekkefølge
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
@@ -775,11 +775,11 @@ public class ContentManagementService {
     /**
      * Hent sitemap
      * @param siteId - Site det skal hentes for
-     * @param depth - Antall niv�er som skal hentes
-     * @param language - Spr�k det skal hentes for
+     * @param depth - Antall nivåer som skal hentes
+     * @param language - Språk det skal hentes for
      * @param associationCategoryName - Spalte / knytning det skal hentes for.  (F.eks alt som er publisert i "venstremeny"
      * @param rootId - Startpunkt for sitemap
-     * @param currentId - Id for side man st�r p�
+     * @param currentId - Id for side man står på
      * @return
      * @throws SystemException
      */
@@ -796,11 +796,11 @@ public class ContentManagementService {
         /**
      * Hent sitemap
      * @param siteId - Site det skal hentes for
-     * @param depth - Antall niv�er som skal hentes
-     * @param language - Spr�k det skal hentes for
+     * @param depth - Antall nivåer som skal hentes
+     * @param language - Språk det skal hentes for
      * @param associationCategoryName - Spalte / knytning det skal hentes for.  (F.eks alt som er publisert i "venstremeny"
      * @param rootId - Startpunkt for sitemap
-     * @param currentId - Id for side man st�r p�
+     * @param currentId - Id for side man står på
      * @return
      * @throws SystemException
      */
@@ -832,7 +832,7 @@ public class ContentManagementService {
     /**
      * Hent meny
      * @param siteId - Site det skal hentes for
-     * @param idList - Liste med �pne element i menyen, henter alle med parent som ligger i lista
+     * @param idList - Liste med åpne element i menyen, henter alle med parent som ligger i lista
      * @param sort
      * @param showExpired
      * @return
@@ -846,7 +846,7 @@ public class ContentManagementService {
     /**
      * Hent meny
      * @param siteId - Site det skal hentes for
-     * @param idList - Liste med �pne element i menyen, henter alle med parent som ligger i lista
+     * @param idList - Liste med åpne element i menyen, henter alle med parent som ligger i lista
      * @param sort
      * @param showExpired
      * @param associationCategories - List of association category ids. Retrieve only content in these categories.
@@ -891,7 +891,7 @@ public class ContentManagementService {
 
 
     /**
-     * Hent sti basert p� kopling
+     * Hent sti basert pø kopling
      * @param association - Kopling til innholdsobjekt
      * @return Liste med PathEntry objekter
      * @throws SystemException
@@ -908,7 +908,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Hent sti basert p� ContentIdentifier
+     * Hent sti basert på ContentIdentifier
      * @param cid - Innholdsid
      * @return Liste med PathEntry objekter
      * @throws SystemException
@@ -919,11 +919,11 @@ public class ContentManagementService {
 
 
     /**
-     * S�k i eventlogg
+     * Søk i eventlogg
      * @param from - Dato fra
      * @param end - Dato til
      * @param userId - Brukerid
-     * @param subjectName - Navn p� objekt i loggen (navn p� side f.eks)
+     * @param subjectName - Navn på objekt i loggen (navn på side f.eks)
      * @param eventName - Hendelse
      * @return
      * @throws SystemException
@@ -963,7 +963,7 @@ public class ContentManagementService {
 
 
     /**
-     * Hent visningsmal basert p� id
+     * Hent visningsmal basert på id
      * @param id - Id til visningsmal
      * @return liste med DisplayTemplate objekter
      * @throws SystemException
@@ -989,7 +989,7 @@ public class ContentManagementService {
 
 
     /**
-     * Henter en spalte basert p� id
+     * Henter en spalte basert på id
      * @param id - Id til spalten som skal hentes
      * @return
      * @throws SystemException
@@ -1000,8 +1000,8 @@ public class ContentManagementService {
 
 
     /**
-     * Henter en spalte basert p� public id
-     * @param id - Id p� spalten som skal hentes
+     * Henter en spalte basert på public id
+     * @param id - Id på spalten som skal hentes
      * @return
      * @throws SystemException
      */
@@ -1010,8 +1010,8 @@ public class ContentManagementService {
     }
 
     /**
-     * Henter en spalte basert p� navn
-     * @param name - Navnet p� spalten som skal hentes
+     * Henter en spalte basert på navn
+     * @param name - Navnet på spalten som skal hentes
      * @return
      * @throws SystemException
      * @deprecated - Use getAssociationCategoryByPublicId 
@@ -1023,7 +1023,7 @@ public class ContentManagementService {
 
 
     /**
-     * Setter rekkef�lge p� koplinger for sortering i menyer
+     * Setter rekkefølge pø koplinger for sortering i menyer
      * @param associations
      * @throws SystemException
      */
@@ -1074,11 +1074,11 @@ public class ContentManagementService {
      * Sletter de angitte koplinger fra basen, dvs markerer dem som slettet. Legger innslag i deleteditems
      * slik at brukeren kan gjenopprette dem senere.
      *
-     * Dersom deleteMultiple = false og det finnes underobjekter vil ikke sletting bli utf�rt, men
-     * man f�r en liste med hva som blir slettet, som kan vises for brukeren
+     * Dersom deleteMultiple = false og det finnes underobjekter vil ikke sletting bli utført, men
+     * man før en liste med hva som blir slettet, som kan vises for brukeren
      *
      * @param associationIds - Koplinger som skal slettes
-     * @param deleteMultiple - M� v�re satt til true for � utf�re sletting hvis det finnes underobjekter
+     * @param deleteMultiple - Må være satt til true for å utføre sletting hvis det finnes underobjekter
      * @return
      * @throws SystemException
      */
@@ -1095,7 +1095,7 @@ public class ContentManagementService {
                         associations.add(a.getId());
                     }
                 } else {
-                    // Sjekk tilgangen til innholdsobjektet den peker p�
+                    // Sjekk tilgangen til innholdsobjektet den peker på
                     ContentIdentifier cid = new ContentIdentifier();
                     cid.setAssociationId(a.getId());
                     Content c = ContentAO.getContent(cid, false);
@@ -1105,7 +1105,7 @@ public class ContentManagementService {
                     }
                     int priv = Privilege.UPDATE_CONTENT;
                     if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
-                        // Hvis siden er publisert eller versjon > 1 f�r ikke slettet uten godkjenningsrett
+                        // Hvis siden er publisert eller versjon > 1 før ikke slettet uten godkjenningsrett
                         priv = Privilege.APPROVE_CONTENT;
                     }
                     if (securitySession.isAuthorized(c, priv)) {
@@ -1118,7 +1118,7 @@ public class ContentManagementService {
 
         List pagesToBeDeleted = AssociationAO.deleteAssociationsById(associations, deleteMultiple, securitySession.getUser().getId());
 
-        // Hvis ikke brukeren har angitt at flere skal kunne slettes s� blir de ikke slettet
+        // Hvis ikke brukeren har angitt at flere skal kunne slettes så blir de ikke slettet
         if (pagesToBeDeleted.size() == 1 || deleteMultiple) {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (int i = 0; i < pagesToBeDeleted.size(); i++) {
@@ -1133,7 +1133,7 @@ public class ContentManagementService {
 
 
     /**
-     * Endrer en kopling i systemet.  F.eks n�r en bruker flytter et punkt i strukturen. Oppdaterer
+     * Endrer en kopling i systemet.  F.eks når en bruker flytter et punkt i strukturen. Oppdaterer
      * alle underliggende koplinger.
      *
      * @param association - Kopling som skal oppdateres
@@ -1171,7 +1171,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Finner eventuelle duplikate alias innenfor omr�de av strukturen
+     * Finner eventuelle duplikate alias innenfor område av strukturen
      *
      * @return - Liste med alias (String)
      * @throws SystemException
@@ -1182,7 +1182,7 @@ public class ContentManagementService {
 
 
     /**
-     * Henter en liste med innhold som er slettet av brukeren, slik at han kan angre p� dette senere
+     * Henter en liste med innhold som er slettet av brukeren, slik at han kan angre på dette senere
      *
      * @return - Liste med DeletedItem
      * @throws SystemException
@@ -1204,18 +1204,18 @@ public class ContentManagementService {
     }
 
     /**
-     * Henter et vedlegg fra databasen med angitt id. NB! Henter ikke data i objektet, m� streames
+     * Henter et vedlegg fra databasen med angitt id. NB! Henter ikke data i objektet, må streames
      *
      * @param id - id til vedlegg som skal hentes
      * @return - Attachment objekt
      * @throws SystemException
-     * @throws NotAuthorizedException - Brukeren har ikke rettighet til � lese vedlegg
+     * @throws NotAuthorizedException - Brukeren har ikke rettighet til å lese vedlegg
      */
     public Attachment getAttachment(int id, int siteId) throws SystemException, NotAuthorizedException {
         Attachment attachment = AttachmentAO.getAttachment(id);
         if (attachment != null) {
             int contentId = attachment.getContentId();
-            // M� hente ut tilh�rende contentobject for � vite om bruker er autorisert og at ikke vedlegget er slettet
+            // Må hente ut tilhørende contentobject for å vite om bruker er autorisert og at ikke vedlegget er slettet
             if (contentId != -1) {
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setContentId(contentId);
@@ -1235,7 +1235,7 @@ public class ContentManagementService {
     /**
      * Streamer et vedlegg fra databasen til en stream ved hjelp av en callback
      * @param id - Id til vedlegg som skal streames
-     * @param ish - Callback for � streame data
+     * @param ish - Callback for å streame data
      * @throws SystemException
      */
     public void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
@@ -1325,8 +1325,8 @@ public class ContentManagementService {
 
 
     /**
-     * Henter et objekt fra XML cachen i systemet.  XML cachen brukes for � lagre XML dokumenter lokalt
-     * istedet for � hente dem med HTTP for hver visning.  Kan brukes for f.eks nyheter.
+     * Henter et objekt fra XML cachen i systemet.  XML cachen brukes for å lagre XML dokumenter lokalt
+     * istedet for å hente dem med HTTP for hver visning.  Kan brukes for f.eks nyheter.
      *
      * @param id - unik identifikator i basen
      * @return
@@ -1347,7 +1347,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Henter en liste med innslag fra XML-cachen.  Brukes for � se hvilke objekter som ligger der og n�r
+     * Henter en liste med innslag fra XML-cachen.  Brukes for å se hvilke objekter som ligger der og nør
      * de er oppdatert.
      *
      * @return

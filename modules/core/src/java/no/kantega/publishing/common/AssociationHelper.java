@@ -17,17 +17,17 @@
 package no.kantega.publishing.common;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.ao.AssociationAO;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssociationHelper {
     private static final String SOURCE = "aksess.AssociationHelper";
@@ -96,7 +96,7 @@ public class AssociationHelper {
                 }
             }
 
-            // Ingen default posting, bruk den første
+            // Ingen default posting, bruk den fÃ¸rste
             if (noDefaultPostings == 0 && first != -1) {
                 Association tmpA = (Association)associations.get(first);
                 tmpA.setAssociationtype(AssociationType.DEFAULT_POSTING_FOR_SITE);

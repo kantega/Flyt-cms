@@ -16,20 +16,19 @@
 
 package no.kantega.publishing.common.cache;
 
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
 import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
-
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.context.ApplicationContext;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static String SOURCE = "SiteCache";
@@ -128,7 +127,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
                 boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
                 if (isDisabled) {
-                    Log.info(SOURCE, "Slår av site:" + site.getName(), null, null);
+                    Log.info(SOURCE, "SlÃ¥r av site:" + site.getName(), null, null);
                 }
                 site.setIsDisabled(isDisabled);
 

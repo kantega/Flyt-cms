@@ -29,16 +29,16 @@ import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.lucene.document.Document;
 import org.apache.commons.io.IOUtils;
-import org.w3c.dom.Element;
-import org.springframework.core.io.ResourceLoader;
+import org.apache.lucene.document.Document;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.w3c.dom.Element;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -48,7 +48,7 @@ public abstract class Attribute {
 
     protected Attribute parent = null;
 
-    protected String name = null;  // Navn p� attributt, lagres i databasen, og refereres med getattribute
+    protected String name = null;  // Navn på attributt, lagres i databasen, og refereres med getattribute
     protected String title = null; // Tittel, vises for brukeren i skjermbilder, valgfritt
     protected String field = null; // Mapping til content felt, f.eks title, description, image etc
 
@@ -60,7 +60,7 @@ public abstract class Attribute {
     protected String value = null;
     protected String regexp = null;
 
-    protected boolean mandatory = false; // Angir om attributten m� fylles ut
+    protected boolean mandatory = false; // Angir om attributten må fylles ut
     protected boolean isCData   = false;
 
     protected int maxLength = 128;
@@ -285,7 +285,7 @@ public abstract class Attribute {
 
     public void setField(String field) {
         if (ContentProperty.TITLE.equalsIgnoreCase(field)) {
-            // Attributten er mappet til tittel, m� alltid fylles ut
+            // Attributten er mappet til tittel, må alltid fylles ut
             mandatory = true;
         }
         this.field = field;
@@ -356,7 +356,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Returnerer behaviour for � oppdatere attributt basert p� request
+     * Returnerer behaviour for å oppdatere attributt basert på request
      * @return - behaviour
      */
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
@@ -364,7 +364,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Returnerer behaviour for mapping av attributt verdi til spesialfelt i content objekt, f.eks utl�psdato
+     * Returnerer behaviour for mapping av attributt verdi til spesialfelt i content objekt, f.eks utløpsdato
      * @return - behaviour
      */
     public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
@@ -372,7 +372,7 @@ public abstract class Attribute {
     }
 
     /**
-     * Brukes for � sjekke om en attributt skal vises eller skjules for content objekt
+     * Brukes for å sjekke om en attributt skal vises eller skjules for content objekt
      * @param content - content objekt som attributten ligger i
      * @return true/false
      */

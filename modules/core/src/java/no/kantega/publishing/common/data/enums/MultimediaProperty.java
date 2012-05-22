@@ -1,7 +1,7 @@
 package no.kantega.publishing.common.data.enums;
 
 /**
- * User: Terje Røstum, Kantega AS
+ * User: Terje RÃ¸stum, Kantega AS
  * Date: Jan 12, 2010
  * Time: 10:52:10 AM
  */

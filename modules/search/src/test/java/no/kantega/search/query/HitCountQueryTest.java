@@ -17,16 +17,15 @@
 package no.kantega.search.query;
 
 import no.kantega.search.AbstractSearchTestCase;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
-import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.query.hitcount.RangeHitCountQuery;
 import no.kantega.search.criteria.TextCriterion;
 import no.kantega.search.index.Fields;
+import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
+import no.kantega.search.query.hitcount.RangeHitCountQuery;
 import no.kantega.search.result.HitCount;
 import no.kantega.search.result.SearchResultExtendedImpl;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.analysis.Analyzer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,8 +104,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[1] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms.length, hitCounts.size());
-        assertTrue("Totalt antall HitCounts for alle termer ("+ totalHitCounts[0] +") skal v�re st�rre enn totalt antall HitCounts for et subsett av termene (" + totalHitCounts[1] + ").", totalHitCounts[0] > totalHitCounts[1]);
-        assertEquals("Antall s�ketreff skal v�re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
+        assertTrue("Totalt antall HitCounts for alle termer ("+ totalHitCounts[0] +") skal være større enn totalt antall HitCounts for et subsett av termene (" + totalHitCounts[1] + ").", totalHitCounts[0] > totalHitCounts[1]);
+        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
 
         // Create search query
         searchQuery = new SearchQueryExtendedImpl();
@@ -127,8 +126,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[2] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms.length + 1, hitCounts.size());
-        assertEquals("Totalt antall HitCounts for alle termer skal v�re lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
-        assertEquals("Antall s�ketreff skal v�re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
+        assertEquals("Totalt antall HitCounts for alle termer skal være lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
+        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
     }
 
     /**
@@ -197,7 +196,7 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[1] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms[0].length + hitCountTerms[1].length, hitCounts.size());
-        assertEquals("Antall s�ketreff skal v�re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
+        assertEquals("Antall søketreff skal vøre like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[1]);
 
         // Create search query
         searchQuery = new SearchQueryExtendedImpl();
@@ -219,8 +218,8 @@ public class HitCountQueryTest extends AbstractSearchTestCase {
             totalHitCounts[2] += hitCount.getHitCount();
         }
         assertEquals("HitCount er ikke regnet ut for riktig antall termer", hitCountTerms[0].length + hitCountTerms[1].length + 2, hitCounts.size());
-        assertEquals("Totalt antall HitCounts for alle termer skal v�re lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
-        assertEquals("Antall s�ketreff skal v�re like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
+        assertEquals("Totalt antall HitCounts for alle termer skal være lik totalt antall HitCounts for et subsett av termene pluss 'other'.", totalHitCounts[0], totalHitCounts[2]);
+        assertEquals("Antall søketreff skal være like uavhengig av HitCountQueries.", numberOfHits[0], numberOfHits[2]);
     }
 
 

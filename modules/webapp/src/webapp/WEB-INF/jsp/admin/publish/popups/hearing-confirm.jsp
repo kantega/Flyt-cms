@@ -1,14 +1,8 @@
-<%@ page import="no.kantega.commons.client.util.RequestParameters" %>
-<%@ page import="no.kantega.publishing.common.data.HearingInvitee" %>
-<%@ page import="no.kantega.publishing.common.data.attributes.UserAttribute" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.Hearing" %>
-<%@ page import="no.kantega.publishing.common.data.attributes.OrgunitAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

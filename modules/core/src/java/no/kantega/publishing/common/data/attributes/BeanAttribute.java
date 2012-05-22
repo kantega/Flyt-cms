@@ -16,16 +16,15 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.ListOption;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.spring.RootContext;
 import org.w3c.dom.Element;
 
-import java.util.Map;
 import java.util.Iterator;
 import java.util.List;
-
-import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.data.ListOption;
-import no.kantega.publishing.spring.RootContext;
+import java.util.Map;
 
 public class BeanAttribute extends ListAttribute {
 
@@ -50,7 +49,7 @@ public class BeanAttribute extends ListAttribute {
         super.setConfig(config, model);
         String clazz = config.getAttribute("class");
         if(clazz == null || clazz.trim().equals("")) {
-            throw new InvalidTemplateException("Attributtet class må være satt for type=bean", "", null);
+            throw new InvalidTemplateException("Attributtet class mÃ¥ vÃ¦re satt for type=bean", "", null);
         }
 
         try {

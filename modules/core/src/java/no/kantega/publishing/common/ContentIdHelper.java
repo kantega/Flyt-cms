@@ -53,7 +53,7 @@ public class ContentIdHelper {
         }
 
         if (expr.contains("..")) {
-            // Hent fra N niv�er lengre opp
+            // Hent fra N nivåer lengre opp
             if (expr.charAt(expr.length() - 1) != '/') {
                 expr += "/";
             }
@@ -90,7 +90,7 @@ public class ContentIdHelper {
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.startsWith("/+")) {
-            // Hent fra root + niv� n
+            // Hent fra root + nivå n
             int level = Integer.parseInt(expr.substring("/+".length(), expr.length()));
             String path = context.getAssociation().getPath() + context.getAssociation().getId() + "/";
             int[] pathElements = StringHelper.getInts(path, "/");
@@ -140,7 +140,7 @@ public class ContentIdHelper {
 
 
     /**
-     * Finner en identifikator til et innholdsobjekt basert p� url/alias
+     * Finner en identifikator til et innholdsobjekt basert på url/alias
      * @param siteId - Site
      * @param url    - Url/alias, f.eks /nyheter/
      * @return
@@ -202,7 +202,7 @@ public class ContentIdHelper {
             try {
                 associationId = Integer.parseInt(idStr);
             } catch (NumberFormatException e) {
-                // Gj�r ingenting
+                // Gjør ingenting
             }
         }
 
@@ -218,7 +218,7 @@ public class ContentIdHelper {
                 try {
                     contentId = Integer.parseInt(idStr);
                 } catch (NumberFormatException e) {
-                    // Gj�r ingenting
+                    // Gjør ingenting
                 }
             }
         }
@@ -234,7 +234,7 @@ public class ContentIdHelper {
             try {
                 language = Integer.parseInt(languageStr);
             } catch (NumberFormatException e) {
-                // Standard spr�k
+                // Standard språk
             }
         }
 
@@ -253,7 +253,7 @@ public class ContentIdHelper {
             }
         }
 
-        // Hvis contentId ikke finnes i URL, sl� opp i basen
+        // Hvis contentId ikke finnes i URL, slå opp i basen
         if (contentId != -1 || associationId != -1) {
             ContentIdentifier cid = new ContentIdentifier();
             cid.setVersion(version);
@@ -309,7 +309,7 @@ public class ContentIdHelper {
             PreparedStatement st;
             ResultSet rs;
             if (contextId != -1) {
-                // F�rst pr�ver vi � finne siden under der lenka kom fra
+                // Først prøver vi å finne siden under der lenka kom fra
                 st = c.prepareStatement("SELECT AssociationId FROM associations WHERE ContentId = ? AND Path like ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
                 st.setInt(1, contentId);
                 st.setString(2, "%/" + contextId + "/%");
@@ -321,7 +321,7 @@ public class ContentIdHelper {
                 rs.close();
                 st.close();
 
-                // S� i samme nettsted som lenka kom fra
+                // Så i samme nettsted som lenka kom fra
                 if (associationId == -1) {
                     st = c.prepareStatement("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
                     st.setInt(1, contextId);

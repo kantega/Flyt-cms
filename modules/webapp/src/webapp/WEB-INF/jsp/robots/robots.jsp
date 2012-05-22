@@ -1,8 +1,8 @@
-<%@ page contentType="text/plain;charset=UTF-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/plain;charset=UTF-8" language="java" pageEncoding="utf-8" %>
+<%@ page import="no.kantega.commons.configuration.Configuration"%>
 <%@ page import="no.kantega.commons.util.URLHelper"%>
-<%@ page import="java.io.BufferedReader"%>
-<%@ page import="java.io.InputStream"%>
-<%@ page import="java.io.InputStreamReader"%><%@ page import="java.io.IOException"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="java.util.List"%><%@ page import="no.kantega.publishing.common.Aksess"%><%@ page import="no.kantega.commons.configuration.Configuration"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
+<%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="java.io.BufferedReader"%><%@ page import="java.io.IOException"%><%@ page import="java.io.InputStream"%><%@ page import="java.io.InputStreamReader"%><%@ page import="java.util.List"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
@@ -25,8 +25,8 @@
     Object crawlerSiteMapEnabledObject = request.getAttribute("crawlerSiteMapEnabled");
     Boolean crawlerSiteMapEnabled = crawlerSiteMapEnabledObject == null ? Boolean.valueOf(false) : (Boolean)crawlerSiteMapEnabledObject;
 
-    // Se om det finnes en robots.txt fil på rota.
-    // Hvis det gjør det, skriver vi ut innholdet av denne.
+    // Se om det finnes en robots.txt fil pÃ¥ rota.
+    // Hvis det gjÃ¸r det, skriver vi ut innholdet av denne.
     try {
         InputStream is = config.getServletContext().getResourceAsStream("/robots.txt");
         if (is != null) {

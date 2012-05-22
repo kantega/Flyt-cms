@@ -29,14 +29,14 @@ public interface SuggestionQuery {
 
 
     /**
-     * Returnerer feltet i indeksen det skal søkes etter Suggestions i.
-     * @return feltet i indeksen det skal søkes etter Suggestions i
+     * Returnerer feltet i indeksen det skal sÃ¸kes etter Suggestions i.
+     * @return feltet i indeksen det skal sÃ¸kes etter Suggestions i
      */
     public String getField();
 
     /**
-     * Returneres teksten det skal søkes etter Suggestions for.
-     * @return teksten det skal søkes etter Suggestions for
+     * Returneres teksten det skal sÃ¸kes etter Suggestions for.
+     * @return teksten det skal sÃ¸kes etter Suggestions for
      */
     public String getText();
 
@@ -47,8 +47,8 @@ public interface SuggestionQuery {
     public int getMax();
 
     /**
-     * Returnerer en instans av en klasse som implementerer SuggestionsProvider som kan brukes til å utføre søk på
-     * dette SearchQuery'et. Denne instansen må være ferdig initialisert og klar til å brukes.
+     * Returnerer en instans av en klasse som implementerer SuggestionsProvider som kan brukes til Ã¥ utfÃ¸re sÃ¸k pÃ¥
+     * dette SearchQuery'et. Denne instansen mÃ¥ vÃ¦re ferdig initialisert og klar til Ã¥ brukes.
      *
      * @param indexManager et IndexManager-objekt
      * @return en instans av en klasse som implementerer SuggestionsProvider

@@ -15,7 +15,7 @@
 ~ limitations under the License
 --%>
 
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 
 <div class="buttonGroup">
     <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button first <c:if test="${navigateActive}"> active</c:if>"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>

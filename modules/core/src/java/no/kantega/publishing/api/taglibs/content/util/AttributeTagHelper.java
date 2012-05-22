@@ -16,23 +16,20 @@
 
 package no.kantega.publishing.api.taglibs.content.util;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -128,7 +125,7 @@ public final class AttributeTagHelper {
             } else {
                 if (contentId.length() > 0) {
                     try {
-                        // Det er angitt en contentid som m� sl�s opp
+                        // Det er angitt en contentid som må slås opp
                         ContentIdentifier cid = new ContentIdentifier();
                         try {
                             if (contentId.contains(",")) {
@@ -172,9 +169,9 @@ public final class AttributeTagHelper {
     }
 
     /**
-     * Henter en attributt for angitt objekt, b�de faste attributter som f.eks publishdate og vanlige attributter.
-     * Kutter lengde p� innhold hvis n�dvendig etc.
-     * Leter etter attributt p� alle niv�ene overfor hvis inheritFromAncestors = true
+     * Henter en attributt for angitt objekt, både faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde på innhold hvis nødvendig etc.
+     * Leter etter attributt på alle nivåene overfor hvis inheritFromAncestors = true
      * @param content
      * @param cmd
      * @return
@@ -187,9 +184,9 @@ public final class AttributeTagHelper {
     }
 
     /**
-     * Henter en attributt for angitt objekt, b�de faste attributter som f.eks publishdate og vanlige attributter.
-     * Kutter lengde p� innhold hvis n�dvendig etc.
-     * Leter etter attributt p� alle niv�ene overfor hvis inheritFromAncestors = true
+     * Henter en attributt for angitt objekt, både faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde på innhold hvis nødvendig etc.
+     * Leter etter attributt på alle nivåene overfor hvis inheritFromAncestors = true
      * @param content
      * @param cmd
      * @return
@@ -199,7 +196,7 @@ public final class AttributeTagHelper {
     public static String getAttribute(SecuritySession securitySession, Content content, GetAttributeCommand cmd, boolean inheritFromAncestors) throws SystemException, NotAuthorizedException {
         String value = getAttribute(content, cmd);
         if ((value == null || value.length() == 0) && (content != null && inheritFromAncestors)) {
-            // Fant ikke verdi p� dette niv�et, pr�ver � lete lengre opp
+            // Fant ikke verdi på dette nivået, prøver å lete lengre opp
             Association a = content.getAssociation();
             if (a != null && a.getPath().length() > 2) {
                 String contentList = a.getPath().substring(1, a.getPath().length() - 1);
@@ -224,8 +221,8 @@ public final class AttributeTagHelper {
 
 
     /**
-     * Henter en attributt for angitt objekt, b�de faste attributter som f.eks publishdate og vanlige attributter.
-     * Kutter lengde p� innhold hvis n�dvendig etc.
+     * Henter en attributt for angitt objekt, både faste attributter som f.eks publishdate og vanlige attributter.
+     * Kutter lengde på innhold hvis nødvendig etc.
      * @param content
      * @param cmd
      * @return

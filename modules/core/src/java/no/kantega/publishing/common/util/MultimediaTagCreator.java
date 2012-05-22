@@ -18,9 +18,6 @@ package no.kantega.publishing.common.util;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
@@ -29,14 +26,8 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaImageMap;
 import no.kantega.publishing.common.data.enums.Cropping;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 
 public class MultimediaTagCreator {
     private static final String SOURCE = "aksess.MultimediaHelper";
@@ -193,7 +184,7 @@ public class MultimediaTagCreator {
                     Log.error(SOURCE, e, null, null);
                 }
             }
-            // Legg til > pï¿½ slutten hvis ikke avsluttet
+            // Legg til > på slutten hvis ikke avsluttet
             if (tag.charAt(tag.length() - 1) != '>') {
                 tag.append(">");
             }

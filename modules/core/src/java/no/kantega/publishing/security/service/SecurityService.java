@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.security.service;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.data.*;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.data.enums.NotificationPriority;
-import no.kantega.publishing.security.ao.PermissionsAO;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.security.ao.PermissionsAO;
+import no.kantega.publishing.security.data.*;
+import no.kantega.publishing.security.data.enums.NotificationPriority;
+import no.kantega.publishing.security.data.enums.Privilege;
 
-import java.util.List;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 public class SecurityService {
 
@@ -183,10 +183,10 @@ public class SecurityService {
                         return p;
                     } else {
                         if (isUserInRole(user, id)) {
-                            // Brukeren har nå normalt tilgang
-                            // Men dersom det er en enhetsrolle, må det sjekkes nærmere
+                            // Brukeren har nÃ¥ normalt tilgang
+                            // Men dersom det er en enhetsrolle, mÃ¥ det sjekkes nÃ¦rmere
                             if (sid.equals(Aksess.getUnitRole())) {
-                                // Enhetsrolle gir kun tilgang når enheten eier objektet
+                                // Enhetsrolle gir kun tilgang nÃ¥r enheten eier objektet
                                 if (ownerUnit != null && ownerUnit.length() > 0 && isUserInRole(user, ownerUnit)) {
                                     // Dette er en enhetsrolle, er kun gyldig dersom brukeren har tilgang til enheten
                                     return p;

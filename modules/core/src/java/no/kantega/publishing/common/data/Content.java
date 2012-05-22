@@ -340,7 +340,7 @@ public class Content extends BaseObject {
         Association a = getAssociation();
 
         if (alias != null && alias.startsWith("/") && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
-            // Alias brukes n�r angitt og man har en hovedknytning og man ikke er i adminmodus
+            // Alias brukes når angitt og man har en hovedknytning og man ikke er i adminmodus
             if (isAdminMode) {
                 return getUrl();
             } else {

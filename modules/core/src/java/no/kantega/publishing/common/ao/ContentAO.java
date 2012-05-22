@@ -90,7 +90,7 @@ public class ContentAO {
             st.execute();
             st.close();
 
-            // Slett h�ring
+            // Slett høring
             try {
                 st = c.prepareStatement("delete from hearing where ContentVersionId in (select ContentVersionId from contentversion where ContentId = ?)");
                 st.setInt(1, id);
@@ -105,7 +105,7 @@ public class ContentAO {
                 st.execute();
                 st.close();
             } catch (Exception e) {
-                // Kunden bruker ikke h�ring, har ikke tabeller for h�ring
+                // Kunden bruker ikke høring, har ikke tabeller for høring
             }
 
             // Slett vedlegg
@@ -396,7 +396,7 @@ public class ContentAO {
             rs.close();
 
             if (!foundCurrentAssociation) {
-                // Knytningsid er ikke angitt, og heller ikke site, bruk den f�rste
+                // Knytningsid er ikke angitt, og heller ikke site, bruk den første
                 List associations = content.getAssociations();
                 for (int i = 0; i < associations.size(); i++) {
                     Association a = (Association)associations.get(i);
@@ -1126,7 +1126,7 @@ public class ContentAO {
 
 
         if (isNew) {
-            // GroupId benyttes for � angi at en side arver egenskaper, f.eks meny, design fra en annen side
+            // GroupId benyttes for ø angi at en side arver egenskaper, f.eks meny, design fra en annen side
             if (content.getGroupId() <= 0) {
                 PreparedStatement st = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
                 st.setInt(1, content.getId());
@@ -1260,7 +1260,7 @@ public class ContentAO {
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
-                    // Sett status = arkivert p� aktiv versjon
+                    // Sett status = arkivert pø aktiv versjon
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
                     tmp.setInt(1, ContentStatus.ARCHIVED);
                     tmp.setInt(2, cid.getContentId());

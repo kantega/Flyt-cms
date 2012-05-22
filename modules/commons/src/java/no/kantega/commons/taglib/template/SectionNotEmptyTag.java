@@ -19,13 +19,12 @@ package no.kantega.commons.taglib.template;
 import no.kantega.commons.log.Log;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.io.StringWriter;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: May 5, 2007
  * Time: 1:15:35 PM
  */

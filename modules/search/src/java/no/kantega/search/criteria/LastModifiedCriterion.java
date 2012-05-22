@@ -16,20 +16,15 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
 import org.apache.lucene.document.DateTools;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeQuery;
 import org.apache.lucene.search.ConstantScoreRangeQuery;
+import org.apache.lucene.search.Query;
 
 import java.util.Date;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 /**
- * Criterion som søker etter dokumenter som sist er endret innenfor et gitt tidsintervall.
+ * Criterion som sÃ¸ker etter dokumenter som sist er endret innenfor et gitt tidsintervall.
  *
  * Date: Dec 2, 2008
  * Time: 9:36:47 AM
@@ -53,10 +48,10 @@ public class LastModifiedCriterion extends AbstractCriterion {
     }
 
     /**
-     * Et av argumentene kan være null, men ikke begge.
+     * Et av argumentene kan vÃ¦re null, men ikke begge.
      *
-     * @param lastModifiedFrom fra-dato. Kan være null.
-     * @param lastModifiedTo til-dato. Kan være null.
+     * @param lastModifiedFrom fra-dato. Kan vÃ¦re null.
+     * @param lastModifiedTo til-dato. Kan vÃ¦re null.
      */
     public LastModifiedCriterion(Date lastModifiedFrom, Date lastModifiedTo) {
         this.lastModifiedFrom = DateTools.dateToString(lastModifiedFrom, DateTools.Resolution.MINUTE);
@@ -64,11 +59,11 @@ public class LastModifiedCriterion extends AbstractCriterion {
     }
 
     /**
-     * Et av argumentene kan være null, men ikke begge.
-     * Formatet på argumentene må være som generert av DateTools.dateToString(Date, DateTools.Resolution.MINUTE)
+     * Et av argumentene kan vÃ¦re null, men ikke begge.
+     * Formatet pÃ¥ argumentene mÃ¥ vÃ¦re som generert av DateTools.dateToString(Date, DateTools.Resolution.MINUTE)
      *
-     * @param lastModifiedFrom fra-dato. Kan være null.
-     * @param lastModifiedTo til-dato. Kan være null.
+     * @param lastModifiedFrom fra-dato. Kan vÃ¦re null.
+     * @param lastModifiedTo til-dato. Kan vÃ¦re null.
      */
     public LastModifiedCriterion(String lastModifiedFrom, String lastModifiedTo) {
         this.lastModifiedFrom = lastModifiedFrom;

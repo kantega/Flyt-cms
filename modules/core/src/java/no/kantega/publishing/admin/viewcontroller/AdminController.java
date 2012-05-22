@@ -1,28 +1,16 @@
 package no.kantega.publishing.admin.viewcontroller;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 02.jul.2009
  * Time: 08:48:04
  */

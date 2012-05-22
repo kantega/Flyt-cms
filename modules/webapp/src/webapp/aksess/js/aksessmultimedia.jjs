@@ -1,4 +1,4 @@
-//<%@ page contentType="application/javascript;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+//<%@ page contentType="application/javascript;charset=utf-8" language="java" pageEncoding="utf-8" %>
 //<%@ page import="no.kantega.publishing.common.Aksess"%>
 var aksessMultimedia = new Object();
 

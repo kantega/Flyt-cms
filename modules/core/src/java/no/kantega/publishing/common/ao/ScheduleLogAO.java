@@ -16,14 +16,14 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
-import java.util.Date;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -76,13 +76,13 @@ public class ScheduleLogAO {
             PreparedStatement st;
 
             if (previous != null) {
-                // Oppdaterer basen med nåværende tidspunkt
+                // Oppdaterer basen med nÃ¥vÃ¦rende tidspunkt
                 st = c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
                 st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
                 st.setString(2, service);
                 st.execute();
             } else {
-                // Oppdaterer basen med nåværende tidspunkt
+                // Oppdaterer basen med nÃ¥vÃ¦rende tidspunkt
                 st = c.prepareStatement("insert into schedulelog values(?,?)");
                 st.setString(1, service);
                 st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));

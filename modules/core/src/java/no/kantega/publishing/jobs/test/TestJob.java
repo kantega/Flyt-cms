@@ -24,7 +24,7 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 public class TestJob extends QuartzJobBean {
     private String message;
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
-        System.out.println("Hei, dette er TestJob! Mitt ansvar er å si: " +message );
+        System.out.println("Hei, dette er TestJob! Mitt ansvar er Ã¥ si: " +message );
     }
 
     public void setMessage(String message) {

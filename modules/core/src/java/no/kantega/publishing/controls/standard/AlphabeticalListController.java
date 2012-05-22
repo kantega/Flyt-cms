@@ -16,13 +16,12 @@
 
 package no.kantega.publishing.controls.standard;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.controls.AksessController;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.controls.AksessController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,7 @@ import java.text.Collator;
 import java.util.*;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega
+ * Author: Kristian Lier SelnÃ¦s, Kantega
  * Date: 22.mar.2007
  * Time: 13:41:37
  */

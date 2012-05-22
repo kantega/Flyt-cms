@@ -1,23 +1,23 @@
 package no.kantega.publishing.api.taglibs.media;
 
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.enums.MultimediaProperty;
-import no.kantega.publishing.common.MultimediaComparator;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.MultimediaComparator;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaProperty;
+import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.service.MultimediaService;
 
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Iterator;
-import java.util.List;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
- * User: Terje Røstum, Kantega AS
+ * User: Terje RÃ¸stum, Kantega AS
  * Date: Jan 12, 2010
  * Time: 10:36:36 AM
  */

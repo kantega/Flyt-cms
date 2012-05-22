@@ -16,22 +16,20 @@
 
 package no.kantega.useradmin.controls;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.profile.DefaultProfile;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.role.DefaultRoleId;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import no.kantega.useradmin.model.ProfileSet;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.security.api.identity.Identity;
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.role.DefaultRoleId;
-import no.kantega.security.api.profile.Profile;
-import no.kantega.security.api.profile.DefaultProfile;
-import no.kantega.security.api.profile.ProfileManager;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.useradmin.model.ProfileSet;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
-
 import java.util.*;
 
 /**
@@ -81,7 +79,7 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
             while (identities.hasNext()) {
                 Identity identity = (Identity) identities.next();
 
-                // �nsker � vise fullt navn for de som har brukerprofil
+                // Ønsker å vise fullt navn for de som har brukerprofil
                 ProfileManager profileManager = profileConfig.getProfileManager();
                 Profile p = profileManager.getProfileForUser(identity);
 

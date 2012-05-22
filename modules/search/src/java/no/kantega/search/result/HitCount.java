@@ -17,7 +17,7 @@
 package no.kantega.search.result;
 
 /**
- * Interface som representerer et antall treff for et søk på et gitt term i indeksen.
+ * Interface som representerer et antall treff for et sÃ¸k pÃ¥ et gitt term i indeksen.
  *
  * Date: Dec 1, 2008
  * Time: 3:50:23 PM
@@ -54,14 +54,14 @@ public interface HitCount {
     public String getTermTranslated();
 
     /**
-     * Returnerer antall søketreff på denne HitCount'ens term.
-     * @return antall søketreff på denne HitCount'ens term
+     * Returnerer antall sÃ¸ketreff pÃ¥ denne HitCount'ens term.
+     * @return antall sÃ¸ketreff pÃ¥ denne HitCount'ens term
      */
     public int getHitCount();
 
     /**
-     * Returnerer antall millisekunder brukt på å finne antall treff på denne HitCount'ens term.
-     * @return antall millisekunder brukt på å finne antall treff på denne HitCount'ens term
+     * Returnerer antall millisekunder brukt pÃ¥ Ã¥ finne antall treff pÃ¥ denne HitCount'ens term.
+     * @return antall millisekunder brukt pÃ¥ Ã¥ finne antall treff pÃ¥ denne HitCount'ens term
      */
     public long getTime();
     

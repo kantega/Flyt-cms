@@ -1,27 +1,16 @@
 package no.kantega.publishing.common;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
-import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
-import no.kantega.publishing.common.data.attributes.NumberAttribute;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.MultimediaProperty;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 
-import java.util.Comparator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
 import java.text.Collator;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * User: Terje Røstum, Kantega AS
+ * User: Terje RÃ¸stum, Kantega AS
  * Date: Jan 12, 2010
  * Time: 10:55:35 AM
  */

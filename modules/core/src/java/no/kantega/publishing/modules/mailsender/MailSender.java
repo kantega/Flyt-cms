@@ -127,7 +127,7 @@ public class MailSender {
                 throw new ConfigurationException("mail.host", SOURCE);
             }
 
-            // I noen tilfeller �nsker vi at all epost skal g� til en testadresse
+            // I noen tilfeller ønsker vi at all epost skal gå til en testadresse
             String catchAllTo = config.getString("mail.catchall.to");
             boolean catchallExists = catchAllTo != null && catchAllTo.contains("@");
             if (catchallExists) {
@@ -206,7 +206,7 @@ public class MailSender {
 
             return textWriter.toString();
         } catch (Exception e) {
-            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert p� Velocity", e);
+            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity", e);
         }
     }
 
@@ -255,7 +255,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra bin�rfil", e);
+            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
         }
     }
 
@@ -281,7 +281,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra bin�rfil", e);
+            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
         }
     }
 }

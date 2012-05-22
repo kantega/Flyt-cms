@@ -31,11 +31,11 @@ public interface SearchHandler {
 
 
     /**
-     * Utfører et søk basert på det gitte SearchQuery'et.
+     * UtfÃ¸rer et sÃ¸k basert pÃ¥ det gitte SearchQuery'et.
      *
-     * @param searchQuery et SearchQuery-objekt som beskriver søket som skal utføres.
+     * @param searchQuery et SearchQuery-objekt som beskriver sÃ¸ket som skal utfÃ¸res.
      * @return et SearchResult-objekt.
-     * @throws IOException hvis en IOException oppstår
+     * @throws IOException hvis en IOException oppstÃ¥r
      */
     public SearchResult handleSearch(SearchQuery searchQuery) throws IOException;
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SearchResult-implementasjon som, i tillegg til å inneholde det samme som SearchResultDefaultImpl, inneholder
+ * SearchResult-implementasjon som, i tillegg til Ã¥ inneholde det samme som SearchResultDefaultImpl, inneholder
  * antall treff per term for en eller flere kategorier.
  *
  * Date: Dec 1, 2008

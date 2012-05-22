@@ -19,19 +19,19 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.util.StringHelper;
 import org.apache.commons.lang.StringUtils;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega
+ * Author: Kristian Lier SelnÃ¦s, Kantega
  * Date: 05.jan.2007
  * Time: 12:15:21
  *
  * <br><br>
  * Tar strengen som ligger i taggens body og forkorter den til det antall tegn som er
- * spesifisert i maxsize. Legger på ... etter den forkortede strengen.
+ * spesifisert i maxsize. Legger pÃ¥ ... etter den forkortede strengen.
  * <br><br>
  * Eksempler: Tekst "abcdefghijklmno"
  * <br><br>

@@ -35,7 +35,7 @@ public class Language {
     public static final int FINNISH = 10;
 
     /**
-     * Returnerer språkkoden i henhold til ISO639-1.
+     * Returnerer sprÃ¥kkoden i henhold til ISO639-1.
      *
      * @param language
      * @return
@@ -55,7 +55,7 @@ public class Language {
             case DUTCH:
                 return "dut";
             case FRENCH:
-                return "fre"; //språkkoden fra finnes også for fransk
+                return "fre"; //sprÃ¥kkoden fra finnes ogsÃ¥ for fransk
             case SWEDISH:
                 return "swe";
             case DANISH:
@@ -68,8 +68,8 @@ public class Language {
     }
 
     /**
-     * Returnerer språkkoden i henhold til ISO639-2.
-     * Hvis det skal angies språk i html-attributtet lang anbefales det at denne standarden benyttes.
+     * Returnerer sprÃ¥kkoden i henhold til ISO639-2.
+     * Hvis det skal angies sprÃ¥k i html-attributtet lang anbefales det at denne standarden benyttes.
      *
      * @param language
      * @return

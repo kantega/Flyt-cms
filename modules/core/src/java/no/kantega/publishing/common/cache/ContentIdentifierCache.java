@@ -54,7 +54,7 @@ public class ContentIdentifierCache {
         synchronized (contentIdentifiers) {
             cids = (List) contentIdentifiers.get(name);
             if (cids == null) {
-                // Prøv å hent alias med / tilslutt
+                // PrÃ¸v Ã¥ hent alias med / tilslutt
                 cids = (List) contentIdentifiers.get(name + "/");
 
             }

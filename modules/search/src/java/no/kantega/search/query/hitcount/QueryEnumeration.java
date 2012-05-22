@@ -25,7 +25,7 @@ import org.apache.lucene.search.TermQuery;
 import java.io.IOException;
 
 /**
- * Klasse for å iterere over Query'ene til HitCountQuery-objekter.
+ * Klasse for Ã¥ iterere over Query'ene til HitCountQuery-objekter.
  *
  * Date: Jan 23, 2009
  * Time: 9:11:36 AM
@@ -69,7 +69,7 @@ public class QueryEnumeration {
 
 
     /**
-     * Interface som definerer metoder for å iterere over et sett med termer.
+     * Interface som definerer metoder for Ã¥ iterere over et sett med termer.
      */
     private interface TermEnumeration {
 

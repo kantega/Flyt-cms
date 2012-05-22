@@ -1,9 +1,9 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="java.util.List,
-                 no.kantega.publishing.common.data.attributes.DocumenttypeAttribute,
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
+<%@ page import="no.kantega.commons.util.StringHelper,
+                 no.kantega.publishing.common.cache.DocumentTypeCache,
                  no.kantega.publishing.common.data.DocumentType"%>
-<%@ page import="no.kantega.commons.util.StringHelper"%>
-<%@ page import="no.kantega.publishing.common.cache.DocumentTypeCache" %>
+<%@ page import="no.kantega.publishing.common.data.attributes.DocumenttypeAttribute"%>
+<%@ page import="java.util.List" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

@@ -17,7 +17,7 @@
 package no.kantega.publishing.common.util;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: May 4, 2007
  * Time: 9:42:39 AM
  */
@@ -25,7 +25,7 @@ public class AksessValidationUtils {
 
 
     public static boolean isTextOnly(String str) {
-        String regexp = "^[a-zA-ZæÆøØåÅöÖäÄ\\-\\s]{1,30}$";
+        String regexp = "^[a-zA-ZÃ¦Ã†Ã¸Ã˜Ã¥Ã…Ã¶Ã–Ã¤Ã„\\-\\s]{1,30}$";
         return str.matches(regexp);
     }
 

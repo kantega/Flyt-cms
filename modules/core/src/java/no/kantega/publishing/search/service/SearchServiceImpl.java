@@ -40,14 +40,7 @@ import no.kantega.search.query.SearchQuery;
 import no.kantega.search.query.SearchQueryDefaultImpl;
 import no.kantega.search.query.SearchQueryExtendedImpl;
 import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.result.Alternative;
-import no.kantega.search.result.DocumentHit;
-import no.kantega.search.result.HitCount;
-import no.kantega.search.result.SearchHit;
-import no.kantega.search.result.SearchResult;
-import no.kantega.search.result.SearchResultExtendedImpl;
-import no.kantega.search.result.Suggestion;
-import no.kantega.search.result.TermTranslator;
+import no.kantega.search.result.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.Sort;
@@ -80,9 +73,9 @@ public class SearchServiceImpl implements SearchService {
 
 
     /**
-     * Utf�rer et s�k mot den underliggende Searcher-implementasjonen
+     * Utfører et søk mot den underliggende Searcher-implementasjonen
      *
-     * @return en Map med ett SearchResultWrapper-objekt - med "searchResult" som n�kkel.
+     * @return en Map med ett SearchResultWrapper-objekt - med "searchResult" som nøkkel.
      * {@inheritDoc}
      */
     public SearchServiceResultImpl search(SearchServiceQuery searchServiceQuery) {
@@ -90,7 +83,7 @@ public class SearchServiceImpl implements SearchService {
         List<Alternative> alternatives = new ArrayList<Alternative>();
 
         if (searchServiceQuery != null && (searchServiceQuery.getSearchPhrase() != null || searchServiceQuery.isAllowEmptySearchPhrase())) {
-            // Bare s�k hvis det er gitt en s�kestreng
+            // Bare søk hvis det er gitt en søkestreng
             SearchQuery searchQuery = createSearchQuery(searchServiceQuery);
             try{
                 searchResult = searcher.search(searchQuery);
@@ -98,7 +91,7 @@ public class SearchServiceImpl implements SearchService {
                 Log.error(SOURCE, "invalid query", null, null);
                 return null;
             }
-            // Registrer s�k med antall treff
+            // Registrer søk med antall treff
             logSearch(searchServiceQuery, searchQuery, searchResult.getNumberOfHits());
 
             if (!isSufficient(searchResult)) {
@@ -214,11 +207,11 @@ public class SearchServiceImpl implements SearchService {
     protected List<Criterion> getDefaultFilters() {
         List<Criterion> criterions = new ArrayList<Criterion>();
 
-        // Bare s�k i aktivt innhold
+        // Bare søk i aktivt innhold
         VisibilityStatusCriterion visibilityStatusCriterion = new VisibilityStatusCriterion(ContentVisibilityStatus.ACTIVE);
         criterions.add(visibilityStatusCriterion);
 
-        // Bare s�k i publisert innhold
+        // Bare søk i publisert innhold
         ContentStatusCriterion contentStatusCriterion = new ContentStatusCriterion(ContentStatus.PUBLISHED);
         criterions.add(contentStatusCriterion);
 
@@ -226,16 +219,16 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * Lager en liste med Criterion-objekter som b�r benyttes som Query.
+     * Lager en liste med Criterion-objekter som bør benyttes som Query.
      *
      * @param query et SearchServiceQuery-objekt
-     * @return en liste med Criterion-objekter som b�r benyttes som Query
+     * @return en liste med Criterion-objekter som bør benyttes som Query
      */
     private List<Criterion> parseSearchParameters(SearchServiceQuery query) {
         List<Criterion> criterionList = new ArrayList<Criterion>();
 
         /*
-         * Query (s�kefrasen)
+         * Query (søkefrasen)
          */
         Analyzer analyzer = indexManager.getAnalyzerFactory().createInstance();
 
@@ -271,10 +264,10 @@ public class SearchServiceImpl implements SearchService {
     }
 
     /**
-     * Lager en liste med Criterion-objekter som b�r benyttes som Filter.
+     * Lager en liste med Criterion-objekter som bør benyttes som Filter.
      *
      * @param query et SearchServiceQuery-objekt
-     * @return en liste med Criterion-objekter som b�r benyttes som Filter
+     * @return en liste med Criterion-objekter som bør benyttes som Filter
      */
     private List<Criterion> parseFilterParameters(SearchServiceQuery query) {
         List<Criterion> criterionList = new ArrayList<Criterion>();

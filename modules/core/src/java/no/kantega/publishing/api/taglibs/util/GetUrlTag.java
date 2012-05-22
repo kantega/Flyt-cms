@@ -22,9 +22,8 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -72,7 +71,7 @@ public class GetUrlTag extends TagSupport {
                     if (url.charAt(0) == '/') {
                         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
-                        // Hvis adminmodus, legg til siteid på link
+                        // Hvis adminmodus, legg til siteid pÃ¥ link
                         if (HttpHelper.isAdminMode(request)) {
                             try {
                                 ContentIdentifier cid = new ContentIdentifier(request, url);

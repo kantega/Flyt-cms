@@ -16,29 +16,29 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.administration.action.CreateRootAction;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 01.jul.2009
  * Time: 15:04:08
  */

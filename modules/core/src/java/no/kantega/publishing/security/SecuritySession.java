@@ -65,7 +65,7 @@ public class SecuritySession {
 
 
     /**
-     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i s�fall User og Identity objektet
+     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i søfall User og Identity objektet
      * @param request
      * @return
      * @throws SystemException
@@ -227,7 +227,7 @@ public class SecuritySession {
     }
 
     /**
-     * H�ndterer n�r en ny bruker har blitt logget inn, henter roller, emner, orgenheter osv
+     * Håndterer når en ny bruker har blitt logget inn, henter roller, emner, orgenheter osv
      * @param request
      * @throws SystemException
      * @throws ConfigurationException
@@ -327,7 +327,7 @@ public class SecuritySession {
         try {
             resolver.initiateLogout(logoutContext);
         } catch (Exception e) {
-            // Ikke alle IdentityResolvers h�ndterer utlogging, f.eks NTLM
+            // Ikke alle IdentityResolvers håndterer utlogging, f.eks NTLM
         }
 
         // Nullstill

@@ -21,13 +21,13 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.common.Aksess;
 
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 24.jan.2008
  * Time: 12:16:04
  */

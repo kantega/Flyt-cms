@@ -32,8 +32,8 @@ public class ContentIdentifier {
 
     private int contentId = -1; // Peker til innhold - tilsvarer content.getId()
     private int associationId = -1; // Peker til menypunkt - tilsvarer association.getAssociationId()
-    private int siteId = -1;    // Brukes sammen contentId for � finne en associationId
-    private int contextId = -1; // Brukes sammen contentId for � finne en associationId
+    private int siteId = -1;    // Brukes sammen contentId for å finne en associationId
+    private int contextId = -1; // Brukes sammen contentId for å finne en associationId
     private int language = Language.NORWEGIAN_BO;
     private int version = -1;
     private int status = -1;

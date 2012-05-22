@@ -37,8 +37,8 @@ import java.util.List;
 public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     private static final String SOURCE = "aksess.jobs.MailSubscriptionJob";
 
-    // Denne jobben kjøres ved ulike intervall for å sende ut meldinger, trenger å vite hvilket intervall
-    // dette er for å sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
+    // Denne jobben kjÃ¸res ved ulike intervall for Ã¥ sende ut meldinger, trenger Ã¥ vite hvilket intervall
+    // dette er for Ã¥ sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
     private String interval = MailSubscription.IMMEDIATE;
 
     private MailSubscriptionAgent mailSubscriptionAgent;

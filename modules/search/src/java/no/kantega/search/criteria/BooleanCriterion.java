@@ -16,7 +16,6 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -42,8 +41,8 @@ public abstract class BooleanCriterion extends AbstractCriterion {
     }
 
     /**
-     * Returnerer operatoren som skal benyttes for å kombinere Criterion-objektetene i dette BooleanCriterion-objektet.
-     * @return operatoren som skal benyttes for å kombinere Criterion-objektetene i dette BooleanCriterion-objektet
+     * Returnerer operatoren som skal benyttes for Ã¥ kombinere Criterion-objektetene i dette BooleanCriterion-objektet.
+     * @return operatoren som skal benyttes for Ã¥ kombinere Criterion-objektetene i dette BooleanCriterion-objektet
      */
     protected abstract BooleanClause.Occur getInnerOperator();
 

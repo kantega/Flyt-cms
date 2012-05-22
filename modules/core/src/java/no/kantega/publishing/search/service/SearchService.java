@@ -25,7 +25,7 @@ package no.kantega.publishing.search.service;
 public interface SearchService {
 
     /**
-     * Utfører et søk basert på det gitte query'et.
+     * UtfÃ¸rer et sÃ¸k basert pÃ¥ det gitte query'et.
      *
      * @param query et SearchServiceQuery
      * @return et SearchServiceResult-objekt

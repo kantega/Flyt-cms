@@ -16,15 +16,14 @@
 
 package no.kantega.commons.taglib.template;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
 /**
- * Benyttes for å hente ut en section som er lagret med put tidligere
+ * Benyttes for Ã¥ hente ut en section som er lagret med put tidligere
  */
 public class GetSectionTag  extends TagSupport {
     private String id = null;

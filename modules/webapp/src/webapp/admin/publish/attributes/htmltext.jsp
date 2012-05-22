@@ -1,12 +1,12 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.configuration.Configuration,
                  no.kantega.commons.log.Log,
                  no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
-<%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
 <%@ page import="no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper"%>
+<%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>

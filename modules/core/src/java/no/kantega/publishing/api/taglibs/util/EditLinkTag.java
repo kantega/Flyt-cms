@@ -16,20 +16,20 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
+import no.kantega.commons.log.Log;
+import no.kantega.commons.util.HttpHelper;
+import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.util.URLHelper;
-import no.kantega.commons.util.HttpHelper;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class EditLinkTag  extends BodyTagSupport {
     private static final String SOURCE = "aksess.EditLinkTag";
@@ -84,7 +84,7 @@ public class EditLinkTag  extends BodyTagSupport {
                 out.print("</a>\n");
             }
         } catch (ContentNotFoundException e) {
-            // Gjør ingenting her nei, siden er ikke redigerbar
+            // GjÃ¸r ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
             System.err.println(e);
             Log.error(SOURCE, e, null, null);

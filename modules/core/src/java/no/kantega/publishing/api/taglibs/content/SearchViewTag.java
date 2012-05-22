@@ -1,17 +1,15 @@
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.search.result.SearchHit;
-
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
-
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.search.model.AksessSearchHit;
 import no.kantega.publishing.spring.RootContext;
+import no.kantega.search.result.SearchHit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -71,7 +69,7 @@ public class SearchViewTag extends TagSupport {
                     }
                     request.setAttribute("aksess_containingPage", currentPage);
 
-                    // Ved å legge content på request'en med navn aksess_this vil malen kunne bruke standard tagger
+                    // Ved Ã¥ legge content pÃ¥ request'en med navn aksess_this vil malen kunne bruke standard tagger
                     RequestHelper.setRequestAttributes(request, content);
                 }
 

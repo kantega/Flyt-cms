@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.content.spellcheck;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Locale;
 
 /**
@@ -42,7 +41,7 @@ public interface SpellcheckerService {
      * @param lang
      * @return a list of suggestions.
      */
-    public List<String> suggest(String word, String lang); // ta inn språk eller spellchecker
+    public List<String> suggest(String word, String lang); // ta inn sprÃ¥k eller spellchecker
 
     /**
      * Checks whether this SpellcheckerService supports the locale given as

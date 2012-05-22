@@ -60,7 +60,7 @@ public class InputScreenRenderer {
 
 
     /**
-     * Lager inputskjermbilde ved � g� gjennom alle attributter
+     * Lager inputskjermbilde ved å gå gjennom alle attributter
      */
     public void generateInputScreen() throws IOException, SystemException, ServletException {
         JspWriter out = pageContext.getOut();

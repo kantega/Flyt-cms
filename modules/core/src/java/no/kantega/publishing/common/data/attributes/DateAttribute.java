@@ -56,7 +56,7 @@ public class DateAttribute extends Attribute {
         if (dateValue != null) {
             DateFormat df;
 
-            // Oppdater verdi basert p� nytt format
+            // Oppdater verdi basert på nytt format
             if (locale != null) {
                 df = new SimpleDateFormat(dateFormat, locale);
             } else {

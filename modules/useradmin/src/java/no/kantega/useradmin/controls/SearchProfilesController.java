@@ -16,15 +16,13 @@
 
 package no.kantega.useradmin.controls;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.search.SearchResult;
 import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -69,7 +67,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
                     model.put("users", users.iterator());
                 }
             } else {
-                // Søkt etter bruker eller vis alle
+                // SÃ¸kt etter bruker eller vis alle
                 SearchResult result = manager.searchProfiles(query == null ? "" : query);
                 if (result != null) {
                     model.put("users", result.getAllResults());

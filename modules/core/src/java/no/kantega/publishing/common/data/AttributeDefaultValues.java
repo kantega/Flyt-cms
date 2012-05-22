@@ -1,9 +1,7 @@
 package no.kantega.publishing.common.data;
 
-import java.util.HashMap;
-
 /**
- * User: Kristian Selnæs
+ * User: Kristian SelnÃ¦s
  * Date: 19.mai.2010
  * Time: 12:05:34
  */

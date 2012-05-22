@@ -1,7 +1,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

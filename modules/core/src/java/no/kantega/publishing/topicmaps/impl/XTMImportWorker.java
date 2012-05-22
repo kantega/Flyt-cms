@@ -17,26 +17,25 @@
 package no.kantega.publishing.topicmaps.impl;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.Aksess;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.CachedXPathAPI;
-
-import javax.xml.transform.TransformerException;
-import java.util.List;
-import java.util.ArrayList;
-
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicBaseName;
-import no.kantega.publishing.topicmaps.data.TopicOccurence;
-import no.kantega.publishing.topicmaps.data.TopicAssociation;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.ao.TopicAssociationAO;
+import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicAssociation;
+import no.kantega.publishing.topicmaps.data.TopicBaseName;
+import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.apache.xpath.CachedXPathAPI;
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import javax.xml.transform.TransformerException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class XTMImportWorker{
     private static final String SOURCE = "aksess.XTMImportWorker";
@@ -368,7 +367,7 @@ public class XTMImportWorker{
             }
             topic.setOccurences(occurences);
 
-            // Slett knytninger, da disse legges inn på nytt
+            // Slett knytninger, da disse legges inn pÃ¥ nytt
             TopicAssociationAO.deleteTopicAssociations(topic);
 
             // Legg til i base

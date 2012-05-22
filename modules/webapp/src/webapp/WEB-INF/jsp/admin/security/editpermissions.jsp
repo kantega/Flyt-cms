@@ -1,12 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
-<%@ page import="java.util.Locale" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
+<%@ page import="no.kantega.publishing.security.data.Role"%>
 <%@ page import="no.kantega.publishing.security.data.User" %>
-<%@ page import="no.kantega.publishing.security.data.Role" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

@@ -16,11 +16,10 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import org.apache.lucene.search.Query;
 
 /**
- * Criterion som pakker inn et org.apache.lucene.search.Query-objekt slik at dette kan benyttes direkte i et søk.
+ * Criterion som pakker inn et org.apache.lucene.search.Query-objekt slik at dette kan benyttes direkte i et sÃ¸k.
  *
  * Date: Dec 8, 2008
  * Time: 8:21:29 AM

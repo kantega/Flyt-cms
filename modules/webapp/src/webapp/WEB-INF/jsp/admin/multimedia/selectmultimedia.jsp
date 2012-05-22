@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -15,9 +15,9 @@
   ~ limitations under the License.
   --%>
 <%@ page import="no.kantega.commons.client.util.RequestParameters,
-                 no.kantega.publishing.common.util.MultimediaTagCreator"%>
+                 no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
-<%@ page import="no.kantega.commons.util.URLHelper" %>
+<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 
 <%
     Multimedia mm = (Multimedia)request.getAttribute("media");

@@ -79,9 +79,9 @@ public class NavigatorUtil {
         if (vStatus == ContentVisibilityStatus.WAITING) {
             return "Utsatt publisering";
         } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
-            return "Utg�tt p� dato - skjult";
+            return "Utgått på dato - skjult";
         } else if (vStatus == ContentVisibilityStatus.ARCHIVED) {
-            return "Utg�tt p� dato - arkivert";
+            return "Utgått på dato - arkivert";
         } else {
             if (type == ContentType.SHORTCUT) {
                 return "Snarvei";

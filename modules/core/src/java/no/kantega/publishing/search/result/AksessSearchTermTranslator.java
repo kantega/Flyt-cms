@@ -155,20 +155,20 @@ public class AksessSearchTermTranslator implements TermTranslator {
         c.add(Calendar.MONTH, -1);
         terms[2] = format.format(c.getTime());
 
-        // sist år
+        // sist Ã¥r
         c.setTime(today);
         terms[5] = format.format(c.getTime());
         c.add(Calendar.YEAR, -1);
         terms[4] = format.format(c.getTime());
 
-        // siste 2 år
+        // siste 2 Ã¥r
         c.setTime(today);
         c.add(Calendar.YEAR, -1);
         terms[7] = format.format(c.getTime());
         c.add(Calendar.YEAR, -2);
         terms[6] = format.format(c.getTime());
 
-        // eldre enn 3 år
+        // eldre enn 3 Ã¥r
         c.setTime(today);
         c.add(Calendar.YEAR, -3);
         terms[9] = format.format(c.getTime());

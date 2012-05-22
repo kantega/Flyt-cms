@@ -20,13 +20,13 @@ import no.kantega.commons.log.Log;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * User: Espen H�e / Kantega AS
+ * User: Espen Høe / Kantega AS
  * Date: 03.sep.2007
  * Time: 13:20:17
  */

@@ -75,10 +75,10 @@ public class AlternativeQuery implements SuggestionQuery {
     }
 
     /**
-     * Setter en verdi for hvor lik forslagene må være den gitte teksten.
-     * Må være en verdi mellom 0 og 1 (begge ekslusiv). Default er 0.75.
+     * Setter en verdi for hvor lik forslagene mÃ¥ vÃ¦re den gitte teksten.
+     * MÃ¥ vÃ¦re en verdi mellom 0 og 1 (begge ekslusiv). Default er 0.75.
      * 
-     * @param accuracy en verdi for hvor lik forslagene må være den gitte teksten
+     * @param accuracy en verdi for hvor lik forslagene mÃ¥ vÃ¦re den gitte teksten
      */
     public void setAccuracy(float accuracy) {
         this.accuracy = accuracy;

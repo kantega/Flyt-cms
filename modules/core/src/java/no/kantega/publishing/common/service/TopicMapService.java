@@ -19,15 +19,15 @@ package no.kantega.publishing.common.service;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
+import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.common.exception.ObjectInUseException;
+import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.*;
 import no.kantega.publishing.topicmaps.data.*;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
 import no.kantega.publishing.topicmaps.impl.XTMImportWorker;
 import org.w3c.dom.Document;
@@ -266,7 +266,7 @@ public class TopicMapService {
             return;
         }
 
-        // En knytning mellom to emner (topics) g�r alltid begge veier, dette blir representert som to innslag i basen
+        // En knytning mellom to emner (topics) går alltid begge veier, dette blir representert som to innslag i basen
         TopicAssociation association1 = new TopicAssociation();
         TopicAssociation association2 = new TopicAssociation();
 

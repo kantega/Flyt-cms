@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.service.lock;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 
@@ -62,7 +61,7 @@ public class LockManager {
             // Content already locked
             return false;
         } else {
-            // Kan kun låse et objekt i gangen
+            // Kan kun lÃ¥se et objekt i gangen
             releaseLocksForOwner(owner);
 
             ContentLock lock = new ContentLock(owner, contentId);

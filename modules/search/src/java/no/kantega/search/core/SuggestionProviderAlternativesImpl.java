@@ -94,7 +94,7 @@ public class SuggestionProviderAlternativesImpl implements SuggestionProvider {
             if (Arrays.binarySearch(stopwords, s) < 0) {
                 int currentDocFreq = reader.docFreq(factoryTerm.createTerm(s));
                 if (currentDocFreq > textTermDocFreq) {
-                    // Bare ta med ord som har h�yere dokumentfrekvens enn det originale
+                    // Bare ta med ord som har høyere dokumentfrekvens enn det originale
                     suggestionsByDocFreq.add(new Suggestion(s, currentDocFreq));
                 }
             }

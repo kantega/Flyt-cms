@@ -21,7 +21,7 @@ import no.kantega.publishing.common.ao.EditableListAO;
 import java.util.Locale;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: Jun 11, 2007
  * Time: 1:32:47 PM
  */

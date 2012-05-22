@@ -101,7 +101,7 @@ public class SearchHandlerDefaultImpl implements SearchHandler {
 
 
     /**
-     * Gj�r det samme som getQueryFromCriteria(List<Criterion>), men returnerer null hvis lista er tom.
+     * Gjør det samme som getQueryFromCriteria(List<Criterion>), men returnerer null hvis lista er tom.
      *
      * @param criteria en liste med Criterion-objekter
      * @return et org.apache.lucene.search.Query-objekt, eller null hvis den gitte lista var tom

@@ -19,7 +19,7 @@ package no.kantega.search.result;
 import java.util.List;
 
 /**
- * Interface som representerer et søkeresultat. Tilbyr en liste med søketreff og tiden det tok å utføre søket.
+ * Interface som representerer et sÃ¸keresultat. Tilbyr en liste med sÃ¸ketreff og tiden det tok Ã¥ utfÃ¸re sÃ¸ket.
  *
  * Date: Dec 1, 2008
  * Time: 2:00:08 PM
@@ -37,20 +37,20 @@ public interface SearchResult {
 
     /**
      * Returnerer det totale antallet treff i indeksen. Dette er forskjellig fra getDocumentHits().size()
-     * når antall treff overstiger maksimumsverdien satt for antall treff.
+     * nÃ¥r antall treff overstiger maksimumsverdien satt for antall treff.
      * @return det totale antallet treff i indeksen
      */
     public int getNumberOfHits();
 
     /**
-     * Returnerer tiden brukt på å utføre søket som resulterte i dette SearchResult'et - i millisekunder.
-     * @return tiden brukt på å utføre søket som resulterte i dette SearchResult'et - i millisekunder
+     * Returnerer tiden brukt pÃ¥ Ã¥ utfÃ¸re sÃ¸ket som resulterte i dette SearchResult'et - i millisekunder.
+     * @return tiden brukt pÃ¥ Ã¥ utfÃ¸re sÃ¸ket som resulterte i dette SearchResult'et - i millisekunder
      */
     public long getTime();
 
     /**
-     * Returnerer et QueryInfo-objekt som inneholder informasjon om søket som genererte dette SearchResult'et.
-     * @return et QueryInfo-objekt som inneholder informasjon om søket som genererte dette SearchResult'et
+     * Returnerer et QueryInfo-objekt som inneholder informasjon om sÃ¸ket som genererte dette SearchResult'et.
+     * @return et QueryInfo-objekt som inneholder informasjon om sÃ¸ket som genererte dette SearchResult'et
      */
     public QueryInfo getQueryInfo();
 

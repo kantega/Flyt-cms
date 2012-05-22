@@ -96,7 +96,7 @@ public class LinkAO {
     }
 
     private static void checkLinkOccurrenceInserted(int linkId, Content content, PreparedStatement checkOccurrenceStatement, PreparedStatement insOccurrenceStatement, String attributeName) throws SQLException {
-        // Legg til occurrence hvis ikke registrert hva før
+        // Legg til occurrence hvis ikke registrert hva fÃ¸r
         checkOccurrenceStatement.setInt(1, linkId);
         checkOccurrenceStatement.setInt(2, content.getId());
         if (attributeName != null) {
@@ -114,7 +114,7 @@ public class LinkAO {
     }
 
     private static int checkLinkInserted(String link, PreparedStatement checkLinkStatement, PreparedStatement insLinkStatement) throws SQLException {
-        // Sjekk om linken er registrert fra før, legg til hvis ikke
+        // Sjekk om linken er registrert fra fÃ¸r, legg til hvis ikke
         checkLinkStatement.setString(1, link);
         ResultSet rs = checkLinkStatement.executeQuery();
         int linkId;

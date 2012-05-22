@@ -17,23 +17,20 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.client.MultimediaRequestHandler;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.ao.PermissionsAO;
 import no.kantega.publishing.spring.RootContext;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 public class MultimediaAO {
@@ -68,7 +65,7 @@ public class MultimediaAO {
     /**
      * Henter multimedia objekt fra basen (unntatt data)
      * @param parentId - parentId til objekt som skal hentes
-     * @param name - navn p� objekt til som skal hentes
+     * @param name - navn på objekt til som skal hentes
      * @return
      * @throws SystemException
      */
@@ -94,8 +91,8 @@ public class MultimediaAO {
 
     /**
      * Sender multimedia til klienten
-     * @param id - Id p� objekt som skal streames
-     * @param ish - Inputhandler som h�ndterer stream
+     * @param id - Id på objekt som skal streames
+     * @param ish - Inputhandler som håndterer stream
      * @throws SystemException
      */
     public static void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {

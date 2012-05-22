@@ -1,13 +1,4 @@
-<%@ page import="java.util.Map"%>
-<%@ page import="no.kantega.publishing.spring.RootContext"%>
-<%@ page import="no.kantega.publishing.org.OrganizationManager"%>
-<%@ page import="org.springframework.context.ApplicationContext"%>
-<%@ page import="java.util.Iterator"%>
-<%@ page import="java.io.IOException"%>
-<%@ page import="no.kantega.publishing.org.OrgUnit"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.DateAttribute"%>
-<%@ page import="java.text.SimpleDateFormat"%>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ include file="../include/jsp_header.jsf" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page buffer="none" %>

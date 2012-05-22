@@ -1,4 +1,4 @@
-<%@ page contentType="application/json;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<%@ page contentType="application/json;charset=utf-8" language="java" pageEncoding="utf-8" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");

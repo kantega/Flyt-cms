@@ -200,7 +200,7 @@ public class LinkCheckerJob implements InitializingBean {
                 checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
             }
         } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
-            // Kan v�re et alias, sjekk
+            // Kan være et alias, sjekk
             String alias = link.substring(Aksess.VAR_WEB.length());
             try {
                 ContentIdentifier cid = new ContentIdentifier(alias);

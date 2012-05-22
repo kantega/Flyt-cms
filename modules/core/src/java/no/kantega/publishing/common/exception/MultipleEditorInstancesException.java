@@ -23,6 +23,6 @@ package no.kantega.publishing.common.exception;
  */
 public class MultipleEditorInstancesException  extends no.kantega.commons.exception.KantegaException {
     public MultipleEditorInstancesException() {
-        super("Brukeren har flere vinduer med redigering åpne", "", null);
+        super("Brukeren har flere vinduer med redigering Ã¥pne", "", null);
     }
 }

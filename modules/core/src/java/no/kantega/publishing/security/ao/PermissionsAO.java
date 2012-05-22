@@ -16,27 +16,27 @@
 
 package no.kantega.publishing.security.ao;
 
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.security.data.*;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.AssociationAO;
+import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.security.data.*;
+import no.kantega.publishing.security.data.enums.NotificationPriority;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.data.enums.RoleType;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 
 public class PermissionsAO {
     private static final String SOURCE = "aksess.PermissionsAO";
@@ -122,7 +122,7 @@ public class PermissionsAO {
             }
 
             if (object.getId() != -1 && (securityId != object.getId()) && setPermissionsFromParent) {
-                // Brukeren har opprettet nye rettigheter, men ikke valgt noen: gjør ingenting
+                // Brukeren har opprettet nye rettigheter, men ikke valgt noen: gjÃ¸r ingenting
                 return;
             }
 

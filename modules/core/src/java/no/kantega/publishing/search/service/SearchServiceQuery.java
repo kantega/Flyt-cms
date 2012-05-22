@@ -25,11 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Date: Jan 28, 2009
@@ -116,16 +112,16 @@ public class SearchServiceQuery {
     }
 
     /**
-     * Returnerer en liste med alle parameternavn som skal være med i søket.
+     * Returnerer en liste med alle parameternavn som skal vÃ¦re med i sÃ¸ket.
      *
-     * @return en liste med alle parameternavn som skal være med i søket
+     * @return en liste med alle parameternavn som skal vÃ¦re med i sÃ¸ket
      */
     public List<String> getParamNames() {
         return paramNames;
     }
 
     /**
-     * Legger til en søkeparameter til dette Query'et. Hvis en parameter med dette navnet allerede finnes, blir dette
+     * Legger til en sÃ¸keparameter til dette Query'et. Hvis en parameter med dette navnet allerede finnes, blir dette
      * overskrevet.
      *
      * @param name navnet til parameteren
@@ -138,7 +134,7 @@ public class SearchServiceQuery {
     /**
      * Returnerer parameteren med det gitte navnet.
      *
-     * @param name navnet på parameteren
+     * @param name navnet pÃ¥ parameteren
      * @return parameteren med det gitte navnet
      */
     public String getStringParam(String name) {
@@ -148,7 +144,7 @@ public class SearchServiceQuery {
     /**
      * Returnerer parameteren med det gitte navnet.
      *
-     * @param name navnet på parameteren
+     * @param name navnet pÃ¥ parameteren
      * @return parameteren med det gitte navnet
      */
     public Integer getIntegerParam(String name) {
@@ -158,7 +154,7 @@ public class SearchServiceQuery {
     /**
      * Returnerer parameteren med det gitte navnet.
      *
-     * @param name navnet på parameteren
+     * @param name navnet pÃ¥ parameteren
      * @return parameteren med det gitte navnet
      */
     public String getDateParamAsString(String name) {

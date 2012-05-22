@@ -68,7 +68,7 @@ public class MiniViewTag extends TagSupport {
 
                     request.setAttribute("aksess_containingPage", currentPage);
 
-                    // Ved å legge content på request'en med navn aksess_this vil malen kunne bruke standard tagger
+                    // Ved Ã¥ legge content pÃ¥ request'en med navn aksess_this vil malen kunne bruke standard tagger
                     RequestHelper.setRequestAttributes(request, content);
                     try {
                         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {

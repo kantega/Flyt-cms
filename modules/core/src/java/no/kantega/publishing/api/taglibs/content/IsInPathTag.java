@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.NotAuthorizedException;
 
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsInPathTag extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsInPathTag";
@@ -92,11 +92,11 @@ public class IsInPathTag extends ConditionalTagSupport {
                     if (session.isLoggedIn()) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     } else {
-                        // Gå til loginside
+                        // GÃ¥ til loginside
                         session.initiateLogin(request, response);
                     }
                 } catch (ContentNotFoundException e) {
-                    // Ikke nødvendig
+                    // Ikke nÃ¸dvendig
                 }
             }
         } catch (Exception e) {

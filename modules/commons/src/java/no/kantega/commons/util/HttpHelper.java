@@ -25,7 +25,7 @@ import java.util.Enumeration;
 
 public class HttpHelper {
     public static boolean isInClientCache(HttpServletRequest request, HttpServletResponse response, String etag, Date lastModified) {
-        // IE bryr seg ikke om å sjekke om ting er modifisert, så vi må la være å bruke dette i adminmodus
+        // IE bryr seg ikke om Ã¥ sjekke om ting er modifisert, sÃ¥ vi mÃ¥ la vÃ¦re Ã¥ bruke dette i adminmodus
         if (isAdminMode(request)) {
             return false;
         }

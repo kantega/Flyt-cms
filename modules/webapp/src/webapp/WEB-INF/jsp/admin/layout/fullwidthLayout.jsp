@@ -1,5 +1,4 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ page buffer="none" %>
 <%--

@@ -15,15 +15,16 @@
   --%>
 
 <%--
-  User: Kristian Lier Selnæs, Kantega AS
+  User: Kristian Lier SelnÃ¦s, Kantega AS
   Date: 20.des.2006
   Time: 15:54:46
 --%>
-<%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:taxo="http://purl.org/rss/1.0/modules/taxonomy/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:syn="http://purl.org/rss/1.0/modules/syndication/" xmlns:admin="http://webns.net/mvcb/">
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://purl.org/rss/1.0/" xmlns:dc="http://purl.org/dc/elements/1.1/"
+        >
   <channel rdf:about="<c:out value="${baseUrl}"/>/">
     <title><aksess:getattribute name="title"/></title>
     <link><c:out value="${baseUrl}"/>/</link>

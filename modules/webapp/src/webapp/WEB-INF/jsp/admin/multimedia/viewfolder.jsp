@@ -1,6 +1,3 @@
-<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
-<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -21,6 +18,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License
   --%>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 
 <%@ include file="include/medialist.jspf" %>

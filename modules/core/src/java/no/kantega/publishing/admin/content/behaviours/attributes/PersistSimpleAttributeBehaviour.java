@@ -19,7 +19,6 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
-import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,7 +40,7 @@ public class PersistSimpleAttributeBehaviour implements PersistAttributeBehaviou
 
         String value = attribute.getValue();
         if (attribute instanceof ListAttribute) {
-            // Legg til , foran og bak for å gjøre mere søkbart
+            // Legg til , foran og bak for Ã¥ gjÃ¸re mere sÃ¸kbart
             if (value != null && value.length() > 0) {
                 if (value.charAt(0) != ',') {
                     value = "," + value;

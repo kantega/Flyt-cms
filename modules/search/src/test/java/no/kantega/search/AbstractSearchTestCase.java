@@ -21,21 +21,20 @@ import no.kantega.search.analysis.AnalyzerFactory;
 import no.kantega.search.core.Searcher;
 import no.kantega.search.core.SearcherImpl;
 import no.kantega.search.index.*;
-import no.kantega.search.index.config.LuceneConfiguration;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.search.spell.SpellChecker;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.spell.LuceneDictionary;
+import org.apache.lucene.search.spell.SpellChecker;
 
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,7 +108,7 @@ public abstract class AbstractSearchTestCase extends TestCase {
 
             try {
                 addDocument(writer, Fields.CONTENT, "Dette er en speilvegg", Field.Store.NO, Field.Index.ANALYZED);
-                addDocument(writer, Fields.CONTENT, "Dette er også en speilvegg", Field.Store.NO, Field.Index.ANALYZED);
+                addDocument(writer, Fields.CONTENT, "Dette er ogsÃ¥ en speilvegg", Field.Store.NO, Field.Index.ANALYZED);
 
                 // SuggestionTest
                 addDocument(writer, Fields.CONTENT_UNSTEMMED, "trondheimsfjorden", Field.Store.NO, Field.Index.ANALYZED);

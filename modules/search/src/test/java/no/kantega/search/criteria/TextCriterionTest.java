@@ -20,14 +20,13 @@ import no.kantega.search.index.Fields;
 import no.kantega.search.query.SearchQueryDefaultImpl;
 import no.kantega.search.result.DocumentHit;
 import no.kantega.search.result.SearchResult;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
-
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 /**
  * Date: Dec 5, 2008
@@ -96,7 +95,7 @@ public class TextCriterionTest extends AbstractCriterionTest {
 //
 //        // Verify result
 //        List<DocumentHit> documentHits = result.getDocumentHits();
-//        assertEquals("Et tomt søk bør returnere alle dokumenter i indeksen.", getIndexSize(), documentHits.size());
+//        assertEquals("Et tomt sÃ¸k bÃ¸r returnere alle dokumenter i indeksen.", getIndexSize(), documentHits.size());
 //        DocumentHit documentHit = documentHits.get(0);
 //        assertEquals("100", documentHit.getDocument().get(Fields.CONTENT_ID));
     }

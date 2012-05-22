@@ -34,9 +34,9 @@ public class ContentParentCriterion extends AbstractCriterion {
     private int parentId;
 
     /**
-     * Oppretter et Criterion-objekt som begrenser søkeresultatet til kun å inneholde undersider til den gitte ID'en.
+     * Oppretter et Criterion-objekt som begrenser sÃ¸keresultatet til kun Ã¥ inneholde undersider til den gitte ID'en.
      *
-     * @param parentId ID'en til roten på treet som det skal søkes i
+     * @param parentId ID'en til roten pÃ¥ treet som det skal sÃ¸kes i
      */
     public ContentParentCriterion(int parentId) {
         this.parentId = parentId;

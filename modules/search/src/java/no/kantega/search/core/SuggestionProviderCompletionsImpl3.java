@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * SuggestionProvider som tilbyr forslag til autocompletions av ord. Støtter også flere ord.
- * Denne implementasjonen gir ord basert på hvilke termer som faktisk er mest populære etter den gitte frasen.
+ * SuggestionProvider som tilbyr forslag til autocompletions av ord. StÃ¸tter ogsÃ¥ flere ord.
+ * Denne implementasjonen gir ord basert pÃ¥ hvilke termer som faktisk er mest populÃ¦re etter den gitte frasen.
  * 
  * Date: Jan 20, 2009
  * Time: 8:03:58 AM

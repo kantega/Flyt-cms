@@ -20,7 +20,7 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.Query;
 
 /**
- * Et Criterion-objekt representerer den minste enheten for søk - en betingelse som må være oppfylt for alle søkeresultat.
+ * Et Criterion-objekt representerer den minste enheten for sÃ¸k - en betingelse som mÃ¥ vÃ¦re oppfylt for alle sÃ¸keresultat.
  *
  * Date: Dec 2, 2008
  * Time: 9:23:28 AM

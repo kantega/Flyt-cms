@@ -59,7 +59,7 @@ public class SystemStatusJob extends QuartzJobBean {
         try {
             debugConnectionsLogThreshold = Aksess.getConfiguration().getInt("database.debugconnections.logthreshold", 10);
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
+            Log.debug(SOURCE, "********* Klarte ikke Ã¥ lese aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
             System.out.println("error:" + e);
         }

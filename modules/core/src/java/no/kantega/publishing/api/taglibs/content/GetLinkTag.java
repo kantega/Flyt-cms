@@ -20,6 +20,7 @@ package no.kantega.publishing.api.taglibs.content;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -27,10 +28,8 @@ import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.common.Aksess;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
@@ -150,7 +149,7 @@ public class GetLinkTag extends BodyTagSupport{
                         }
                     }
                 } catch (ContentNotFoundException e) {
-                    // Vi vet ikke hvilken site denne siden tilh�rer, er ikke registrert
+                    // Vi vet ikke hvilken site denne siden tilhører, er ikke registrert
                 }
             }
 

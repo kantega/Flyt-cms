@@ -1,5 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1"%>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>

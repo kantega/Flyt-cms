@@ -18,13 +18,13 @@ package no.kantega.publishing.admin.util;
 
 import no.kantega.commons.util.LocaleLabels;
 
-import java.util.Locale;
 import java.util.Date;
+import java.util.Locale;
 
 /**
- * Formatterer en dato med SimpleDateFormat pattern til gjeldende språk.
+ * Formatterer en dato med SimpleDateFormat pattern til gjeldende sprÃ¥k.
  *
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 25.jan.2008
  * Time: 13:48:26
  */
@@ -39,7 +39,7 @@ public class DateUtil {
 
     /**
      * Formatterer mellom SimpleDateFormat pattern og "lesbar" tekst
-     * Eks: dd.MM.yyy HH:mm -> dd.mm.åååå tt:mm
+     * Eks: dd.MM.yyy HH:mm -> dd.mm.Ã¥Ã¥Ã¥Ã¥ tt:mm
      *
      * @param dateFormat
      * @param locale

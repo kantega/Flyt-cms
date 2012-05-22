@@ -174,7 +174,7 @@ public class UploadMultimediaAction extends AdminController {
                         // See http://en.wikipedia.org/wiki/Code_page_437
                         String ibm = new String(bytes, defaultCharset.name());
                         if(ibm.contains("\u00a2") ||ibm.contains("\u00d5")) {
-                            // Fix norwegian � and �
+                            // Fix norwegian Ø and ø
                             return ibm.replaceAll("\u00a2", "\u00f8").replaceAll("\u00d5", "\u00d8");
                         }
 

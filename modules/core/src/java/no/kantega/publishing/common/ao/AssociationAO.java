@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.AssociationHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.ao.PermissionsAO;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 
 import java.sql.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssociationAO  {
     private static final String SOURCE = "aksess.AssociationAO";
@@ -104,7 +104,7 @@ public class AssociationAO  {
         }
 
         if (a.getAssociationtype() != AssociationType.SHORTCUT) {
-            // Avgj�r om dette er en krysspublisering eller ikke
+            // Avgjør om dette er en krysspublisering eller ikke
             ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ContentId = " + a.getContentId() + " and SiteId = " + a.getSiteId());
             if (rs.next()) {
                 a.setAssociationtype(AssociationType.CROSS_POSTING);
@@ -133,7 +133,7 @@ public class AssociationAO  {
         if (rs.next()) {
             a.setId(rs.getInt(1));
         } else {
-            Log.error(SOURCE, "Feilet ved uthenting av n�kkel - id", null, null);
+            Log.error(SOURCE, "Feilet ved uthenting av nøkkel - id", null, null);
         }
         rs.close();
         st.close();
@@ -148,7 +148,7 @@ public class AssociationAO  {
             st.close();
         }
 
-        // Sett defaultrettigheter p� startside, alle kan gj�re alt
+        // Sett defaultrettigheter pø startside, alle kan gjøre alt
         if (a.getSecurityId() == -1 && a.getParentAssociationId() == 0) {
             PermissionsAO.setPermissions(a, null);
             a.setSecurityId(a.getId());
@@ -163,7 +163,7 @@ public class AssociationAO  {
     public static void addAssociation(Association association) throws SystemException {
 
         if (association.getAssociationtype() == AssociationType.SHORTCUT && association.getAssociationId() == -1) {
-            // Kan ikke opprette en snarvei uten � ha en knytningsid
+            // Kan ikke opprette en snarvei uten ø ha en knytningsid
             return;
         }
 
@@ -315,15 +315,15 @@ public class AssociationAO  {
     /**
      * Flytter en struktur
      * @param newAssociation - oppdatert kopling
-     * @param updateCopies - dersom siden er kopiert (krysspublisert), angi om krysspubliserte sider ogs� skal flyttes
+     * @param updateCopies - dersom siden er kopiert (krysspublisert), angi om krysspubliserte sider ogsø skal flyttes
      * @throws SystemException - Systemfeil
      */
     public static void modifyAssociation(Association newAssociation, boolean updateCopies, boolean updateGroup) throws SystemException {
         if (updateCopies) {
-            // Hent fra basen kopling i n�v�rende form og parent
+            // Hent fra basen kopling i nøvørende form og parent
             Association oldAssociation = getAssociationById(newAssociation.getId());
             if (oldAssociation.getParentAssociationId() > 0) {
-                // Siden som skal flyttes kan v�re krysspublisert
+                // Siden som skal flyttes kan vøre krysspublisert
 
                 int contentId = newAssociation.getContentId();
 
@@ -628,7 +628,7 @@ public class AssociationAO  {
 
             titleQuery.append(") AND contentversion.IsActive = 1");
 
-            // � hente ut tittel er splittet opp i to operasjoner, fordi det g�r s� sinnsykt tregt p� MySQL enkelte ganger
+            // ø hente ut tittel er splittet opp i to operasjoner, fordi det gør sø sinnsykt tregt pø MySQL enkelte ganger
             if (a > 0) {
                 PreparedStatement titleSt = c.prepareStatement(titleQuery.toString());
                 ResultSet titleRs = titleSt.executeQuery();

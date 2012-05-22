@@ -17,15 +17,9 @@
 package no.kantega.search.query.hitcount;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermEnum;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 import java.io.IOException;
 import java.util.Arrays;
-
-import no.kantega.search.query.hitcount.HitCountQuery;
 
 /**
  * Date: Jan 16, 2009
@@ -53,9 +47,9 @@ public class HitCountQueryDefaultImpl implements HitCountQuery {
     /**
      * Oppretter et HitCountQuery-objekt.
      *
-     * @param field navnet på et felt i indeksen
-     * @param terms en liste med termer i indeksen det skal søkes etter antall treff for
-     * @param ignoreOther hvis false så summeres og returneres antall treff for termer som ikke finnes i det gitte
+     * @param field navnet pÃ¥ et felt i indeksen
+     * @param terms en liste med termer i indeksen det skal sÃ¸kes etter antall treff for
+     * @param ignoreOther hvis false sÃ¥ summeres og returneres antall treff for termer som ikke finnes i det gitte
      *                    array'et med termer
      */
     public HitCountQueryDefaultImpl(String field, String[] terms, boolean ignoreOther) {

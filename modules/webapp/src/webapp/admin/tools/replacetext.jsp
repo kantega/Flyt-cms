@@ -1,9 +1,9 @@
-<%@ page import="java.sql.PreparedStatement"%>
-<%@ page import="java.sql.Connection"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory"%>
-<%@ page import="java.sql.ResultSet"%>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession"%>
+<%@ page import="java.sql.Connection"%>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -30,10 +30,10 @@
 
     SecuritySession ss = SecuritySession.getInstance(request);
 %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <html>
 <head>
-    <title>Søk og erstatt tekst i database</title>
+    <title>SÃ¸k og erstatt tekst i database</title>
 </head>
 <body>
 <form action="replacetext.jsp" method="post">
@@ -55,7 +55,7 @@
     if (ss.isUserInRole(Aksess.getAdminRole()) && (findText.length() > 3) && (replaceText.length() > 3)) {
 %>
 <p>
-    Fant følgende forekomster av <b><%=findText%></b>
+    Fant fÃ¸lgende forekomster av <b><%=findText%></b>
 </p>
 <form action="replacetextAction.jsp" method="post">
     <input type="hidden" name="find" value="<%=findText%>">
@@ -90,8 +90,8 @@
     %>
 </table>
     <p style="color: #ff0000">
-        NB! Søket her tar ikke hensyn til små / store bokstaver.  Det kan derfor her vises sider som ikke vil bli endret.
-        NB! Endringen skjer direkte i databasen og kan ikke endres, ta backup hvis nødvendig før du gjør endringer<br>
+        NB! SÃ¸ket her tar ikke hensyn til smÃ¥ / store bokstaver.  Det kan derfor her vises sider som ikke vil bli endret.
+        NB! Endringen skjer direkte i databasen og kan ikke endres, ta backup hvis nÃ¸dvendig fÃ¸r du gjÃ¸r endringer<br>
     </p>
     <p>
         <input type="submit" value="Erstatt tekst i valgte sider">

@@ -1,9 +1,9 @@
-<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="java.util.List" %>
 <%@ page import="no.kantega.commons.client.util.RequestParameters" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="java.util.List" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

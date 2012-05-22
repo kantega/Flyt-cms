@@ -1,15 +1,9 @@
-<%@ page import="java.util.Map"%>
-<%@ page import="no.kantega.publishing.spring.RootContext"%>
-<%@ page import="no.kantega.publishing.org.OrganizationManager"%>
-<%@ page import="org.springframework.context.ApplicationContext"%>
-<%@ page import="java.util.Iterator"%>
-<%@ page import="java.io.IOException"%>
-<%@ page import="no.kantega.publishing.org.OrgUnit"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.DateAttribute"%>
-<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="no.kantega.commons.client.util.RequestParameters"%>
 <%@ page import="no.kantega.publishing.common.ao.HearingAO"%>
-<%@ page import="no.kantega.commons.client.util.RequestParameters" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page import="no.kantega.publishing.common.data.attributes.DateAttribute"%>
+<%@ page import="java.io.IOException"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ include file="../include/jsp_header.jsf" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page buffer="none" %>
@@ -63,7 +57,7 @@
                     <td>
 
                         <div id="errorMessage" class="ui-state-error">
-                            <b>Vennligst fyll ut følgende felt riktig:</b>
+                            <b>Vennligst fyll ut fÃ¸lgende felt riktig:</b>
                             <ul>
                                 <c:forEach items="${errors.errors}" var="error">
                                     <LI><c:out value="${error.message}"/><!-- [<A href="Javascript:document.myform.<c:out value="${error.field}"/>.focus()">vis meg</A>]--></LI>
@@ -102,7 +96,7 @@
         showAttribute("deadline", deadline, request, response);
         %>
 
-        <tr><td><div class=helpText>Frist for når kommentarer til høringen må være inne</div></td></tr>
+        <tr><td><div class=helpText>Frist for nÃ¥r kommentarer til hÃ¸ringen mÃ¥ vÃ¦re inne</div></td></tr>
         <tr><td><img src="../bitmaps/blank.gif" width="2" height="8"></td></tr>
 
         <%
@@ -117,7 +111,7 @@
         showAttribute("description", desc, request, response);
         %>
 
-        <tr><td><div class=helpText>Kort beskrivelse av endringer i versjonen som legges ut på høring</div></td></tr>
+        <tr><td><div class=helpText>Kort beskrivelse av endringer i versjonen som legges ut pÃ¥ hÃ¸ring</div></td></tr>
         <tr><td><img src="../bitmaps/blank.gif" width="2" height="8"></td></tr>
 
         <%
@@ -143,7 +137,7 @@
 
         showAttribute("orgunits", orgunits, request, response);
         %>
-        <tr><td><div class=helpText>Organisasjonsenheter som skal ha tilgang til høringen</div></td></tr>
+        <tr><td><div class=helpText>Organisasjonsenheter som skal ha tilgang til hÃ¸ringen</div></td></tr>
         <tr><td><img src="../bitmaps/blank.gif" width="2" height="8"></td></tr>
 
         <%
@@ -166,7 +160,7 @@
 
         showAttribute("users", users, request, response);
         %>
-        <tr><td><div class=helpText>Brukere som skal ha tilgang til høringen</div></td></tr>
+        <tr><td><div class=helpText>Brukere som skal ha tilgang til hÃ¸ringen</div></td></tr>
         <tr><td><img src="../bitmaps/blank.gif" width="2" height="8"></td></tr>
 
         <%

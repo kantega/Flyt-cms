@@ -16,12 +16,12 @@
 
 package no.kantega.publishing.spring;
 
-import org.simplericity.datadirlocator.DefaultDataDirectoryLocator;
 import org.simplericity.datadirlocator.DataDirectoryLocatorStrategy;
+import org.simplericity.datadirlocator.DefaultDataDirectoryLocator;
 
-import javax.servlet.ServletContextListener;
-import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.io.File;
 import java.util.Properties;
 
@@ -105,7 +105,7 @@ public class DataDirectoryContextListener implements ServletContextListener {
                 p.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(CONFIGFILE));
                 kantegaDir = p.getProperty("kantega.dir");
             } catch (Exception e) {
-                // Gjør ingenting, bruker default
+                // GjÃ¸r ingenting, bruker default
             }
 
             if (kantegaDir == null || kantegaDir.length() == 0) {

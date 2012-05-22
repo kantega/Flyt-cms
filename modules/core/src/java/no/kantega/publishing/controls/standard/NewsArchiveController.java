@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.controls.standard;
 
-import no.kantega.publishing.controls.AksessController;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.Language;
-import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.controls.AksessController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 19.des.2006
  * Time: 10:46:45
  */
@@ -38,7 +38,7 @@ public class NewsArchiveController implements AksessController {
 
     private int startYear = -1;
     private int defaultMax = 20;
-    private String description = "Nyheter - Brukes for å vise liste med nyheter der brukeren velger dato/år";
+    private String description = "Nyheter - Brukes for Ã¥ vise liste med nyheter der brukeren velger dato/Ã¥r";
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Calendar calendar = new GregorianCalendar();

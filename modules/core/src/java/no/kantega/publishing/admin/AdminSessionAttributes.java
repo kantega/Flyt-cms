@@ -17,7 +17,7 @@
 package no.kantega.publishing.admin;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 03.jul.2009
  * Time: 09:32:14
  */

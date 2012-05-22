@@ -16,11 +16,12 @@
 
 package no.kantega.publishing.admin.content.spellcheck;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -33,11 +34,11 @@ public class SpellcheckerHelperTest {
         String defaultLang = "en_us";
         List<SpellcheckerInfo> spellcheckerInfos = new ArrayList<SpellcheckerInfo>();
         spellcheckerInfos.add(new SpellcheckerInfo("en_us", "English (US)", null));
-        spellcheckerInfos.add(new SpellcheckerInfo("no_nb", "Norwegian (Bokmål)", null));
+        spellcheckerInfos.add(new SpellcheckerInfo("no_nb", "Norwegian (BokmÃ¥l)", null));
         spellcheckerInfos.add(new SpellcheckerInfo("no_nn", "Norwegian (Nynorsk)", null));
 
         String langString = SpellcheckerHelper.getTinyMCESpellcheckerLanguages(spellcheckerInfos, defaultLang);
-        assertEquals("+English (US)=en_us,Norwegian (Bokmål)=no_nb,Norwegian (Nynorsk)=no_nn", langString);
+        assertEquals("+English (US)=en_us,Norwegian (BokmÃ¥l)=no_nb,Norwegian (Nynorsk)=no_nn", langString);
     }
 
     @Test
@@ -45,11 +46,11 @@ public class SpellcheckerHelperTest {
         String defaultLang = "no_nb";
         List<SpellcheckerInfo> spellcheckerInfos = new ArrayList<SpellcheckerInfo>();
         spellcheckerInfos.add(new SpellcheckerInfo("en_us", "English (US)", null));
-        spellcheckerInfos.add(new SpellcheckerInfo("no_nb", "Norwegian (Bokmål)", null));
+        spellcheckerInfos.add(new SpellcheckerInfo("no_nb", "Norwegian (BokmÃ¥l)", null));
         spellcheckerInfos.add(new SpellcheckerInfo("no_nn", "Norwegian (Nynorsk)", null));
 
         String langString = SpellcheckerHelper.getTinyMCESpellcheckerLanguages(spellcheckerInfos, defaultLang);
-        assertEquals("English (US)=en_us,+Norwegian (Bokmål)=no_nb,Norwegian (Nynorsk)=no_nn", langString);
+        assertEquals("English (US)=en_us,+Norwegian (BokmÃ¥l)=no_nb,Norwegian (Nynorsk)=no_nn", langString);
     }
 
 }

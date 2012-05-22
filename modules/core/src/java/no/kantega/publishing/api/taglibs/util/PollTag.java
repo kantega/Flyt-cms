@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -39,7 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega
+ * Author: Kristian Lier SelnÃ¦s, Kantega
  * Date: 19.apr.2007
  * Time: 14:21:29
  */
@@ -86,7 +86,7 @@ public class PollTag  extends TagSupport {
         else{
             Boolean visresultat = Boolean.FALSE;
             //Hvis brukeren allerede har stemt
-            //eller har klikket på link for å vise resultat
+            //eller har klikket pÃ¥ link for Ã¥ vise resultat
             if(hasVoted(session) || (request.getParameter("visresultat") != null && request.getParameter("visresultat").equals("true")) ) {
                 fetchResults(request);
                 visresultat = Boolean.TRUE;
@@ -103,10 +103,10 @@ public class PollTag  extends TagSupport {
     /**
      * Legger til alternativer som ikke finnes i denne pollen.
      *
-     * Ved første request til pollen vil det ikke finnes noen alternativer, alle blir da opprettet.
+     * Ved fÃ¸rste request til pollen vil det ikke finnes noen alternativer, alle blir da opprettet.
      *
      * Hvis brukeren har lagt til et eller flere alternativer til en eksisterende poll vil disse bli lagt til ved
-     * første request til pollen etter tilleggelse.
+     * fÃ¸rste request til pollen etter tilleggelse.
      */
     private void createOrUpdatePoll(){
         int altnum = 1;

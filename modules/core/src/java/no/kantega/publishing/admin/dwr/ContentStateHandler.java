@@ -16,27 +16,23 @@
 
 package no.kantega.publishing.admin.dwr;
 
-import org.directwebremoting.WebContextFactory;
-import org.directwebremoting.annotations.RemoteProxy;
-import org.directwebremoting.annotations.RemoteMethod;
-
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.service.ContentManagementService;
+import org.directwebremoting.annotations.RemoteMethod;
+import org.directwebremoting.annotations.RemoteProxy;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * Used by DWR to maintain the state of the user's currentContent session attribute,
  * i.e. the last content viewed by the user.
  *
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 03.jul.2009
  * Time: 09:20:13
  */

@@ -37,7 +37,7 @@ public class MapUserAttributeValueToContentPropertyBehaviour implements MapAttri
     private final static String SOURCE = "aksess.MapUserAttributeValueToContentPropertyBehaviour";
 
     public void mapAttributeValue(RequestParameters param, Content content, Attribute attribute, String field, ValidationErrors errors) {
-        // Knytt verdien til bestemte felter hvis nødvendig
+        // Knytt verdien til bestemte felter hvis nÃ¸dvendig
         String fullName = "";
 
         String userId = attribute.getValue();

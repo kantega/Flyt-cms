@@ -1,10 +1,10 @@
-<%@ page import="java.sql.PreparedStatement"%>
-<%@ page import="java.sql.Connection"%>
+<%@ page import="no.kantega.commons.util.StringHelper"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory"%>
-<%@ page import="java.sql.ResultSet"%>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page import="no.kantega.commons.util.StringHelper" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession"%>
+<%@ page import="java.sql.Connection" %>
+<%@ page import="java.sql.PreparedStatement" %>
+<%@ page import="java.sql.ResultSet" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -32,10 +32,10 @@
     SecuritySession ss = SecuritySession.getInstance(request);
 %>
 
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <html>
 <head>
-    <title>Søk og erstatt tekst i database</title>
+    <title>SÃ¸k og erstatt tekst i database</title>
 </head>
 <body>
 Erstatter tekst

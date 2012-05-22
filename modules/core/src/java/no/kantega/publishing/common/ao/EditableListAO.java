@@ -16,19 +16,18 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.data.ListOption;
-
-import java.util.List;
-import java.util.Locale;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Locale;
+
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: Jun 11, 2007
  * Time: 10:46:31 AM
  */
@@ -40,7 +39,7 @@ public class EditableListAO {
      * Fetches all list options from for a list with a given key.
      *
      * @param attributeKey Attribute's name or value from parameter "key"
-     * @param locale Norwegian Bokmål is assumed is assumed if null
+     * @param locale Norwegian BokmÃ¥l is assumed is assumed if null
      * @param ignoreVariant Locale variant is ignored if true.
      * @return List of ListOption
      */
@@ -67,7 +66,7 @@ public class EditableListAO {
      * @param attributeKey Attribute's name or key
      * @param value Option value
      * @param defaultSelected Whether or not the option should be selected by default.
-     * @param locale Norwegian Bokmål is assumed is assumed if null
+     * @param locale Norwegian BokmÃ¥l is assumed is assumed if null
      */
     public static void saveOption(String attributeKey, String value, boolean defaultSelected, Locale locale) {
         if(attributeKey == null || attributeKey.trim().length() == 0 || value == null || value.trim().length() == 0) {
@@ -90,7 +89,7 @@ public class EditableListAO {
      *
      * @param attributeKey Attribute's name or key
      * @param value Option value
-     * @param locale Norwegian Bokmål is assumed is assumed if null
+     * @param locale Norwegian BokmÃ¥l is assumed is assumed if null
      */
     public static void deleteOption(String attributeKey, String value, Locale locale) {
         if(attributeKey == null || attributeKey.trim().length() == 0 || value == null || value.trim().length() == 0) {
@@ -101,7 +100,7 @@ public class EditableListAO {
 
 
     /**
-     * @param locale Norwegian Bokmål is assumed is assumed if null
+     * @param locale Norwegian BokmÃ¥l is assumed is assumed if null
      * @param ignoreVariant Locale variant is ignored if true
      * @return Locale as a string formatted as "country_language_variant"
      */

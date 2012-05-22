@@ -35,7 +35,7 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 /**
- * Author: Kristian Lier Seln�s, Kantega AS
+ * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 30.mai.2008
  * Time: 12:20:05
  */

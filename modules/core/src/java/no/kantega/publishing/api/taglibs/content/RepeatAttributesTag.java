@@ -39,7 +39,7 @@ public class RepeatAttributesTag extends BodyTagSupport {
                     if (session.isLoggedIn()) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     } else {
-                        // Gå til loginside
+                        // GÃ¥ til loginside
                         session.initiateLogin(request, response);
                     }
                 }

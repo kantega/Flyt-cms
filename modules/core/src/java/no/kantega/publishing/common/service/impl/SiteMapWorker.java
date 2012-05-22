@@ -18,9 +18,11 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -39,7 +41,7 @@ public class SiteMapWorker {
     private static SiteMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {
             SiteMapEntry e = (SiteMapEntry)entries.get(i);
-            // Snarveier kan aldri v�re parents
+            // Snarveier kan aldri være parents
             if (e.parentId == parentId) {
                 entries.remove(e);
                 return e;
@@ -53,7 +55,7 @@ public class SiteMapWorker {
             int parentId = parent.currentId;
             SiteMapEntry entry = getFirst(parentId, entries);
             while (entry != null) {
-                // Legger kun til hovedknytninger, ellers kan ting g� i evig l�kke...
+                // Legger kun til hovedknytninger, ellers kan ting gå i evig løkke...
                 addToSiteMap(entry, entries);
                 parent.addChild(entry);
                 entry = getFirst(parentId, entries);
@@ -167,7 +169,7 @@ public class SiteMapWorker {
                     entry.setContentTemplateId(contentTemplateId);
                     entry.setDisplayTemplateId(displayTemplateId);
                     if (type == ContentType.LINK) {
-                        // Enten har bruker angitt at lenke skal �pnes i eget vindu eller s� skal dette skje automatisk
+                        // Enten har bruker angitt at lenke skal åpnes i eget vindu eller så skal dette skje automatisk
                         if (openInNewWindow || (location != null && location.length() > 0 && location.charAt(0) != '/')) {
                             entry.setOpenInNewWindow(true);
                         }
@@ -190,7 +192,7 @@ public class SiteMapWorker {
         }
 
         if (sitemap != null) {
-            // Vi har funnet starten p� sitemap'en, legg til underelementer
+            // Vi har funnet starten på sitemap'en, legg til underelementer
             addToSiteMap(sitemap, tmpentries);
         }
 
@@ -352,7 +354,7 @@ public class SiteMapWorker {
             }
         }
 
-        // Kan ha mulighet for � bruke lokalmeny
+        // Kan ha mulighet for å bruke lokalmeny
         int rootId = -1;
         int pathStartOffset = 0;
 

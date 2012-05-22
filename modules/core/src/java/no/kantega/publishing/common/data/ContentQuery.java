@@ -466,7 +466,7 @@ public class ContentQuery {
 
         if (attributes != null) {
             try {
-                // M� gj�res tungvint siden MySQL 4.0 ikke st�tter subqueryes
+                // Mø gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
                 Connection c = null;
                 try {
                     c = dbConnectionFactory.getConnection();

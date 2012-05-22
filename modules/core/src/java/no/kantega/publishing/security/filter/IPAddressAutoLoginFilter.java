@@ -16,17 +16,16 @@
 
 package no.kantega.publishing.security.filter;
 
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -65,7 +64,7 @@ public class IPAddressAutoLoginFilter implements Filter {
         try {
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
-            // Hvis bruker er logget inn skal vi ikke gjøre noe som helst
+            // Hvis bruker er logget inn skal vi ikke gjÃ¸re noe som helst
             if (!securitySession.isLoggedIn()) {
                 // Sjekk om autoinnlogging gjelder denne hosten
                 boolean includeHost = true;

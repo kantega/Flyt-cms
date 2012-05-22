@@ -16,22 +16,20 @@
 
 package no.kantega.publishing.controls.userprofile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- * User: Kristian Selnæs / Anders Skar, Kantega AS
+ * User: Kristian SelnÃ¦s / Anders Skar, Kantega AS
  * Date: Apr 26, 2007
  * Time: 2:14:23 PM
  */
@@ -64,14 +62,14 @@ public class UpdateProfileController implements AksessController {
                         if (t != null) {
                             Log.debug(SOURCE, "Valgt emne: " + t.getBaseName(), null, null);
                             topicService.addTopicSIDAssociation(t, user);
-                            //Legger inn i sesjon også slik at det blir oppdatert nå
+                            //Legger inn i sesjon ogsÃ¥ slik at det blir oppdatert nÃ¥
                             user.addTopic(t);
                         }
                     }
                 }
             }
 
-            //Fjerer emner som brukeren ønsker å fjerne fra profilen.
+            //Fjerer emner som brukeren Ã¸nsker Ã¥ fjerne fra profilen.
             List userTopics = topicService.getTopicsBySID(user);
             if(userTopics != null) {
                 for(int i = 0; i < userTopics.size(); i++) {
@@ -101,7 +99,7 @@ public class UpdateProfileController implements AksessController {
             List userSelectedTopics = topicService.getTopicsBySID(user);
             model.put("userSelectedTopics", userSelectedTopics);
 
-            //Finner forhåndsdefinerte emner for brukeren ved å ta differansen mellom alle emner og emner brukeren selv har valgt
+            //Finner forhÃ¥ndsdefinerte emner for brukeren ved Ã¥ ta differansen mellom alle emner og emner brukeren selv har valgt
             List userTopics = user.getTopics(); //Alle topics, inkludert brukervalgte
             if(userTopics == null) {
                 userTopics = new ArrayList();

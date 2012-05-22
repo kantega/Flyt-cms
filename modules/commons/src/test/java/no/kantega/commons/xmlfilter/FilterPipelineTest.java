@@ -17,11 +17,10 @@
 package no.kantega.commons.xmlfilter;
 
 import junit.framework.TestCase;
-
-import java.io.StringWriter;
-import java.io.StringReader;
-
 import no.kantega.commons.exception.SystemException;
+
+import java.io.StringReader;
+import java.io.StringWriter;
 
 public class FilterPipelineTest extends TestCase {
     private FilterPipeline filterPipeline;
@@ -34,7 +33,7 @@ public class FilterPipelineTest extends TestCase {
         filterPipeline.removeFilters();
         String pre = "<html><head>";
         String meta = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>";
-        String body = "<body>Dette er en test med ��� ���</body></html>";
+        String body = "<body>Dette er en test med æøå ÆØÅ</body></html>";
         String input = pre + body;        
         StringWriter sw = new StringWriter();
         try {

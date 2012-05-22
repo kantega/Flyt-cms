@@ -158,7 +158,7 @@ public class PasswordGenerator {
         StringBuffer buffer = new StringBuffer(wordLength);
         int[] scheme = chooseScheme(schemes[wordLength]);
         for (int i = 0; i < scheme.length; i++) {
-            if (i > 0 && scheme[i] == scheme[i - 1]) {  // Doble vokaler eller konsonanter skal vÊre lik
+            if (i > 0 && scheme[i] == scheme[i - 1]) {  // Doble vokaler eller konsonanter skal v√¶re lik
                 buffer.append(buffer.charAt(buffer.length() - 1));
             } else {
                 String[] chars = characters[scheme[i]];

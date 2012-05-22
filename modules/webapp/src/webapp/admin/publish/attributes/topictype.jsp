@@ -1,16 +1,11 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.Aksess,
-                 org.w3c.dom.NodeList,
-                 org.w3c.dom.Element,
-                 no.kantega.publishing.common.data.attributes.FormAttribute"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.TopicmapAttribute"%>
-<%@ page import="java.util.List"%>
+<%@ page import="no.kantega.publishing.common.data.attributes.TopictypeAttribute,
+                 no.kantega.publishing.topicmaps.ao.TopicAO,
+                 no.kantega.publishing.topicmaps.ao.TopicMapAO,
+                 no.kantega.publishing.topicmaps.data.Topic"%>
 <%@ page import="no.kantega.publishing.topicmaps.data.TopicMap"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.TopictypeAttribute"%>
-<%@ page import="no.kantega.publishing.topicmaps.ao.TopicMapAO"%>
-<%@ page import="no.kantega.publishing.topicmaps.ao.TopicAO"%>
-<%@ page import="no.kantega.publishing.topicmaps.data.Topic"%>
+<%@ page import="java.util.List"%>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

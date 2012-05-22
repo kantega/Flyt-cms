@@ -1,14 +1,13 @@
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
 import java.util.Map;
 
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.commons.exception.SystemException;
-
 /**
- * User: Terje Røstum, Kantega AS
+ * User: Terje RÃ¸stum, Kantega AS
  * Date: Jan 12, 2010
  * Time: 10:12:15 AM
  */

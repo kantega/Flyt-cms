@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -50,7 +50,7 @@
         </script>
         <form id="typeform">
             <input value="type" name="sendortype" type="radio" <c:if test="${!maildefault}">checked="checked"</c:if> onclick="updateVisibility()"> Skriv inn passord
-            <input value="mail" name="sendortype" type="radio" <c:if test="${maildefault}">checked="checked"</c:if> onclick="updateVisibility()"> Send ut generert passord på epost
+            <input value="mail" name="sendortype" type="radio" <c:if test="${maildefault}">checked="checked"</c:if> onclick="updateVisibility()"> Send ut generert passord pÃ¥ epost
         </form>
 
         <form action="reset" name="myform" method="post" id="mailform" style="<c:if test="${!maildefault}">display: none;</c:if>">

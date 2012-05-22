@@ -19,10 +19,9 @@ package no.kantega.search.query;
 import no.kantega.search.core.SearchHandler;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.index.IndexManager;
+import org.apache.lucene.search.Sort;
 
 import java.util.List;
-
-import org.apache.lucene.search.Sort;
 
 /**
  * Date: Dec 3, 2008
@@ -34,22 +33,22 @@ public interface SearchQuery {
 
 
     /**
-     * Returnerer en liste med Criterion-objekter som representerer dette søket.
+     * Returnerer en liste med Criterion-objekter som representerer dette sÃ¸ket.
      * 
      * @return en liste med Criterion-objekter.
      */
     public List<Criterion> getCriteria();
 
     /**
-     * Returnerer en liste med Criterion-objekter som skal benyttes som filter for dette søket.
+     * Returnerer en liste med Criterion-objekter som skal benyttes som filter for dette sÃ¸ket.
      *
-     * @return en liste med Criterion-objekter som skal benyttes som filter for dette søket
+     * @return en liste med Criterion-objekter som skal benyttes som filter for dette sÃ¸ket
      */
     public List<Criterion> getFilterCriteria();
 
     /**
-     * Returnerer en instans av en klasse som implementerer SearchHandler som kan brukes til å utføre søk på
-     * dette SearchQuery'et. Denne instansen må være ferdig initialisert og klar til å brukes.
+     * Returnerer en instans av en klasse som implementerer SearchHandler som kan brukes til Ã¥ utfÃ¸re sÃ¸k pÃ¥
+     * dette SearchQuery'et. Denne instansen mÃ¥ vÃ¦re ferdig initialisert og klar til Ã¥ brukes.
      *
      * @param indexManager et IndexManager-objekt
      * @return en instans av en klasse som implementerer SearchHandler
@@ -57,8 +56,8 @@ public interface SearchQuery {
     public SearchHandler getSearchHandler(IndexManager indexManager);
 
     /**
-     * Returnerer det maksimale antallet treff som skal returneres for dette søket.
-     * @return det maksimale antallet treff som skal returneres for dette søket
+     * Returnerer det maksimale antallet treff som skal returneres for dette sÃ¸ket.
+     * @return det maksimale antallet treff som skal returneres for dette sÃ¸ket
      */
     public int getMaxHits();
 

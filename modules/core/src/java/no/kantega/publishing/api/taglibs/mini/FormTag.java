@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 /**
- * User: Kristian Seln�s
+ * User: Kristian Selnæs
  * Date: 23.mar.2010
  * Time: 09:22:16
  */

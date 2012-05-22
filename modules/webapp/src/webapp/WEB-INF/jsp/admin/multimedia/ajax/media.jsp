@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="iso-8859-1" %><%--
+<?xml version="1.0" encoding="utf-8"?><%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="utf-8" %><%--
   ~ Copyright 2009 Kantega AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");

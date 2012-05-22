@@ -19,13 +19,13 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.util.DateUtil;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.DatetimeAttribute;
-import no.kantega.publishing.common.Aksess;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
+ * Author: Kristian Lier SelnÃ¦s, Kantega AS
  * Date: 24.jan.2008
  * Time: 13:07:32
  */

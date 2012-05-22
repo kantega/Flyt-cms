@@ -1,9 +1,6 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.data.attributes.ListAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.EditablelistAttribute" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -19,7 +16,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%
     EditablelistAttribute attribute = (EditablelistAttribute) request.getAttribute("attribute");
     request.setAttribute("alwaysUseSelectList", Boolean.TRUE);

@@ -1,5 +1,5 @@
 <%@ page import="no.kantega.commons.client.util.RequestParameters" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -22,7 +22,7 @@
 %>
 <html>
 <head>
-	<title>Send side til høring</title>
+	<title>Send side til hÃ¸ring</title>
 </head>
 <frameset rows="*,40" frameborder="0" border="0">
     <frame name="main" src="hearing_body.jsp?contentId=<%=param.getInt("contentId")%>" marginwidth="0" marginheight="0" scrolling="auto">

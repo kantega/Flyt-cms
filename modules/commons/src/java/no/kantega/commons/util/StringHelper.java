@@ -94,7 +94,7 @@ public class StringHelper {
                 }
             }
 
-            // Setter på link markup om funnet tekst ikke skal skippes
+            // Setter pÃ¥ link markup om funnet tekst ikke skal skippes
             if (!skip) {
                 if (text.charAt(endPos - 1) == '.' || text.charAt(endPos -1) == ',')
                     endPos--;

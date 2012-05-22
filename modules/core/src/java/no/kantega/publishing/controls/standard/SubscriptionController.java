@@ -16,15 +16,12 @@
 
 package no.kantega.publishing.controls.standard;
 
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.RegExp;
 import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.client.util.RequestParameters;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega
+ * Author: Kristian Lier SelnÃ¦s, Kantega
  * Date: 20.des.2006
  * Time: 12:14:50
  */
@@ -102,6 +99,6 @@ public class SubscriptionController implements AksessController {
     }
 
     public String getDescription() {
-        return "Epostabonnement - Melder brukere av/på epostliste(r)";
+        return "Epostabonnement - Melder brukere av/pÃ¥ epostliste(r)";
     }
 }

@@ -40,7 +40,7 @@ public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour 
                 attribute.setValue("");
             }
 
-            // Ved opplasting av filer må id'en til fila lagres i location feltet dersom URL er angitt som felt som attributten
+            // Ved opplasting av filer mÃ¥ id'en til fila lagres i location feltet dersom URL er angitt som felt som attributten
             String field = attribute.getField();
             if (ContentProperty.URL.equalsIgnoreCase(field)) {
                 content.setLocation(attribute.getValue());

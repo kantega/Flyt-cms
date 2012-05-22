@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateHtmltextAttributeFromRequestBehaviour;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
 import java.util.Map;
@@ -91,7 +91,7 @@ public class HtmltextAttribute extends TextAttribute {
         }
 
         if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
-            // Første linje er pga skrivefeil, kan ikke fjernes før evt databaser oppdateres
+            // FÃ¸rste linje er pga skrivefeil, kan ikke fjernes fÃ¸r evt databaser oppdateres
             returnValue = StringHelper.replace(returnValue, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
             returnValue = StringHelper.replace(returnValue, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
         }

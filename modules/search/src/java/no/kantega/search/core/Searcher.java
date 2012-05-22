@@ -33,9 +33,9 @@ public interface Searcher {
 
     
     /**
-     * Utfører et søk basert på det gitte SearchQuery'et.
+     * UtfÃ¸rer et sÃ¸k basert pÃ¥ det gitte SearchQuery'et.
      *
-     * @param query et SearchQuery-objekt som beskriver søket som skal utføres.
+     * @param query et SearchQuery-objekt som beskriver sÃ¸ket som skal utfÃ¸res.
      * @return et SearchResult-objekt.
      */
     public SearchResult search(SearchQuery query);

@@ -18,10 +18,8 @@ package no.kantega.commons.exception;
 
 //import org.apache.log4j.Logger;
 
-import no.kantega.commons.log.Log;
-
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 /**
  *
@@ -99,7 +97,7 @@ public class KantegaException extends Exception {
     }
 
     /**
-     * Stacktrace bør alltid skrives ut med tre tabulator-tegn forran dersom den skal skrives som ren tekst
+     * Stacktrace bÃ¸r alltid skrives ut med tre tabulator-tegn forran dersom den skal skrives som ren tekst
      * @return true dersom det fantes et linjeskift
      */
     private final String addThreeTabsAfterAllLinebreaks(String s) {

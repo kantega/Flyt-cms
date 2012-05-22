@@ -16,21 +16,20 @@
 
 package no.kantega.publishing.common.service.impl;
 
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.PathEntry;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.PathEntry;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class PathWorker {
@@ -48,7 +47,7 @@ public class PathWorker {
 
         String strIds = "";
 
-        // Legg inn alle element fra path i rekkefølge
+        // Legg inn alle element fra path i rekkefÃ¸lge
         for (int i = 0; i < pathIds.length; i++) {
             PathEntry entry = new PathEntry(pathIds[i], "");
             pathEntries.add(entry);
@@ -115,7 +114,7 @@ public class PathWorker {
 
             String strIds = "";
 
-            // Legg inn alle element fra path i rekkefølge
+            // Legg inn alle element fra path i rekkefÃ¸lge
             for (int i = 0; i < pathIds.length; i++) {
                 PathEntry entry = new PathEntry(pathIds[i], "");
                 pathEntries.add(entry);

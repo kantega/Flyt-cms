@@ -16,17 +16,17 @@
 
 package no.kantega.publishing.common.service.impl;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.MultimediaMapEntry;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultimediaMapWorker {
     private static final String SOURCE = "aksess.MultimediaMapWorker";
@@ -34,7 +34,7 @@ public class MultimediaMapWorker {
     private static MultimediaMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {
             MultimediaMapEntry e = (MultimediaMapEntry)entries.get(i);
-            // Snarveier kan aldri være parents
+            // Snarveier kan aldri vÃ¦re parents
             if (e.parentId == parentId) {
                 entries.remove(e);
                 return e;
@@ -93,7 +93,7 @@ public class MultimediaMapWorker {
         }
 
         if (sitemap != null) {
-            // Vi har funnet starten på sitemap'en, legg til underelementer
+            // Vi har funnet starten pÃ¥ sitemap'en, legg til underelementer
             addToSiteMap(sitemap, tmpentries);
         }
         return sitemap;

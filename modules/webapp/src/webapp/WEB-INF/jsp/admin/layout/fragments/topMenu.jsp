@@ -1,16 +1,15 @@
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page import="no.kantega.publishing.security.service.SecurityService" %>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="java.util.Locale" %>
-<%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
 <%@ page import="no.kantega.publishing.api.plugin.OpenAksessPlugin" %>
+<%@ page import="no.kantega.publishing.api.ui.MenuItem" %>
+<%@ page import="no.kantega.publishing.api.ui.UIContribution" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.spring.PluginMessageSource" %>
 <%@ page import="org.kantega.jexmec.PluginManager" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
-<%@ page import="no.kantega.publishing.api.ui.UIContribution" %>
-<%@ page import="no.kantega.publishing.api.ui.MenuItem" %>
+<%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
+<%@ page import="java.util.Locale" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~

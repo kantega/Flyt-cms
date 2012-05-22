@@ -1,14 +1,6 @@
-<%@ page import="no.kantega.publishing.api.plugin.OpenAksessPlugin" %>
-<%@ page import="no.kantega.publishing.api.ui.MenuItem" %>
-<%@ page import="no.kantega.publishing.api.ui.UIContribution" %>
 <%@ page import="no.kantega.publishing.api.ui.UIServices" %>
-<%@ page import="no.kantega.publishing.spring.PluginMessageSource" %>
-<%@ page import="org.kantega.jexmec.PluginManager" %>
-<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
-<%@ page import="org.springframework.web.servlet.support.RequestContextUtils" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="java.util.Locale" %>
-<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="iso-8859-1" %>
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
