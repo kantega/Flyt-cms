@@ -312,7 +312,7 @@ public final class AttributeTagHelper {
                     if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
                         Multimedia mm = media.getMultimedia();
                         if (mm != null) {
-                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCssClass());
+                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCropping(), cmd.getCssClass());
                         }
                     } else {
                         result = media.getProperty(cmd.getProperty());
