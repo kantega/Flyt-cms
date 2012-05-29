@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
+<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%--
   ~ Copyright 2010 Kantega AS
   ~
