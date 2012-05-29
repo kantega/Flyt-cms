@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ public class SaveHearingCommentAction{
 	@Autowired
 	private NotesDao notesDao;
 
-	@RequestMapping("/aksess/hearing/SaveHearingComment.action")
+	@RequestMapping(value="/aksess/hearing/SaveHearingComment.action", method = RequestMethod.POST)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestParameters param = new RequestParameters(request);
 

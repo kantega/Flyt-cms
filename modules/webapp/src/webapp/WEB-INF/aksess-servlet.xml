@@ -512,16 +512,6 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
-    <!--
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="SaveHearingCommentAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.admin.content.action.SaveHearingCommentAction</value>
-        </property>
-        <property name="servletName">
-            <value>SaveHearingCommentAction</value>
-        </property>
-    </bean>
--->
     
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction">
         <property name="aksessJsonView" ref="aksessJsonView"/>
