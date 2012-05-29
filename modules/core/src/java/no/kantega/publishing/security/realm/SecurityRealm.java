@@ -118,27 +118,34 @@ public class SecurityRealm {
         if (userid==null || userid.trim().length() == 0) { return null;}
 
         Profile profile = null;
+
         if (useCache) {
             try {
                 profile = (Profile) userCache.getFromCache(userid);
             } catch (NeedsRefreshException e) {
-                //Thrown when the profile is not found in the cache.
-                //Do nothing, since the user is looked up and added to the cache below.
-                Log.debug(this.getClass().getName(), "User " + userid +" is not found in the userCache", null, null);
+                try {
+                    profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
+                    if (profile != null) {
+                        userCache.putInCache(userid, profile);
+                    } else {
+                        userCache.cancelUpdate(userid);
+                    }
+                } catch (no.kantega.security.api.common.SystemException e1) {
+                    userCache.cancelUpdate(userid);
+                }
             }
-        }
-
-        if (profile == null) {
+        } else {
             try {
                 profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
-                userCache.putInCache(userid, profile);
-                Log.debug(this.getClass().getName(), "User " + userid +" is added to the userCache", null, null);
             } catch (no.kantega.security.api.common.SystemException e) {
                 Log.error(this.getClass().getName(), e, null, null);
             }
         }
 
-        if (profile==null) {return null;}
+        if (profile == null) {
+            return null;
+        }
+
         return SecurityHelper.createAksessUser(profile);
     }
 
