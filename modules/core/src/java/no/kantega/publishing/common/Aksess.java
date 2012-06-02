@@ -109,8 +109,6 @@ public class Aksess {
 
     private static boolean topicMapsEnabled = false;
 
-    private static String luceneIndexDir;
-
     private static int securitySessionTimeout = 7200;
     private static int lockTimeToLive = 3600;
     private static boolean linkCheckerEnabled = false;
@@ -138,7 +136,7 @@ public class Aksess {
         try {
             contextPath = c.getString("location.contextpath", "");
             if (contextPath.length() > 0) {
-                if (contextPath.indexOf("/") != -1) {
+                if (contextPath.contains("/")) {
                     // Fjern ekstra / start eller slutt av adresse
                     contextPath = StringHelper.replace(contextPath, "/", "");
                 }
@@ -226,11 +224,6 @@ public class Aksess {
             if (linkCheckerEnabled) {
                 Log.info(SOURCE, "Module enabled: Link checker");
             }
-
-
-            // Location of search-index
-            luceneIndexDir = c.getString("lucene.index.dir", Configuration.getApplicationDirectory() +"/index");
-
 
             // Roller
             roleAdmin = c.getString("security.role.admin", "admin");
@@ -475,10 +468,6 @@ public class Aksess {
 
     public static int getOutputImageQuality() {
         return outputImageQuality;
-    }
-
-    public static String getLuceneIndexDir() {
-        return luceneIndexDir;
     }
 
     public static String[] getInternalIpSegment() {

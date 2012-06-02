@@ -18,16 +18,13 @@ package no.kantega.search.criteria;
 
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.SearchQueryDefaultImpl;
-import no.kantega.search.result.DocumentHit;
-import no.kantega.search.result.SearchResult;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.snowball.SnowballAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 
 /**
  * Date: Dec 5, 2008

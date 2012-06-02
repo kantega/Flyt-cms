@@ -54,6 +54,7 @@
         <module>modules/webdav</module>
         <module>modules/webapp</module>
         <module>modules/core-plugins</module>
+        <module>solr-search</module>
     </modules>
 
     <dependencies>
@@ -260,7 +261,6 @@
         <dbcp.version>1.4</dbcp.version>
         <httpclient.version>3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
-        <lucene.version>2.9.3</lucene.version>
         <log4j.version>1.2.16</log4j.version>
         <nekohtml.version>1.9.14</nekohtml.version>
         <tika.version>1.0</tika.version>

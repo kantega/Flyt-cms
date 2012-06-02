@@ -16,52 +16,16 @@
 
 package no.kantega.publishing.search.taglib;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.SearchAO;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.search.model.AksessSearchHit;
-import no.kantega.publishing.search.model.AksessSearchHitContext;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.search.analysis.AnalyzerFactory;
-import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexReaderManager;
-import no.kantega.search.index.IndexSearcherManager;
-import no.kantega.search.index.provider.DocumentProvider;
-import no.kantega.search.index.provider.DocumentProviderSelector;
-import no.kantega.search.result.QueryInfo;
-import no.kantega.search.result.SearchHit;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.*;
-import org.apache.lucene.search.spell.SpellChecker;
-import org.apache.lucene.store.Directory;
-import org.springframework.context.ApplicationContext;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SearchTag extends TagSupport {
     private static String SOURCE = "SearchTag";
 
     private String query = null;
     private int parent = 0;
-    private QueryParser.Operator operator = QueryParser.AND_OPERATOR;
     private int lang = -1;
     private int notlang = -1;
     private String queryref = null;
@@ -91,7 +55,7 @@ public class SearchTag extends TagSupport {
 
         Map map = new HashMap();
 
-
+/*
         try {
             String queryString = "";
             String url = "";
@@ -372,12 +336,12 @@ public class SearchTag extends TagSupport {
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspException(e);
-        }
+        }*/
 
         return SKIP_BODY;
     }
 
-
+/*
     private List buildHitList(Query q, Analyzer analyzer, HttpServletRequest request, Hits hits, int startIndex, int endIndex, DocumentProviderSelector selector) throws SystemException, IOException {
         List<SearchHit> searchHits = new ArrayList<SearchHit>();
 
@@ -419,13 +383,13 @@ public class SearchTag extends TagSupport {
         }
 
         return searchHits;
-    }
+    }*/
 
 
     public int doEndTag() throws JspException {
         query = null;
         parent = 0;
-        operator = QueryParser.AND_OPERATOR;
+       // operator = QueryParser.AND_OPERATOR;
         lang = -1;
         notlang = -1;
         queryref = null;
@@ -474,7 +438,7 @@ public class SearchTag extends TagSupport {
         if (operator != 1 && operator != 0) {
             throw new IllegalArgumentException(operator + " is not a legal default operator");
         }
-        this.operator = operator == 1 ? QueryParser.Operator.AND : QueryParser.Operator.OR;
+       // this.operator = operator == 1 ? QueryParser.Operator.AND : QueryParser.Operator.OR;
     }
 
     public void setIndex(String index) {

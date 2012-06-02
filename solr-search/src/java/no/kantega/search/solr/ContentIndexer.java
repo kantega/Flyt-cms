@@ -29,14 +29,20 @@ public class ContentIndexer {
             public void handleContent(Content content) {
                 SolrInputDocument document = new SolrInputDocument();
                 Association association = content.getAssociation();
-                document.addField("id", association.getId());
+                String contenttype = "Content";
+                document.addField("contenttype", contenttype);
+                int associationId = association.getId();
+                document.addField("id", associationId);
+                document.addField("uid", contenttype.concat(String.valueOf(associationId)));
                 document.addField("title_no", content.getTitle(), 1.0f);
                 document.addField("altTitle_no", content.getAltTitle(), 1.0f);
                 document.addField("description_no", content.getDescription(), 1.0f);
                 document.addField("contentType", content.getType().name());
                 document.addField("contentTemplateId", content.getContentTemplateId());
+                document.addField("contentTemplateName", getContentTemplateName(content));
                 document.addField("metaDataTemplateId", content.getMetaDataTemplateId());
                 document.addField("displayTemplateId", content.getDisplayTemplateId());
+                document.addField("displayTemplateName", getDisplayTemplateName(content));
                 document.addField("documentTypeId", content.getDocumentTypeId());
                 document.addField("groupId", content.getGroupId());
                 document.addField("siteId", content.getGroupId());
@@ -67,6 +73,14 @@ public class ContentIndexer {
                 }
             }
 
+            private String getDisplayTemplateName(Content content) {
+                return "Herp derp!";
+            }
+
+            private String getContentTemplateName(Content content) {
+                return "Derp herp!";
+            }
+
             private Object getValue(Attribute attribute) {
                 Object value;
                 if(attribute instanceof DateAttribute){
@@ -83,6 +97,7 @@ public class ContentIndexer {
             }
         };
         ContentAO.forAllContentObjects(contentHandler, stopper, 10);
+
     }
 
     private String getFieldName(Attribute attribute) {

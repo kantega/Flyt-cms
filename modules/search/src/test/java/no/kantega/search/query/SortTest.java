@@ -19,23 +19,21 @@ import no.kantega.search.AbstractSearchTestCase;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.criteria.TextCriterion;
 import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexWriterManager;
 import no.kantega.search.result.DocumentHit;
 import no.kantega.search.result.SearchResult;
+import org.apache.lucene.document.DateTools;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.search.Sort;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.search.Sort;
 
 /**
  *

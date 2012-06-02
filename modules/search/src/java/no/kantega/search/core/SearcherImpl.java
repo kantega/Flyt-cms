@@ -17,12 +17,9 @@
 package no.kantega.search.core;
 
 import no.kantega.commons.log.Log;
-import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.SearchQuery;
 import no.kantega.search.query.SuggestionQuery;
-import no.kantega.search.result.SearchResult;
 import no.kantega.search.result.Suggestion;
-import org.apache.lucene.search.BooleanQuery;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,16 +34,6 @@ public class SearcherImpl implements Searcher {
 
     private static final String SOURCE = SearcherImpl.class.getName();
 
-    private IndexManager indexManager;
-
-
-    public SearcherImpl() {
-    }
-
-    public SearcherImpl(int maxClauseCount) {
-        Log.info(SearcherImpl.class.getSimpleName(), "Setting Lucene's maxClauseCount to " + maxClauseCount + ".", null, null);
-        BooleanQuery.setMaxClauseCount(maxClauseCount);
-    }
 
     /**
      * {@inheritDoc}

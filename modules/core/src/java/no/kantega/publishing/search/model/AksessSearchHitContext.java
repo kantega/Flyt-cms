@@ -17,8 +17,6 @@
 package no.kantega.publishing.search.model;
 
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.search.result.SearchHitContext;
-import no.kantega.search.result.QueryInfo;
 
 /**
  * User: Anders Skar, Kantega AS

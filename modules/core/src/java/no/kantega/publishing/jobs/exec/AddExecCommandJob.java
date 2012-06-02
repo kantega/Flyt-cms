@@ -19,7 +19,6 @@ package no.kantega.publishing.jobs.exec;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.search.index.IndexManager;
 import no.kantega.publishing.search.index.jobs.ExecWhileClosedJob;
 
 public class AddExecCommandJob {

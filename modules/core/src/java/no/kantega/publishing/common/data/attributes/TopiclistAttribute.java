@@ -27,19 +27,17 @@ import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
-import no.kantega.search.index.Fields;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicBaseName;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class TopiclistAttribute extends ListAttribute {
     private int topicMapId = -1;
@@ -67,13 +65,13 @@ public class TopiclistAttribute extends ListAttribute {
         return multiple;
     }
 
-    public List getListOptions(int language) {
-        List options = new ArrayList();
+    public List<ListOption> getListOptions(int language) {
+        List<ListOption> options = new ArrayList<ListOption>();
 
-        List topics = null;
+        List<Topic> topics = null;
 
         try {
-            if (instanceOf != null && instanceOf.length() > 0 && topicMapId != -1) {
+            if (isNotBlank(instanceOf) && topicMapId != -1) {
                 Topic instance = new Topic();
                 instance.setTopicMapId(topicMapId);
                 instance.setId(instanceOf);
@@ -88,8 +86,7 @@ public class TopiclistAttribute extends ListAttribute {
         }
 
         if (topics != null) {
-            for (int i = 0; i < topics.size(); i++) {
-                Topic topic =  (Topic)topics.get(i);
+            for (Topic topic : topics) {
                 ListOption option = new ListOption();
                 option.setText(topic.getBaseName());
                 option.setValue(topic.getTopicMapId() + ":" + topic.getId());
@@ -117,31 +114,6 @@ public class TopiclistAttribute extends ListAttribute {
 
     public String getInstanceOf() {
         return instanceOf;
-    }
-
-    public void addIndexFields(Document d) {
-        if(getValue() != null) {
-            String[] topics = getValue().split(",");
-            for (int i = 0; i < topics.length; i++) {
-                String[] topicStrings = topics[i].split(":");
-                if(topicStrings.length == 2) {
-                    try {
-                        Topic topic = TopicAO.getTopic(Integer.parseInt(topicStrings[0]), topicStrings[1]);
-                        if (topic != null) {
-                            List basenames = topic.getBaseNames();
-                            for (int j = 0; j < basenames.size(); j++) {
-                                TopicBaseName baseName = (TopicBaseName) basenames.get(j);
-                                d.add(new Field(Fields.TM_TOPICS, " " +baseName.getBaseName(), Field.Store.NO, Field.Index.ANALYZED));
-                            }
-                        } else {
-                            log.debug("Fant ikke topic: " + topicStrings[1], null);
-                        }
-                    } catch (SystemException e) {
-                        log.error(e.getMessage(), e);
-                    }
-                }
-            }
-        }
     }
 
     public Topic getValueAsTopic() {

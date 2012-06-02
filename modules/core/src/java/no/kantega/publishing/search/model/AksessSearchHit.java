@@ -18,18 +18,15 @@ package no.kantega.publishing.search.model;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.Content;
-import org.apache.commons.io.FileUtils;
-import org.apache.lucene.document.Document;
-
-import java.util.List;
-import java.util.Date;
-
-import no.kantega.search.result.SearchHit;
 import no.kantega.publishing.common.data.PathEntry;
+import no.kantega.search.result.SearchHit;
+import org.apache.commons.io.FileUtils;
+
+import java.util.Date;
+import java.util.List;
 
 public class AksessSearchHit implements SearchHit {
 
-    private Document document = null;
     private String title = "";
     private String summary = "";
     private String allText = "";
@@ -51,14 +48,6 @@ public class AksessSearchHit implements SearchHit {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
     }
 
     public String getTitle() {

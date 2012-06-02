@@ -1,20 +1,14 @@
 package no.kantega.publishing.search.control;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.DocumentType;
-import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.search.SearchField;
 import no.kantega.publishing.search.control.util.QueryStringGenerator;
 import no.kantega.publishing.search.service.SearchService;
 import no.kantega.publishing.search.service.SearchServiceQuery;
@@ -24,8 +18,6 @@ import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.DateHitCountQuery;
 import no.kantega.search.query.hitcount.HitCountQuery;
 import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
-import no.kantega.search.result.HitCount;
-import no.kantega.search.result.SearchResultExtendedImpl;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;

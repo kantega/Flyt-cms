@@ -17,9 +17,7 @@
 package no.kantega.search.query;
 
 import no.kantega.search.core.SuggestionProvider;
-import no.kantega.search.core.SuggestionProviderAlternativesImpl;
 import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexManager;
 
 /**
  * Date: Jan 20, 2009

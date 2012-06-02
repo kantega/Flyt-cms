@@ -18,12 +18,10 @@ package no.kantega.search.core;
 
 import no.kantega.search.AbstractSearchTestCase;
 import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.AlternativeQuery;
 import no.kantega.search.query.CompletionQuery;
 import no.kantega.search.result.Suggestion;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

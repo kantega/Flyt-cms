@@ -16,28 +16,13 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.data.SearchResult;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexSearcherManager;
-import no.kantega.search.analysis.AnalyzerFactory;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.log4j.Logger;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.*;
-import org.springframework.context.ApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 
-import java.io.IOException;
 import java.sql.*;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,53 +30,6 @@ import java.util.List;
 public class SearchAO {
     private static final String SOURCE = "aksess.SearchAO";
     private static Logger log  = Logger.getLogger(SearchAO.class);
-
-    public static List search(String phrase) throws SystemException {
-
-        ApplicationContext applicationContext = RootContext.getInstance();
-
-        Analyzer analyzer = ((AnalyzerFactory)applicationContext.getBean("analyzerFactory")).createInstance();
-
-        IndexSearcherManager manager = (IndexSearcherManager) applicationContext.getBean("indexSearcherManager");
-
-        try {
-            IndexSearcher searcher = manager.getSearcher("aksess");
-
-            BooleanQuery query = new BooleanQuery();
-
-            QueryParser parser = new QueryParser(Fields.CONTENT, analyzer);
-
-            query.add(parser.parse(phrase), BooleanClause.Occur.MUST);
-            query.add(new TermQuery(new Term(Fields.DOCTYPE, Fields.TYPE_CONTENT)), BooleanClause.Occur.MUST);
-
-            Hits hits = searcher.search(query);
-
-            List results = new ArrayList();
-            for(int i = 0; i < hits.length() && i < 100; i++) {
-                try {
-                    Document doc = hits.doc(i);
-                    int contentId =  Integer.parseInt(doc.get(Fields.CONTENT_ID));
-                    int contentStatus =  Integer.parseInt(doc.get(Fields.CONTENT_STATUS));
-                    String title = doc.get(Fields.TITLE);
-                    Date lastModified = DateTools.stringToDate(doc.get(Fields.LAST_MODIFIED));
-
-                    results.add(new SearchResult(contentId, contentStatus, title, null,  lastModified));
-                } catch (IOException e) {
-                    log.error(e);
-                } catch (ParseException e) {
-                    log.error(e);
-                }
-            }
-            return results;
-        } catch (IOException e) {
-            log.error(e);
-            throw new RuntimeException(e);
-        } catch (org.apache.lucene.queryParser.ParseException e) {
-            log.error(e);
-            throw new RuntimeException(e);
-        }
-
-    }
 
     public static void registerSearch(String queryString, String exactQuery, int siteId, int numberOfHits) {
         JdbcTemplate temp = getJdbcTemplate();

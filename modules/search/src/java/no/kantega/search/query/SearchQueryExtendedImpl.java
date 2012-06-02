@@ -19,15 +19,13 @@ package no.kantega.search.query;
 import no.kantega.search.core.SearchHandler;
 import no.kantega.search.core.SearchHandlerExtendedImpl;
 import no.kantega.search.criteria.Criterion;
-import no.kantega.search.index.IndexManager;
-import no.kantega.search.result.TermTranslator;
 import no.kantega.search.query.hitcount.HitCountQuery;
+import no.kantega.search.result.TermTranslator;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Sort;
 
 /**
  * Date: Dec 3, 2008

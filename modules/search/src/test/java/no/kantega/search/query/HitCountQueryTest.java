@@ -21,8 +21,6 @@ import no.kantega.search.criteria.TextCriterion;
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
 import no.kantega.search.query.hitcount.RangeHitCountQuery;
-import no.kantega.search.result.HitCount;
-import no.kantega.search.result.SearchResultExtendedImpl;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;

@@ -18,7 +18,6 @@ package no.kantega.search.query;
 
 import no.kantega.search.core.SearchHandler;
 import no.kantega.search.criteria.Criterion;
-import no.kantega.search.index.IndexManager;
 import org.apache.lucene.search.Sort;
 
 import java.util.List;

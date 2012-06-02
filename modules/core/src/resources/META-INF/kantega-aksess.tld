@@ -2194,7 +2194,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Search site using Lucene index. No parameters are normally necessary since tag will search request for parameters</description>
+        <description>Search the current site. No parameters are normally necessary since tag will search request for parameters</description>
         <name>search</name>
         <tag-class>no.kantega.publishing.search.taglib.SearchTag</tag-class>
         <body-content>empty</body-content>

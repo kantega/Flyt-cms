@@ -18,7 +18,6 @@ package no.kantega.search.result;
 
 import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
-import no.kantega.search.index.IndexSearcherManager;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;

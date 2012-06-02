@@ -16,22 +16,20 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.search.index.IndexManager;
-import no.kantega.search.index.IndexManagerImpl;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 
-import java.sql.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 
 public class AttachmentAO {

@@ -17,7 +17,6 @@
 package no.kantega.search.core;
 
 import no.kantega.search.query.SearchQuery;
-import no.kantega.search.result.SearchResult;
 
 import java.io.IOException;
 

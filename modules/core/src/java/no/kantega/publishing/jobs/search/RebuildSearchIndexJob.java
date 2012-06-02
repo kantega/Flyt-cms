@@ -1,11 +1,10 @@
 package no.kantega.publishing.jobs.search;
 
-import no.kantega.search.index.IndexManager;
-import no.kantega.search.index.rebuild.ProgressReporter;
-import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
-import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
-import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
+import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
+import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
+import no.kantega.search.index.rebuild.ProgressReporter;
 
 /**
  *

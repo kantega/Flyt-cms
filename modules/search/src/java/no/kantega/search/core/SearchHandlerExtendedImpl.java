@@ -17,20 +17,18 @@
 package no.kantega.search.core;
 
 import no.kantega.commons.log.Log;
-import no.kantega.search.query.SearchQuery;
-import no.kantega.search.query.SearchQueryExtendedImpl;
-import no.kantega.search.query.hitcount.QueryEnumeration;
-import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.result.*;
 import no.kantega.search.criteria.Criterion;
 import no.kantega.search.criteria.LastModifiedCriterion;
 import no.kantega.search.index.Fields;
-import org.apache.lucene.search.*;
+import no.kantega.search.query.SearchQuery;
+import no.kantega.search.query.SearchQueryExtendedImpl;
+import no.kantega.search.query.hitcount.HitCountQuery;
+import no.kantega.search.query.hitcount.QueryEnumeration;
+import no.kantega.search.result.TermTranslator;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Date: Dec 5, 2008

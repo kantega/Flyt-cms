@@ -18,11 +18,8 @@ package no.kantega.search.core;
 
 import no.kantega.commons.log.Log;
 import no.kantega.search.criteria.Criterion;
-import no.kantega.search.index.IndexManager;
 import no.kantega.search.query.SearchQuery;
-import no.kantega.search.result.*;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.search.*;
 
 import java.io.IOException;
 import java.util.List;

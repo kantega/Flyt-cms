@@ -31,7 +31,6 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.lucene.document.Document;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -41,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Representing a single attribute in a Content object.
  */
 public abstract class Attribute {
     private final String FILE_TOKEN = "file:";
@@ -150,7 +149,7 @@ public abstract class Attribute {
             String defaultValue = config.getAttribute("default");
             if (value == null || value.length() == 0 && defaultValue != null) {
                 // Hent defaultverdi fra en fil
-                if (defaultValue.indexOf(FILE_TOKEN) != -1) {
+                if (defaultValue.contains(FILE_TOKEN)) {
                     int inx = defaultValue.indexOf(FILE_TOKEN) + FILE_TOKEN.length();
                     String file = defaultValue.substring(inx, defaultValue.length());
 
@@ -390,8 +389,7 @@ public abstract class Attribute {
             Site site = SiteCache.getSiteById(siteId);
             // Dersom site er angitt i hideInSites skal den ikke vises
             if (site != null && hideInSites != null) {
-                for (int i = 0; i < hideInSites.length; i++) {
-                    String alias = hideInSites[i];
+                for (String alias : hideInSites) {
                     if (alias.equalsIgnoreCase(site.getAlias())) {
                         return true;
                     }
@@ -399,8 +397,7 @@ public abstract class Attribute {
             }
             // Dersom site er angitt i showInSites skal den vises
             if (site != null && showInSites != null) {
-                for (int i = 0; i < showInSites.length; i++) {
-                    String alias = showInSites[i];
+                for (String alias : showInSites) {
                     if (alias.equalsIgnoreCase(site.getAlias())) {
                         return false;
                     }
@@ -411,10 +408,6 @@ public abstract class Attribute {
             Log.error("Attribute:" + name, e, null, null);
         }
         return isHidden;
-    }
-
-    public void addIndexFields(Document d) {
-
     }
 
     public boolean isSearchable() {

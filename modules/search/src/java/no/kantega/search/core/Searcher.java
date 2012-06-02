@@ -18,17 +18,10 @@ package no.kantega.search.core;
 
 import no.kantega.search.query.SearchQuery;
 import no.kantega.search.query.SuggestionQuery;
-import no.kantega.search.result.SearchResult;
 import no.kantega.search.result.Suggestion;
 
 import java.util.List;
 
-/**
- * Date: Dec 5, 2008
- * Time: 8:44:45 AM
- *
- * @author Tarje Killingberg
- */
 public interface Searcher {
 
     

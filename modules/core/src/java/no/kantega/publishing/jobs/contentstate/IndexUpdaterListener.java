@@ -27,7 +27,6 @@ import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 import no.kantega.publishing.search.index.jobs.RemoveContentJob;
 import no.kantega.publishing.search.index.jobs.UpdateAttachmentJob;
 import no.kantega.publishing.search.index.jobs.UpdateContentJob;
-import no.kantega.search.index.IndexManager;
 
 import java.util.List;
 

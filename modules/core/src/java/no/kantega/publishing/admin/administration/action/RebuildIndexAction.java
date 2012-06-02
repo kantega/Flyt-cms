@@ -20,7 +20,6 @@ import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
 import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
 import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
-import no.kantega.search.index.IndexManager;
 import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.rebuild.ProgressReporter;
 import org.springframework.web.bind.ServletRequestUtils;

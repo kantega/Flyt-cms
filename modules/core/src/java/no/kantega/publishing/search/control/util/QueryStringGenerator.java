@@ -17,15 +17,13 @@
 package no.kantega.publishing.search.control.util;
 
 import no.kantega.publishing.search.service.SearchServiceQuery;
-import no.kantega.publishing.search.service.SearchServiceResultImpl;
 import no.kantega.publishing.search.service.SearchServiceResult;
-import no.kantega.search.result.HitCount;
-import no.kantega.search.result.SearchResultExtendedImpl;
+import no.kantega.publishing.search.service.SearchServiceResultImpl;
 import no.kantega.search.index.Fields;
 
-import java.util.*;
-import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
 
 
 public class QueryStringGenerator {

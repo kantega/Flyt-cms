@@ -17,7 +17,6 @@
 package no.kantega.publishing.search.service;
 
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.search.SearchField;
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.HitCountQuery;
 
