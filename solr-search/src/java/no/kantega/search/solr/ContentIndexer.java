@@ -5,6 +5,8 @@ import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.*;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
@@ -54,6 +56,9 @@ public class ContentIndexer {
                 document.addField("author", content.getOwnerPerson());
                 document.addField("keywords", content.getKeywords());
                 document.addField("language", getLanguageAsISOCode(content.getLanguage()));
+                document.addField("visibilityStatus", getVisibilityStatusAsString(content.getVisibilityStatus()));
+                document.addField("contentStatus", getContentStatusAsString(content.getVisibilityStatus()));
+                document.addField("url", content.getUrl());
 
                 for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                     Attribute value = attribute.getValue();
@@ -71,6 +76,31 @@ public class ContentIndexer {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+
+            private String getContentStatusAsString(int contentStatus) {
+                switch (contentStatus){
+                    case ContentStatus.ARCHIVED:
+                        return "ARCHIVED";
+                    case ContentStatus.DRAFT:
+                        return "DRAFT";
+                    case ContentStatus.HEARING:
+                        return "HEARING";
+                    case ContentStatus.PUBLISHED:
+                        return "PUBLISHED";
+                    case ContentStatus.PUBLISHED_WAITING:
+                        return "PUBLISHED_WAITING";
+                    case ContentStatus.REJECTED:
+                        return "REJECTED";
+                    case ContentStatus.WAITING_FOR_APPROVAL:
+                        return "WAITING_FOR_APPROVAL";
+                    default:
+                        return "UNKNOWN";
+                }
+            }
+
+            private String getVisibilityStatusAsString(int visibilityStatus) {
+                return ContentVisibilityStatus.getName(visibilityStatus);
             }
 
             private String getDisplayTemplateName(Content content) {
