@@ -22,6 +22,8 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.client.device.DeviceCategory;
+import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.client.filter.UrlContentRewriter;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.Aksess;
@@ -32,6 +34,7 @@ import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.util.CharResponseWrapper;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.common.util.TemplateMacroHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.kantega.jexmec.PluginManager;
 
@@ -50,6 +53,7 @@ public class ContentRequestDispatcher {
 
     private SiteCache siteCache;
     private UrlContentRewriter urlRewriter;
+    private DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
     public void dispatchContentRequest(Content content, ServletContext servletContext, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -106,7 +110,11 @@ public class ContentRequestDispatcher {
             throw new SystemException("DisplayTemplate not found. Check if displaytemplate with databaseid=" + content.getDisplayTemplateId() + " has been deleted from aksess-templateconfig.xml", getClass().getName(), null);
         }
 
-        String view = getView(siteId, dt);
+
+
+        DeviceCategory deviceCategory = deviceCategoryDetector.getUserAgentDeviceCategory(request);
+
+        String view = getView(siteId, dt, deviceCategory);
 
         response.addHeader("X-Powered-By", "OpenAksess " + Aksess.getVersion());
 
@@ -146,17 +154,9 @@ public class ContentRequestDispatcher {
         }
     }
 
-    private String getView(int siteId, DisplayTemplate dt) {
+    private String getView(int siteId, DisplayTemplate dt, DeviceCategory deviceCategory) {
         Site site = siteCache.getSiteById(siteId);
-        String alias = site.getAlias();
-
-        String template = dt.getView();
-
-        // If template filename contains macro $SITE, replace with correct site
-        if (template.indexOf("$SITE") != -1) {
-            template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
-        }
-        return template;
+        return TemplateMacroHelper.replaceMacros(dt.getView(), site, deviceCategory);
     }
 
     private void dispatchAdminMode(Content content, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

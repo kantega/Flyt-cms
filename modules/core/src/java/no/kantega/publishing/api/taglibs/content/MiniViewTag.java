@@ -22,10 +22,12 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import no.kantega.publishing.client.DefaultDispatchContext;
+import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.kantega.jexmec.PluginManager;
 
@@ -47,6 +49,7 @@ public class MiniViewTag extends TagSupport {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
         PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
         SiteCache siteCache = (SiteCache) RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+        DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
         try {
             Content currentPage = (Content)request.getAttribute("aksess_this");
@@ -59,11 +62,11 @@ public class MiniViewTag extends TagSupport {
                     template = dt.getMiniView();
                 }
                 if (template != null && template.length() > 0) {
-                    if (template.indexOf("$SITE") != -1) {
+                    if (TemplateMacroHelper.containsMacro(template)) {
                         int siteId = currentPage.getAssociation().getSiteId();
                         Site site = siteCache.getSiteById(siteId);
-                        String alias = site.getAlias();
-                        template = template.replaceAll("\\$SITE", alias.substring(0, alias.length() - 1));
+
+                        template = TemplateMacroHelper.replaceMacros(template, site, deviceCategoryDetector.getUserAgentDeviceCategory(request));
                     }
 
                     request.setAttribute("aksess_containingPage", currentPage);

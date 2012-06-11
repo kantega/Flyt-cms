@@ -40,7 +40,7 @@ public class GetUserTag  extends TagSupport {
     private String userid = null;
     private boolean getRoles = false;
     private boolean getRoleTopics = false;
-    private boolean useCache;
+    private boolean useCache = true;
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -98,6 +98,7 @@ public class GetUserTag  extends TagSupport {
     public int doEndTag() throws JspException {
         userid = null;
         name = "currentuser";
+        useCache = true;
         return EVAL_PAGE;
     }
 
