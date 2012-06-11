@@ -1,6 +1,9 @@
 package no.kantega.publishing.security.action;
 
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.login.PostResetPasswordHandler;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.DefaultResetPasswordToken;
 import no.kantega.security.api.password.PasswordManager;
@@ -13,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResetPasswordAction extends AbstractLoginAction {
+    private static final String SOURCE = "aksess.ResetPassordAction";
+
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;
     private int minPasswordLength = 6;
@@ -77,6 +82,17 @@ public class ResetPasswordAction extends AbstractLoginAction {
 
         ResetPasswordTokenManager tokenManager = getResetPasswordTokenManager();
         tokenManager.deleteTokensForIdentity(identity);
+
+        Configuration c = Aksess.getConfiguration();
+        String postResetPasswordHandler = c.getString("security.login.postresetpasswordhandler");
+        if (postResetPasswordHandler != null && !postResetPasswordHandler.isEmpty()) {
+            try {
+                PostResetPasswordHandler resetHandler = (PostResetPasswordHandler)Class.forName(postResetPasswordHandler).newInstance();
+                resetHandler.handlePostResetPassword(identity, request);
+            } catch (Exception e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
 
         model.put("loginLayout", getLoginLayout());
         model.put("minPasswordLength", minPasswordLength);
