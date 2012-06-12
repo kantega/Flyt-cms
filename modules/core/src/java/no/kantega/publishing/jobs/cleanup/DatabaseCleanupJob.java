@@ -74,7 +74,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             // Update number of views based on trafficlog
             Log.info(SOURCE, "Updating number of views based on trafficlog", null, null);
 
-            st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId)");
+            st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId) and trafficlog.IsSpider=0");
             st.execute();
 
 

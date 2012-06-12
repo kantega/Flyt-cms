@@ -420,7 +420,7 @@ public final class AttributeTagHelper {
             if (TemplateMacroHelper.containsMacro(url)) {
                 HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 
-                no.kantega.publishing.api.cache.SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+                SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
 
                 DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
