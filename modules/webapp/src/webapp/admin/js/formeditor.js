@@ -388,6 +388,8 @@ function getLastFormElementForAppend() {
 
 function formSaveElement() {
     var fieldName = $("#form_FieldName").val();
+    fieldName = formElementStripUnlegalChars(fieldName);
+
     var type = $("#form_FieldType").val();
     var helpText = $("#form_HelpText").val();
 
@@ -565,6 +567,11 @@ function formInitElements() {
     for (n in formElementTypes) {
         $("#form_FieldType").append('<option value="' + formElementTypes[n].type + '">' + formElementTypes[n].name + '</option>');
     }
+}
+
+function formElementStripUnlegalChars(fieldName) {
+    fieldName = fieldName.replace('"', '');
+    return fieldName;
 }
 
 $(document).ready(function() {
@@ -761,6 +768,7 @@ formElementCheckbox.onSave = function (fieldName) {
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
         if (val != "") {
+            val = formElementStripUnlegalChars(val);
             var id = formGetUniqueId("formcb");
             html += '<div><input type="checkbox" name="' + fieldName + '" value="' + val + '" id="' + id + '" disabled';
             if ($("input[type=checkbox]", this).is(":checked")) {
@@ -804,6 +812,7 @@ formElementRadio.onSave = function (fieldName) {
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
         if (val != "") {
+            val = formElementStripUnlegalChars(val);
             var id = formGetUniqueId("formradio");
             html += '<div><input type="radio" name="' + fieldName + '" value="' + val + '" id="' + id + '" disabled';
             if ($("input[type=radio]", this).is(":checked")) {
@@ -851,6 +860,7 @@ formElementSelect.onSave = function (fieldName) {
     $("#form_Values div").each(function (i) {
         val = $("input[type=text]", this).val();
         if (val != "") {
+            val = formElementStripUnlegalChars(val);
             var useFirstOptionAsLabel = $("#form_FirstValueBlank").is(":checked");
             if (i == 0 && useFirstOptionAsLabel) {
                 html += '<option value="" ';
