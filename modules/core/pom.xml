@@ -106,20 +106,6 @@
             <scope>provided</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-        </dependency>
-
-        <dependency>
-
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
