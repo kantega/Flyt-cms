@@ -44,9 +44,17 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kantega.openaksess.plugins</groupId>
+            <artifactId>openaksess-plugins-common</artifactId>
+            <version>1.1</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-test</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
