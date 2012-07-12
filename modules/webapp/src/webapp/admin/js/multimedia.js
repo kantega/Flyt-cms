@@ -283,7 +283,7 @@ openaksess.multimedia = {
 
     showUploadForm : function() {
         openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + currentItemIdentifier);
-        openaksess.common.modalWindow.open({title:properties.multimedia.labels.aksessToolsUpload, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
+        openaksess.common.modalWindow.open({title:properties.multimedia.labels.aksessToolsUpload, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
     }
 };
 

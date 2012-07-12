@@ -314,6 +314,20 @@ openaksess.editcontext = function()  {
             openaksess.common.modalWindow.open({title:properties.editcontext.labels.multimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/Navigate.action?id=" + id + "&filter=" + filter + "refresh=" + getRefresh(),width: 880, height:550});
         },
 
+        /*
+         *  Popup window for upload media object
+         */
+        uploadMultimedia : function (formElement) {
+            openaksess.editcontext.focusField = formElement;
+            var id = -1;
+            if (openaksess.editcontext.focusField.value != "") {
+                id = openaksess.editcontext.focusField.value;
+            }
+
+            openaksess.editcontext.doInsertTag = false;
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.uploadmultimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?fileUploadedFromEditor=true&refresh=" + getRefresh(),width: 450, height:450});
+        },
+
 
         /*
          * Popup window for selecting media folder

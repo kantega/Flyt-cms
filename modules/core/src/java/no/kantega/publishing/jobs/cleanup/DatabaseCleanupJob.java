@@ -19,14 +19,13 @@ package no.kantega.publishing.jobs.cleanup;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.LinkDao;
-import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.event.ContentListenerUtil;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.sql.Connection;
@@ -38,9 +37,6 @@ import java.util.GregorianCalendar;
 
 public class DatabaseCleanupJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
-
-    private LinkDao linkDao;
-    private MultimediaUsageDao multimediaUsageDao;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
@@ -60,6 +56,12 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             PreparedStatement st = c.prepareStatement("delete from attachments where ContentId = -1 AND LastModified < ?");
             st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
             st.execute();
+
+            // Delete multimedia with no connections to content and no parent id
+            st = c.prepareStatement("delete from multimedia where ContentId = -1 AND ParentId = -1 AND LastModified < ?");
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+
 
             // Delete traffic log
             cal = new GregorianCalendar();
@@ -121,8 +123,8 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
                 Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month", null, null);
                 EventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
-                linkDao.deleteLinksForContentId(cid.getContentId());
-                multimediaUsageDao.removeUsageForContentId(cid.getContentId());
+
+                ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
                 ContentAO.deleteContent(cid);
             }
 
@@ -145,14 +147,6 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 }
             }
         }
-    }
-
-    public void setLinkDao(LinkDao linkDao) {
-        this.linkDao = linkDao;
-    }
-
-    public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
-        this.multimediaUsageDao = multimediaUsageDao;
     }
 }
 

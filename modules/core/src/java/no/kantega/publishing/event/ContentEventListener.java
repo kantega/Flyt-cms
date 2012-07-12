@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.event;
 
+import no.kantega.publishing.common.data.ContentIdentifier;
+
 /**
  * @
  */
@@ -127,4 +129,11 @@ public interface ContentEventListener {
      * @param contentEvent
      */
     public void contentStatusChanged(ContentEvent contentEvent);
+
+    /**
+     * Called when a content is permanently deleted
+     * @param contentIdentifier
+     */
+    public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier);
+
 }

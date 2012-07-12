@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.ao.LinkDao;
@@ -38,5 +39,9 @@ public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
         if (!event.getContent().isNew()) {
             linkDao.deleteLinksForContentId(event.getContent().getId());
         }
+    }
+
+    public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier) {
+        linkDao.deleteLinksForContentId(contentIdentifier.getContentId());
     }
 }

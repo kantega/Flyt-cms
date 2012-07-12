@@ -16,15 +16,21 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
+import com.sun.tools.internal.ws.processor.model.Model;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 
@@ -37,16 +43,17 @@ public class ViewUploadMultimediaFormAction implements Controller {
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        int folderId = params.getInt("parentId");
-        int id = params.getInt("id");
+        boolean fileUploadedFromEditor = params.getBoolean("fileUploadedFromEditor", false);
 
+        int folderId = params.getInt("parentId");
         if (folderId == -1) {
             folderId = 0;
         }
 
         Map<String, Object> model = new HashMap<String, Object>();
         model.put("parentId", folderId);
-        model.put("id", id);
+        model.put("fileUploadedFromEditor", fileUploadedFromEditor);
+        model.put("id", params.getInt("id"));
         model.put("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
         model.put("altNameRequired", Aksess.getConfiguration().getBoolean("multimedia.altname.required", false));
         model.put("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));

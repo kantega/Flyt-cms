@@ -16,7 +16,12 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.data.attributes.Attribute;
@@ -33,6 +38,7 @@ import java.util.List;
  */
 public class MultimediaUsageListener extends ContentEventListenerAdapter {
     private MultimediaUsageDao multimediaUsageDao;
+    private MultimediaDao multimediaDao;
 
     public void contentSaved(ContentEvent event) {
         // Delete all usages for this content
@@ -52,8 +58,21 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     public void contentExpired(ContentEvent event) {
         int action = event.getContent().getExpireAction();
 
-        if(action == ExpireAction.DELETE) {
+        if (action == ExpireAction.DELETE) {
             multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
+        }
+    }
+
+    public void contentPermanentlyDeleted(ContentIdentifier cid) {
+        multimediaUsageDao.removeUsageForContentId(cid.getContentId());
+
+        List<Multimedia> multimedia = multimediaDao.getMultimediaWithContentId(cid.getContentId());
+        for (Multimedia m : multimedia) {
+            try {
+                multimediaDao.deleteMultimedia(m.getId());
+            } catch (ObjectInUseException e) {
+                Log.error(this.getClass().getName(), e);
+            }
         }
     }
 
@@ -88,5 +107,9 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
 
     public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
         this.multimediaUsageDao = multimediaUsageDao;
+    }
+
+    public void setMultimediaDao(MultimediaDao multimediaDao) {
+        this.multimediaDao = multimediaDao;
     }
 }

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages, ContentId";
 
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
@@ -142,8 +142,13 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     }
 
     public List<Multimedia> getMultimediaList(int parentId) {
-        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, parentId));
+        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL AND ContentId < 0 ORDER BY Type, Name", rowMapper, parentId));
     }
+
+    public List<Multimedia> getMultimediaWithContentId(int contentId) {
+        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ContentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, contentId));
+    }
+
 
     public int getMultimediaCount() {
         return getSimpleJdbcTemplate().queryForInt("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?", MultimediaType.MEDIA.getTypeAsInt());
@@ -161,10 +166,10 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             where = "Id = ?";
             params.add(id);
         } catch (NumberFormatException e) {
-            where = "Name like ? or Author like ? or Description like ? or Filename like ?";
+            where = "Name LIKE ? OR Author like ? OR Description LIKE ? OR Filename like ?";
             if (sqlDialect.searchIsCaseSensitive()) {
                 phrase = phrase.toLowerCase();
-                where = "lower(Name) like ? or lower(Author) like ? or lower(Description) like ? or lower(Filename) like ?";
+                where = "LOWER(Name) like ? OR LOWER(Author) like ? OR LOWER(Description) like ? OR LOWER(Filename) like ?";
             }
             params.add(phrase + "%");
             params.add(phrase + "%");
@@ -195,13 +200,13 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         if (site != -1 || parentId != -1) {
             query.append(", associations.Path, associations.SiteId");
         }
-        query.append(" from multimedia ");
+        query.append(" FROM multimedia ");
 
         // join
         query.append(join);
         query.append(" ");
 
-        query.append("where ").append(DB_TABLE).append(".Type = ? and ProfileImageUserId is NULL and (");
+        query.append("WHERE ").append(DB_TABLE).append(".Type = ? AND ProfileImageUserId is NULL AND ContentId < 0 AND(");
         query.append(where);
         query.append(") ");
 
@@ -211,7 +216,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             query.append(") ");
         }
 
-        query.append("order by Name");
+        query.append("ORDER BY Name");
 
         return updateMultimediaWithExifData(getSimpleJdbcTemplate().query(query.toString(), rowMapper, params.toArray()));
     }
@@ -274,16 +279,16 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 if (multimedia.isNew()) {
                     // Ny
                     if (!hasData) {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?,?)", Statement.RETURN_GENERATED_KEYS);
                     } else {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?)", Statement.RETURN_GENERATED_KEYS);
+                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?)", Statement.RETURN_GENERATED_KEYS);
                     }
                 } else {
                     // Oppdater
                     if (!hasData) {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
+                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ? where Id = ?");
                     } else {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ? where Id = ?");
+                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ? where Id = ?");
                     }
                 }
 
@@ -315,6 +320,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 st.setString(p++, multimedia.getGpsLatitude());
                 st.setString(p++, multimedia.getGpsLongitudeRef());
                 st.setString(p++, multimedia.getGpsLongitude());
+                st.setInt(p++, multimedia.getContentId());
 
                 if (!multimedia.isNew()) {
                     st.setInt(p++, multimedia.getId());

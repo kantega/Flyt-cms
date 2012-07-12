@@ -603,11 +603,12 @@
         <property name="selectMediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/uploadform.jsp"/>
+        <property name="view" value="/WEB-INF/jsp/admin/multimedia/uploadform.jsp"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
         <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>
+        <property name="insertMultimediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">

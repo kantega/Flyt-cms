@@ -213,12 +213,6 @@
         <property name="jobClass">
             <value>no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob</value>
         </property>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="linkDao" value-ref="aksessLinkDao"/>
-                <entry key="multimediaUsageDao" value-ref="aksessMultimediaUsageDao"/>
-            </map>
-        </property>
     </bean>
 
     <!-- Slett gamle innslag i trafikk og eventlog -->

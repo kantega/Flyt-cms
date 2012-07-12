@@ -907,6 +907,18 @@ public class ContentAO {
                 }
             }
 
+            // Update contentid on multimedia saved in database before the page was saved
+            List<Multimedia> multimedia = content.getMultimedia();
+            if (multimedia != null) {
+                for (Multimedia m : multimedia) {
+                    PreparedStatement st = c.prepareStatement("update multimedia set ContentId = ?  where Id = ?");
+                    st.setInt(1, content.getId());
+                    st.setInt(2, m.getId());
+                    st.executeUpdate();
+                }
+            }
+
+
             // Delete all existing topic associations before insertion.
             TopicAO.deleteTopicAssociationsForContent(content.getId());
 

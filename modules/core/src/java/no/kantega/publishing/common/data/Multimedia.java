@@ -31,6 +31,7 @@ import java.util.List;
 
 public class Multimedia extends BaseObject {
     private int parentId = 0;
+    private int contentId = -1;
     private MultimediaType type = MultimediaType.MEDIA;
 
     private String name = "";
@@ -84,6 +85,14 @@ public class Multimedia extends BaseObject {
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public int getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(int contentId) {
+        this.contentId = contentId;
     }
 
     public MultimediaType getType() {

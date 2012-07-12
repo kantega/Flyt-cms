@@ -19,7 +19,7 @@
     <parent>
         <artifactId>openaksess</artifactId>
         <groupId>org.kantega.openaksess</groupId>
-        <version>7.3.28-SNAPSHOT</version>
+        <version>7.4.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <artifactId>openaksess-core-plugins</artifactId>

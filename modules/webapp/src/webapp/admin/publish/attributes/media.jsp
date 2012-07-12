@@ -93,7 +93,8 @@
             </script>
         </div>
         <div class="buttonGroup">
-            <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.uploadMultimedia(document.myform.${fieldName})" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="upload"><kantega:label key="aksess.button.upload"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose-media"/></span></a>
             <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
         </div>
     </c:otherwise>
