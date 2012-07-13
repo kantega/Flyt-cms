@@ -321,9 +321,7 @@
         <property name="resetPasswordErrorView">
             <value>${security.login.errorview}</value>
         </property>
-        <property name="minPasswordLength">
-            <value>${security.login.minpasswordlength}</value>
-        </property>
+        <property name="passwordValidator" ref="aksessPasswordValidator"/>
     </bean>
 
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="LogoutAction">

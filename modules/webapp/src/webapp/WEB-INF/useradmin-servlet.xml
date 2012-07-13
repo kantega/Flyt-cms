@@ -42,7 +42,9 @@
         </property>
     </bean>
 
-    <bean id="resetPasswordController" class="no.kantega.useradmin.controls.ResetPasswordController" parent="useradminController"></bean>
+    <bean id="resetPasswordController" class="no.kantega.useradmin.controls.ResetPasswordController" parent="useradminController">
+        <property name="passwordValidator" ref="aksessPasswordValidator"/>
+    </bean>
 
     <bean id="searchProfilesController" class="no.kantega.useradmin.controls.SearchProfilesController" parent="useradminController"/>
 
