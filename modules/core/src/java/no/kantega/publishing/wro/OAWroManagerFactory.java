@@ -4,12 +4,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import ro.isdc.wro.extensions.manager.ExtensionsConfigurableWroManagerFactory;
+import ro.isdc.wro.manager.WroManager;
+import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
 import ro.isdc.wro.model.factory.WroModelFactory;
 import ro.isdc.wro.model.factory.XmlModelFactory;
-import ro.isdc.wro.model.resource.locator.ServletContextUriLocator;
-import ro.isdc.wro.model.resource.locator.UriLocator;
-import ro.isdc.wro.model.resource.processor.ResourcePreProcessor;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,23 +19,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.util.Map;
 
-public class OAWroManagerFactory extends ExtensionsConfigurableWroManagerFactory {
+public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
 
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/wro-oa.xml";
     private static final String PROJECT_XML_CONFIG_FILE = "/WEB-INF/wro-project.xml";
 
-    private Map<String, UriLocator> locators;
+    private WroManager manager;
 
     @Override
-    protected void contributePreProcessors(Map<String, ResourcePreProcessor> map) {
-        super.contributePreProcessors(map);
-    }
-
-    @Override
-    protected void contributeLocators(Map<String, UriLocator> map) {
-        this.locators = map;
+    protected void onAfterInitializeManager(WroManager manager) {
+        this.manager = manager;
     }
 
     @Override
@@ -46,15 +38,14 @@ public class OAWroManagerFactory extends ExtensionsConfigurableWroManagerFactory
         return new XmlModelFactory(){
             @Override
             protected InputStream getModelResourceAsStream() throws IOException {
-                ServletContextUriLocator servletContextUriLocator = (ServletContextUriLocator) locators.get("servletContext");
                 try {
-                    InputStream oaResourceStream = servletContextUriLocator.locate(OA_XML_CONFIG_FILE);
+                    InputStream oaResourceStream = manager.getUriLocatorFactory().locate(OA_XML_CONFIG_FILE);
 
                     if(oaResourceStream == null) {
                         throw new IllegalStateException("Could not find WRO config file at " + OA_XML_CONFIG_FILE);
                     }
 
-                    InputStream projectResourceStream = servletContextUriLocator.locate(PROJECT_XML_CONFIG_FILE);
+                    InputStream projectResourceStream = manager.getUriLocatorFactory().locate(PROJECT_XML_CONFIG_FILE);
 
                     boolean onlyOA = projectResourceStream == null;
                     if(onlyOA) {
