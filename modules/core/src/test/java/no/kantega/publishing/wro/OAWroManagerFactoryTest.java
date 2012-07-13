@@ -28,7 +28,7 @@ public class OAWroManagerFactoryTest {
 
 
         // When
-        InputStream stream = fac.merge(getClass().getResource("oa.xml"), getClass().getResource("project.xml"));
+        InputStream stream = fac.merge(getClass().getResource("oa.xml").openStream(), getClass().getResource("project.xml").openStream());
         Document doc = new SAXBuilder().build(stream);
 
         // Then
