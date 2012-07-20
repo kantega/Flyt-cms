@@ -223,9 +223,9 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkRemoteUrl(String link, LinkOccurrence occurrence, HttpClient client) {
-        HeadMethod head;
+        GetMethod get;
         try {
-            head = new HeadMethod(link);
+            get = new GetMethod(link);
         } catch (Exception e) {
             occurrence.setStatus(CheckStatus.INVALID_URL);
             return;
@@ -235,22 +235,13 @@ public class LinkCheckerJob implements InitializingBean {
         int status = CheckStatus.OK;
 
         try {
-            head.setFollowRedirects(true);
+            get.setFollowRedirects(true);
 
-            client.executeMethod(head);
-            httpStatus = head.getStatusCode();
-            if(httpStatus != HttpStatus.SC_OK) {
-                GetMethod get = new GetMethod(link);
-                get.setFollowRedirects(true);
-                try {
-                    client.executeMethod(get);
-                } finally{
-                    get.releaseConnection();
-                }
-                httpStatus = get.getStatusCode();
-                if (httpStatus != HttpStatus.SC_OK && httpStatus != HttpStatus.SC_UNAUTHORIZED && httpStatus != HttpStatus.SC_MULTIPLE_CHOICES && httpStatus != HttpStatus.SC_MOVED_TEMPORARILY && httpStatus != HttpStatus.SC_TEMPORARY_REDIRECT) {
-                    status = CheckStatus.HTTP_NOT_200;
-                }
+            client.executeMethod(get);
+            httpStatus = get.getStatusCode();
+
+            if (httpStatus != HttpStatus.SC_OK && httpStatus != HttpStatus.SC_UNAUTHORIZED && httpStatus != HttpStatus.SC_MULTIPLE_CHOICES && httpStatus != HttpStatus.SC_MOVED_TEMPORARILY && httpStatus != HttpStatus.SC_TEMPORARY_REDIRECT) {
+                status = CheckStatus.HTTP_NOT_200;
             }
         } catch (UnknownHostException e) {
             status = CheckStatus.UNKNOWN_HOST;
@@ -263,45 +254,10 @@ public class LinkCheckerJob implements InitializingBean {
         } catch (IOException e) {
             status = CheckStatus.IO_EXCEPTION;
         } finally {
-            head.releaseConnection();
+            get.releaseConnection();
         }
-
         occurrence.setStatus(status);
         occurrence.setHttpStatus(httpStatus);
-
-    }
-
-    public static void main(String[] args) {
-
-        final HttpClient client = new HttpClient();
-        HeadMethod head = new HeadMethod(args[0]);
-
-        int httpStatus = -1;
-        int status = CheckStatus.OK;
-
-        try {
-            head.setFollowRedirects(true);
-
-            client.executeMethod(head);
-            httpStatus = head.getStatusCode();
-            if(httpStatus != HttpStatus.SC_OK) {
-                GetMethod get = new GetMethod(args[0]);
-                get.setFollowRedirects(true);
-                client.executeMethod(get);
-                httpStatus = get.getStatusCode();
-                if(httpStatus != HttpStatus.SC_OK) {
-                    status = CheckStatus.HTTP_NOT_200;
-                }
-            }
-        } catch (UnknownHostException e) {
-            status = CheckStatus.UNKNOWN_HOST;
-        } catch (ConnectTimeoutException e) {
-            status = CheckStatus.CONNECTION_TIMEOUT;
-        } catch(CircularRedirectException e) {
-            status = CheckStatus.CIRCULAR_REDIRECT;
-        } catch (IOException e) {
-            status = CheckStatus.IO_EXCEPTION;
-        }
     }
 
     public void setWebroot(String webroot) {
