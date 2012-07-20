@@ -126,6 +126,7 @@ public class ContentIndexer {
                 return false;
             }
         };
+
         ContentAO.forAllContentObjects(contentHandler, stopper, 10);
 
     }
