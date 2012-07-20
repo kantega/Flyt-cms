@@ -1,4 +1,4 @@
-package no.kantega.openaksess.search;
+package no.kantega.openaksess.search.index;
 
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
@@ -25,7 +25,9 @@ public class IndexRebuilder {
             Iterator<IndexableDocument> indexableDocumentIterator = indexableDocumentProvider.provideDocuments();
             while (indexableDocumentIterator.hasNext()){
                 IndexableDocument next = indexableDocumentIterator.next();
-                documentIndexer.indexDocument(next);
+                if (next.shouldIndex()) {
+                    documentIndexer.indexDocument(next);
+                }
             }
         }
         documentIndexer.commit();

@@ -22,11 +22,6 @@
     <bean id="contentListenerList" class="no.kantega.publishing.event.ContentListenerList">
         <property name="listeners">
             <list>
-                <!--<bean class="no.kantega.publishing.jobs.contentstate.IndexUpdaterListener">
-                    <property name="indexManager">
-                        <ref bean="indexManager"/>
-                    </property>
-                </bean>-->
                 <bean class="no.kantega.publishing.jobs.cache.UpdateContentCachesListener"/>
                 <bean class="no.kantega.publishing.jobs.contentstate.RemoveFromLinkCheckerListener"/>
                 <bean class="no.kantega.publishing.jobs.contentstate.DeleteIfExpiredListener"/>

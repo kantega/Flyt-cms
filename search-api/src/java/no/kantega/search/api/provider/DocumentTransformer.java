@@ -1,0 +1,7 @@
+package no.kantega.search.api.provider;
+
+import no.kantega.search.api.IndexableDocument;
+
+public interface DocumentTransformer<D> {
+    public IndexableDocument transform(D document);
+}
