@@ -4,8 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.core.CoreContainer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.xml.sax.SAXException;
@@ -19,8 +18,7 @@ import java.io.InputStream;
 @Configuration
 public class SolrConfiguration {
 
-    @Autowired
-    @Qualifier("appDir")
+    @Value("${appDir}/solr")
     private File solrHome;
     private File solrConfigFile;
 
@@ -37,7 +35,7 @@ public class SolrConfiguration {
         if(!solrHome.exists()){
             boolean successfullMkdirs = solrHome.mkdirs();
             File confdir = new File(solrHome, "conf");
-            File langdir = new File(solrHome, "lang");
+            File langdir = new File(confdir, "lang");
             successfullMkdirs &= confdir.mkdir();
             successfullMkdirs &= langdir.mkdir();
 
@@ -48,6 +46,7 @@ public class SolrConfiguration {
             try {
                 copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/schema.xml"), new FileOutputStream(new File(confdir, "schema.xml")));
                 copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/solrconfig.xml"), new FileOutputStream(new File(confdir, "solrconfig.xml")));
+                copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/elevate.xml"), new FileOutputStream(new File(confdir, "elevate.xml")));
                 copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/solr.xml"), new FileOutputStream(solrConfigFile));
                 copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/lang/stopwords_en.txt"), new FileOutputStream(new File(langdir, "stopwords_en.txt")));
                 copyAndCloseStreams(getClass().getResourceAsStream("/solrconfig/lang/stopwords_no.txt"), new FileOutputStream(new File(langdir, "stopwords_no.txt")));

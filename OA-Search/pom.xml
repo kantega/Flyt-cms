@@ -21,6 +21,13 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>solr-search</artifactId>
+            <version>${project.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-core</artifactId>
             <version>${project.version}</version>
         </dependency>

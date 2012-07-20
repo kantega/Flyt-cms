@@ -32,7 +32,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
         SolrInputDocument solrInputDocument = new SolrInputDocument();
         solrInputDocument.addField("contentStatus", document.getContentStatus());
-        solrInputDocument.addField("contentType", document.getContentType());
+        solrInputDocument.addField("indexedContentType", document.getContentType());
         solrInputDocument.addField("description_no", document.getDescription());
         solrInputDocument.addField("id", document.getId());
         solrInputDocument.addField("uid", document.getUId());

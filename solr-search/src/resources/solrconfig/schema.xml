@@ -8,6 +8,7 @@
         <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
         <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
         <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
         <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
         <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
             <analyzer>
@@ -57,14 +58,15 @@
 
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" />
-        <field name="contenttype" type="text_general" indexed="true" stored="true" required="true" />
+        <field name="indexedContentType" type="text_general" indexed="true" stored="true" required="true" />
+        <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />
         <field name="title_no" type="text_no" indexed="true" stored="true"/>
-        <field name="title_eng" type="text_eng" indexed="true" stored="true"/>
+        <field name="title_eng" type="text_en" indexed="true" stored="true"/>
         <field name="altTitle_no" type="text_no" indexed="true" stored="true"/>
-        <field name="altTitle_eng" type="text_eng" indexed="true" stored="true"/>
+        <field name="altTitle_eng" type="text_en" indexed="true" stored="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true"/>
-        <field name="description_eng" type="text_eng" indexed="true" stored="true"/>
+        <field name="description_eng" type="text_en" indexed="true" stored="true"/>
         <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
         <field name="contentTemplateName" type="text_general" indexed="true" stored="false"/>
         <field name="metaDataTemplateId" type="int" indexed="true" stored="false"/>
