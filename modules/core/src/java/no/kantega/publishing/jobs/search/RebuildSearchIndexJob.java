@@ -1,16 +1,13 @@
 package no.kantega.publishing.jobs.search;
 
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
-import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
-import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
 import no.kantega.search.index.rebuild.ProgressReporter;
 
 /**
  *
  */
 public class RebuildSearchIndexJob {
-    private IndexManager indexManager;
+//    private IndexManager indexManager;
 
     public void execute() {
         Log.info(getClass().getName(), "Starting rebuild of index", null, null);
@@ -25,12 +22,9 @@ public class RebuildSearchIndexJob {
             }
         };
 
-        indexManager.addIndexJob(new RebuildIndexJob(p));
+/*        indexManager.addIndexJob(new RebuildIndexJob(p));
         indexManager.addIndexJob(new OptimizeIndexJob());
-        indexManager.addIndexJob(new RebuildSpellCheckIndexJob());
+        indexManager.addIndexJob(new RebuildSpellCheckIndexJob());*/
     }
 
-    public void setIndexManager(IndexManager indexManager) {
-        this.indexManager = indexManager;
-    }
 }

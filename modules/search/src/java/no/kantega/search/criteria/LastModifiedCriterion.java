@@ -17,10 +17,8 @@
 package no.kantega.search.criteria;
 
 import no.kantega.search.index.Fields;
-import org.apache.lucene.document.DateTools;
-import org.apache.lucene.search.ConstantScoreRangeQuery;
-import org.apache.lucene.search.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -31,31 +29,31 @@ import java.util.Date;
  *
  * @author Tarje Killingberg
  */
-public class LastModifiedCriterion extends AbstractCriterion {
-
-    private static final String SOURCE = LastModifiedCriterion.class.getName();
-
-    private String lastModifiedFrom;
-    private String lastModifiedTo;
-
-
-    public String getLastModifiedFrom() {
-        return lastModifiedFrom;
-    }
-
-    public String getLastModifiedTo() {
-        return lastModifiedTo;
-    }
+public class LastModifiedCriterion extends Criterion {
+    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-mm-ddTHH:mm:ssZ");
+    private final String lastModifiedFrom;
+    private final String lastModifiedTo;
 
     /**
      * Et av argumentene kan være null, men ikke begge.
      *
      * @param lastModifiedFrom fra-dato. Kan være null.
      * @param lastModifiedTo til-dato. Kan være null.
+     * @throws IllegalArgumentException if both arguments are null.
      */
-    public LastModifiedCriterion(Date lastModifiedFrom, Date lastModifiedTo) {
-        this.lastModifiedFrom = DateTools.dateToString(lastModifiedFrom, DateTools.Resolution.MINUTE);
-        this.lastModifiedTo = DateTools.dateToString(lastModifiedTo, DateTools.Resolution.MINUTE);
+    public LastModifiedCriterion(Date lastModifiedFrom, Date lastModifiedTo) throws IllegalArgumentException {
+        if(lastModifiedFrom == null && lastModifiedTo == null) throw new IllegalArgumentException("Both lastModifiedFrom and lastModifiedTo cannot be null");
+
+        this.lastModifiedFrom = wildcardOrDate(lastModifiedFrom);
+        this.lastModifiedTo = wildcardOrDate(lastModifiedTo);
+    }
+
+    private String wildcardOrDate(Date date) {
+        if(date == null){
+            return "*";
+        } else {
+          return dateFormat.format(date);
+        }
     }
 
     /**
@@ -70,11 +68,9 @@ public class LastModifiedCriterion extends AbstractCriterion {
         this.lastModifiedTo = lastModifiedTo;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        return new ConstantScoreRangeQuery(Fields.LAST_MODIFIED, lastModifiedFrom, lastModifiedTo, true, true);
-    }
 
+    @Override
+    public String getCriterionAsString() {
+        return Fields.LAST_MODIFIED +":[" + lastModifiedFrom + " TO " + lastModifiedTo + "]";
+    }
 }

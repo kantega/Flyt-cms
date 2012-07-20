@@ -16,9 +16,6 @@
 
 package no.kantega.search.criteria;
 
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.Query;
-
 /**
  * Et Criterion-objekt representerer den minste enheten for søk - en betingelse som må være oppfylt for alle søkeresultat.
  *
@@ -27,19 +24,7 @@ import org.apache.lucene.search.Query;
  * 
  * @author Tarje Killingberg
  */
-public interface Criterion {
+public abstract class Criterion {
 
-
-    /**
-     * Oversetter dette Criterion-objektet til et org.apache.lucene.search.Query-objekt, og returnerer dette.
-     * @return et org.apache.lucene.search.Query-objekt som representerer dette Criterion-objektet.
-     */
-    public Query getQuery();
-
-    /**
-     * Returnerer operatoren som skal benyttes for dette Criterion-objektet.
-     * @return operatoren som skal benyttes for dette Criterion-objektet
-     */
-    public BooleanClause.Occur getOperator();
-
+    public abstract String getCriterionAsString();
 }

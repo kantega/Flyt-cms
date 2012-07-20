@@ -97,5 +97,5 @@
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
-    <uniqueKey>id</uniqueKey>
+    <uniqueKey>uid</uniqueKey>
 </schema>

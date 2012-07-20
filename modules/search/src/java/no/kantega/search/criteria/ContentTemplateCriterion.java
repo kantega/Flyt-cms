@@ -24,22 +24,14 @@ import no.kantega.search.index.Fields;
  *
  * @author Tarje Killingberg
  */
-public class ContentTemplateCriterion extends IntTermArrayCriterion {
+public class ContentTemplateCriterion extends FieldCriterion {
 
     private static final String SOURCE = ContentTemplateCriterion.class.getName();
 
 
     public ContentTemplateCriterion(int contentTemplate) {
-        super(contentTemplate);
+        super(Fields.CONTENT_TEMPLATE_ID, String.valueOf(contentTemplate));
     }
 
-    public ContentTemplateCriterion(int[] contentTemplateArray) {
-        super(contentTemplateArray);
-    }
-
-    @Override
-    protected String getField() {
-        return Fields.CONTENT_TEMPLATE_ID;
-    }
 
 }

@@ -16,25 +16,25 @@
 
 package no.kantega.search.criteria;
 
-import org.apache.lucene.search.BooleanClause;
+
+import java.util.List;
 
 /**
- * Date: Dec 5, 2008
- * Time: 9:21:42 AM
- *
- * @author Tarje Killingberg
+
  */
 public class AndCriterion extends BooleanCriterion {
 
-    private static final String SOURCE = AndCriterion.class.getName();
 
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected BooleanClause.Occur getInnerOperator() {
-        return BooleanClause.Occur.MUST;
+    public AndCriterion(List<Criterion> criteria) {
+        super(criteria);
     }
 
+    public AndCriterion(Criterion left, Criterion right) {
+        super(left, right);
+    }
+
+    @Override
+    protected String getInnerOperator() {
+        return "AND";
+    }
 }

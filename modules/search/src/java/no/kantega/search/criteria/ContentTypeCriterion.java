@@ -16,13 +16,7 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * Date: Jan 8, 2009
@@ -30,31 +24,10 @@ import org.apache.lucene.search.TermQuery;
  *
  * @author Tarje Killingberg
  */
-public class ContentTypeCriterion extends AbstractCriterion {
+public class ContentTypeCriterion extends FieldCriterion {
 
-    private static final String SOURCE = ContentTypeCriterion.class.getName();
-
-    private String[] termArray;
-
-
-    public ContentTypeCriterion(String term) {
-        this(new String[]{ term });
-    }
-
-    public ContentTypeCriterion(String[] termArray) {
-        this.termArray = termArray;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        BooleanQuery query = new BooleanQuery();
-        for (String sTerm : termArray) {
-            Term term = new Term(Fields.DOCTYPE, sTerm);
-            query.add(new TermQuery(term), BooleanClause.Occur.SHOULD);
-        }
-        return query;
+    public ContentTypeCriterion(int contentType) {
+        super(Fields.CONTENT_TYPE, String.valueOf(contentType));
     }
 
 }

@@ -23,10 +23,6 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
-import no.kantega.publishing.search.index.jobs.RemoveContentJob;
-import no.kantega.publishing.search.index.jobs.UpdateAttachmentJob;
-import no.kantega.publishing.search.index.jobs.UpdateContentJob;
 
 import java.util.List;
 
@@ -36,7 +32,7 @@ import java.util.List;
 public class IndexUpdaterListener extends ContentEventListenerAdapter {
     private static final String SOURCE = "aksess.IndexUpdaterListener";
 
-    private IndexManager indexManager;
+   // private IndexManager indexManager;
 
     @Override
     public void contentSaved(ContentEvent event) {
@@ -56,14 +52,14 @@ public class IndexUpdaterListener extends ContentEventListenerAdapter {
     @Override
     public void contentDeleted(ContentEvent event) {
         // Slett innhold
-        indexManager.addIndexJob(new RemoveContentJob(Integer.toString(event.getContent().getId()), "aksessContent"));
+       // indexManager.addIndexJob(new RemoveContentJob(Integer.toString(event.getContent().getId()), "aksessContent"));
 
         // Slett vedlegg
         List<Attachment> attachments = null;
         try {
             attachments = AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier());
             for (Attachment attachment : attachments) {
-                indexManager.addIndexJob(new RemoveAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
+                //indexManager.addIndexJob(new RemoveAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
             }
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
@@ -72,12 +68,12 @@ public class IndexUpdaterListener extends ContentEventListenerAdapter {
 
     public void attachmentUpdated(ContentEvent event) {
         if (event.getAttachment().getContentId() != -1) {
-            indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
+           // indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
         }
     }
 
     private void updateIndex(Content content) {
-        indexManager.addIndexJob(new UpdateContentJob(Integer.toString(content.getId()), "aksessContent"));
+        /*indexManager.addIndexJob(new UpdateContentJob(Integer.toString(content.getId()), "aksessContent"));
         List<Attachment> attachments = null;
         try {
             attachments = AttachmentAO.getAttachmentList(content.getContentIdentifier());
@@ -86,10 +82,10 @@ public class IndexUpdaterListener extends ContentEventListenerAdapter {
             }
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
-        }
+        }*/
     }
 
-    public void setIndexManager(IndexManager indexManager) {
+  /*  public void setIndexManager(IndexManager indexManager) {
         this.indexManager = indexManager;
-    }
+    }*/
 }

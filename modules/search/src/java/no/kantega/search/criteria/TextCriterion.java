@@ -16,12 +16,7 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
 
 /**
  * Criterion som søker etter ett eller flere ord i et felt.
@@ -31,40 +26,20 @@ import org.apache.lucene.search.Query;
  *
  * @author Tarje Killingberg
  */
-public class TextCriterion extends AbstractCriterion {
+public class TextCriterion extends FieldCriterion{
 
     public final static String DEFAULT_FIELDNAME = Fields.CONTENT;
     private static final String SOURCE = TextCriterion.class.getName();
 
-    private Analyzer analyzer;
     private String fieldname;
     private String text;
 
 
-    public TextCriterion(String text, Analyzer analyzer) {
-        this(DEFAULT_FIELDNAME, text, analyzer);
+    public TextCriterion(String text) {
+        this(DEFAULT_FIELDNAME, text);
     }
 
-    public TextCriterion(String fieldname, String text, Analyzer analyzer) {
-        this.fieldname = fieldname;
-        this.text = text;
-        this.analyzer = analyzer;
+    public TextCriterion(String fieldname, String text) {
+        super(fieldname, text);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        Query query = null;
-        QueryParser queryParser = new QueryParser(fieldname, analyzer);
-        queryParser.setDefaultOperator(QueryParser.AND_OPERATOR);
-        try {
-            query = queryParser.parse(text);
-
-        } catch (ParseException e) {
-            Log.error(SOURCE, e, "getQuery", null);
-        }
-        return query;
-    }
-
 }

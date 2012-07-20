@@ -9,21 +9,12 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.search.control.util.QueryStringGenerator;
 import no.kantega.publishing.search.service.SearchService;
-import no.kantega.publishing.search.service.SearchServiceQuery;
-import no.kantega.publishing.search.service.SearchServiceResult;
-import no.kantega.publishing.search.service.SearchServiceResultImpl;
 import no.kantega.search.index.Fields;
-import no.kantega.search.query.hitcount.DateHitCountQuery;
-import no.kantega.search.query.hitcount.HitCountQuery;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +27,7 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     private SearchService searchService;
     private String queryStringEncoding = "iso-8859-1"; // Must match setting in web server, default for tomcat is iso-8859-1, jetty is utf-8. Tomcat can be set to use utf-8 by setting URIEncoding="UTF-8" on the Connector element in server.xml
-    private List<SearchField> customSearchFields;
+    //private List<SearchField> customSearchFields;
 
     private boolean hitCountDocumentType = true;
     private boolean hitCountParents = true;
@@ -44,7 +35,7 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     static final String INVALIDQUERY = "invalidquery";
 
-    private QueryStringGenerator queryStringGenerator;
+  //  private QueryStringGenerator queryStringGenerator;
 
     private String modelParametersPrefix = "";
 
@@ -56,10 +47,11 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
-        Map<String, Object> model = performSearches(request);
-        model.put("totalTime", System.currentTimeMillis() - start);
-        return model;
+       // Map<String, Object> model = performSearches(request);
+        //model.put("totalTime", System.currentTimeMillis() - start);
+        return null;
     }
+/*
 
     private Map<String, Object> performSearches(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -109,7 +101,7 @@ public class ContentSearchController implements AksessController, InitializingBe
     }
 
     protected SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
-        SearchServiceQuery query = new SearchServiceQuery(request, customSearchFields);
+        SearchServiceQuery query = new SearchServiceQuery(request);
         RequestParameters params = new RequestParameters(request);
 
         if (!searchAllSites) {
@@ -134,6 +126,7 @@ public class ContentSearchController implements AksessController, InitializingBe
 
         return query;
     }
+*/
 
     /**
      * Get URL to previous page
@@ -141,21 +134,25 @@ public class ContentSearchController implements AksessController, InitializingBe
      * @param result
      * @return
      */
+/*
     private String getPrevPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
         String prevPageUrl = queryStringGenerator.prevPage(query, result.getCurrentPage());
         return prevPageUrl == null || "".equals(prevPageUrl) ? null : prevPageUrl;
     }
 
-    /**
+    */
+/**
      * Get URL to next page
      * @param query
      * @param result
      * @return
-     */
+     *//*
+
     private String getNextPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
-        String nextPageUrl = queryStringGenerator.nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), result.getSearchResult().getNumberOfHits());
+        String nextPageUrl = queryStringGenerator.nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), 666);
         return nextPageUrl == null || "".equals(nextPageUrl) ? null : nextPageUrl;
     }
+*/
 
 
     /**
@@ -165,15 +162,15 @@ public class ContentSearchController implements AksessController, InitializingBe
      * @param result - result
      * @return - list of URLs
      */
-    private LinkedHashMap<String, String> createPageUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResultImpl result) {
+  /*  private LinkedHashMap<String, String> createPageUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResultImpl result) {
         LinkedHashMap<String, String> pageUrls = new LinkedHashMap<String, String>();
         int currentpage = result.getCurrentPage() + 1;
         int startPage = ((currentpage / 10) * 10) + 1;
         int endPage = startPage + 9;
-        if (endPage * query.getHitsPerPage() >= result.getSearchResult().getNumberOfHits()) {
+        *//*if (endPage * query.getHitsPerPage() >= result.getSearchResult().getNumberOfHits()) {
             endPage = (result.getSearchResult().getNumberOfHits() - 1) / query.getHitsPerPage();
             endPage++;
-        }
+        }*//*
         if (startPage > 1) {
             startPage--;
         }
@@ -183,7 +180,7 @@ public class ContentSearchController implements AksessController, InitializingBe
             pageUrls.put("" + i, urlPrefix + queryStringGenerator.replaceParams(query, keys, values));
         }
         return pageUrls;
-    }
+    }*/
 
 
     /**
@@ -193,11 +190,11 @@ public class ContentSearchController implements AksessController, InitializingBe
      * @param result
      * @return
      */
-    private Map<String, String> getHitCountUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResult result) {
+ /*   private Map<String, String> getHitCountUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResult result) {
         Map<String, String> hitCounts = new HashMap<String, String>();
-        SearchServiceResultImpl serviceResult = (SearchServiceResultImpl)result;
+   //     SearchServiceResultImpl serviceResult = (SearchServiceResultImpl)result;
 
-        if (serviceResult.getSearchResult() instanceof SearchResultExtendedImpl) {
+   *//*     if (serviceResult.getSearchResult() instanceof SearchResultExtendedImpl) {
             SearchResultExtendedImpl sr = (SearchResultExtendedImpl)serviceResult.getSearchResult();
 
             for (HitCount hitCount : sr.getHitCounts()) {
@@ -214,10 +211,10 @@ public class ContentSearchController implements AksessController, InitializingBe
                     }
                 }
             }
-        }
+        }*//*
         return hitCounts;
     }
-
+*/
     private String[] getDocumentTypes() {
         List<DocumentType> documentTypes = DocumentTypeCache.getDocumentTypes();
         String[] docTypeIds = new String[documentTypes.size()];
@@ -268,8 +265,10 @@ public class ContentSearchController implements AksessController, InitializingBe
      * @param request - HttpServletRequest
      * @param content - Content current page
      */
+/*
     protected void addHitCountQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
-        if (hitCountDocumentType) {
+        */
+/*if (hitCountDocumentType) {
             // Document types
             HitCountQuery hitCountDocType = new HitCountQueryDefaultImpl(Fields.DOCUMENT_TYPE_ID, HitCountHelper.getDocumentTypes(), true);
             query.addHitCountQuery(hitCountDocType);
@@ -288,10 +287,12 @@ public class ContentSearchController implements AksessController, InitializingBe
         if (hitCountLastModified) {
             // Modified date
             query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));
-        }
+        }*//*
 
-        addCustomQueries(query, request, content);
+
+      //  addCustomQueries(query, request, content);
     }
+*/
 
     public String getDescription() {
         return description;
@@ -320,14 +321,14 @@ public class ContentSearchController implements AksessController, InitializingBe
     public void setQueryStringEncoding(String queryStringEncoding) {
         this.queryStringEncoding = queryStringEncoding;
     }
-
+/*
     public void setCustomSearchFields(List<SearchField> customSearchFields) {
         this.customSearchFields = customSearchFields;
     }
 
     public List<SearchField> getCustomSearchFields() {
         return customSearchFields;
-    }
+    }*/
 
     public void setModelParametersPrefix(String modelParametersPrefix) {
         this.modelParametersPrefix = modelParametersPrefix;
@@ -343,10 +344,10 @@ public class ContentSearchController implements AksessController, InitializingBe
 
     public void afterPropertiesSet() throws Exception {
         queryStringEncoding = Aksess.getQueryStringEncoding();
-        queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
+        //queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
     }
 
-    private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
+ /*   private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
         if (customSearchFields != null) {
             for (SearchField field : customSearchFields) {
                 List<HitCountQuery> hitCountQueries = field.getHitCountQueries(query, request, content);
@@ -357,7 +358,7 @@ public class ContentSearchController implements AksessController, InitializingBe
                 }
             }
         }
-    }
+    }*/
 
     public void setSearchAllSites(boolean searchAllSites) {
         this.searchAllSites = searchAllSites;

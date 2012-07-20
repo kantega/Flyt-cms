@@ -30,6 +30,6 @@ public interface SearchService {
      * @param query et SearchServiceQuery
      * @return et SearchServiceResult-objekt
      */
-    public SearchServiceResult search(SearchServiceQuery query);
+    //public SearchServiceResult search(SearchServiceQuery query);
 
 }

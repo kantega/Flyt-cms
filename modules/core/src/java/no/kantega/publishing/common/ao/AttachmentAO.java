@@ -22,7 +22,6 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -120,8 +119,8 @@ public class AttachmentAO {
             st.setInt(1, id);
             st.execute();
             st.close();
-            IndexManager indexManager = IndexManagerImpl.getInstance();
-            indexManager.addIndexJob(new RemoveAttachmentJob(""+id, "aksessAttachments"));
+        //    IndexManager indexManager = IndexManagerImpl.getInstance();
+        //    indexManager.addIndexJob(new RemoveAttachmentJob(""+id, "aksessAttachments"));
 
         } catch (SQLException e) {
             throw new SystemException(SOURCE, "SQL feil ved sletting av vedlegg", e);

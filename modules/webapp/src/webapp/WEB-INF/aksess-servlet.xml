@@ -218,7 +218,7 @@
                 <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
                 <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
                 <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
-                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
+                <!--<prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>-->
                 <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
@@ -419,7 +419,7 @@
     </bean>
     <!-- Search content -->
     <bean id="adminContentSearchController" class="no.kantega.publishing.search.control.AdminContentSearchController">
-        <property name="searchService" ref="adminSearchService"/>
+        <!--<property name="searchService" ref="adminSearchService"/>-->
         <property name="view" value="/WEB-INF/jsp/admin/publish/search.jsp"/>
     </bean>
     <!-- Organize subpages -->
@@ -671,11 +671,11 @@
     <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
     </bean>
-    <bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
+    <!--<bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
         <property name="indexManager" ref="indexManager" />
         <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
         <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
-    </bean>
+    </bean>-->
     <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>

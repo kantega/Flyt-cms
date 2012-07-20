@@ -16,8 +16,6 @@
 
 package no.kantega.search.query;
 
-import no.kantega.search.core.SuggestionProvider;
-
 /**
  * Date: Jan 19, 2009
  * Time: 9:00:10 AM
@@ -44,14 +42,5 @@ public interface SuggestionQuery {
      * @return maksimalt antall Suggestions som skal finnes
      */
     public int getMax();
-
-    /**
-     * Returnerer en instans av en klasse som implementerer SuggestionsProvider som kan brukes til å utføre søk på
-     * dette SearchQuery'et. Denne instansen må være ferdig initialisert og klar til å brukes.
-     *
-     * @param indexManager et IndexManager-objekt
-     * @return en instans av en klasse som implementerer SuggestionsProvider
-     */
-    public SuggestionProvider getSuggestionsProvider(IndexManager indexManager);
 
 }

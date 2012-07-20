@@ -16,7 +16,6 @@
 
 package no.kantega.search.query;
 
-import no.kantega.search.core.SuggestionProvider;
 import no.kantega.search.index.Fields;
 
 /**
@@ -65,23 +64,6 @@ public class CompletionQuery implements SuggestionQuery {
 
     public void setMax(int max) {
         this.max = max;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public SuggestionProvider getSuggestionsProvider(IndexManager indexManager) {
-        SuggestionProvider retVal;
-        if (text != null && text.split(" ").length > 1) {
-            SuggestionProviderCompletionsImpl2 provider = new SuggestionProviderCompletionsImpl2();
-            provider.setIndexManager(indexManager);
-            retVal = provider;
-        } else {
-            SuggestionProviderCompletionsImpl provider = new SuggestionProviderCompletionsImpl();
-            provider.setIndexManager(indexManager);
-            retVal = provider;
-        }
-        return retVal;
     }
 
 }

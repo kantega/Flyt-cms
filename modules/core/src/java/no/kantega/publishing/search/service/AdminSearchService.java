@@ -24,12 +24,12 @@ import java.util.List;
 /**
  *
  */
-public class AdminSearchService extends SearchServiceImpl {
+public class AdminSearchService {
     /**
      * Override default filters: search all content
      * @return - List of criterion
      */
-    @Override
+
     protected List<Criterion> getDefaultFilters() {
         return new ArrayList<Criterion>();
     }

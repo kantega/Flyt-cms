@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.3.26-SNAPSHOT</version>
+        <version>7.3.26.SOLR-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -64,6 +64,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-rating</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>OA-Search</artifactId>
             <version>${project.version}</version>
         </dependency>
 

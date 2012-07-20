@@ -51,4 +51,5 @@ public interface Fields {
     public static final String ATTACHMENT_FILE_SIZE = "AttachmentFileSize";    
     public static final String ASSOCIATION_ID = "AssociationId";
     public static final String URL = "Url";
+    public static final String CONTENT_TYPE = "";
 }

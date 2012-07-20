@@ -19,11 +19,9 @@ package no.kantega.publishing.jobs.exec;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.search.index.jobs.ExecWhileClosedJob;
 
 public class AddExecCommandJob {
 
-    private IndexManager indexManager;
     private String command;
 
     public void execute() {
@@ -33,13 +31,9 @@ public class AddExecCommandJob {
             return;
         }
 
-        ExecWhileClosedJob job = new ExecWhileClosedJob();
+      /*  ExecWhileClosedJob job = new ExecWhileClosedJob();
         job.setCommand(command);
-        indexManager.addIndexJob(job);
-    }
-
-    public void setIndexManager(IndexManager indexManager) {
-        this.indexManager = indexManager;
+        indexManager.addIndexJob(job);*/
     }
 
     public void setCommand(String command) {

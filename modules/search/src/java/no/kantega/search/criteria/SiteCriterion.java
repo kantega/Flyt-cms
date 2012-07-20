@@ -16,13 +16,7 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * Date: Jan 14, 2009
@@ -30,26 +24,8 @@ import org.apache.lucene.search.TermQuery;
  *
  * @author Tarje Killingberg
  */
-public class SiteCriterion extends AbstractCriterion {
-
-    private static final String SOURCE = SiteCriterion.class.getName();
-
-    private int siteId;
-
-
+public class SiteCriterion extends FieldCriterion{
     public SiteCriterion(int siteId) {
-        this.siteId = siteId;
+        super(Fields.SITE_ID, String.valueOf(siteId));
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        BooleanQuery query = new BooleanQuery();
-        String siteStr = Integer.toString(siteId);
-        Term term = new Term(Fields.SITE_ID, siteStr);
-        query.add(new TermQuery(term), BooleanClause.Occur.SHOULD);
-        return query;
-    }
-
 }

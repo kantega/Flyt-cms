@@ -16,35 +16,34 @@
 
 package no.kantega.search.criteria;
 
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * Date: Jan 8, 2009
- * Time: 7:43:55 AM
- *
- * @author Tarje Killingberg
+ * //TODO
  */
-public abstract class BooleanCriterion extends AbstractCriterion {
-
-    private static final String SOURCE = BooleanCriterion.class.getName();
+public abstract class BooleanCriterion extends Criterion {
 
     private List<Criterion> criteria;
 
 
-    public BooleanCriterion() {
-        criteria = new ArrayList<Criterion>();
+    public BooleanCriterion(List<Criterion> criteria) {
+        this.criteria = criteria;
     }
+
+    public BooleanCriterion(Criterion left, Criterion right) {
+        this.criteria = new ArrayList<Criterion>();
+        criteria.add(left);
+        criteria.add(right);
+    }
+
 
     /**
      * Returnerer operatoren som skal benyttes for å kombinere Criterion-objektetene i dette BooleanCriterion-objektet.
      * @return operatoren som skal benyttes for å kombinere Criterion-objektetene i dette BooleanCriterion-objektet
      */
-    protected abstract BooleanClause.Occur getInnerOperator();
+    protected abstract String getInnerOperator();
 
     public void add(Criterion criterion) {
         criteria.add(criterion);
@@ -53,12 +52,19 @@ public abstract class BooleanCriterion extends AbstractCriterion {
     /**
      * {@inheritDoc}
      */
-    public Query getQuery() {
-        BooleanQuery query = new BooleanQuery();
-        for (Criterion c : criteria) {
-            query.add(c.getQuery(), getInnerOperator());
+    public String getCriterionAsString() {
+        StringBuilder queryBuilder = new StringBuilder();
+
+        for (Iterator<Criterion> iterator = criteria.iterator(); iterator.hasNext(); ) {
+            Criterion c = iterator.next();
+            queryBuilder.append(c.getCriterionAsString());
+            if(iterator.hasNext()){
+                queryBuilder.append(' ');
+                queryBuilder.append(getInnerOperator());
+                queryBuilder.append(' ');
+            }
         }
-        return query;
+        return queryBuilder.toString();
     }
 
 }

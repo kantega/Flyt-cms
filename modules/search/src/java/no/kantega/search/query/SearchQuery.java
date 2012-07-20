@@ -16,9 +16,7 @@
 
 package no.kantega.search.query;
 
-import no.kantega.search.core.SearchHandler;
 import no.kantega.search.criteria.Criterion;
-import org.apache.lucene.search.Sort;
 
 import java.util.List;
 
@@ -46,15 +44,6 @@ public interface SearchQuery {
     public List<Criterion> getFilterCriteria();
 
     /**
-     * Returnerer en instans av en klasse som implementerer SearchHandler som kan brukes til å utføre søk på
-     * dette SearchQuery'et. Denne instansen må være ferdig initialisert og klar til å brukes.
-     *
-     * @param indexManager et IndexManager-objekt
-     * @return en instans av en klasse som implementerer SearchHandler
-     */
-    public SearchHandler getSearchHandler(IndexManager indexManager);
-
-    /**
      * Returnerer det maksimale antallet treff som skal returneres for dette søket.
      * @return det maksimale antallet treff som skal returneres for dette søket
      */
@@ -69,4 +58,7 @@ public interface SearchQuery {
      */
     public Sort getSort();
 
+    public enum Sort {
+        ASCENDING, DESCENDING
+    }
 }

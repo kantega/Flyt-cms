@@ -24,22 +24,9 @@ import no.kantega.search.index.Fields;
  *
  * @author Tarje Killingberg
  */
-public class ContentStatusCriterion extends IntTermArrayCriterion {
-
-    private static final String SOURCE = ContentStatusCriterion.class.getName();
-
+public class ContentStatusCriterion extends FieldCriterion {
 
     public ContentStatusCriterion(int status) {
-        super(status);
+        super(Fields.CONTENT_STATUS, String.valueOf(status));
     }
-
-    public ContentStatusCriterion(int[] statusArray) {
-        super(statusArray);
-    }
-
-    @Override
-    protected String getField() {
-        return Fields.CONTENT_STATUS;
-    }
-
 }

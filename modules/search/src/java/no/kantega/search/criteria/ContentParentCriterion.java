@@ -17,21 +17,11 @@
 package no.kantega.search.criteria;
 
 import no.kantega.search.index.Fields;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
- * Date: Jan 14, 2009
- * Time: 12:16:01 PM
  *
- * @author Tarje Killingberg
  */
-public class ContentParentCriterion extends AbstractCriterion {
-
-    private static final String SOURCE = ContentParentCriterion.class.getName();
-
-    private int parentId;
+public class ContentParentCriterion extends FieldCriterion {
 
     /**
      * Oppretter et Criterion-objekt som begrenser søkeresultatet til kun å inneholde undersider til den gitte ID'en.
@@ -39,17 +29,6 @@ public class ContentParentCriterion extends AbstractCriterion {
      * @param parentId ID'en til roten på treet som det skal søkes i
      */
     public ContentParentCriterion(int parentId) {
-        this.parentId = parentId;
+        super(Fields.CONTENT_PARENTS, String.valueOf(parentId));
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        Query query;
-        String parentStr = Integer.toString(parentId);
-        query = new TermQuery(new Term(Fields.CONTENT_PARENTS, parentStr));
-        return query;
-    }
-
 }

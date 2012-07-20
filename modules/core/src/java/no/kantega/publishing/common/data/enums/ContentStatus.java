@@ -24,4 +24,25 @@ public class ContentStatus {
     public static final int PUBLISHED_WAITING = 25; // Waiting to become PUBLISHED
     public static final int PUBLISHED = 30;
     public static final int HEARING = 40; // Sent to hearing
+
+    public static String getContentStatusAsString(int contentStatus) {
+        switch (contentStatus){
+            case ContentStatus.ARCHIVED:
+                return "ARCHIVED";
+            case ContentStatus.DRAFT:
+                return "DRAFT";
+            case ContentStatus.HEARING:
+                return "HEARING";
+            case ContentStatus.PUBLISHED:
+                return "PUBLISHED";
+            case ContentStatus.PUBLISHED_WAITING:
+                return "PUBLISHED_WAITING";
+            case ContentStatus.REJECTED:
+                return "REJECTED";
+            case ContentStatus.WAITING_FOR_APPROVAL:
+                return "WAITING_FOR_APPROVAL";
+            default:
+                return "UNKNOWN";
+        }
+    }
 }

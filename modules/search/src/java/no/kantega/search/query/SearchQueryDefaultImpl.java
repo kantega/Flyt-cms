@@ -16,11 +16,7 @@
 
 package no.kantega.search.query;
 
-import no.kantega.search.core.SearchHandler;
-import no.kantega.search.core.SearchHandlerDefaultImpl;
 import no.kantega.search.criteria.Criterion;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,15 +59,6 @@ public class SearchQueryDefaultImpl implements SearchQuery {
     /**
      * {@inheritDoc}
      */
-    public SearchHandler getSearchHandler(IndexManager indexManager) {
-        SearchHandlerDefaultImpl defaultSearcher = new SearchHandlerDefaultImpl();
-        defaultSearcher.setIndexManager(indexManager);
-        return defaultSearcher;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public int getMaxHits() {
         return maxHits;
     }
@@ -98,17 +85,4 @@ public class SearchQueryDefaultImpl implements SearchQuery {
     public void addFilterCriterion(Criterion criterion) {
         filters.add(criterion);
     }
-
-    @Override
-    public String toString() {
-        BooleanQuery query = new BooleanQuery();
-        for (Criterion criterion : criteria) {
-            query.add(criterion.getQuery(), criterion.getOperator());
-        }
-        for (Criterion criterion : filters) {
-            query.add(criterion.getQuery(), criterion.getOperator());
-        }
-        return query.toString();
-    }
-
 }

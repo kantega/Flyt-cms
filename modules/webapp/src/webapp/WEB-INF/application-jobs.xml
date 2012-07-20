@@ -330,7 +330,7 @@
         </property>
     </bean>
 
-    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
+  <!--  <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
         <property name="indexManager" ref="indexManager"/>
     </bean>
 
@@ -351,10 +351,10 @@
             <ref bean="rebuildSearchIndexJobDetail"/>
         </property>
         <property name="cronExpression">
-            <!-- This job is default off (set to run in 2099) can be overriden in projects -->
+            &lt;!&ndash; This job is default off (set to run in 2099) can be overriden in projects &ndash;&gt;
             <value>${jobs.rebuildindex.trigger}</value>
         </property>
-    </bean>
+    </bean>-->
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
@@ -369,7 +369,7 @@
                 <ref local="databaseCleanupTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
-                <ref local="rebuildSearchIndexJobTrigger"/>
+                <!--<ref local="rebuildSearchIndexJobTrigger"/>-->
                 <ref local="brokenLinkEventTrigger" />
             </list>
         </property>

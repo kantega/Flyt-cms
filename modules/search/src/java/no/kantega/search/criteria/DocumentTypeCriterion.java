@@ -18,28 +18,9 @@ package no.kantega.search.criteria;
 
 import no.kantega.search.index.Fields;
 
-/**
- * Date: Jan 7, 2009
- * Time: 1:04:37 PM
- *
- * @author Tarje Killingberg
- */
-public class DocumentTypeCriterion extends IntTermArrayCriterion {
-
-    private static final String SOURCE = DocumentTypeCriterion.class.getName();
-
+public class DocumentTypeCriterion extends FieldCriterion {
 
     public DocumentTypeCriterion(int documentType) {
-        super(documentType);
+        super(Fields.DOCTYPE, String.valueOf(documentType));
     }
-
-    public DocumentTypeCriterion(int[] documentTypeArray) {
-        super(documentTypeArray);
-    }
-
-    @Override
-    protected String getField() {
-        return Fields.DOCUMENT_TYPE_ID;
-    }
-
 }

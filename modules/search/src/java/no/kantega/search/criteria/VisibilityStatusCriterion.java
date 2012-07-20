@@ -18,28 +18,9 @@ package no.kantega.search.criteria;
 
 import no.kantega.search.index.Fields;
 
-/**
- * Date: Dec 15, 2008
- * Time: 2:27:17 PM
- *
- * @author Tarje Killingberg
- */
-public class VisibilityStatusCriterion extends IntTermArrayCriterion {
-
-    private static final String SOURCE = VisibilityStatusCriterion.class.getName();
-
+public class VisibilityStatusCriterion extends FieldCriterion {
 
     public VisibilityStatusCriterion(int visibilityStatus) {
-        super(visibilityStatus);
+        super(Fields.CONTENT_VISIBILITY_STATUS, String.valueOf(visibilityStatus));
     }
-
-    public VisibilityStatusCriterion(int[] visibilityStatusArray) {
-        super(visibilityStatusArray);
-    }
-
-    @Override
-    protected String getField() {
-        return Fields.CONTENT_VISIBILITY_STATUS;
-    }
-
 }

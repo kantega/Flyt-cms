@@ -21,7 +21,6 @@ import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.publishing.common.data.enums.HTMLVersion;
 import no.kantega.publishing.common.data.enums.ServerType;
 
 import java.io.IOException;
@@ -117,8 +116,6 @@ public class Aksess {
 
     private static String language;
     private static String country;
-
-    private static String htmlVersion;
 
     private static boolean csrfCheckEnabled = true;
     private static boolean javascriptDebugEnabled;
@@ -242,8 +239,6 @@ public class Aksess {
             language = c.getString("admin.locale.language", "no");
             country = c.getString("admin.locale.country", "NO");
 
-            htmlVersion = c.getString("html.version", HTMLVersion.HTML_401_TRANS);
-            
             javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
 
             // Format of alt and title-attributes
@@ -500,10 +495,6 @@ public class Aksess {
 
     public static int getDeletedItemsMaxAge() {
         return deletedItemsMaxAge;
-    }
-
-    public static String getHtmlVersion() {
-        return htmlVersion;
     }
 
     public static boolean isJavascriptDebugEnabled() {

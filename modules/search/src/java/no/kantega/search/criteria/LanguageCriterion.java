@@ -16,13 +16,7 @@
 
 package no.kantega.search.criteria;
 
-import no.kantega.commons.log.Log;
 import no.kantega.search.index.Fields;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
 
 /**
  * Date: Jan 14, 2009
@@ -30,26 +24,9 @@ import org.apache.lucene.search.TermQuery;
  *
  * @author Tarje Killingberg
  */
-public class LanguageCriterion extends AbstractCriterion {
-
-    private static final String SOURCE = LanguageCriterion.class.getName();
-
-    private int languageId;
-
+public class LanguageCriterion extends FieldCriterion {
 
     public LanguageCriterion(int languageId) {
-        this.languageId = languageId;
+        super(Fields.LANGUAGE, String.valueOf(languageId));
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public Query getQuery() {
-        BooleanQuery query = new BooleanQuery();
-        String languageStr = Integer.toString(languageId);
-        Term term = new Term(Fields.LANGUAGE, languageStr);
-        query.add(new TermQuery(term), BooleanClause.Occur.SHOULD);
-        return query;
-    }
-
 }

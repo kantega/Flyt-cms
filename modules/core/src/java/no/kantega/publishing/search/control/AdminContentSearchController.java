@@ -16,28 +16,18 @@
 
 package no.kantega.publishing.search.control;
 
-import org.springframework.web.servlet.ModelAndView;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.search.service.SearchService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.search.control.util.QueryStringGenerator;
-import no.kantega.publishing.search.service.SearchService;
-import no.kantega.publishing.search.service.SearchServiceQuery;
-import no.kantega.publishing.search.service.SearchServiceResultImpl;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.search.index.Fields;
-import no.kantega.search.query.hitcount.DateHitCountQuery;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
-import no.kantega.search.query.hitcount.HitCountQuery;
-
-import java.util.Map;
 import java.util.HashMap;
-import java.io.FileNotFoundException;
+import java.util.Map;
 
 /**
  *
@@ -48,7 +38,7 @@ public class AdminContentSearchController extends AdminController implements Ini
     private SearchService searchService;
     private String queryStringEncoding = "iso-8859-1"; // Must be iso-8859-1 in Tomcat, utf-8 in Jetty
 
-    private QueryStringGenerator queryStringGenerator;
+   // private QueryStringGenerator queryStringGenerator;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -62,7 +52,7 @@ public class AdminContentSearchController extends AdminController implements Ini
     private Map<String, Object> performSearches(HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
 
-        SearchServiceQuery query = new SearchServiceQuery(request);
+     /*   SearchServiceQuery query = new SearchServiceQuery(request);
 
         // Add hit counts
         addHitCountQueries(query);
@@ -95,7 +85,7 @@ public class AdminContentSearchController extends AdminController implements Ini
             model.put("links", links);
         } catch (Exception ex) {
             model.put("error", "true");
-        }
+        }*/
 
         return model;
     }
@@ -105,17 +95,17 @@ public class AdminContentSearchController extends AdminController implements Ini
      * Creates queries for hit counts, eg hits per category
      * @param query - SearchServiceQuery
      */
-    protected void addHitCountQueries(SearchServiceQuery query) {
+/*    protected void addHitCountQueries(SearchServiceQuery query) {
         String[] docTypes = HitCountHelper.getDocumentTypes();
-        if (docTypes.length > 0) {
+        *//*if (docTypes.length > 0) {
             // Document types
             HitCountQuery hitCountDocType = new HitCountQueryDefaultImpl(Fields.DOCUMENT_TYPE_ID, HitCountHelper.getDocumentTypes(), true);
             query.addHitCountQuery(hitCountDocType);
         }
 
         // Modified date
-        query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));
-    }
+        query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));*//*
+    }*/
 
 
     public void setSearchService(SearchService searchService) {
@@ -133,7 +123,7 @@ public class AdminContentSearchController extends AdminController implements Ini
     public void afterPropertiesSet() throws Exception {
         try {
             queryStringEncoding = Aksess.getConfiguration().getString("querystring.encoding", queryStringEncoding);
-            queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
+        //    queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
         } catch (ConfigurationException e) {
             Log.error(this.getClass().getName(), e, null, null);
         }

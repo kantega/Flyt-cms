@@ -16,25 +16,24 @@
 
 package no.kantega.search.criteria;
 
-import org.apache.lucene.search.BooleanClause;
+
+import java.util.List;
 
 /**
- * Date: Dec 5, 2008
- * Time: 9:24:41 AM
  *
- * @author Tarje Killingberg
  */
 public class OrCriterion extends BooleanCriterion {
 
-    private static final String SOURCE = OrCriterion.class.getName();
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected BooleanClause.Occur getInnerOperator() {
-        return BooleanClause.Occur.SHOULD;
+    public OrCriterion(List<Criterion> criteria) {
+        super(criteria);
     }
 
+    public OrCriterion(Criterion left, Criterion right) {
+        super(left, right);
+    }
+
+    @Override
+    protected String getInnerOperator() {
+        return "OR";
+    }
 }
