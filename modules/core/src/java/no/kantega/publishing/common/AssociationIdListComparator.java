@@ -21,18 +21,15 @@ import no.kantega.publishing.common.data.ContentIdentifier;
 
 import java.util.Comparator;
 
-public class AssociationIdListComparator  implements Comparator {
+public class AssociationIdListComparator  implements Comparator<Content> {
     ContentIdentifier[] cids = null;
 
     public AssociationIdListComparator(ContentIdentifier[] cids) {
         this.cids = cids;
     }
 
-    public int compare(Object v1, Object v2) {
-        if (v1 instanceof Content && v2 instanceof Content && cids != null) {
-            Content c1 = (Content)v1;
-            Content c2 = (Content)v2;
-
+    public int compare(Content c1, Content c2) {
+        if (cids != null) {
             int pos1 = -1;
             int pos2 = -1;
 

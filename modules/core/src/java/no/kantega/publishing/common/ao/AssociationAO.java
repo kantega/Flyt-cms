@@ -253,7 +253,7 @@ public class AssociationAO  {
 
 
     public static List<Association> getAssociationsByContentId(int contentId) throws SystemException {
-        List associations = new ArrayList();
+        List<Association> associations = new ArrayList<Association>();
 
         Connection c = null;
 
@@ -283,7 +283,7 @@ public class AssociationAO  {
 
 
     public static List getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
-        List associations = new ArrayList();
+        List<Association> associations = new ArrayList<Association>();
 
         Connection c = null;
 
@@ -527,9 +527,9 @@ public class AssociationAO  {
     }
 
 
-    public static List deleteAssociationsById(List ids, boolean deleteMultiple, String userId) throws SystemException {
+    public static List<Content> deleteAssociationsById(List ids, boolean deleteMultiple, String userId) throws SystemException {
 
-        List deletedContent = new ArrayList();
+        List<Content> deletedContent = new ArrayList<Content>();
 
         if (ids == null || ids.size() == 0) {
             return deletedContent;
@@ -581,7 +581,7 @@ public class AssociationAO  {
              */
             query = new StringBuffer();
 
-            StringBuffer titleQuery = new StringBuffer();
+            StringBuilder titleQuery = new StringBuilder();
             titleQuery.append("SELECT ContentId, Title FROM contentversion WHERE ContentId IN (");
 
             // Query 1
@@ -833,8 +833,8 @@ public class AssociationAO  {
         return parentId;
     }
 
-    public static List findDuplicateAliases(Association parent) throws SystemException {
-        List duplicates = new ArrayList();
+    public static List<String> findDuplicateAliases(Association parent) throws SystemException {
+        List<String> duplicates = new ArrayList<String>();
 
         Connection c = null;
 

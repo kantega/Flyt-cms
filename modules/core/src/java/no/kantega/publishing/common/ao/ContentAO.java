@@ -397,9 +397,8 @@ public class ContentAO {
 
             if (!foundCurrentAssociation) {
                 // Knytningsid er ikke angitt, og heller ikke site, bruk den første
-                List associations = content.getAssociations();
-                for (int i = 0; i < associations.size(); i++) {
-                    Association a = (Association)associations.get(i);
+                List<Association> associations = content.getAssociations();
+                for (Association a : associations) {
                     if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
                         foundCurrentAssociation = true;
                         a.setCurrent(true);
@@ -408,7 +407,7 @@ public class ContentAO {
                 }
 
                 if (!foundCurrentAssociation && associations.size() > 0) {
-                    Association a = (Association)associations.get(0);
+                    Association a = associations.get(0);
                     a.setCurrent(true);
                     Log.debug(SOURCE, "Fant ingen defaultknytning:" + cid.getContentId(), null, null);
                 }
@@ -426,7 +425,7 @@ public class ContentAO {
             }
             rs.close();
 
-            List topics = TopicAO.getTopicsByContentId(cid.getContentId());
+            List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
             content.setTopics(topics);
 
             return content;
@@ -637,8 +636,8 @@ public class ContentAO {
     }
 
 
-    public static List getContentListForApproval() throws SystemException {
-        List contentList = new ArrayList();
+    public static List<Content> getContentListForApproval() throws SystemException {
+        List<Content> contentList = new ArrayList<Content>();
 
         Connection c = null;
 
@@ -675,7 +674,7 @@ public class ContentAO {
     }
 
     public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
-        final Map contentMap   = new HashMap();
+        final Map<Integer, Content> contentMap   = new HashMap<Integer, Content>();
         final List<Content> contentList = new ArrayList<Content>();
 
         final StringBuffer cvids = new StringBuffer();
@@ -683,7 +682,7 @@ public class ContentAO {
         doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
-                contentMap.put("" + content.getVersionId(), content);
+                contentMap.put( content.getVersionId(), content);
                 if(cvids.length() != 0) {
                     cvids.append(",");
                 }
@@ -706,7 +705,7 @@ public class ContentAO {
 
                 while(rs.next()) {
                     int cvid = rs.getInt("ContentVersionId");
-                    Content current = (Content)contentMap.get("" + cvid);
+                    Content current = contentMap.get(cvid);
                     if (current != null) {
                         ContentAOHelper.addAttributeFromRS(current, rs);
                     }
@@ -715,9 +714,8 @@ public class ContentAO {
 
             if (listSize > 0 && getTopics) {
                 // Hent topics
-                for (int i = 0; i < contentList.size(); i++) {
-                    Content content = (Content) contentList.get(i);
-                    List topics = TopicAO.getTopicsByContentId(content.getId());
+                for (Content content : contentList) {
+                    List<Topic> topics = TopicAO.getTopicsByContentId(content.getId());
                     content.setTopics(topics);
                 }
             }
@@ -1187,7 +1185,7 @@ public class ContentAO {
         st.setString(2, "%/" +associationId +"/%");
         ResultSet rs = st.executeQuery();
 
-        StringBuffer whereClause = new StringBuffer();
+        StringBuilder whereClause = new StringBuilder();
         while(rs.next()) {
             whereClause.append(String.valueOf(rs.getInt("contentid")));
             if(!rs.isLast()) {
@@ -1489,7 +1487,7 @@ public class ContentAO {
     }
 
     public static List getNoChangesPerUser(int months) throws SystemException {
-        List ucclist = new ArrayList();
+        List<UserContentChanges> ucclist = new ArrayList<UserContentChanges>();
         Connection c = null;
 
         try {
@@ -1527,7 +1525,7 @@ public class ContentAO {
 
 
     public static Map getContentIdentifierCacheValues() throws SystemException {
-        Map aliases = new HashMap();
+        Map<String, List<ContentIdentifier>> aliases = new HashMap<String, List<ContentIdentifier>>();
         Connection c = null;
 
         try {
@@ -1536,7 +1534,7 @@ public class ContentAO {
             String driver = dbConnectionFactory.getDriverName();
 
             String where = "";
-            if (driver.indexOf("oracle") != -1) {
+            if (driver.contains("oracle")) {
                 where = " content.Alias is not null and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
             } else {
                 where = " content.Alias is not null and content.Alias <> '' and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
@@ -1550,11 +1548,11 @@ public class ContentAO {
                 int contentId = rs.getInt("ContentId");
                 String alias = rs.getString("alias");
 
-                List cids = (List)aliases.get(alias);
+                List<ContentIdentifier> cids = aliases.get(alias);
 
                 if (cids == null) {
                     // Alias ligger ikke i cache
-                    cids = new ArrayList();
+                    cids = new ArrayList<ContentIdentifier>();
                     aliases.put(alias, cids);
                 }
 
@@ -1663,14 +1661,14 @@ public class ContentAO {
 
             // Update database with correct value for ContentTemplateId and MetadataTemplateId
             JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-            template.update("update content set ContentTemplateId = ? where DisplayTemplateId = ? and ContentTemplateId <> ?", new Object[] { contentTemplateId, dt.getId(), contentTemplateId});
-            template.update("update content set MetaDataTemplateId = ? where DisplayTemplateId = ? and MetaDataTemplateId <> ?", new Object[] { metadataTemplateId, dt.getId(), metadataTemplateId});
+            template.update("update content set ContentTemplateId = ? where DisplayTemplateId = ? and ContentTemplateId <> ?", contentTemplateId, dt.getId(), contentTemplateId);
+            template.update("update content set MetaDataTemplateId = ? where DisplayTemplateId = ? and MetaDataTemplateId <> ?", metadataTemplateId, dt.getId(), metadataTemplateId);
         }
 
         for (ContentTemplate ct : templateConfiguration.getContentTemplates()) {
             // Update database with correct value for type
             JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-            template.update("update content set Type = ? where ContentTemplateId = ? and Type <> ?", new Object[] { ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt() });
+            template.update("update content set Type = ? where ContentTemplateId = ? and Type <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
         }
 
         /*
@@ -1690,7 +1688,7 @@ public class ContentAO {
             return false;
         }
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", new Object[] {contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED});
+        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED);
         return cnt > 0;
     }
 
@@ -1702,7 +1700,7 @@ public class ContentAO {
      */
     public static void setRating(int contentId, float score, int numberOfRatings) {
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        template.update("update content set RatingScore = ?, NumberOfRatings = ? where ContentId = ?", new Object[] {score, numberOfRatings, contentId});
+        template.update("update content set RatingScore = ?, NumberOfRatings = ? where ContentId = ?", score, numberOfRatings, contentId);
     }
 
     /**
@@ -1712,7 +1710,7 @@ public class ContentAO {
      */
     public static void setNumberOfComments(int contentId, int numberOfComments) {
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        template.update("update content set NumberOfComments = ? where ContentId = ?", new Object[] {numberOfComments, contentId});
+        template.update("update content set NumberOfComments = ? where ContentId = ?", numberOfComments, contentId);
     }
 
 

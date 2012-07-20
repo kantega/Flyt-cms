@@ -43,6 +43,7 @@ import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
 import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -68,7 +69,7 @@ public class ContentManagementService {
     private boolean cachingEnabled;
 
     private ContentManagementService() {
-        final CacheManager cacheManager = (CacheManager) RootContext.getInstance().getBean("cacheManager", CacheManager.class);
+        final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
         contentCache = cacheManager.getCache("ContentCache");
         contentListCache = cacheManager.getCache("ContentListCache");
         siteMapCache = cacheManager.getCache("SiteMapCache");
@@ -269,7 +270,7 @@ public class ContentManagementService {
      * Legger til objektet i søkeindeks dersom status = Publish
      * @param content - Endret objekt
      * @param newStatus - Status som skal settes på nytt objekt
-     * @return
+     * @return the new, saved, content object.
      * @throws SystemException
      * @throws NotAuthorizedException
      */
@@ -354,7 +355,8 @@ public class ContentManagementService {
             }
         }
 
-        ContentListenerUtil.getContentNotifier().beforeContentSave(new ContentEvent().setContent(content));
+        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
+        contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
 
         Content c = ContentAO.checkInContent(content, newStatus);
 
@@ -368,29 +370,20 @@ public class ContentManagementService {
             }
         }
 
-        ContentListenerUtil.getContentNotifier().contentSaved(new ContentEvent().setContent(c));
-        // New content created
+        ContentEvent event = new ContentEvent().setContent(c);
+        contentNotifier.contentSaved(event);
+
         if (isNewContent) {
-            ContentListenerUtil.getContentNotifier().newContentSaved(new ContentEvent().setContent(c));
+            contentNotifier.newContentSaved(event);
         }
 
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
-            ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(c));
+            contentNotifier.newContentPublished(event);
         }
 
         if (Aksess.isEventLogEnabled()) {
-            String event;
-            switch (c.getStatus()) {
-                case ContentStatus.DRAFT:
-                    event = Event.SAVE_DRAFT;
-                    break;
-                case ContentStatus.WAITING_FOR_APPROVAL:
-                    event = Event.SEND_FOR_APPROVAL;
-                    break;
-                default:
-                    event = Event.PUBLISH_CONTENT;
-            }
-            EventLog.log(securitySession, request, event, c.getTitle(), c);
+            String eventType = ContentStatus.getContentStatusAsString(c.getStatus());
+            EventLog.log(securitySession, request, eventType, c.getTitle(), c);
         }
 
         return c;
@@ -402,7 +395,7 @@ public class ContentManagementService {
      * @param sourceContent - Endret objekt
      * @param target -
      * @param category -
-     * @return
+     * @return The new copy of sourceContent.
      * @throws SystemException
      * @throws NotAuthorizedException
      */
@@ -439,7 +432,7 @@ public class ContentManagementService {
         ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(sourceContent));
 
         // Legg til kopling til parent
-        List associations = new ArrayList();
+        List<Association> associations = new ArrayList<Association>();
 
         Association association = new Association();
 
@@ -461,24 +454,26 @@ public class ContentManagementService {
     public void setContentVisibilityStatus(Content content, int newVisibilityStatus) {
         ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
+        ContentEvent event = new ContentEvent().setContent(content);
+        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
         if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
-            ContentListenerUtil.getContentNotifier().contentExpired(new ContentEvent().setContent(content));
+            contentNotifier.contentExpired(event);
         } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
-            ContentListenerUtil.getContentNotifier().contentActivated(new ContentEvent().setContent(content));
+            contentNotifier.contentActivated(event);
             if (content.getStatus() == ContentStatus.PUBLISHED) {
-                ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(content));
+                contentNotifier.newContentPublished(event);
             }
         }
+        contentNotifier.contentStatusChanged(event);
         EventLog.log(securitySession, request, "CV-STATUS-" +ContentVisibilityStatus.getName(newVisibilityStatus), content.getTitle(), content);
     }
 
     /**
      * Setter ny status på et objekt, f.eks ved godkjenning av en side.
-     * Legger til / fjerner objektet til/fra søkeindeks
      * @param cid - ContentIdenfier for nytt objekt
      * @param newStatus - Ny status
      * @param note - melding
-     * @return
+     * @return the content object identified by the given ContentIdenfier with the new status.
      * @throws NotAuthorizedException
      * @throws SystemException
      */
@@ -525,11 +520,13 @@ public class ContentManagementService {
         EventLog.log(securitySession, request, event, c.getTitle(), c);
         Content content = ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
+        ContentEvent contentEvent = new ContentEvent().setContent(content);
+        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
-            ContentListenerUtil.getContentNotifier().newContentPublished(new ContentEvent().setContent(content));
+            contentNotifier.newContentPublished(contentEvent);
         }
 
-        ContentListenerUtil.getContentNotifier().contentStatusChanged(new ContentEvent().setContent(content));
+        contentNotifier.contentStatusChanged(contentEvent);
 
         return content;
     }
@@ -622,7 +619,7 @@ public class ContentManagementService {
      * @param query - Søk som angir hva som skal hentes
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
      * @param sort - Sorteringsrekkefølge
-     * @return
+     * @return the Content object matching contentQuery, that the user have access privilegies for.
      * @throws SystemException
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
@@ -667,11 +664,10 @@ public class ContentManagementService {
             return null;
         }
 
-        List list = ContentAO.getContentListForApproval();
-        List approved = new ArrayList();
-        for (int i = 0; i < list.size(); i++) {
+        List<Content> list = ContentAO.getContentListForApproval();
+        List<Content> approved = new ArrayList<Content>();
+        for (Content c : list) {
             // Legg kun til elementer som brukeren har tilgang til
-            Content c = (Content)list.get(i);
             if (securitySession.isApprover(c)) {
                 approved.add(c);
             }
@@ -809,25 +805,6 @@ public class ContentManagementService {
     }
 
     /**
-     * Hent meny
-     * @param content - Innholdsobjekt
-     * @param associationCategory -
-     * @param useLocalMenus -
-     * @return
-     * @throws SystemException
-     */
-    @Deprecated
-    public SiteMapEntry getMenu(Content content, String associationCategory, boolean useLocalMenus) throws SystemException {
-        AssociationCategory category = null;
-        if (associationCategory != null) {
-            category = AssociationCategoryCache.getAssociationCategoryByPublicId(associationCategory);
-        }
-
-        return SiteMapWorker.getPartialSiteMap(content, category, useLocalMenus, false);
-    }
-
-
-    /**
      * Hent liste over alle dokumenttyper
      * @return Liste av DocumentType
      * @throws SystemException
@@ -842,7 +819,7 @@ public class ContentManagementService {
 
 
     /**
-     * Hent sti basert pø kopling
+     * Hent sti basert på kopling
      * @param association - Kopling til innholdsobjekt
      * @return Liste med PathEntry objekter
      * @throws SystemException
@@ -1030,15 +1007,14 @@ public class ContentManagementService {
      *
      * @param associationIds - Koplinger som skal slettes
      * @param deleteMultiple - Må være satt til true for å utføre sletting hvis det finnes underobjekter
-     * @return
+     * @return The content objects to which the associations deleted pointed to.
      * @throws SystemException
      */
-    public List deleteAssociationsById(int[] associationIds, boolean deleteMultiple) throws SystemException {
+    public List<Content> deleteAssociationsById(int[] associationIds, boolean deleteMultiple) throws SystemException {
         List<Integer> associations = new ArrayList<Integer>();
-        List deletedItems = new ArrayList();
 
-        for (int i = 0; i < associationIds.length; i++) {
-            Association a = AssociationAO.getAssociationById(associationIds[i]);
+        for (int associationId : associationIds) {
+            Association a = AssociationAO.getAssociationById(associationId);
             if (a != null) {
                 if (a.getAssociationtype() == AssociationType.SHORTCUT) {
                     // Sjekk tilgangen til snarvei
@@ -1060,20 +1036,18 @@ public class ContentManagementService {
                         priv = Privilege.APPROVE_CONTENT;
                     }
                     if (securitySession.isAuthorized(c, priv)) {
-                        deletedItems.add(c);
                         associations.add(a.getId());
                     }
                 }
             }
         }
 
-        List pagesToBeDeleted = AssociationAO.deleteAssociationsById(associations, deleteMultiple, securitySession.getUser().getId());
+        List<Content> pagesToBeDeleted = AssociationAO.deleteAssociationsById(associations, deleteMultiple, securitySession.getUser().getId());
 
         // Hvis ikke brukeren har angitt at flere skal kunne slettes så blir de ikke slettet
         if (pagesToBeDeleted.size() == 1 || deleteMultiple) {
             // Dette er innholdsobjekter som er slettet i sin helhet
-            for (int i = 0; i < pagesToBeDeleted.size(); i++) {
-                Content c =  (Content)pagesToBeDeleted.get(i);
+            for (Content c : pagesToBeDeleted) {
                 EventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
                 ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
             }

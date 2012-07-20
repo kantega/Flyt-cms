@@ -28,6 +28,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     public void indexDocument(IndexableDocument document) {
         try {
+            //TODO mapping of values to appropriate dynamic fieldnames
             File fileContent = document.getFileContent();
             SolrInputDocument solrParams = getSolrParams(document);
             if (fileContent == null) {
