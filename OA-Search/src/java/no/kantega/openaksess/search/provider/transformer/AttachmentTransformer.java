@@ -23,7 +23,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
     private static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
 
     public IndexableDocument transform(Attachment attachment) {
-        IndexableDocument indexableDocument = new IndexableDocument();
+        IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(attachment));
 
         ContentIdentifier contentIdentifier = new ContentIdentifier();
         contentIdentifier.setContentId(attachment.getContentId());
@@ -31,8 +31,6 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
 
         if (content.isSearchable()) {
             indexableDocument.setShouldIndex(true);
-            indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
-            indexableDocument.setId(String.valueOf(attachment.getId()));
             indexableDocument.setTitle(attachment.getFilename());
             indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE));
@@ -55,5 +53,9 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         }
 
         return indexableDocument;
+    }
+
+    public String generateUniqueID(Attachment document) {
+        return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
     }
 }

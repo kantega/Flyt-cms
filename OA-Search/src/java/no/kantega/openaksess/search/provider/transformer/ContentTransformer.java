@@ -19,7 +19,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     private static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
 
     public IndexableDocument transform(Content content) {
-        IndexableDocument indexableDocument = new IndexableDocument();
+        IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(content));
 
         if (content.isSearchable()) {
             indexableDocument.setShouldIndex(true);
@@ -72,4 +72,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         return value;
     }
 
+    public String generateUniqueID(Content document) {
+        return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
+    }
 }

@@ -30,6 +30,8 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
@@ -902,6 +904,7 @@ public class ContentAO {
                 for (Attachment a : attachments) {
                     a.setContentId(content.getId());
                     AttachmentAO.setAttachment(a);
+                    ContentListenerUtil.getContentNotifier().attachmentUpdated(new ContentEvent().setAttachment(a));
                 }
             }
 

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -48,9 +49,24 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     }
 
+    public void indexDocumentAndCommit(IndexableDocument document) {
+        indexDocument(document);
+        commit();
+    }
+
     public void commit() {
         try {
             UpdateResponse commit = solrServer.commit();
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteById(List<String> uids) {
+        try {
+            UpdateResponse updateResponse = solrServer.deleteById(uids);
         } catch (SolrServerException e) {
             e.printStackTrace();
         } catch (IOException e) {

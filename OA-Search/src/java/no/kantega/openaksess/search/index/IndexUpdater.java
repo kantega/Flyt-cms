@@ -1,7 +1,6 @@
 package no.kantega.openaksess.search.index;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
+import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
@@ -12,6 +11,7 @@ import no.kantega.search.api.index.DocumentIndexer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,56 +20,44 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     private DocumentIndexer documentIndexer;
 
     @Autowired
-    private ContentTransformer transformer;
+    private ContentTransformer contentTransformer;
+
+    @Autowired
+    private AttachmentTransformer attachmentTransformer;
 
     @Override
-    public void contentStatusChanged(ContentEvent contentEvent) {
-        super.contentStatusChanged(contentEvent);
+    public void contentStatusChanged(ContentEvent event) {
+        Content content = event.getContent();
+        updateIndex(content);
     }
 
     @Override
     public void contentSaved(ContentEvent event) {
-        updateIndex(event.getContent());
-    }
-
-    @Override
-    public void contentActivated(ContentEvent event) {
-        updateIndex(event.getContent());
+        Content content = event.getContent();
+        updateIndex(content);
     }
 
     @Override
     public void contentDeleted(ContentEvent event) {
-        // Slett innhold
-        // indexManager.addIndexJob(new RemoveContentJob(Integer.toString(event.getContent().getId()), "aksessContent"));
+        Content content = event.getContent();
+        List<String> uids = new ArrayList<String>();
+        uids.add(contentTransformer.generateUniqueID(content));
 
-        // Slett vedlegg
-        List<Attachment> attachments = null;
-        try {
-            attachments = AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier());
-            for (Attachment attachment : attachments) {
-                //indexManager.addIndexJob(new RemoveAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
-            }
-        } catch (SystemException e) {
-            Log.error("", e, null, null);
+        for (Attachment attachment : AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
+            uids.add(attachmentTransformer.generateUniqueID(attachment));
         }
+        documentIndexer.deleteById(uids);
+
     }
 
     public void attachmentUpdated(ContentEvent event) {
-        if (event.getAttachment().getContentId() != -1) {
-            // indexManager.addIndexJob(new UpdateAttachmentJob(""+event.getAttachment().getId(), "aksessAttachments"));
+        Attachment attachment = event.getAttachment();
+        if (attachment.getContentId() != -1) {
+            documentIndexer.indexDocumentAndCommit(attachmentTransformer.transform(attachment));
         }
     }
 
     private void updateIndex(Content content) {
-        /*indexManager.addIndexJob(new UpdateContentJob(Integer.toString(content.getId()), "aksessContent"));
-        List<Attachment> attachments = null;
-        try {
-            attachments = AttachmentAO.getAttachmentList(content.getContentIdentifier());
-            for (Attachment attachment : attachments) {
-                indexManager.addIndexJob(new UpdateAttachmentJob(Integer.toString(attachment.getId()), "aksessAttachments"));
-            }
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        }*/
+        documentIndexer.indexDocumentAndCommit(contentTransformer.transform(content));
     }
 }

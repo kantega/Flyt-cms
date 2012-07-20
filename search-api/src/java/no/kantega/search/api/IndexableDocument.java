@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IndexableDocument {
+    private final String uid;
     private String id;
     private String contentType;
     private String title;
@@ -16,6 +17,10 @@ public class IndexableDocument {
     private File fileContent;
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private boolean shouldIndex = false;
+
+    public IndexableDocument(String uid) {
+        this.uid = uid;
+    }
 
     public String getId() {
         return id;
@@ -98,7 +103,7 @@ public class IndexableDocument {
     }
 
     public String getUId() {
-        return String.format("%s-%s", getContentType(), getId());
+        return uid;
     }
 
     public boolean shouldIndex() {
