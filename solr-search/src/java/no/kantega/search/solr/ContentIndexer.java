@@ -2,8 +2,12 @@ package no.kantega.search.solr;
 
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
@@ -104,11 +108,13 @@ public class ContentIndexer {
             }
 
             private String getDisplayTemplateName(Content content) {
-                return "Herp derp!";
+                DisplayTemplate displayTemplate = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
+                return displayTemplate.getName();
             }
 
             private String getContentTemplateName(Content content) {
-                return "Derp herp!";
+                ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getId());
+                return contentTemplate.getName();
             }
 
             private Object getValue(Attribute attribute) {
