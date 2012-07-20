@@ -124,7 +124,13 @@ public interface ContentEventListener {
 
     /**
      * Called when a content status has changed
-     * @param contentEvent
+     * @param event - event.getContent contains page (content)
      */
-    public void contentStatusChanged(ContentEvent contentEvent);
+    public void contentStatusChanged(ContentEvent event);
+
+    /**
+     * Called when attachment is deleted
+     * @param event - event.getAttachment contains attachment
+     */
+    public void attachmentDeleted(ContentEvent event);
 }

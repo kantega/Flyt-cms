@@ -91,4 +91,8 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
     public void contentStatusChanged(ContentEvent contentEvent) {
         
     }
+
+    public void attachmentDeleted(ContentEvent event) {
+
+    }
 }

@@ -1232,6 +1232,7 @@ public class ContentManagementService {
         }
 
         AttachmentAO.deleteAttachment(id);
+        ContentListenerUtil.getContentNotifier().attachmentDeleted(new ContentEvent().setAttachment(attachment));
         if (Aksess.isEventLogEnabled()) {
             EventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, title);
         }

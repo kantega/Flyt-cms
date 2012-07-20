@@ -119,8 +119,6 @@ public class AttachmentAO {
             st.setInt(1, id);
             st.execute();
             st.close();
-        //    IndexManager indexManager = IndexManagerImpl.getInstance();
-        //    indexManager.addIndexJob(new RemoveAttachmentJob(""+id, "aksessAttachments"));
 
         } catch (SQLException e) {
             throw new SystemException(SOURCE, "SQL feil ved sletting av vedlegg", e);
@@ -149,38 +147,6 @@ public class AttachmentAO {
             Attachment file = getAttachmentFromRS(rs);
             rs.close();
             return file;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
-    }
-
-
-    @Deprecated
-    public static String getAttachmentDataAsString(int id) throws SystemException {
-        Blob blob = null;
-
-        Connection c = null;
-
-        String query = "select Data from attachments where Id = " + id;
-        try {
-            c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            if (!rs.next()) {
-                return null;
-            }
-            blob = rs.getBlob("Data");
-            byte[] data = blob.getBytes(1, (int)blob.length()-1);
-
-            String text = new String(data);
-            return text;
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
         } finally {
