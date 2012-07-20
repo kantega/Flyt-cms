@@ -123,12 +123,12 @@ public class ContentPropertiesAction implements Controller {
                 if (canUpdate || canApprove) {
                     enabledButtons.add("NewSubpageButton");
                     enabledButtons.add("EditPageButton");
+                }
+                if (canApprove) {
                     if (content.getAssociation().getParentAssociationId() != 0) {
                         // Can set display period for all other pages than ROOT page (parentid = 0)
                         enabledButtons.add("DisplayPeriodButton");
                     }
-                }
-                if (canApprove) {
                     enabledButtons.add("DeletePageButton");
                     enabledButtons.add("CutButton");
                     enabledButtons.add("CopyButton");

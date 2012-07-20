@@ -56,6 +56,11 @@
                 var endDate = $("#end_date").val();
                 var endTime = $("#end_time").val();
                 var updateChild = $("#update_Children").is(":checked");
+
+                if (updateChild && !confirm("<kantega:label key="aksess.publishinfo.period.updatechildren.confirm"/>")) {
+                    return false;
+                }
+
                 if (validatePublishProperties()) {
                     openaksess.common.debug("showdisplayperiod - set new date:" + fromDate + "-" + endDate);
                     $.post("../publish/UpdateDisplayPeriod.action", {associationId:${content.association.id}, from_date: fromDate, from_time:fromTime, end_date:endDate, end_time:endTime, updateChildren: updateChild}, function(data) {
@@ -122,16 +127,18 @@
                 <input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${content.expireDate}"/>">
             </td>
         </tr>
-
     </table>
-    <div id="UpdateChildren">
-        <div class="row">
-            <input type="checkbox" name="updateChildren" value="true" id="update_Children" class="radio">
-            <label for="update_Children" class="radio"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
-            <div class="clearing"></div>
-        </div>
 
-    </div>
+    <c:if test="${canUpdateSubpages}">
+        <div id="UpdateChildren">
+            <div class="row">
+                <input type="checkbox" name="updateChildren" value="true" id="update_Children" class="radio">
+                <label for="update_Children" class="radio"><kantega:label key="aksess.publishinfo.period.updatechildren"/></label>
+                <div class="clearing"></div>
+            </div>
+        </div>
+    </c:if>
+
     <div class="buttonGroup">
         <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.ok"/>"></span>
         <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>

@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +44,11 @@ public class ViewDisplayPeriodAction extends AdminController {
         String url = request.getParameter("url");
         ContentIdentifier cid = new ContentIdentifier(request, url);
         Content content = cms.getContent(cid, false);
+
+        boolean canUpdateSubpages = false;
+        if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.FULL_CONTROL)) {
+            canUpdateSubpages = true;
+        }
         if (content != null) {
             model.put("content", content);
         }
