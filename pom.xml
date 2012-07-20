@@ -263,8 +263,8 @@
         <fileupload.version>1.2.1</fileupload.version>
         <log4j.version>1.2.16</log4j.version>
         <nekohtml.version>1.9.14</nekohtml.version>
-        <tika.version>1.0</tika.version>
-        <poi.version>3.8-beta5</poi.version>
+        <tika.version>1.1</tika.version>
+        <poi.version>3.8</poi.version>
         <springframework.version>3.0.7.RELEASE</springframework.version>
         <securityapi.version>2.6</securityapi.version>
         <securityapi.openimpl.version>2.10</securityapi.openimpl.version>
