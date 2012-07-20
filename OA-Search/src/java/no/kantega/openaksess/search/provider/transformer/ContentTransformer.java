@@ -2,8 +2,7 @@ package no.kantega.openaksess.search.provider.transformer;
 
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
+import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.search.api.IndexableDocument;
@@ -53,13 +52,39 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
                 if(value.isSearchable()){
-                    String fieldName = value.getName();
+                    String fieldName = getFieldName(value);
 
                     indexableDocument.addAttribute(fieldName, getValue(value));
                 }
             }
         }
         return indexableDocument;
+    }
+
+    private String getFieldName(Attribute attribute) {
+        StringBuilder fieldname = new StringBuilder(attribute.getName());
+        fieldname.append("_");
+        if(attribute instanceof CategoryAttribute ||
+                attribute instanceof ListAttribute ||
+                attribute instanceof EmailAttribute ||
+                attribute instanceof RoleAttribute ||
+                attribute instanceof UserAttribute ||
+                attribute instanceof TopicmapAttribute ||
+                attribute instanceof TopicAttribute ||
+                attribute instanceof UrlAttribute){
+            fieldname.append("txt");
+        }else if(attribute instanceof ContentidAttribute ||
+                attribute instanceof FileAttribute ||
+                attribute instanceof NumberAttribute){
+            fieldname.append("i");
+        }else if(attribute instanceof DateAttribute){
+            fieldname.append("dt");
+        }else if (attribute instanceof RepeaterAttribute){
+            fieldname = new StringBuilder(getFieldName(attribute.getParent()));
+        } else if (attribute instanceof TextAttribute){
+            fieldname.append("no");
+        }
+        return fieldname.toString();
     }
 
     private Object getValue(Attribute attribute) {

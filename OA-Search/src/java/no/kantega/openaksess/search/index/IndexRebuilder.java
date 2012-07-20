@@ -1,14 +1,18 @@
 package no.kantega.openaksess.search.index;
 
+import no.kantega.commons.log.Log;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import javax.annotation.PostConstruct;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Component
 public class IndexRebuilder {
@@ -18,18 +22,35 @@ public class IndexRebuilder {
 
     @Autowired
     private DocumentIndexer documentIndexer;
+    private final String category = getClass().getName();
 
     @PostConstruct
     public void doReindex(){
+        int nThreads = 15;
+        Log.info(category, String.format("Starting reindex with a threadpool of size %s ", 15));
+        StopWatch stopWatch = new StopWatch(category);
+        stopWatch.start();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
+
         for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
             Iterator<IndexableDocument> indexableDocumentIterator = indexableDocumentProvider.provideDocuments();
             while (indexableDocumentIterator.hasNext()){
-                IndexableDocument next = indexableDocumentIterator.next();
+                final IndexableDocument next = indexableDocumentIterator.next();
                 if (next.shouldIndex()) {
-                    documentIndexer.indexDocument(next);
+                    executorService.execute(new Runnable() {
+                        public void run() {
+                            documentIndexer.indexDocument(next);
+                        }
+                    });
+
                 }
             }
         }
         documentIndexer.commit();
+
+        stopWatch.stop();
+        double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+        Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
     }
 }

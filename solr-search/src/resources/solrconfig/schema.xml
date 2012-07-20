@@ -52,7 +52,12 @@
                 <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
             </analyzer>
         </fieldType>
-        <fieldtype name="keyword" stored="true" indexed="true" multiValued="true" class="solr.StrField" />
+        <fieldtype name="keyword" stored="true" indexed="true" multiValued="true" class="solr.StrField">
+            <analyzer>
+                <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+            </analyzer>
+        </fieldtype>
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
