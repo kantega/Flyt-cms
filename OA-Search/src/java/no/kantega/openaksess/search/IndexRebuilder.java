@@ -28,5 +28,6 @@ public class IndexRebuilder {
                 documentIndexer.indexDocument(next);
             }
         }
+        documentIndexer.commit();
     }
 }

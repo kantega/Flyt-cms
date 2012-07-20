@@ -73,7 +73,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         public IndexableAttachemntIterator(DataSource dataSource) {
             try {
                 Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0 ORDER BY attachments.id");
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 resultSet = preparedStatement.executeQuery();
             } catch (SQLException e) {
                 throw new IllegalStateException("Could not connect to database", e);

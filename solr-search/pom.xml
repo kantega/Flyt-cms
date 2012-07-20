@@ -30,6 +30,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-cell</artifactId>
+            <version>${solr.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>

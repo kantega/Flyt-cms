@@ -909,7 +909,7 @@ Lucene will flush based on whichever limit is hit first.  -->
             <!-- All the main content goes into "text"... if you need to return
   the extracted text or do highlighting, use a stored field. -->
             <str name="fmap.content">text_no</str>
-            <str name="lowernames">true</str>
+            <str name="lowernames">false</str>
             <str name="uprefix">ignored_</str>
 
             <!-- capture link hrefs but ignore div attributes -->

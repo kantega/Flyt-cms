@@ -64,6 +64,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         indexableDocument.addAttribute("createDate", content.getCreateDate());
         indexableDocument.addAttribute("publishDate", content.getPublishDate());
         indexableDocument.addAttribute("expireDate", content.getExpireDate());
+        // TODO get author name
         indexableDocument.addAttribute("author", content.getOwnerPerson());
         indexableDocument.addAttribute("keywords", content.getKeywords());
         indexableDocument.addAttribute("url", content.getUrl());
