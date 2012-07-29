@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.search.extraction;
+package no.kantega.search.api.search;
 
-import java.io.InputStream;
+import java.util.List;
 
+public interface Searcher {
 
-public interface TextExtractor {
-    public String extractText(InputStream is, String fileName);
+    
+    /**
+     * Utfører et søk basert på det gitte SearchQuery'et.
+     *
+     * @param query et SearchQuery-objekt som beskriver søket som skal utføres.
+     * @return et SearchResult-objekt.
+     */
+    public SearchResult search(String query);
+
+    /**
+     * @param query et SuggestionQuery-objekt
+     * @return en liste med Suggestion-objekter, sortert etter antall treff
+     */
+    public List<String> suggest(String query);
+
 }

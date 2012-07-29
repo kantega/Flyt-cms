@@ -1,4 +1,4 @@
-package no.kantega.publishing.search.control;
+package no.kantega.search.controller;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;

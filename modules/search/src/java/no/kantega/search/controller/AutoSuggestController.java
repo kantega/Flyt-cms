@@ -1,7 +1,6 @@
 package no.kantega.search.controller;
 
-import no.kantega.search.core.Searcher;
-import no.kantega.search.query.CompletionQuery;
+import no.kantega.search.api.search.Searcher;
 import no.kantega.search.result.Suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,10 +29,10 @@ public class AutoSuggestController {
     private List<Suggestion> suggest(String term, int limit) {
         List<Suggestion> suggestions = new ArrayList<Suggestion>();
         if (isNotBlank(term)) {
-            CompletionQuery query = new CompletionQuery();
-            query.setText(term);
-            query.setMax(limit);
-            suggestions = searcher.suggest(query);
+            //CompletionQuery query = new CompletionQuery();
+            //query.setText(term);
+            //query.setMax(limit);
+            //suggestions = searcher.suggest(term);
         }
         return suggestions;
     }

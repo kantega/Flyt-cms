@@ -1,4 +1,4 @@
-package no.kantega.openaksess.search.index;
+package no.kantega.openaksess.search.index.rebuild;
 
 import no.kantega.commons.log.Log;
 import no.kantega.search.api.IndexableDocument;
@@ -25,7 +25,7 @@ public class IndexRebuilder {
     private final String category = getClass().getName();
 
     @PostConstruct
-    public void doReindex(){
+    public void doReindex(ProgressReporter progressReporter){
         int nThreads = 15;
         Log.info(category, String.format("Starting reindex with a threadpool of size %s ", 15));
         StopWatch stopWatch = new StopWatch(category);
@@ -34,10 +34,13 @@ public class IndexRebuilder {
         ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
 
         for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
+            long numberOfDocuments = indexableDocumentProvider.getNumberOfDocuments();
             Iterator<IndexableDocument> indexableDocumentIterator = indexableDocumentProvider.provideDocuments();
+            long progressCounter = 0L;
             while (indexableDocumentIterator.hasNext()){
                 final IndexableDocument next = indexableDocumentIterator.next();
                 if (next.shouldIndex()) {
+                    progressReporter.reportProgress(progressCounter++, next.getContentType(), numberOfDocuments);
                     executorService.execute(new Runnable() {
                         public void run() {
                             documentIndexer.indexDocument(next);

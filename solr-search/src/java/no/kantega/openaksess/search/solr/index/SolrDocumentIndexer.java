@@ -1,4 +1,4 @@
-package no.kantega.openaksess.search.solr;
+package no.kantega.openaksess.search.solr.index;
 
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
@@ -29,7 +29,6 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     public void indexDocument(IndexableDocument document) {
         try {
-            //TODO mapping of values to appropriate dynamic fieldnames
             File fileContent = document.getFileContent();
             SolrInputDocument solrParams = getSolrParams(document);
             if (fileContent == null) {

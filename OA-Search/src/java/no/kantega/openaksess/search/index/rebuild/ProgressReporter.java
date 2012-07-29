@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package no.kantega.search.core;
+package no.kantega.openaksess.search.index.rebuild;
 
-import no.kantega.search.query.SuggestionQuery;
-import no.kantega.search.result.Suggestion;
-
-import java.io.IOException;
-import java.util.List;
-
-/**
- * Date: Jan 12, 2009
- * Time: 1:01:30 PM
- *
- * @author Tarje Killingberg
- */
-public interface SuggestionProvider {
+public interface ProgressReporter {
 
 
-    public List<Suggestion> provideSuggestions(SuggestionQuery query) throws IOException;
-
+    public void reportProgress(long current, String docType, long total);
+    public void reportFinished();
+    
 }

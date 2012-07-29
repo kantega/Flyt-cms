@@ -19,13 +19,12 @@ package no.kantega.publishing.search.model;
 import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.PathEntry;
-import no.kantega.search.result.SearchHit;
 import org.apache.commons.io.FileUtils;
 
 import java.util.Date;
 import java.util.List;
 
-public class AksessSearchHit implements SearchHit {
+public class AksessSearchHit /*implements SearchHit */{
 
     private String title = "";
     private String summary = "";

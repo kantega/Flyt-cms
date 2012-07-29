@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.search.index.rebuild.ProgressReporter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -87,7 +86,7 @@ public class RebuildIndexAction extends AdminController {
 
     private synchronized void startIndex(List<String> providersToExclude, int numberOfConcurrentJobs) {
         current = 0;
-        ProgressReporter p = new ProgressReporter() {
+        /*ProgressReporter p = new ProgressReporter() {
 
             public void reportProgress(int c, String d, int t) {
                 current = c;
@@ -99,7 +98,7 @@ public class RebuildIndexAction extends AdminController {
                 current = -1;
                 total = -1;
             }
-        };
+        };*/
 
 
      //   indexManager.addIndexJob(new RebuildIndexJob(p, providersToExclude, numberOfConcurrentJobs));

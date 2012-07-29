@@ -23,12 +23,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.web.context.ServletContextAware;
 
-import javax.servlet.ServletContext;
 import java.util.Properties;
-import java.io.File;
 
 /**
  *

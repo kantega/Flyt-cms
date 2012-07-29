@@ -2,14 +2,8 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.search.model.AksessSearchHit;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.search.result.SearchHit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -18,7 +12,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 public class SearchViewTag extends TagSupport {
     private static final String SOURCE = "aksess.MiniViewTag";
 
-    private SearchHit searchHit = null;
+    //private SearchHit searchHit = null;
     private String var = "searchHit";
     private String defaultViewContent = "/WEB-INF/jsp/defaultviews/search.jsp";
     private String otherView = "/WEB-INF/jsp/defaultviews/search.jsp";
@@ -27,9 +21,9 @@ public class SearchViewTag extends TagSupport {
         this.var = var;
     }
 
-    public void setSearchhit(SearchHit searchHit) {
+    /*public void setSearchhit(SearchHit searchHit) {
         this.searchHit = searchHit;
-    }
+    }*/
 
     public void setDefaultviewcontent(String defaultView) {
         this.defaultViewContent = defaultView;
@@ -49,7 +43,7 @@ public class SearchViewTag extends TagSupport {
 
             String template = otherView;
 
-            if (searchHit != null && searchHit instanceof AksessSearchHit) {
+            /*if (searchHit != null && searchHit instanceof AksessSearchHit) {
                 Content content = ((AksessSearchHit)searchHit).getContentObject();
                 if (content != null) {
                     DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
@@ -85,7 +79,7 @@ public class SearchViewTag extends TagSupport {
                 }
                 request.removeAttribute(var);
 
-            }
+            }*/
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
@@ -103,6 +97,6 @@ public class SearchViewTag extends TagSupport {
         defaultViewContent = "/WEB-INF/jsp/defaultviews/search.jsp";
         otherView = "/WEB-INF/jsp/defaultviews/search.jsp";
         var = "searchHit";
-        searchHit = null;
+        //searchHit = null;
     }
 }

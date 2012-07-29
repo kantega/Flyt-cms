@@ -52,12 +52,7 @@
                 <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
             </analyzer>
         </fieldType>
-        <fieldtype name="keyword" stored="true" indexed="true" multiValued="true" class="solr.StrField">
-            <analyzer>
-                <tokenizer class="solr.WhitespaceTokenizerFactory"/>
-                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
-            </analyzer>
-        </fieldtype>
+        <fieldtype name="keyword" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
@@ -87,6 +82,7 @@
         <field name="expireDate" type="date" indexed="true" stored="true"/>
         <field name="author" type="text_general" indexed="true" stored="true"/>
         <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true"/>
+        <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true"/>
         <field name="visibilityStatus" type="text_general" indexed="true" stored="true"/>
         <field name="contentStatus" type="text_general" indexed="true" stored="true"/>
         <field name="url" type="keyword" indexed="false" stored="true"/>

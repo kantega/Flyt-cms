@@ -6,6 +6,7 @@ import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -27,6 +28,11 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     public Iterator<IndexableDocument> provideDocuments() {
         return new IndexableAttachemntIterator(dataSource);
+    }
+
+    public long getNumberOfDocuments() {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        return jdbcTemplate.queryForInt("SELECT count(attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
     }
 
     private class IndexableAttachemntIterator implements Iterator<IndexableDocument> {

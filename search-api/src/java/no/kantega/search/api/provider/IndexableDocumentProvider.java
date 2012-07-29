@@ -8,4 +8,6 @@ public interface IndexableDocumentProvider {
 
     public Iterator<IndexableDocument> provideDocuments();
 
+    public long getNumberOfDocuments();
+
 }

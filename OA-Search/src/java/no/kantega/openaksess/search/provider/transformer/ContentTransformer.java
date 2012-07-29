@@ -13,10 +13,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Component
 public class ContentTransformer implements DocumentTransformer<Content> {
@@ -53,7 +55,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.addAttribute("expireDate", content.getExpireDate());
             // TODO get author name
             indexableDocument.addAttribute("author", content.getOwnerPerson());
-            indexableDocument.addAttribute("keywords", content.getKeywords());
+            indexableDocument.addAttribute("keywords", getKeywords(content));
             indexableDocument.addAttribute("url", content.getUrl());
             indexableDocument.addAttribute("topics", getTopics(content.getId()));
 
@@ -67,6 +69,20 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             }
         }
         return indexableDocument;
+    }
+
+    private List<String> getKeywords(Content content) {
+        List<String> filteredKeywords = new ArrayList<String>();
+        String contentKeywords = content.getKeywords();
+        if (contentKeywords != null) {
+            String[] keywords = contentKeywords.split("[,\\s]");
+            for (String keyword : keywords) {
+                if(isNotBlank(keyword) && !keyword.equalsIgnoreCase("null")){
+                    filteredKeywords.add(keyword);
+                }
+            }
+        }
+        return filteredKeywords;
     }
 
     private List<String> getTopics(int contentId) {

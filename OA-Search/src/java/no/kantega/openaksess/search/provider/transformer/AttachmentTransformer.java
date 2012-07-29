@@ -30,6 +30,8 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         Content content = ContentAO.getContent(contentIdentifier, true);
 
         if (content.isSearchable()) {
+            indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
+            indexableDocument.setId(String.valueOf(attachment.getId()));
             indexableDocument.setShouldIndex(true);
             indexableDocument.setTitle(attachment.getFilename());
             indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
