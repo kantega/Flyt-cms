@@ -234,26 +234,20 @@ public class SecuritySession {
      */
     public void handlePostLogin(HttpServletRequest request) throws SystemException, ConfigurationException {
 
-        List roles = realm.lookupRolesForUser(user.getId());
-        for (int i = 0; i < roles.size(); i++) {
-            Role role =  (Role)roles.get(i);
+        List<Role> roles = realm.lookupRolesForUser(user.getId());
+        for (Role role : roles) {
             user.addRole(role);
         }
 
         if (Aksess.isTopicMapsEnabled()) {
-            // Hent topics for bruker
-            List tmp = TopicAO.getTopicsBySID(user);
-            for (int i = 0; i < tmp.size(); i++) {
-                user.addTopic((Topic)tmp.get(i));
-            }
+            user.setTopics(TopicAO.getTopicsBySID(user));
 
             // Og for roller brukeren har tilgang til
             if (user.getRoles() != null) {
-                for (int i = 0; i < roles.size(); i++) {
-                    Role role =  (Role)roles.get(i);
-                    tmp = TopicAO.getTopicsBySID(role);
-                    for (int j = 0; j < tmp.size(); j++) {
-                        user.addTopic((Topic)tmp.get(j));
+                for (Role role : roles) {
+                    List<Topic> topicsForRole = TopicAO.getTopicsBySID(role);
+                    for (Topic aTopicsForRole : topicsForRole) {
+                        user.addTopic( aTopicsForRole );
                     }
                 }
             }
@@ -273,11 +267,7 @@ public class SecuritySession {
     }
 
     public boolean isLoggedIn() {
-        if (getUser() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return getUser() != null;
     }
 
     public void initiateLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
