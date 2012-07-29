@@ -91,6 +91,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
         streamParams.add("literal.contentStatus", document.getContentStatus());
         streamParams.add("literal.indexedContentType", document.getContentType());
+        streamParams.add("literal.language", document.getLanguage());
         streamParams.add("literal.description_" + languageSuffix, document.getDescription());
         streamParams.add("literal.id", document.getId());
         streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
@@ -105,7 +106,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         return streamParams;
     }
 
-    private String getLanguageSuffix(String language) {
+    public static String getLanguageSuffix(String language) {
         if(language.equals("eng")){
             return "en";
         }else {

@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.kantega.openaksess.search.solr.index.SolrDocumentIndexer.getLanguageSuffix;
+
 @Component
 public class SolrSearcher implements Searcher {
 
@@ -34,6 +36,12 @@ public class SolrSearcher implements Searcher {
         try {
             SolrQuery params = new SolrQuery(query.getFullQuery());
             params.set("spellcheck", "on");
+
+            params.setHighlight(query.isHighlightSearchResultDescription());
+            params.setHighlightSimplePre("<span class=\"highlight\"/>");
+            params.setHighlightSimplePost("</span>");
+            params.set("hl.fl", "description*");
+
             QueryResponse queryResponse = solrServer.query(params);
             SolrDocumentList results = queryResponse.getResults();
             searchResponse.setQueryTime(queryResponse.getQTime());
@@ -41,7 +49,7 @@ public class SolrSearcher implements Searcher {
 
             List<SearchResult> searchResults = new ArrayList<SearchResult>();
             for (SolrDocument result : results) {
-                searchResults.add(createSearchResult(result));
+                searchResults.add(createSearchResult(result, queryResponse, query));
             }
             searchResponse.setDocumentHits(searchResults);
             setSpellResponse(searchResponse, queryResponse);
@@ -68,15 +76,31 @@ public class SolrSearcher implements Searcher {
         return suggestionStrings;
     }
 
-    private SearchResult createSearchResult(SolrDocument result) {
-
+    private SearchResult createSearchResult(SolrDocument result, QueryResponse queryResponse, SearchQuery query) {
+        String language = (String) result.getFieldValue("language");
+        String languageSuffix = getLanguageSuffix(language);
+        String description = getHighlightedDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
         return new LazyObjectLoadingSearchResult((Integer) result.getFieldValue("id"),
                 (Integer) result.getFieldValue("securityId"),
                 (String) result.getFieldValue("indexedContentType"),
-                (String) result.getFieldValue("title_no"),
-                (String) result.getFieldValue("description_no"),
+                (String) result.getFieldValue("title_" + languageSuffix),
+                description,
                 (String) result.getFieldValue("author"),
                 (String) result.getFieldValue("url"));
+    }
+
+    private String getHighlightedDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {
+        String fieldname = "description_" + languageSuffix;
+        if(query.isHighlightSearchResultDescription()){
+            Map<String, List<String>> uid = queryResponse.getHighlighting().get((String)result.getFieldValue("uid"));
+            if(uid != null){
+                List<String> highlightedDescription = uid.get(fieldname);
+                if(highlightedDescription != null && !highlightedDescription.isEmpty()){
+                    return highlightedDescription.get(0);
+                }
+            }
+        }
+        return (String) result.getFieldValue(fieldname);
     }
 
     public List<String> suggest(SearchQuery query) {

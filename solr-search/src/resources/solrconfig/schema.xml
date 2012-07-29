@@ -62,6 +62,7 @@
         <field name="indexedContentType" type="text_general" indexed="true" stored="true" required="true" />
         <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />
+        <field name="language" type="text_general" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="title_no" type="text_no" indexed="true" stored="true"/>
         <field name="title_en" type="text_en" indexed="true" stored="true"/>
         <field name="altTitle_no" type="text_no" indexed="true" stored="true"/>
@@ -88,8 +89,8 @@
         <field name="contentStatus" type="text_general" indexed="true" stored="true"/>
         <field name="url" type="url" indexed="false" stored="true" multiValued="false"/>
 
-        <field name="all_text_no" type="text_no" indexed="true" stored="false"/>
-        <field name="all_text_en" type="text_en" indexed="true" stored="false"/>
+        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true"/>
+        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />

@@ -4,6 +4,7 @@ public class SearchQuery {
     private final SearchContext searchContext;
     private final String originalQuery;
     private final String fullQuery;
+    private boolean highlightSearchResultDescription;
 
     public SearchQuery(SearchContext searchContext, String originalQuery, String fullQuery) {
         this.searchContext = searchContext;
@@ -21,5 +22,13 @@ public class SearchQuery {
 
     public SearchContext getSearchContext() {
         return searchContext;
+    }
+
+    public void setHighlightSearchResultDescription(boolean highlightSearchResultDescription) {
+        this.highlightSearchResultDescription = highlightSearchResultDescription;
+    }
+
+    public boolean isHighlightSearchResultDescription() {
+        return highlightSearchResultDescription;
     }
 }
