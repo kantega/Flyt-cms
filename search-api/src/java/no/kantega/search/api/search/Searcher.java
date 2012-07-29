@@ -27,12 +27,12 @@ public interface Searcher {
      * @param query et SearchQuery-objekt som beskriver søket som skal utføres.
      * @return et SearchResult-objekt.
      */
-    public SearchResponse search(String query);
+    public SearchResponse search(SearchQuery query);
 
     /**
      * @param query et SuggestionQuery-objekt
      * @return en liste med Suggestion-objekter, sortert etter antall treff
      */
-    public List<String> suggest(String query);
+    public List<String> suggest(SearchQuery query);
 
 }

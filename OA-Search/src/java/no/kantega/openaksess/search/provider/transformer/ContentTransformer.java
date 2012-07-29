@@ -22,7 +22,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Component
 public class ContentTransformer implements DocumentTransformer<Content> {
-    private static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
+    public static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
 
     private JdbcTemplate jdbcTemplate;
 
@@ -32,6 +32,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         if (content.isSearchable()) {
             indexableDocument.setShouldIndex(true);
             indexableDocument.setId(String.valueOf(content.getId()));
+            indexableDocument.setSecurityId(content.getSecurityId());
             indexableDocument.setTitle(content.getTitle());
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
             indexableDocument.setDescription(content.getDescription());
@@ -71,10 +72,6 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         return indexableDocument;
     }
 
-    public String getSupportedContentType() {
-        return HANDLED_DOCUMENT_TYPE;
-    }
-
     private List<String> getKeywords(Content content) {
         List<String> filteredKeywords = new ArrayList<String>();
         String contentKeywords = content.getKeywords();
@@ -106,8 +103,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                 attribute instanceof RoleAttribute ||
                 attribute instanceof UserAttribute ||
                 attribute instanceof TopicmapAttribute ||
-                attribute instanceof TopicAttribute ||
-                attribute instanceof UrlAttribute){
+                attribute instanceof TopicAttribute){
             fieldname.append("txt");
         }else if(attribute instanceof ContentidAttribute ||
                 attribute instanceof FileAttribute ||
@@ -119,6 +115,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             fieldname = new StringBuilder(getFieldName(attribute.getParent()));
         } else if (attribute instanceof TextAttribute){
             fieldname.append("no");
+        } else if (attribute instanceof UrlAttribute){
+            fieldname.append("url");
         }
         return fieldname.toString();
     }

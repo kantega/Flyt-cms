@@ -3,17 +3,16 @@ package no.kantega.search.api.search;
 import java.util.List;
 
 public class SearchResponse {
-    private int numberOfHits;
     private int queryTime;
-    private String query;
+    private SearchQuery query;
     private List<SearchResult> documentHits;
 
     public int getNumberOfHits() {
-        return numberOfHits;
-    }
-
-    public void setNumberOfHits(int numberOfHits) {
-        this.numberOfHits = numberOfHits;
+        if (documentHits != null) {
+            return documentHits.size();
+        } else {
+            return 0;
+        }
     }
 
     public void setQueryTime(int queryTime) {
@@ -24,11 +23,11 @@ public class SearchResponse {
         return queryTime;
     }
 
-    public String getQuery() {
+    public SearchQuery getQuery() {
         return query;
     }
 
-    public void setQuery(String query) {
+    public void setQuery(SearchQuery query) {
         this.query = query;
     }
 

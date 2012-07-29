@@ -20,7 +20,7 @@ import java.io.OutputStream;
 
 @Component
 public class AttachmentTransformer implements DocumentTransformer<Attachment> {
-    private static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
+    public static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
 
     public IndexableDocument transform(Attachment attachment) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(attachment));
@@ -28,10 +28,12 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         ContentIdentifier contentIdentifier = new ContentIdentifier();
         contentIdentifier.setContentId(attachment.getContentId());
         Content content = ContentAO.getContent(contentIdentifier, true);
+        indexableDocument.setSecurityId(content.getSecurityId());
 
         if (content.isSearchable()) {
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
             indexableDocument.setId(String.valueOf(attachment.getId()));
+
             indexableDocument.setShouldIndex(true);
             indexableDocument.setTitle(attachment.getFilename());
             indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
@@ -55,10 +57,6 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         }
 
         return indexableDocument;
-    }
-
-    public String getSupportedContentType() {
-        return HANDLED_DOCUMENT_TYPE;
     }
 
     public String generateUniqueID(Attachment document) {

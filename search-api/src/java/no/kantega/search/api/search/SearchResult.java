@@ -7,9 +7,12 @@ public class SearchResult {
     private final String description;
     private final String author;
     private final String url;
+    private Object document;
+    private final int securityId;
 
-    public SearchResult(int id, String indexedContentType, String title, String description, String author, String url) {
+    public SearchResult(int id, int securityId, String indexedContentType, String title, String description, String author, String url) {
         this.id = id;
+        this.securityId = securityId;
         this.indexedContentType = indexedContentType;
         this.title = title;
         this.description = description;
@@ -39,5 +42,17 @@ public class SearchResult {
 
     public String getUrl() {
         return url;
+    }
+
+    public Object getDocument() {
+        return document;
+    }
+
+    public void setDocument(Object document) {
+        this.document = document;
+    }
+
+    public int getSecurityId() {
+        return securityId;
     }
 }

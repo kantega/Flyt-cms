@@ -17,6 +17,7 @@ public class IndexableDocument {
     private File fileContent;
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private boolean shouldIndex = false;
+    private int securityId;
 
     public IndexableDocument(String uid) {
         this.uid = uid;
@@ -112,5 +113,13 @@ public class IndexableDocument {
 
     public void setShouldIndex(boolean shouldIndex) {
         this.shouldIndex = shouldIndex;
+    }
+
+    public void setSecurityId(int securityId) {
+        this.securityId = securityId;
+    }
+
+    public int getSecurityId() {
+        return securityId;
     }
 }

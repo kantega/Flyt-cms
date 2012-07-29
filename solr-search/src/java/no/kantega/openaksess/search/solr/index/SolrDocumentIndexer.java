@@ -90,6 +90,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         streamParams.add("literal.indexedContentType", document.getContentType());
         streamParams.add("literal.description_no", document.getDescription());
         streamParams.add("literal.id", document.getId());
+        streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
         streamParams.add("literal.uid", document.getUId());
         streamParams.add("literal.siteId", String.valueOf(document.getSiteId()));
         streamParams.add("literal.title_no", document.getTitle());
@@ -118,6 +119,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         solrInputDocument.addField("indexedContentType", document.getContentType());
         solrInputDocument.addField("description_no", document.getDescription());
         solrInputDocument.addField("id", document.getId());
+        solrInputDocument.addField("securityId", String.valueOf(document.getSecurityId()));
         solrInputDocument.addField("uid", document.getUId());
         solrInputDocument.addField("language", language);
         solrInputDocument.addField("siteId", document.getSiteId());

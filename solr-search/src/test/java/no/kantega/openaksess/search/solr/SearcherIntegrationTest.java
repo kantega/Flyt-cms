@@ -12,8 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-test.xml"})
@@ -55,7 +54,7 @@ public class SearcherIntegrationTest {
     public void allResultsShouldHaveASinTitle(){
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue(searchResult.getTitle().toLowerCase().contains("as"));
+                assertTrue("Title did not contain 'as'", searchResult.getTitle().toLowerCase().contains("as"));
             }
         });
     }
@@ -64,7 +63,7 @@ public class SearcherIntegrationTest {
     public void allResultsShouldHaveContentObjects(){
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue(searchResult.getDocument() instanceof Content);
+                assertTrue("Document was not Content", searchResult.getDocument() instanceof Content);
             }
         });
     }
@@ -73,7 +72,16 @@ public class SearcherIntegrationTest {
     public void allResultsShouldHaveId(){
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue(searchResult.getId() > 0);
+                assertTrue("Search result id was 0", searchResult.getId() > 0);
+            }
+        });
+    }
+
+    @Test
+    public void allResultsShouldHaveUrl(){
+        doForAllhits(new Assertion() {
+            public void doAssert(SearchResult searchResult) {
+                assertNotNull("Searchresult url was null", searchResult.getUrl());
             }
         });
     }
@@ -82,7 +90,7 @@ public class SearcherIntegrationTest {
     public void allResultsShouldHaveSecurityId(){
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue(searchResult.getSecurityId() > 0);
+                assertTrue("Result did not have securityid", searchResult.getSecurityId() > 0);
             }
         });
     }

@@ -20,13 +20,11 @@ public class SolrConfiguration {
     @Value("${appDir}/solr")
     private File solrHome;
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException {
         File solrConfigFile = initSolrConfigIfAbsent(solrHome);
         CoreContainer container = new CoreContainer(solrHome.getAbsolutePath(), solrConfigFile);
 
         return new EmbeddedSolrServer(container, "oacore");
     }
-
-
 }

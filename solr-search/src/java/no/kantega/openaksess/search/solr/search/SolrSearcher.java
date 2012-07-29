@@ -32,7 +32,6 @@ public class SolrSearcher implements Searcher {
         try {
             QueryResponse queryResponse = solrServer.query(new SolrQuery(query.getFullQuery()));
             SolrDocumentList results = queryResponse.getResults();
-            searchResponse.setNumberOfHits(results.size());
             searchResponse.setQueryTime(queryResponse.getQTime());
             searchResponse.setQuery(query);
 

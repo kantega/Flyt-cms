@@ -52,13 +52,13 @@
                 <tokenizer class="solr.PathHierarchyTokenizerFactory"/>
             </analyzer>
         </fieldType>
-        <fieldtype name="keyword" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
+        <fieldtype name="url" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" />
-        <field name="securityId" type="int" indexed="true" stored="true" required="true" />
+        <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
         <field name="indexedContentType" type="text_general" indexed="true" stored="true" required="true" />
         <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />
@@ -86,7 +86,7 @@
         <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true"/>
         <field name="visibilityStatus" type="text_general" indexed="true" stored="true"/>
         <field name="contentStatus" type="text_general" indexed="true" stored="true"/>
-        <field name="url" type="keyword" indexed="false" stored="true" multiValued="false"/>
+        <field name="url" type="url" indexed="false" stored="true" multiValued="false"/>
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
@@ -98,6 +98,7 @@
         <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
         <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
+        <dynamicField name="*_url" type="url"    indexed="true"  stored="false"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>

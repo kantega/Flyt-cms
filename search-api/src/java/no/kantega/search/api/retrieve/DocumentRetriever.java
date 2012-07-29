@@ -1,5 +1,7 @@
 package no.kantega.search.api.retrieve;
 
-public interface DocumentRetriever<IndexableDocument> {
+public interface DocumentRetriever<D> {
+    public String getSupportedContentType();
 
+    D getObjectById(int id);
 }
