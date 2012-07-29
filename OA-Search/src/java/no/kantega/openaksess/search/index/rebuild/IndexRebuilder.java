@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import javax.annotation.PostConstruct;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +23,6 @@ public class IndexRebuilder {
     private DocumentIndexer documentIndexer;
     private final String category = getClass().getName();
 
-    @PostConstruct
     public void reindex(){
         doReindex(new ProgressReporter() {
             public void reportProgress(long current, String docType, long total) {

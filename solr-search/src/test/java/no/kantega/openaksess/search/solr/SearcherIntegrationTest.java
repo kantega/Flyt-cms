@@ -15,7 +15,7 @@ import java.util.List;
 import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-test.xml"})
+@ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
 public class SearcherIntegrationTest {
     @Autowired
     private Searcher searcher;

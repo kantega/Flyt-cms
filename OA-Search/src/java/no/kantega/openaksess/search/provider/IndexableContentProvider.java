@@ -3,6 +3,7 @@ package no.kantega.openaksess.search.provider;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,6 @@ import java.util.Iterator;
 public class IndexableContentProvider implements IndexableDocumentProvider {
 
     @Autowired
-    private ContentManagementService contentManagementService;
-
-    @Autowired
     @Qualifier("aksessDataSource")
     private DataSource dataSource;
 
@@ -31,6 +29,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     private ContentTransformer transformer;
 
     public Iterator<IndexableDocument> provideDocuments() {
+        ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
         return new IndexableContentDocumentIterator(dataSource, contentManagementService);
     }
 

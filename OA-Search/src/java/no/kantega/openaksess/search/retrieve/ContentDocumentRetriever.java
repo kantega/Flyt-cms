@@ -5,14 +5,13 @@ import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.retrieve.DocumentRetriever;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ContentDocumentRetriever implements DocumentRetriever<Content> {
 
-    @Autowired
     private ContentManagementService contentManagementService;
 
     public String getSupportedContentType() {
@@ -20,6 +19,10 @@ public class ContentDocumentRetriever implements DocumentRetriever<Content> {
     }
 
     public Content getObjectById(int id) {
+        if(contentManagementService == null){
+             contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
+        }
+
         ContentIdentifier cid = new ContentIdentifier();
         cid.setContentId(id);
         try {
