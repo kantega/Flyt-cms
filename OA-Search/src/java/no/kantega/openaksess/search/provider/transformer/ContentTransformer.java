@@ -5,6 +5,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(content.getStatus()));
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(content.getVisibilityStatus()));
             indexableDocument.setSiteId(content.getAssociation().getSiteId());
-            indexableDocument.setLanguage(getLanguageAsISOCode(content.getLanguage()));
+            int language = content.getLanguage();
+            indexableDocument.setLanguage(getLanguageAsISOCode(language));
 
             Association association = content.getAssociation();
             indexableDocument.addAttribute("location", association.getPath());
@@ -63,7 +65,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
                 if(value.isSearchable() && !value.getName().matches("title|description")){
-                    String fieldName = getFieldName(value);
+                    String fieldName = getFieldName(value, language);
 
                     indexableDocument.addAttribute(fieldName, getValue(value));
                 }
@@ -94,7 +96,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                 "AND tmbasename.TopicMapId=ct2topic.TopicMapId", String.class, contentId);
     }
 
-    private String getFieldName(Attribute attribute) {
+    private String getFieldName(Attribute attribute, int language) {
         StringBuilder fieldname = new StringBuilder(attribute.getName());
         fieldname.append("_");
         if(attribute instanceof CategoryAttribute ||
@@ -112,9 +114,13 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         }else if(attribute instanceof DateAttribute){
             fieldname.append("dt");
         }else if (attribute instanceof RepeaterAttribute){
-            fieldname = new StringBuilder(getFieldName(attribute.getParent()));
+            fieldname = new StringBuilder(getFieldName(attribute.getParent(), language));
         } else if (attribute instanceof TextAttribute){
-            fieldname.append("no");
+            if (language == Language.ENGLISH) {
+                fieldname.append("en");
+            }else {
+                fieldname.append("no");
+            }
         } else if (attribute instanceof UrlAttribute){
             fieldname.append("url");
         }

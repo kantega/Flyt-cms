@@ -28,14 +28,6 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>solr-search</artifactId>
-            <version>${project.version}</version>
-            <classifier>test</classifier>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -54,10 +46,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.2.4</version>
-            <scope>test</scope>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

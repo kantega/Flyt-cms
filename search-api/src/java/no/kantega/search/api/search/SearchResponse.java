@@ -1,11 +1,13 @@
 package no.kantega.search.api.search;
 
+import java.util.Collections;
 import java.util.List;
 
 public class SearchResponse {
     private int queryTime;
     private SearchQuery query;
     private List<SearchResult> documentHits;
+    private List<String> spellSuggestions;
 
     public int getNumberOfHits() {
         if (documentHits != null) {
@@ -37,5 +39,15 @@ public class SearchResponse {
 
     public List<SearchResult> getDocumentHits() {
         return documentHits;
+    }
+
+    public List<String> getSpellSuggestions() {
+        if(spellSuggestions == null) return Collections.emptyList();
+
+        return spellSuggestions;
+    }
+
+    public void setSpellSuggestions(List<String> spellSuggestions) {
+        this.spellSuggestions = spellSuggestions;
     }
 }

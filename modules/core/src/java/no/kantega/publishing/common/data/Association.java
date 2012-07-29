@@ -176,6 +176,7 @@ public class Association extends BaseObject {
         this.numberOfViews = numberOfViews;
     }
 
+    @Override
     public String toString() {
         return "associationId: " + associationId + "\ncontentId:" + contentId + "\nparentAssociationId: " + parentAssociationId + "\nsiteId:" + siteId + "\nassociationType:" + associationtype;
     }

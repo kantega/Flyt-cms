@@ -39,6 +39,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                 contentStreamUpdateRequest.addFile(fileContent, StringUtils.substringAfterLast(fileContent.getName(), "."));
                 contentStreamUpdateRequest.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
                 NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
+                fileContent.delete();
             }
         } catch (SolrServerException e) {
             e.printStackTrace();
@@ -85,21 +86,31 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     private ModifiableSolrParams getStreamParams(IndexableDocument document) {
         ModifiableSolrParams streamParams = new ModifiableSolrParams();
+        String languageSuffix = getLanguageSuffix(document.getLanguage());
+        streamParams.add("fmap.content", "text_" + languageSuffix);
 
         streamParams.add("literal.contentStatus", document.getContentStatus());
         streamParams.add("literal.indexedContentType", document.getContentType());
-        streamParams.add("literal.description_no", document.getDescription());
+        streamParams.add("literal.description_" + languageSuffix, document.getDescription());
         streamParams.add("literal.id", document.getId());
         streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
         streamParams.add("literal.uid", document.getUId());
         streamParams.add("literal.siteId", String.valueOf(document.getSiteId()));
-        streamParams.add("literal.title_no", document.getTitle());
+        streamParams.add("literal.title_" + languageSuffix, document.getTitle());
         streamParams.add("literal.visibilityStatus", document.getVisibility());
 
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
             streamParams.add("literal." + attributeEntry.getKey(), getStringValue(attributeEntry.getValue()));
         }
         return streamParams;
+    }
+
+    private String getLanguageSuffix(String language) {
+        if(language.equals("eng")){
+            return "en";
+        }else {
+            return "no";
+        }
     }
 
     private String getStringValue(Object value) {
@@ -113,17 +124,18 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     private SolrInputDocument getSolrParams(IndexableDocument document) {
         String language = document.getLanguage();
+        String languageSuffix = getLanguageSuffix(language);
 
         SolrInputDocument solrInputDocument = new SolrInputDocument();
         solrInputDocument.addField("contentStatus", document.getContentStatus());
         solrInputDocument.addField("indexedContentType", document.getContentType());
-        solrInputDocument.addField("description_no", document.getDescription());
+        solrInputDocument.addField("description_" + languageSuffix, document.getDescription());
         solrInputDocument.addField("id", document.getId());
         solrInputDocument.addField("securityId", String.valueOf(document.getSecurityId()));
         solrInputDocument.addField("uid", document.getUId());
         solrInputDocument.addField("language", language);
         solrInputDocument.addField("siteId", document.getSiteId());
-        solrInputDocument.addField("title_no", document.getTitle());
+        solrInputDocument.addField("title_" + languageSuffix, document.getTitle());
         solrInputDocument.addField("visibilityStatus", document.getVisibility());
 
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){

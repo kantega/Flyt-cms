@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.security;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.security.SecuritySession;
@@ -20,6 +21,7 @@ public class SearchResultFilterAspect {
 
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
     public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
+        Log.debug("SearchResultFilterAspect", "Filtering search results");
         SearchResponse searchResponse = (SearchResponse) pjp.proceed();
         AksessSearchContext searchContext = (AksessSearchContext) searchResponse.getQuery().getSearchContext();
         SecuritySession session = searchContext.getSecuritySession();

@@ -3,19 +3,16 @@ package no.kantega.search.api.search;
 public class SearchQuery {
     private final SearchContext searchContext;
     private final String originalQuery;
-    private String fullQuery;
+    private final String fullQuery;
 
-    public SearchQuery(SearchContext searchContext, String originalQuery) {
+    public SearchQuery(SearchContext searchContext, String originalQuery, String fullQuery) {
         this.searchContext = searchContext;
         this.originalQuery = originalQuery;
+        this.fullQuery = fullQuery;
     }
 
     public String getFullQuery() {
         return fullQuery;
-    }
-
-    public void setFullQuery(String fullQuery) {
-        this.fullQuery = fullQuery;
     }
 
     public String getOriginalQuery() {

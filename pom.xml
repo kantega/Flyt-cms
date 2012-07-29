@@ -48,7 +48,6 @@
         <module>modules/commons</module>
         <module>modules/core</module>
         <module>modules/rating</module>
-        <module>modules/search</module>
         <module>modules/test</module>
         <module>modules/useradmin</module>
         <module>modules/webdav</module>

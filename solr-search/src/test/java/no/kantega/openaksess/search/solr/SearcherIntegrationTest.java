@@ -24,13 +24,14 @@ public class SearcherIntegrationTest {
     private final String originalQuery = "as";
 
     @Before
-    public void doSearch(){
-        SearchContext searchContext = new SearchContext() {
+    public void setup(){
+        searchResponse = doSearch(fullQuery);
+    }
 
-        };
-        SearchQuery q = new SearchQuery(searchContext, originalQuery);
-        q.setFullQuery(fullQuery);
-        searchResponse = searcher.search(q);
+    public SearchResponse doSearch(String fullQuery){
+        SearchContext searchContext = new SearchContext() {};
+        SearchQuery q = new SearchQuery(searchContext, originalQuery, fullQuery);
+        return searcher.search(q);
     }
 
     @Test
@@ -100,6 +101,25 @@ public class SearcherIntegrationTest {
         for (SearchResult documentHit : documentHits) {
             assertion.doAssert(documentHit);
         }
+    }
+
+    @Test
+    public void resultShouldHaveEmptyListIfNoSpellSuggestions(){
+        assertNotNull("SpellSuggestions was null", searchResponse.getSpellSuggestions());
+    }
+
+    @Test
+    public void searchResultShouldHaveSpellSuggestions(){
+        SearchResponse response = doSearch("title_no:elektroni");
+        assertFalse("Search did not have spell suggestions", response.getSpellSuggestions().isEmpty());
+    }
+
+    @Test
+    public void misSpelledWordShouldGetSuggestion(){
+        SearchContext searchContext = new SearchContext() {};
+        SearchQuery q = new SearchQuery(searchContext, "ell", "title_no:ell");
+        List<String> suggest = searcher.suggest(q);
+        assertFalse("No suggestions", suggest.isEmpty());
     }
 
     private interface Assertion {

@@ -63,11 +63,11 @@
         <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />
         <field name="title_no" type="text_no" indexed="true" stored="true"/>
-        <field name="title_eng" type="text_en" indexed="true" stored="true"/>
+        <field name="title_en" type="text_en" indexed="true" stored="true"/>
         <field name="altTitle_no" type="text_no" indexed="true" stored="true"/>
         <field name="altTitle_eng" type="text_en" indexed="true" stored="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true"/>
-        <field name="description_eng" type="text_en" indexed="true" stored="true"/>
+        <field name="description_en" type="text_en" indexed="true" stored="true"/>
         <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
         <field name="contentTemplateName" type="text_general" indexed="true" stored="false"/>
         <field name="metaDataTemplateId" type="int" indexed="true" stored="false"/>
@@ -88,9 +88,16 @@
         <field name="contentStatus" type="text_general" indexed="true" stored="true"/>
         <field name="url" type="url" indexed="false" stored="true" multiValued="false"/>
 
+        <field name="all_text_no" type="text_no" indexed="true" stored="false"/>
+        <field name="all_text_en" type="text_en" indexed="true" stored="false"/>
+
+        <copyField source="*_en" dest="all_text_en"/>
+        <copyField source="*_txt" dest="all_text_en" />
+        <copyField source="*_no" dest="all_text_no" />
+        <copyField source="*_txt" dest="all_text_no" />
+
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
-        <dynamicField name="*_t"  type="text_general"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" />
         <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" />
@@ -102,4 +109,5 @@
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>
+    <defaultSearchField>all_text_no</defaultSearchField>
 </schema>

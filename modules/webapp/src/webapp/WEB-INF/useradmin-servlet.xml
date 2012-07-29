@@ -42,29 +42,29 @@
         </property>
     </bean>
 
-    <bean id="resetPasswordController" class="no.kantega.useradmin.controls.ResetPasswordController" parent="useradminController"></bean>
+    <bean id="resetPasswordController" class="no.kantega.useradmin.controls.ResetPasswordController" parent="useradminController"/>
 
     <bean id="searchProfilesController" class="no.kantega.useradmin.controls.SearchProfilesController" parent="useradminController"/>
 
-    <bean id="editProfileController" class="no.kantega.useradmin.controls.EditProfileController" parent="useradminController"></bean>
-    <bean id="deleteProfileController" class="no.kantega.useradmin.controls.DeleteProfileController" parent="useradminController"></bean>
+    <bean id="editProfileController" class="no.kantega.useradmin.controls.EditProfileController" parent="useradminController"/>
+    <bean id="deleteProfileController" class="no.kantega.useradmin.controls.DeleteProfileController" parent="useradminController"/>
     <bean id="profileImageController" class="no.kantega.useradmin.controls.ProfileImageController" parent="useradminController">
         <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>
     </bean>
 
-    <bean id="viewUserRolesController" class="no.kantega.useradmin.controls.ViewUserRolesController" parent="useradminController"></bean>
-    <bean id="viewUsersWithRoleController" class="no.kantega.useradmin.controls.ViewUsersWithRoleController" parent="useradminController"></bean>
+    <bean id="viewUserRolesController" class="no.kantega.useradmin.controls.ViewUserRolesController" parent="useradminController"/>
+    <bean id="viewUsersWithRoleController" class="no.kantega.useradmin.controls.ViewUsersWithRoleController" parent="useradminController"/>
 
-    <bean id="editRoleController" class="no.kantega.useradmin.controls.EditRoleController" parent="useradminController"></bean>
-    <bean id="deleteRoleController" class="no.kantega.useradmin.controls.DeleteRoleController" parent="useradminController"></bean>
-    <bean id="addUserRoleController" class="no.kantega.useradmin.controls.AddUserRoleController" parent="useradminController"></bean>
-    <bean id="removeUserRoleController" class="no.kantega.useradmin.controls.RemoveUserRoleController" parent="useradminController"></bean>
+    <bean id="editRoleController" class="no.kantega.useradmin.controls.EditRoleController" parent="useradminController"/>
+    <bean id="deleteRoleController" class="no.kantega.useradmin.controls.DeleteRoleController" parent="useradminController"/>
+    <bean id="addUserRoleController" class="no.kantega.useradmin.controls.AddUserRoleController" parent="useradminController"/>
+    <bean id="removeUserRoleController" class="no.kantega.useradmin.controls.RemoveUserRoleController" parent="useradminController"/>
 
-    <bean id="searchRolesController" class="no.kantega.useradmin.controls.SearchRolesController" parent="useradminController"></bean>
+    <bean id="searchRolesController" class="no.kantega.useradmin.controls.SearchRolesController" parent="useradminController"/>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix"><value>/WEB-INF/jsp/useradmin/</value></property>
-        <property name="suffix"><value>.jsp</value></property>
+        <property name="prefix" value="/WEB-INF/jsp/useradmin/"/>
+        <property name="suffix" value=".jsp"/>
     </bean>
 </beans>
 

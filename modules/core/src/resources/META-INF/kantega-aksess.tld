@@ -2196,7 +2196,7 @@
     <tag>
         <description>Search the current site. No parameters are normally necessary since tag will search request for parameters</description>
         <name>search</name>
-        <tag-class>no.kantega.publishing.search.taglib.SearchTag</tag-class>
+        <tag-class>no.kantega.openaksess.search.taglib.SearchTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>query</name>
@@ -2794,7 +2794,7 @@
     <tag>
         <description>Tag used after SearchTag to print pages on the form 1 2 3 ... 45</description>
         <name>paginateSearch</name>
-        <tag-class>no.kantega.publishing.search.taglib.PaginateSearchTag</tag-class>
+        <tag-class>no.kantega.openaksess.search.taglib.PaginateSearchTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <description>Name of the variable exposed by SearchTag containing a list of urls for the search pages. Default searchPageUrls</description>

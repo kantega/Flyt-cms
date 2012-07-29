@@ -18,6 +18,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
+
 @Component
 public class AttachmentTransformer implements DocumentTransformer<Attachment> {
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
@@ -29,6 +31,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         contentIdentifier.setContentId(attachment.getContentId());
         Content content = ContentAO.getContent(contentIdentifier, true);
         indexableDocument.setSecurityId(content.getSecurityId());
+        indexableDocument.setLanguage(getLanguageAsISOCode(content.getLanguage()));
 
         if (content.isSearchable()) {
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);

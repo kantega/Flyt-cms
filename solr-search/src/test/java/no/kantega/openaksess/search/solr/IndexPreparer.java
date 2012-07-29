@@ -42,6 +42,7 @@ public class IndexPreparer extends PropertyPlaceholderConfigurer {
                 copyAndClose(inputStream, fos);
             }
         }
+        zip.close();
 
     }
 

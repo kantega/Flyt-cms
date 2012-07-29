@@ -355,7 +355,6 @@
     <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
         <lst name="defaults">
             <str name="spellcheck">true</str>
-            <str name="spellcheck.dictionary">spellcheck</str>
             <str name="spellcheck.onlyMorePopular">true</str>
             <str name="spellcheck.count">5</str>
             <str name="spellcheck.collate">true</str>
@@ -430,7 +429,7 @@
             <str name="name">default</str>
             <str name="field">title_no</str>
             <str name="spellcheckIndexDir">spellchecker</str>
-            <str name="buildOnOptimize">true</str>
+            <str name="buildOnCommit">true</str>
             <!-- uncomment this to require terms to occur in 1% of the documents
                in order to be included in the dictionary
             -->

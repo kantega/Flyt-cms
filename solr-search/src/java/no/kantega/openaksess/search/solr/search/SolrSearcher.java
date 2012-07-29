@@ -9,8 +9,10 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.ModifiableSolrParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +32,9 @@ public class SolrSearcher implements Searcher {
     public SearchResponse search(SearchQuery query) {
         SearchResponse searchResponse = new SearchResponse();
         try {
-            QueryResponse queryResponse = solrServer.query(new SolrQuery(query.getFullQuery()));
+            SolrQuery params = new SolrQuery(query.getFullQuery());
+            params.set("spellcheck", "on");
+            QueryResponse queryResponse = solrServer.query(params);
             SolrDocumentList results = queryResponse.getResults();
             searchResponse.setQueryTime(queryResponse.getQTime());
             searchResponse.setQuery(query);
@@ -40,12 +44,28 @@ public class SolrSearcher implements Searcher {
                 searchResults.add(createSearchResult(result));
             }
             searchResponse.setDocumentHits(searchResults);
+            setSpellResponse(searchResponse, queryResponse);
+            return searchResponse;
         } catch (SolrServerException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Error when searching", e);
         }
+    }
 
-        return searchResponse;
+    private void setSpellResponse(SearchResponse searchResponse, QueryResponse queryResponse) {
+        SpellCheckResponse spellCheckResponse = queryResponse.getSpellCheckResponse();
+        if(!spellCheckResponse.isCorrectlySpelled()){
+            List<String> suggestionStrings = getSpellSuggestions(spellCheckResponse);
+            searchResponse.setSpellSuggestions(suggestionStrings);
+        }
+    }
 
+    private List<String> getSpellSuggestions(SpellCheckResponse spellCheckResponse) {
+        List<SpellCheckResponse.Suggestion> suggestions = spellCheckResponse.getSuggestions();
+        List<String> suggestionStrings = new ArrayList<String>();
+        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
+            suggestionStrings.addAll(suggestion.getAlternatives());
+        }
+        return suggestionStrings;
     }
 
     private SearchResult createSearchResult(SolrDocument result) {
@@ -60,7 +80,16 @@ public class SolrSearcher implements Searcher {
     }
 
     public List<String> suggest(SearchQuery query) {
-        return null;
+        ModifiableSolrParams params = new ModifiableSolrParams();
+        params.set("qt", "/suggest");
+        params.set("q", query.getFullQuery());
+        params.set("spellcheck", "on");
+        try {
+            QueryResponse queryResponse = solrServer.query(params);
+            return  getSpellSuggestions(queryResponse.getSpellCheckResponse());
+        } catch (SolrServerException e) {
+            throw new IllegalStateException("Error when searching", e);
+        }
     }
 
     @Autowired

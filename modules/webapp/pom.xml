@@ -202,6 +202,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.6.12</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -219,7 +225,7 @@
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>aksess-maven-plugin</artifactId>
-                <version>1.25</version>
+                <version>1.29</version>
                 <configuration>
                     <versionFile>${project.build.outputDirectory}/aksess-version.properties</versionFile>
                 </configuration>
