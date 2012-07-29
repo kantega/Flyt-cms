@@ -73,6 +73,16 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         }
     }
 
+    public void optimize() {
+        try {
+            solrServer.optimize();
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ModifiableSolrParams getStreamParams(IndexableDocument document) {
         ModifiableSolrParams streamParams = new ModifiableSolrParams();
 

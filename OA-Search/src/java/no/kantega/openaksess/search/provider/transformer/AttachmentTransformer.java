@@ -39,7 +39,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             indexableDocument.addAttribute("publishDate", attachment.getLastModified());
 
 
-            indexableDocument.addAttribute("location", content.getAssociation().getPath() + "/" + content.getAssociation().getId());
+            indexableDocument.addAttribute("location", content.getAssociation().getPath() + content.getAssociation().getId());
             indexableDocument.setSiteId(content.getAssociation().getSiteId());
 
             OutputStream fileStream = null;

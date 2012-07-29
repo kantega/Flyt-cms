@@ -51,7 +51,7 @@ public class IndexRebuilder {
             }
         }
         documentIndexer.commit();
-
+        documentIndexer.optimize();
         stopWatch.stop();
         double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
         Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));

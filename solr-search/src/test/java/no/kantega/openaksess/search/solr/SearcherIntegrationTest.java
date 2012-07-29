@@ -18,7 +18,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void wildcardQueryShouldWork(){
-        SearchResult search = searcher.search("elektronisk faktura");
+        SearchResult search = searcher.search("as");
         int numberOfHits = search.getNumberOfHits();
         assertTrue("Number of hits should be larger than 0", numberOfHits > 0);
     }

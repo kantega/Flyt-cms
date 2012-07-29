@@ -11,4 +11,6 @@ public interface DocumentIndexer {
     public void commit();
 
     public void deleteById(List<String> s);
+
+    public void optimize();
 }
