@@ -25,6 +25,19 @@ public class IndexRebuilder {
     private final String category = getClass().getName();
 
     @PostConstruct
+    public void reindex(){
+        doReindex(new ProgressReporter() {
+            public void reportProgress(long current, String docType, long total) {
+                System.out.println(String.format("%s %s/%s", docType, current, total));
+            }
+
+            public void reportFinished() {
+                System.out.println("Finished");
+            }
+        });
+    }
+
+
     public void doReindex(ProgressReporter progressReporter){
         int nThreads = 15;
         Log.info(category, String.format("Starting reindex with a threadpool of size %s ", 15));

@@ -85,8 +85,7 @@
         <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true"/>
         <field name="visibilityStatus" type="text_general" indexed="true" stored="true"/>
         <field name="contentStatus" type="text_general" indexed="true" stored="true"/>
-        <field name="url" type="keyword" indexed="false" stored="true"/>
-
+        <field name="url" type="keyword" indexed="false" stored="true" multiValued="false"/>
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>

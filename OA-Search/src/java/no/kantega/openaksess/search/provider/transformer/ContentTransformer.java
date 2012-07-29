@@ -61,7 +61,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
-                if(value.isSearchable()){
+                if(value.isSearchable() && !value.getName().matches("title|description")){
                     String fieldName = getFieldName(value);
 
                     indexableDocument.addAttribute(fieldName, getValue(value));
@@ -69,6 +69,10 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             }
         }
         return indexableDocument;
+    }
+
+    public String getSupportedContentType() {
+        return HANDLED_DOCUMENT_TYPE;
     }
 
     private List<String> getKeywords(Content content) {

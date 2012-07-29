@@ -31,13 +31,12 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     private ContentTransformer transformer;
 
     public Iterator<IndexableDocument> provideDocuments() {
-
         return new IndexableContentDocumentIterator(dataSource, contentManagementService);
     }
 
     public long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForInt("SELECT count(*) FROM content WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+        return jdbcTemplate.queryForInt("SELECT count(*) FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
     }
 
     private class IndexableContentDocumentIterator implements Iterator<IndexableDocument>{
@@ -48,7 +47,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
             this.cms = cms;
             try {
                 Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT ContentId FROM content WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT content.ContentId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 resultSet = preparedStatement.executeQuery();
             } catch (SQLException e) {
                 throw new IllegalStateException("Could not connect to database", e);

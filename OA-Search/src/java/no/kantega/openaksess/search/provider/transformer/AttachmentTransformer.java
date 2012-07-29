@@ -57,6 +57,10 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
         return indexableDocument;
     }
 
+    public String getSupportedContentType() {
+        return HANDLED_DOCUMENT_TYPE;
+    }
+
     public String generateUniqueID(Attachment document) {
         return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
     }
