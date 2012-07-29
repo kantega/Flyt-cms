@@ -25,9 +25,7 @@
 
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
 
-        <property name="alwaysUseFullPath">
-            <value>true</value>
-        </property>
+        <property name="alwaysUseFullPath" value="true"/>
 
         <property name="mappings">
             <props>
@@ -201,9 +199,7 @@
     </bean>
 
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-        <property name="alwaysUseFullPath">
-            <value>true</value>
-        </property>
+        <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors">
             <list>
                 <ref bean="adminRoleInterceptor"/>
@@ -218,7 +214,7 @@
                 <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
                 <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
                 <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
-                <!--<prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>-->
+                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
                 <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
@@ -267,20 +263,12 @@
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
 
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AttachmentRequestHandler">
-        <property name="servletClass">
-            <value>no.kantega.publishing.client.AttachmentRequestHandler</value>
-        </property>
-        <property name="servletName">
-            <value>AttachmentRequestHandler</value>
-        </property>
+        <property name="servletClass" value="no.kantega.publishing.client.AttachmentRequestHandler"/>
+        <property name="servletName" value="AttachmentRequestHandler"/>
     </bean>
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
-        <property name="loginView">
-            <value>${security.login.view}</value>
-        </property>
-        <property name="loginLayout">
-            <value>${security.login.layout}</value>
-        </property>
+        <property name="loginView" value="${security.login.view}"/>
+        <property name="loginLayout" value="${security.login.layout}"/>
         <property name="userLoginRestrictor">
             <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
                 <property name="maxAttempts" value="5"/>
@@ -295,44 +283,22 @@
         </property>
     </bean>
     <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
-        <property name="requestResetPasswordView">
-            <value>${security.login.requestresetpassword.view}</value>
-        </property>
-        <property name="loginLayout">
-            <value>${security.login.layout}</value>
-        </property>
-        <property name="mailFrom">
-            <value>${mail.from}</value>
-        </property>
-        <property name="mailSubject">
-            <value>${security.login.requestresetpassword.mailsubject}</value>
-        </property>
-        <property name="mailTemplate">
-            <value>${security.login.requestresetpassword.mailtemplate}</value>
-        </property>
+        <property name="requestResetPasswordView" value="${security.login.requestresetpassword.view}"/>
+        <property name="loginLayout" value="${security.login.layout}"/>
+        <property name="mailFrom" value="${mail.from}"/>
+        <property name="mailSubject" value="${security.login.requestresetpassword.mailsubject}"/>
+        <property name="mailTemplate" value="${security.login.requestresetpassword.mailtemplate}"/>
     </bean>
     <bean class="no.kantega.publishing.security.action.ResetPasswordAction" id="ResetPasswordAction">
-        <property name="resetPasswordView">
-            <value>${security.login.resetpassword.view}</value>
-        </property>
-        <property name="loginLayout">
-            <value>${security.login.layout}</value>
-        </property>
-        <property name="resetPasswordErrorView">
-            <value>${security.login.errorview}</value>
-        </property>
-        <property name="minPasswordLength">
-            <value>${security.login.minpasswordlength}</value>
-        </property>
+        <property name="resetPasswordView" value="${security.login.resetpassword.view}"/>
+        <property name="loginLayout" value="${security.login.layout}"/>
+        <property name="resetPasswordErrorView" value="${security.login.errorview}"/>
+        <property name="minPasswordLength" value="${security.login.minpasswordlength}"/>
     </bean>
 
     <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="LogoutAction">
-        <property name="servletClass">
-            <value>no.kantega.publishing.security.action.LogoutAction</value>
-        </property>
-        <property name="servletName">
-            <value>LogoutAction</value>
-        </property>
+        <property name="servletClass" value="no.kantega.publishing.security.action.LogoutAction"/>
+        <property name="servletName" value="LogoutAction"/>
     </bean>
     <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
     <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
@@ -350,9 +316,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/generic/windowclose.jsp"/>
     </bean>
     <bean class="no.kantega.useradmin.controls.CreateInitialUserController" id="CreateInitialUserAction">
-        <property name="defaultDomain">
-            <value>${security.defaultdomain}</value>
-        </property>
+        <property name="defaultDomain" value="${security.defaultdomain}"/>
         <property name="profileConfiguration" ref="profileConfigurations"/>
         <property name="roleConfiguration" ref="roleConfigurations"/>
         <property name="tokenFile" value="${appDir}/security/initialusertoken.txt"/>
@@ -671,11 +635,12 @@
     <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
     </bean>
-    <!--<bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
-        <property name="indexManager" ref="indexManager" />
+
+    <bean id="rebuildIndexAction" class="no.kantega.openaksess.search.controller.RebuildIndexAction">
         <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
         <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
-    </bean>-->
+    </bean>
+
     <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>
@@ -792,7 +757,7 @@
     </bean>
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass"><value>org.springframework.web.servlet.view.JstlView</value></property>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     </bean>
 
     <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>

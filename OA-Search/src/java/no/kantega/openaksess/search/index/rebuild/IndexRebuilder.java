@@ -15,6 +15,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
+
 @Component
 public class IndexRebuilder {
 
@@ -25,12 +27,15 @@ public class IndexRebuilder {
     private DocumentIndexer documentIndexer;
     private final String category = getClass().getName();
 
-    public List<ProgressReporter> startIndexing(int nThreads) {
+    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude) {
         final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
         final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>();
         for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
-            ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments, nThreads);
-            progressReporters.add(progressReporter);
+            boolean providerIsNotExcluded = !providersToExclude.contains(indexableDocumentProvider.getClass().getSimpleName());
+            if (providerIsNotExcluded) {
+                ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments, nThreads);
+                progressReporters.add(progressReporter);
+            }
         }
 
         new Thread(new Runnable() {
@@ -52,14 +57,6 @@ public class IndexRebuilder {
                     double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
                     Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
                 }
-            }
-
-            private boolean notAllProgressReportersAreMarkedAsFinished(List<ProgressReporter> progressReporters) {
-                boolean isFinished = false;
-                for (ProgressReporter progressReporter : progressReporters) {
-                    isFinished |= !progressReporter.isFinished();
-                }
-                return isFinished;
             }
         }).start();
         return progressReporters;
