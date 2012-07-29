@@ -7,8 +7,13 @@ import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.util.List;
 import java.util.Map;
 
 import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
@@ -16,6 +21,8 @@ import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOC
 @Component
 public class ContentTransformer implements DocumentTransformer<Content> {
     private static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
+
+    private JdbcTemplate jdbcTemplate;
 
     public IndexableDocument transform(Content content) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(content));
@@ -48,6 +55,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.addAttribute("author", content.getOwnerPerson());
             indexableDocument.addAttribute("keywords", content.getKeywords());
             indexableDocument.addAttribute("url", content.getUrl());
+            indexableDocument.addAttribute("topics", getTopics(content.getId()));
 
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
@@ -59,6 +67,14 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             }
         }
         return indexableDocument;
+    }
+
+    private List<String> getTopics(int contentId) {
+        return jdbcTemplate.queryForList("SELECT tmbasename.Basename " +
+                "FROM ct2topic, tmbasename " +
+                "WHERE ContentId=? " +
+                "AND tmbasename.TopicId=ct2topic.TopicId " +
+                "AND tmbasename.TopicMapId=ct2topic.TopicMapId", String.class, contentId);
     }
 
     private String getFieldName(Attribute attribute) {
@@ -99,5 +115,11 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
     public String generateUniqueID(Content document) {
         return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
+    }
+
+    @Autowired
+    @Qualifier("aksessDataSource")
+    public void setDataSource(DataSource dataSource){
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 }
