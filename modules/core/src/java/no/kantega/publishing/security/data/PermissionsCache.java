@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.security.data;
 
-import no.kantega.publishing.security.ao.PermissionsAO;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.security.ao.PermissionsAO;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 public class PermissionsCache {
     private static final String SOURCE = "aksess.PermissionsCache";
@@ -36,8 +36,8 @@ public class PermissionsCache {
         if ((lastUpdate == null) || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime())) {
             reloadCache();
         }
-
-        return permissions.get("" + object.getSecurityId() + "/" + object.getObjectType());
+        String key = String.format("%s/%s", object.getSecurityId() , object.getObjectType());
+        return permissions.get(key);
     }
 
     public static void reloadCache() throws SystemException {

@@ -106,7 +106,7 @@ public class PermissionsAO {
     }
 
 
-    public static void setPermissions(BaseObject object, List permissions) throws SystemException {
+    public static void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
         int securityId = object.getSecurityId();
 
         Connection c = null;
@@ -137,8 +137,7 @@ public class PermissionsAO {
 
             // Sett inn nye rettigheter
             if (permissions != null) {
-                for (int i = 0; i < permissions.size(); i++) {
-                    Permission permission = (Permission)permissions.get(i);
+                for (Permission permission : permissions) {
                     SecurityIdentifier sid = permission.getSecurityIdentifier();
                     st.setInt(1, object.getId());
                     st.setInt(2, object.getObjectType());
@@ -188,8 +187,8 @@ public class PermissionsAO {
         }
     }
 
-    public static List getPermissionsOverview(int objectType) throws SystemException {
-        List overview = new ArrayList();
+    public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
+        List<ObjectPermissionsOverview> overview = new ArrayList<ObjectPermissionsOverview>();
 
         Connection c = null;
         try {
@@ -206,7 +205,7 @@ public class PermissionsAO {
             st.setInt(1, objectType);
             ResultSet rs = st.executeQuery();
 
-            List permissions = new ArrayList();
+            List<Permission> permissions = new ArrayList<Permission>();
             int prev = -1;
             while(rs.next()) {
                 String name = rs.getString("Name");
@@ -214,7 +213,7 @@ public class PermissionsAO {
                 if (id != prev) {
                     ObjectPermissionsOverview opo = new ObjectPermissionsOverview();
                     opo.setName(name);
-                    permissions = new ArrayList();
+                    permissions = new ArrayList<Permission>();
                     opo.setPermissions(permissions);
                     overview.add(opo);
                     prev = id;
