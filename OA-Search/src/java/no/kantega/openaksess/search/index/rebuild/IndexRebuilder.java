@@ -3,15 +3,17 @@ package no.kantega.openaksess.search.index.rebuild;
 import no.kantega.commons.log.Log;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
+import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class IndexRebuilder {
@@ -23,48 +25,43 @@ public class IndexRebuilder {
     private DocumentIndexer documentIndexer;
     private final String category = getClass().getName();
 
-    public void reindex(){
-        doReindex(new ProgressReporter() {
-            public void reportProgress(long current, String docType, long total) {
-                System.out.println(String.format("%s %s/%s", docType, current, total));
-            }
-
-            public void reportFinished() {
-                System.out.println("Finished");
-            }
-        });
-    }
-
-
-    public void doReindex(ProgressReporter progressReporter){
-        int nThreads = 15;
-        Log.info(category, String.format("Starting reindex with a threadpool of size %s ", 15));
-        StopWatch stopWatch = new StopWatch(category);
-        stopWatch.start();
-
-        ExecutorService executorService = Executors.newFixedThreadPool(nThreads);
-
+    public List<ProgressReporter> startIndexing(int nThreads) {
+        final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
+        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>();
         for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
-            long numberOfDocuments = indexableDocumentProvider.getNumberOfDocuments();
-            Iterator<IndexableDocument> indexableDocumentIterator = indexableDocumentProvider.provideDocuments();
-            long progressCounter = 0L;
-            while (indexableDocumentIterator.hasNext()){
-                final IndexableDocument next = indexableDocumentIterator.next();
-                if (next.shouldIndex()) {
-                    progressReporter.reportProgress(progressCounter++, next.getContentType(), numberOfDocuments);
-                    executorService.execute(new Runnable() {
-                        public void run() {
-                            documentIndexer.indexDocument(next);
-                        }
-                    });
+            ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments, nThreads);
+            progressReporters.add(progressReporter);
+        }
 
+        new Thread(new Runnable() {
+            public void run() {
+                Log.info(category, "Starting reindex");
+                StopWatch stopWatch = new StopWatch(category);
+                stopWatch.start();
+                try {
+                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                        IndexableDocument poll = indexableDocuments.poll(1000, TimeUnit.MINUTES);
+                        documentIndexer.indexDocument(poll);
+                    }
+                } catch (InterruptedException e) {
+                    Log.error(category, e);
+                }finally {
+                    documentIndexer.commit();
+                    documentIndexer.optimize();
+                    stopWatch.stop();
+                    double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+                    Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
                 }
             }
-        }
-        documentIndexer.commit();
-        documentIndexer.optimize();
-        stopWatch.stop();
-        double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
-        Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
+
+            private boolean notAllProgressReportersAreMarkedAsFinished(List<ProgressReporter> progressReporters) {
+                boolean isFinished = false;
+                for (ProgressReporter progressReporter : progressReporters) {
+                    isFinished |= !progressReporter.isFinished();
+                }
+                return isFinished;
+            }
+        }).start();
+        return progressReporters;
     }
 }

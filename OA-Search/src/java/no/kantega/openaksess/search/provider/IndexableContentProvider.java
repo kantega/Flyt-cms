@@ -1,10 +1,12 @@
 package no.kantega.openaksess.search.provider;
 
+import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.IndexableDocument;
+import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,8 +17,9 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class IndexableContentProvider implements IndexableDocumentProvider {
@@ -28,51 +31,74 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     @Autowired
     private ContentTransformer transformer;
 
-    public Iterator<IndexableDocument> provideDocuments() {
+    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments, int numberOfThreads) {
         ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
-        return new IndexableContentDocumentIterator(dataSource, contentManagementService);
+        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
+        new Thread(new IDProducer(dataSource, ids)).start();
+        ProgressReporter progressReporter = new ProgressReporter(ContentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
+        for (int i = 0; i < numberOfThreads; i++){
+            new Thread(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments)).start();
+        }
+
+        return progressReporter;
     }
 
-    public long getNumberOfDocuments() {
+    private long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.queryForInt("SELECT count(*) FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
     }
 
-    private class IndexableContentDocumentIterator implements Iterator<IndexableDocument>{
-        private final ResultSet resultSet;
-        private final ContentManagementService cms;
+    private class IDProducer implements Runnable {
+        private final DataSource dataSource;
+        private final LinkedBlockingQueue<Integer> ids;
 
-        private IndexableContentDocumentIterator(DataSource dataSource, ContentManagementService cms) {
-            this.cms = cms;
+        private IDProducer(DataSource dataSource, LinkedBlockingQueue<Integer> ids) {
+            this.dataSource = dataSource;
+            this.ids = ids;
+        }
+
+        public void run() {
             try {
                 Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT content.ContentId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
-                resultSet = preparedStatement.executeQuery();
-            } catch (SQLException e) {
-                throw new IllegalStateException("Could not connect to database", e);
-            }
-        }
-
-        public boolean hasNext() {
-            try {
-                return resultSet.next();
-            } catch (SQLException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        public IndexableDocument next() {
-            try {
-                ContentIdentifier contentIdentifier = new ContentIdentifier();
-                contentIdentifier.setContentId(resultSet.getInt("ContentId"));
-                return transformer.transform(cms.getContent(contentIdentifier));
+                ResultSet resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()){
+                    ids.put(resultSet.getInt("ContentId"));
+                }
             } catch (Exception e) {
-              throw new IllegalStateException(e);
+                Log.error(getClass().getName(), e);
             }
         }
+    }
 
-        public void remove() {
-            throw new UnsupportedOperationException("Remove is not supported");
+    private class ContentProducer implements Runnable {
+
+        private final ProgressReporter progressReporter;
+        private final ContentManagementService contentManagementService;
+        private final LinkedBlockingQueue<Integer> ids;
+        private final BlockingQueue<IndexableDocument> indexableDocuments;
+
+        public ContentProducer(ProgressReporter progressReporter, ContentManagementService contentManagementService, LinkedBlockingQueue<Integer> ids, BlockingQueue<IndexableDocument> indexableDocuments) {
+            this.progressReporter = progressReporter;
+            this.contentManagementService = contentManagementService;
+            this.ids = ids;
+            this.indexableDocuments = indexableDocuments;
+        }
+
+        public void run() {
+            while (!progressReporter.isFinished()){
+                try {
+                    Integer id = ids.poll(1000, TimeUnit.SECONDS);
+                    ContentIdentifier contentIdentifier = new ContentIdentifier();
+                    contentIdentifier.setContentId(id);
+                    progressReporter.reportProgress();
+                    IndexableDocument indexableDocument = transformer.transform(contentManagementService.getContent(contentIdentifier));
+                    indexableDocuments.put(indexableDocument);
+                } catch (Exception e) {
+                    Log.error(getClass().getName(), e);
+                }
+
+            }
         }
     }
 }
