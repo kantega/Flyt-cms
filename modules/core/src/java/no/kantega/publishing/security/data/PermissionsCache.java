@@ -29,7 +29,7 @@ import java.util.List;
 public class PermissionsCache {
     private static final String SOURCE = "aksess.PermissionsCache";
 
-    private static HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
+    private static final HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
     private static Date lastUpdate = null;
 
     public static List<Permission> getPermissions(BaseObject object) throws SystemException {
@@ -46,7 +46,7 @@ public class PermissionsCache {
         synchronized (permissions) {
             lastUpdate  = new Date();
 
-            HashMap tmp = PermissionsAO.getPermissionMap();
+            HashMap<String, List<Permission>> tmp = PermissionsAO.getPermissionMap();
             permissions.clear();
             permissions.putAll(tmp);
         }

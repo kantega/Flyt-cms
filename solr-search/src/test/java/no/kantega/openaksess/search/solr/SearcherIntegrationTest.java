@@ -1,9 +1,9 @@
 package no.kantega.openaksess.search.solr;
 
-import no.kantega.search.api.search.SearchResponse;
-import no.kantega.search.api.search.SearchResult;
-import no.kantega.search.api.search.Searcher;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.search.api.search.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +21,17 @@ public class SearcherIntegrationTest {
     @Autowired
     private Searcher searcher;
     private SearchResponse searchResponse;
-    private final String query = "title_no:as";
+    private final String fullQuery = "title_no:as";
+    private final String originalQuery = "as";
 
     @Before
     public void doSearch(){
-        searchResponse = searcher.search(query);
+        SearchContext searchContext = new SearchContext() {
+
+        };
+        SearchQuery q = new SearchQuery(searchContext, originalQuery);
+        q.setFullQuery(fullQuery);
+        searchResponse = searcher.search(q);
     }
 
     @Test
@@ -34,20 +40,61 @@ public class SearcherIntegrationTest {
     }
 
     @Test
+    @Ignore // search under 1 second is possible
     public void resultShouldHaveQueryTime(){
         assertTrue("QueryTime should be larger than 0", searchResponse.getQueryTime() > 0);
     }
 
     @Test
     public void resultShouldHaveSearchString(){
-        assertEquals("Query should be equal", query, searchResponse.getQuery());
+        assertEquals("Query should be equal", fullQuery, searchResponse.getQuery().getFullQuery());
+        assertEquals("Query should be equal", originalQuery, searchResponse.getQuery().getOriginalQuery());
     }
 
     @Test
     public void allResultsShouldHaveASinTitle(){
+        doForAllhits(new Assertion() {
+            public void doAssert(SearchResult searchResult) {
+                assertTrue(searchResult.getTitle().toLowerCase().contains("as"));
+            }
+        });
+    }
+
+    @Test
+    public void allResultsShouldHaveContentObjects(){
+        doForAllhits(new Assertion() {
+            public void doAssert(SearchResult searchResult) {
+                assertTrue(searchResult.getDocument() instanceof Content);
+            }
+        });
+    }
+
+    @Test
+    public void allResultsShouldHaveId(){
+        doForAllhits(new Assertion() {
+            public void doAssert(SearchResult searchResult) {
+                assertTrue(searchResult.getId() > 0);
+            }
+        });
+    }
+
+    @Test
+    public void allResultsShouldHaveSecurityId(){
+        doForAllhits(new Assertion() {
+            public void doAssert(SearchResult searchResult) {
+                assertTrue(searchResult.getSecurityId() > 0);
+            }
+        });
+    }
+
+    private void doForAllhits(Assertion assertion){
         List<SearchResult> documentHits = searchResponse.getDocumentHits();
         for (SearchResult documentHit : documentHits) {
-            assertTrue(documentHit.getTitle().toLowerCase().contains("as"));
+            assertion.doAssert(documentHit);
         }
+    }
+
+    private interface Assertion {
+        void doAssert(SearchResult searchResult);
     }
 }

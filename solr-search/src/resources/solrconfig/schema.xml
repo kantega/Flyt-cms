@@ -58,6 +58,7 @@
 
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" />
+        <field name="securityId" type="int" indexed="true" stored="true" required="true" />
         <field name="indexedContentType" type="text_general" indexed="true" stored="true" required="true" />
         <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />

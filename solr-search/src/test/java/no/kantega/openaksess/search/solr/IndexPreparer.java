@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.solr;
 
-import no.kantega.openaksess.search.solr.config.SolrConfiguration;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.tika.io.IOUtils;
@@ -19,8 +18,6 @@ public class IndexPreparer extends PropertyPlaceholderConfigurer {
 
     private File tempDir = new File(System.getProperty("java.io.tmpdir"));
     private final File zipFile = new File(tempDir, "solr.zip");
-
-    private SolrConfiguration solrConfiguration;
 
     public void unpackIndex() throws IOException {
         zipFile.deleteOnExit();
