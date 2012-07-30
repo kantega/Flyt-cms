@@ -79,7 +79,7 @@ public class RebuildIndexAction extends AdminController {
         List<String> excludedProviders = new ArrayList<String>();
         for (IndexableDocumentProvider provider : indexableDocumentProviders) {
             String simpleName = provider.getClass().getSimpleName();
-            if(ServletRequestUtils.getBooleanParameter(request, "exclude" + simpleName, false)){
+            if(ServletRequestUtils.getBooleanParameter(request, "exclude." + simpleName, false)){
                 excludedProviders.add(simpleName);
             }
         }
