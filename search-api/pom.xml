@@ -12,5 +12,11 @@
     <artifactId>oa-search-api</artifactId>
     <name>OpenAksess Search API</name>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>com.google.gdata</groupId>
+            <artifactId>gdata-core</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 </project>

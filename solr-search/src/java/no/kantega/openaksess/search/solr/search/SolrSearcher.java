@@ -1,14 +1,14 @@
 package no.kantega.openaksess.search.solr.search;
 
+import com.google.gdata.util.common.base.Pair;
 import no.kantega.search.api.retrieve.DocumentRetriever;
-import no.kantega.search.api.search.SearchQuery;
-import no.kantega.search.api.search.SearchResponse;
-import no.kantega.search.api.search.SearchResult;
-import no.kantega.search.api.search.Searcher;
+import no.kantega.search.api.search.*;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.client.solrj.response.RangeFacet;
 import org.apache.solr.client.solrj.response.SpellCheckResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
@@ -37,31 +37,102 @@ public class SolrSearcher implements Searcher {
             SolrQuery params = new SolrQuery(query.getFullQuery());
             params.set("spellcheck", "on");
 
-            params.setHighlight(query.isHighlightSearchResultDescription());
-            params.setHighlightSimplePre("<span class=\"highlight\"/>");
-            params.setHighlightSimplePost("</span>");
-            params.set("hl.fl", "description*");
+            setHighlighting(query, params);
+
+            addFacetQueryInformation(query, params);
 
             QueryResponse queryResponse = solrServer.query(params);
+
             SolrDocumentList results = queryResponse.getResults();
             searchResponse.setQueryTime(queryResponse.getQTime());
             searchResponse.setQuery(query);
 
-            List<SearchResult> searchResults = new ArrayList<SearchResult>();
-            for (SolrDocument result : results) {
-                searchResults.add(createSearchResult(result, queryResponse, query));
-            }
-            searchResponse.setDocumentHits(searchResults);
+            addSearchResults(query, searchResponse, queryResponse, results);
             setSpellResponse(searchResponse, queryResponse);
+
+            addFacetResults(searchResponse, queryResponse);
+
             return searchResponse;
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
         }
     }
 
+    private void addFacetQueryInformation(SearchQuery query, SolrQuery params) {
+        boolean useFacet = query.useFacet();
+        params.setFacet(useFacet);
+        if (useFacet) {
+            params.setFacetMinCount(1);
+            for(String field : query.getFacetFields()){
+                params.addFacetField(field);
+            }
+            for(String facetquery : query.getFacetQueries()){
+                params.addFacetQuery(facetquery);
+            }
+            for (DateRange dateRange : query.getDateRangeFacets()){
+                params.addDateRangeFacet(dateRange.getField(), dateRange.getFrom(), dateRange.getTo(), dateRange.getGap());
+            }
+            for(String facetQuery : query.getFacetQueries()){
+                params.addFacetQuery(facetQuery);
+            }
+        }
+    }
+
+    private void addFacetResults(SearchResponse searchResponse, QueryResponse queryResponse) {
+        List<FacetField> facetFields = queryResponse.getFacetFields();
+        if (facetFields != null) {
+            Map<String, List<Pair<String, Long>>> facetFieldsResult = new HashMap<String, List<Pair<String, Long>>>();
+            for(FacetField facetField : facetFields){
+                List<Pair<String, Long>> valuesAndCount = new ArrayList<Pair<String, Long>>();
+                for(FacetField.Count count : facetField.getValues()){
+                    valuesAndCount.add(new Pair<String, Long>(count.getName(), count.getCount()));
+                }
+                facetFieldsResult.put(facetField.getName(), valuesAndCount);
+            }
+            searchResponse.setFacetFields(facetFieldsResult);
+        }
+        List<RangeFacet> facetRanges = queryResponse.getFacetRanges();
+        if(facetRanges != null){
+            Map<String, List<Pair<String, Integer>>> rangeFacetResult = new HashMap<String, List<Pair<String, Integer>>>();
+            for(RangeFacet facetRange : facetRanges){
+                List<RangeFacet.Count> counts = facetRange.getCounts();
+                List<Pair<String, Integer>> resultCounts = new ArrayList<Pair<String, Integer>>();
+                for (RangeFacet.Count count : counts) {
+                    resultCounts.add(new Pair<String, Integer>(count.getValue(), count.getCount()));
+                }
+                rangeFacetResult.put(facetRange.getName(), resultCounts);
+            }
+            searchResponse.setRangeFacet(rangeFacetResult);
+        }
+
+        Map<String, Integer> facetQuery = queryResponse.getFacetQuery();
+        if(facetQuery != null){
+            List<Pair<String, Integer>> facetQueryResults = new ArrayList<Pair<String, Integer>>();
+            for (Map.Entry<String, Integer> facetQueryEntry : facetQuery.entrySet()) {
+                facetQueryResults.add(new Pair<String, Integer>(facetQueryEntry.getKey(), facetQueryEntry.getValue()));
+            }
+            searchResponse.setFacetQuery(facetQueryResults);
+        }
+    }
+
+    private void setHighlighting(SearchQuery query, SolrQuery params) {
+        params.setHighlight(query.isHighlightSearchResultDescription());
+        params.setHighlightSimplePre("<span class=\"highlight\"/>");
+        params.setHighlightSimplePost("</span>");
+        params.set("hl.fl", "description*");
+    }
+
+    private void addSearchResults(SearchQuery query, SearchResponse searchResponse, QueryResponse queryResponse, SolrDocumentList results) {
+        List<SearchResult> searchResults = new ArrayList<SearchResult>();
+        for (SolrDocument result : results) {
+            searchResults.add(createSearchResult(result, queryResponse, query));
+        }
+        searchResponse.setDocumentHits(searchResults);
+    }
+
     private void setSpellResponse(SearchResponse searchResponse, QueryResponse queryResponse) {
         SpellCheckResponse spellCheckResponse = queryResponse.getSpellCheckResponse();
-        if(!spellCheckResponse.isCorrectlySpelled()){
+        if(spellCheckResponse != null && !spellCheckResponse.isCorrectlySpelled()){
             List<String> suggestionStrings = getSpellSuggestions(spellCheckResponse);
             searchResponse.setSpellSuggestions(suggestionStrings);
         }

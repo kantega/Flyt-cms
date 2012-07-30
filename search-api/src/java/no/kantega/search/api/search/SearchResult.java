@@ -1,6 +1,24 @@
 package no.kantega.search.api.search;
 
 public class SearchResult {
+    /*
+    private String title = "";
+    private String summary = "";
+    private String allText = "";
+    private String contextText = "";
+    private String url = "";
+    private Date lastModified = null;
+    private List<PathEntry> pathElements = null;
+    private String fileExtension = null;
+    private String fileName = null;
+    private int fileSize = 0;
+    private MimeType mimeType = null;
+    private boolean doOpenInNewWindow = false;
+    private int id = -1;
+    private Content contentObject;
+     */
+
+
     private final int id;
     private final String indexedContentType;
     private final String title;
