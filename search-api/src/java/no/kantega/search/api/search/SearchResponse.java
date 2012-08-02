@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The response returned as result of a SearchQuery
+ * @see SearchQuery
+ */
 public class SearchResponse {
     private int queryTime;
     private SearchQuery query;
@@ -15,38 +19,40 @@ public class SearchResponse {
     private Map<String, List<Pair<String, Integer>>> rangeFacet;
     private List<Pair<String, Integer>> facetQuery;
 
-    public int getNumberOfHits() {
-        if (documentHits != null) {
-            return documentHits.size();
-        } else {
-            return 0;
-        }
-    }
-
-    public void setQueryTime(int queryTime) {
+    public SearchResponse(SearchQuery query, int queryTime, List<SearchResult> searchResults) {
+        this.query = query;
         this.queryTime = queryTime;
+        this.documentHits = searchResults;
     }
 
+    public int getNumberOfHits() {
+         return documentHits.size();
+    }
+
+    /**
+     * @return the time in ms the search server used processing the query
+     */
     public int getQueryTime() {
         return queryTime;
     }
 
+    /**
+     * @return the query this SearchResponse is a response of.
+     */
     public SearchQuery getQuery() {
         return query;
     }
 
-    public void setQuery(SearchQuery query) {
-        this.query = query;
-    }
-
-    public void setDocumentHits(List<SearchResult> documentHits) {
-        this.documentHits = documentHits;
-    }
-
+    /**
+     * @return a list containing the actual hits of the query
+     */
     public List<SearchResult> getDocumentHits() {
         return documentHits;
     }
 
+    /**
+     * @return Spellsuggestions suggested by the search server.
+     */
     public List<String> getSpellSuggestions() {
         if(spellSuggestions == null) return Collections.emptyList();
 
@@ -61,6 +67,10 @@ public class SearchResponse {
         this.facetFields = facetFields;
     }
 
+    /**
+     * @return a map where the key is the name of the indexed field in which the facetes are created. Each entry is
+     * a list of facetes with a value and the document count for the facet.
+     */
     public Map<String, List<Pair<String, Long>>> getFacetFields() {
         return facetFields;
     }
@@ -69,6 +79,9 @@ public class SearchResponse {
         this.rangeFacet = rangeFacet;
     }
 
+    /**
+     * @return the result of adding dateRange for the SearchQuery.
+     */
     public Map<String, List<Pair<String, Integer>>> getRangeFacet() {
         if(rangeFacet == null){
             rangeFacet = Collections.emptyMap();
@@ -80,6 +93,9 @@ public class SearchResponse {
         this.facetQuery = facetQuery;
     }
 
+    /**
+     * @return a list of Pair<String, Integer> containing the value of each facet query, and the resulting document count.
+     */
     public List<Pair<String, Integer>> getFacetQuery() {
         if(facetQuery == null){
             facetQuery = Collections.emptyList();

@@ -4,6 +4,15 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A document containing information to be indexed.
+ * If fields other than the ones specified should be indexed they should be put
+ * into the attributes map. All primitive objects and Date are handled automatically.
+ * The names of the attributes have to have a postfix such that it is picked up by the dynamic fields in solr, defined in schema.xml.
+ *
+ * If content in a files is to be submitted for indexing, save it to a file and use setFileContent. The content of the file is then
+ * associated with this document.
+ */
 public class IndexableDocument {
     private final String uid;
     private String id;
@@ -19,6 +28,9 @@ public class IndexableDocument {
     private boolean shouldIndex = false;
     private int securityId;
 
+    /**
+     * @param uid unique for the qhole index. Typically indexedContentType-Id.
+     */
     public IndexableDocument(String uid) {
         this.uid = uid;
     }

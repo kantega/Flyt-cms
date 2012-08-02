@@ -1,5 +1,8 @@
 package no.kantega.openaksess.search.controller;
 
+import no.kantega.openaksess.search.security.AksessSearchContext;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.Searcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,49 +11,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 @Controller
 public class AutoSuggestController {
-
+    @Autowired
     private Searcher searcher;
 
     @RequestMapping("/autosuggest")
-    public @ResponseBody String search(@RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) throws UnsupportedEncodingException {
-    /*    List<Suggestion> suggestionList = suggest(decodeTerm(term), limit);
-        return printSuggestions(suggestionList);*/
-        return "";
-    }
-/*
-    private List<Suggestion> suggest(String term, int limit) {
-        List<Suggestion> suggestions = new ArrayList<Suggestion>();
-        if (isNotBlank(term)) {
-            //CompletionQuery query = new CompletionQuery();
-            //query.setText(term);
-            //query.setMax(limit);
-            //suggestions = searcher.suggest(term);
-        }
-        return suggestions;
-    }
+    public @ResponseBody
+    List<String> search(@RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) throws UnsupportedEncodingException {
 
-    private String printSuggestions(List<Suggestion> suggestionList) throws UnsupportedEncodingException {
-        StringBuilder builder = new StringBuilder();
-        for (Suggestion suggestion : suggestionList) {
-            builder.append(suggestion.getPhrase());
-            builder.append('\n');
-        }
-      return builder.toString();
-    }
-
-    private String decodeTerm(String term) throws UnsupportedEncodingException {
-        if (term != null) {
-            term = URLDecoder.decode(term, "UTF-8");
-            term = term.toLowerCase();
-        }
-        return term;
-    }*/
-
-    @Autowired
-    public void setSearcher(Searcher searcher) {
-        this.searcher = searcher;
+        return searcher.suggest(new SearchQuery(new AksessSearchContext(SecuritySession.createNewUnauthenticatedInstance()), term, term));
     }
 }

@@ -32,7 +32,6 @@ public class SolrSearcher implements Searcher {
     private Map<String, DocumentRetriever> documentRetrievers;
 
     public SearchResponse search(SearchQuery query) {
-        SearchResponse searchResponse = new SearchResponse();
         try {
             SolrQuery params = new SolrQuery(query.getFullQuery());
             params.set("spellcheck", "on");
@@ -44,10 +43,8 @@ public class SolrSearcher implements Searcher {
             QueryResponse queryResponse = solrServer.query(params);
 
             SolrDocumentList results = queryResponse.getResults();
-            searchResponse.setQueryTime(queryResponse.getQTime());
-            searchResponse.setQuery(query);
+            SearchResponse searchResponse = new SearchResponse(query, queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
 
-            addSearchResults(query, searchResponse, queryResponse, results);
             setSpellResponse(searchResponse, queryResponse);
 
             addFacetResults(searchResponse, queryResponse);
@@ -122,12 +119,12 @@ public class SolrSearcher implements Searcher {
         params.set("hl.fl", "description*");
     }
 
-    private void addSearchResults(SearchQuery query, SearchResponse searchResponse, QueryResponse queryResponse, SolrDocumentList results) {
+    private List<SearchResult> addSearchResults(SearchQuery query, QueryResponse queryResponse, SolrDocumentList results) {
         List<SearchResult> searchResults = new ArrayList<SearchResult>();
         for (SolrDocument result : results) {
             searchResults.add(createSearchResult(result, queryResponse, query));
         }
-        searchResponse.setDocumentHits(searchResults);
+        return searchResults;
     }
 
     private void setSpellResponse(SearchResponse searchResponse, QueryResponse queryResponse) {

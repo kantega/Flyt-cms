@@ -106,7 +106,7 @@
         <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
         <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
-        <dynamicField name="*_url" type="url"    indexed="true"  stored="false"/>
+        <dynamicField name="*_str" type="string"    indexed="true"  stored="false"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>

@@ -19,6 +19,10 @@ package no.kantega.search.api.index;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * When reindexing the reindexer should report to the
+ * ProgressReporter as it submits documents.
+ */
 public class ProgressReporter {
 
     private final String docType;
@@ -26,6 +30,10 @@ public class ProgressReporter {
     private final AtomicLong current;
     private final AtomicBoolean isFinished;
 
+    /**
+     * @param docType - the document type of this indexprocess, typically the value of indexedContentType
+     * @param total - The total number of documents that is submitted.
+     */
     public ProgressReporter(String docType, long total) {
         this.docType = docType;
         this.total = total;
@@ -33,16 +41,25 @@ public class ProgressReporter {
         isFinished = new AtomicBoolean(false);
     }
 
+    /**
+     * Report that processing and submiting of a single document has been performed.
+     */
     public void reportProgress(){
         if(current.incrementAndGet() == total){
             isFinished.set(true);
         }
     }
 
+    /**
+     * @return true if the progress has been reported as many times as the number of total documents.
+     */
     public boolean isFinished(){
         return isFinished.get();
     }
 
+    /**
+     * @return the current number of progresses made, i.e. how many times reportProgress has been called.
+     */
     public long getCurrent() {
         return current.get();
     }

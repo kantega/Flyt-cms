@@ -122,7 +122,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                 fieldname.append("no");
             }
         } else if (attribute instanceof UrlAttribute){
-            fieldname.append("url");
+            fieldname.append("str");
         }
         return fieldname.toString();
     }

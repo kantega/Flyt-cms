@@ -22,16 +22,16 @@ public interface Searcher {
 
     
     /**
-     * Utfører et søk basert på det gitte SearchQuery'et.
+     * Perform a search based on the SearchQuery
      *
-     * @param query et SearchQuery-objekt som beskriver søket som skal utføres.
-     * @return et SearchResult-objekt.
+     * @param query - a SearchQuery..
+     * @return a SearchResponse containing information about the result of the query.
      */
     public SearchResponse search(SearchQuery query);
 
     /**
-     * @param query et SuggestionQuery-objekt
-     * @return en liste med Suggestion-objekter, sortert etter antall treff
+     * @param query a SuggestionQuery
+     * @return a list of suggestions based on the query.
      */
     public List<String> suggest(SearchQuery query);
 

@@ -8,6 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SolrConfigInitializer {
+    /**
+     * Checks for the presense of solrHome. If it does not exist,
+     * the neccesarry folders are created and the default configuration files
+     * are copied into the appropriate directories.
+     * @param solrHome - The location of SolrHome. Typically ${appDir}/solr
+     * @return The file for solr.xml, solrHome/solr.xml
+     */
     public static File initSolrConfigIfAbsent(File solrHome) {
         File solrConfigFile = new File(solrHome, "solr.xml");
         if(!solrHome.exists()){

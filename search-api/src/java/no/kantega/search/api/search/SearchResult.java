@@ -1,5 +1,9 @@
 package no.kantega.search.api.search;
 
+/**
+ * A single hit in a SearchResponse
+ * @see SearchResponse
+ */
 public class SearchResult {
     /*
     private String title = "";
@@ -28,6 +32,15 @@ public class SearchResult {
     private Object document;
     private final int securityId;
 
+    /**
+     * @param id of the content this result is based on.
+     * @param securityId of the content this result is based on.
+     * @param indexedContentType the type on content this is.
+     * @param title of the document.
+     * @param description of the document.
+     * @param author of the document.
+     * @param url of the document.
+     */
     public SearchResult(int id, int securityId, String indexedContentType, String title, String description, String author, String url) {
         this.id = id;
         this.securityId = securityId;
