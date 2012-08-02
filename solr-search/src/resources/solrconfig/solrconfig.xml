@@ -173,15 +173,17 @@
         <httpCaching never304="true" />
 
     </requestDispatcher>
+
     <requestHandler name="/select" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="defType">dismax</str>
+            <str name="defType">edismax</str>
+            <str name="fl">id,securityId,title_*,indexedContentType,author,url,language</str>
+            <str name="qf">*</str>
             <str name="echoParams">explicit</str>
-            <int name="rows">10</int>
-            <str name="df">title_no</str>
+            <int name="rows">50</int>
             <str name="spellcheck.onlyMorePopular">false</str>
             <str name="spellcheck.extendedResults">false</str>
-            <str name="spellcheck.count">1</str>
+            <str name="spellcheck.count">3</str>
         </lst>
 
         <arr name="last-components">
@@ -428,7 +430,7 @@
         -->
         <lst name="spellchecker">
             <str name="name">default</str>
-            <str name="field">title_no</str>
+            <str name="field">all_text_no</str>
             <str name="spellcheckIndexDir">spellchecker</str>
             <str name="buildOnCommit">true</str>
             <!-- uncomment this to require terms to occur in 1% of the documents

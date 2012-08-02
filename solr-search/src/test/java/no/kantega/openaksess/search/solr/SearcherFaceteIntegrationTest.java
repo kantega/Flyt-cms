@@ -53,6 +53,6 @@ public class SearcherFaceteIntegrationTest {
         q.setFacetQueries(Arrays.asList("publishDate:[* TO 2011-12-30T23:59:59Z]", "publishDate:[2012-01-01T23:59:59Z TO *]"));
         SearchResponse search = searcher.search(q);
         List<Pair<String, Integer>> facetQuery = search.getFacetQuery();
-        assertFalse("Facete wuery result was empty", facetQuery.isEmpty());
+        assertFalse("Facet query result was empty", facetQuery.isEmpty());
     }
 }

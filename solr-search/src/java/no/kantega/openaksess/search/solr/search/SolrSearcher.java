@@ -33,7 +33,9 @@ public class SolrSearcher implements Searcher {
 
     public SearchResponse search(SearchQuery query) {
         try {
-            SolrQuery params = new SolrQuery(query.getFullQuery());
+            SolrQuery params = new SolrQuery(query.getOriginalQuery());
+            setFilterQueryIfPresent(query, params);
+
             Integer resultsPerPage = query.getResultsPerPage();
             params.setRows(resultsPerPage);
             params.setStart(query.getPageNumber() * resultsPerPage);
@@ -61,7 +63,7 @@ public class SolrSearcher implements Searcher {
     public List<String> suggest(SearchQuery query) {
         ModifiableSolrParams params = new ModifiableSolrParams();
         params.set("qt", "/suggest");
-        params.set("q", query.getFullQuery());
+        params.set("q", query.getFilterQuery());
         Integer resultsPerPage = query.getResultsPerPage();
         params.set("rows", resultsPerPage);
         params.set("start", query.getPageNumber() * resultsPerPage);
@@ -71,6 +73,13 @@ public class SolrSearcher implements Searcher {
             return  getSpellSuggestions(queryResponse.getSpellCheckResponse());
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
+        }
+    }
+
+    private void setFilterQueryIfPresent(SearchQuery query, SolrQuery params) {
+        String filterQuery = query.getFilterQuery();
+        if(filterQuery != null){
+            params.setFilterQueries(filterQuery);
         }
     }
 

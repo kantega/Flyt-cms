@@ -57,18 +57,18 @@
     </types>
 
     <fields>
-        <field name="id" type="int" indexed="true" stored="true" required="true" />
+        <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
-        <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" />
+        <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="contentType" type="text_general" indexed="true" stored="true"/>
         <field name="uid" type="text_general" indexed="true" stored="true" required="true" />
         <field name="language" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="title_no" type="text_no" indexed="true" stored="true"/>
-        <field name="title_en" type="text_en" indexed="true" stored="true"/>
-        <field name="altTitle_no" type="text_no" indexed="true" stored="true"/>
-        <field name="altTitle_eng" type="text_en" indexed="true" stored="true"/>
-        <field name="description_no" type="text_no" indexed="true" stored="true"/>
-        <field name="description_en" type="text_en" indexed="true" stored="true"/>
+        <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="title_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="altTitle_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="altTitle_eng" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
         <field name="contentTemplateName" type="string" indexed="true" stored="false"/>
         <field name="metaDataTemplateId" type="int" indexed="true" stored="false"/>
@@ -76,21 +76,21 @@
         <field name="displayTemplateName" type="string" indexed="true" stored="false"/>
         <field name="documentTypeId" type="int" indexed="true" stored="false"/>
         <field name="groupId" type="int" indexed="true" stored="true"/>
-        <field name="siteId" type="int" indexed="true" stored="true"/>
-        <field name="location" type="text_path" indexed="true" stored="true"/>
-        <field name="alias" type="string" indexed="true" stored="true"/>
+        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false"/>
+        <field name="location" type="text_path" indexed="true" stored="true" multiValued="false"/>
+        <field name="alias" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="createDate" type="date" indexed="true" stored="true"/>
         <field name="publishDate" type="date" indexed="true" stored="true"/>
         <field name="expireDate" type="date" indexed="true" stored="true"/>
-        <field name="author" type="text_general" indexed="true" stored="true"/>
-        <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true"/>
-        <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true"/>
-        <field name="visibilityStatus" type="string" indexed="true" stored="true"/>
-        <field name="contentStatus" type="string" indexed="true" stored="true"/>
-        <field name="url" type="string" indexed="false" stored="true" multiValued="false"/>
+        <field name="author" type="text_general" indexed="true" stored="true" multiValued="false"/>
+        <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true"/>
+        <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true"/>
+        <field name="visibilityStatus" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="contentStatus" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="url" type="string" indexed="false" stored="true" required="true" multiValued="false"/>
 
-        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true"/>
-        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true"/>
+        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
@@ -106,9 +106,8 @@
         <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
         <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
-        <dynamicField name="*_str" type="string"    indexed="true"  stored="false"/>
+        <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>
-    <defaultSearchField>all_text_no</defaultSearchField>
 </schema>

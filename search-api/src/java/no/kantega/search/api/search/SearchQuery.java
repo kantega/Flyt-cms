@@ -10,7 +10,7 @@ import java.util.List;
 public class SearchQuery {
     private final SearchContext searchContext;
     private final String originalQuery;
-    private final String fullQuery;
+    private String filterQuery;
     private boolean highlightSearchResultDescription;
     private List<String> facetFields;
     private List<String> facetQueries;
@@ -19,22 +19,38 @@ public class SearchQuery {
     private Integer pageNumber = 0;
 
     /**
+     * Construct an query with a query string which typically comes from the user, and an
+     * exact query to restrict/filter the results by.
      * @param searchContext - The context in which this query is executed
      * @param originalQuery - The original query, e.g "kino"
-     * @param fullQuery - The full query built to further specify the query. e.g. "title:kino +kommune:trondheim".
-     *                  This should follow the Solr query syntax,
-     *                  http://wiki.apache.org/solr/SolrQuerySyntax and
-     *                  http://lucene.apache.org/core/3_6_0/queryparsersyntax.html
+     * @param filterQuery - An exact query built to restrict the super set of documents that
+     *                    can be returned, without influencing score.
+     *                    e.g. "kommune:trondheim", where kommune is a field, results where only results with
+     *                    value "trondheim" in kommune-field is returned.
+     *                    This should follow the Solr query syntax,
+     *                    http://wiki.apache.org/solr/SolrQuerySyntax and
+     *                    http://lucene.apache.org/core/3_6_0/queryparsersyntax.html
      *
      */
-    public SearchQuery(SearchContext searchContext, String originalQuery, String fullQuery) {
+    public SearchQuery(SearchContext searchContext, String originalQuery, String filterQuery) {
         this.searchContext = searchContext;
         this.originalQuery = originalQuery;
-        this.fullQuery = fullQuery;
+        this.filterQuery = filterQuery;
     }
 
-    public String getFullQuery() {
-        return fullQuery;
+    /**
+     * Construct an query with a query string which typically comes from the user.
+     * @param searchContext - The context in which this query is executed
+     * @param originalQuery - The original query, e.g "kino"
+     *
+     */
+    public SearchQuery(SearchContext searchContext, String originalQuery) {
+        this.searchContext = searchContext;
+        this.originalQuery = originalQuery;
+    }
+
+    public String getFilterQuery() {
+        return filterQuery;
     }
 
     public String getOriginalQuery() {

@@ -18,38 +18,36 @@ import static junit.framework.Assert.*;
 public class SearcherIntegrationTest {
     @Autowired
     private Searcher searcher;
-    private final String fullQuery = "title_no:as";
     private final String originalQuery = "as";
 
-    private SearchResponse doSearch(String fullQuery){
+    private SearchResponse doSearch(String query){
         SearchContext searchContext = new SearchContext() {};
-        SearchQuery q = new SearchQuery(searchContext, originalQuery, fullQuery);
+        SearchQuery q = new SearchQuery(searchContext, query);
         return searcher.search(q);
     }
 
     @Test
     public void resultShouldHaveHits(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         assertTrue("Number of hits should be larger than 0", searchResponse.getNumberOfHits() > 0);
     }
 
     @Test
     @Ignore // search under 1 second is possible
     public void resultShouldHaveQueryTime(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         assertTrue("QueryTime should be larger than 0", searchResponse.getQueryTime() > 0);
     }
 
     @Test
     public void resultShouldHaveSearchString(){
-        SearchResponse searchResponse = doSearch(fullQuery);
-        assertEquals("Query should be equal", fullQuery, searchResponse.getQuery().getFullQuery());
+        SearchResponse searchResponse = doSearch(originalQuery);
         assertEquals("Query should be equal", originalQuery, searchResponse.getQuery().getOriginalQuery());
     }
 
     @Test
     public void allResultsShouldHaveASinTitle(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Title did not contain 'as'", searchResult.getTitle().toLowerCase().contains("as"));
@@ -59,7 +57,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveContentObjects(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Document was not Content", searchResult.getDocument() instanceof Content);
@@ -69,7 +67,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveId(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Search result id was 0", searchResult.getId() > 0);
@@ -79,7 +77,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveUrl(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertNotNull("Searchresult url was null", searchResult.getUrl());
@@ -89,7 +87,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveSecurityId(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Result did not have securityid", searchResult.getSecurityId() > 0);
@@ -99,21 +97,20 @@ public class SearcherIntegrationTest {
 
     @Test
     public void resultShouldHaveEmptyListIfNoSpellSuggestions(){
-        SearchResponse searchResponse = doSearch(fullQuery);
+        SearchResponse searchResponse = doSearch(originalQuery);
         assertNotNull("SpellSuggestions was null", searchResponse.getSpellSuggestions());
     }
 
     @Test
     public void searchResultShouldHaveSpellSuggestions(){
-        SearchResponse searchResponse = doSearch(fullQuery);
-        SearchResponse response = doSearch("title_no:elektroni");
+        SearchResponse response = doSearch("kan");
         assertFalse("Search did not have spell suggestions", response.getSpellSuggestions().isEmpty());
     }
 
     @Test
     public void misSpelledWordShouldGetSuggestion(){
         SearchContext searchContext = new SearchContext() {};
-        SearchQuery q = new SearchQuery(searchContext, "ell", "title_no:ell");
+        SearchQuery q = new SearchQuery(searchContext, "ell", "kantøga");
         List<String> suggest = searcher.suggest(q);
         assertFalse("No suggestions", suggest.isEmpty());
     }
@@ -121,7 +118,7 @@ public class SearcherIntegrationTest {
     @Test
     public void descriptionShouldBehighlighted(){
         SearchContext searchContext = new SearchContext() {};
-        SearchQuery q = new SearchQuery(searchContext, originalQuery, "description_no:beskrivelse");
+        SearchQuery q = new SearchQuery(searchContext, originalQuery);
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getDocumentHits()){
