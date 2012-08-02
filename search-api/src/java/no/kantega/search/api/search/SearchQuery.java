@@ -15,6 +15,8 @@ public class SearchQuery {
     private List<String> facetFields;
     private List<String> facetQueries;
     private List<DateRange> dateRangeFacets;
+    private Integer resultsPerPage = 50;
+    private Integer pageNumber = 0;
 
     /**
      * @param searchContext - The context in which this query is executed
@@ -99,5 +101,21 @@ public class SearchQuery {
      */
     public void setFacetQueries(List<String> facetQueries) {
         this.facetQueries = facetQueries;
+    }
+
+    public void setResultsPerPage(Integer resultsPerPage) {
+        this.resultsPerPage = resultsPerPage;
+    }
+
+    public Integer getResultsPerPage() {
+        return resultsPerPage;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
     }
 }
