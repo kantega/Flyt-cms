@@ -176,9 +176,8 @@
 
     <requestHandler name="/select" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="defType">edismax</str>
-            <str name="fl">id,securityId,title_*,indexedContentType,author,url,language</str>
-            <str name="qf">*</str>
+            <str name="fl">uid,id,securityId,title_*,description*,indexedContentType,author,url,language</str>
+            <str name="df">all_text_no</str>
             <str name="echoParams">explicit</str>
             <int name="rows">50</int>
             <str name="spellcheck.onlyMorePopular">false</str>

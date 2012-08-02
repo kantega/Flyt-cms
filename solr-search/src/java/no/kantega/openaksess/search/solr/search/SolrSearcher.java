@@ -188,7 +188,8 @@ public class SolrSearcher implements Searcher {
     private String getHighlightedDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {
         String fieldname = "description_" + languageSuffix;
         if(query.isHighlightSearchResultDescription()){
-            Map<String, List<String>> uid = queryResponse.getHighlighting().get((String)result.getFieldValue("uid"));
+            Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
+            Map<String, List<String>> uid = highlighting.get((String) result.getFieldValue("uid"));
             if(uid != null){
                 List<String> highlightedDescription = uid.get(fieldname);
                 if(highlightedDescription != null && !highlightedDescription.isEmpty()){

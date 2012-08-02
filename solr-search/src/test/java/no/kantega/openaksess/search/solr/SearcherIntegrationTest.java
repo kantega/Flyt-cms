@@ -23,6 +23,7 @@ public class SearcherIntegrationTest {
     private SearchResponse doSearch(String query){
         SearchContext searchContext = new SearchContext() {};
         SearchQuery q = new SearchQuery(searchContext, query);
+        q.setHighlightSearchResultDescription(true);
         return searcher.search(q);
     }
 
@@ -122,7 +123,7 @@ public class SearcherIntegrationTest {
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getDocumentHits()){
-            assertTrue(searchResult.getDescription().contains("<span class=\"highlight\""));
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<span class=\"highlight\""));
         }
     }
 
