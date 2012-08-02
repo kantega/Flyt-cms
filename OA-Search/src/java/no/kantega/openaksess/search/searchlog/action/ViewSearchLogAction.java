@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.administration.action;
+package no.kantega.openaksess.search.searchlog.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import no.kantega.commons.client.util.RequestParameters;
-
-import no.kantega.publishing.common.ao.SearchAO;
-import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-
-/**
- *
- */
 public class ViewSearchLogAction extends AdminController {
     private SiteCache siteCache;
     private String view;
+    @Autowired
+    private SearchLogDao searchLogDao;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -54,16 +52,16 @@ public class ViewSearchLogAction extends AdminController {
         cal.add(Calendar.MINUTE, -30);
         Date thirtyMinutesAgo = cal.getTime();
 
-        model.put("last30min", SearchAO.getSearchCountForPeriod(thirtyMinutesAgo, now, siteId));
+        model.put("last30min", searchLogDao.getSearchCountForPeriod(thirtyMinutesAgo, now, siteId));
 
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -1);
         Date oneMonthAgo = cal.getTime();
-        model.put("sumLastMonth", SearchAO.getSearchCountForPeriod(oneMonthAgo, now, siteId));
+        model.put("sumLastMonth", searchLogDao.getSearchCountForPeriod(oneMonthAgo, now, siteId));
 
-        List mostPopular = SearchAO.getMostPopularQueries(siteId);
+        List mostPopular = searchLogDao.getMostPopularQueries(siteId);
         model.put("most", mostPopular);
-        List leastHits = SearchAO.getQueriesWithLeastHits(siteId);
+        List leastHits = searchLogDao.getQueriesWithLeastHits(siteId);
         model.put("least", leastHits);
 
         model.put("sites", sites);

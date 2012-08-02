@@ -22,6 +22,7 @@ public class AutoSuggestController {
     public @ResponseBody
     List<String> search(@RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) throws UnsupportedEncodingException {
 
-        return searcher.suggest(new SearchQuery(new AksessSearchContext(SecuritySession.createNewUnauthenticatedInstance()), term, term));
+        int siteId = -1;
+        return searcher.suggest(new SearchQuery(new AksessSearchContext(SecuritySession.createNewUnauthenticatedInstance(), siteId), term, term));
     }
 }

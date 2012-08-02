@@ -641,7 +641,7 @@
         <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
     </bean>
 
-    <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
+    <bean class="no.kantega.openaksess.search.searchlog.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>
     </bean>

@@ -43,6 +43,10 @@ public class SearchResponse {
         return query;
     }
 
+    public void setDocumentHits(List<SearchResult> documentHits) {
+        this.documentHits = documentHits;
+    }
+
     /**
      * @return a list containing the actual hits of the query
      */
