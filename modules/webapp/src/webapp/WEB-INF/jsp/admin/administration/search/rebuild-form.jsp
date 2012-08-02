@@ -26,7 +26,7 @@
         <admin:box>
             <h1><kantega:label key="aksess.search.title"/></h1>
             <div class="row">
-                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label>
+                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label><br>
                 <c:forEach var="provider" items="${providers}">
                     <c:set var="providerName" value="${provider.class.simpleName}"/>
                     <input type="checkbox" class="checkbox" name="exclude.${providerName}" id="${providerName}"><label for="${providerName}" class="checkbox">${providerName}</label><br>
