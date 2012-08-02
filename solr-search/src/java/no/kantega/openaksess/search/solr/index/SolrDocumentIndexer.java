@@ -4,7 +4,6 @@ import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -41,10 +39,8 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                 NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
                 fileContent.delete();
             }
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
 
     }
@@ -57,30 +53,24 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     public void commit() {
         try {
             UpdateResponse commit = solrServer.commit();
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
     public void deleteById(List<String> uids) {
         try {
-            UpdateResponse updateResponse = solrServer.deleteById(uids);
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            UpdateResponse updateResponse = solrServer.deleteById(uids, 0);
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
     public void optimize() {
         try {
             solrServer.optimize();
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
     }
 
