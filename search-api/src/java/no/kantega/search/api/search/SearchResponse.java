@@ -11,6 +11,7 @@ import java.util.Map;
  * @see SearchQuery
  */
 public class SearchResponse {
+    private final long numFound;
     private int queryTime;
     private SearchQuery query;
     private List<SearchResult> documentHits;
@@ -19,14 +20,16 @@ public class SearchResponse {
     private Map<String, List<Pair<String, Integer>>> rangeFacet;
     private List<Pair<String, Integer>> facetQuery;
 
-    public SearchResponse(SearchQuery query, int queryTime, List<SearchResult> searchResults) {
+    public SearchResponse(SearchQuery query, long numFound, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
+        this.numFound = numFound;
         this.queryTime = queryTime;
         this.documentHits = searchResults;
+
     }
 
-    public int getNumberOfHits() {
-         return documentHits.size();
+    public long getNumberOfHits() {
+         return numFound;
     }
 
     /**

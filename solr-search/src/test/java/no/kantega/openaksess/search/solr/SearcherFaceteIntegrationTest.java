@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.solr;
 
 import com.google.gdata.util.common.base.Pair;
 import no.kantega.search.api.search.*;
+import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -95,6 +97,30 @@ public class SearcherFaceteIntegrationTest {
 
         assertEquals("3", displayTemplateId.get(2).first);
         assertEquals((Long)1L, displayTemplateId.get(2).second);
+    }
 
+    @Test
+    public void locationFacet(){
+        SearchContext searchContext = new SearchContext() {};
+        SearchQuery q = new SearchQuery(searchContext, "rett");
+        q.setFacetFields(Arrays.asList("location"));
+        SearchResponse search = searcher.search(q);
+
+        assertEquals(3, search.getNumberOfHits());
+        List<Pair<String, Long>> location = search.getFacetFields().get("location");
+        assertEquals(3, location.size());
+        assertEquals(1, select(location, getPredicate("/1/1", 1L)).size());
+        assertEquals(1, select(location, getPredicate("/1/2", 1L)).size());
+        assertEquals(1, select(location, getPredicate("/1/3", 1L)).size());
+
+    }
+
+    private Predicate getPredicate(final String path, final Long count) {
+        return new Predicate() {
+            public boolean evaluate(Object object) {
+                Pair<String, Long> pair = (Pair<String, Long>) object;
+                return pair.first.equals(path) && pair.second.equals(count);
+            }
+        };
     }
 }

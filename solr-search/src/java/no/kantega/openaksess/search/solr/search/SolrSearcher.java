@@ -48,7 +48,7 @@ public class SolrSearcher implements Searcher {
             QueryResponse queryResponse = solrServer.query(params);
 
             SolrDocumentList results = queryResponse.getResults();
-            SearchResponse searchResponse = new SearchResponse(query, queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
+            SearchResponse searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
 
             setSpellResponse(searchResponse, queryResponse);
 
