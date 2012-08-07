@@ -1,5 +1,6 @@
 package no.kantega.search.api.search;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import java.util.List;
 public class SearchQuery {
     private final SearchContext searchContext;
     private final String originalQuery;
-    private String filterQuery;
+    private List<String> filterQueries;
     private boolean highlightSearchResultDescription;
     private List<String> facetFields;
     private List<String> facetQueries;
@@ -23,7 +24,7 @@ public class SearchQuery {
      * exact query to restrict/filter the results by.
      * @param searchContext - The context in which this query is executed
      * @param originalQuery - The original query, e.g "kino"
-     * @param filterQuery - An exact query built to restrict the super set of documents that
+     * @param filterQueries - An exact query built to restrict the super set of documents that
      *                    can be returned, without influencing score.
      *                    e.g. "kommune:trondheim", where kommune is a field, results where only results with
      *                    value "trondheim" in kommune-field is returned.
@@ -32,10 +33,16 @@ public class SearchQuery {
      *                    http://lucene.apache.org/core/3_6_0/queryparsersyntax.html
      *
      */
-    public SearchQuery(SearchContext searchContext, String originalQuery, String filterQuery) {
+    public SearchQuery(SearchContext searchContext, String originalQuery, List<String> filterQueries) {
         this.searchContext = searchContext;
         this.originalQuery = originalQuery;
-        this.filterQuery = filterQuery;
+        this.filterQueries = filterQueries;
+    }
+
+    public SearchQuery(SearchContext searchContext, String originalQuery, String... filterQueries) {
+        this.searchContext = searchContext;
+        this.originalQuery = originalQuery;
+        this.filterQueries = Arrays.asList(filterQueries);
     }
 
     /**
@@ -49,8 +56,8 @@ public class SearchQuery {
         this.originalQuery = originalQuery;
     }
 
-    public String getFilterQuery() {
-        return filterQuery;
+    public List<String> getFilterQueries() {
+        return filterQueries;
     }
 
     public String getOriginalQuery() {

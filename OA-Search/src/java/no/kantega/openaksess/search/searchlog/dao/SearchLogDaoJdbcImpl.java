@@ -21,7 +21,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
     private NamedParameterJdbcTemplate namedjdbcTemplate;
     private JdbcTemplate jdbcTemplate;
 
-    public void registerSearch(String queryString, String exactQuery, int siteId, int numberOfHits) {
+    public void registerSearch(String queryString, List<String> exactQuery, int siteId, int numberOfHits) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("time", new Timestamp(new Date().getTime()));
         params.put("query", queryString);

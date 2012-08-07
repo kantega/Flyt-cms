@@ -50,7 +50,7 @@ public class SearchResultFilterAspect {
         executorService.execute(new Runnable() {
             public void run() {
                 SearchQuery query = searchResponse.getQuery();
-                searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQuery(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
+                searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
             }
         });
     }

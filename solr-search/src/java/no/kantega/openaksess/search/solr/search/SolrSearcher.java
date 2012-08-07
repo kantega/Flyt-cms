@@ -63,7 +63,7 @@ public class SolrSearcher implements Searcher {
     public List<String> suggest(SearchQuery query) {
         ModifiableSolrParams params = new ModifiableSolrParams();
         params.set("qt", "/suggest");
-        params.set("q", query.getFilterQuery());
+        params.set("q", query.getOriginalQuery());
         Integer resultsPerPage = query.getResultsPerPage();
         params.set("rows", resultsPerPage);
         params.set("start", query.getPageNumber() * resultsPerPage);
@@ -77,9 +77,9 @@ public class SolrSearcher implements Searcher {
     }
 
     private void setFilterQueryIfPresent(SearchQuery query, SolrQuery params) {
-        String filterQuery = query.getFilterQuery();
+        List<String> filterQuery = query.getFilterQueries();
         if(filterQuery != null){
-            params.setFilterQueries(filterQuery);
+            params.setFilterQueries(filterQuery.toArray(new String[filterQuery.size()]));
         }
     }
 
