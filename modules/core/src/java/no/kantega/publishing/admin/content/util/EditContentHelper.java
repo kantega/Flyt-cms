@@ -117,9 +117,8 @@ public class EditContentHelper {
         // Create associations as specified
         boolean foundCurrentAssociation = false;
 
-        List associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
-        for (int i = 0; i < associations.size(); i++) {
-            Association association = (Association)associations.get(i);
+        List<Association> associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
+        for (Association association : associations) {
             if (association.getParentAssociationId() == param.getMainParentId()) {
                 foundCurrentAssociation = true;
                 association.setCurrent(true);
@@ -131,7 +130,7 @@ public class EditContentHelper {
 
         // Check if user has removed main parent from list of parents, in case just use first parent as main parent
         if (!foundCurrentAssociation) {
-            Association association = (Association)associations.get(0);
+            Association association = associations.get(0);
             association.setCurrent(true);
             param.setMainParentId(association.getParentAssociationId());
         }
@@ -215,7 +214,7 @@ public class EditContentHelper {
 
             List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
 
-            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, null, newAttributes, new ArrayList<Attribute>(), xmlElements);
+            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
         }
     }
 
@@ -271,14 +270,14 @@ public class EditContentHelper {
 
         List<Attribute> newAttributes = new ArrayList<Attribute>();
 
-        addAttributes(template, attributeType, defaultValues, null, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
+        addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
 
         addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
 
         content.setAttributes(newAttributes, attributeType);
     }
 
-    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List newAttributes) throws InvalidTemplateException {
+    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
         // Some attributes are mapped to specific properties in the Content object, search for these
         // These are always located at root level, never inside a repeater
         String titleField = null;
@@ -295,11 +294,11 @@ public class EditContentHelper {
 
             if (field != null && field.length() > 0) {
                 field = field.toLowerCase();
-                if (field.indexOf(ContentProperty.TITLE) != -1) {
+                if (field.contains(ContentProperty.TITLE)) {
                     titleField = name;
-                } else if (field.indexOf(ContentProperty.DESCRIPTION) != -1) {
+                } else if (field.contains(ContentProperty.DESCRIPTION)) {
                     descField = name;
-                } else if (field.indexOf(ContentProperty.IMAGE) != -1) {
+                } else if (field.contains(ContentProperty.IMAGE)) {
                     imageField = name;
                 }
             }
@@ -317,8 +316,7 @@ public class EditContentHelper {
             */
 
             if ((titleField == null) || (descField == null) || (imageField == null)) {
-                for (int i = 0; i < newAttributes.size(); i++) {
-                    Attribute attr = (Attribute)newAttributes.get(i);
+                for (Attribute attr : newAttributes) {
                     if (attr instanceof ImageAttribute && imageField == null) {
                         attr.setField(ContentProperty.IMAGE);
                         imageField = attr.getName();
@@ -339,27 +337,25 @@ public class EditContentHelper {
                     }
                 }
             }
-            if (attributeType == AttributeDataType.CONTENT_DATA) {
-                if (titleField == null) {
-                    throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
-                }
+            if (titleField == null) {
+                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
             }
         }
     }
 
     /**
      * Create attributes recursively
+     *
      * @param attributeType - type of attributes to create, content or metadata
      * @param defaultValues - used to initialize attributes with default values
      * @param newParentAttribute - parent of attributes
-     * @param oldParentAttribute - parent of oldattributes
      * @param newAttributes - list with new attributes
      * @param oldAttributes - list with old attributes
      * @param xmlAttributes - XML element with definition
      * @throws SystemException -
      * @throws InvalidTemplateException -
      */
-    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, @Nullable RepeaterAttribute oldParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
+    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
             String name = xmlAttribute.getAttribute("name");
@@ -419,7 +415,7 @@ public class EditContentHelper {
                         }
                     }
 
-                    addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                    addAttributes(template, attributeType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
                     repeater.addRow(newRowAttributes);
                 }
             }
