@@ -23,7 +23,7 @@ import java.util.Map;
 
 public interface AksessController {
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
 
     public String getDescription();
 }
