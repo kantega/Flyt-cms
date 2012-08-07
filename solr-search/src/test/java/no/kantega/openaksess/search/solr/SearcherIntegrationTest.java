@@ -20,35 +20,39 @@ public class SearcherIntegrationTest {
     private Searcher searcher;
     private final String originalQuery = "as";
 
-    private SearchResponse doSearch(String query){
+    private SearchResponse doSearchSiteOne(String query){
+        return doSearch(query, "siteId:1");
+    }
+
+    private SearchResponse doSearch(String query, String filter){
         SearchContext searchContext = new SearchContext() {};
-        SearchQuery q = new SearchQuery(searchContext, query);
+        SearchQuery q = new SearchQuery(searchContext, query, filter);
         q.setHighlightSearchResultDescription(true);
         return searcher.search(q);
     }
 
     @Test
     public void resultShouldHaveHits(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         assertTrue("Number of hits should be larger than 0", searchResponse.getNumberOfHits() > 0);
     }
 
     @Test
     @Ignore // search under 1 second is possible
     public void resultShouldHaveQueryTime(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         assertTrue("QueryTime should be larger than 0", searchResponse.getQueryTime() > 0);
     }
 
     @Test
     public void resultShouldHaveSearchString(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         assertEquals("Query should be equal", originalQuery, searchResponse.getQuery().getOriginalQuery());
     }
 
     @Test
     public void allResultsShouldHaveASinTitle(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Title did not contain 'as'", searchResult.getTitle().toLowerCase().contains("as"));
@@ -58,7 +62,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveContentObjects(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Document was not Content", searchResult.getDocument() instanceof Content);
@@ -68,7 +72,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveId(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Search result id was 0", searchResult.getId() > 0);
@@ -78,7 +82,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveUrl(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertNotNull("Searchresult url was null", searchResult.getUrl());
@@ -88,7 +92,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void allResultsShouldHaveSecurityId(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
                 assertTrue("Result did not have securityid", searchResult.getSecurityId() > 0);
@@ -98,13 +102,13 @@ public class SearcherIntegrationTest {
 
     @Test
     public void resultShouldHaveEmptyListIfNoSpellSuggestions(){
-        SearchResponse searchResponse = doSearch(originalQuery);
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         assertNotNull("SpellSuggestions was null", searchResponse.getSpellSuggestions());
     }
 
     @Test
     public void searchResultShouldHaveSpellSuggestions(){
-        SearchResponse response = doSearch("kan");
+        SearchResponse response = doSearchSiteOne("kan");
         assertFalse("Search did not have spell suggestions", response.getSpellSuggestions().isEmpty());
     }
 
@@ -126,6 +130,8 @@ public class SearcherIntegrationTest {
             assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<span class=\"highlight\""));
         }
     }
+
+
 
     private void doForAllhits(Assertion assertion, SearchResponse searchResponse){
 
