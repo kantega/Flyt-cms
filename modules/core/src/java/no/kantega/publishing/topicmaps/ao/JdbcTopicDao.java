@@ -372,4 +372,12 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     public void setTopicUsageCounter(TopicUsageCounter topicUsageCounter) {
         this.topicUsageCounter = topicUsageCounter;
     }
+
+    public List<String> getTopicNamesForContent(int contentId) {
+            return getJdbcTemplate().queryForList("SELECT tmbasename.Basename " +
+                    "FROM ct2topic, tmbasename " +
+                    "WHERE ContentId=? " +
+                    "AND tmbasename.TopicId=ct2topic.TopicId " +
+                    "AND tmbasename.TopicMapId=ct2topic.TopicMapId", String.class, contentId);
+    }
 }

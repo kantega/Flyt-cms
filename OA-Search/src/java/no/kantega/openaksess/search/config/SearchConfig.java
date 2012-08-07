@@ -1,6 +1,6 @@
 package no.kantega.openaksess.search.config;
 
-import no.kantega.openaksess.search.index.IndexUpdater;
+import no.kantega.openaksess.search.index.update.IndexUpdater;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.event.ContentListenerList;
 import org.springframework.beans.factory.annotation.Autowired;

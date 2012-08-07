@@ -1,4 +1,4 @@
-package no.kantega.openaksess.search.index;
+package no.kantega.openaksess.search.index.update;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;

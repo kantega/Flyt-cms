@@ -12,6 +12,7 @@ import org.springframework.util.StopWatch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -37,8 +38,7 @@ public class IndexRebuilder {
                 progressReporters.add(progressReporter);
             }
         }
-
-        new Thread(new Runnable() {
+        Executors.newSingleThreadExecutor().execute((new Runnable() {
             public void run() {
                 Log.info(category, "Starting reindex");
                 StopWatch stopWatch = new StopWatch(category);
@@ -58,7 +58,7 @@ public class IndexRebuilder {
                     Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
                 }
             }
-        }).start();
+        }));
         return progressReporters;
     }
 }
