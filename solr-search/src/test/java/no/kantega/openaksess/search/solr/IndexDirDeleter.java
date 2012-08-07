@@ -10,6 +10,6 @@ import java.io.IOException;
 public class IndexDirDeleter {
     @PreDestroy
     public void deleteAppDir() throws IOException {
-        FileUtils.deleteDirectory(IndexPreparer.appDir);
+        FileUtils.deleteDirectory(AppDirPropertyPlaceHolder.appDir);
     }
 }

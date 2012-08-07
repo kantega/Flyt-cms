@@ -38,7 +38,7 @@ public class ContentSearchController implements AksessController {
     private SiteCache siteCache;
     private boolean showOnlyVisibleContent = true;
     private boolean showOnlyPublishedContent = true;
-    private List<String> facetFields = Arrays.asList("documentTypeName", "location");
+    private List<String> facetFields = asList("documentTypeName", "location");
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HashMap<String, Object> model = new HashMap<String, Object>();
@@ -51,7 +51,7 @@ public class ContentSearchController implements AksessController {
             Map<String, Object> links = new HashMap<String, Object>();
 
             links.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
-            // TODO Facet names
+
             String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), searchResponse.getCurrentPage());
             if (isNotBlank(prevPageUrl)) {
                 links.put("prevPageUrl", urlPrefix + prevPageUrl);
@@ -125,18 +125,18 @@ public class ContentSearchController implements AksessController {
     }
 
     private int findSiteId(HttpServletRequest request) {
-        int retVal = 1;
+        int siteId = 1;
 
         Content content = (Content)request.getAttribute("aksess_this");
         if (content != null) {
-            retVal = content.getAssociation().getSiteId();
+            siteId = content.getAssociation().getSiteId();
         } else {
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
-                retVal = site.getId();
+                siteId = site.getId();
             }
         }
-        return retVal;
+        return siteId;
     }
 
     public String getDescription() {

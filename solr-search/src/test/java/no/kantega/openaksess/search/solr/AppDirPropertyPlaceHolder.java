@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 @Component
-public class IndexPreparer extends PropertyPlaceholderConfigurer {
+public class AppDirPropertyPlaceHolder extends PropertyPlaceholderConfigurer {
     public static File appDir = new File(System.getProperty("java.io.tmpdir"), "aksesstest");
 
     @Override
