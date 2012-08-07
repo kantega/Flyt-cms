@@ -96,7 +96,7 @@ public class Association extends BaseObject {
 
     public int getPriority() {
         if(priority == -1){
-            priority = (int)((System.currentTimeMillis())/1000);
+            return (int)((System.currentTimeMillis())/1000);
         }
         return priority;
     }
