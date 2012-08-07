@@ -82,7 +82,7 @@ public class QueryStringGenerator {
     public static String getFacetUrl(String facet, SearchResponse searchResponse) {
         StringBuilder queryStringBuilder = getUrl(searchResponse.getQuery());
         queryStringBuilder.append("&");
-        queryStringBuilder.append(facet);
+        queryStringBuilder.append(getEncodedQuery(facet));
         return queryStringBuilder.toString();
     }
 
@@ -92,7 +92,7 @@ public class QueryStringGenerator {
 
         for (String filterQuery : filterQueries) {
             queryStringBuilder.append("&");
-            queryStringBuilder.append(String.format(keyValueFormat, FILTER_PARAM, filterQuery));
+            queryStringBuilder.append(String.format(keyValueFormat, FILTER_PARAM, getEncodedQuery(filterQuery)));
         }
     }
 

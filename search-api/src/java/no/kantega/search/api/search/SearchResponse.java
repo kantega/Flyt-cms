@@ -113,4 +113,8 @@ public class SearchResponse {
     public int getCurrentPage() {
         return query.getPageNumber();
     }
+
+    public int getNumberOfPages() {
+        return (int) Math.ceil(numFound / query.getResultsPerPage());
+    }
 }

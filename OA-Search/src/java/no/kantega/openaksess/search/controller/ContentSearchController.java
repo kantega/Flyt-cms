@@ -14,34 +14,33 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.SearchResponse;
 import no.kantega.search.api.search.Searcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
  * Performs search for Aksess content.
  */
 public class ContentSearchController implements AksessController {
-
+    @Autowired
     private Searcher searcher;
 
-    private boolean searchAllSites = false;
+    @Autowired
     private SiteCache siteCache;
+
+    private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
     private boolean showOnlyPublishedContent = true;
-    private List<String> facetFields = asList("documentTypeName", "location");
+    private List<String> facetFields = asList("documentTypeId", "location");
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        HashMap<String, Object> model = new HashMap<String, Object>();
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<String, Object>();
         String query = getQuery(request);
         if (isNotEmpty(query)) {
             SearchResponse searchResponse = performSearch(request, query);
@@ -52,22 +51,28 @@ public class ContentSearchController implements AksessController {
 
             links.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
 
-            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), searchResponse.getCurrentPage());
-            if (isNotBlank(prevPageUrl)) {
+            int currentPage = searchResponse.getCurrentPage();
+            if (currentPage > 0) {
+                String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
                 links.put("prevPageUrl", urlPrefix + prevPageUrl);
             }
-            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), searchResponse.getCurrentPage());
-            if (isNotBlank(nextPageUrl)) {
+
+            int numberOfPages = searchResponse.getNumberOfPages();
+            if (currentPage < numberOfPages) {
+                String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
                 links.put("nextPageUrl", urlPrefix + nextPageUrl);
             }
-            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, searchResponse.getCurrentPage(), urlPrefix));
+
+            if (numberOfPages > 1) {
+                links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
+            }
             model.put("links", links);
         }
 
         return model;
     }
 
-    private Multimap<String, String> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
+    private Map<String, Collection<String>> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
         Multimap<String,String> facetUrls = ArrayListMultimap.create();
         for (Map.Entry<String, List<Pair<String, Long>>> facetFieldEntry : searchResponse.getFacetFields().entrySet()) {
             for(Pair<String, Long> facetFieldValue : facetFieldEntry.getValue()){
@@ -78,7 +83,7 @@ public class ContentSearchController implements AksessController {
         for(Pair<String, Integer> facetQuery : searchResponse.getFacetQueries()){
             facetUrls.put(facetQuery.first, urlPrefix + QueryStringGenerator.getFacetUrl(facetQuery.first, searchResponse));
         }
-        return facetUrls;
+        return facetUrls.asMap();
     }
 
     private SearchResponse performSearch(HttpServletRequest request, String query) {

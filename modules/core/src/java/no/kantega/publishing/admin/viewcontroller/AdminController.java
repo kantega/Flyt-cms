@@ -10,18 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 02.jul.2009
- * Time: 08:48:04
+ * Abstract Controller used as base for admin controllers.
+ * Adds aksess_locale and selected page to model.
  */
 public abstract class AdminController implements Controller {
 
 
     public final ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = handleRequestInternal(request, response);
-        Map model = modelAndView.getModel();
+        Map<String, Object> model = modelAndView.getModel();
         if (model == null) {
-            model = new HashMap();
+            model = new HashMap<String, Object>();
         }
         model.put("aksess_locale", Aksess.getDefaultAdminLocale());
 
