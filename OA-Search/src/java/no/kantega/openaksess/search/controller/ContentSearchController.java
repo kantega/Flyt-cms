@@ -74,15 +74,13 @@ public class ContentSearchController implements AksessController {
 
     private Map<String, Collection<String>> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
         Multimap<String,String> facetUrls = ArrayListMultimap.create();
-        for (Map.Entry<String, List<Pair<String, Long>>> facetFieldEntry : searchResponse.getFacetFields().entrySet()) {
-            for(Pair<String, Long> facetFieldValue : facetFieldEntry.getValue()){
+        for (Map.Entry<String, Collection<Pair<String, Number>>> facetFieldEntry : searchResponse.getFacets().entrySet()) {
+            for(Pair<String, Number> facetFieldValue : facetFieldEntry.getValue()){
                 String facetName = facetFieldEntry.getKey();
                 facetUrls.put(facetName, urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse));
             }
         }
-        for(Pair<String, Integer> facetQuery : searchResponse.getFacetQueries()){
-            facetUrls.put(facetQuery.first, urlPrefix + QueryStringGenerator.getFacetUrl(facetQuery.first, searchResponse));
-        }
+
         return facetUrls.asMap();
     }
 

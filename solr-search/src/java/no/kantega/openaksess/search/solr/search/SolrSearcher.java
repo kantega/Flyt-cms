@@ -1,5 +1,7 @@
 package no.kantega.openaksess.search.solr.search;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gdata.util.common.base.Pair;
 import no.kantega.search.api.retrieve.DocumentRetriever;
 import no.kantega.search.api.search.*;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static no.kantega.openaksess.search.solr.index.SolrDocumentIndexer.getLanguageSuffix;
 
@@ -30,6 +33,7 @@ public class SolrSearcher implements Searcher {
     private SolrServer solrServer;
 
     private Map<String, DocumentRetriever> documentRetrievers;
+    private final Pattern facetQuerySplitPattern = Pattern.compile("^(\\w):(.*)");
 
     public SearchResponse search(SearchQuery query) {
         try {
@@ -112,39 +116,42 @@ public class SolrSearcher implements Searcher {
     }
 
     private void addFacetResults(SearchResponse searchResponse, QueryResponse queryResponse) {
+        Multimap<String,Pair<String, Number>> facets = ArrayListMultimap.create();
         List<FacetField> facetFields = queryResponse.getFacetFields();
         if (facetFields != null) {
-            Map<String, List<Pair<String, Long>>> facetFieldsResult = new HashMap<String, List<Pair<String, Long>>>();
             for(FacetField facetField : facetFields){
-                List<Pair<String, Long>> valuesAndCount = new ArrayList<Pair<String, Long>>();
                 for(FacetField.Count count : facetField.getValues()){
-                    valuesAndCount.add(new Pair<String, Long>(count.getName(), count.getCount()));
+                    facets.put(facetField.getName(), new Pair<String, Number>(count.getName(), count.getCount()));
                 }
-                facetFieldsResult.put(facetField.getName(), valuesAndCount);
             }
-            searchResponse.setFacetFields(facetFieldsResult);
         }
         List<RangeFacet> facetRanges = queryResponse.getFacetRanges();
         if(facetRanges != null){
-            Map<String, List<Pair<String, Integer>>> rangeFacetResult = new HashMap<String, List<Pair<String, Integer>>>();
             for(RangeFacet facetRange : facetRanges){
                 List<RangeFacet.Count> counts = facetRange.getCounts();
-                List<Pair<String, Integer>> resultCounts = new ArrayList<Pair<String, Integer>>();
                 for (RangeFacet.Count count : counts) {
-                    resultCounts.add(new Pair<String, Integer>(count.getValue(), count.getCount()));
+                    facets.put(facetRange.getName(), new Pair<String, Number>(count.getValue(), count.getCount()));
                 }
-                rangeFacetResult.put(facetRange.getName(), resultCounts);
             }
-            searchResponse.setRangeFacet(rangeFacetResult);
         }
 
         Map<String, Integer> facetQuery = queryResponse.getFacetQuery();
         if(facetQuery != null){
-            List<Pair<String, Integer>> facetQueryResults = new ArrayList<Pair<String, Integer>>();
             for (Map.Entry<String, Integer> facetQueryEntry : facetQuery.entrySet()) {
-                facetQueryResults.add(new Pair<String, Integer>(facetQueryEntry.getKey(), facetQueryEntry.getValue()));
+                String facetQueryString = facetQueryEntry.getKey();
+                String[] facetFieldAndValue = facetQuerySplitPattern.split(facetQueryString);
+
+                throwIfNotLenghtTwo(facetQueryString, facetFieldAndValue);
+                facets.put(facetFieldAndValue[0], new Pair<String, Number>(facetFieldAndValue[1], facetQueryEntry.getValue()));
             }
-            searchResponse.setFacetQueries(facetQueryResults);
+        }
+        searchResponse.setFacets(facets.asMap());
+    }
+
+    private void throwIfNotLenghtTwo(String facetQueryString, String[] facetFieldAndValue) {
+        if(facetFieldAndValue.length != 2){
+            throw new IllegalStateException(String.format("Splitting of facet query %s into field and query did not yield expected result." +
+                    " Expected values of length 2, got %d: %s", facetQueryString, facetFieldAndValue.length, facetFieldAndValue.toString()));
         }
     }
 

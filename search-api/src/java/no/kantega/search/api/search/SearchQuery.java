@@ -91,7 +91,7 @@ public class SearchQuery {
     }
 
     /**
-     * @param facetFields - The indexed fields facet should be used on.
+     * @param facetFields - The indexed fields facet to use facets for.
      */
     public void setFacetFields(List<String> facetFields) {
         this.facetFields = facetFields;

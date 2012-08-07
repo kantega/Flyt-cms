@@ -2,6 +2,7 @@ package no.kantega.search.api.search;
 
 import com.google.gdata.util.common.base.Pair;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,7 @@ public class SearchResponse {
     private SearchQuery query;
     private List<SearchResult> documentHits;
     private List<String> spellSuggestions;
-    private Map<String, List<Pair<String, Long>>> facetFields;
-    private Map<String, List<Pair<String, Integer>>> rangeFacet;
-    private List<Pair<String, Integer>> facetQueries;
+    private Map<String, Collection<Pair<String, Number>>> facets;
 
     public SearchResponse(SearchQuery query, long numFound, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
@@ -70,51 +69,27 @@ public class SearchResponse {
         this.spellSuggestions = spellSuggestions;
     }
 
-    public void setFacetFields(Map<String,List<Pair<String, Long>>> facetFields) {
-        this.facetFields = facetFields;
-    }
-
-    /**
-     * @return a map where the key is the name of the indexed field in which the facetes are created. Each entry is
-     * a list of facetes with a value and the document count for the facet.
-     */
-    public Map<String, List<Pair<String, Long>>> getFacetFields() {
-        return facetFields;
-    }
-
-    public void setRangeFacet(Map<String,List<Pair<String, Integer>>> rangeFacet) {
-        this.rangeFacet = rangeFacet;
-    }
-
-    /**
-     * @return the result of adding dateRange for the SearchQuery.
-     */
-    public Map<String, List<Pair<String, Integer>>> getRangeFacet() {
-        if(rangeFacet == null){
-            rangeFacet = Collections.emptyMap();
-        }
-        return rangeFacet;
-    }
-
-    public void setFacetQueries(List<Pair<String, Integer>> facetQueries) {
-        this.facetQueries = facetQueries;
-    }
-
-    /**
-     * @return a list of Pair<String, Integer> containing the value of each facet query, and the resulting document count.
-     */
-    public List<Pair<String, Integer>> getFacetQueries() {
-        if(facetQueries == null){
-            return Collections.emptyList();
-        }
-        return facetQueries;
-    }
-
     public int getCurrentPage() {
         return query.getPageNumber();
     }
 
     public int getNumberOfPages() {
         return (int) Math.ceil(numFound / query.getResultsPerPage());
+    }
+
+    public void setFacets(Map<String,Collection<Pair<String, Number>>> facets) {
+        this.facets = facets;
+    }
+
+    /**
+     * The result of using a facetQuery, facetField or dateRangeFacet will result in entries in the returned map.
+     * facetQueries will be split based on the field queries, such that it will have a single entry in the returned map.
+     * @return a map where the key is the name of the indexed field in which the facetes are created. Each entry is
+     * a list of facets with a value and the document count for the facet.
+     */
+    public Map<String, Collection<Pair<String, Number>>> getFacets() {
+        if(facets == null) return Collections.emptyMap();
+
+        return facets;
     }
 }
