@@ -1,7 +1,9 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
@@ -48,16 +50,20 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
             indexableDocument.addAttribute("contentType", content.getType().name());
             indexableDocument.addAttribute("contentTemplateId", content.getContentTemplateId());
-            indexableDocument.addAttribute("metaDataTemplateId", content.getMetaDataTemplateId());
+
+            setMetaTemplateId(content, indexableDocument);
+
             indexableDocument.addAttribute("displayTemplateId", content.getDisplayTemplateId());
-            indexableDocument.addAttribute("documentTypeId", content.getDocumentTypeId());
+            setDocumentTypeIdAndName(content, indexableDocument);
+
             indexableDocument.addAttribute("groupId", content.getGroupId());
-            indexableDocument.addAttribute("alias", content.getAlias());
+            setAlias(content, indexableDocument);
             indexableDocument.addAttribute("createDate", content.getCreateDate());
             indexableDocument.addAttribute("publishDate", content.getPublishDate());
             indexableDocument.addAttribute("expireDate", content.getExpireDate());
-            // TODO get author name
-            indexableDocument.addAttribute("author", content.getOwnerPerson());
+
+            setOwnerPerson(content, indexableDocument);
+
             indexableDocument.addAttribute("keywords", getKeywords(content));
             indexableDocument.addAttribute("url", content.getUrl());
             indexableDocument.addAttribute("topics", getTopics(content.getId()));
@@ -72,6 +78,37 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             }
         }
         return indexableDocument;
+    }
+
+    private void setOwnerPerson(Content content, IndexableDocument indexableDocument) {
+        String ownerPerson = content.getOwnerPerson();
+        if (isNotBlank(ownerPerson)) {
+            indexableDocument.addAttribute("author", ownerPerson);
+        }
+    }
+
+    private void setAlias(Content content, IndexableDocument indexableDocument) {
+        String alias = content.getAlias();
+        if (isNotBlank(alias)) {
+            indexableDocument.addAttribute("alias", alias);
+        }
+    }
+
+    private void setDocumentTypeIdAndName(Content content, IndexableDocument indexableDocument) {
+        int documentTypeId = content.getDocumentTypeId();
+
+        if (documentTypeId != -1 && documentTypeId != 0) {
+            indexableDocument.addAttribute("documentTypeId", documentTypeId);
+            DocumentType documentTypeById = DocumentTypeCache.getDocumentTypeById(documentTypeId);
+            indexableDocument.addAttribute("documentTypeName", documentTypeById.getName());
+        }
+    }
+
+    private void setMetaTemplateId(Content content, IndexableDocument indexableDocument) {
+        int metaDataTemplateId = content.getMetaDataTemplateId();
+        if (metaDataTemplateId != -1 && metaDataTemplateId != 0) {
+            indexableDocument.addAttribute("metaDataTemplateId", metaDataTemplateId);
+        }
     }
 
     private List<String> getKeywords(Content content) {
