@@ -75,6 +75,7 @@
         <field name="displayTemplateId" type="int" indexed="true" stored="false"/>
         <field name="displayTemplateName" type="string" indexed="true" stored="false"/>
         <field name="documentTypeId" type="int" indexed="true" stored="false"/>
+        <field name="documentTypeName" type="string" indexed="true" stored="false"/>
         <field name="groupId" type="int" indexed="true" stored="true"/>
         <field name="siteId" type="int" indexed="true" stored="true" multiValued="false"/>
         <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>
@@ -99,9 +100,9 @@
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
-        <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true"/>
-        <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" />
-        <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" />
+        <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
         <dynamicField name="*_b"  type="boolean" indexed="true"  stored="false"/>
         <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
         <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>

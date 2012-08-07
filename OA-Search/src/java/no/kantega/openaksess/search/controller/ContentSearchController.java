@@ -1,199 +1,156 @@
 package no.kantega.openaksess.search.controller;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.gdata.util.common.base.Pair;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.query.Fields;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.openaksess.search.security.AksessSearchContext;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.controls.AksessController;
-import org.springframework.beans.factory.InitializingBean;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.search.api.search.SearchQuery;
+import no.kantega.search.api.search.SearchResponse;
+import no.kantega.search.api.search.Searcher;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
+
 /**
- *
+ * Performs search for Aksess content.
  */
-public class ContentSearchController implements AksessController, InitializingBean {
+public class ContentSearchController implements AksessController {
 
-    private String description = "Performs search for Aksess content";
-
-    //private SearchService searchService;
-    private String queryStringEncoding = "iso-8859-1"; // Must match setting in web server, default for tomcat is iso-8859-1, jetty is utf-8. Tomcat can be set to use utf-8 by setting URIEncoding="UTF-8" on the Connector element in server.xml
-    //private List<SearchField> customSearchFields;
-
-    private boolean hitCountDocumentType = true;
-    private boolean hitCountParents = true;
-    private boolean hitCountLastModified = true;
-
-    static final String INVALIDQUERY = "invalidquery";
-
-  //  private QueryStringGenerator queryStringGenerator;
-
-    private String modelParametersPrefix = "";
-
-    private Integer includedContentTemplateId = null;
-    private Integer excludedContentTemplateId = null;
+    private Searcher searcher;
 
     private boolean searchAllSites = false;
-
+    private SiteCache siteCache;
+    private boolean showOnlyVisibleContent = true;
+    private boolean showOnlyPublishedContent = true;
+    private List<String> facetFields = Arrays.asList("documentTypeName", "location");
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long start = System.currentTimeMillis();
-       // Map<String, Object> model = performSearches(request);
-        //model.put("totalTime", System.currentTimeMillis() - start);
-        return null;
-    }
-/*
+        HashMap<String, Object> model = new HashMap<String, Object>();
+        String query = getQuery(request);
+        if (isNotEmpty(query)) {
+            SearchResponse searchResponse = performSearch(request, query);
+            model.put("searchResponse", searchResponse);
 
-    private Map<String, Object> performSearches(HttpServletRequest request) {
-        Map<String, Object> model = new HashMap<String, Object>();
-
-        Content content = (Content)request.getAttribute("aksess_this");
-
-        SearchServiceQuery query = createSearchServiceQuery(content, request);
-
-        // Add hit counts
-        addHitCountQueries(query, request, content);
-
-        String urlPrefix = "?";
-
-        // Perform search
-
-
-        // SearchServiceResultImpl should be renamed or something in future
-        SearchServiceResultImpl result = (SearchServiceResultImpl)searchService.search(query);
-
-
-        if (result == null){
-            model.put("error", INVALIDQUERY);
-        } else{
-
-            model.put(modelParametersPrefix + "result", result);
-
+            String urlPrefix = "?";
             Map<String, Object> links = new HashMap<String, Object>();
-            // QueryStrings for drilldown
-            links.put("hitcounts", getHitCountUrls(urlPrefix, query, result));
 
-            // QueryString to previous and next page
-            String prevPageUrl = getPrevPageUrl(query, result);
-            if (prevPageUrl != null) {
+            links.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
+            // TODO Facet names
+            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), searchResponse.getCurrentPage());
+            if (isNotBlank(prevPageUrl)) {
                 links.put("prevPageUrl", urlPrefix + prevPageUrl);
             }
-            String nextPageUrl = getNextPageUrl(query, result);
-            if (nextPageUrl != null) {
+            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), searchResponse.getCurrentPage());
+            if (isNotBlank(nextPageUrl)) {
                 links.put("nextPageUrl", urlPrefix + nextPageUrl);
             }
-
-            // QueryStrings for pages
-            links.put("pageUrls", createPageUrls(urlPrefix, query, result));
-            model.put(modelParametersPrefix + "links", links);
-
+            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, searchResponse.getCurrentPage(), urlPrefix));
+            model.put("links", links);
         }
+
         return model;
     }
 
-    protected SearchServiceQuery createSearchServiceQuery(Content content, HttpServletRequest request) {
-        SearchServiceQuery query = new SearchServiceQuery(request);
-        RequestParameters params = new RequestParameters(request);
-
-        if (!searchAllSites) {
-            if (content != null) {
-                query.putSearchParam("thisId", "" + content.getAssociation().getId());
-                int siteId = params.getInt(SearchServiceQuery.PARAM_SITE_ID);
-                if (siteId == -1) {
-                    siteId = content.getAssociation().getSiteId();
-                }
-                query.putSearchParam(SearchServiceQuery.PARAM_SITE_ID, "" + siteId);
+    private Multimap<String, String> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
+        Multimap<String,String> facetUrls = ArrayListMultimap.create();
+        for (Map.Entry<String, List<Pair<String, Long>>> facetFieldEntry : searchResponse.getFacetFields().entrySet()) {
+            for(Pair<String, Long> facetFieldValue : facetFieldEntry.getValue()){
+                String facetName = facetFieldEntry.getKey();
+                facetUrls.put(facetName, urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse));
             }
         }
-
-        if (includedContentTemplateId != null) {
-            query.putSearchParam(SearchServiceQuery.PARAM_CONTENT_TEMPLATE, includedContentTemplateId.toString());
+        for(Pair<String, Integer> facetQuery : searchResponse.getFacetQueries()){
+            facetUrls.put(facetQuery.first, urlPrefix + QueryStringGenerator.getFacetUrl(facetQuery.first, searchResponse));
         }
-
-        if (excludedContentTemplateId != null) {
-            query.putSearchParam(SearchServiceQuery.PARAM_EXCLUDED_CONTENT_TEMPLATE, excludedContentTemplateId.toString());
-        }
-
-
-        return query;
-    }
-*/
-
-    /**
-     * Get URL to previous page
-     * @param query
-     * @param result
-     * @return
-     */
-/*
-    private String getPrevPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
-        String prevPageUrl = queryStringGenerator.prevPage(query, result.getCurrentPage());
-        return prevPageUrl == null || "".equals(prevPageUrl) ? null : prevPageUrl;
+        return facetUrls;
     }
 
-    */
-/**
-     * Get URL to next page
-     * @param query
-     * @param result
-     * @return
-     *//*
-
-    private String getNextPageUrl(SearchServiceQuery query, SearchServiceResultImpl result) {
-        String nextPageUrl = queryStringGenerator.nextPage(query, result.getCurrentPage(), query.getHitsPerPage(), 666);
-        return nextPageUrl == null || "".equals(nextPageUrl) ? null : nextPageUrl;
+    private SearchResponse performSearch(HttpServletRequest request, String query) {
+        AksessSearchContext searchContext = getSearchContext(request);
+        return searcher.search(getSearchQuery(request, query, searchContext));
     }
-*/
 
+    private SearchQuery getSearchQuery(HttpServletRequest request, String query, AksessSearchContext searchContext) {
+        SearchQuery searchQuery = new SearchQuery(searchContext, query, getFilterQueries(request, searchContext));
 
-    /**
-     * Generate URL for navigation to pages in search result
-     * @param urlPrefix
-     * @param query - query
-     * @param result - result
-     * @return - list of URLs
-     */
-  /*  private LinkedHashMap<String, String> createPageUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResultImpl result) {
-        LinkedHashMap<String, String> pageUrls = new LinkedHashMap<String, String>();
-        int currentpage = result.getCurrentPage() + 1;
-        int startPage = ((currentpage / 10) * 10) + 1;
-        int endPage = startPage + 9;
-        *//*if (endPage * query.getHitsPerPage() >= result.getSearchResult().getNumberOfHits()) {
-            endPage = (result.getSearchResult().getNumberOfHits() - 1) / query.getHitsPerPage();
-            endPage++;
-        }*//*
-        if (startPage > 1) {
-            startPage--;
+        searchQuery.setFacetFields(facetFields);
+
+        searchQuery.setFacetQueries(asList(
+                "lastModified:[NOW/DAY-7DAYS TO NOW]",
+                "lastModified:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]",
+                "lastModified:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]",
+                "lastModified:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]",
+                "lastModified:[* TO NOW/YEAR-3YEARS]"));
+        return searchQuery;
+    }
+
+    private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
+        List<String> filterQueries = Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM));
+
+        if(!searchAllSites){
+            filterQueries.add("siteId:" + searchContext.getSiteId());
         }
-        for (int i = startPage; i <= endPage; i++) {
-            String[] keys = new String[]{ SearchServiceQuery.METAPARAM_PAGE };
-            String[] values = new String[]{ "" + (i-1) };
-            pageUrls.put("" + i, urlPrefix + queryStringGenerator.replaceParams(query, keys, values));
+        if(showOnlyVisibleContent){
+            filterQueries.add("visibilityStatus:" + ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE));
         }
-        return pageUrls;
-    }*/
+        if(showOnlyPublishedContent){
+            filterQueries.add("contentStatus:" + ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
+        }
 
+        return filterQueries;
+    }
 
-    /**
-     * Get links for drilldown
-     * @param urlPrefix
-     * @param query
-     * @param result
-     * @return
-     */
- /*   private Map<String, String> getHitCountUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResult result) {
+    private String getQuery(HttpServletRequest request) {
+        return ServletRequestUtils.getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
+    }
+
+    private AksessSearchContext getSearchContext(HttpServletRequest request) {
+        return new AksessSearchContext(SecuritySession.getInstance(request), findSiteId(request));
+    }
+
+    private int findSiteId(HttpServletRequest request) {
+        int retVal = 1;
+
+        Content content = (Content)request.getAttribute("aksess_this");
+        if (content != null) {
+            retVal = content.getAssociation().getSiteId();
+        } else {
+            Site site = siteCache.getSiteByHostname(request.getServerName());
+            if (site != null) {
+                retVal = site.getId();
+            }
+        }
+        return retVal;
+    }
+
+    private Map<String, String> getHitCountUrls(String urlPrefix, SearchServiceQuery query, SearchServiceResult result) {
         Map<String, String> hitCounts = new HashMap<String, String>();
-   //     SearchServiceResultImpl serviceResult = (SearchServiceResultImpl)result;
+        //     SearchServiceResultImpl serviceResult = (SearchServiceResultImpl)result;
 
-   *//*     if (serviceResult.getSearchResult() instanceof SearchResultExtendedImpl) {
+        if (serviceResult.getSearchResult() instanceof SearchResultExtendedImpl) {
             SearchResultExtendedImpl sr = (SearchResultExtendedImpl)serviceResult.getSearchResult();
 
             for (HitCount hitCount : sr.getHitCounts()) {
@@ -210,10 +167,10 @@ public class ContentSearchController implements AksessController, InitializingBe
                     }
                 }
             }
-        }*//*
+        }
         return hitCounts;
     }
-*/
+
     private String[] getDocumentTypes() {
         List<DocumentType> documentTypes = DocumentTypeCache.getDocumentTypes();
         String[] docTypeIds = new String[documentTypes.size()];
@@ -223,12 +180,6 @@ public class ContentSearchController implements AksessController, InitializingBe
         return docTypeIds;
     }
 
-    /**
-     * Gets a list of subpages based on parentid, if no parentid is specified, gets subpages under root
-     * @param siteId
-     * @param request
-     * @return
-     */
     private String[] getParents(int siteId, HttpServletRequest request) {
         ContentManagementService cms = new ContentManagementService(request);
 
@@ -258,16 +209,9 @@ public class ContentSearchController implements AksessController, InitializingBe
         return null;
     }
 
-    /**
-     * Creates queries for hit counts, eg hits per category
-     * @param query - SearchServiceQuery
-     * @param request - HttpServletRequest
-     * @param content - Content current page
-     */
-/*
     protected void addHitCountQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
-        */
-/*if (hitCountDocumentType) {
+
+        if (hitCountDocumentType) {
             // Document types
             HitCountQuery hitCountDocType = new HitCountQueryDefaultImpl(Fields.DOCUMENT_TYPE_ID, HitCountHelper.getDocumentTypes(), true);
             query.addHitCountQuery(hitCountDocType);
@@ -286,77 +230,34 @@ public class ContentSearchController implements AksessController, InitializingBe
         if (hitCountLastModified) {
             // Modified date
             query.addHitCountQuery(new DateHitCountQuery(Fields.LAST_MODIFIED, 5, null, null));
-        }*//*
+        }
 
 
-      //  addCustomQueries(query, request, content);
+        //  addCustomQueries(query, request, content);
     }
-*/
+
 
     public String getDescription() {
-        return description;
+        return "Performs search for Aksess content";
     }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
-    public void setHitCountDocumentType(boolean hitCountDocumentType) {
-        this.hitCountDocumentType = hitCountDocumentType;
-    }
-
-    public void setHitCountParents(boolean hitCountParents) {
-        this.hitCountParents = hitCountParents;
-    }
-
-    public void setHitCountLastModified(boolean hitCountLastModified) {
-        this.hitCountLastModified = hitCountLastModified;
-    }
-
-    public void setQueryStringEncoding(String queryStringEncoding) {
-        this.queryStringEncoding = queryStringEncoding;
-    }
-/*
-    public void setCustomSearchFields(List<SearchField> customSearchFields) {
-        this.customSearchFields = customSearchFields;
-    }
-
-    public List<SearchField> getCustomSearchFields() {
-        return customSearchFields;
-    }*/
-
-    public void setModelParametersPrefix(String modelParametersPrefix) {
-        this.modelParametersPrefix = modelParametersPrefix;
-    }
-
-    public void setIncludedContentTemplateId(Integer includedContentTemplateId) {
-        this.includedContentTemplateId = includedContentTemplateId;
-    }
-
-    public void setExcludedContentTemplateId(Integer excludedContentTemplateId) {
-        this.excludedContentTemplateId = excludedContentTemplateId;
-    }
-
-    public void afterPropertiesSet() throws Exception {
-        queryStringEncoding = Aksess.getQueryStringEncoding();
-        //queryStringGenerator = new QueryStringGenerator(queryStringEncoding);
-    }
-
- /*   private void addCustomQueries(SearchServiceQuery query, HttpServletRequest request, Content content) {
-        if (customSearchFields != null) {
-            for (SearchField field : customSearchFields) {
-                List<HitCountQuery> hitCountQueries = field.getHitCountQueries(query, request, content);
-                if (hitCountQueries != null) {
-                    for (HitCountQuery hcQuery : hitCountQueries) {
-                        query.addHitCountQuery(hcQuery);
-                    }
-                }
-            }
-        }
-    }*/
 
     public void setSearchAllSites(boolean searchAllSites) {
         this.searchAllSites = searchAllSites;
+    }
+
+    public void setSiteCache(SiteCache siteCache) {
+        this.siteCache = siteCache;
+    }
+
+    public void setShowOnlyVisibleContent(boolean showOnlyVisibleContent) {
+        this.showOnlyVisibleContent = showOnlyVisibleContent;
+    }
+
+    public void setSearcher(Searcher searcher) {
+        this.searcher = searcher;
+    }
+
+    public void setShowOnlyPublishedContent(boolean showOnlyPublishedContent) {
+        this.showOnlyPublishedContent = showOnlyPublishedContent;
     }
 }

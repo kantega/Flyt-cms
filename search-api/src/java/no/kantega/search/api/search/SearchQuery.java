@@ -15,6 +15,7 @@ public class SearchQuery {
     private boolean highlightSearchResultDescription;
     private List<String> facetFields;
     private List<String> facetQueries;
+    private List<DateRange> dateRangeFacets;
     private Integer resultsPerPage = 50;
     private Integer pageNumber = 0;
 
@@ -79,7 +80,7 @@ public class SearchQuery {
     }
 
     public boolean useFacet() {
-        return facetFields != null || facetQueries != null;
+        return facetFields != null || facetQueries != null || dateRangeFacets != null;
     }
 
     public List<String> getFacetFields() {
@@ -101,6 +102,20 @@ public class SearchQuery {
             return Collections.emptyList();
         }
         return facetQueries;
+    }
+
+    public List<DateRange> getDateRangeFacets() {
+        if(dateRangeFacets == null){
+            dateRangeFacets = Collections.emptyList();
+        }
+        return dateRangeFacets;
+    }
+
+    /**
+     * @param dateRangeFacets which should be used for the SearchResponse
+     */
+    public void setDateRangeFacets(List<DateRange> dateRangeFacets) {
+        this.dateRangeFacets = dateRangeFacets;
     }
 
     /**

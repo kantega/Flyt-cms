@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static org.apache.commons.collections.CollectionUtils.select;
@@ -69,7 +70,7 @@ public class SearcherFaceteIntegrationTest {
         String newContent = "createDate:[2012-01-01T23:59:59Z TO *]";
         q.setFacetQueries(Arrays.asList(oldContent, newContent));
         SearchResponse search = searcher.search(q);
-        List<Pair<String, Integer>> facetQuery = search.getFacetQuery();
+        List<Pair<String, Integer>> facetQuery = search.getFacetQueries();
         assertFalse("Facet query result was empty", facetQuery.isEmpty());
 
         assertEquals(oldContent, facetQuery.get(0).first);
@@ -77,6 +78,22 @@ public class SearcherFaceteIntegrationTest {
         assertEquals((Integer)4, facetQuery.get(0).second);
         assertEquals((Integer)2, facetQuery.get(1).second);
     }
+
+    @Test
+    public void facetQuery2(){
+        SearchContext searchContext = new SearchContext() {};
+        SearchQuery q = new SearchQuery(searchContext, "as", "*");
+        q.setFacetQueries(asList("createDate:[NOW/DAY-7DAYS TO NOW]",
+                "createDate:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]",
+                "createDate:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]",
+                "createDate:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]",
+                "createDate:[* TO NOW/YEAR-3YEARS]"));
+        SearchResponse search = searcher.search(q);
+        List<Pair<String, Integer>> facetQuery = search.getFacetQueries();
+        assertFalse("Facet query result was empty", facetQuery.isEmpty());
+    }
+
+
 
     @Test
     public void facetQueryDrilldown(){
@@ -100,7 +117,7 @@ public class SearcherFaceteIntegrationTest {
     }
 
     @Test
-    public void locationFacet(){
+    public void exploreLocationFacet(){
         SearchContext searchContext = new SearchContext() {};
         SearchQuery q = new SearchQuery(searchContext, "rett");
         q.setFacetFields(Arrays.asList("location"));

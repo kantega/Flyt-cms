@@ -18,7 +18,7 @@ public class SearchResponse {
     private List<String> spellSuggestions;
     private Map<String, List<Pair<String, Long>>> facetFields;
     private Map<String, List<Pair<String, Integer>>> rangeFacet;
-    private List<Pair<String, Integer>> facetQuery;
+    private List<Pair<String, Integer>> facetQueries;
 
     public SearchResponse(SearchQuery query, long numFound, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
@@ -96,17 +96,21 @@ public class SearchResponse {
         return rangeFacet;
     }
 
-    public void setFacetQuery(List<Pair<String, Integer>> facetQuery) {
-        this.facetQuery = facetQuery;
+    public void setFacetQueries(List<Pair<String, Integer>> facetQueries) {
+        this.facetQueries = facetQueries;
     }
 
     /**
      * @return a list of Pair<String, Integer> containing the value of each facet query, and the resulting document count.
      */
-    public List<Pair<String, Integer>> getFacetQuery() {
-        if(facetQuery == null){
-            facetQuery = Collections.emptyList();
+    public List<Pair<String, Integer>> getFacetQueries() {
+        if(facetQueries == null){
+            return Collections.emptyList();
         }
-        return facetQuery;
+        return facetQueries;
+    }
+
+    public int getCurrentPage() {
+        return query.getPageNumber();
     }
 }

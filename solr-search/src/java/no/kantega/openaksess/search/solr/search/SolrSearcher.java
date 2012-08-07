@@ -33,31 +33,39 @@ public class SolrSearcher implements Searcher {
 
     public SearchResponse search(SearchQuery query) {
         try {
-            SolrQuery params = new SolrQuery(query.getOriginalQuery());
-            setFilterQueryIfPresent(query, params);
-
-            Integer resultsPerPage = query.getResultsPerPage();
-            params.setRows(resultsPerPage);
-            params.setStart(query.getPageNumber() * resultsPerPage);
-            params.set("spellcheck", "on");
-
-            setHighlighting(query, params);
-
-            addFacetQueryInformation(query, params);
+            SolrQuery params = createSearchParams(query);
 
             QueryResponse queryResponse = solrServer.query(params);
 
-            SolrDocumentList results = queryResponse.getResults();
-            SearchResponse searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
-
-            setSpellResponse(searchResponse, queryResponse);
-
-            addFacetResults(searchResponse, queryResponse);
-
-            return searchResponse;
+            return createSearchReponse(query, queryResponse);
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
         }
+    }
+
+    private SearchResponse createSearchReponse(SearchQuery query, QueryResponse queryResponse) {
+        SolrDocumentList results = queryResponse.getResults();
+        SearchResponse searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
+
+        setSpellResponse(searchResponse, queryResponse);
+
+        addFacetResults(searchResponse, queryResponse);
+        return searchResponse;
+    }
+
+    private SolrQuery createSearchParams(SearchQuery query) {
+        SolrQuery params = new SolrQuery(query.getOriginalQuery());
+        setFilterQueryIfPresent(query, params);
+
+        Integer resultsPerPage = query.getResultsPerPage();
+        params.setRows(resultsPerPage);
+        params.setStart(query.getPageNumber() * resultsPerPage);
+        params.set("spellcheck", "on");
+
+        setHighlighting(query, params);
+
+        addFacetQueryInformation(query, params);
+        return params;
     }
 
     public List<String> suggest(SearchQuery query) {
@@ -136,7 +144,7 @@ public class SolrSearcher implements Searcher {
             for (Map.Entry<String, Integer> facetQueryEntry : facetQuery.entrySet()) {
                 facetQueryResults.add(new Pair<String, Integer>(facetQueryEntry.getKey(), facetQueryEntry.getValue()));
             }
-            searchResponse.setFacetQuery(facetQueryResults);
+            searchResponse.setFacetQueries(facetQueryResults);
         }
     }
 

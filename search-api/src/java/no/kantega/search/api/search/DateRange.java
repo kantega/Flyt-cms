@@ -9,11 +9,10 @@ public class DateRange {
     private final Date to;
 
     /**
-     *
      * @param field to create date range from
      * @param from the date to start
      * @param to the date to end
-     * @param gap spacing between facets. As seen in DateMathParser.
+     * @param gap spacing between facets. As seen in DateMathParser. Example 1DAY.
      * @see org.apache.solr.util.DateMathParser
      */
     public DateRange(String field, Date from, Date to, String gap) {
