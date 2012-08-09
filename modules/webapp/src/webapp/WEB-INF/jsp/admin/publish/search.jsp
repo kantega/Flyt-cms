@@ -20,15 +20,19 @@
   --%>
 <kantega:section id="body">
 <div id="SearchDrilldown">
-
+    <ul>
     <c:forEach items="${searchResponse.facets}" var="facet">
-       <h3><kantega:label key="aksess.search.${facet.key}"/></h3>
-       <c:forEach items="${facet.value}" var="facetEntry">
-            <c:set var="facetLabel" value="${facet.key}.${facetEntry.first}"/>
-            <a href="${facetUrls[facetLabel]}"><search:labelresolver key="${facetLabel}" /> (${facetEntry.second})</a>
-       </c:forEach>
+        <li>
+           <h3><kantega:label key="aksess.search.${facet.key}"/></h3>
+            <ul>
+           <c:forEach items="${facet.value}" var="facetEntry">
+                <c:set var="facetLabel" value="${facet.key}.${facetEntry.first}"/>
+                <li><a href="${facetUrls[facetLabel]}"><search:labelresolver key="${facetLabel}" /> (${facetEntry.second})</a></li>
+           </c:forEach>
+            </ul>
+        </li>
     </c:forEach>
-
+    </ul>
 </div>
 
 <div id="SearchResult">
@@ -55,14 +59,10 @@
 
     <c:if test="${searchResponse.numberOfHits gt 10}">
         <div class="paging">
-            <c:choose>
-                <c:when test="${not empty links.prevPageUrl}">
-                    <a class="previous" href="<c:out value="${links.prevPageUrl}"/>"><kantega:label key="aksess.search.results.previous"/></a>
-                </c:when>
-                <c:otherwise>
-                    <span class="previous disabled"><kantega:label key="aksess.search.results.previous"/></span>
-                </c:otherwise>
-            </c:choose>
+            <c:if test="${not empty links.prevPageUrl}">
+                <a class="previous" href="<c:out value="${links.prevPageUrl}"/>"><kantega:label key="aksess.search.results.previous"/></a>
+            </c:if>
+
             <div class="pagenumbers">
                 <c:forEach items="${pageUrls}" varStatus="status">
                     <c:choose>
@@ -78,14 +78,9 @@
                     </c:if>
                 </c:forEach>
             </div>
-            <c:choose>
-                <c:when test="${not empty nextPageUrl}">
-                    <a class="next" href="<c:out value="${nextPageUrl}"/>"><kantega:label key="aksess.search.results.next"/></a>
-                </c:when>
-                <c:otherwise>
-                    <span class="next disabled"><kantega:label key="aksess.search.results.next"/></span>
-                </c:otherwise>
-            </c:choose>
+            <c:if test="${not empty nextPageUrl}">
+                <a class="next" href="<c:out value="${nextPageUrl}"/>"><kantega:label key="aksess.search.results.next"/></a>
+            </c:if>
         </div>
     </c:if>
 </div>

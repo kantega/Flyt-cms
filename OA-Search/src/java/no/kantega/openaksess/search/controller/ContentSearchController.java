@@ -73,7 +73,7 @@ public class ContentSearchController implements AksessController {
         for (Map.Entry<String, Collection<Pair<String, Number>>> facetFieldEntry : searchResponse.getFacets().entrySet()) {
             for(Pair<String, Number> facetFieldValue : facetFieldEntry.getValue()){
                 String facetName = facetFieldEntry.getKey();
-                facetUrls.put(String.format("%s.%s", facetName, facetFieldValue.first), urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse));
+                facetUrls.put(String.format("%s.%s", facetName, facetFieldValue.first), urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse.getQuery()));
             }
         }
 

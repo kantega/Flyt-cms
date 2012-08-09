@@ -66,6 +66,14 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         }
     }
 
+    public void deleteAllDocuments() {
+        try {
+            solrServer.deleteByQuery("*:*");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     public void optimize() {
         try {
             solrServer.optimize();

@@ -31,6 +31,11 @@ public interface DocumentIndexer {
     public void deleteById(List<String> Ids);
 
     /**
+     * Delete all documents in the index.
+     */
+    public void deleteAllDocuments();
+
+    /**
      * Force a optimization of the index.
      */
     public void optimize();

@@ -79,10 +79,13 @@ public class QueryStringGenerator {
         return pageUrls;
     }
 
-    public static String getFacetUrl(String facet, SearchResponse searchResponse) {
-        StringBuilder queryStringBuilder = getUrl(searchResponse.getQuery());
+    public static String getFacetUrl(String facet, SearchQuery query) {
+        StringBuilder queryStringBuilder = getUrl(query);
         queryStringBuilder.append("&");
+        queryStringBuilder.append(FILTER_PARAM);
+        queryStringBuilder.append("=");
         queryStringBuilder.append(getEncodedQuery(facet));
+        appendFilterQueries(query, queryStringBuilder);
         return queryStringBuilder.toString();
     }
 

@@ -61,6 +61,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             setAlias(content, indexableDocument);
             indexableDocument.addAttribute("createDate", content.getCreateDate());
             indexableDocument.addAttribute("publishDate", content.getPublishDate());
+            indexableDocument.addAttribute("lastModified", content.getLastModified());
             indexableDocument.addAttribute("expireDate", content.getExpireDate());
 
             setOwnerPerson(content, indexableDocument);

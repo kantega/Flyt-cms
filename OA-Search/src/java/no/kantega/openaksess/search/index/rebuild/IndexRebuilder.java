@@ -29,6 +29,8 @@ public class IndexRebuilder {
     private final String category = getClass().getName();
 
     public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude) {
+        documentIndexer.deleteAllDocuments();
+
         final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
         final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>();
         for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
