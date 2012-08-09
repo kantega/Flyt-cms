@@ -24,4 +24,37 @@
     <context:component-scan base-package="no.kantega.openaksess.search"/>
     <aop:aspectj-autoproxy/>
     <task:annotation-driven/>
+
+    <bean id="facetFields"  class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>documentTypeId</value>
+                <value>location</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="facetQueries"  class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>lastModified:[NOW/DAY-7DAYS TO NOW]</value>
+                <value>lastModified:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]</value>
+                <value>lastModified:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]</value>
+                <value>lastModified:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]</value>
+                <value>lastModified:[* TO NOW/YEAR-3YEARS]</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="facetValueToLabelKeys"  class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="lastModified.[NOW/DAY-7DAYS TO NOW]" value="aksess.search.lastweek" />
+                <entry key="lastModified.[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]" value="aksess.search.lastmonth" />
+                <entry key="lastModified.[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]" value="aksess.search.lastyear" />
+                <entry key="lastModified.[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]" value="aksess.search.lessthan3years" />
+                <entry key="lastModified.[* TO NOW/YEAR-3YEARS]" value="aksess.search.morethan3years" />
+            </map>
+        </property>
+    </bean>
 </beans>

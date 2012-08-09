@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static no.kantega.openaksess.search.solr.index.SolrDocumentIndexer.getLanguageSuffix;
 
@@ -33,7 +32,6 @@ public class SolrSearcher implements Searcher {
     private SolrServer solrServer;
 
     private Map<String, DocumentRetriever> documentRetrievers;
-    private final Pattern facetQuerySplitPattern = Pattern.compile("^(\\w):(.*)");
 
     public SearchResponse search(SearchQuery query) {
         try {
@@ -139,7 +137,7 @@ public class SolrSearcher implements Searcher {
         if(facetQuery != null){
             for (Map.Entry<String, Integer> facetQueryEntry : facetQuery.entrySet()) {
                 String facetQueryString = facetQueryEntry.getKey();
-                String[] facetFieldAndValue = facetQuerySplitPattern.split(facetQueryString);
+                String[] facetFieldAndValue = facetQueryString.split(":");
 
                 throwIfNotLenghtTwo(facetQueryString, facetFieldAndValue);
                 facets.put(facetFieldAndValue[0], new Pair<String, Number>(facetFieldAndValue[1], facetQueryEntry.getValue()));

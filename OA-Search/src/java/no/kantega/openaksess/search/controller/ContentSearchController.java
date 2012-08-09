@@ -1,7 +1,5 @@
 package no.kantega.openaksess.search.controller;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import com.google.gdata.util.common.base.Pair;
 import no.kantega.openaksess.search.security.AksessSearchContext;
 import no.kantega.publishing.api.cache.SiteCache;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 /**
@@ -37,7 +34,8 @@ public class ContentSearchController implements AksessController {
     private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
     private boolean showOnlyPublishedContent = true;
-    private List<String> facetFields = asList("documentTypeId", "location");
+    private List<String> facetFields;
+    private List<String> facetQueries;
 
     public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -47,41 +45,39 @@ public class ContentSearchController implements AksessController {
             model.put("searchResponse", searchResponse);
 
             String urlPrefix = "?";
-            Map<String, Object> links = new HashMap<String, Object>();
 
-            links.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
+            model.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
 
             int currentPage = searchResponse.getCurrentPage();
             if (currentPage > 0) {
                 String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
-                links.put("prevPageUrl", urlPrefix + prevPageUrl);
+                model.put("prevPageUrl", urlPrefix + prevPageUrl);
             }
 
             int numberOfPages = searchResponse.getNumberOfPages();
             if (currentPage < numberOfPages) {
                 String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
-                links.put("nextPageUrl", urlPrefix + nextPageUrl);
+                model.put("nextPageUrl", urlPrefix + nextPageUrl);
             }
 
             if (numberOfPages > 1) {
-                links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
+                model.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
             }
-            model.put("links", links);
         }
 
         return model;
     }
 
-    private Map<String, Collection<String>> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
-        Multimap<String,String> facetUrls = ArrayListMultimap.create();
+    private Map<String, String> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
+        Map<String,String> facetUrls = new HashMap<String, String>();
         for (Map.Entry<String, Collection<Pair<String, Number>>> facetFieldEntry : searchResponse.getFacets().entrySet()) {
             for(Pair<String, Number> facetFieldValue : facetFieldEntry.getValue()){
                 String facetName = facetFieldEntry.getKey();
-                facetUrls.put(facetName, urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse));
+                facetUrls.put(String.format("%s.%s", facetName, facetFieldValue.first), urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse));
             }
         }
 
-        return facetUrls.asMap();
+        return facetUrls;
     }
 
     private SearchResponse performSearch(HttpServletRequest request, String query) {
@@ -94,12 +90,7 @@ public class ContentSearchController implements AksessController {
 
         searchQuery.setFacetFields(facetFields);
 
-        searchQuery.setFacetQueries(asList(
-                "lastModified:[NOW/DAY-7DAYS TO NOW]",
-                "lastModified:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]",
-                "lastModified:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]",
-                "lastModified:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]",
-                "lastModified:[* TO NOW/YEAR-3YEARS]"));
+        searchQuery.setFacetQueries(facetQueries);
         return searchQuery;
     }
 
@@ -150,19 +141,19 @@ public class ContentSearchController implements AksessController {
         this.searchAllSites = searchAllSites;
     }
 
-    public void setSiteCache(SiteCache siteCache) {
-        this.siteCache = siteCache;
-    }
-
     public void setShowOnlyVisibleContent(boolean showOnlyVisibleContent) {
         this.showOnlyVisibleContent = showOnlyVisibleContent;
     }
 
-    public void setSearcher(Searcher searcher) {
-        this.searcher = searcher;
-    }
-
     public void setShowOnlyPublishedContent(boolean showOnlyPublishedContent) {
         this.showOnlyPublishedContent = showOnlyPublishedContent;
+    }
+
+    public void setFacetFields(List<String> facetFields) {
+        this.facetFields = facetFields;
+    }
+
+    public void setFacetQueries(List<String> facetQueries) {
+        this.facetQueries = facetQueries;
     }
 }

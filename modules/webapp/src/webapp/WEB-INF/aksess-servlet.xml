@@ -390,6 +390,8 @@
                 <property name="searchAllSites" value="true"/>
                 <property name="showOnlyPublishedContent" value="false"/>
                 <property name="showOnlyVisibleContent" value="false"/>
+                <property name="facetFields" ref="facetFields"/>
+                <property name="facetQueries" ref="facetQueries"/>
             </bean>
         </property>
     </bean>

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/search" prefix="search" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -19,81 +20,40 @@
   --%>
 <kantega:section id="body">
 <div id="SearchDrilldown">
-    <c:set var="category" value="${result.hitCounts['search.documenttype']}"/>
-    <c:if test="${not empty category}">
-        <h3>
-            <kantega:label key="aksess.search.documenttype"/>
-        </h3>
-        <ul>
-            <c:forEach items="${category}" var="hitCount">
-                <c:if test="${hitCount.hitCount ne 0}">
-                    <li>
-                        <c:set var="hitCountId" value="${hitCount.field}.${hitCount.term}"/>
-                        <c:choose>
-                            <c:when test="${not empty links.hitcounts[hitCountId]}">
-                                <a href="<c:out value="${links.hitcounts[hitCountId]}"/>"><c:out value="${hitCount.termTranslated}"/> <span class="antall">(<c:out value="${hitCount.hitCount}"/>)</span></a>
-                            </c:when>
-                            <c:otherwise>
-                                <c:out value="${hitCount.termTranslated}"/> <span class="antall">(<c:out value="${hitCount.hitCount}"/>)</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
-                </c:if>
-            </c:forEach>
-        </ul>
-    </c:if>
-    <c:set var="category" value="${result.hitCounts['search.lastmodified']}"/>
-    <c:if test="${not empty category}">
-        <h3>
-            <kantega:label key="aksess.search.lastmodified"/>
-        </h3>
-        <ul>
-            <c:forEach items="${category}" var="hitCount">
-                <c:if test="${hitCount.hitCount ne 0}">
-                    <li>
-                        <c:set var="hitCountId" value="${hitCount.field}.${hitCount.term}"/>
-                        <c:choose>
-                            <c:when test="${not empty links.hitcounts[hitCountId]}">
-                                <a href="<c:out value="${links.hitcounts[hitCountId]}"/>"><kantega:label key="${hitCount.termTranslated}"/> <span class="antall">(<c:out value="${hitCount.hitCount}"/>)</span></a>
-                            </c:when>
-                            <c:otherwise>
-                                <kantega:label key="${hitCount.termTranslated}" bundle="common"/> <span class="antall">(<c:out value="${hitCount.hitCount}"/>)</span>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
-                </c:if>
-            </c:forEach>
-        </ul>
-    </c:if>
+
+    <c:forEach items="${searchResponse.facets}" var="facet">
+       <h3><kantega:label key="aksess.search.${facet.key}"/></h3>
+       <c:forEach items="${facet.value}" var="facetEntry">
+            <c:set var="facetLabel" value="${facet.key}.${facetEntry.first}"/>
+            <a href="${facetUrls[facetLabel]}"><search:labelresolver key="${facetLabel}" /> (${facetEntry.second})</a>
+       </c:forEach>
+    </c:forEach>
+
 </div>
+
 <div id="SearchResult">
     <c:choose>
-        <c:when test="${result.searchResult.numberOfHits eq 0}">
+        <c:when test="${searchResponse.numberOfHits eq 0}">
             <div class="hitCount">
                 <kantega:label key="aksess.search.nohits"/>
             </div>
         </c:when>
         <c:otherwise>
             <div class="hitCount">
-                <kantega:label key="aksess.search.numberofhits"/>: ${result.searchResult.numberOfHits}
+                <kantega:label key="aksess.search.numberofhits"/>: ${searchResponse.numberOfHits}
             </div>
         </c:otherwise>
     </c:choose>
 
 
-    <c:forEach items="${result.searchHits}" var="searchHit">
+    <c:forEach items="${searchResponse.documentHits}" var="searchHit">
         <div class="hit">
             <a href="${searchHit.url}" target="contentmain"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
-            <c:choose>
-                <c:when test="${searchHit.contextText != ''}">
-                    <c:out value="${searchHit.contextText}" escapeXml="false"/>
-                </c:when>
-                <c:otherwise><c:out value="${searchHit.summary}" escapeXml="false"/></c:otherwise>
-            </c:choose>
+            <c:out value="${searchHit.description}" escapeXml="false"/>
         </div>
     </c:forEach>
 
-    <c:if test="${result.searchResult.numberOfHits gt 10}">
+    <c:if test="${searchResponse.numberOfHits gt 10}">
         <div class="paging">
             <c:choose>
                 <c:when test="${not empty links.prevPageUrl}">
@@ -104,9 +64,9 @@
                 </c:otherwise>
             </c:choose>
             <div class="pagenumbers">
-                <c:forEach items="${links.pageUrls}" varStatus="status">
+                <c:forEach items="${pageUrls}" varStatus="status">
                     <c:choose>
-                        <c:when test="${status.current.key == result.currentPage + 1}">
+                        <c:when test="${status.current.key == searchResponse.currentPage + 1}">
                             <a class="currentpage" href="<c:out value="${status.current.value}"/>"><b><c:out value="${status.current.key}"/></b></a>
                         </c:when>
                         <c:otherwise>
@@ -119,8 +79,8 @@
                 </c:forEach>
             </div>
             <c:choose>
-                <c:when test="${not empty links.nextPageUrl}">
-                    <a class="next" href="<c:out value="${links.nextPageUrl}"/>"><kantega:label key="aksess.search.results.next"/></a>
+                <c:when test="${not empty nextPageUrl}">
+                    <a class="next" href="<c:out value="${nextPageUrl}"/>"><kantega:label key="aksess.search.results.next"/></a>
                 </c:when>
                 <c:otherwise>
                     <span class="next disabled"><kantega:label key="aksess.search.results.next"/></span>

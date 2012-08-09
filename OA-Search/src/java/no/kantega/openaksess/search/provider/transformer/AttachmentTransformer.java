@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.provider.transformer;
 
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -18,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithouthSiteIdAndTrailingSlash;
 import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
 
 @Component
@@ -42,10 +44,13 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE));
             indexableDocument.addAttribute("publishDate", attachment.getLastModified());
+            indexableDocument.addAttribute("url", attachment.getUrl());
 
-
-            indexableDocument.addAttribute("location", content.getAssociation().getPath() + content.getAssociation().getId());
-            indexableDocument.setSiteId(content.getAssociation().getSiteId());
+            Association association = content.getAssociation();
+            int siteId = association.getSiteId();
+            indexableDocument.setSiteId(siteId);
+            indexableDocument.addAttribute("location",
+                    locationWithouthSiteIdAndTrailingSlash(association.getPath() + association.getId(), siteId));
 
             OutputStream fileStream = null;
             try {

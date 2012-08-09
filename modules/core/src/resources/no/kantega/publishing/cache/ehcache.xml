@@ -45,4 +45,13 @@
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true"/>
+
+    <cache name="FacetLabelCache"
+           maxElementsInMemory="30"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true"/>
 </ehcache>
