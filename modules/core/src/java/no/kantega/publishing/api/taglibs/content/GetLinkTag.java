@@ -36,9 +36,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
-/**
- *
- */
 public class GetLinkTag extends BodyTagSupport{
     private static final String SOURCE = "aksess.GetLinkTag";
 
@@ -136,6 +133,7 @@ public class GetLinkTag extends BodyTagSupport{
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {
                             Site site = SiteCache.getSiteById(contentObject.getAssociation().getSiteId());
+
                             List hostnames = site.getHostnames();
                             if (hostnames.size() > 0) {
                                 String hostname = (String)hostnames.get(0);
@@ -156,7 +154,7 @@ public class GetLinkTag extends BodyTagSupport{
             if (url != null) {
                 if (queryParams != null) {
                     if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?")) && (!queryParams.startsWith("#"))) {
-                        if (url.indexOf("?") == -1) {
+                        if (!url.contains("?")) {
                             queryParams = "?" + queryParams;
                         } else {
                             queryParams = "&amp;" + queryParams;
@@ -213,9 +211,8 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
         } catch (Exception e) {
-            System.err.println(e);
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            Log.error(SOURCE, e);
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }
