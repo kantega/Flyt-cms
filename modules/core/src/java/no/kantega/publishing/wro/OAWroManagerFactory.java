@@ -45,7 +45,7 @@ public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
                         throw new IllegalStateException("Could not find WRO config file at " + OA_XML_CONFIG_FILE);
                     }
 
-                    InputStream projectResourceStream = manager.getUriLocatorFactory().locate(PROJECT_XML_CONFIG_FILE);
+                    InputStream projectResourceStream = tryToGetProjectResource();
 
                     boolean onlyOA = projectResourceStream == null;
                     if(onlyOA) {
@@ -64,6 +64,21 @@ public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
                 } catch (TransformerException e) {
                     throw new RuntimeException(e);
                 }
+            }
+
+            /**
+             * WRO creates the stream in a way that tries to open the file when locating it.
+             * so if it does not exist an IOexception is thrown.
+             * @return a stream or null.
+             */
+            private InputStream tryToGetProjectResource() {
+                InputStream projectResourceStream;
+                try {
+                    projectResourceStream = manager.getUriLocatorFactory().locate(PROJECT_XML_CONFIG_FILE);
+                } catch (IOException e) {
+                    projectResourceStream = null;
+                }
+                return projectResourceStream;
             }
         };
     }
