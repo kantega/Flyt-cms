@@ -47,7 +47,7 @@ public class IndexRebuilder {
                 stopWatch.start();
                 try {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
-                        IndexableDocument poll = indexableDocuments.poll(1000, TimeUnit.MINUTES);
+                        IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
                         documentIndexer.indexDocument(poll);
                     }
                 } catch (InterruptedException e) {

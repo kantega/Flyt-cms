@@ -91,6 +91,7 @@ public class ContentSearchController implements AksessController {
         searchQuery.setFacetFields(facetFields);
 
         searchQuery.setFacetQueries(facetQueries);
+
         return searchQuery;
     }
 

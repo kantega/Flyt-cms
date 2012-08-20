@@ -213,9 +213,8 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
         } catch (Exception e) {
-            System.err.println(e);
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            Log.error(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

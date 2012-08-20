@@ -84,7 +84,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         public void run() {
             while (!progressReporter.isFinished()){
                 try {
-                    Integer id = ids.poll(1000, TimeUnit.SECONDS);
+                    Integer id = ids.poll(10, TimeUnit.SECONDS);
 
                     progressReporter.reportProgress();
                     IndexableDocument indexableDocument = transformer.transform(AttachmentAO.getAttachment(id));

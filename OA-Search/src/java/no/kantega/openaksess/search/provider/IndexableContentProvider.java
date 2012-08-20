@@ -88,7 +88,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         public void run() {
             while (!progressReporter.isFinished()){
                 try {
-                    Integer id = ids.poll(1000, TimeUnit.SECONDS);
+                    Integer id = ids.poll(10, TimeUnit.SECONDS);
                     ContentIdentifier contentIdentifier = new ContentIdentifier();
                     contentIdentifier.setContentId(id);
                     progressReporter.reportProgress();
