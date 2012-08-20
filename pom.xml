@@ -53,9 +53,9 @@
         <module>modules/webdav</module>
         <module>modules/webapp</module>
         <module>modules/core-plugins</module>
-        <module>solr-search</module>
-        <module>search-api</module>
-        <module>OA-Search</module>
+        <module>modules/solr-search</module>
+        <module>modules/search-api</module>
+        <module>modules/OA-Search</module>
     </modules>
 
     <dependencies>
