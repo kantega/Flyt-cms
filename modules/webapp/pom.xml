@@ -143,6 +143,12 @@
             <version>${codec.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.6.12</version>
+            <scope>runtime</scope>
+        </dependency>
         
         <!-- Is this one really needed?
         Added by Anders when upgrading to Spring 2.5.5 because he hit a runtime error.

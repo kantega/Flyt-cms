@@ -24,6 +24,7 @@
     </parent>
     <artifactId>openaksess-core-plugins</artifactId>
     <name>OpenAksess core plugins</name>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
