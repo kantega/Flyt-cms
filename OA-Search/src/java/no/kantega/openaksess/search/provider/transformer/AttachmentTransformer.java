@@ -51,7 +51,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
             indexableDocument.addAttribute("location",
-                    locationWithoutTrailingSlash(association.getPath() + association.getId()));
+                    String.format("%s/%s", locationWithoutTrailingSlash(association), association.getId()));
 
             OutputStream fileStream = null;
             try {
