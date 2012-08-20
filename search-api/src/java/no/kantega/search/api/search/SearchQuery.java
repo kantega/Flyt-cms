@@ -57,6 +57,7 @@ public class SearchQuery {
     }
 
     public List<String> getFilterQueries() {
+        if(filterQueries == null) return Collections.emptyList();
         return filterQueries;
     }
 

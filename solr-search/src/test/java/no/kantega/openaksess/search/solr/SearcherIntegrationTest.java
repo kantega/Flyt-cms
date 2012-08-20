@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 import static junit.framework.Assert.*;
+import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -25,7 +26,7 @@ public class SearcherIntegrationTest {
     }
 
     private SearchResponse doSearch(String query, String filter){
-        SearchContext searchContext = new SearchContext() {};
+        SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, query, filter);
         q.setHighlightSearchResultDescription(true);
         return searcher.search(q);
@@ -114,7 +115,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void misSpelledWordShouldGetSuggestion(){
-        SearchContext searchContext = new SearchContext() {};
+        SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "ell", "kantøga");
         List<String> suggest = searcher.suggest(q);
         assertFalse("No suggestions", suggest.isEmpty());
@@ -122,7 +123,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void descriptionShouldBehighlighted(){
-        SearchContext searchContext = new SearchContext() {};
+        SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, originalQuery);
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);

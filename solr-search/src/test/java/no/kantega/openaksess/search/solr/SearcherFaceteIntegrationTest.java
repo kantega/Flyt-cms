@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.solr;
 
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.search.api.search.*;
 import org.apache.commons.collections.Predicate;
 import org.junit.Test;
@@ -17,6 +16,7 @@ import java.util.*;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,8 +38,9 @@ public class SearcherFaceteIntegrationTest {
         Collection<FacetResult> facetResults = facetFields.get(indexedContentType);
         assertEquals(1, facetResults.size());
 
-        assertEquals("aksess-document", facetResults.iterator().next());
-        assertEquals((Long)6L, pairs.get(0).second);
+        FacetResult next = facetResults.iterator().next();
+        assertEquals("aksess-document", next.getValue());
+        assertEquals(6L, next.getCount());
     }
 
     @Test
@@ -49,13 +50,13 @@ public class SearcherFaceteIntegrationTest {
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         q.setDateRangeFacets(Collections.singletonList(new DateRange("createDate", dateFormat.parse("01-01-2010"), dateFormat.parse("01-01-2012"), "+1MONTH")));
         SearchResponse search = searcher.search(q);
-        Map<String, List<Pair<String, Integer>>> rangeFacet = search.getFacets();
+        Map<String, Collection<FacetResult>> rangeFacet = search.getFacets();
         assertFalse("Date facet was empty", rangeFacet.isEmpty());
 
-        List<Pair<String, Integer>> createDate = rangeFacet.get("createDate");
+        Collection<FacetResult> createDate = rangeFacet.get("createDate");
         assertEquals(5, createDate.size());
-        for (Pair<String, Integer> facet : createDate) {
-            assertEquals((Integer)1, facet.second);
+        for (FacetResult facet : createDate) {
+            assertEquals(1, facet.getCount());
         }
     }
 
@@ -67,13 +68,16 @@ public class SearcherFaceteIntegrationTest {
         String newContent = "createDate:[2012-01-01T23:59:59Z TO *]";
         q.setFacetQueries(Arrays.asList(oldContent, newContent));
         SearchResponse search = searcher.search(q);
-        List<Pair<String, Integer>> facetQuery = search.getFacets();
-        assertFalse("Facet query result was empty", facetQuery.isEmpty());
+        Map<String, Collection<FacetResult>> facets = search.getFacets();
+        assertFalse("Facet query result was empty", facets.isEmpty());
 
-        assertEquals(oldContent, facetQuery.get(0).first);
-        assertEquals(newContent, facetQuery.get(1).first);
-        assertEquals((Integer)4, facetQuery.get(0).second);
-        assertEquals((Integer)2, facetQuery.get(1).second);
+        Iterator<FacetResult> createDate = facets.get("createDate").iterator();
+        FacetResult first = createDate.next();
+        FacetResult second = createDate.next();
+        assertEquals("[* TO 2011-12-30T23:59:59Z]", first.getValue());
+        assertEquals("[2012-01-01T23:59:59Z TO *]", second.getValue());
+        assertEquals(4, first.getCount());
+        assertEquals(2, second.getCount());
     }
 
     @Test
@@ -86,8 +90,8 @@ public class SearcherFaceteIntegrationTest {
                 "createDate:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]",
                 "createDate:[* TO NOW/YEAR-3YEARS]"));
         SearchResponse search = searcher.search(q);
-        List<Pair<String, Integer>> facetQuery = search.getFacets();
-        assertFalse("Facet query result was empty", facetQuery.isEmpty());
+        Map<String, Collection<FacetResult>> facets = search.getFacets();
+        assertFalse("Facet query result was empty", facets.isEmpty());
     }
 
 
@@ -100,17 +104,22 @@ public class SearcherFaceteIntegrationTest {
         SearchResponse search = searcher.search(q);
 
         assertEquals(4, search.getNumberOfHits());
-        List<Pair<String, Long>> displayTemplateId = search.getFacets().get("displayTemplateId");
+        Collection<FacetResult> displayTemplateId = search.getFacets().get("displayTemplateId");
         assertEquals(3, displayTemplateId.size());
 
-        assertEquals("1", displayTemplateId.get(0).first);
-        assertEquals((Long)2L, displayTemplateId.get(0).second);
+        Iterator<FacetResult> iterator = displayTemplateId.iterator();
 
-        assertEquals("2", displayTemplateId.get(1).first);
-        assertEquals((Long)1L, displayTemplateId.get(1).second);
+        FacetResult first = iterator.next();
+        assertEquals("1", first.getValue());
+        assertEquals(2L, first.getCount());
 
-        assertEquals("3", displayTemplateId.get(2).first);
-        assertEquals((Long)1L, displayTemplateId.get(2).second);
+        FacetResult second = iterator.next();
+        assertEquals("2", second.getValue());
+        assertEquals(1L, second.getCount());
+
+        FacetResult third = iterator.next();
+        assertEquals("3", third.getValue());
+        assertEquals(1L, third.getCount());
     }
 
     @Test
@@ -121,27 +130,20 @@ public class SearcherFaceteIntegrationTest {
         SearchResponse search = searcher.search(q);
 
         assertEquals(3, search.getNumberOfHits());
-        List<Pair<String, Long>> location = search.getFacets().get("location");
-        assertEquals(3, location.size());
+        Collection<FacetResult> location = search.getFacets().get("location");
+        assertEquals(4, location.size());
+        assertEquals(1, select(location, getPredicate("/1", 3L)).size());
         assertEquals(1, select(location, getPredicate("/1/1", 1L)).size());
         assertEquals(1, select(location, getPredicate("/1/2", 1L)).size());
         assertEquals(1, select(location, getPredicate("/1/3", 1L)).size());
 
     }
 
-    private Predicate getPredicate(final String path, final Long count) {
+    private Predicate getPredicate(final String path, final Number count) {
         return new Predicate() {
             public boolean evaluate(Object object) {
-                Pair<String, Long> pair = (Pair<String, Long>) object;
-                return pair.first.equals(path) && pair.second.equals(count);
-            }
-        };
-    }
-
-    private SearchContext getDummySearchContext() {
-        return new SearchContext() {
-            public String getSearchUrl() {
-                return "";
+                FacetResult facetResult = (FacetResult) object;
+                return facetResult.getValue().equals(path) && facetResult.getCount().equals(count);
             }
         };
     }

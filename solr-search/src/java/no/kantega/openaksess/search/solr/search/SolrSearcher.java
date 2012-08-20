@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.search.api.retrieve.DocumentRetriever;
 import no.kantega.search.api.search.*;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -146,7 +147,7 @@ public class SolrSearcher implements Searcher {
         if(facetQuery != null){
             for (Map.Entry<String, Integer> facetQueryEntry : facetQuery.entrySet()) {
                 String facetQueryString = facetQueryEntry.getKey();
-                String[] facetFieldAndValue = facetQueryString.split(":");
+                String[] facetFieldAndValue = splitOnFirstColon(facetQueryString);
 
                 throwIfNotLenghtTwo(facetQueryString, facetFieldAndValue);
                 String facetFieldName = facetFieldAndValue[0];
@@ -159,6 +160,12 @@ public class SolrSearcher implements Searcher {
         searchResponse.setFacets(facets.asMap());
     }
 
+    private String[] splitOnFirstColon(String facetQueryString) {
+        int firstColon = facetQueryString.indexOf(":");
+
+        return new String[]{facetQueryString.substring(0, firstColon), facetQueryString.substring(firstColon + 1)};
+    }
+
     private boolean addFacetResult(SearchQuery query, Multimap<String, FacetResult> facets, String facetFieldName, String facetFieldValue, Number facetCount) {
         return facets.put(facetFieldName, new FacetResult(facetFieldName, facetFieldValue, facetCount, QueryStringGenerator.getFacetUrl(facetFieldName, facetFieldValue, query)));
     }
@@ -166,7 +173,7 @@ public class SolrSearcher implements Searcher {
     private void throwIfNotLenghtTwo(String facetQueryString, String[] facetFieldAndValue) {
         if(facetFieldAndValue.length != 2){
             throw new IllegalStateException(String.format("Splitting of facet query %s into field and query did not yield expected result." +
-                    " Expected values of length 2, got %d: %s", facetQueryString, facetFieldAndValue.length, facetFieldAndValue.toString()));
+                    " Expected values of length 2, got %d: %s", facetQueryString, facetFieldAndValue.length, ArrayUtils.toString(facetFieldAndValue)));
         }
     }
 
