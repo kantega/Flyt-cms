@@ -271,6 +271,7 @@
         <column name="GPSLongitudeRef" required="false" type="VARCHAR" size="1"/>
         <column name="GPSLongitude" required="false" type="VARCHAR" size="32"/>
         <column name="HasImageMap" required="false" type="INTEGER" size="10"/>
+        <column name="ContentId" required="false" type="INTEGER" size="10"/>
         <index name="idx_multimedia_parentid">
             <index-column name="ParentId"/>
         </index>
@@ -347,11 +348,6 @@
         <column name="SiteId" required="true" type="INTEGER" size="10"/>
         <column name="Hostname" required="true" type="VARCHAR" size="255"/>
         <column name="IsDefault" required="true" type="INTEGER" size="10"/>
-    </table>
-    <table name="sites">
-        <column name="SiteId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="Name" required="false" type="VARCHAR" size="32"/>
-        <column name="Alias" required="false" type="VARCHAR" size="32"/>
     </table>
     <table name="tmassociation">
         <column name="TopicMapId" required="true" type="INTEGER" size="10"/>

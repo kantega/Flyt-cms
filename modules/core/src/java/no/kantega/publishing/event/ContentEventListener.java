@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.event;
 
+import no.kantega.publishing.common.data.ContentIdentifier;
+
 /**
  * @
  */
@@ -133,4 +135,11 @@ public interface ContentEventListener {
      * @param event - event.getAttachment contains attachment
      */
     public void attachmentDeleted(ContentEvent event);
+
+    /**
+     * Called when a content is permanently deleted
+     * @param contentIdentifier
+     */
+    public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier);
+
 }

@@ -1,6 +1,11 @@
 package no.kantega.publishing.security.action;
 
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.log.Log;
+import no.kantega.commons.password.PasswordValidator;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.login.PostResetPasswordHandler;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.DefaultResetPasswordToken;
 import no.kantega.security.api.password.PasswordManager;
@@ -13,9 +18,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResetPasswordAction extends AbstractLoginAction {
+    private static final String SOURCE = "aksess.ResetPassordAction";
+
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;
-    private int minPasswordLength = 6;
+    private PasswordValidator passwordValidator;
 
 
 
@@ -58,9 +65,11 @@ public class ResetPasswordAction extends AbstractLoginAction {
         String password1 = request.getParameter("password1");
         String password2 = request.getParameter("password2");
 
-        if (isValidPassword(password1, password2)) {
+        ValidationErrors errors = passwordValidator.isValidPassword(password1, password2);
+        if (errors.getLength() > 0) {
             ModelAndView modelAndView = showPasswordForm(request);
-            modelAndView.getModel().put("error", "aksess.resetpassword.passwordmissing");
+            Map model = modelAndView.getModel();
+            model.put("passwordErrors", errors);
             return modelAndView;
         }
 
@@ -78,17 +87,23 @@ public class ResetPasswordAction extends AbstractLoginAction {
         ResetPasswordTokenManager tokenManager = getResetPasswordTokenManager();
         tokenManager.deleteTokensForIdentity(identity);
 
+        Configuration c = Aksess.getConfiguration();
+        String postResetPasswordHandler = c.getString("security.login.postresetpasswordhandler");
+        if (postResetPasswordHandler != null && !postResetPasswordHandler.isEmpty()) {
+            try {
+                PostResetPasswordHandler resetHandler = (PostResetPasswordHandler)Class.forName(postResetPasswordHandler).newInstance();
+                resetHandler.handlePostResetPassword(identity, request);
+            } catch (Exception e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+
         model.put("loginLayout", getLoginLayout());
-        model.put("minPasswordLength", minPasswordLength);
         model.put("passwordChanged", true);
 
 
         return new ModelAndView(resetPasswordView, model);
 
-    }
-
-    private boolean isValidPassword(String password1, String password2) {
-        return password1 == null || password1.length() < minPasswordLength || (!password1.equals(password2));
     }
 
     public ModelAndView showPasswordForm(HttpServletRequest request) throws Exception {
@@ -101,7 +116,6 @@ public class ResetPasswordAction extends AbstractLoginAction {
         model.put("token", token);
         model.put("username", userid);
         model.put("domain", domain);
-        model.put("minPasswordLength", minPasswordLength);
 
         return new ModelAndView(resetPasswordView, model);
     }
@@ -114,7 +128,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
         this.resetPasswordErrorView = resetPasswordErrorView;
     }
 
-    public void setMinPasswordLength(int minPasswordLength) {
-        this.minPasswordLength = minPasswordLength;
+    public void setPasswordValidator(PasswordValidator passwordValidator) {
+        this.passwordValidator = passwordValidator;
     }
 }

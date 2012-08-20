@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.event;
 
+import no.kantega.publishing.common.data.ContentIdentifier;
+
 /**
  * @see no.kantega.publishing.event.ContentEventListener
  *  
@@ -90,6 +92,10 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
 
     public void contentStatusChanged(ContentEvent contentEvent) {
         
+    }
+
+    public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier) {
+
     }
 
     public void attachmentDeleted(ContentEvent event) {

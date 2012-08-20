@@ -18,13 +18,13 @@ package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class GetUserTag  extends TagSupport {
     private String userid = null;
     private boolean getRoles = false;
     private boolean getRoleTopics = false;
-    private boolean useCache;
+    private boolean useCache = true;
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -98,6 +98,7 @@ public class GetUserTag  extends TagSupport {
     public int doEndTag() throws JspException {
         userid = null;
         name = "currentuser";
+        useCache = true;
         return EVAL_PAGE;
     }
 

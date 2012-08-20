@@ -18,17 +18,16 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.HearingComment;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.security.SecuritySession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -39,7 +38,7 @@ import java.io.IOException;
 import java.util.Date;
 
 
-public class SaveHearingCommentAction{
+public class SaveHearingCommentAction {
 
 	private Logger log = Logger.getLogger(getClass());
 	public static final String HEARING_KEY = SaveHearingCommentAction.class.getName() + ".HearingKey";
@@ -48,7 +47,7 @@ public class SaveHearingCommentAction{
 	@Autowired
 	private NotesDao notesDao;
 
-	@RequestMapping(value="/aksess/hearing/SaveHearingComment.action", method = RequestMethod.POST)
+	@RequestMapping(value = "/aksess/hearing/SaveHearingComment.action", method = RequestMethod.POST)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestParameters param = new RequestParameters(request);
 
@@ -61,10 +60,14 @@ public class SaveHearingCommentAction{
 
 			int hearingID = param.getInt("hearingId");
 
+			int contentId = param.getInt("contentId");
+
 			// TODO: Check if is hearing instance
 
 			if (comment != null && !comment.trim().equals("")) {
-				Content content = (Content) request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
+				ContentIdentifier cid = new ContentIdentifier();
+				cid.setContentId(contentId);
+				Content content = ContentAO.getContent(cid,false);
 				String name = SecuritySession.getInstance(request).getUser().getName();
 
 				HearingComment hc = new HearingComment();

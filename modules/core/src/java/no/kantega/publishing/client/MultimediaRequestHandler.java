@@ -75,7 +75,7 @@ public class MultimediaRequestHandler implements Controller {
                 return null;
             }
 
-            Multimedia mm = mediaService.getMultimedia(mmId);
+            Multimedia mm = mediaService.getMultimediaCheckAuthorization(mmId);
             if (mm == null) {
                 // Multimedia object not found
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);

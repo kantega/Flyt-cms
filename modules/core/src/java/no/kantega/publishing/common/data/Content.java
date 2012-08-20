@@ -100,8 +100,11 @@ public class Content extends BaseObject {
     private List<Attribute> contentAttributes = new ArrayList<Attribute>();
     private List<Attribute> metaAttributes = new ArrayList<Attribute>();
 
-    // File attachments
+    // File attachments - only used to hold attachments when editing a page which is not saved yet
     private List<Attachment> attachments = new ArrayList<Attachment>();
+
+    // Multimedia - only used to hold multimedia when editing a page which is not saved yet
+    private List<Multimedia> multimedia = new ArrayList<Multimedia>();
 
     // Topics
     private List<Topic> topics = new ArrayList<Topic>();
@@ -662,6 +665,15 @@ public class Content extends BaseObject {
     public void addAttachment(Attachment attachment) {
         attachments.add(attachment);
     }
+
+    public List<Multimedia> getMultimedia() {
+        return multimedia;
+    }
+
+    public void addMultimedia(Multimedia m) {
+        multimedia.add(m);
+    }
+
 
     public List<Topic> getTopics() {
         return topics;

@@ -759,7 +759,9 @@ public class ContentManagementService {
 
     private SiteMapEntry getSiteMapFromCache(int siteId, int depth, int language, int rootId, int[] path, AssociationCategory category) {
         if (cachingEnabled) {
-            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, path, category.getId());
+            int categoryId = category != null ? category.getId() : -1;
+
+            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, path, categoryId);
 
             Element element = siteMapCache.get(key);
             if(element == null) {

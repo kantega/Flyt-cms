@@ -716,6 +716,10 @@ table.fullWidth {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -113px;
 }
 
+.button .upload {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -155px -1628px;
+}
+
 .buttonBar input#MinorChange {
     height: auto;
     float: none;
@@ -727,7 +731,7 @@ table.fullWidth {
 
 /************** Form elements and content attributes **************/
 
-.contentAttribute, .contentAttributeRepeater .formElement {
+.contentAttribute, .contentAttributeRepeater, .formElement {
     margin-bottom: 14px;
 }
 

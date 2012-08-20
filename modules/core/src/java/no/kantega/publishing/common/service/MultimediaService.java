@@ -64,6 +64,25 @@ public class MultimediaService {
         this.securitySession = securitySession;
     }
 
+    public Multimedia getMultimediaCheckAuthorization(int id) throws SystemException, NotAuthorizedException {
+        Multimedia multimedia = multimediaDao.getMultimedia(id);
+
+        if (multimedia.getContentId() > 0) {
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setContentId(multimedia.getContentId());
+            Content content = ContentAO.getContent(cid, false);
+            if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
+                throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+            }
+        } else {
+            if (!securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
+                throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+            }
+        }
+
+        return multimedia;
+    }
+
     public Multimedia getMultimedia(int id) throws SystemException {
         return multimediaDao.getMultimedia(id);
     }

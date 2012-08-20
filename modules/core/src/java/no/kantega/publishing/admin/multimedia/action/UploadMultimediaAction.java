@@ -18,8 +18,10 @@ package no.kantega.publishing.admin.multimedia.action;
 
 import com.glaforge.i18n.io.CharsetToolkit;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.common.service.MultimediaService;
@@ -44,6 +46,7 @@ public class UploadMultimediaAction extends AdminController {
     private MultimediaUploadHandler multimediaUploadHandler;
     private ImageEditor imageEditor;
     private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
+    private String insertMultimediaView;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters parameters = new RequestParameters(request, "utf-8");
@@ -51,10 +54,20 @@ public class UploadMultimediaAction extends AdminController {
         MultimediaService mediaService = new MultimediaService(request);
 
         int parentId = parameters.getInt("parentId");
+        int contentId = -1;
+
+        Content currentContent = null;
+        boolean fileUploadedFromEditor = parameters.getBoolean("fileUploadedFromEditor", false);
+        if (fileUploadedFromEditor) {
+            currentContent = (Content)request.getSession().getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+            if (currentContent != null) {
+                contentId = currentContent.getId();
+            }
+        }
 
         // Save image or other file
         Multimedia parent = null;
-        if (parentId != 0) {
+        if (parentId > 0) {
             parent = mediaService.getMultimedia(parentId);
         }
 
@@ -70,6 +83,12 @@ public class UploadMultimediaAction extends AdminController {
                     file.setParentId(parentId);
                 } else {
                     file.setSecurityId(0);
+                    file.setContentId(contentId);
+                    if (fileUploadedFromEditor) {
+                        file.setParentId(-1);
+                    } else {
+                        file.setParentId(0);
+                    }
                 }
                 if (uploadedFiles.size() == 1) {
                     String name = parameters.getString("name");
@@ -87,7 +106,17 @@ public class UploadMultimediaAction extends AdminController {
         }
 
 
-        if (uploadedFiles.size() == 1) {
+        if (fileUploadedFromEditor) {
+            if (currentContent != null && currentContent.isNew()) {
+                for (Multimedia uploadedFile : uploadedFiles) {
+                    currentContent.addMultimedia(uploadedFile);
+                }
+            }
+
+            Map model = new HashMap();
+            model.put("media", uploadedFiles.get(0));
+            return new ModelAndView(insertMultimediaView, model);
+        } else if (uploadedFiles.size() == 1) {
             Map model = new HashMap();
             model.put("id", uploadedFiles.get(0).getId());
             return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
@@ -246,5 +275,9 @@ public class UploadMultimediaAction extends AdminController {
 
     public void setMultimediaUploadHandler(MultimediaUploadHandler multimediaUploadHandler) {
         this.multimediaUploadHandler = multimediaUploadHandler;
+    }
+
+    public void setInsertMultimediaView(String insertMultimediaView) {
+        this.insertMultimediaView = insertMultimediaView;
     }
 }

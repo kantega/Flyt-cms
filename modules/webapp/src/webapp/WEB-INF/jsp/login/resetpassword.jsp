@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8"%>
+<%@ page import="no.kantega.commons.client.util.ValidationError"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
@@ -44,11 +45,11 @@
                     <input type="hidden" name="token" value="${token}">
                     <div id="Password">
                         <label>Passord...</label>
-                        <input type="password" id="j_password" name="password1" size="25" maxlength="60">
+                        <input type="password" id="j_password" name="password1" size="25" maxlength="60" autocomplete="off">
                     </div>
                     <div id="RepeatPassword">
                         <label>Gjenta passord...</label>
-                        <input type="password" id="j_password2" name="password2" size="25" maxlength="60">
+                        <input type="password" id="j_password2" name="password2" size="25" maxlength="60" autocomplete="off">
                     </div>
                     <div id="Submit">
                         <input type="submit" value="<kantega:label key="aksess.resetpassword.changepw"/>">
@@ -58,8 +59,18 @@
             </div>
 
             <div id="LoginMessages">
-                <c:if test="${error != null}">
-                    <div id="Error"><kantega:label key="${error}"/></div>
+                <c:if test="${error != null || passwordErrors != null}">
+                    <div id="Error">
+                        <c:if test="${error != null}">
+                        <kantega:label key="${error}"/>
+                        </c:if>
+                        <c:forEach var="err" items="${passwordErrors.errors}">
+                            <%
+                                ValidationError err = (ValidationError)pageContext.getAttribute("err");
+                                out.write(err.getMessage(Aksess.getDefaultAdminLocale()) + "<br>");
+                            %>
+                        </c:forEach>
+                    </div>
                 </c:if>
             </div>
         </c:otherwise>

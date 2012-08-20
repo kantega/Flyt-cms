@@ -16,16 +16,16 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +41,11 @@ public class ViewDisplayPeriodAction extends AdminController {
         String url = request.getParameter("url");
         ContentIdentifier cid = new ContentIdentifier(request, url);
         Content content = cms.getContent(cid, false);
+
+        boolean canUpdateSubpages = false;
+        if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.FULL_CONTROL)) {
+            canUpdateSubpages = true;
+        }
         if (content != null) {
             model.put("content", content);
         }

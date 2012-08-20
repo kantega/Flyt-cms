@@ -21,11 +21,12 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
+import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
@@ -35,7 +36,9 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -414,26 +417,25 @@ public final class AttributeTagHelper {
 
     public static String replaceMacros(String url, PageContext pageContext) throws SystemException, NotAuthorizedException {
         if (url != null && pageContext != null) {
-            HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            if (url.indexOf("$SITE") != -1 || url.indexOf("$LANGUAGE") != -1) {
-                String site = "";
+            if (TemplateMacroHelper.containsMacro(url)) {
+                HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+
+                SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+
+                DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
+
+                no.kantega.publishing.api.model.Site site;
                 Integer language = Language.NORWEGIAN_BO;
 
-                Content c = AttributeTagHelper.getContent(pageContext, null, null);
-                if (c != null) {
-                    site = (String)request.getAttribute("aksess_site");
-                    language = (Integer)request.getAttribute("aksess_language");
+                Content content = AttributeTagHelper.getContent(pageContext, null, null);
+                if (content != null) {
+                    language = content.getLanguage();
+                    site = siteCache.getSiteById(content.getAssociation().getSiteId());
                 } else {
-                    Site s = SiteCache.getSiteByHostname(pageContext.getRequest().getServerName());
-                    if (s != null) {
-                        site = s.getAlias();
-                    }
+                    site = siteCache.getSiteByHostname(pageContext.getRequest().getServerName());
                 }
 
-                String lang = Language.getLanguageAsISOCode(language);
-
-                url = url.replaceAll("\\$SITE", site.substring(0, site.length() - 1));
-                url = url.replaceAll("\\$LANGUAGE", lang);
+                url = TemplateMacroHelper.replaceMacros(url, site, deviceCategoryDetector.getUserAgentDeviceCategory(request), language);
             }
         }
 

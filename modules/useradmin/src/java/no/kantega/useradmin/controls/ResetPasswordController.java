@@ -16,31 +16,28 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.password.PasswordValidator;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.modules.mailsender.MailSender;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.password.PasswordManager;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.VelocityContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.*;
-import java.security.SecureRandom;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import no.kantega.security.api.password.PasswordManager;
-import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.security.api.profile.Profile;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.util.LocaleLabels;
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.modules.mailsender.MailSender;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -48,6 +45,8 @@ import no.kantega.publishing.modules.mailsender.MailSender;
  * Time: 2:54:03 PM
  */
 public class ResetPasswordController extends AbstractUserAdminController {
+
+    private PasswordValidator passwordValidator;
 
     private SecureRandom random = new SecureRandom();
 
@@ -65,8 +64,6 @@ public class ResetPasswordController extends AbstractUserAdminController {
 
         String password1 = param.getString("password1");
         String password2 = param.getString("password2");
-
-        ValidationErrors errors = new ValidationErrors();
 
         Map model = new HashMap();
         model.put("domain", domain);
@@ -155,13 +152,8 @@ public class ResetPasswordController extends AbstractUserAdminController {
 
             } else {
                 // Just set the password
-                if (password1.length() < 6) {
-                    errors.add(null, "useradmin.password.minlength");
-                    model.put("userId", id);
-                    model.put("errors", errors);
-                } else if (!password1.equals(password2)) {
-                    errors.add(null, "useradmin.password.mismatch");
-                    model.put("userId", id);
+                ValidationErrors errors = passwordValidator.isValidPassword(password1, password2);
+                if (errors.getLength() > 0) {
                     model.put("errors", errors);
                 } else {
                     ProfileManagementConfiguration config = getProfileConfiguration(domain);
@@ -178,5 +170,9 @@ public class ResetPasswordController extends AbstractUserAdminController {
         model.put("userId", id);
 
         return new ModelAndView("/password/reset", model);
+    }
+
+    public void setPasswordValidator(PasswordValidator passwordValidator) {
+        this.passwordValidator = passwordValidator;
     }
 }

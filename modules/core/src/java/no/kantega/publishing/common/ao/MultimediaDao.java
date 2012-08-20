@@ -54,6 +54,14 @@ public interface MultimediaDao {
      */
     public List<Multimedia> getMultimediaList(int parentId);
 
+
+    /**
+     * Fetch all multimedia objects with specified contentId
+     * @param contentId - contentId
+     * @return - List<Multimedia>
+     */
+    public List<Multimedia> getMultimediaWithContentId(int contentId);
+
     /**
      * Get number of objects in mediaarchive
      *

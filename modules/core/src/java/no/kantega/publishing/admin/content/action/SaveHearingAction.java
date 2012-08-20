@@ -16,34 +16,19 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveHearingHelper;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Hearing;
 import no.kantega.publishing.common.data.HearingInvitee;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.HearingAO;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.security.SecuritySession;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import org.apache.log4j.Logger;
-import org.apache.poi.ss.formula.functions.CalendarFieldFunction;
-import org.springframework.web.servlet.ModelAndView;
 
 
 public class SaveHearingAction extends AdminController {

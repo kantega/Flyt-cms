@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.io.IOException;
 
 public class GetUrlTag extends TagSupport {
     private static String SOURCE = "aksess.GetUrlTag";
@@ -113,13 +111,11 @@ public class GetUrlTag extends TagSupport {
 
             out.write(absoluteurl);
 
-        } catch (IOException e) {
-            throw new JspException("ERROR: GetUrlTag", e);
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspException("ERROR: GetUrlTag", e);
         } catch (NotAuthorizedException e) {
             // Do nothing
+        }catch (Exception e){
+            Log.error(SOURCE, e);
+            throw new JspException("ERROR: GetUrlTag", e);
         }
 
         resetVars();

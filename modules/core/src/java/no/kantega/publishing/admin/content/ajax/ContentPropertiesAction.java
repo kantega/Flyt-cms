@@ -22,13 +22,11 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.dwr.ContentClipboardHandler;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.LinkDao;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -46,8 +44,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.Controller;
@@ -123,12 +119,12 @@ public class ContentPropertiesAction implements Controller {
                 if (canUpdate || canApprove) {
                     enabledButtons.add("NewSubpageButton");
                     enabledButtons.add("EditPageButton");
+                }
+                if (canApprove) {
                     if (content.getAssociation().getParentAssociationId() != 0) {
                         // Can set display period for all other pages than ROOT page (parentid = 0)
                         enabledButtons.add("DisplayPeriodButton");
                     }
-                }
-                if (canApprove) {
                     enabledButtons.add("DeletePageButton");
                     enabledButtons.add("CutButton");
                     enabledButtons.add("CopyButton");

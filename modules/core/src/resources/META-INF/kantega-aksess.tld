@@ -2720,4 +2720,16 @@
         </example>
     </tag>
 
+    <tag>
+        <description>Checks which device the user is using</description>
+        <name>getdevice</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetDeviceTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of the request-attribue</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>

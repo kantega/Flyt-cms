@@ -36,9 +36,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
-/**
- *
- */
 public class GetLinkTag extends BodyTagSupport{
     private static final String SOURCE = "aksess.GetLinkTag";
 
@@ -214,7 +211,7 @@ public class GetLinkTag extends BodyTagSupport{
 
         } catch (Exception e) {
             Log.error(SOURCE, e);
-            throw new JspTagException(e);
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }

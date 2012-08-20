@@ -93,12 +93,12 @@
         <admin:box>
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.password.password1"/></label></div>
-                <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+                <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64" autocomplete="off"></div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.password.password2"/></label></div>
-                <div class="inputs"><input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64"></div>
+                <div class="inputs"><input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64" autocomplete="off"></div>
             </div>
 
             <div class="buttonGroup">

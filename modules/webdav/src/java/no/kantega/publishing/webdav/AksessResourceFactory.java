@@ -1,7 +1,7 @@
 package no.kantega.publishing.webdav;
 
-import com.bradmcevoy.http.ResourceFactory;
 import com.bradmcevoy.http.Resource;
+import com.bradmcevoy.http.ResourceFactory;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
@@ -23,7 +23,7 @@ public class AksessResourceFactory implements ResourceFactory {
         try {
             Configuration config = Aksess.getConfiguration();
             if (config.getBoolean("webdav.enabled", false)) {
-                if (path.indexOf(ROOT) == -1) {
+                if (!path.contains(ROOT)) {
                     return null;
                 }
                 if (path.contains(".")) {
