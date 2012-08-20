@@ -1,31 +1,36 @@
 package no.kantega.search.api.search;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The response returned as result of a SearchQuery
  * @see SearchQuery
  */
 public class SearchResponse {
-    private final long numFound;
+    private final Number numFound;
     private int queryTime;
+    private List<GroupResultResponse> groupResultResponses;
     private SearchQuery query;
-    private List<SearchResult> documentHits;
     private List<String> spellSuggestions;
     private Map<String, Collection<FacetResult>> facets;
+    private final String ALL_DOCUMENTS_GROUPNAME = "all";
 
     public SearchResponse(SearchQuery query, long numFound, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
         this.numFound = numFound;
         this.queryTime = queryTime;
-        this.documentHits = searchResults;
+        groupResultResponses = Arrays.asList(new GroupResultResponse(ALL_DOCUMENTS_GROUPNAME, numFound, searchResults));
 
     }
 
-    public long getNumberOfHits() {
+    public SearchResponse(SearchQuery query, int matches, int qTime, List<GroupResultResponse> groupResultResponses) {
+        this.query = query;
+        this.numFound = matches;
+        this.queryTime = qTime;
+        this.groupResultResponses = groupResultResponses;
+    }
+
+    public Number getNumberOfHits() {
          return numFound;
     }
 
@@ -43,14 +48,18 @@ public class SearchResponse {
         return query;
     }
 
-    public void setDocumentHits(List<SearchResult> documentHits) {
-        this.documentHits = documentHits;
-    }
-
     /**
-     * @return a list containing the actual hits of the query
+     * @return a list containing the actual hits of the query if this
+     * result is not a result of a grouped query, else an empty list.
      */
     public List<SearchResult> getDocumentHits() {
+        List<SearchResult> documentHits = Collections.emptyList();
+        for(GroupResultResponse groupResultResponse : groupResultResponses){
+            if(groupResultResponse.getGroupValue().equals(ALL_DOCUMENTS_GROUPNAME)){
+                documentHits = groupResultResponse.getSearchResults();
+            }
+        }
+
         return documentHits;
     }
 
@@ -72,7 +81,7 @@ public class SearchResponse {
     }
 
     public int getNumberOfPages() {
-        return (int) Math.ceil(numFound / query.getResultsPerPage());
+        return (int) Math.ceil(numFound.intValue() / query.getResultsPerPage());
     }
 
     public void setFacets(Map<String,Collection<FacetResult>> facets) {
@@ -89,5 +98,13 @@ public class SearchResponse {
         if(facets == null) return Collections.emptyMap();
 
         return facets;
+    }
+
+    public List<GroupResultResponse> getGroupResultResponses() {
+        return groupResultResponses;
+    }
+
+    public void setGroupResultResponses(List<GroupResultResponse> groupResultResponses) {
+        this.groupResultResponses = groupResultResponses;
     }
 }

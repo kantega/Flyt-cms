@@ -62,10 +62,10 @@ public class QueryStringGenerator {
         int startPage = ((page / 10) * 10) + 1;
         int endPage = startPage + 9;
 
-        long numberOfHits = searchResponse.getNumberOfHits();
+        int numberOfHits = searchResponse.getNumberOfHits().intValue();
         int resultsPerPage = query.getResultsPerPage();
         if (endPage * resultsPerPage >= numberOfHits) {
-            endPage = (int) ((numberOfHits - 1) / numberOfHits);
+            endPage = ((numberOfHits - 1) / numberOfHits);
             endPage++;
         }
         if (startPage > 1) {

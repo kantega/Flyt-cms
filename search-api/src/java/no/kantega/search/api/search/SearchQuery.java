@@ -18,6 +18,8 @@ public class SearchQuery {
     private List<DateRange> dateRangeFacets;
     private Integer resultsPerPage = 50;
     private Integer pageNumber = 0;
+    private String groupField;
+    private List<String> groupQueries;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -141,5 +143,26 @@ public class SearchQuery {
 
     public Integer getPageNumber() {
         return pageNumber;
+    }
+
+    public void setGroupField(String groupField) {
+        this.groupField = groupField;
+    }
+
+    public String getGroupField() {
+        return groupField;
+    }
+
+    public boolean getResultsAreGrouped() {
+        return groupField != null || groupQueries != null ;
+    }
+
+    public void setGroupQueries(String... query) {
+        groupQueries = Arrays.asList(query);
+    }
+
+    public List<String> getGroupQueries() {
+        if((groupQueries == null)) return Collections.emptyList();
+        return groupQueries;
     }
 }

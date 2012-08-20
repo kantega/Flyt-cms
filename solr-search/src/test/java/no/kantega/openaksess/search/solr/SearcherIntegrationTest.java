@@ -27,7 +27,7 @@ public class SearcherIntegrationTest {
 
     private SearchResponse doSearch(String query, String filter){
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, query, filter);
+        SearchQuery q = new SearchQuery(searchContext, query, filter, "indexedContentType:aksess-document");
         q.setHighlightSearchResultDescription(true);
         return searcher.search(q);
     }
@@ -35,7 +35,7 @@ public class SearcherIntegrationTest {
     @Test
     public void resultShouldHaveHits(){
         SearchResponse searchResponse = doSearchSiteOne(originalQuery);
-        assertTrue("Number of hits should be larger than 0", searchResponse.getNumberOfHits() > 0);
+        assertTrue("Number of hits should be larger than 0", searchResponse.getNumberOfHits().intValue() > 0);
     }
 
     @Test

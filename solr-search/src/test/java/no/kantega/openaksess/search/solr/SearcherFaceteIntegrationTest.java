@@ -28,7 +28,7 @@ public class SearcherFaceteIntegrationTest {
     @Test
     public void indexedContentTypeAsFacet(){
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, "as", "*");
+        SearchQuery q = new SearchQuery(searchContext, "as", "indexedContentType:aksess-document");
         String indexedContentType = "indexedContentType";
         q.setFacetFields(Collections.singletonList(indexedContentType));
         SearchResponse search = searcher.search(q);
@@ -46,7 +46,7 @@ public class SearcherFaceteIntegrationTest {
     @Test
     public void dateRangeFacet() throws ParseException {
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, "as", "*");
+        SearchQuery q = new SearchQuery(searchContext, "as", "indexedContentType:aksess-document");
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         q.setDateRangeFacets(Collections.singletonList(new DateRange("createDate", dateFormat.parse("01-01-2010"), dateFormat.parse("01-01-2012"), "+1MONTH")));
         SearchResponse search = searcher.search(q);
@@ -63,7 +63,7 @@ public class SearcherFaceteIntegrationTest {
     @Test
     public void facetQuery(){
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, "as", "*");
+        SearchQuery q = new SearchQuery(searchContext, "as", "indexedContentType:aksess-document");
         String oldContent = "createDate:[* TO 2011-12-30T23:59:59Z]";
         String newContent = "createDate:[2012-01-01T23:59:59Z TO *]";
         q.setFacetQueries(Arrays.asList(oldContent, newContent));
@@ -83,7 +83,7 @@ public class SearcherFaceteIntegrationTest {
     @Test
     public void facetQuery2(){
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, "as", "*");
+        SearchQuery q = new SearchQuery(searchContext, "as", "indexedContentType:aksess-document");
         q.setFacetQueries(asList("createDate:[NOW/DAY-7DAYS TO NOW]",
                 "createDate:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]",
                 "createDate:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]",

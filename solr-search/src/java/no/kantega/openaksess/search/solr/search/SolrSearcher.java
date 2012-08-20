@@ -8,12 +8,10 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.client.solrj.response.RangeFacet;
-import org.apache.solr.client.solrj.response.SpellCheckResponse;
+import org.apache.solr.client.solrj.response.*;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.GroupParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,8 +44,28 @@ public class SolrSearcher implements Searcher {
     }
 
     private SearchResponse createSearchReponse(SearchQuery query, QueryResponse queryResponse) {
-        SolrDocumentList results = queryResponse.getResults();
-        SearchResponse searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
+        SearchResponse searchResponse = null;
+        if (!query.getResultsAreGrouped()) {
+            SolrDocumentList results = queryResponse.getResults();
+            searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
+        } else {
+            GroupResponse groupResponse = queryResponse.getGroupResponse();
+            List<GroupCommand> values = groupResponse.getValues();
+            for (GroupCommand value : values) {
+                List<Group> groups = value.getValues();
+                int matches = value.getMatches();
+
+                List<GroupResultResponse> groupResultResponses = new ArrayList<GroupResultResponse>(groups.size());
+                for (Group group : groups) {
+                    String groupValue = group.getGroupValue();
+                    SolrDocumentList result = group.getResult();
+                    long numFound = result.getNumFound();
+                    groupResultResponses.add(new GroupResultResponse(groupValue, numFound, addSearchResults(query, queryResponse, result)));
+                }
+
+                searchResponse = new SearchResponse(query, matches, queryResponse.getQTime(), groupResultResponses);
+            }
+        }
 
         setSpellResponse(searchResponse, queryResponse);
 
@@ -57,18 +75,21 @@ public class SolrSearcher implements Searcher {
     }
 
     private SolrQuery createSearchParams(SearchQuery query) {
-        SolrQuery params = new SolrQuery(query.getOriginalQuery());
-        setFilterQueryIfPresent(query, params);
+        SolrQuery solrQuery = new SolrQuery(query.getOriginalQuery());
+        setFilterQueryIfPresent(query, solrQuery);
 
         Integer resultsPerPage = query.getResultsPerPage();
-        params.setRows(resultsPerPage);
-        params.setStart(query.getPageNumber() * resultsPerPage);
-        params.set("spellcheck", "on");
+        solrQuery.setRows(resultsPerPage);
+        solrQuery.setStart(query.getPageNumber() * resultsPerPage);
+        solrQuery.set("spellcheck", "on");
 
-        setHighlighting(query, params);
+        setHighlighting(query, solrQuery);
 
-        addFacetQueryInformation(query, params);
-        return params;
+        addFacetQueryInformation(query, solrQuery);
+
+        addResultGrouping(query, solrQuery);
+
+        return solrQuery;
     }
 
     public List<String> suggest(SearchQuery query) {
@@ -84,6 +105,24 @@ public class SolrSearcher implements Searcher {
             return  getSpellSuggestions(queryResponse.getSpellCheckResponse());
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
+        }
+    }
+
+    private void addResultGrouping(SearchQuery query, SolrQuery solrQuery) {
+        if (query.getResultsAreGrouped()) {
+            solrQuery.set(GroupParams.GROUP, true);
+            String groupField = query.getGroupField();
+            if (groupField != null) {
+                solrQuery.set(GroupParams.GROUP_FIELD, groupField);
+            }
+
+            List<String> groupQueries = query.getGroupQueries();
+            if(!groupQueries.isEmpty()){
+                solrQuery.set(GroupParams.GROUP_QUERY, groupQueries.toArray(new String[groupQueries.size()]));
+            }
+            Integer resultsPerPage = query.getResultsPerPage();
+            solrQuery.set(GroupParams.GROUP_LIMIT, resultsPerPage);
+            solrQuery.set(GroupParams.GROUP_OFFSET, query.getPageNumber() * resultsPerPage);
         }
     }
 
@@ -251,7 +290,7 @@ public class SolrSearcher implements Searcher {
             super(id, securityId, indexedContentType, title, description, author, url);
             documentRetriever = documentRetrievers.get(indexedContentType);
             if(documentRetriever == null){
-                throw new IllegalStateException("Document retriever is null");
+                throw new IllegalStateException(String.format("Document retriever for %s is null", indexedContentType));
             }
         }
 
