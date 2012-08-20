@@ -17,15 +17,13 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
     <import resource="application-datasources.xml"/>
     <import resource="application-security.xml"/>
 
     <bean name="dialectFactory" class="no.kantega.commons.sqlsearch.dialect.SQLDialectFactory">
-        <property name="dialectClassname">
-            <value>${sqlsearch.sqldialect}</value>
-        </property>
+        <property name="dialectClassname" value="${sqlsearch.sqldialect}"/>
     </bean>
     <bean id="sqlDialect" factory-bean="dialectFactory" factory-method="createInstance"/>
     <bean class="no.kantega.publishing.spring.RootContext"/>
