@@ -26,8 +26,8 @@
            <h3><kantega:label key="aksess.search.${facet.key}"/></h3>
             <ul>
            <c:forEach items="${facet.value}" var="facetEntry">
-                <c:set var="facetLabel" value="${facet.key}.${facetEntry.first}"/>
-                <li><a href="${facetUrls[facetLabel]}"><search:labelresolver key="${facetLabel}" /> (${facetEntry.second})</a></li>
+                <c:set var="facetLabel" value="${facet.key}.${facetEntry.value}"/>
+                <li><a href="${facetEntry.url}"><search:labelresolver key="${facetLabel}" /> (${facetEntry.count})</a></li>
            </c:forEach>
             </ul>
         </li>

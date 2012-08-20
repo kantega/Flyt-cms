@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithouthSiteIdAndTrailingSlash;
+import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -47,7 +47,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             Association association = content.getAssociation();
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
-            indexableDocument.addAttribute("location", locationWithouthSiteIdAndTrailingSlash(association.getPath(), siteId));
+            indexableDocument.addAttribute("location", locationWithoutTrailingSlash(association.getPath()));
 
             indexableDocument.addAttribute("contentType", content.getType().name());
             indexableDocument.addAttribute("contentTemplateId", content.getContentTemplateId());

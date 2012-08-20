@@ -65,7 +65,7 @@ public class GetUrlTag extends TagSupport {
             String absoluteurl = addcontextpath ? Aksess.getContextPath(): "";
 
             if (url != null && url.length() > 0) {
-                if (url.indexOf("http:") != -1 || url.indexOf("https:") != -1 ) {
+                if (url.contains("http:") || url.contains("https:")) {
                     absoluteurl = url;
                 } else {
                     if (url.charAt(0) == '/') {
@@ -75,7 +75,7 @@ public class GetUrlTag extends TagSupport {
                         if (HttpHelper.isAdminMode(request)) {
                             try {
                                 ContentIdentifier cid = new ContentIdentifier(request, url);
-                                if (url.indexOf("?") == -1) {
+                                if (!url.contains("?")) {
                                     url = url + "?siteId=" + cid.getSiteId();
                                 } else {
                                     url = url + "&amp;siteId=" + cid.getSiteId();
@@ -97,7 +97,7 @@ public class GetUrlTag extends TagSupport {
 
             if (queryParams != null) {
                 if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?")) && (!queryParams.startsWith("#"))) {
-                    if (absoluteurl.indexOf("?") == -1) {
+                    if (!absoluteurl.contains("?")) {
                         queryParams = "?" + queryParams;
                     } else {
                         queryParams = "&" + queryParams;

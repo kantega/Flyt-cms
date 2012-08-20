@@ -7,10 +7,12 @@ public class AksessSearchContext implements SearchContext {
 
     private final SecuritySession securitySession;
     private final int siteId;
+    private final String searchUrl;
 
-    public AksessSearchContext(SecuritySession securitySession, int siteId) {
+    public AksessSearchContext(SecuritySession securitySession, int siteId, String searchUrl) {
         this.securitySession = securitySession;
         this.siteId = siteId;
+        this.searchUrl = searchUrl;
     }
 
     public SecuritySession getSecuritySession() {
@@ -19,5 +21,9 @@ public class AksessSearchContext implements SearchContext {
 
     public int getSiteId() {
         return siteId;
+    }
+
+    public String getSearchUrl() {
+        return searchUrl;
     }
 }

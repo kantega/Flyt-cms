@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Association;
@@ -19,7 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithouthSiteIdAndTrailingSlash;
+import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
 
 @Component
@@ -50,7 +51,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
             indexableDocument.addAttribute("location",
-                    locationWithouthSiteIdAndTrailingSlash(association.getPath() + association.getId(), siteId));
+                    locationWithoutTrailingSlash(association.getPath() + association.getId()));
 
             OutputStream fileStream = null;
             try {
@@ -58,7 +59,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
                 AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(new FileOutputStream(attachmentFile)));
                 indexableDocument.setFileContent(attachmentFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.error(getClass().getSimpleName(), e);
             }finally {
                 IOUtils.closeQuietly(fileStream);
             }

@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.openaksess.search.controller;
-
-import no.kantega.search.api.search.SearchQuery;
-import no.kantega.search.api.search.SearchResponse;
+package no.kantega.search.api.search;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -50,7 +47,8 @@ public class QueryStringGenerator {
     }
 
     private static StringBuilder getUrl(SearchQuery query) {
-        StringBuilder queryStringBuilder = new StringBuilder();
+        StringBuilder queryStringBuilder = new StringBuilder(query.getSearchContext().getSearchUrl());
+        queryStringBuilder.append("?");
         queryStringBuilder.append(String.format(keyValueFormat, QUERY_PARAM, getEncodedQuery(query.getOriginalQuery())));
         appendFilterQueries(query, queryStringBuilder);
 
@@ -79,13 +77,13 @@ public class QueryStringGenerator {
         return pageUrls;
     }
 
-    public static String getFacetUrl(String facet, SearchQuery query) {
-        StringBuilder queryStringBuilder = getUrl(query);
+    public static String getFacetUrl(String facetfield, String facetvalue, SearchQuery searchQuery) {
+        StringBuilder queryStringBuilder = getUrl(searchQuery);
         queryStringBuilder.append("&");
         queryStringBuilder.append(FILTER_PARAM);
         queryStringBuilder.append("=");
-        queryStringBuilder.append(getEncodedQuery(facet));
-        appendFilterQueries(query, queryStringBuilder);
+        queryStringBuilder.append(getEncodedQuery(String.format(keyValueFormat, facetfield, facetvalue)));
+
         return queryStringBuilder.toString();
     }
 

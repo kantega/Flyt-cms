@@ -1,14 +1,11 @@
 package no.kantega.openaksess.search.controller;
 
-import com.google.gdata.util.common.base.Pair;
+import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
-import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.security.SecuritySession;
+import no.kantega.search.api.search.QueryStringGenerator;
 import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.SearchResponse;
 import no.kantega.search.api.search.Searcher;
@@ -17,7 +14,10 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -29,7 +29,7 @@ public class ContentSearchController implements AksessController {
     private Searcher searcher;
 
     @Autowired
-    private SiteCache siteCache;
+    private AksessSearchContextCreator aksessSearchContextCreator;
 
     private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
@@ -45,8 +45,6 @@ public class ContentSearchController implements AksessController {
             model.put("searchResponse", searchResponse);
 
             String urlPrefix = "?";
-
-            model.put("facetUrls", getFacetUrls(urlPrefix, searchResponse));
 
             int currentPage = searchResponse.getCurrentPage();
             if (currentPage > 0) {
@@ -68,20 +66,8 @@ public class ContentSearchController implements AksessController {
         return model;
     }
 
-    private Map<String, String> getFacetUrls(String urlPrefix, SearchResponse searchResponse) {
-        Map<String,String> facetUrls = new HashMap<String, String>();
-        for (Map.Entry<String, Collection<Pair<String, Number>>> facetFieldEntry : searchResponse.getFacets().entrySet()) {
-            for(Pair<String, Number> facetFieldValue : facetFieldEntry.getValue()){
-                String facetName = facetFieldEntry.getKey();
-                facetUrls.put(String.format("%s.%s", facetName, facetFieldValue.first), urlPrefix + QueryStringGenerator.getFacetUrl(facetName + ":" + facetFieldValue.first, searchResponse.getQuery()));
-            }
-        }
-
-        return facetUrls;
-    }
-
     private SearchResponse performSearch(HttpServletRequest request, String query) {
-        AksessSearchContext searchContext = getSearchContext(request);
+        AksessSearchContext searchContext = aksessSearchContextCreator.getSearchContext(request);
         return searcher.search(getSearchQuery(request, query, searchContext));
     }
 
@@ -113,25 +99,6 @@ public class ContentSearchController implements AksessController {
 
     private String getQuery(HttpServletRequest request) {
         return ServletRequestUtils.getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
-    }
-
-    private AksessSearchContext getSearchContext(HttpServletRequest request) {
-        return new AksessSearchContext(SecuritySession.getInstance(request), findSiteId(request));
-    }
-
-    private int findSiteId(HttpServletRequest request) {
-        int siteId = 1;
-
-        Content content = (Content)request.getAttribute("aksess_this");
-        if (content != null) {
-            siteId = content.getAssociation().getSiteId();
-        } else {
-            Site site = siteCache.getSiteByHostname(request.getServerName());
-            if (site != null) {
-                siteId = site.getId();
-            }
-        }
-        return siteId;
     }
 
     public String getDescription() {

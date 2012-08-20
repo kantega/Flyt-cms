@@ -2,7 +2,6 @@ package no.kantega.openaksess.search.solr.search;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.search.api.retrieve.DocumentRetriever;
 import no.kantega.search.api.search.*;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -114,12 +113,17 @@ public class SolrSearcher implements Searcher {
     }
 
     private void addFacetResults(SearchResponse searchResponse, QueryResponse queryResponse) {
-        Multimap<String,Pair<String, Number>> facets = ArrayListMultimap.create();
+        SearchQuery query = searchResponse.getQuery();
+        Multimap<String,FacetResult> facets = ArrayListMultimap.create();
         List<FacetField> facetFields = queryResponse.getFacetFields();
         if (facetFields != null) {
             for(FacetField facetField : facetFields){
                 for(FacetField.Count count : facetField.getValues()){
-                    facets.put(facetField.getName(), new Pair<String, Number>(count.getName(), count.getCount()));
+                    String facetFieldName = facetField.getName();
+                    String facetFieldValue = count.getName();
+                    long facetCount = count.getCount();
+
+                    addFacetResult(query, facets, facetFieldName, facetFieldValue, facetCount);
                 }
             }
         }
@@ -128,7 +132,11 @@ public class SolrSearcher implements Searcher {
             for(RangeFacet facetRange : facetRanges){
                 List<RangeFacet.Count> counts = facetRange.getCounts();
                 for (RangeFacet.Count count : counts) {
-                    facets.put(facetRange.getName(), new Pair<String, Number>(count.getValue(), count.getCount()));
+                    String facetFieldName = facetRange.getName();
+                    String facetFieldValue = count.getValue();
+                    int facetCount = count.getCount();
+
+                    addFacetResult(query, facets, facetFieldName, facetFieldValue, facetCount);
                 }
             }
         }
@@ -140,10 +148,18 @@ public class SolrSearcher implements Searcher {
                 String[] facetFieldAndValue = facetQueryString.split(":");
 
                 throwIfNotLenghtTwo(facetQueryString, facetFieldAndValue);
-                facets.put(facetFieldAndValue[0], new Pair<String, Number>(facetFieldAndValue[1], facetQueryEntry.getValue()));
+                String facetFieldName = facetFieldAndValue[0];
+                String facetFieldValue = facetFieldAndValue[1];
+                Integer facetCount = facetQueryEntry.getValue();
+
+                addFacetResult(query, facets, facetFieldName, facetFieldValue, facetCount);
             }
         }
         searchResponse.setFacets(facets.asMap());
+    }
+
+    private boolean addFacetResult(SearchQuery query, Multimap<String, FacetResult> facets, String facetFieldName, String facetFieldValue, Number facetCount) {
+        return facets.put(facetFieldName, new FacetResult(facetFieldName, facetFieldValue, facetCount, QueryStringGenerator.getFacetUrl(facetFieldName, facetFieldValue, query)));
     }
 
     private void throwIfNotLenghtTwo(String facetQueryString, String[] facetFieldAndValue) {

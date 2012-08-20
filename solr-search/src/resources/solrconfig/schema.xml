@@ -48,7 +48,7 @@
             </analyzer>
         </fieldType>
         <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
-            <analyzer type="Index">
+            <analyzer>
                 <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
             </analyzer>
         </fieldType>
