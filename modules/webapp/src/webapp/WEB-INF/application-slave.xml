@@ -11,7 +11,7 @@
                         <bean class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
                             <property name="targetObject">
                                 <bean class="no.kantega.publishing.cache.SlaveCacheExpiratorJob">
-                                    <property name="cacheManager" ref="cacheManager"/>
+                                    <property name="cacheManager" ref="ehcacheCacheManager"/>
                                     <property name="eventLogAO" ref="eventLogAO"/>
                                 </bean>
                             </property>

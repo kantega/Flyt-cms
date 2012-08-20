@@ -53,9 +53,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
 
-/**
- *
- */
 public class ContentManagementService {
     private static final String SOURCE = "aksess.ContentManagementService";
 
@@ -69,7 +66,7 @@ public class ContentManagementService {
     private boolean cachingEnabled;
 
     private ContentManagementService() {
-        final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
+        final CacheManager cacheManager = RootContext.getInstance().getBean("ehcacheCacheManager", CacheManager.class);
         contentCache = cacheManager.getCache("ContentCache");
         contentListCache = cacheManager.getCache("ContentListCache");
         siteMapCache = cacheManager.getCache("SiteMapCache");

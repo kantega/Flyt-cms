@@ -29,7 +29,7 @@
                     <property name="multimediaUsageDao" ref="aksessMultimediaUsageDao"/>
                 </bean>
                 <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator">
-                    <property name="cacheManager" ref="cacheManager"/>
+                    <property name="cacheManager" ref="ehcacheCacheManager"/>
                 </bean>
             </list>
         </property>
