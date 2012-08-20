@@ -1,17 +1,12 @@
 package no.kantega.openaksess.search.taglib.label;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.openaksess.search.taglib.label.resolver.LabelResolver;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -20,67 +15,26 @@ import java.util.Map;
 /**
  * AksessSearchTermTranslator
  */
-public class FacetLabelResolver extends TagSupport {
+@Component
+public class FacetLabelResolver {
 
     private Map<String, LabelResolver> labelResolvers;
-    private Ehcache facetLabelCache;
+
     private Map<String,String> facetValueToLabelKeys;
 
-    private String key;
-    private String bundle = LocaleLabels.DEFAULT_BUNDLE;
 
-    @Override
-    public int doStartTag() throws JspException {
-        initIfNotAlreadyDone();
+    @Cacheable(value = "FacetLabel", key = "#key#bundle#locale.language")
+    public String resolveLabel(String key, String bundle, Locale locale) {
+        String label;
 
-        String label = resolveLabel();
-        if(label == null) label = key;
-        writeLabel(label);
-
-        return SKIP_BODY;
-    }
-
-    @Override
-    public int doEndTag() throws JspException {
-        key = null;
-        bundle =  LocaleLabels.DEFAULT_BUNDLE;
-        return super.doEndTag();
-    }
-
-    private void writeLabel(String label) throws JspException {
-        try {
-            pageContext.getOut().print(label);
-        } catch (IOException e) {
-            throw new JspException("ERROR: FacetLabelResolver", e);
-        }
-    }
-
-    private String resolveLabel() {
-        String label;Locale locale = getLocale();
-        String language = locale.getLanguage();
-        String cacheKey = key.concat(language);
-        Element element = facetLabelCache.get(cacheKey);
-        if(element == null){
-            if(facetValueToLabelKeys.containsKey(key)){
-                key = facetValueToLabelKeys.get(key);
-                label = LocaleLabels.getLabel(key, bundle, locale);
-            }else {
-                label = resolveLabelFromLabelResolvers(key);
-            }
-            facetLabelCache.put(new Element(cacheKey, label));
+        if(facetValueToLabelKeys.containsKey(key)){
+            key = facetValueToLabelKeys.get(key);
+            label = LocaleLabels.getLabel(key, bundle, locale);
         }else {
-            label = (String) element.getValue();
+            label = resolveLabelFromLabelResolvers(key);
         }
-        return label;
-    }
 
-    private Locale getLocale() {
-        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-        Locale locale = (Locale)request.getAttribute("aksess_locale");
-        if (locale == null) {
-            locale = new Locale("no", "NO");
-        }
-        return locale;
+        return label;
     }
 
     private String resolveLabelFromLabelResolvers(String key) {
@@ -96,6 +50,7 @@ public class FacetLabelResolver extends TagSupport {
         return labelResolver.resolveLabel(labelTypeAndKey[1]);
     }
 
+    @Autowired
     public void setLabelResolvers(Collection<LabelResolver> labelResolvers){
         this.labelResolvers = new HashMap<String, LabelResolver>();
         for (LabelResolver labelResolver : labelResolvers) {
@@ -109,26 +64,9 @@ public class FacetLabelResolver extends TagSupport {
         }
     }
 
-    private void initIfNotAlreadyDone() {
-        if (labelResolvers == null) {
-            doInit();
-        }
-    }
-
-    private synchronized void doInit() {
-        WebApplicationContext requiredWebApplicationContext = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
-        Map<String, LabelResolver> beansOfType = requiredWebApplicationContext.getBeansOfType(LabelResolver.class);
-        setLabelResolvers(beansOfType.values());
-        facetValueToLabelKeys = requiredWebApplicationContext.getBean("facetValueToLabelKeys", Map.class);
-        CacheManager cacheManager = requiredWebApplicationContext.getBean(CacheManager.class);
-        facetLabelCache = cacheManager.getEhcache("FacetLabelCache");
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public void setBundle(String bundle) {
-        this.bundle = bundle;
+    @Autowired
+    @Qualifier("facetValueToLabelKeys")
+    public void setFacetValueToLabelKeys(Map<String, String> facetValueToLabelKeys) {
+        this.facetValueToLabelKeys = facetValueToLabelKeys;
     }
 }

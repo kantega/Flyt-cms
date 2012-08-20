@@ -25,7 +25,7 @@
     <uri>http://www.kantega.no/aksess/tags/search</uri>
     <tag>
         <name>labelresolver</name>
-        <tag-class>no.kantega.openaksess.search.taglib.label.FacetLabelResolver</tag-class>
+        <tag-class>no.kantega.openaksess.search.taglib.label.FacetLabelTagLib</tag-class>
         <body-content>empty</body-content>
         <description>Resolves a facet label key to a label</description>
         <attribute>
