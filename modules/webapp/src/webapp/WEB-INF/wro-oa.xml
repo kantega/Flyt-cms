@@ -38,6 +38,7 @@
     <group name="admin-searchlayout">
         <group-ref>admin-core</group-ref>
         <css>/admin/css/search.css</css>
+        <js>/admin/js/jquery-ui-i18n.min.js</js>
         <group-ref>jquery-all</group-ref>
     </group>
 

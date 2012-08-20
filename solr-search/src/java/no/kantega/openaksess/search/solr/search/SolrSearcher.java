@@ -51,6 +51,7 @@ public class SolrSearcher implements Searcher {
         setSpellResponse(searchResponse, queryResponse);
 
         addFacetResults(searchResponse, queryResponse);
+
         return searchResponse;
     }
 
