@@ -132,6 +132,19 @@ public class SearcherIntegrationTest {
         }
     }
 
+    @Test
+    public void testTitleStartingWith(){
+        SearchContext searchContext = getDummySearchContext();
+        SearchQuery q = new SearchQuery(searchContext, "title_no:Kan*");
+        SearchResponse response = searcher.search(q);
+        for(SearchResult searchResult : response.getDocumentHits()){
+            String title = searchResult.getTitle();
+            assertTrue(title + " did not contain start with kan", title.toLowerCase().startsWith("kan"));
+        }
+
+        assertTrue("Number of hits should be larger than 0", response.getNumberOfHits().intValue() > 0);
+    }
+
 
 
     private void doForAllhits(Assertion assertion, SearchResponse searchResponse){
