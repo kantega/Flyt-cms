@@ -17,6 +17,8 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.ObjectInUseException;
@@ -46,6 +48,11 @@ public class DeleteMultimediaAction implements Controller {
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             // Ask if user wants to delete
             Multimedia mm = mediaService.getMultimedia(id);
+            if (mm.getType() == MultimediaType.FOLDER) {
+                model.put("message", "aksess.confirmdeletefolder.text");
+            } else {
+                model.put("message", "aksess.confirmdelete.text");
+            }
             model.put("multimedia", mm);
             return new ModelAndView(beforeDeleteView, model);
         } else {
@@ -54,16 +61,27 @@ public class DeleteMultimediaAction implements Controller {
             if (mm != null) {
                 parentId = mm.getParentId();
                 model.put("parentId", parentId);
-                try {
-                    mediaService.deleteMultimedia(id);
-
-                } catch (ObjectInUseException e) {
-                    model.put("error", "feil.no.kantega.publishing.common.exception.ObjectInUseException");
-                    return new ModelAndView(errorView, model);
+                if (mm.getType() == MultimediaType.FOLDER && (mm.getNoFiles() + mm.getNoSubFolders()) > 0) {
+                    try {
+                        mediaService.deleteMultimediaFolder(id);
+                    } catch (NotAuthorizedException e) {
+                        model.put("message", "aksess.confirmdelete.notauthorized");
+                        return new ModelAndView(errorView, model);
+                    }
+                } else {
+                    try {
+                        mediaService.deleteMultimedia(id);
+                    } catch (ObjectInUseException e) {
+                        model.put("error", "feil.no.kantega.publishing.common.exception.ObjectInUseException");
+                        return new ModelAndView(errorView, model);
+                    } catch (NotAuthorizedException e) {
+                        model.put("message", "aksess.confirmdelete.notauthorized");
+                        return new ModelAndView(errorView, model);
+                    }
                 }
 
             }
-            model.put("message", "aksess.confirmdelete.multimedia.finished");            
+            model.put("message", "aksess.confirmdelete.multimedia.finished");
             return new ModelAndView(confirmDeleteView, model);
         }
     }

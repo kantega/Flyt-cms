@@ -49,8 +49,8 @@ public class MultimediaService {
     private SecuritySession securitySession = null;
 
     public MultimediaService() {
-        multimediaUsageDao = (MultimediaUsageDao)RootContext.getInstance().getBean("aksessMultimediaUsageDao");
-        multimediaDao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        multimediaUsageDao = (MultimediaUsageDao) RootContext.getInstance().getBean("aksessMultimediaUsageDao");
+        multimediaDao = (MultimediaDao) RootContext.getInstance().getBean("aksessMultimediaDao");
     }
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
@@ -59,7 +59,7 @@ public class MultimediaService {
         this.securitySession = SecuritySession.getInstance(request);
     }
 
-    public MultimediaService(SecuritySession securitySession){
+    public MultimediaService(SecuritySession securitySession) {
         this();
         this.securitySession = securitySession;
     }
@@ -101,7 +101,7 @@ public class MultimediaService {
 
         List<Multimedia> approved = new ArrayList<Multimedia>();
         // Vis alle bilder + kun de mapper som brukeren har tilgang til
-        for (Multimedia m: list) {
+        for (Multimedia m : list) {
             if (m.getType() != MultimediaType.FOLDER || securitySession.isAuthorized(m, Privilege.VIEW_CONTENT)) {
                 approved.add(m);
             }
@@ -112,8 +112,8 @@ public class MultimediaService {
 
     /**
      * Saves multimediaobject in database.
-     * @param multimedia - Multimedia object
      *
+     * @param multimedia - Multimedia object
      * @return
      * @throws SystemException
      */
@@ -154,12 +154,43 @@ public class MultimediaService {
         multimediaDao.moveMultimedia(mmId, newParentId);
     }
 
-    public void deleteMultimedia(int id) throws SystemException, ObjectInUseException {
+    /**
+     * Delete a multimedia folder with contents.
+     *
+     * @param id - id of object to be deleted
+     * @throws SystemException - Thrown if there is an error during logging to the eventlog.
+     * @throws NotAuthorizedException - Thrown if the user is not authorized to delete folder and contained objects.
+     */
+    public void deleteMultimediaFolder(int id) throws SystemException, NotAuthorizedException {
+        List<Multimedia> children = getMultimediaList(id);
+        for (Multimedia child : children) {
+            if (child.getType() == MultimediaType.MEDIA) {
+                try {
+                    deleteMultimedia(child.getId());
+                } catch (ObjectInUseException e) {
+                    // Should never occur, because MultimediaType is MEDIA. Can only occur with MultimediaType FOLDER.
+                    throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+                }
+            } else {
+                deleteMultimediaFolder(child.getId());
+            }
+        }
+        try {
+            deleteMultimedia(id);
+        } catch (ObjectInUseException e) {
+            throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+        }
+    }
+
+    public void deleteMultimedia(int id) throws SystemException, ObjectInUseException, NotAuthorizedException {
         String title = null;
         if (id != -1 && Aksess.isEventLogEnabled()) {
             Multimedia t = getMultimedia(id);
             if (t != null) {
                 title = t.getName();
+            }
+            if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
+                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".", this.getClass().getName());
             }
         }
         multimediaDao.deleteMultimedia(id);
@@ -172,8 +203,8 @@ public class MultimediaService {
      * Performs a search for multimedia matching the given phrase, published on the given site and published in content
      * which is a child of the content given by parentId.
      *
-     * @param phrase the text to search for
-     * @param site the site to limit the search by, or -1 for global.
+     * @param phrase   the text to search for
+     * @param site     the site to limit the search by, or -1 for global.
      * @param parentId the root of the subtree of contents to limit the search by, or -1 for all
      * @return a list of Multimedia-objects matching the given criteria
      * @throws SystemException if a SystemException is thrown by the underlying AO
@@ -218,6 +249,7 @@ public class MultimediaService {
 
     /**
      * Retrieves an image associated with the user's profile.
+     *
      * @param userId
      * @return
      */
@@ -231,7 +263,7 @@ public class MultimediaService {
      * @param mm
      */
     public void setProfileImageForUser(Multimedia mm) {
-        if (mm == null || mm.getProfileImageUserId() == null || mm.getProfileImageUserId().trim().equals("") ) {
+        if (mm == null || mm.getProfileImageUserId() == null || mm.getProfileImageUserId().trim().equals("")) {
             return;
         }
         //Check if the user already has an image.
