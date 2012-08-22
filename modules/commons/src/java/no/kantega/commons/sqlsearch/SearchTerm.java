@@ -61,7 +61,7 @@ public abstract class SearchTerm implements java.io.Serializable {
 
     /**
      * Returns the SQL query for this SearchTerm
-     * @param the part following SELECT (what to select)
+     * @param selectString the part following SELECT (what to select)
      * @return the SQL query
      */
     public String getQuery(String selectString) {
@@ -107,7 +107,7 @@ public abstract class SearchTerm implements java.io.Serializable {
     }
     /**
      * Returns the SQL query for this SearchTerm
-     * @param the part following SELECT (what to select)
+     * @param selectString the part following SELECT (what to select)
      * @return the SQL query
      */
     public String getQuery(String selectString, ResultLimitorStrategy limitStrategy) {
