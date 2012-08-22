@@ -15,7 +15,7 @@
 
     <name>OpenAksess search - Solr</name>
     <properties>
-        <solr.version>4.0.0-ALPHA</solr.version>
+        <solr.version>4.0.0-BETA</solr.version>
     </properties>
 
     <dependencies>
