@@ -20,7 +20,6 @@ div.search .searchicon {
     padding-left: 10px;
     float: left;
     width: 19%;
-    list-style: none outside none;
     margin:0;
 }
 
@@ -34,6 +33,7 @@ div.search .searchicon {
 
 .hitCount {
     font-weight: bold;
+    margin-left: 10px;
 }
 
 .paging {

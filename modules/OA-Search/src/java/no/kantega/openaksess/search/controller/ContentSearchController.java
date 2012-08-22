@@ -10,7 +10,9 @@ import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.SearchResponse;
 import no.kantega.search.api.search.Searcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +26,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 /**
  * Performs search for Aksess content.
  */
+@Controller
 public class ContentSearchController implements AksessController {
     @Autowired
     private Searcher searcher;
@@ -37,7 +40,7 @@ public class ContentSearchController implements AksessController {
     private List<String> facetFields;
     private List<String> facetQueries;
 
-    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         String query = getQuery(request);
         if (isNotEmpty(query)) {

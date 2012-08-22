@@ -1,9 +1,7 @@
 package no.kantega.openaksess.search.solr;
 
-import no.kantega.search.api.search.SearchContext;
-import no.kantega.search.api.search.SearchQuery;
-import no.kantega.search.api.search.SearchResponse;
-import no.kantega.search.api.search.Searcher;
+import no.kantega.search.api.search.*;
+import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
+import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -27,7 +26,22 @@ public class GroupingIntegrationTest {
         q.setGroupField("indexedContentType");
 
         SearchResponse search = searcher.search(q);
-        // Avanade has neglish as language, as is then ignored since it is an english stopword.
+        // Avanade has english as language, "as" is then ignored since it is an english stopword.
         assertEquals("Wrong number of results", 12, search.getNumberOfHits());
+        GroupResultResponse aksessDocument = (GroupResultResponse) select(search.getGroupResultResponses(), getGroupValuePredicate("aksess-document")).iterator().next();
+        assertEquals("Wrong number of results", 6, aksessDocument.getNumFound().intValue());
+
+        GroupResultResponse derpDocument = (GroupResultResponse) select(search.getGroupResultResponses(), getGroupValuePredicate("derp-document")).iterator().next();
+        assertEquals("Wrong number of results", 6, derpDocument.getNumFound().intValue());
+
+    }
+
+    private Predicate getGroupValuePredicate(final String groupValue) {
+        return new Predicate() {
+            public boolean evaluate(Object object) {
+                GroupResultResponse groupResultResponse = (GroupResultResponse) object;
+                return groupResultResponse.getGroupValue().equals(groupValue);
+            }
+        };
     }
 }
