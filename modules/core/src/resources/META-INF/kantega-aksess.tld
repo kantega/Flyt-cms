@@ -2609,52 +2609,6 @@
     </tag>
 
     <tag>
-        <description>Tag used after SearchTag to print pages on the form 1 2 3 ... 45</description>
-        <name>paginateSearch</name>
-        <tag-class>no.kantega.openaksess.search.taglib.PaginateSearchTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>Name of the variable exposed by SearchTag containing a list of urls for the search pages. Default searchPageUrls</description>
-            <name>searchPageUrlsVariableName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Label for previous link. Leave blank to not use</description>
-            <name>prevlabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Label for next link. Leave blank to not use</description>
-            <name>nextlabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Number of links before and after the gap</description>
-            <name>beforeandafterlinks</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Name of offset parameter. default offset</description>
-            <name>offsetparam</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <example>
-            <![CDATA[
-                    <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
-                    <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
-
-                    <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
-                    <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
-            ]]>
-        </example>
-    </tag>
-
-    <tag>
         <description>Iterate through repeatable attributes</description>
         <name>repeatattributes</name>
         <tag-class>no.kantega.publishing.api.taglibs.content.RepeatAttributesTag</tag-class>
