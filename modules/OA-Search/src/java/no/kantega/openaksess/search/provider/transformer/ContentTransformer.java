@@ -130,8 +130,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     private String getFieldName(Attribute attribute, int language) {
         StringBuilder fieldname = new StringBuilder(attribute.getName());
         fieldname.append("_");
-        if(attribute instanceof CategoryAttribute ||
-                attribute instanceof ListAttribute ||
+        if(attribute instanceof ListAttribute ||
                 attribute instanceof EmailAttribute ||
                 attribute instanceof RoleAttribute ||
                 attribute instanceof UserAttribute ||

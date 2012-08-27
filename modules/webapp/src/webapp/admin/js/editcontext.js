@@ -291,16 +291,6 @@ openaksess.editcontext = function()  {
         },
 
         /*
-         *  Popup window for selecting a category
-         */
-        selectCategory : function (formElement) {
-            openaksess.editcontext.focusField = formElement;
-            openaksess.editcontext.doInsertTag = false;
-            var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
-            catwin.focus();
-        },
-
-        /*
          *  Popup window for selecting media object
          */
         selectMultimedia : function (formElement, filter) {
