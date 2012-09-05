@@ -206,7 +206,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         query.append(join);
         query.append(" ");
 
-        query.append("WHERE ").append(DB_TABLE).append(".Type = ? AND ProfileImageUserId is NULL AND ContentId < 0 AND(");
+        query.append("WHERE ").append(DB_TABLE).append(".Type = ? AND ProfileImageUserId is NULL AND multimedia.ContentId < 0 AND(");
         query.append(where);
         query.append(") ");
 
