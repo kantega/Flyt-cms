@@ -38,6 +38,11 @@
     </filter>
 
     <filter>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+    </filter>
+
+    <filter>
         <filter-name>MultipartFilter</filter-name>
         <filter-class>no.kantega.commons.filter.NoSpringContextCapableMultipartFilter</filter-class>
     </filter>
@@ -89,9 +94,15 @@
     </filter-mapping>
 
     <filter-mapping>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
         <filter-name>PluginDelgatingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
 
     <filter-mapping>
         <filter-name>MultipartFilter</filter-name>
