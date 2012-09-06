@@ -29,7 +29,7 @@ public class MapTopicAttributeValueToContentPropertyBehaviour  implements MapAtt
         if (field != null) {
             if (field.equalsIgnoreCase(ContentProperty.TOPICS)) {
                 TopicAttribute topicAttribute = (TopicAttribute)attribute;
-                content.setTopics(topicAttribute.getValueAsTopics());
+                content.getTopics().addAll(topicAttribute.getValueAsTopics());
             }
         }
     }
