@@ -59,9 +59,10 @@
             <input type="hidden" name="j_domain" value="<%=Aksess.getDefaultSecurityDomain()%>">
             <input type="hidden" name="redirect" value="<c:out value="${redirect}"/>">
 
+            <c:set var="autocomplete"><aksess:getconfig key="security.login.autocomplete"/></c:set>
             <div id="UserName">
                 <label>Brukernavn...</label>
-                <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" size="25" maxlength="60" autocomplete="off">
+                <input type="text" id="j_username" name="j_username" value="<c:out value="${username}"/>" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
             </div>
             <div id="Password">
                 <label>Passord...</label>
