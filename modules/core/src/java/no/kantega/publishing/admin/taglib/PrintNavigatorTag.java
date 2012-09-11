@@ -20,11 +20,9 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,8 +107,6 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             }
         }
     }
-
-
     @Override
     public void doTag() throws JspException, IOException {
         menuitems = new ArrayList<NavigationMapEntry>();
@@ -126,12 +122,10 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
                 printListElement();
                 status.incrementIndex();
             }
-
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
         }
-
         currentId = -1;
         highlightCurrent = true;
         startId = -1;
@@ -140,7 +134,6 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         prevDepth = -1;
         nrul = 0;
      }
-
     /**
      * Prints the menu "plumbing", i.e. the list elements (ul/li) needed to mark up the menu as a tree.
      * @throws IOException
@@ -150,8 +143,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
         String ulStartElem = "<ul class=\"navigator\">";
         String ulEndElem = "</ul>\n";
-
-        StringBuffer clz = new StringBuffer();
+        StringBuilder clz = new StringBuilder();
 
         if (highlightCurrent && selectedClass != null && currentItem.isSelected()) {
             if (clz.length()  > 0) clz.append(" ");
@@ -161,7 +153,6 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             if (clz.length()  > 0) clz.append(" ");
             clz.append(openClass);
         }
-
         JspWriter out = getJspContext().getOut();
 
         if (prevDepth == -1) {

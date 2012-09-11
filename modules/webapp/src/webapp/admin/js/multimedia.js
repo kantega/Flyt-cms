@@ -221,7 +221,6 @@ openaksess.multimedia = {
         return properties.contextPath + "/admin/multimedia/EditMultimedia.action";
     },
 
-
     /**
      * Enables inline editing of the media item's name.
      *
@@ -287,18 +286,11 @@ openaksess.multimedia = {
     }
 };
 
-
-
-
-
-
-
 /********************************************************************************
  *
  * Overridden functions from inherited namespaces.
  *
  ********************************************************************************/
-
 
 /**
  * Changes the content of the main pane

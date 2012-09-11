@@ -1,7 +1,7 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
 <%@ page import="no.kantega.commons.util.LocaleLabels" %>
-<%@ page import="no.kantega.publishing.common.data.attributes.*" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.common.data.attributes.*" %>
+<%@ page import="no.kantega.publishing.common.data.enums.ContentProperty" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -94,7 +94,7 @@
             user.setValue("");
             request.setAttribute("attribute", user);
             request.setAttribute("fieldName", "ownerperson");
-            pageContext.include("/admin/publish/attributes/" +user.getRenderer() + ".jsp");
+            pageContext.include("/admin/publish/attributes/" + user.getRenderer() + ".jsp");
         %>
     </div>
     <div class="contentAttribute">
@@ -105,7 +105,7 @@
             orgunit.setValue("");
             request.setAttribute("attribute", orgunit);
             request.setAttribute("fieldName", "owner");
-            pageContext.include("/admin/publish/attributes/" +orgunit.getRenderer() + ".jsp");
+            pageContext.include("/admin/publish/attributes/" + orgunit.getRenderer() + ".jsp");
         %>
     </div>
     <div class="contentAttribute">

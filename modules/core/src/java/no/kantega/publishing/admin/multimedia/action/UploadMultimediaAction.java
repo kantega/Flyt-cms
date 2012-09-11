@@ -36,7 +36,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -100,7 +99,6 @@ public class UploadMultimediaAction extends AdminController {
                 }
                 file.setAuthor(parameters.getString("author"));
             }
-
             // Save object
             int newId = mediaService.setMultimedia(file);
             file.setId(newId);
@@ -113,14 +111,18 @@ public class UploadMultimediaAction extends AdminController {
                     currentContent.addMultimedia(uploadedFile);
                 }
             }
-
             Map model = new HashMap();
             model.put("media", uploadedFiles.get(0));
             return new ModelAndView(insertMultimediaView, model);
-        } else if (uploadedFiles.size() == 1) {
+        } else if (uploadedFiles.size() > 0) {
+            List<Integer> ids = new ArrayList<Integer>();
+            for (Multimedia uploadedFile : uploadedFiles) {
+                ids.add(uploadedFile.getId());
+            }
+            int id = ids.remove(0);
             Map model = new HashMap();
-            model.put("id", uploadedFiles.get(0).getId());
-            return new ModelAndView(new RedirectView("EditMultimedia.action"), model);
+            model.put("ids", ids);
+            return new ModelAndView(new RedirectView("EditMultimedia.action?id="+id), model);
         } else {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
@@ -140,7 +142,6 @@ public class UploadMultimediaAction extends AdminController {
                 }
             }
         }
-
         return multimediaList;
     }
 
