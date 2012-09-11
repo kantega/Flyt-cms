@@ -16,13 +16,14 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.client.DefaultDispatchContext;
+import org.kantega.jexmec.PluginManager;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +32,10 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
-import org.kantega.jexmec.PluginManager;
-
 public class IncludeTag  extends TagSupport {
     String url = null;
+    private PluginManager<OpenAksessPlugin> pluginManager;
+    private UrlPlaceholderResolver urlPlaceholderResolver;
 
     public void setUrl(String url) {
         this.url = url;
@@ -43,10 +44,10 @@ public class IncludeTag  extends TagSupport {
     public int doStartTag() throws JspException {
         if (url != null) {
 
-            PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
+            setPluginmanagerAndUrlPlaceholderResolverIfNull();
 
             try {
-                url = AttributeTagHelper.replaceMacros(url, pageContext);
+                url = urlPlaceholderResolver.replaceMacros(url, pageContext);
                 String absoluteUrl = url;
 
                 if(!url.startsWith("/")) {
@@ -73,19 +74,24 @@ public class IncludeTag  extends TagSupport {
                 throw new JspException(e);
             } catch (SystemException e) {
                 throw new JspException(e);
-            } catch (NotAuthorizedException e) {
-                throw new JspException(e);
             }
 
         }
 
-        url = null;
-
         return SKIP_BODY;
     }
 
+    private void setPluginmanagerAndUrlPlaceholderResolverIfNull() {
+        if (pluginManager == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            pluginManager = (PluginManager<OpenAksessPlugin>) context.getBean("pluginManager", PluginManager.class);
+            urlPlaceholderResolver = context.getBean(UrlPlaceholderResolver.class);
+        }
+    }
+
     public int doEndTag() throws JspException {
-         return EVAL_PAGE;
+        url = null;
+        return EVAL_PAGE;
     }
 
 

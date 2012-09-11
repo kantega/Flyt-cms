@@ -16,13 +16,14 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,6 +37,8 @@ public class GetUrlTag extends TagSupport {
     String queryParams = null;
     boolean addcontextpath = true;
     boolean escapeurl = true;
+
+    private UrlPlaceholderResolver urlPlaceholderResolver;
 
     public void setUrl(String url) {
         this.url = url;
@@ -58,7 +61,9 @@ public class GetUrlTag extends TagSupport {
         try {
             out = pageContext.getOut();
 
-            url = AttributeTagHelper.replaceMacros(url, pageContext);
+            initUrlPlaceholderResolverIfNull();
+
+            url = urlPlaceholderResolver.replaceMacros(url, pageContext);
 
             String absoluteurl = addcontextpath ? Aksess.getContextPath(): "";
 
@@ -111,9 +116,7 @@ public class GetUrlTag extends TagSupport {
 
             out.write(absoluteurl);
 
-        } catch (NotAuthorizedException e) {
-            // Do nothing
-        }catch (Exception e){
+        } catch (Exception e){
             Log.error(SOURCE, e);
             throw new JspException("ERROR: GetUrlTag", e);
         }
@@ -121,6 +124,11 @@ public class GetUrlTag extends TagSupport {
         resetVars();
 
         return SKIP_BODY;
+    }
+
+    private void initUrlPlaceholderResolverIfNull() {
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        urlPlaceholderResolver = context.getBean(UrlPlaceholderResolver.class);
     }
 
     private void resetVars() {

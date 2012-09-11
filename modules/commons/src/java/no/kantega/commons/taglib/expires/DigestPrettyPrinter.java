@@ -21,7 +21,7 @@ package no.kantega.commons.taglib.expires;
  */
 public abstract class DigestPrettyPrinter {
     public static String prettyPrintDigest(byte[] digest) {
-        StringBuffer format = new StringBuffer();
+        StringBuilder format = new StringBuilder();
 
         for (int i = 0; i < digest.length; i++) {
             int b = ((int) digest[i]) & 0xff;

@@ -369,7 +369,7 @@ public final class AttributeTagHelper {
                 }
             }
 
-            if (result != null && result.indexOf("$") != -1) {
+            if (result != null && result.contains("$")) {
                 result = result.replaceAll("\\$contextId\\$", "" + content.getAssociation().getAssociationId());
             }
         }
@@ -411,9 +411,6 @@ public final class AttributeTagHelper {
         }
         return associationId;
     }
-
-
-
 
     public static String replaceMacros(String url, PageContext pageContext) throws SystemException, NotAuthorizedException {
         if (url != null && pageContext != null) {
