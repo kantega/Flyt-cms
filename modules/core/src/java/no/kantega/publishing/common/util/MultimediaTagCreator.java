@@ -226,6 +226,7 @@ public class MultimediaTagCreator {
             tag.append(" width=\""+width+"\"");
             tag.append(" height=\""+height+"\"");
             tag.append(" src=\""+url +"\">");
+            tag.append(" autostart=\"" + Aksess.isFlashVideoAutoplay() + "\" ");
             tag.append("</EMBED>");
             tag.append("</OBJECT>");
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
