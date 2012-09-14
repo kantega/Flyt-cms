@@ -19,7 +19,9 @@ package no.kantega.publishing.admin.administration.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventLogQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,13 +34,13 @@ import java.util.*;
 public class SearchEventLogAction extends AdminController {
     private String formView;
     private String resultsView;
+    @Autowired
+    private EventLog eventLog;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
-            ContentManagementService cms = new ContentManagementService(request);
-
             RequestParameters p = new RequestParameters(request, "utf-8");
 
             Date from = p.getDate("from_date", Aksess.getDefaultDateFormat());
@@ -51,7 +53,9 @@ public class SearchEventLogAction extends AdminController {
                 endInclusive.add(Calendar.DATE, 1);
                 end.setTime(endInclusive.getTimeInMillis());
             }
-            List events = cms.searchEventLog(from, end, p.getString("userid"), p.getString("subject"), p.getString("event"));
+
+            EventLogQuery eventLogQuery = new EventLogQuery(from, end, p.getString("userid"), p.getString("subject"), p.getString("event"));
+            List events = eventLog.getQueryResult(eventLogQuery);
             model.put("events", events);
 
             return new ModelAndView(resultsView, model);

@@ -75,7 +75,9 @@ public class LinkExtractor {
                             parser.parse(new InputSource(new StringReader(html)));
                         }
                     } catch (Throwable e) {
-                        Log.error(SOURCE, String.format("contentId: %s, attribute: %s \n %s", content.getId(), attrName, html), null, null);
+
+                        Log.error(SOURCE, String.format("contentId: %s, associationid: %s, attribute: %s \n %s",
+                                content.getId(), content.getAssociation().getId(), attrName, html), null, null);
                         Log.error(SOURCE, e, null, null);
                     }
                 } else if (attribute instanceof UrlAttribute) {
@@ -98,7 +100,7 @@ public class LinkExtractor {
 
     }
 
-    class LinkExtractingHandler extends DefaultHandler {
+    private class LinkExtractingHandler extends DefaultHandler {
         private List<String> links = new ArrayList<String>();
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

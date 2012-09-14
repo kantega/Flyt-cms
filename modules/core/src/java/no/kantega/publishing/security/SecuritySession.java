@@ -273,11 +273,7 @@ public class SecuritySession {
     }
 
     public boolean isLoggedIn() {
-        if (getUser() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return getUser() != null;
     }
 
     public void initiateLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {

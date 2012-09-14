@@ -16,38 +16,39 @@
 
 package no.kantega.publishing.security.action;
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.LoginRestrictor;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.LoginRestrictor;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.common.SystemException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.context.ApplicationContext;
+import java.util.Map;
 
 public class LoginAction extends AbstractLoginAction {
 
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
 
+    @Autowired
+    private EventLog eventLog;
     private String loginView = null;
 
     private boolean rolesExists = false;
@@ -125,7 +126,7 @@ public class LoginAction extends AbstractLoginAction {
                     userLoginRestrictor.registerLoginAttempt(username, false);
                     ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), false);
 
-                    EventLog.log(username, request.getRemoteAddr(), Event.FAILED_LOGIN, username, null);
+                    eventLog.log(username, request.getRemoteAddr(), Event.FAILED_LOGIN, username, null);
                     model.put("loginfailed", Boolean.TRUE);
                 }
             }

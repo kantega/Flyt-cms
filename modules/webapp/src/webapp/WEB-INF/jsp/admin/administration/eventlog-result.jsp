@@ -1,5 +1,5 @@
-<%@ page import="no.kantega.publishing.common.data.EventLogEntry" %>
 <%@ page import="no.kantega.publishing.common.data.enums.ObjectType" %>
+<%@ page import="no.kantega.publishing.eventlog.EventLogEntry" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.List" %>

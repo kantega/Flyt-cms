@@ -18,8 +18,8 @@ package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.Role;
@@ -29,6 +29,7 @@ import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
 import no.kantega.publishing.security.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -42,13 +43,16 @@ import java.util.List;
 public class SavePermissionsAction extends AbstractController {
     private String view;
 
+    @Autowired
+    private EventLog eventLog;
+
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         HttpSession session = request.getSession(true);
 
-        List permissions = new ArrayList();
+        List<Permission> permissions = new ArrayList<Permission>();
         Enumeration params = request.getParameterNames();
         while(params.hasMoreElements()) {
             String name = (String)params.nextElement();
@@ -93,7 +97,7 @@ public class SavePermissionsAction extends AbstractController {
     }
 
     private void setUpdatedPermissions(HttpServletRequest request, List permissions, BaseObject object) {
-        EventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
+        eventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
         SecurityService.setPermissions(object, permissions);
     }
 

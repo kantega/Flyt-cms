@@ -18,10 +18,11 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +32,8 @@ import java.util.Properties;
 public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 
     private Logger log = Logger.getLogger(getClass());
-
+    @Autowired
+    private EventLog eventLog;
 
 	public void process(List<LinkOccurrence> links) {
 		Map params = new HashMap();
@@ -54,7 +56,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 		} else{
             String message = "finner ikke mailEditor eller mailFrom i config, kan ikke sende mail om brukne lenker";
             log.error(message);
-            EventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, message, null);
+            eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, message, null);
         }
 	}
 

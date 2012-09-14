@@ -19,9 +19,9 @@ package no.kantega.publishing.common.service;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
-import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.service.impl.EventLog;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
@@ -40,15 +40,13 @@ import java.util.List;
 
 public class TopicMapService {
 
-    private static final String AKSESS_TOPIC_DAO = "aksessTopicDao";
-    private static final String AKSESS_TOPIC_ASSOCIATION_DAO = "aksessTopicAssociationDao";
-    private static final String AKSESS_TOPIC_MAP_DAO = "aksessTopicMapDao";
+    private TopicMapDao topicMapDao;
 
-    TopicMapDao topicMapDao;
+    private TopicDao topicDao;
 
-    TopicDao topicDao;
+    private TopicAssociationDao topicAssociationDao;
 
-    TopicAssociationDao topicAssociationDao;
+    private EventLog eventLog;
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;
@@ -66,9 +64,10 @@ public class TopicMapService {
     }
 
     private void initDao() {
-        topicAssociationDao = (TopicAssociationDao) RootContext.getInstance().getBean(AKSESS_TOPIC_ASSOCIATION_DAO);
-        topicDao = (TopicDao) RootContext.getInstance().getBean(AKSESS_TOPIC_DAO);
-        topicMapDao= (TopicMapDao) RootContext.getInstance().getBean(AKSESS_TOPIC_MAP_DAO);
+        topicAssociationDao = RootContext.getInstance().getBean(TopicAssociationDao.class);
+        topicDao = RootContext.getInstance().getBean(TopicDao.class);
+        topicMapDao = RootContext.getInstance().getBean(TopicMapDao.class);
+        eventLog = RootContext.getInstance().getBean(EventLog.class);
     }
 
 
@@ -201,7 +200,7 @@ public class TopicMapService {
     }
 
     public void setTopic(Topic topic) throws SystemException {
-        EventLog.log(securitySession, request, Event.SAVE_TOPIC, topic.getBaseName());
+        eventLog.log(securitySession, request, Event.SAVE_TOPIC, topic.getBaseName());
         List<TopicOccurence> occurences = topic.getOccurences();
         if (occurences != null) {
             for (TopicOccurence occurence : occurences) {
@@ -219,7 +218,7 @@ public class TopicMapService {
     }
 
     public void deleteTopic(Topic topic) throws SystemException {
-        EventLog.log(securitySession, request, Event.DELETE_TOPIC, topic.getBaseName());
+        eventLog.log(securitySession, request, Event.DELETE_TOPIC, topic.getBaseName());
         TopicAO.deleteTopic(topic);
         TopicAssociationAO.deleteTopicAssociations(topic);
     }

@@ -2,9 +2,10 @@ package org.kantega.openaksess.plugins.failedSubmissions;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.EventLogAO;
-import no.kantega.publishing.common.data.EventLogEntry;
-import no.kantega.publishing.common.data.enums.Event;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventLogEntry;
+import no.kantega.publishing.eventlog.EventLogQuery;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,12 +19,13 @@ import java.util.List;
 @Controller
 public class FailedSubmissionsController {
 
-    private EventLogAO eventLogAO;
+    private EventLog eventLog;
 
     @RequestMapping(method = RequestMethod.GET)
     public String getFailedEmailSubmissionEvents(@RequestParam(defaultValue = Event.FAILED_FORM_SUBMISSION, required = false) String eventName, Model model) throws Exception {
         Calendar from = getFromDate();
-        List<EventLogEntry> list = eventLogAO.createQuery().setEventName(eventName).setFrom(from.getTime()).list();
+        EventLogQuery eventLogQuery = new EventLogQuery(from.getTime(), null, null, null, null);
+        List<EventLogEntry> list = eventLog.getQueryResult(eventLogQuery);
         model.addAttribute("failedSubmissions", list);
         return "org/kantega/openaksess/plugins/failedSubmissions/view";
     }
@@ -36,7 +38,7 @@ public class FailedSubmissionsController {
     }
 
     @Required
-    public void setEventLogAO(EventLogAO eventLogAO) {
-        this.eventLogAO = eventLogAO;
+    public void setEventLog(EventLog eventLog) {
+        this.eventLog = eventLog;
     }
 }

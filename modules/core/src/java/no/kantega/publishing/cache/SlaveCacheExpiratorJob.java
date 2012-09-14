@@ -5,15 +5,16 @@ import net.sf.ehcache.CacheManager;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.ao.EventLogAO;
 import no.kantega.publishing.common.ao.XMLCacheAO;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.EventLogEntry;
 import no.kantega.publishing.common.data.XMLCacheEntry;
-import no.kantega.publishing.common.data.enums.Event;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventLogEntry;
+import no.kantega.publishing.eventlog.EventLogQuery;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -25,7 +26,8 @@ public class SlaveCacheExpiratorJob {
 
     private long lastRun = System.currentTimeMillis();
 
-    private EventLogAO eventLogAO;
+    @Autowired
+    private EventLog eventLog;
 
     private CacheManager cacheManager;
 
@@ -48,8 +50,8 @@ public class SlaveCacheExpiratorJob {
         // Find content that was changed
 
         long thisRun = System.currentTimeMillis();
-
-        final List<EventLogEntry> entiresSinceLast = eventLogAO.createQuery().setFrom(new Date(lastRun)).setSubjectType(ObjectType.CONTENT).list();
+        EventLogQuery eventLogQuery = new EventLogQuery(new Date(lastRun), null, null, null, null);
+        final List<EventLogEntry> entiresSinceLast = eventLog.getQueryResult(eventLogQuery);
 
 
         // Remove any Content objects (keyed by Association)
@@ -92,10 +94,6 @@ public class SlaveCacheExpiratorJob {
 
         lastRun = thisRun;
         
-    }
-
-    public void setEventLogAO(EventLogAO eventLogAO) {
-        this.eventLogAO = eventLogAO;
     }
 
     public void setCacheManager(CacheManager cacheManager) {

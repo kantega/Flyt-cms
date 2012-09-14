@@ -1,4 +1,4 @@
-<%@ page import="no.kantega.publishing.common.data.enums.Event" %>
+<%@ page import="no.kantega.publishing.eventlog.Event" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>

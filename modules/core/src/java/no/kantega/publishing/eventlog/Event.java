@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data.enums;
+package no.kantega.publishing.eventlog;
 
 public class Event {
     public static final String PUBLISH_CONTENT = "PUBLISH_CONTENT";

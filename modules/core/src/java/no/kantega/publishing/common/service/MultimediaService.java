@@ -24,13 +24,13 @@ import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.service.impl.MultimediaMapWorker;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
@@ -47,10 +47,13 @@ public class MultimediaService {
 
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
+    private EventLog eventLog;
 
     public MultimediaService() {
-        multimediaUsageDao = (MultimediaUsageDao) RootContext.getInstance().getBean("aksessMultimediaUsageDao");
-        multimediaDao = (MultimediaDao) RootContext.getInstance().getBean("aksessMultimediaDao");
+        multimediaUsageDao = RootContext.getInstance().getBean(MultimediaUsageDao.class);
+        multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
+        eventLog = RootContext.getInstance().getBean(EventLog.class);
+
     }
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
@@ -127,9 +130,9 @@ public class MultimediaService {
         multimedia.setId(id);
         if (Aksess.isEventLogEnabled()) {
             if (multimedia.getType() == MultimediaType.FOLDER) {
-                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName());
+                eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName());
             } else {
-                EventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
+                eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
             }
         }
         return id;
@@ -195,7 +198,7 @@ public class MultimediaService {
         }
         multimediaDao.deleteMultimedia(id);
         if (title != null) {
-            EventLog.log(securitySession, request, Event.DELETE_MULTIMEDIA, title);
+            eventLog.log(securitySession, request, Event.DELETE_MULTIMEDIA, title);
         }
     }
 

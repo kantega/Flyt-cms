@@ -73,7 +73,7 @@ public class User extends SecurityIdentifier {
         }
     }
 
-    public HashMap getRoles() {
+    public HashMap<String, Role> getRoles() {
         return roles;
     }
 
