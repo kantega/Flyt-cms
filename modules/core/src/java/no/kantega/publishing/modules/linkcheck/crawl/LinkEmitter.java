@@ -24,8 +24,11 @@ import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.eventlog.EventLog;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.PostConstruct;
 
 public class LinkEmitter {
     private LinkExtractor linkExtractor;
@@ -35,8 +38,12 @@ public class LinkEmitter {
     @Autowired
     private LinkDao linkDao;
 
-    public LinkEmitter() {
-        this.linkExtractor = new LinkExtractor();
+    @Autowired
+    private EventLog eventLog;
+
+    @PostConstruct
+    public void initLinkEmitter() {
+        this.linkExtractor = new LinkExtractor(eventLog);
     }
 
     public void emittLinks(final LinkHandler handler) {

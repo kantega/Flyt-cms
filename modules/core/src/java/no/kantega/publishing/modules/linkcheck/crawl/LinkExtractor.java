@@ -26,6 +26,8 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import org.cyberneko.html.parsers.SAXParser;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
@@ -40,8 +42,10 @@ public class LinkExtractor {
     private static final String SOURCE = "aksess.LinkExtractor";
 
     private SAXParser parser;
+    private final EventLog eventLog;
 
-    public LinkExtractor() {
+    public LinkExtractor(EventLog eventLog) {
+        this.eventLog = eventLog;
         parser = new SAXParser();
 
         try {
@@ -75,7 +79,7 @@ public class LinkExtractor {
                             parser.parse(new InputSource(new StringReader(html)));
                         }
                     } catch (Throwable e) {
-
+                        eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
                         Log.error(SOURCE, String.format("contentId: %s, associationid: %s, attribute: %s \n %s",
                                 content.getId(), content.getAssociation().getId(), attrName, html), null, null);
                         Log.error(SOURCE, e, null, null);

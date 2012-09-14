@@ -18,13 +18,15 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.publishing.common.ao.LinkDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class BrokenLinkNotifierJob {
 
-	@Autowired LinkDao linkDao;
-	private List<BrokenLinkEventListener> listeners = new ArrayList<BrokenLinkEventListener>();
+	@Autowired
+    private LinkDao linkDao;
+    @Autowired
+	private List<BrokenLinkEventListener> listeners = Collections.emptyList();
     private String sortBy = "";
 
 	public void execute() {
@@ -33,14 +35,6 @@ public class BrokenLinkNotifierJob {
             listener.process(brokenlinks);
         }
 	}
-
-    public void setLinkDao(LinkDao linkDao){
-        this.linkDao = linkDao;
-    }
-
-    public void setListeners(List<BrokenLinkEventListener> listeners){
-        this.listeners = listeners;
-    }
 
     public void setSortBy(String sortBy){
         this.sortBy = sortBy;

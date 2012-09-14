@@ -23,26 +23,14 @@
 
     <bean id="contentStateChangeJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="contentStateChangeJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="contentStateChangeJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="contentStateChangeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="contentStateChangeJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hvert 5 minutt -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 0/5 * * * ?</value>
-        </property>
+        <property name="jobDetail" ref="contentStateChangeJobDetail"/>
+        <property name="cronExpression" value="0 0/5 * * * ?"/>
     </bean>
 
     <bean name="expireContentAlertJob" class="no.kantega.publishing.jobs.alerts.ExpireContentAlertJob">
@@ -56,25 +44,14 @@
     </bean>
 
     <bean id="expireContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="expireContentAlertJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="expireContentAlertJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="expireContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="expireContentAlertJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hver mandag kl 06.30 -->
-            <value>0 30 6 ? * MON</value>
-        </property>
+        <property name="jobDetail" ref="expireContentAlertJobDetail"/>
+        <property name="cronExpression" value="0 30 6 ? * MON"/>
     </bean>
 
     <bean name="revisionContentAlertJob" class="no.kantega.publishing.jobs.alerts.RevisionContentAlertJob">
@@ -89,25 +66,14 @@
     </bean>
 
     <bean id="revisionContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="revisionContentAlertJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="revisionContentAlertJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="revisionContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="revisionContentAlertJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hver mandag kl 06.45 -->
-            <value>0 45 6 ? * MON</value>
-        </property>
+        <property name="jobDetail" ref="revisionContentAlertJobDetail"/>
+        <property name="cronExpression" value="0 45 6 ? * MON"/>
     </bean>
 
     <!-- MailSubscriptionAgent bean -->
@@ -118,112 +84,67 @@
     </bean>
 
     <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
-        </property>
+        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
         <property name="jobDataAsMap">
             <map>
-                <entry key="interval">
-                    <value>immediate</value>
-                </entry>
+                <entry key="interval" value="immediate"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
 
     <bean name="mailSubscriptionJobDaily" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
-        </property>
+        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
         <property name="jobDataAsMap">
             <map>
-                <entry key="interval">
-                    <value>daily</value>
-                </entry>
+                <entry key="interval" value="daily"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
 
     <bean name="mailSubscriptionJobWeekly" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob</value>
-        </property>
+        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
         <property name="jobDataAsMap">
             <map>
-                <entry key="interval">
-                    <value>weekly</value>
-                </entry>
+                <entry key="interval" value="weekly"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
             </map>
         </property>
     </bean>
 
     <bean id="mailSubscriptionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="mailSubscriptionJob"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hvert 15 minutt -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>50 0/3 * * * ?</value>
-        </property>
+        <property name="jobDetail" ref="mailSubscriptionJob"/>
+        <property name="cronExpression" value="50 0/3 * * * ?"/>
     </bean>
 
     <bean id="mailSubscriptionTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="mailSubscriptionJobDaily"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Klokka 15 hver dag -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 0 15 * * ?</value>
-        </property>
+        <property name="jobDetail" ref="mailSubscriptionJobDaily"/>
+        <property name="cronExpression" value="0 0 15 * * ?"/>
     </bean>
 
     <bean id="mailSubscriptionTriggerWeekly" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="mailSubscriptionJobWeekly"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Klokka 15 hver fredag -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 0 15 ? * FRI</value>
-        </property>
+        <property name="jobDetail" ref="mailSubscriptionJobWeekly"/>
+        <property name="cronExpression" value="0 0 15 ? * FRI"/>
     </bean>
 
     <bean name="systemStatusJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>no.kantega.publishing.jobs.systemstatus.SystemStatusJob</value>
-        </property>
+        <property name="jobClass" value="no.kantega.publishing.jobs.systemstatus.SystemStatusJob"/>
     </bean>
 
     <bean id="systemStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="systemStatusJob"/>
-        </property>
-        <property name="cronExpression">
-            <!-- run every five minutes -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>30 0/5 * * * ?</value>
-        </property>
+        <property name="jobDetail" ref="systemStatusJob"/>
+        <property name="cronExpression" value="30 0/5 * * * ?"/>
     </bean>
 
     <bean name="databaseCleanupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass">
-            <value>no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob</value>
-        </property>
+        <property name="jobClass" value="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
     </bean>
 
     <!-- Slett gamle innslag i trafikk og eventlog -->
     <bean id="databaseCleanupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="databaseCleanupJob"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Klokka 4 hver natt  0 0 4 * * ? -->
-            <value>0 0 4 * * ?</value>
-        </property>
+        <property name="jobDetail" ref="databaseCleanupJob"/>
+        <property name="cronExpression" value="0 0 4 * * ?"/>
     </bean>
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
@@ -231,33 +152,19 @@
     <bean name="linkEmitter" class="no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter"/>
 
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
-        <property name="checker">
-            <ref bean="linkCheckJob"/>
-        </property>
+        <property name="checker" ref="linkCheckJob"/>
     </bean>
 
     <bean id="linkCrawlJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="linkCrawlJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="linkCrawlJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="linkCrawlTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="linkCrawlJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hvert natt klokka ti over tre  -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 10 3 * * ?</value>
-        </property>
+        <property name="jobDetail" ref="linkCrawlJobDetail"/>
+        <property name="cronExpression" value="0 10 3 * * ?"/>
     </bean>
 
     <bean id="brokenLinkEventListeners" class="org.springframework.beans.factory.config.ListFactoryBean">
@@ -270,33 +177,19 @@
     <bean id="brokenLinksEditorMailer" class="no.kantega.publishing.modules.linkcheck.check.BrokenLinksEditorMailer"/>
 
     <bean id="brokenLinkNotifierJob" class="no.kantega.publishing.modules.linkcheck.check.BrokenLinkNotifierJob">
-        <property name="listeners" ref="brokenLinkEventListeners" />
         <property name="sortBy" value="url" />
     </bean>
 
     <bean id="brokenLinkEventTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="brokenLinkJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- Hver mandag klokka ti over fire  -->
-            <!-- Se http://www.quartz-scheduler.org/docs/tutorials/crontrigger.html for eksempler -->
-            <value>0 10 4 ? * MON</value>
-
-        </property>
+        <property name="jobDetail" ref="brokenLinkJobDetail"/>
+        <property name="cronExpression" value="0 10 4 ? * MON"/>
     </bean>
 
     <bean id="brokenLinkJobDetail"
           class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="brokenLinkNotifierJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="brokenLinkNotifierJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
 
@@ -304,24 +197,14 @@
     <bean name="contentImportJob" class="no.kantega.publishing.jobs.contentimport.ContentImportJob"/>
 
     <bean id="contentImportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="contentImportJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="contentImportJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="contentImportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="contentImportJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <value>${jobs.contentimport.trigger}</value>
-        </property>
+        <property name="jobDetail" ref="contentImportJobDetail"/>
+        <property name="cronExpression" value="${jobs.contentimport.trigger}"/>
     </bean>
 
     <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
@@ -329,25 +212,14 @@
     </bean>
 
     <bean id="rebuildSearchIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject">
-            <ref bean="rebuildSearchIndexJob"/>
-        </property>
-        <property name="targetMethod">
-            <value>execute</value>
-        </property>
-        <property name="concurrent">
-            <value>false</value>
-        </property>
+        <property name="targetObject" ref="rebuildSearchIndexJob"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="rebuildSearchIndexJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail">
-            <ref bean="rebuildSearchIndexJobDetail"/>
-        </property>
-        <property name="cronExpression">
-            <!-- This job is default off (set to run in 2099) can be overriden in projects -->
-            <value>${jobs.rebuildindex.trigger}</value>
-        </property>
+        <property name="jobDetail" ref="rebuildSearchIndexJobDetail"/>
+        <property name="cronExpression" value="${jobs.rebuildindex.trigger}"/>
     </bean>
 
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

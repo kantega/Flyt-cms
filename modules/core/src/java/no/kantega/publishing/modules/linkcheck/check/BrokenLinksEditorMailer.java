@@ -20,14 +20,13 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventLogEntry;
+import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 
@@ -36,9 +35,10 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
     private EventLog eventLog;
 
 	public void process(List<LinkOccurrence> links) {
-		Map params = new HashMap();
+		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("linklist", links);
         params.put("applicationurl", Aksess.getApplicationUrl());
+        params.put("failedpages", getFailedUrlEmitEvents());
 		
 		try {
 			mailLinksToEditor(params);
@@ -47,7 +47,14 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 		} 
 	}
 
-	private void mailLinksToEditor(Map params) throws ConfigurationException {
+    private List<EventLogEntry> getFailedUrlEmitEvents() {
+        Calendar from = Calendar.getInstance();
+        from.set(Calendar.DATE, -1);
+        EventLogQuery eventLogQuery = new EventLogQuery(from.getTime(), null, null, null, Event.FAILED_LINK_EXTRACT);
+        return eventLog.getQueryResult(eventLogQuery);
+    }
+
+    private void mailLinksToEditor(Map params) throws ConfigurationException {
 		Properties properties = new Properties(Aksess.getConfiguration().getProperties());
 		String mailFrom = properties.getProperty("mail.from");
 		String mailEditor = properties.getProperty("mail.editor");

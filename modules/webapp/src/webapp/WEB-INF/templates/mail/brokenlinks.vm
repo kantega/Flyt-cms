@@ -15,7 +15,7 @@
             #else
                 #set($url = $link.url)
             #end
-            <td><a href="$applicationurl/admin/?contentId=$link.getContentId()">$link.getContentTitle()</a></td>
+            <td><a href="${applicationurl}/admin/?contentId=$link.getContentId()">$link.getContentTitle()</a></td>
             <td>#if($link.getAttributeName())
                     $link.getAttributeName()
                 #end
@@ -23,10 +23,16 @@
             <td><a href="$link.url">$url</a></td>
         </tr>
     #end
-
-    <p>
-        Denne eposten er automatisk generert av OpenAksess.
-    </p>
 </table>
+
+<h1>Sider som linksjekk feilet for</h1>
+<ul>
+#foreach($page in $failedpages)
+    <li><a href="${applicationurl}/content.ap?contentId=${page.subjectId}">${applicationurl}/content.ap?contentId=${page.subjectId}</a></li>
+#end
+</ul>
+<p>
+    Denne eposten er automatisk generert av OpenAksess.
+</p>
 </body>
 </html>
