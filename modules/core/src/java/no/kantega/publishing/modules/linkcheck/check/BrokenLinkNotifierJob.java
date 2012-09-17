@@ -27,6 +27,7 @@ public class BrokenLinkNotifierJob {
     private LinkDao linkDao;
     @Autowired
 	private List<BrokenLinkEventListener> listeners = Collections.emptyList();
+
     private String sortBy = "";
 
 	public void execute() {
@@ -38,5 +39,13 @@ public class BrokenLinkNotifierJob {
 
     public void setSortBy(String sortBy){
         this.sortBy = sortBy;
+    }
+
+    public void setLinkDao(LinkDao linkDao) {
+        this.linkDao = linkDao;
+    }
+
+    public void setListeners(List<BrokenLinkEventListener> listeners) {
+        this.listeners = listeners;
     }
 }
