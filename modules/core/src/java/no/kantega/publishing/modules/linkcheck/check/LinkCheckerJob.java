@@ -35,7 +35,6 @@ import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -253,6 +252,8 @@ public class LinkCheckerJob implements InitializingBean {
             status = CheckStatus.CONNECT_EXCEPTION;
         } catch (IOException e) {
             status = CheckStatus.IO_EXCEPTION;
+        }  catch (Exception e) {
+            status = CheckStatus.INVALID_URL;
         } finally {
             get.releaseConnection();
         }
