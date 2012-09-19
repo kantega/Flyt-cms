@@ -93,12 +93,12 @@ openaksess.multimedia = {
     bindToolButtons : function() {
         $("#UploadButton").click(function() {
             if (!$(this).hasClass("disabled")) {
-                openaksess.multimedia.showUploadForm();
+                openaksess.multimedia.tools.showUploadForm(currentItemIdentifier);
             }
         });
         $("#NewFolderButton").click(function() {
             if (!$(this).hasClass("disabled")) {
-                openaksess.multimedia.createMediaFolder();
+                openaksess.multimedia.tools.createMediaFolder(currentItemIdentifier);
             }
         });
         $("#DeleteFolderButton").click(function() {
@@ -146,6 +146,21 @@ openaksess.multimedia = {
         managePrivileges: function(id) {
             openaksess.common.debug("Multimedia.managePrivileges(): id: " + id);
             openaksess.common.modalWindow.open({title:properties.multimedia.labels.editpermissions, iframe:true, href: properties.contextPath + "/admin/security/EditPermissions.action?id=" + id + "&type=" + properties.objectTypeMultimedia,width: 650, height:560});
+        },
+
+        createMediaFolder : function(id) {
+            var folderName = prompt(properties.multimedia.labels.foldername, '');
+            if (folderName != null && folderName != "") {
+                openaksess.common.debug("openaksess.multimedia.createMediaFolder(): itemIdentifier: " + id + ", name: " + folderName);
+                $.post(properties.contextPath + "/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: id, name : folderName }, function(success) {
+                    openaksess.multimedia.triggerMultimediaupdateEvent(id);
+                });
+            }
+        },
+
+        showUploadForm : function(id) {
+            openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + id);
+            openaksess.common.modalWindow.open({title:properties.multimedia.labels.aksessToolsUpload, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + id + "&dummy=" + new Date().getTime(), width: 450, height:350});
         }
     },
 
@@ -267,23 +282,8 @@ openaksess.multimedia = {
             });
         }
         $obj.find(".name").html(newName);
-    },
-
-
-    createMediaFolder : function() {
-        var folderName = prompt(properties.multimedia.labels.foldername, '');
-        if (folderName != null && folderName != "") {
-            openaksess.common.debug("openaksess.multimedia.createMediaFolder(): itemIdentifier: " + currentItemIdentifier + ", name: " + folderName);
-            $.post(properties.contextPath + "/admin/multimedia/CreateMediaFolder.action", {itemIdentifier: currentItemIdentifier, name : folderName }, function(success) {
-                openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
-            });
-        }
-    },
-
-    showUploadForm : function() {
-        openaksess.common.debug("openaksess.multimedia.showUploadForm(): parentId: " + currentItemIdentifier);
-        openaksess.common.modalWindow.open({title:properties.multimedia.labels.aksessToolsUpload, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?parentId=" + currentItemIdentifier + "&dummy=" + new Date().getTime(), width: 450, height:350});
     }
+
 };
 
 /********************************************************************************
@@ -322,6 +322,12 @@ openaksess.navigate.setContextMenus = function(clipboardEmpty) {
     }
     openaksess.navigate.setContextMenu("media", disabledElements);
     openaksess.navigate.setContextMenu("folder", disabledElements);
+    //Disable certain tools in the root folder context menu
+    disabledElements.push('newFile');
+    disabledElements.push('delete');
+    disabledElements.push('copy');
+    disabledElements.push('cut');
+    openaksess.navigate.setContextMenu("root", disabledElements);
 };
 
 openaksess.navigate.handleContextMenuClick_folder = function(action, href) {
@@ -329,6 +335,12 @@ openaksess.navigate.handleContextMenuClick_folder = function(action, href) {
 
     var id = openaksess.common.getQueryParam("itemIdentifier", href);
     switch (action) {
+        case 'newFolder':
+            openaksess.multimedia.tools.createMediaFolder(id);
+            break;
+        case 'newFile':
+            openaksess.multimedia.tools.showUploadForm(id);
+            break;
         case 'edit':
             openaksess.multimedia.tools.edit(id);
             break;

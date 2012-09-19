@@ -42,11 +42,11 @@ public class PrintMultimediaNavigatorTag  extends PrintNavigatorTag {
             out.write("<span class=\"openState\"><span class=\"noChildren\"></span></span>");
         }
 
-        String type = "";
+        String type = (currentItem.getDepth() == 0)? "root " : "";
         if (currentItem.getType() == MultimediaType.FOLDER) {
-            type = "folder";
+            type += "folder";
         } else {
-            type = "media";
+            type += "media";
         }
         out.write("<span class=\"icon\"><a href=\"" + href + "\" class=\""+type+"\"></a></span>");
 
