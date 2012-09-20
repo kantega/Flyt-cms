@@ -117,6 +117,11 @@ openaksess.multimedia = {
             window.location.href = "EditMultimedia.action?id=" + id;
         },
 
+        deleteFolder: function(id) {
+            openaksess.common.debug("multimedia.Multimedia.deleteFolder(): id: " + id);
+
+        },
+
         deleteItem: function(id) {
             openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
             openaksess.common.modalWindow.open({title:properties.multimedia.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
@@ -366,6 +371,9 @@ openaksess.navigate.handleContextMenuClick_media = function(action, href) {
     return openaksess.navigate.handleContextMenuClick_folder(action, href);
 };
 
+openaksess.navigate.handleContextMenuClick_root = function(action, href) {
+    openaksess.navigate.handleContextMenuClick_folder(action, href);
+};
 
 openaksess.navigate.getNavigatorAction = function() {
     return properties.contextPath + "/admin/multimedia/MultimediaNavigator.action";

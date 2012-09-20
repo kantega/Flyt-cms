@@ -163,16 +163,24 @@ openaksess.admin = {
         this.init = function(updateEventType) {
             openaksess.common.debug("common.StateHandler.init()");
             bindHashChange(updateEventType);
-            $(window).trigger("hashchange");
+            this.triggerHashChange();
         };
 
         this.setState = function(state) {
             openaksess.common.debug("common.StateHandler.setState(): state: " + state);
-            $.bbq.pushState({ state : state });
+            if (state != this.getState()) {
+                $.bbq.pushState({ state : state });
+            } else {
+                this.triggerHashChange();
+            }
         };
 
         this.getState = function() {
             return $.bbq.getState("state");
+        };
+
+        this.triggerHashChange = function() {
+            $(window).trigger("hashchange");
         };
 
         var bindHashChange = function(updateEventType) {
