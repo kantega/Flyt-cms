@@ -77,7 +77,7 @@ public class MimeTypes {
         mimetypes.add(new MimeType("mpw", "vnd.ms-project", "MS Project"));
 
         // Office 2007
-        mimetypes.add(new MimeType("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "MS Word dokument openxml format"));
+        mimetypes.add(new MimeType("docx", "application/vnd.openxmlformats-officedocument.processingml.document", "MS Word dokument openxml format"));
         mimetypes.add(new MimeType("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "MS Excel regneark openxml format"));
         mimetypes.add(new MimeType("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "MS Powerpoint presentasjon openxml format"));
 

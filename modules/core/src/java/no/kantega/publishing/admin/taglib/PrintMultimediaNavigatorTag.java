@@ -46,7 +46,7 @@ public class PrintMultimediaNavigatorTag  extends PrintNavigatorTag {
         if (currentItem.getType() == MultimediaType.FOLDER) {
             type += "folder";
         } else {
-            type += "media";
+            type += "media " + getMimeTypeAsClassName(currentItem.getMimeType().getType());
         }
         out.write("<span class=\"icon\"><a href=\"" + href + "\" class=\""+type+"\"></a></span>");
 
@@ -61,5 +61,25 @@ public class PrintMultimediaNavigatorTag  extends PrintNavigatorTag {
             titleClass += " selected";
         }
         out.write("<span class=\"title\"><a href=\""+ href +"\" class=\""+ titleClass +"\" title=\"" + currentItem.getName() + "\">" + currentItem.getName() +"</a></span>");
+    }
+
+
+    /**
+     * Simplifies and generifies mime types. All images will get class name 'image', all videos will get class name 'video' etc.
+     * The full mime type is also appended, though with characters undesirable in class names replaced with hyphens, e.g. 'image image-png'
+     * @param type mime type, e.g. 'application/pdf'
+     * @return 'classified' mime type
+     */
+    private String getMimeTypeAsClassName(String type) {
+        type =  type.replaceAll("(/|\\.|\\+)", "-");
+        String simplifiedType = "";
+        if (type.startsWith("image")) { simplifiedType = "image"; }
+        else if (type.startsWith("video")) { simplifiedType = "video"; }
+        else if (type.startsWith("video")) { simplifiedType = "video"; }
+        else if (type.startsWith("audio")) { simplifiedType = "audio"; }
+        else if (type.contains("excel") || type.contains("spreadsheet")) { simplifiedType = "excel"; }
+        else if (type.contains("powerpoint") || type.contains("presentation")) { simplifiedType = "presentation"; }
+        else if (type.contains("word") || type.contains("processingml.document") || type.contains("opendocument.text")) { simplifiedType = "word"; }
+        return simplifiedType + " " + type;
     }
 }
