@@ -1,10 +1,8 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import org.kantega.jexmec.PluginClassLoaderProvider;
-import org.kantega.jexmec.PluginLoader;
-import org.kantega.jexmec.PluginManager;
-import org.kantega.jexmec.ServiceLocator;
+import org.kantega.jexmec.*;
+import org.kantega.jexmec.events.PluginLoadingExceptionEvent;
 import org.kantega.jexmec.manager.DefaultPluginManager;
 import org.kantega.jexmec.spring.SpringPluginLoader;
 import org.kantega.jexmec.spring.SpringServiceLocator;
@@ -120,7 +118,21 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         if (event instanceof ContextRefreshedEvent && event.getSource() == applicationContext) {
             try {
                 DefaultPluginManager manager = (DefaultPluginManager) getObject();
-                manager.start();
+                PluginManagerListener<OpenAksessPlugin> listener = new PluginManagerListener<OpenAksessPlugin>() {
+                    @Override
+                    public void pluginLoadingFailedWithException(PluginLoadingExceptionEvent<OpenAksessPlugin> event) {
+                        String msg = "PluginLoader " + event.getPluginLoader() + " threw exception loading plugins from class loader " + event.getClassLoader() + " provided by " + event.getProvider() + ". Exception message was " + event.getThrowable().getMessage();
+                        logger.error(msg, event.getThrowable());
+                        throw new RuntimeException(msg, event.getThrowable());
+                    }
+                };
+                manager.addPluginManagerListener(listener);
+
+                try {
+                    manager.start();
+                } finally {
+                    manager.removePluginManagerListener(listener);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
