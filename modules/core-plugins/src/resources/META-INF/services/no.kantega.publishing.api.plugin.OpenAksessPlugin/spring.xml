@@ -36,4 +36,8 @@
             </list>
         </property>
     </bean>
+
+    <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 </beans>

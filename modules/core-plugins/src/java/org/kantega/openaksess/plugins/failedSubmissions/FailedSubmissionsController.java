@@ -6,7 +6,7 @@ import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +19,7 @@ import java.util.List;
 @Controller
 public class FailedSubmissionsController {
 
+    @Autowired
     private EventLog eventLog;
 
     @RequestMapping(method = RequestMethod.GET)
@@ -37,8 +38,4 @@ public class FailedSubmissionsController {
         return from;
     }
 
-    @Required
-    public void setEventLog(EventLog eventLog) {
-        this.eventLog = eventLog;
-    }
 }
