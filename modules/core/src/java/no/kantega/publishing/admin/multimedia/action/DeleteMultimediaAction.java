@@ -48,7 +48,10 @@ public class DeleteMultimediaAction {
      * @return view asking the user to confirm or abort the delete action.
      */
     @RequestMapping(method = RequestMethod.GET)
-    public String showConfirmDialog(Model model, @RequestParam("id") Integer itemIdToDelete, @RequestParam Integer currentNavigateItem, HttpServletRequest request) {
+    public String showConfirmDialog(Model model,
+                                    @RequestParam("id") Integer itemIdToDelete,
+                                    @RequestParam(required = false, defaultValue = "-1") Integer currentNavigateItem,
+                                    HttpServletRequest request) {
         MultimediaService mediaService = new MultimediaService(request);
 
         Multimedia mm = mediaService.getMultimedia(itemIdToDelete);
@@ -74,7 +77,10 @@ public class DeleteMultimediaAction {
      * @return confirm view or error view if something happens, typically if an item is in use somewhere.
      */
     @RequestMapping(method = RequestMethod.POST)
-    public String performDelete(Model model, @RequestParam("id") Integer itemIdToDelete, @RequestParam Integer currentNavigateItem, HttpServletRequest request) {
+    public String performDelete(Model model,
+                                @RequestParam("id") Integer itemIdToDelete,
+                                @RequestParam(required = false, defaultValue = "-1") Integer currentNavigateItem,
+                                HttpServletRequest request) {
         MultimediaService mediaService = new MultimediaService(request);
 
         Multimedia mm = mediaService.getMultimedia(itemIdToDelete);

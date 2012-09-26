@@ -24,12 +24,14 @@
 <kantega:section id="body">
     <script type="text/javascript">
         function closePopup() {
-            buttonOkPressed();
+            if (getParent().openaksess.multimedia.onDeleteConfirm) {
+                getParent().openaksess.multimedia.onDeleteConfirm();
+            }
             closeWindow();
         }
 
         function buttonOkPressed() {
-            return true;
+            return closePopup();
         }
 
         $(document).ready(function() {
