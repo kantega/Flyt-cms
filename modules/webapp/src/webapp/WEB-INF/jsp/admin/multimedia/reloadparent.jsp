@@ -33,8 +33,7 @@
         }
 
         $(document).ready(function() {
-            getParent().openaksess.navigate.updateNavigator(getParent().openaksess.navigate.getCurrentItemIdentifier(), true);
-            getParent().openaksess.navigate.updateMainPane(getParent().openaksess.navigate.getCurrentItemIdentifier(), false);
+            getParent().openaksess.multimedia.triggerMultimediaupdateEvent('${navigateTo}');
         });
 
         setTimeout('closePopup()', 3000);

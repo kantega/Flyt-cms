@@ -33,15 +33,17 @@ $(document).ready(function(){
     openaksess.multimedia.bindMultimediaupdateEvents();
     openaksess.multimedia.bindToolButtons();
     stateHandler.init("multimediaupdate");
-    var currentFolder = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder);
-    if (!currentFolder) {
-        openaksess.common.debug("multimedia.$(document).ready(): No state found in user preferences. Opening root element.");
-        currentFolder = currentItemIdentifier;
-    } else {
-        currentItemIdentifier = currentFolder;
-    }
-    openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);//Must be fired at startup in order to load the navigator
-    openaksess.multimedia.addMediaitemClickListeners();
+    openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder, function(data){
+        var currentFolder = 0;
+        if (data && data.value) {
+            currentFolder = data.value;
+        } else {
+            openaksess.common.debug("multimedia.$(document).ready(): No state found in user preferences. Opening root element.");
+        }
+        openaksess.multimedia.triggerMultimediaupdateEvent(currentFolder);//Must be fired at startup in order to load the navigator
+        openaksess.multimedia.addMediaitemClickListeners();
+    });
+
 });
 
 
@@ -57,7 +59,7 @@ openaksess.multimedia = {
      * New global listeners to this event should be added here.
      */
     bindMultimediaupdateEvents : function() {
-        //Enables the navigator to listen to contentupdate events. Called every time a contentupdate event is fired.
+        //Enables the navigator to listen to multimediaupdate events. Called every time a multimediaupdate event is fired.
         $("#Navigator").bind("multimediaupdate", function(e, itemIdentifier){
             openaksess.common.debug("openaksess.multimedia.bindMultimediaupdateEvents(): "+e.type +" event received");
             if (!suppressNavigatorUpdate) {
@@ -82,26 +84,30 @@ openaksess.multimedia = {
 
     triggerMultimediaupdateEvent : function(url) {
         openaksess.common.debug("openaksess.multimedia.triggerMultimediaupdateEvent(): mediaupdate event triggered. Url: " + url);
-        openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder, url);
+        openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.currentfolder, url, false, function(){});
         //Event triggering is delegated to the state handler.
         stateHandler.setState(url);
+        currentItemIdentifier = url;
     },
 
     /**
      * Registers click event actions to each tool
      */
     bindToolButtons : function() {
-        $("#UploadButton").click(function() {
+        $("#UploadButton").click(function(e) {
+            e.preventDefault();
             if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.tools.showUploadForm(currentItemIdentifier);
             }
         });
-        $("#NewFolderButton").click(function() {
+        $("#NewFolderButton").click(function(e) {
+            e.preventDefault();
             if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.tools.createMediaFolder(currentItemIdentifier);
             }
         });
-        $("#DeleteFolderButton").click(function() {
+        $("#DeleteFolderButton").click(function(e) {
+            e.preventDefault();
             if (!$(this).hasClass("disabled")) {
                 openaksess.multimedia.tools.deleteItem(currentItemIdentifier);
             }
@@ -117,34 +123,26 @@ openaksess.multimedia = {
             window.location.href = "EditMultimedia.action?id=" + id;
         },
 
-        deleteFolder: function(id) {
-            openaksess.common.debug("multimedia.Multimedia.deleteFolder(): id: " + id);
-
-        },
-
         deleteItem: function(id) {
             openaksess.common.debug("multimedia.Multimedia.deleteItem(): id: " + id);
-            openaksess.common.modalWindow.open({title:properties.multimedia.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/multimedia/DeleteMultimedia.action?id=" + id,width: 450, height:250});
+            openaksess.common.modalWindow.open({title:properties.multimedia.labels.confirmDelete, iframe:true, href: properties.contextPath + "/admin/multimedia/DeleteMultimedia.action?id="+id+"&currentNavigateItem="+currentItemIdentifier, width: 450, height:250});
         },
 
         cut: function(id) {
             openaksess.common.debug("Multimedia.cut(): id: " + id);
             MultimediaClipboardHandler.cut(id);
             $(".contextMenu").enableContextMenuItems("#paste");
-            //openaksess.content.contentstatus.enableButtons(['PasteButton']);
         },
 
         copy: function(id) {
             openaksess.common.debug("Multimedia.copy(): id: " + id);
             MultimediaClipboardHandler.copy(id);
             $(".contextMenu").enableContextMenuItems("#paste");
-            //openaksess.content.contentstatus.enableButtons(['PasteButton']);
         },
 
         paste: function(id) {
             openaksess.common.debug("Multimedia.paste(): id: " + id);
             $(".contextMenu").disableContextMenuItems("#paste");
-            //openaksess.content.contentstatus.disableButtons(['PasteButton']);
             openaksess.common.modalWindow.open({title:properties.multimedia.labels.copypaste, iframe:true, href: properties.contextPath + "/admin/multimedia/ConfirmCopyPaste.action?newParentId=" + id,width: 390, height:250});
         },
 
@@ -214,9 +212,9 @@ openaksess.multimedia = {
                         openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
                         openaksess.multimedia.updateMediaName($media);
                     } else {
-                        var idAttr = $media.attr("id");
-                        currentItemIdentifier = idAttr.substring("Media".length, idAttr.length);
-                        openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
+                        var idAttr = $media.attr("id"),
+                            idClicked = idAttr.substring("Media".length, idAttr.length);
+                        openaksess.multimedia.triggerMultimediaupdateEvent(idClicked);
                     }
                 } else if ($media.hasClass("media")) {
                     openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
@@ -394,14 +392,14 @@ openaksess.navigate.getCurrentItemIdentifier = function() {
 
 openaksess.navigate.onNavigatorTitleClick = function(elm) {
     var href = elm.attr("href");
-    currentItemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
-    openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem.href: "+href+", currentItemIdentifier: "+currentItemIdentifier);
+    var idClicked = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
+    openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem.href: "+href+", idClicked: "+idClicked);
     if(elm.hasClass("media")) {
         openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem has class 'media'. Opening for edit.");
-        window.location.href = openaksess.multimedia.getEditAction()+"?id="+currentItemIdentifier;
+        window.location.href = openaksess.multimedia.getEditAction()+"?id="+idClicked;
     } else {
         openaksess.common.debug("multimedia:openaksess.navigate.onNavigatorTitleClick(): elem does not have class 'media'. Triggering update event.");
-        openaksess.multimedia.triggerMultimediaupdateEvent(currentItemIdentifier);
+        openaksess.multimedia.triggerMultimediaupdateEvent(idClicked);
     }
 };
 
@@ -436,7 +434,7 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
 
     if (elementProperties.navigation.width) {
         var navigationWidth = elementProperties.navigation.width;
-        var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth);
+        var preferredNavigationWidth = openaksess.admin.userpreferences.getPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth, function(){});
         if (preferredNavigationWidth) {
             var $navigation = $("#Navigation");
             $navigation.width(preferredNavigationWidth + "px");
@@ -458,11 +456,11 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
 };
 
 openaksess.navigate.navigatorResizeOnStart = function() {
-    openaksess.admin.userpreferences.deletePreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth);
+    openaksess.admin.userpreferences.deletePreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth, function(){});
 };
 
 openaksess.navigate.navigatorResizeOnStop = function() {
-    openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth, $("#Navigation").width());
+    openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.multimedia.navigationwidth, $("#Navigation").width(), function(){});
 };
 
 

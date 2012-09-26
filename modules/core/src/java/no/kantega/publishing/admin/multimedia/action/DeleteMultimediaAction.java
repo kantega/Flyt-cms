@@ -16,87 +16,98 @@
 
 package no.kantega.publishing.admin.multimedia.action;
 
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
+import no.kantega.publishing.common.service.MultimediaService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
+/**
+ * Controller for handling deletion of multimedia objects, i.e. files or folders.
+ */
+@Controller
+public class DeleteMultimediaAction {
+    private static final String ERROR_VIEW = "/WEB-INF/jsp/admin/generic/popup-error.jsp";
+    private static final String BEFORE_DELETE_VIEW = "/WEB-INF/jsp/admin/multimedia/delete/confirmdelete.jsp";
+    private static final String CONFIRM_DELETE_VIEW = "/WEB-INF/jsp/admin/multimedia/reloadparent.jsp";
 
-public class DeleteMultimediaAction implements Controller {
-    private String errorView;
-    private String beforeDeleteView;
-    private String confirmDeleteView;
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        RequestParameters param = new RequestParameters(request, "utf-8");
+    /**
+     * Ask if user wants to delete
+     * @param model MVC model
+     * @param itemIdToDelete id of the multimedia item (folder or file) to delete
+     * @param currentNavigateItem the item currently active in the navigator. May potentially be different from the item to
+     *                            delete if the user uses the context menu to select item to delete.
+     * @param request current http request.
+     * @return view asking the user to confirm or abort the delete action.
+     */
+    @RequestMapping(method = RequestMethod.GET)
+    public String showConfirmDialog(Model model, @RequestParam("id") Integer itemIdToDelete, @RequestParam Integer currentNavigateItem, HttpServletRequest request) {
         MultimediaService mediaService = new MultimediaService(request);
 
-        int id = param.getInt("id");
-
-        Map<String, Object> model = new HashMap<String, Object>();
-
-        if (!request.getMethod().equalsIgnoreCase("POST")) {
-            // Ask if user wants to delete
-            Multimedia mm = mediaService.getMultimedia(id);
-            if (mm.getType() == MultimediaType.FOLDER) {
-                model.put("message", "aksess.confirmdeletefolder.text");
-            } else {
-                model.put("message", "aksess.confirmdelete.text");
-            }
-            model.put("multimedia", mm);
-            return new ModelAndView(beforeDeleteView, model);
+        Multimedia mm = mediaService.getMultimedia(itemIdToDelete);
+        if (mm.getType() == MultimediaType.FOLDER) {
+            model.addAttribute("message", "aksess.confirmdeletefolder.text");
         } else {
-            int parentId = 0;
-            Multimedia mm = mediaService.getMultimedia(id);
-            if (mm != null) {
-                parentId = mm.getParentId();
-                model.put("parentId", parentId);
-                if (mm.getType() == MultimediaType.FOLDER && (mm.getNoFiles() + mm.getNoSubFolders()) > 0) {
-                    try {
-                        mediaService.deleteMultimediaFolder(id);
-                    } catch (NotAuthorizedException e) {
-                        model.put("message", "aksess.confirmdelete.notauthorized");
-                        return new ModelAndView(errorView, model);
-                    }
-                } else {
-                    try {
-                        mediaService.deleteMultimedia(id);
-                    } catch (ObjectInUseException e) {
-                        model.put("error", "feil.no.kantega.publishing.common.exception.ObjectInUseException");
-                        return new ModelAndView(errorView, model);
-                    } catch (NotAuthorizedException e) {
-                        model.put("message", "aksess.confirmdelete.notauthorized");
-                        return new ModelAndView(errorView, model);
-                    }
-                }
-
-            }
-            model.put("message", "aksess.confirmdelete.multimedia.finished");
-            return new ModelAndView(confirmDeleteView, model);
+            model.addAttribute("message", "aksess.confirmdelete.text");
         }
+        model.addAttribute("multimedia", mm);
+        model.addAttribute("currentNavigateItem", currentNavigateItem);
+
+        return BEFORE_DELETE_VIEW;
     }
 
-    public void setErrorView(String errorView) {
-        this.errorView = errorView;
+
+    /**
+     * Perform the actual delete operation.
+     * @param model MVC model
+     * @param itemIdToDelete id of the multimedia item (folder or file) to delete
+     * @param currentNavigateItem the item currently active in the navigator. May potentially be different from the item to
+     *                            delete if the user uses the context menu to select item to delete.
+     * @param request current http request.
+     * @return confirm view or error view if something happens, typically if an item is in use somewhere.
+     */
+    @RequestMapping(method = RequestMethod.POST)
+    public String performDelete(Model model, @RequestParam("id") Integer itemIdToDelete, @RequestParam Integer currentNavigateItem, HttpServletRequest request) {
+        MultimediaService mediaService = new MultimediaService(request);
+
+        Multimedia mm = mediaService.getMultimedia(itemIdToDelete);
+        if (mm != null) {
+            // Go to the parent folder after deletion if attempting to delete the currently viewed folder,
+            // otherwise stay at the current folder.
+            int navigateTo = (currentNavigateItem == itemIdToDelete.intValue()) ?  mm.getParentId() : currentNavigateItem;
+            model.addAttribute("navigateTo", navigateTo);
+
+            if (mm.getType() == MultimediaType.FOLDER && (mm.getNoFiles() + mm.getNoSubFolders()) > 0) {
+                try {
+                    mediaService.deleteMultimediaFolder(itemIdToDelete);
+                } catch (NotAuthorizedException e) {
+                    model.addAttribute("message", "aksess.confirmdelete.notauthorized");
+                    return ERROR_VIEW;
+                }
+            } else {
+                try {
+                    mediaService.deleteMultimedia(itemIdToDelete);
+                } catch (ObjectInUseException e) {
+                    model.addAttribute("error", "feil.no.kantega.publishing.common.exception.ObjectInUseException");
+                    return ERROR_VIEW;
+                } catch (NotAuthorizedException e) {
+                    model.addAttribute("message", "aksess.confirmdelete.notauthorized");
+                    return ERROR_VIEW;
+                }
+            }
+        }
+        model.addAttribute("message", "aksess.confirmdelete.multimedia.finished");
+        return CONFIRM_DELETE_VIEW;
     }
 
-    public void setBeforeDeleteView(String beforeDeleteView) {
-        this.beforeDeleteView = beforeDeleteView;
-    }
 
-    public void setConfirmDeleteView(String confirmDeleteView) {
-        this.confirmDeleteView = confirmDeleteView;
-    }
 }
 
 

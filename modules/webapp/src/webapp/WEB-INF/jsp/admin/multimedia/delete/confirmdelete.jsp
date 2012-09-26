@@ -40,6 +40,7 @@
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteMultimedia.action">
         <input type="hidden" name="id" value="${multimedia.id}">
+        <input type="hidden" name="currentNavigateItem" value="${currentNavigateItem}">
         <kantega:label key="${message}" title="${multimedia.name}"/>
 
         <div class="buttonGroup">
