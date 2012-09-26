@@ -251,9 +251,14 @@ openaksess.multimedia = {
             var html = '<input type="hidden" class="oldName" value="' + value + '">';
             html += '<input type="text" class="newName" maxlength="255" value="' + value + '">';
             $name.html(html);
-            $("input.newName", obj).keypress(function(e) {
+            $("input.newName", obj).keyup(function(e) {
                 if (e.which == 13 || e.which == 0) {//Enter or tab
+                    openaksess.common.debug("openaksess.multimedia.editMediaName(): Submitting new name. ");
                     openaksess.multimedia.updateMediaName(obj);
+                }
+                else if (e.which == 27){ //escape
+                    openaksess.common.debug("openaksess.multimedia.editMediaName(): Cancelling name change");
+                    openaksess.multimedia.cancelMediaNameUpdate(obj);
                 }
             }).click(function(e){
                 e.stopPropagation();
@@ -285,6 +290,15 @@ openaksess.multimedia = {
             });
         }
         $obj.find(".name").html(newName);
+    },
+
+    cancelMediaNameUpdate: function(obj) {
+        var $obj = $(obj);
+        var idAttr = $obj.attr('id');
+        var id = idAttr.substring("Media".length, idAttr.length);
+        var oldName = $obj.find("input.oldName").val();
+        openaksess.common.debug("openaksess.multimedia.cancelMediaNameUpdate(): id: "+id);
+        $obj.find(".name").html(oldName);
     }
 
 };
