@@ -17,27 +17,21 @@
 
 package no.kantega.publishing.admin.multimedia.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.search.service.SearchService;
-import no.kantega.publishing.search.service.SearchServiceQuery;
-import no.kantega.publishing.search.service.SearchServiceResultImpl;
-import no.kantega.publishing.search.control.util.QueryStringGenerator;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
-public class SearchMultimediaAction extends AdminController {
+public class SearchMultimediaAction extends AbstractController {
 
     private String view;
 

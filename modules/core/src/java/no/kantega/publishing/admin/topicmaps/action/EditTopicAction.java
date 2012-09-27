@@ -17,30 +17,27 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.admin.topicmaps.action.util.TopicMapHelper;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicOccurence;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.LocaleLabels;
-import no.kantega.commons.util.RegExp;
-import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.publishing.admin.topicmaps.action.util.TopicMapHelper;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  */
-public class EditTopicAction extends AdminController {
+public class EditTopicAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

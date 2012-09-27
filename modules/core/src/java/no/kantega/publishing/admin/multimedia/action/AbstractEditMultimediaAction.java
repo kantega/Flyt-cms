@@ -16,24 +16,24 @@
 
 package no.kantega.publishing.admin.multimedia.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract base class for all actions in multimedia element such as edit, crop and create image map
  */
-public abstract class AbstractEditMultimediaAction extends AdminController {
+public abstract class AbstractEditMultimediaAction extends AbstractController {
     @SuppressWarnings("unchecked")
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");

@@ -16,21 +16,20 @@
 
 package no.kantega.publishing.admin.security.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
 
 /**
  *
  */
-public class SelectRolesAction extends AdminController {
+public class SelectRolesAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

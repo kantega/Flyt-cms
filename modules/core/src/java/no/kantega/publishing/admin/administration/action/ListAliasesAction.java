@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  *
  */
-public class ListAliasesAction extends AdminController {
+public class ListAliasesAction extends AbstractController {
     private String view;
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();

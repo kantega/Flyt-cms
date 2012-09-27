@@ -16,33 +16,30 @@
 
 package no.kantega.publishing.search.control;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.beans.factory.InitializingBean;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.log.Log;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.search.control.util.QueryStringGenerator;
 import no.kantega.publishing.search.service.SearchService;
 import no.kantega.publishing.search.service.SearchServiceQuery;
 import no.kantega.publishing.search.service.SearchServiceResultImpl;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.search.index.Fields;
 import no.kantega.search.query.hitcount.DateHitCountQuery;
-import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
 import no.kantega.search.query.hitcount.HitCountQuery;
+import no.kantega.search.query.hitcount.HitCountQueryDefaultImpl;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
-import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.io.FileNotFoundException;
+import java.util.Map;
 
 /**
  *
  */
-public class AdminContentSearchController extends AdminController implements InitializingBean {
+public class AdminContentSearchController extends AbstractController implements InitializingBean {
 
     private String view;
     private SearchService searchService;

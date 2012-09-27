@@ -16,22 +16,21 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
  * Date: Feb 4, 2009
  * Time: 11:03:49 AM
  */
-public class ListSitesAction extends AdminController {
+public class ListSitesAction extends AbstractController {
     private SiteCache siteCache;
 
     private String view;

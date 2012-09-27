@@ -17,12 +17,12 @@
 package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ import java.util.*;
 /**
  *
  */
-public class SearchEventLogAction extends AdminController {
+public class SearchEventLogAction extends AbstractController {
     private String formView;
     private String resultsView;
     @Autowired

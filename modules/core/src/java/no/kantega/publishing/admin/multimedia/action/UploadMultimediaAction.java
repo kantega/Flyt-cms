@@ -20,7 +20,6 @@ import com.glaforge.i18n.io.CharsetToolkit;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
@@ -32,6 +31,7 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 import java.util.zip.ZipException;
 
-public class UploadMultimediaAction extends AdminController {
+public class UploadMultimediaAction extends AbstractController {
 
     private MultimediaUploadHandler multimediaUploadHandler;
     private ImageEditor imageEditor;

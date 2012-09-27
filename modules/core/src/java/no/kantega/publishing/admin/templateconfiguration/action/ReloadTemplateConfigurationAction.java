@@ -16,31 +16,28 @@
 
 package no.kantega.publishing.admin.templateconfiguration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.TemplateConfiguration;
+import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.util.templates.ContentTemplateValidator;
+import no.kantega.publishing.common.util.templates.TemplateConfigurationFactory;
+import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-
-import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.util.templates.TemplateConfigurationFactory;
-import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
-import no.kantega.publishing.common.util.templates.ContentTemplateValidator;
-import no.kantega.publishing.common.data.TemplateConfiguration;
-import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import java.util.Map;
 
 /**
 */
-public class ReloadTemplateConfigurationAction extends AdminController {
+public class ReloadTemplateConfigurationAction extends AbstractController {
     private TemplateConfigurationFactory templateConfigurationFactory;
     private TemplateConfigurationValidator  templateConfigurationValidator;
     private TemplateConfigurationCache  templateConfigurationCache;

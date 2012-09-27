@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.MultimediaService;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * Update name of folder or other multimedia object
  */
-public class UpdateMediaNameAction extends AdminController {
+public class UpdateMediaNameAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

@@ -17,11 +17,11 @@ package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.topicmaps.action.util.TopicMapHelper;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EditTopicTypeAction extends AdminController {
+public class EditTopicTypeAction extends AbstractController {
     private String view;
     private TopicMapService topicMapService;
 

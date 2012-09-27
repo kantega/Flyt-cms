@@ -16,26 +16,23 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Dialogue which allows user to update display period (publish and expire date) for a page
  */
-public class ViewDisplayPeriodAction extends AdminController {
+public class ViewDisplayPeriodAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

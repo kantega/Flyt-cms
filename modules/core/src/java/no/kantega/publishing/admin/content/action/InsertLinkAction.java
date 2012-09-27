@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  *
  */
-public class InsertLinkAction extends AdminController {
+public class InsertLinkAction extends AbstractController {
     private final String LINKTYPE_ATTACHMENT = "attachment";
     private final String LINKTYPE_INTERNAL = "internal";
     private final String LINKTYPE_EXTERNAL = "external";

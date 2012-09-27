@@ -17,11 +17,11 @@
 
 package no.kantega.publishing.admin.topicmaps.ajax;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  *
  */
-public abstract class AbstractTopicInfoAction extends AdminController {
+public abstract class AbstractTopicInfoAction extends AbstractController {
     public abstract ModelAndView handleTopicInfoRequest(HttpServletRequest request, HttpServletResponse response, Topic topic);
 
     protected String view;

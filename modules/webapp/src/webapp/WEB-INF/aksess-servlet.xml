@@ -34,7 +34,6 @@
                 <!-- Base controllers -->
                 <prop key="/">ContentRequestHandler</prop>
                 <prop key="/oap/static/**">PluginStaticContentController</prop>
-                <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
                 <prop key="/content/**">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
                 <prop key="/attachment.ap">AttachmentRequestHandler</prop>
@@ -51,6 +50,44 @@
 
                 <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
+
+                <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
+
+                <!-- Search for autocomplete -->
+                <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
+                <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
+                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
+                <prop key="/ajax/AutocompleteOrgUnits.action">AutocompleteOrgUnitsAction</prop>
+                <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
+
+                <!-- Popups for publishing -->
+                <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
+                <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
+                <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
+
+                <!-- Rating -->
+                <prop key="/Rating.action">RatingController</prop>
+
+                <!-- Information -->
+                <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
+
+                <prop key="/TestPages.action">testPagesAction</prop>
+
+                <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <bean id="adminUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="alwaysUseFullPath" value="true"/>
+        <property name="interceptors" ref="adminViewInterceptor"/>
+
+        <property name="mappings">
+            <props>
+                <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
+
+                <!-- Security -->
                 <prop key="/admin/security/AddTopicRole.action">AddTopicRoleAction</prop>
                 <prop key="/admin/security/AddUserRolePermission.action">AddUserRolePermissionAction</prop>
                 <prop key="/admin/security/EditPermissions.action">EditPermissionsAction</prop>
@@ -119,17 +156,12 @@
                 <prop key="/admin/publish/SimpleEditContent.action">SimpleEditContentAction</prop>
                 <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
 
-                <prop key="/aksess/hearing/SaveHearingComment.action">SaveHearingCommentAction</prop>
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
                 <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
                 <prop key="/admin/publish/ViewDisplayPeriod.action">viewDisplayPeriodAction</prop>
                 <prop key="/admin/publish/UpdateDisplayPeriod.action">updateDisplayPeriodAction</prop>
                 <prop key="/admin/publish/Spellcheck.action">spellcheckAction</prop>
 
-                <!-- Popups for publishing -->
-                <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
-                <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
-                <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
                 <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
                 <prop key="/admin/publish/OrgUnitNavigator.action">orgUnitNavigatorAjaxAction</prop>
@@ -167,30 +199,13 @@
                 <prop key="/admin/topicmaps/HandleContentTopics.action">HandleContentTopicsAction</prop>
                 <prop key="/admin/topicmaps/SelectTopics.action">SelectTopicsAction</prop>
 
-
                 <prop key="/admin/LogJSError.action">LogJSErrorAction</prop>
-
-                <!-- Search for autocomplete -->
-                <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
-                <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
-                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
-                <prop key="/ajax/AutocompleteOrgUnits.action">AutocompleteOrgUnitsAction</prop>
-                <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
 
                 <!-- List options -->
                 <prop key="/admin/publish/EditListOption.action">EditListOptionAction</prop>
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
-                <!-- Rating -->
-                <prop key="/Rating.action">RatingController</prop>
-
-                <!-- Information -->
-                <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
-
-                <prop key="/TestPages.action">testPagesAction</prop>
-
-                <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
             </props>
         </property>
     </bean>
@@ -200,13 +215,14 @@
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <bean id="adminRoleInterceptedMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath">
             <value>true</value>
         </property>
         <property name="interceptors">
             <list>
                 <ref bean="adminRoleInterceptor"/>
+                <ref bean="adminViewInterceptor"/>
             </list>
         </property>
         <property name="mappings">
@@ -249,6 +265,7 @@
         </property>
     </bean>
 
+    <bean class="no.kantega.publishing.security.interceptors.AdminViewInterceptor" id="adminViewInterceptor"/>
 
     <!-- Base controllers -->
     <bean id="ContentRequestDispatcher" class="no.kantega.publishing.client.ContentRequestDispatcher">
@@ -596,9 +613,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>
         <property name="selectMediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction">
-        <property name="view" value="/WEB-INF/jsp/admin/multimedia/uploadform.jsp"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction"/>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
         <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>

@@ -19,19 +19,20 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveHearingHelper;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.publishing.security.interceptors.AdminViewInterceptor;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Hearing;
 import no.kantega.publishing.common.data.HearingInvitee;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 
-public class SaveHearingAction extends AdminController {
+public class SaveHearingAction extends AbstractController {
 	private String confirmView;
 	private String formView;
 

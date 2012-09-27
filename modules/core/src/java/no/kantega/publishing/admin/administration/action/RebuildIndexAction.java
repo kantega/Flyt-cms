@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.search.index.jobs.OptimizeIndexJob;
 import no.kantega.publishing.search.index.jobs.RebuildIndexJob;
 import no.kantega.publishing.search.index.jobs.RebuildSpellCheckIndexJob;
@@ -25,6 +24,7 @@ import no.kantega.search.index.provider.DocumentProvider;
 import no.kantega.search.index.rebuild.ProgressReporter;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 
-public class RebuildIndexAction extends AdminController {
+public class RebuildIndexAction extends AbstractController {
 
     private String formView;
     private String statusView;

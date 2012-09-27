@@ -16,23 +16,21 @@
 
 package no.kantega.publishing.admin.administration.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.ao.SearchAO;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import no.kantega.commons.client.util.RequestParameters;
-
-import no.kantega.publishing.common.ao.SearchAO;
-import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-
 /**
  *
  */
-public class ViewSearchLogAction extends AdminController {
+public class ViewSearchLogAction extends AbstractController {
     private SiteCache siteCache;
     private String view;
 

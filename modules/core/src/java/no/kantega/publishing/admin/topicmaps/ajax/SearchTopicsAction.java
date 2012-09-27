@@ -17,15 +17,11 @@
 
 package no.kantega.publishing.admin.topicmaps.ajax;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +30,7 @@ import java.util.*;
 /**
  * List all topic types for all topic maps
  */
-public class SearchTopicsAction extends AdminController {
+public class SearchTopicsAction extends AbstractController {
     private String view;
 
     @Override

@@ -16,24 +16,22 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.client.util.RequestParameters;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  *
  */
-public class CreateMediaFolderAction extends AdminController {
+public class CreateMediaFolderAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
