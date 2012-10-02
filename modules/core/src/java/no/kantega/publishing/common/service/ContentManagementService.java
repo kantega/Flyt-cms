@@ -565,7 +565,7 @@ public class ContentManagementService {
                     title = c.getTitle();
                 }
 
-                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(canDelete));
+                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
 
                 cid = ContentAO.deleteContent(id);
                 if (title != null) {
