@@ -27,6 +27,10 @@ public class AdminViewInterceptor extends HandlerInterceptorAdapter {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
+        if (modelAndView == null) {
+            modelAndView = new ModelAndView();
+        }
+
         Map<String, Object> model = modelAndView.getModel();
         if (model == null) {
             model = new HashMap<String, Object>();
