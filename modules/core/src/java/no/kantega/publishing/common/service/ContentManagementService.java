@@ -100,8 +100,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Hent ut brukerens sikkerhetssesjon
-     * @return - sikkerhetssesjon
+     * @return - the user's SecuritySession
      */
     public SecuritySession getSecuritySession() {
         return securitySession;
@@ -109,14 +108,15 @@ public class ContentManagementService {
 
 
     /**
-     * Sjekk ut innholdsobjekt fra basen
-     * @param id - ContentIdentifier til innholdsobjekt
-     * @return Innholdsobjekt
+     * Check out an content object. The difference from getContent is that checking out
+     * indicates that we want to change the object, so a Lock is created.
+     * @param id - ContentIdentifier for the Content object
+     * @return Content object associated with the ContentIdentifier or null if the content does not exist.
      * @throws SystemException - System error
-     * @throws NotAuthorizedException - dersom bruker ikke har tilgang
-     * @throws InvalidFileException - mal ikke finnes
+     * @throws NotAuthorizedException - if the user is not authorized to update the content.
+     * @throws InvalidFileException - The template
      * @throws InvalidTemplateException - invalid template
-     * @throws ObjectLockedException - Someone else is editing object
+     * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
         ContentLock lock = LockManager.peekAtLock(id.getContentId());

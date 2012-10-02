@@ -887,4 +887,9 @@ public class Content extends BaseObject {
     public void setAttributesAreUpdatedFromTemplate(boolean attributesAreUpdatedFromTemplate) {
         this.attributesAreUpdatedFromTemplate = attributesAreUpdatedFromTemplate;
     }
+
+    @Override
+    public String toString() {
+        return getTitle();
+    }
 }

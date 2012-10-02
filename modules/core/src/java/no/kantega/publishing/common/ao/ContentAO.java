@@ -397,9 +397,8 @@ public class ContentAO {
 
             if (!foundCurrentAssociation) {
                 // Knytningsid er ikke angitt, og heller ikke site, bruk den første
-                List associations = content.getAssociations();
-                for (int i = 0; i < associations.size(); i++) {
-                    Association a = (Association)associations.get(i);
+                List<Association> associations = content.getAssociations();
+                for (Association a : associations) {
                     if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
                         foundCurrentAssociation = true;
                         a.setCurrent(true);
@@ -426,7 +425,7 @@ public class ContentAO {
             }
             rs.close();
 
-            List topics = TopicAO.getTopicsByContentId(cid.getContentId());
+            List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
             content.setTopics(topics);
 
             return content;
