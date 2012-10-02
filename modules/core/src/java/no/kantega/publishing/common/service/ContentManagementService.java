@@ -36,6 +36,7 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.InvalidTemplateReferenceException;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.service.impl.SiteMapWorker;
@@ -535,6 +536,50 @@ public class ContentManagementService {
 
         return content;
     }
+
+    /**
+     * TODO: Slett denne senere
+     * Sletter et innholdsobjekt fra basen. NB! Alle versjoner slettes
+     * @param id - Innholdsid
+     * @return
+     * @throws SystemException
+     * @throws ObjectInUseException
+     * @throws NotAuthorizedException
+     */
+    public ContentIdentifier deleteContent(ContentIdentifier id) throws SystemException, ObjectInUseException, NotAuthorizedException {
+        ContentIdentifier cid = null;
+        String title = null;
+
+        if (id != null) {
+            Content c = getContent(id);
+            if (c != null) {
+                int priv = Privilege.UPDATE_CONTENT;
+                if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
+                    // Hvis siden er publisert eller versjon > 1 før ikke slettet uten godkjenningsrett
+                    priv = Privilege.APPROVE_CONTENT;
+                }
+                if (!securitySession.isAuthorized(c, priv)) {
+                    throw new NotAuthorizedException("deleteContent", SOURCE);
+                }
+                if (Aksess.isEventLogEnabled()) {
+                    title = c.getTitle();
+                }
+
+                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(canDelete));
+
+                cid = ContentAO.deleteContent(id);
+                if (title != null) {
+                    eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
+                }
+
+                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
+
+
+            }
+        }
+        return cid;
+    }
+
 
     /**
      * Sletter en bestemt versjon av et innholdsobjekt.  Dersom objektversjonen er aktiv blir den ikke slettet.
