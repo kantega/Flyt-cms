@@ -17,19 +17,19 @@
 package no.kantega.publishing.modules.forms.tags;
 
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.modules.forms.validate.FormError;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
-import no.kantega.commons.util.LocaleLabels;
-import no.kantega.publishing.modules.forms.validate.FormError;
 
 /**
  * Tag used to create forms
@@ -47,7 +47,7 @@ public class FormTag extends BodyTagSupport {
         boolean hasErrors = false;
 
         try {
-            StringBuffer html = new StringBuffer();
+            StringBuilder html = new StringBuilder();
 
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
             Content content = (Content) request.getAttribute("aksess_this");
