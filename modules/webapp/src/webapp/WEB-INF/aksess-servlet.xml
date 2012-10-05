@@ -613,7 +613,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/editmultimedia.jsp"/>
         <property name="selectMediaView" value="/WEB-INF/jsp/admin/multimedia/selectmultimedia.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction" id="ViewUploadMultimediaFormAction"/>
+    <bean class="no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormController" id="ViewUploadMultimediaFormAction"/>
 
     <bean class="no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction" id="UploadMultimediaAction">
         <property name="multimediaUploadHandler" ref="aksessMultimediaUploadHandler"/>

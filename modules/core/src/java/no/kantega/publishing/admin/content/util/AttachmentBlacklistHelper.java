@@ -21,7 +21,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.action.AddAttachmentAction;
 import no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction;
-import no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormAction;
+import no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormController;
 import no.kantega.publishing.common.Aksess;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author jogri
  * @see AddAttachmentAction
- * @see ViewUploadMultimediaFormAction
+ * @see ViewUploadMultimediaFormController
  * @see UploadMultimediaAction
  */
 public class AttachmentBlacklistHelper {
