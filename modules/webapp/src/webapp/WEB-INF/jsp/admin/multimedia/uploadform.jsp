@@ -132,10 +132,10 @@
             </div>
 
             <c:if test="${id == -1}">
-                <div class="uploadMetadata hidden">
+                <div class="uploadMetadata">
                     <c:choose>
                         <c:when test="${fileUploadedFromEditor}">
-                            <div id="MediaFolderContainer" class="hidden formElement">
+                            <div id="MediaFolderContainer" class="formElement hidden">
                                 <div class="heading">
                                     <label><kantega:label key="aksess.multimedia.selectfolder"/></label>
                                 </div>
@@ -152,7 +152,7 @@
                             <input type="hidden" name="parentId" value="${parentId}">
                         </c:otherwise>
                     </c:choose>
-                    <div class="formElement">
+                    <div class="formElement hidden">
                         <div class="heading">
                             <label><kantega:label key="aksess.multimedia.medianame"/></label>
                         </div>
@@ -160,7 +160,7 @@
                             <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
                         </div>
                     </div>
-                    <div class="formElement">
+                    <div class="formElement <c:if test="${!altNameRequired}">hidden</c:if>">
                         <div class="heading">
                             <label><kantega:label key="aksess.multimedia.altname"/></label>
                         </div>
@@ -171,7 +171,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="formElement">
+                    <div class="formElement hidden">
                         <div class="heading">
                             <label><kantega:label key="aksess.multimedia.author"/></label>
                         </div>
@@ -183,7 +183,7 @@
             </c:if>
 
             <div id="UploadFormButtons" class="buttonGroup hidden">
-                <div class="ui-state-highlight">
+                <div class="ui-state-highlight <c:if test="${fileUploadedFromEditor}">hidden</c:if>">
                     <kantega:label key="aksess.multimedia.uploadfile.label"/>
                 </div>
                 <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.upload"/>"></span>
