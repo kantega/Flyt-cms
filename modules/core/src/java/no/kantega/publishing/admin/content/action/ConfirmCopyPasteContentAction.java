@@ -18,27 +18,27 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.model.Clipboard;
+import no.kantega.publishing.admin.model.ClipboardStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.event.ContentListenerUtil;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.model.Clipboard;
-import no.kantega.publishing.admin.model.ClipboardStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -121,7 +121,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
-        } else if ((!isCopy) && (newParent.getAssociation().getPath().indexOf("/" + selectedPageAssociationId + "/") != -1)) {
+        } else if ((!isCopy) && (newParent.getAssociation().getPath().contains("/" + selectedPageAssociationId + "/"))) {
             // Will lead to recursion
             error = "aksess.copypaste.recursion";
         } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {

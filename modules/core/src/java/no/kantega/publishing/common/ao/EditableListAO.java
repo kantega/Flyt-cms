@@ -26,11 +26,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: Jun 11, 2007
- * Time: 10:46:31 AM
- */
 public class EditableListAO {
 
     private static Locale defaultLocale = new Locale("no", "NO");
@@ -43,14 +38,14 @@ public class EditableListAO {
      * @param ignoreVariant Locale variant is ignored if true.
      * @return List of ListOption
      */
-    public static List getOptions(String attributeKey, Locale locale, boolean ignoreVariant) {
+    public static List<ListOption> getOptions(String attributeKey, Locale locale, boolean ignoreVariant) {
         if(attributeKey == null) {
             return null;
         }
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionFactory.getDataSource());
         String language = (ignoreVariant)? getLocaleAsString(locale, true) + '%' : getLocaleAsString(locale, false);
-        return jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY Value", new Object[]{attributeKey.toLowerCase(), language}, new RowMapper(){
-            public Object mapRow(ResultSet rs, int i) throws SQLException {
+        return jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY Value", new Object[]{attributeKey.toLowerCase(), language}, new RowMapper<ListOption>(){
+            public ListOption mapRow(ResultSet rs, int i) throws SQLException {
                 ListOption option = new ListOption();
                 option.setText(rs.getString("Value"));
                 option.setValue(rs.getString("Value"));
@@ -76,10 +71,10 @@ public class EditableListAO {
         String language = getLocaleAsString(locale, false);
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionFactory.getDataSource());
         if(defaultSelected) {
-            jdbcTemplate.update("UPDATE attribute_editablelist SET DefaultSelected = 0 WHERE AttributeKey = ? AND Language = ?", new Object[]{attributeKey.toLowerCase(), language});
+            jdbcTemplate.update("UPDATE attribute_editablelist SET DefaultSelected = 0 WHERE AttributeKey = ? AND Language = ?", attributeKey.toLowerCase(), language);
         }
         int intDefaultSelected = (defaultSelected)? 1 : 0;
-        jdbcTemplate.update("INSERT INTO attribute_editablelist(AttributeKey, Value, DefaultSelected, Language) VALUES(?, ?, ?, ?)", new Object[]{attributeKey.toLowerCase(), value, intDefaultSelected, language});
+        jdbcTemplate.update("INSERT INTO attribute_editablelist(AttributeKey, Value, DefaultSelected, Language) VALUES(?, ?, ?, ?)", attributeKey.toLowerCase(), value, intDefaultSelected, language);
     }
 
 
@@ -95,7 +90,7 @@ public class EditableListAO {
         if(attributeKey == null || attributeKey.trim().length() == 0 || value == null || value.trim().length() == 0) {
             return;
         }
-        new JdbcTemplate(dbConnectionFactory.getDataSource()).update("DELETE FROM attribute_editablelist WHERE AttributeKey = ? AND Value = ? AND Language = ?", new Object[]{attributeKey, value, getLocaleAsString(locale, false)});
+        new JdbcTemplate(dbConnectionFactory.getDataSource()).update("DELETE FROM attribute_editablelist WHERE AttributeKey = ? AND Value = ? AND Language = ?", attributeKey, value, getLocaleAsString(locale, false));
     }
 
 

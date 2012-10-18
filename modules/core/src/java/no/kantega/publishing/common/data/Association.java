@@ -175,6 +175,7 @@ public class Association extends BaseObject {
     }
 
     public String toString() {
-        return "associationId: " + associationId + "\ncontentId:" + contentId + "\nparentAssociationId: " + parentAssociationId + "\nsiteId:" + siteId + "\nassociationType:" + associationtype;
+        return String.format("associationId: %s\ncontentId: %s\nparentAssociationId: %s\nsiteId: %s\nassociationType: %s",
+        associationId,contentId,parentAssociationId,siteId,associationtype);
     }
 }
