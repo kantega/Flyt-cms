@@ -299,7 +299,7 @@ public class SecuritySession {
         } catch (URISyntaxException e) {
             Log.error(SOURCE, e, null, null);
         }
-
+        Log.debug(SOURCE, String.format("Initiating login in authentication context: %s", resolver.getAuthenticationContext()));
         resolver.initateLogin(loginContext);
     }
 
