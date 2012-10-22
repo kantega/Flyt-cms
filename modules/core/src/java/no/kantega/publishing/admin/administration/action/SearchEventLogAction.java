@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- *
+ * Search the eventlog based on parameters from_date, to_date, userid, subject, event.
  */
 public class SearchEventLogAction extends AbstractController {
     private String formView;
@@ -54,7 +54,12 @@ public class SearchEventLogAction extends AbstractController {
                 end.setTime(endInclusive.getTimeInMillis());
             }
 
-            EventLogQuery eventLogQuery = new EventLogQuery(from, end, p.getString("userid"), p.getString("subject"), p.getString("event"));
+            EventLogQuery eventLogQuery = new EventLogQuery()
+                    .setFrom(from)
+                    .setTo(end)
+                    .setUserId(p.getString("userid"))
+                    .setSubjectName(p.getString("subject"))
+                    .setEventName(p.getString("event"));
             List events = eventLog.getQueryResult(eventLogQuery);
             model.put("events", events);
 

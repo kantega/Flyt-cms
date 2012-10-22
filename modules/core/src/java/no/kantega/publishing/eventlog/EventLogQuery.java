@@ -5,12 +5,12 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import java.util.Date;
 
 /**
- * Søk i eventlogg
- * from - Dato fra
- * end - Dato til
- * userId - Brukerid
- * subjectName - Navn på objekt i loggen (navn på side f.eks)
- * eventName - Hendelse
+ * Query object to search the event log.
+ * from - Get events after this date
+ * end - Get events before this date
+ * userId - Get events performed by the user with this userId
+ * subjectName - The name of the object that the event has been performed on.
+ * eventName - The name of the event type which has been performed on the subject.
  */
 public class EventLogQuery {
     private Date from;
@@ -20,67 +20,57 @@ public class EventLogQuery {
     private int subjectType = ObjectType.CONTENT;
     private String eventName;
 
-    /**
-     *
-     * @param from date
-     * @param to date
-     * @param userId of user performing logged action
-     * @param subjectName Name of the object performed action upon
-     * @param eventName the name of the type of event
-     */
-    public EventLogQuery(Date from, Date to, String userId, String subjectName, String eventName) {
-        this.from = from;
-        this.to = to;
-        this.userId = userId;
-        this.subjectName = subjectName;
-        this.eventName = eventName;
-    }
-
     public Date getFrom() {
         return from;
     }
 
-    public void setFrom(Date from) {
+    public EventLogQuery setFrom(Date from) {
         this.from = from;
+        return this;
     }
 
     public Date getTo() {
         return to;
     }
 
-    public void setTo(Date to) {
+    public EventLogQuery setTo(Date to) {
         this.to = to;
+        return this;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public EventLogQuery setUserId(String userId) {
         this.userId = userId;
+        return this;
     }
 
     public String getSubjectName() {
         return subjectName;
     }
 
-    public void setSubjectName(String subjectName) {
+    public EventLogQuery setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+        return this;
     }
 
     public int getSubjectType() {
         return subjectType;
     }
 
-    public void setSubjectType(int subjectType) {
+    public EventLogQuery setSubjectType(int subjectType) {
         this.subjectType = subjectType;
+        return this;
     }
 
     public String getEventName() {
         return eventName;
     }
 
-    public void setEventName(String eventName) {
+    public EventLogQuery setEventName(String eventName) {
         this.eventName = eventName;
+        return this;
     }
 }

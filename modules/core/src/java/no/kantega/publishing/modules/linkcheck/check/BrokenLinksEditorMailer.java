@@ -50,7 +50,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
     private List<EventLogEntry> getFailedUrlEmitEvents() {
         Calendar from = Calendar.getInstance();
         from.set(Calendar.DATE, -1);
-        EventLogQuery eventLogQuery = new EventLogQuery(from.getTime(), null, null, null, Event.FAILED_LINK_EXTRACT);
+        EventLogQuery eventLogQuery = new EventLogQuery().setFrom(from.getTime()).setEventName(Event.FAILED_LINK_EXTRACT);
         return eventLog.getQueryResult(eventLogQuery);
     }
 

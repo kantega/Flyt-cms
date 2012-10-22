@@ -50,7 +50,7 @@ public class SlaveCacheExpiratorJob {
         // Find content that was changed
 
         long thisRun = System.currentTimeMillis();
-        EventLogQuery eventLogQuery = new EventLogQuery(new Date(lastRun), null, null, null, null);
+        EventLogQuery eventLogQuery = new EventLogQuery().setFrom(new Date(lastRun));
         final List<EventLogEntry> entiresSinceLast = eventLog.getQueryResult(eventLogQuery);
 
 

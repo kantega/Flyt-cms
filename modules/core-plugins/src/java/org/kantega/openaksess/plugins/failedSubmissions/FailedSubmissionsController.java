@@ -25,7 +25,7 @@ public class FailedSubmissionsController {
     @RequestMapping(method = RequestMethod.GET)
     public String getFailedEmailSubmissionEvents(@RequestParam(defaultValue = Event.FAILED_FORM_SUBMISSION, required = false) String eventName, Model model) throws Exception {
         Calendar from = getFromDate();
-        EventLogQuery eventLogQuery = new EventLogQuery(from.getTime(), null, null, null, null);
+        EventLogQuery eventLogQuery = new EventLogQuery().setFrom(from.getTime());
         List<EventLogEntry> list = eventLog.getQueryResult(eventLogQuery);
         model.addAttribute("failedSubmissions", list);
         return "org/kantega/openaksess/plugins/failedSubmissions/view";
