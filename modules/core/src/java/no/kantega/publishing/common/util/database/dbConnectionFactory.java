@@ -445,6 +445,16 @@ public class dbConnectionFactory {
     public static synchronized Map<Connection, StackTraceElement[]> getConnections() {
         return new HashMap<Connection, StackTraceElement[]>(connections);
     }
+
+    public static void closePool() {
+        if(ds instanceof BasicDataSource) {
+            try {
+                ((BasicDataSource)ds).close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
 
 class DataSourceWrapper implements InvocationHandler {

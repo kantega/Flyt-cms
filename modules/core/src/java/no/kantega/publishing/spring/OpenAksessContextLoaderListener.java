@@ -86,7 +86,11 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
     @Override
     public void contextDestroyed(ServletContextEvent event) {
         TrafficLogger.shutdownExecutor();
+        try {
         super.contextDestroyed(event);
+        } finally {
+            dbConnectionFactory.closePool();
+        }
     }
 
     public synchronized void initContext() {
