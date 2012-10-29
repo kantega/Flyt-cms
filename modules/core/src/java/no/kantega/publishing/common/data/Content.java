@@ -554,6 +554,10 @@ public class Content extends BaseObject {
         }
     }
 
+    /**
+     * @param name of the attribute wanting value for
+     * @return the String value of the attribute or empty string.
+     */
     public String getAttributeValue(String name) {
         Attribute attr = getAttribute(name, AttributeDataType.CONTENT_DATA);
         if (attr != null) {
