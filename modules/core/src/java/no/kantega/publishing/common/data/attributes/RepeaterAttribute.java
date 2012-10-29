@@ -21,7 +21,7 @@ public class RepeaterAttribute extends Attribute {
     int maxOccurs = -1;
 
 
-    public Iterator getIterator() {
+    public Iterator<List<Attribute>> getIterator() {
         return rows.iterator();
     }
 
