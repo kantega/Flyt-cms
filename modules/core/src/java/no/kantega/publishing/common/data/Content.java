@@ -513,6 +513,9 @@ public class Content extends BaseObject {
         return expireAction;
     }
 
+    /**
+     * @param expireAction one of {@link ContentVisibilityStatus}
+     */
     public void setExpireAction(int expireAction) {
         this.expireAction = expireAction;
     }
