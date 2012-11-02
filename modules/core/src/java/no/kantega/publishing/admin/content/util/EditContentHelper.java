@@ -79,10 +79,10 @@ public class EditContentHelper {
             cid.setAssociationId(param.getMainParentId());
 
             Content parent = aksessService.getContent(cid);
-            List associations = parent.getAssociations();
+            List<Association> associations = parent.getAssociations();
             int allParents[] = new int[associations.size()];
             for (int i = 0; i < associations.size(); i++) {
-                Association p = (Association)associations.get(i);
+                Association p = associations.get(i);
                 allParents[i] = p.getId();
             }
             param.setParentIds(allParents);
@@ -117,9 +117,8 @@ public class EditContentHelper {
         // Create associations as specified
         boolean foundCurrentAssociation = false;
 
-        List associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
-        for (int i = 0; i < associations.size(); i++) {
-            Association association = (Association)associations.get(i);
+        List<Association> associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
+        for (Association association : associations) {
             if (association.getParentAssociationId() == param.getMainParentId()) {
                 foundCurrentAssociation = true;
                 association.setCurrent(true);
@@ -278,7 +277,7 @@ public class EditContentHelper {
         content.setAttributes(newAttributes, attributeType);
     }
 
-    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List newAttributes) throws InvalidTemplateException {
+    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
         // Some attributes are mapped to specific properties in the Content object, search for these
         // These are always located at root level, never inside a repeater
         String titleField = null;
@@ -295,11 +294,11 @@ public class EditContentHelper {
 
             if (field != null && field.length() > 0) {
                 field = field.toLowerCase();
-                if (field.indexOf(ContentProperty.TITLE) != -1) {
+                if (field.contains(ContentProperty.TITLE)) {
                     titleField = name;
-                } else if (field.indexOf(ContentProperty.DESCRIPTION) != -1) {
+                } else if (field.contains(ContentProperty.DESCRIPTION)) {
                     descField = name;
-                } else if (field.indexOf(ContentProperty.IMAGE) != -1) {
+                } else if (field.contains(ContentProperty.IMAGE)) {
                     imageField = name;
                 }
             }
@@ -317,8 +316,7 @@ public class EditContentHelper {
             */
 
             if ((titleField == null) || (descField == null) || (imageField == null)) {
-                for (int i = 0; i < newAttributes.size(); i++) {
-                    Attribute attr = (Attribute)newAttributes.get(i);
+                for (Attribute attr : newAttributes) {
                     if (attr instanceof ImageAttribute && imageField == null) {
                         attr.setField(ContentProperty.IMAGE);
                         imageField = attr.getName();
@@ -339,10 +337,9 @@ public class EditContentHelper {
                     }
                 }
             }
-            if (attributeType == AttributeDataType.CONTENT_DATA) {
-                if (titleField == null) {
-                    throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
-                }
+
+            if (titleField == null) {
+                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
             }
         }
     }

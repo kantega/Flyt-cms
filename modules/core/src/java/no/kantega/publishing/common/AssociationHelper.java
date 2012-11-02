@@ -32,13 +32,13 @@ import java.util.List;
 public class AssociationHelper {
     private static final String SOURCE = "aksess.AssociationHelper";
 
-    public static List createAssociationsFromParentIds(int[] parentIds) throws SystemException {
-        List associations = new ArrayList();
+    public static List<Association> createAssociationsFromParentIds(int[] parentIds) throws SystemException {
+        List<Association> associations = new ArrayList<Association>();
 
-        List sites = new ArrayList();
+        List<Integer> sites = new ArrayList<Integer>();
 
-        for (int i = 0; i < parentIds.length; i++) {
-            Association parent = AssociationAO.getAssociationById(parentIds[i]);
+        for (int parentId : parentIds) {
+            Association parent = AssociationAO.getAssociationById(parentId);
 
             Association association = new Association();
             association.setContentId(-1);
@@ -46,14 +46,7 @@ public class AssociationHelper {
             association.setSiteId(parent.getSiteId());
             association.setSecurityId(parent.getSecurityId());
 
-            boolean found = false;
-            for (int j = 0; j < sites.size(); j++) {
-                Integer site = (Integer)sites.get(j);
-                if (site == association.getSiteId()) {
-                    found = true;
-                    break;
-                }
-            }
+            boolean found = sites.contains(association.getSiteId());
 
             if (!found) {
                 sites.add(association.getSiteId());
@@ -78,13 +71,12 @@ public class AssociationHelper {
         }
 
         // Sjekk at det er kun en hovedknytning per site og at det er en per site
-        for (int i = 0; i < sites.size(); i++) {
-            Integer siteId = (Integer)sites.get(i);
+        for (Integer siteId : sites) {
             int noDefaultPostings = 0;
             int first = -1;
 
             for (int j = 0; j < associations.size(); j++) {
-                Association tmpA = (Association)associations.get(j);
+                Association tmpA = associations.get(j);
                 if (siteId == tmpA.getSiteId()) {
                     if (first == -1) first = j;
                     if (tmpA.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
@@ -98,7 +90,7 @@ public class AssociationHelper {
 
             // Ingen default posting, bruk den første
             if (noDefaultPostings == 0 && first != -1) {
-                Association tmpA = (Association)associations.get(first);
+                Association tmpA = associations.get(first);
                 tmpA.setAssociationtype(AssociationType.DEFAULT_POSTING_FOR_SITE);
             }
         }
