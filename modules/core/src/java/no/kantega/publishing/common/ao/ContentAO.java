@@ -1538,7 +1538,7 @@ public class ContentAO {
     }
 
 
-    public static Map getContentIdentifierCacheValues() throws SystemException {
+    public static Map<String, Collection<ContentIdentifier>> getContentIdentifiersMappedByAlias() throws SystemException {
         Multimap<String, ContentIdentifier> contentIdentifiersMappedByAlias = ArrayListMultimap.create();
         Connection c = null;
 
