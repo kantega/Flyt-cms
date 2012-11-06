@@ -99,21 +99,24 @@
                 for (ListOption option : options) {
                     String optText = option.getText();
                     String optVal = option.getValue();
-                    if (isBlank(optVal) && isBlank(optText)) {
-                        Locale locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
-                        optText = LocaleLabels.getLabel("aksess.list.ingen", locale);
-                    }else if (isBlank(optVal)) {
-                        optVal = optText;
-                    }
+                    boolean attributeValueIsAksessThis = String.valueOf(content.getAssociation().getAssociationId()).equals(optVal);
+                    if (!attributeValueIsAksessThis) {
+                        if (isBlank(optVal) && isBlank(optText)) {
+                            Locale locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
+                            optText = LocaleLabels.getLabel("aksess.list.ingen", locale);
+                        }else if (isBlank(optVal)) {
+                            optVal = optText;
+                        }
 
-                    out.write("<option");
-                    out.write(" value=\"" + optVal + "\"");
-                    if (isSelected(option, value)) {
-                        out.write(" selected=\"selected\"");
+                        out.write("<option");
+                        out.write(" value=\"" + optVal + "\"");
+                        if (isSelected(option, value)) {
+                            out.write(" selected=\"selected\"");
+                        }
+                        out.write(">");
+                        out.write(optText);
+                        out.write("</option>");
                     }
-                    out.write(">");
-                    out.write(optText);
-                    out.write("</option>");
                 }
             }
             out.write("</select>");
