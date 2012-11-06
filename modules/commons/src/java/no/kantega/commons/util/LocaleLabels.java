@@ -18,19 +18,20 @@ package no.kantega.commons.util;
 
 import no.kantega.commons.log.Log;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 
 public class LocaleLabels {
     static public String DEFAULT_BUNDLE = "TextLabels";
 
-    private static Map bundles = new HashMap();
+    private static Map<String, PropertyResourceBundle> bundles = new HashMap<String, PropertyResourceBundle>();
 
     private static PropertyResourceBundle getBundle(String bundleName, String locale) {
-        PropertyResourceBundle bundle = null;
+        PropertyResourceBundle bundle;
         synchronized (bundles) {
-            bundle = (PropertyResourceBundle)bundles.get(bundleName + "_" + locale);
-                if (bundle == null) {
+            bundle = bundles.get(bundleName + "_" + locale);
+            if (bundle == null) {
                 String[] locArr = locale.split("_");
                 try {
                     if (locArr.length > 2) {
@@ -47,7 +48,7 @@ public class LocaleLabels {
         return bundle;
     }
 
-    private static String getLabel(String key, String bundleName, String locale, Map parameters) {
+    private static String getLabel(String key, String bundleName, String locale, Map<String, Object> parameters) {
         String msg = key;
 
         PropertyResourceBundle bundle = getBundle(bundleName, locale);
@@ -62,12 +63,10 @@ public class LocaleLabels {
         }
 
         if (parameters != null) {
-            Iterator paramNames = parameters.keySet().iterator();
-            while (paramNames.hasNext()) {
-                String pName = (String)paramNames.next();
-                Object pValue = parameters.get(pName);
-                if (pValue != null) {
-                    msg = msg.replaceAll("\\$\\{" + pName + "\\}", pValue.toString());
+            for (Map.Entry<String, ?> o : parameters.entrySet()) {
+                Object value = o.getValue();
+                if (value != null) {
+                    msg = msg.replaceAll("\\$\\{" + o.getKey() + "\\}", value.toString());
                 }
             }
         }
@@ -98,7 +97,7 @@ public class LocaleLabels {
      * @param parameters - parameters
      * @return - localized string
      */
-    public static String getLabel(String key, String bundleName, Locale locale, Map parameters) {
+    public static String getLabel(String key, String bundleName, Locale locale, Map<String, Object> parameters) {
         String loc = locale.getLanguage() + "_" + locale.getCountry();
         if (locale.getVariant() != null) {
             loc += "_" + locale.getVariant();
@@ -125,7 +124,7 @@ public class LocaleLabels {
      * @return - localized string
      */
 
-    public static String getLabel(String key, Locale locale, Map parameters) {
+    public static String getLabel(String key, Locale locale, Map<String, Object> parameters) {
         return getLabel(key, DEFAULT_BUNDLE, locale, parameters);
     }
 
@@ -140,5 +139,18 @@ public class LocaleLabels {
             return null;
         }
         return bundle.getKeys();
+    }
+
+    /**
+     *
+     * @param request - the current request.
+     * @return the value of request attribute aksess_locale or NO_no if aksess_locale is absent.
+     */
+    public static Locale getLocaleFromRequestOrDefault(HttpServletRequest request){
+        Locale locale = (Locale)request.getAttribute("aksess_locale");
+        if (locale == null) {
+            locale = new Locale("no", "NO");
+        }
+        return locale;
     }
 }

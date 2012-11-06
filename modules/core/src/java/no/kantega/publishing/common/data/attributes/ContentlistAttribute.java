@@ -49,7 +49,7 @@ public class ContentlistAttribute extends ListAttribute {
             contentTemplateId = config.getAttribute("contenttemplate");
             setDoctype(config);
             this.siteId = config.getAttribute("site");
-            this.showEmptyOption = Boolean.valueOf(config.getAttribute("showemptyoption"));
+            this.showEmptyOption = !"false".equals(config.getAttribute("showemptyoption"));
         }
     }
 
@@ -103,7 +103,8 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     private void addEmptyOption(List<ListOption> options) {
-        if (showEmptyOption) {
+        // When multiple is true, checkboxes are chosen so it is not necessary to show empty option.
+        if (!multiple && showEmptyOption) {
             ListOption emptyOption = new ListOption();
             options.add(emptyOption);
         }

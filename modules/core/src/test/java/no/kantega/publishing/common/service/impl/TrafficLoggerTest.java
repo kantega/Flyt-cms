@@ -18,8 +18,8 @@ package no.kantega.publishing.common.service.impl;
 
 import junit.framework.TestCase;
 
-import java.net.URLDecoder;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 
 public class TrafficLoggerTest extends TestCase {
@@ -43,9 +43,7 @@ public class TrafficLoggerTest extends TestCase {
 
     public void testGetRenfererInfoMSN() {
         String referer = "http://search.msn.com/results.aspx?q=tullball&FORM=MSNH";
-        long before = System.currentTimeMillis();
         TrafficLogger.RefererInfo info = TrafficLogger.getRefererInfo(referer);
-        System.out.println("Took: " + (System.currentTimeMillis()-before));
         assertEquals("search.msn.com", info.getHost());
         assertEquals("tullball", info.getQuery());
         assertEquals(referer, info.getReferer());

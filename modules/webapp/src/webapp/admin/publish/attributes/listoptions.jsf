@@ -1,7 +1,9 @@
+<%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.publishing.common.data.Content"%>
-<%@ page import="no.kantega.publishing.common.data.ListOption"%>
-<%@ page import="java.util.List" %>
+<%@ page import="no.kantega.publishing.common.data.ListOption" %>
 <%@ page import="static org.apache.commons.lang.StringUtils.isBlank" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -97,7 +99,10 @@
                 for (ListOption option : options) {
                     String optText = option.getText();
                     String optVal = option.getValue();
-                    if (isBlank(optVal)) {
+                    if (isBlank(optVal) && isBlank(optText)) {
+                        Locale locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
+                        optText = LocaleLabels.getLabel("aksess.list.ingen", locale);
+                    }else if (isBlank(optVal)) {
                         optVal = optText;
                     }
 
@@ -114,7 +119,4 @@
             out.write("</select>");
         }
     }
-
-    // TODO Clear other values when blank value is chosen, and respect the value of maxitems
-
 %>
