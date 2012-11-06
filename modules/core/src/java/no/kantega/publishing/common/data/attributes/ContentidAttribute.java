@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class ContentidAttribute extends Attribute {
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
@@ -44,7 +46,7 @@ public class ContentidAttribute extends Attribute {
                 this.multiple = true;
             }
             String maxitemsS = config.getAttribute("maxitems");
-            if(maxitemsS != null && maxitemsS.trim().length() > 0) {
+            if(isNotBlank(maxitemsS)) {
                 maxitems = Integer.parseInt(maxitemsS);
             }
             String startIdS = config.getAttribute("startid");

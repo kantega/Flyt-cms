@@ -114,4 +114,7 @@
             out.write("</select>");
         }
     }
+
+    // TODO Clear other values when blank value is chosen, and respect the value of maxitems
+
 %>

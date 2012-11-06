@@ -131,7 +131,7 @@ public class ContentlistAttribute extends ListAttribute {
         if("$SITE".equals(siteId)){
             requestedSiteId = currentSiteId;
         }else{
-            if (siteId != null && siteId.trim().length() > 0) {
+            if (isNotBlank(siteId)) {
 
                 try {
                     requestedSiteId = Integer.parseInt(siteId);
