@@ -17,13 +17,16 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.util.MultimediaTagCreator;
+import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.PersistMediaAttributeBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateMediaAttributeFromRequestBehaviour;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.publishing.common.util.MultimediaTagCreator;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Element;
 
@@ -41,7 +44,8 @@ public class MediaAttribute extends Attribute {
 
     protected String filter = null;
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException {
         super.setConfig(config, model);
         if (config != null) {
             this.defaultMediaFolder = config.getAttribute("mediafolder");

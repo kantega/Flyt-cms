@@ -16,16 +16,17 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import org.w3c.dom.Element;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.w3c.dom.Element;
 
 import java.util.Map;
 
 public class DocumenttypeAttribute extends ListAttribute {
     protected int contentTemplateId = -1;
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
     }
 

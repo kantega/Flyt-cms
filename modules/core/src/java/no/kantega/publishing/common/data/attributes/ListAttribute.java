@@ -37,7 +37,8 @@ public class ListAttribute extends Attribute {
     protected boolean multiple = false;
     protected List<ListOption> options = null;
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {

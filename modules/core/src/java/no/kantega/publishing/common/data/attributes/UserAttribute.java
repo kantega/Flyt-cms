@@ -17,16 +17,17 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapUserAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapSimpleAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapUserAttributeValueToContentPropertyBehaviour;
 import org.w3c.dom.Element;
 
 import java.util.Map;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class UserAttribute extends Attribute {
     private static final String SOURCE = "aksess.UserAttribute";
@@ -36,7 +37,9 @@ public class UserAttribute extends Attribute {
     private User user = null;
 
     private boolean moveable = true;
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
@@ -52,10 +55,10 @@ public class UserAttribute extends Attribute {
     }
 
     public String getProperty(String property) {
-        if (value == null || value.length() == 0) {
+        if (isBlank(value)) {
             return "";
         }
-        if (value.indexOf(",") == -1 && (AttributeProperty.NAME.equalsIgnoreCase(property) || AttributeProperty.EMAIL.equalsIgnoreCase(property))) {
+        if (!value.contains(",") && (AttributeProperty.NAME.equalsIgnoreCase(property) || AttributeProperty.EMAIL.equalsIgnoreCase(property))) {
             if (user == null) {
                 try {
                     user = SecurityRealmFactory.getInstance().lookupUser(value);

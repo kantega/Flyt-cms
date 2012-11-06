@@ -27,14 +27,14 @@ import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
-import no.kantega.search.index.Fields;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
+import no.kantega.search.index.Fields;
+import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -46,7 +46,8 @@ public class TopiclistAttribute extends ListAttribute {
     private String instanceOf = null;
     private Logger log = Logger.getLogger(getClass());
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
@@ -67,8 +68,8 @@ public class TopiclistAttribute extends ListAttribute {
         return multiple;
     }
 
-    public List getListOptions(int language) {
-        List options = new ArrayList();
+    public List<ListOption> getListOptions(int language) {
+        List<ListOption> options = new ArrayList<ListOption>();
 
         List topics = null;
 

@@ -22,33 +22,35 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.w3c.dom.Element;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class BeanAttribute extends ListAttribute {
 
     private Class clazz;
 
-    public List getListOptions(int language) {
-        Map beans =  RootContext.getInstance().getBeansOfType(clazz);
-        Iterator i = beans.keySet().iterator();
-        while(i.hasNext()) {
-            String id = (String)i.next();
+    public List<ListOption> getListOptions(int language) {
 
+        Map<String, ?> beans =  RootContext.getInstance().getBeansOfType(clazz);
+        for (Map.Entry<String, ?> bean : beans.entrySet()) {
+            String beanClass = bean.getValue().getClass().getName();
+            String id = bean.getKey();
             ListOption option = new ListOption();
             option.setValue(id);
-            option.setText(id +" ("+beans.get(id).getClass().getName() +")");
+            option.setText(id + " (" + beanClass + ")");
             options.add(option);
         }
 
         return options;
     }
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
         String clazz = config.getAttribute("class");
-        if(clazz == null || clazz.trim().equals("")) {
+        if(isBlank(clazz)) {
             throw new InvalidTemplateException("Attributtet class må være satt for type=bean", "", null);
         }
 

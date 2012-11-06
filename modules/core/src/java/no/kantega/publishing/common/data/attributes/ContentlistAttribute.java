@@ -41,8 +41,8 @@ public class ContentlistAttribute extends ListAttribute {
     protected int currentSiteId = -1;
     protected boolean showEmptyOption = false;
 
-
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
