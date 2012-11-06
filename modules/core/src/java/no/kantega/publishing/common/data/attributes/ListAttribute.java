@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.common.data.ListOption;
@@ -64,7 +65,7 @@ public class ListAttribute extends Attribute {
                 }
 
             } catch (TransformerException e) {
-                e.printStackTrace();
+                Log.error(getClass().getName(), e);
             }
         }
     }

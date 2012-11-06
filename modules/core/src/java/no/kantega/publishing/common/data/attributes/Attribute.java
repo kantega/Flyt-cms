@@ -150,7 +150,7 @@ public abstract class Attribute {
             String defaultValue = config.getAttribute("default");
             if (value == null || value.length() == 0 && defaultValue != null) {
                 // Hent defaultverdi fra en fil
-                if (defaultValue.indexOf(FILE_TOKEN) != -1) {
+                if (defaultValue.contains(FILE_TOKEN)) {
                     int inx = defaultValue.indexOf(FILE_TOKEN) + FILE_TOKEN.length();
                     String file = defaultValue.substring(inx, defaultValue.length());
 
