@@ -125,13 +125,14 @@ public class Topic {
     public void setBaseName(String name) {
         if (baseNames == null) {
             baseNames = new ArrayList<TopicBaseName>();
-            TopicBaseName tbn = new TopicBaseName();
-            tbn.setBaseName(name);
-            baseNames.add(tbn);
-        } else {
-            TopicBaseName tbn = (TopicBaseName)baseNames.get(0);
-            tbn.setBaseName(name);
         }
+        if (baseNames.size() == 0) {
+            TopicBaseName baseName = new TopicBaseName();
+            baseNames.add(baseName);
+        }
+
+        TopicBaseName tbn = (TopicBaseName)baseNames.get(0);
+        tbn.setBaseName(name);
     }
 
     public List<TopicBaseName> getBaseNames() {
