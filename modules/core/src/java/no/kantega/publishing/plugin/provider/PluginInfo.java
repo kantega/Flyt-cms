@@ -16,6 +16,8 @@ public class PluginInfo {
     private String description;
     private File resourceDirectory;
     private Set<String> dependencies = Collections.emptySet();
+    private String runtimeClasspath;
+    private String compileClasspath;
 
     public PluginInfo(File source, String groupId, String artifactId, String version) {
         this.source = source;
@@ -75,5 +77,21 @@ public class PluginInfo {
 
     public void setDependencies(Set<String> dependencies) {
         this.dependencies = dependencies;
+    }
+
+    public void setRuntimeClasspath(String runtimeClasspath) {
+        this.runtimeClasspath = runtimeClasspath;
+    }
+
+    public String getRuntimeClasspath() {
+        return runtimeClasspath;
+    }
+
+    public void setCompileClasspath(String compileClasspath) {
+        this.compileClasspath = compileClasspath;
+    }
+
+    public String getCompileClasspath() {
+        return compileClasspath;
     }
 }

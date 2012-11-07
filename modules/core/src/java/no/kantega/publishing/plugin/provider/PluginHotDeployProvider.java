@@ -1,10 +1,12 @@
 package no.kantega.publishing.plugin.provider;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.kantega.jexmec.PluginClassLoaderProvider;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -36,6 +38,9 @@ public class PluginHotDeployProvider implements PluginClassLoaderProvider {
     private ClassLoader parentClassLoader;
     private File installedPluginsDirectory;
 
+    @Autowired
+    private RuntimeMode runtimeMode;
+
     public void deploy(PluginInfo pluginInfo) throws IOException {
         DeployedPlugin deployedPlugin = loaders.get(pluginInfo.getKey());
         if (deployedPlugin != null) {
@@ -52,16 +57,28 @@ public class PluginHotDeployProvider implements PluginClassLoaderProvider {
 
         ClassLoader parentClassLoader = getParentClassLoader(pluginInfo);
 
-        ClassLoader loader = pluginInfo.getSource().isFile() ?
-                new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader, pluginWorkDirectory) :
-                new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader);
-        if (pluginInfo.getResourceDirectory() != null && pluginInfo.getResourceDirectory().exists() && pluginInfo.getResourceDirectory().isDirectory()) {
-            loader = new ResourceDirectoryPreferringClassLoader(loader, pluginInfo.getResourceDirectory());
-        }
+        ClassLoader loader = createClassLoader(pluginInfo, parentClassLoader);
 
         registry.add(singleton(loader));
 
         loaders.put(pluginInfo.getKey(), new DeployedPlugin(loader, pluginInfo));
+    }
+
+    private ClassLoader createClassLoader(PluginInfo pluginInfo, ClassLoader parentClassLoader) {
+        if(runtimeMode == RuntimeMode.PRODUCTION || pluginInfo.getCompileClasspath() == null) {
+            ClassLoader loader = pluginInfo.getSource().isFile() ?
+                    new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader, pluginWorkDirectory) :
+                    new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader);
+            if (pluginInfo.getResourceDirectory() != null && pluginInfo.getResourceDirectory().exists() && pluginInfo.getResourceDirectory().isDirectory()) {
+                loader = new ResourceDirectoryPreferringClassLoader(loader, pluginInfo.getResourceDirectory());
+            }
+            return loader;
+        } else {
+            JavaCompilingPluginClassLoader loader = new JavaCompilingPluginClassLoader(pluginInfo, parentClassLoader);
+            loader.compileJava();
+            return loader;
+        }
+
     }
 
     private ClassLoader getParentClassLoader(PluginInfo pluginInfo) {

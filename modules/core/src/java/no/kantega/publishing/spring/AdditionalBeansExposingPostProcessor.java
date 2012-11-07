@@ -3,6 +3,8 @@ package no.kantega.publishing.spring;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
 
@@ -23,9 +25,21 @@ public class AdditionalBeansExposingPostProcessor implements BeanFactoryPostProc
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         for (String beanName : exposedBeanNames) {
-            configurableListableBeanFactory.registerSingleton(beanName, applicationContext.getBean(beanName));
+            register(configurableListableBeanFactory, beanName, applicationContext.getBean(beanName));
         }
-        configurableListableBeanFactory.registerSingleton("rootApplicationContext", applicationContext);
+        register(configurableListableBeanFactory, "rootApplicationContext", applicationContext);
+    }
+
+    private void register(ConfigurableListableBeanFactory configurableListableBeanFactory, String name, Object bean) {
+        //
+
+        BeanDefinitionRegistry registry = (BeanDefinitionRegistry) configurableListableBeanFactory;
+
+        RootBeanDefinition definition = new RootBeanDefinition(bean.getClass());
+
+        registry.registerBeanDefinition(name, definition);
+        configurableListableBeanFactory.registerSingleton(name, bean);
+
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
