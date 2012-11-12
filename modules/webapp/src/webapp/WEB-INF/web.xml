@@ -311,6 +311,9 @@
         <session-timeout>15</session-timeout>
     </session-config>
 
+    <!-- Matches 404 requests back to ContentRequestHandler.
+        This is needed for page aliases.
+    -->
     <error-page>
         <error-code>404</error-code>
         <location>/content.ap</location>
