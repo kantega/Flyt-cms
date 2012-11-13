@@ -21,7 +21,7 @@ import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
-public class SearcherFaceteIntegrationTest {
+public class SearcherFacetIntegrationTest {
     @Autowired
     private Searcher searcher;
 
@@ -103,7 +103,7 @@ public class SearcherFaceteIntegrationTest {
         q.setFacetFields(Arrays.asList("displayTemplateId"));
         SearchResponse search = searcher.search(q);
 
-        assertEquals(4, search.getNumberOfHits());
+        assertEquals(8, search.getNumberOfHits().intValue());
         Collection<FacetResult> displayTemplateId = search.getFacets().get("displayTemplateId");
         assertEquals(3, displayTemplateId.size());
 
@@ -111,15 +111,15 @@ public class SearcherFaceteIntegrationTest {
 
         FacetResult first = iterator.next();
         assertEquals("1", first.getValue());
-        assertEquals(2L, first.getCount());
+        assertEquals(4, first.getCount().intValue());
 
         FacetResult second = iterator.next();
         assertEquals("2", second.getValue());
-        assertEquals(1L, second.getCount());
+        assertEquals(2L, second.getCount().intValue());
 
         FacetResult third = iterator.next();
         assertEquals("3", third.getValue());
-        assertEquals(1L, third.getCount());
+        assertEquals(2L, third.getCount().intValue());
     }
 
     @Test
@@ -129,7 +129,7 @@ public class SearcherFaceteIntegrationTest {
         q.setFacetFields(Arrays.asList("location"));
         SearchResponse search = searcher.search(q);
 
-        assertEquals(3, search.getNumberOfHits());
+        assertEquals(3, search.getNumberOfHits().intValue());
         Collection<FacetResult> location = search.getFacets().get("location");
         assertEquals(4, location.size());
         assertEquals(1, select(location, getPredicate("/1", 3L)).size());
