@@ -18,17 +18,17 @@ package no.kantega.openaksess.search.searchlog.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-public class ViewSearchLogAction extends AdminController {
+public class ViewSearchLogAction extends AbstractController {
     private SiteCache siteCache;
     private String view;
     @Autowired

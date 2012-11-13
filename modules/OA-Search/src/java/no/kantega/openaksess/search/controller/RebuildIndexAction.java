@@ -17,12 +17,12 @@
 package no.kantega.openaksess.search.controller;
 
 import no.kantega.openaksess.search.index.rebuild.IndexRebuilder;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,7 +34,7 @@ import java.util.Map;
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
 
-public class RebuildIndexAction extends AdminController {
+public class RebuildIndexAction extends AbstractController {
 
     private String formView;
     private String statusView;
