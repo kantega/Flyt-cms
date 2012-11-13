@@ -11,10 +11,7 @@ import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
@@ -40,7 +37,13 @@ public class IndexRebuilder {
                 progressReporters.add(progressReporter);
             }
         }
-        Executors.newSingleThreadExecutor().execute((new Runnable() {
+        executeRebuild(progressReporters, indexableDocuments);
+        return progressReporters;
+    }
+
+    private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
+        final ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute((new Runnable() {
             public void run() {
                 Log.info(category, "Starting reindex");
                 StopWatch stopWatch = new StopWatch(category);
@@ -52,15 +55,15 @@ public class IndexRebuilder {
                     }
                 } catch (InterruptedException e) {
                     Log.error(category, e);
-                }finally {
+                } finally {
                     documentIndexer.commit();
                     documentIndexer.optimize();
                     stopWatch.stop();
                     double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
                     Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
+                    executorService.shutdown();
                 }
             }
         }));
-        return progressReporters;
     }
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -37,6 +38,11 @@ public class SearchResultFilterAspect {
     @PostConstruct
     public void setupExecutorService(){
         executorService = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    @PreDestroy
+    public void shutdownExecutorService(){
+        executorService.shutdown();
     }
 
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
