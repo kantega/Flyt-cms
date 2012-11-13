@@ -39,22 +39,27 @@ public class ContentlistAttribute extends ListAttribute {
     protected int documentTypeId = -1;
     protected String siteId;
     protected int currentSiteId = -1;
+    protected boolean showEmptyOption = false;
 
-
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
             contentTemplateId = config.getAttribute("contenttemplate");
-            String docType = config.getAttribute("documenttype");
-            if (docType != null && docType.length() > 0) {
-                DocumentType dt = DocumentTypeCache.getDocumentTypeByPublicId(docType);
-                if (dt != null) {
-                    documentTypeId = dt.getId();
-                }
-            }
+            setDoctype(config);
             this.siteId = config.getAttribute("site");
+            this.showEmptyOption = !"false".equals(config.getAttribute("showemptyoption"));
+        }
+    }
 
+    private void setDoctype(Element config) {
+        String docType = config.getAttribute("documenttype");
+        if (docType != null && docType.length() > 0) {
+            DocumentType dt = DocumentTypeCache.getDocumentTypeByPublicId(docType);
+            if (dt != null) {
+                documentTypeId = dt.getId();
+            }
         }
     }
 
@@ -66,19 +71,68 @@ public class ContentlistAttribute extends ListAttribute {
         return siteId;
     }
 
-    public List getListOptions(int language) {
+    public List<ListOption> getListOptions(int language) {
         int requestedSiteId = -1;
         ContentQuery query = new ContentQuery();
+        setContentTemplateId(query);
+        setDocumentTypeId(query);
+        setSiteId(requestedSiteId, query);
+
+        setLanguage(language, query);
+
+        return createListOptions(query);
+    }
+
+    private List<ListOption> createListOptions(ContentQuery query) {
+        List<ListOption> options = new ArrayList<ListOption>();
+        addEmptyOption(options);
+        try {
+            List<Content> all = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false), false);
+            for (Content c : all) {
+                String id = String.valueOf(c.getAssociation().getId());
+                ListOption option = new ListOption();
+                option.setText(c.getTitle());
+                option.setValue(id);
+                options.add(option);
+            }
+        } catch (SystemException e) {
+            Log.error(SOURCE, e, null, null);
+        }
+
+        return options;
+    }
+
+    private void addEmptyOption(List<ListOption> options) {
+        // When multiple is true, checkboxes are chosen so it is not necessary to show empty option.
+        if (!multiple && showEmptyOption) {
+            ListOption emptyOption = new ListOption();
+            options.add(emptyOption);
+        }
+    }
+
+    private void setLanguage(int language, ContentQuery query) {
+        if (language != -1 ) {
+            query.setLanguage(language);
+        }
+    }
+
+    private void setContentTemplateId(ContentQuery query) {
         if (isNotBlank(contentTemplateId)){
             query.setContentTemplate(contentTemplateId);
         }
+    }
+
+    private void setDocumentTypeId(ContentQuery query) {
         if (documentTypeId != -1) {
             query.setDocumentType(documentTypeId);
         }
+    }
+
+    private void setSiteId(int requestedSiteId, ContentQuery query) {
         if("$SITE".equals(siteId)){
             requestedSiteId = currentSiteId;
         }else{
-            if (siteId != null && siteId.trim().length() > 0) {
+            if (isNotBlank(siteId)) {
 
                 try {
                     requestedSiteId = Integer.parseInt(siteId);
@@ -88,29 +142,10 @@ public class ContentlistAttribute extends ListAttribute {
                     if(s != null) {
                         requestedSiteId = s.getId();
                     }
-                } 
+                }
             }
         }
         query.setSiteId(requestedSiteId);
-
-        if (language != -1 ) {
-            query.setLanguage(language);
-        }
-
-        List options = new ArrayList();
-        try {
-            List<Content> all = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false),  false);
-            for (Content c : all) {
-                String id = "" + c.getAssociation().getId();
-                ListOption option = new ListOption();
-                option.setText(c.getTitle());
-                option.setValue(id);
-                options.add(option);
-            }
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        }
-        return options;
     }
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {

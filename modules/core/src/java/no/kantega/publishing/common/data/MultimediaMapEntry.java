@@ -16,11 +16,14 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.commons.media.MimeType;
+import no.kantega.commons.media.MimeTypes;
 import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.data.enums.ObjectType;
 
 public class MultimediaMapEntry extends NavigationMapEntry {
     public MultimediaType type = MultimediaType.MEDIA;
+    private String filename = "";
 
     public MultimediaMapEntry (int currentId, int parentId, MultimediaType type, String title) {
         this.currentId = currentId;
@@ -52,4 +55,17 @@ public class MultimediaMapEntry extends NavigationMapEntry {
     public MultimediaType getType() {
         return type;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+
+    public MimeType getMimeType() {
+        return MimeTypes.getMimeType(filename);
+    }
+
 }

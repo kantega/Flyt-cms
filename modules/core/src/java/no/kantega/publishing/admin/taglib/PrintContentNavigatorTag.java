@@ -17,12 +17,12 @@
 package no.kantega.publishing.admin.taglib;
 
 import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.util.NavigatorUtil;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.publishing.admin.util.NavigatorUtil;
 
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
@@ -80,5 +80,4 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
             out.write("<span class=\"notes\"><a href=\"" + href + "\" title=\"" + + currentItem.getNumberOfNotes() + " " + notesTxt + "\"></a></span>");
         }
     }
-
 }

@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
@@ -30,8 +32,6 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.event.ContentEvent;
-import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
@@ -294,8 +294,8 @@ public class ContentAO {
         }
     }
 
-    public static List getAllContentVersions(ContentIdentifier cid) throws SystemException {
-        List contentVersions = new ArrayList();
+    public static List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
+        List<Content> contentVersions = new ArrayList<Content>();
 
         Connection c = null;
 
@@ -371,7 +371,7 @@ public class ContentAO {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");
             }
-            query.append(" and content.ContentId = " + cid.getContentId() + " order by ContentVersionId");
+            query.append(" and content.ContentId = ").append(cid.getContentId()).append(" order by ContentVersionId");
 
             // Get data from content and contentversion tables
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
@@ -679,12 +679,12 @@ public class ContentAO {
         final Map<Integer, Content> contentMap   = new HashMap<Integer, Content>();
         final List<Content> contentList = new ArrayList<Content>();
 
-        final StringBuffer cvids = new StringBuffer();
+        final StringBuilder cvids = new StringBuilder();
 
         doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
-                contentMap.put( content.getVersionId(), content);
+                contentMap.put(content.getVersionId(), content);
                 if(cvids.length() != 0) {
                     cvids.append(",");
                 }
@@ -904,7 +904,6 @@ public class ContentAO {
                 for (Attachment a : attachments) {
                     a.setContentId(content.getId());
                     AttachmentAO.setAttachment(a);
-                    ContentListenerUtil.getContentNotifier().attachmentUpdated(new ContentEvent().setAttachment(a));
                 }
             }
 
@@ -1501,7 +1500,7 @@ public class ContentAO {
         }
     }
 
-    public static List getNoChangesPerUser(int months) throws SystemException {
+    public static List<UserContentChanges> getNoChangesPerUser(int months) throws SystemException {
         List<UserContentChanges> ucclist = new ArrayList<UserContentChanges>();
         Connection c = null;
 
@@ -1539,8 +1538,8 @@ public class ContentAO {
     }
 
 
-    public static Map getContentIdentifierCacheValues() throws SystemException {
-        Map<String, List<ContentIdentifier>> aliases = new HashMap<String, List<ContentIdentifier>>();
+    public static Map<String, Collection<ContentIdentifier>> getContentIdentifiersMappedByAlias() throws SystemException {
+        Multimap<String, ContentIdentifier> contentIdentifiersMappedByAlias = ArrayListMultimap.create();
         Connection c = null;
 
         try {
@@ -1563,21 +1562,13 @@ public class ContentAO {
                 int contentId = rs.getInt("ContentId");
                 String alias = rs.getString("alias");
 
-                List<ContentIdentifier> cids = aliases.get(alias);
-
-                if (cids == null) {
-                    // Alias ligger ikke i cache
-                    cids = new ArrayList<ContentIdentifier>();
-                    aliases.put(alias, cids);
-                }
-
                 ContentIdentifier cid = new ContentIdentifier();
                 cid.setAssociationId(associationId);
                 cid.setContentId(contentId);
                 cid.setSiteId(siteId);
-                cids.add(cid);
+                contentIdentifiersMappedByAlias.put(alias, cid);
             }
-            return aliases;
+            return contentIdentifiersMappedByAlias.asMap();
         } catch (SQLException e) {
             throw new SystemException("SQL error",SOURCE, e);
         } finally {
@@ -1685,12 +1676,6 @@ public class ContentAO {
             JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
             template.update("update content set Type = ? where ContentTemplateId = ? and Type <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
         }
-
-        /*
-
-        TODO: Should documenttype be changed?
-
-         */
     }
 
     /**

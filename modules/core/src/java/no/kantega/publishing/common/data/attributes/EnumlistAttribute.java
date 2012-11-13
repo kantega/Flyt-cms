@@ -17,16 +17,11 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.ListOption;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
-import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +33,8 @@ public class EnumlistAttribute extends ListAttribute {
 
 	protected List<ListOption> options = null;
 
-	public void setConfig(Element config, Map model)throws InvalidTemplateException, SystemException {
+    @Override
+	public void setConfig(Element config, Map<String, String> model)throws InvalidTemplateException, SystemException {
 		super.setConfig(config, model);
 		if (config != null) {
 			options = new ArrayList<ListOption>();
@@ -55,7 +51,7 @@ public class EnumlistAttribute extends ListAttribute {
 					options.add(asListOption(enumValue));
 				}
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+                Log.error(getClass().getName(), e);
 			}
 		}
 	}

@@ -79,6 +79,7 @@ public class ContentQuery {
     private SortOrder sortOrder = null;
     private boolean includeDrafts = false;
     private boolean includeWaitingForApproval = false;
+    private int[] excludedAssociationTypes = null;
 
     private int maxRecords = -1;
     private int offset = 0;
@@ -193,7 +194,10 @@ public class ContentQuery {
                     parameters.add(contentList[i].getAssociationId());
                 }
             }
-            query.append(") and associations.Type <> " + AssociationType.SHORTCUT);
+            query.append(")");
+            if (excludedAssociationTypes == null) {
+                excludedAssociationTypes = new int[]{ AssociationType.SHORTCUT };
+            }
         } else if (pathElementIds != null) {
             for (int i = 0; i < pathElementIds.length; i++) {
                 if (i == 0) {
@@ -226,10 +230,11 @@ public class ContentQuery {
                 query.append(" and ");
             }
             query.append(sql);
-        } else if (attributes == null) {
-            query.append(" and associations.Type = ?");
-            parameters.add(AssociationType.DEFAULT_POSTING_FOR_SITE);
+        } else if (attributes == null && excludedAssociationTypes == null) {
+            excludedAssociationTypes = new int[]{AssociationType.CROSS_POSTING, AssociationType.SHORTCUT};
         }
+
+        addExclusionOfAssociationTypes(query);
 
         if (siteId != -1) {
             query.append(" and associations.SiteId = ?");
@@ -517,6 +522,20 @@ public class ContentQuery {
         return new QueryWithParameters(query.toString(), parameters);
     }
 
+    private void addExclusionOfAssociationTypes(StringBuilder query) {
+        if(excludedAssociationTypes != null && excludedAssociationTypes.length > 0){
+            query.append(" and associations.Type not in (");
+            for (int i = 0, excludedAssociationTypesLength = excludedAssociationTypes.length; i < excludedAssociationTypesLength; i++) {
+                Integer associationType = excludedAssociationTypes[i];
+                query.append(associationType);
+                if(i < excludedAssociationTypes.length - 1){
+                    query.append(",");
+                }
+            }
+            query.append(")");
+        }
+    }
+
 
     //  Setter methods only
     public void setAssociatedId(ContentIdentifier cid) {
@@ -762,7 +781,7 @@ public class ContentQuery {
     public void setTopicType(Topic topicType) {
         this.topicType = topicType;
     }
-    
+
     public void setOwnerPerson(String ownerPerson) {
         this.ownerPerson = ownerPerson;
     }
@@ -809,6 +828,10 @@ public class ContentQuery {
 
     public void setIncludeWaitingForApproval(boolean includeWaitingForApproval) {
         this.includeWaitingForApproval = includeWaitingForApproval;
+    }
+
+    public void setExcludedAssociationTypes(int[] excludedAssociationTypes){
+        this.excludedAssociationTypes = excludedAssociationTypes;
     }
 
     /**

@@ -16,28 +16,28 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.publishing.spring.RootContext;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.configuration.ConfigurationLoader;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.commons.configuration.ConfigurationLoader;
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Properties;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  *
  */
-public class ViewSystemInformationAction extends AdminController {
+public class ViewSystemInformationAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

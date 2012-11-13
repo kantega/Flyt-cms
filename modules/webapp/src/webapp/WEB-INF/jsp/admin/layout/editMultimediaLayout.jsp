@@ -25,10 +25,7 @@
             overflow: hidden;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery.Jcrop.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editmultimedia.js"></script>
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-editmultimedia.css"/>">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { content : {} };
@@ -49,9 +46,7 @@
         };
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.Jcrop.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/swfobject.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editmultimedia.js"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksessmultimedia.jjs"></script>
     <script type="text/javascript">
         $(document).ready(function(){
@@ -74,7 +69,7 @@
         </c:if>
         <c:if test="${canEdit}">
             $("#ToolsMenu .button .delete").click(function(){
-                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}",width: 450, height:250});
+                openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.confirmdelete.title"/>', iframe:true, href: "${pageContext.request.contextPath}/admin/multimedia/DeleteMultimedia.action?id=${media.id}&currentNavigateItem="+stateHandler.getState(),width: 450, height:250});
             });
         </c:if>
         <c:if test="${canEdit}">
@@ -83,6 +78,10 @@
             });
         </c:if>
         }
+
+        openaksess.multimedia.onDeleteConfirm = function() {
+            window.location.href = "Navigate.action";
+        };
     </script>
 
 </kantega:section>

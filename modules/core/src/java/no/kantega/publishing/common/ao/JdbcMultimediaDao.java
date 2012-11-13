@@ -9,6 +9,7 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
-    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages, ContentId";
+    private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages, " + DB_TABLE + ".ContentId";
 
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
@@ -107,7 +108,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     }
 
     private String getQueryForExifData(List<Multimedia> multimedia) {
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
         query.append("SELECT * FROM multimediaexifdata WHERE MultimediaId IN (");
 
         for (int i = 0, multimediaSize = multimedia.size(); i < multimediaSize; i++) {
@@ -206,7 +207,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         query.append(join);
         query.append(" ");
 
-        query.append("WHERE ").append(DB_TABLE).append(".Type = ? AND ProfileImageUserId is NULL AND ContentId < 0 AND(");
+        query.append("WHERE ").append(DB_TABLE).append(".Type = ? AND ProfileImageUserId is NULL AND multimedia.ContentId < 0 AND(");
         query.append(where);
         query.append(") ");
 
@@ -381,10 +382,12 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         getSimpleJdbcTemplate().update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
     }
 
+    @Required
     public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
         this.multimediaUsageDao = multimediaUsageDao;
     }
 
+    @Required
     public void setSqlDialect(SQLDialect sqlDialect) {
         this.sqlDialect = sqlDialect;
     }

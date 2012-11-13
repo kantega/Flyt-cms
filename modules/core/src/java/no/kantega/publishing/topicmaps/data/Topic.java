@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.topicmaps.data;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Topic {
     private String id = null;
@@ -125,13 +125,14 @@ public class Topic {
     public void setBaseName(String name) {
         if (baseNames == null) {
             baseNames = new ArrayList<TopicBaseName>();
-            TopicBaseName tbn = new TopicBaseName();
-            tbn.setBaseName(name);
-            baseNames.add(tbn);
-        } else {
-            TopicBaseName tbn = (TopicBaseName)baseNames.get(0);
-            tbn.setBaseName(name);
         }
+        if (baseNames.size() == 0) {
+            TopicBaseName baseName = new TopicBaseName();
+            baseNames.add(baseName);
+        }
+
+        TopicBaseName tbn = baseNames.get(0);
+        tbn.setBaseName(name);
     }
 
     public List<TopicBaseName> getBaseNames() {
@@ -160,14 +161,10 @@ public class Topic {
     public boolean equals(Object obj) {
         try {
             Topic t = (Topic)obj;
-            if(this.id == null && t.getId() == null && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            if(this.id.equals(t.getId()) && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            return false;
-            
+            return this.id == null && t.getId() == null
+                    && this.topicMapId == t.getTopicMapId() || this.id.equals(t.getId())
+                    && this.topicMapId == t.getTopicMapId();
+
         } catch (ClassCastException e) {
             return false;
         }

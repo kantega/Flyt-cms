@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.common.data.Association;
@@ -60,40 +61,10 @@ public class CopyPasteContentAction implements Controller {
         Map model = new HashMap();
 
         if (isCopy) {
-            if (isTextCopy) {
-                // Copy text from one page to a new page
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(source.getAssociationId());
-                Content content = aksessService.getContent(cid);
-
-                aksessService.copyContent(content, parent, category);
-
-            } else if (pasteShortCut) {
-                // Create a shortcut
-                Association association = new Association();
-                association.setParentAssociationId(newParentId);
-                association.setCategory(category);
-                association.setSiteId(parent.getSiteId());
-                association.setContentId(source.getContentId());
-                association.setAssociationId(uniqueId);
-                association.setAssociationtype(AssociationType.SHORTCUT);
-                aksessService.addAssociation(association);
-            } else {
-                // Copy structure (cross publish)
-                aksessService.copyAssociations(source, parent, category, true);
-            }
+            copyContent(aksessService, isTextCopy, pasteShortCut, uniqueId, newParentId, category, parent, source);
             model.put("message", "aksess.copypaste.copy.ok");
         } else {
-            // Move page / structure
-            Association association = new Association();
-            association.setParentAssociationId(newParentId);
-            association.setCategory(category);
-            association.setSiteId(parent.getSiteId());
-            association.setContentId(source.getContentId());
-            association.setId(uniqueId);
-            association.setAssociationId(uniqueId);
-
-            aksessService.modifyAssociation(association);
+            moveContent(aksessService, uniqueId, newParentId, category, parent, source);
             model.put("message", "aksess.copypaste.move.ok");
         }
 
@@ -110,6 +81,43 @@ public class CopyPasteContentAction implements Controller {
         } else {
             model.put("aliases", aliases);
             return new ModelAndView(duplicateAliasesView, model);
+        }
+    }
+
+    private void moveContent(ContentManagementService aksessService, int uniqueId, int newParentId, AssociationCategory category, Association parent, Association source) {
+        Association association = new Association();
+        association.setParentAssociationId(newParentId);
+        association.setCategory(category);
+        association.setSiteId(parent.getSiteId());
+        association.setContentId(source.getContentId());
+        association.setId(uniqueId);
+        association.setAssociationId(uniqueId);
+
+        aksessService.modifyAssociation(association);
+    }
+
+    private void copyContent(ContentManagementService aksessService, boolean textCopy, boolean pasteShortCut, int uniqueId, int newParentId, AssociationCategory category, Association parent, Association source) throws NotAuthorizedException {
+        if (textCopy) {
+            // Copy text from one page to a new page
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setAssociationId(source.getAssociationId());
+            Content content = aksessService.getContent(cid);
+
+            aksessService.copyContent(content, parent, category);
+
+        } else if (pasteShortCut) {
+            // Create a shortcut
+            Association association = new Association();
+            association.setParentAssociationId(newParentId);
+            association.setCategory(category);
+            association.setSiteId(parent.getSiteId());
+            association.setContentId(source.getContentId());
+            association.setAssociationId(uniqueId);
+            association.setAssociationtype(AssociationType.SHORTCUT);
+            aksessService.addAssociation(association);
+        } else {
+            // Copy structure (cross publish)
+            aksessService.copyAssociations(source, parent, category, true);
         }
     }
 

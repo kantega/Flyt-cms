@@ -153,7 +153,7 @@ public abstract class Attribute {
                     int inx = defaultValue.indexOf(FILE_TOKEN) + FILE_TOKEN.length();
                     String file = defaultValue.substring(inx, defaultValue.length());
 
-                    ResourceLoader source = (ResourceLoader)RootContext.getInstance().getBean("contentTemplateResourceLoader");
+                    ResourceLoader source = RootContext.getInstance().getBean("contentTemplateResourceLoader", ResourceLoader.class);
                     Resource resource = source.getResource("defaults/" + file);
 
                     try {

@@ -16,28 +16,23 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapTopicAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapTopiclistAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapTopicAttributeValueToContentPropertyBehaviour;
-import no.kantega.commons.exception.SystemException;
-
-import java.text.ParseException;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-
 import org.w3c.dom.Element;
+
+import java.util.List;
+import java.util.Map;
 
 public class TopicAttribute  extends Attribute {
     protected boolean multiple = false;
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {

@@ -1,10 +1,12 @@
 package no.kantega.publishing.plugin.provider;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.kantega.jexmec.PluginClassLoaderProvider;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -14,9 +16,10 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.*;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -35,6 +38,9 @@ public class PluginHotDeployProvider implements PluginClassLoaderProvider {
     private ClassLoader parentClassLoader;
     private File installedPluginsDirectory;
 
+    @Autowired
+    private RuntimeMode runtimeMode;
+
     public void deploy(PluginInfo pluginInfo) throws IOException {
         DeployedPlugin deployedPlugin = loaders.get(pluginInfo.getKey());
         if (deployedPlugin != null) {
@@ -49,23 +55,30 @@ public class PluginHotDeployProvider implements PluginClassLoaderProvider {
         }
         logger.info("Adding classloader for plugin " + pluginInfo.getKey() + " from source " + pluginInfo.getSource().getAbsolutePath());
 
-        if (pluginInfo.getSource().isFile()) {
-            URLConnection connection = getClass().getResource(getClass().getSimpleName() + ".class").openConnection();
-            connection.setDefaultUseCaches(false);
-        }
-
         ClassLoader parentClassLoader = getParentClassLoader(pluginInfo);
 
-        ClassLoader loader = pluginInfo.getSource().isFile() ?
-                new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader, pluginWorkDirectory) :
-                new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader);
-        if (pluginInfo.getResourceDirectory() != null && pluginInfo.getResourceDirectory().exists() && pluginInfo.getResourceDirectory().isDirectory()) {
-            loader = new ResourceDirectoryPreferringClassLoader(loader, pluginInfo.getResourceDirectory());
-        }
+        ClassLoader loader = createClassLoader(pluginInfo, parentClassLoader);
 
         registry.add(singleton(loader));
 
         loaders.put(pluginInfo.getKey(), new DeployedPlugin(loader, pluginInfo));
+    }
+
+    private ClassLoader createClassLoader(PluginInfo pluginInfo, ClassLoader parentClassLoader) {
+        if(runtimeMode == RuntimeMode.PRODUCTION || pluginInfo.getCompileClasspath() == null) {
+            ClassLoader loader = pluginInfo.getSource().isFile() ?
+                    new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader, pluginWorkDirectory) :
+                    new EmbeddedLibraryPluginClassLoader(pluginInfo.getSource(), parentClassLoader);
+            if (pluginInfo.getResourceDirectory() != null && pluginInfo.getResourceDirectory().exists() && pluginInfo.getResourceDirectory().isDirectory()) {
+                loader = new ResourceDirectoryPreferringClassLoader(loader, pluginInfo.getResourceDirectory());
+            }
+            return loader;
+        } else {
+            JavaCompilingPluginClassLoader loader = new JavaCompilingPluginClassLoader(pluginInfo, parentClassLoader);
+            loader.compileJava();
+            return loader;
+        }
+
     }
 
     private ClassLoader getParentClassLoader(PluginInfo pluginInfo) {
@@ -89,8 +102,39 @@ public class PluginHotDeployProvider implements PluginClassLoaderProvider {
 
     public void undeployPlugin(PluginInfo pluginInfo) {
         logger.info("Undeploying plugin " + pluginInfo.getKey());
-        registry.remove(singleton(loaders.get(pluginInfo.getKey()).getClassLoader()));
+        ClassLoader classLoader = loaders.get(pluginInfo.getKey()).getClassLoader();
+        closeClassLoader(classLoader);
+        registry.remove(singleton(classLoader));
         loaders.remove(pluginInfo.getKey());
+    }
+
+    private void closeClassLoader(ClassLoader classLoader) {
+        if(classLoader instanceof URLClassLoader) {
+            URL[] urls = ((URLClassLoader) classLoader).getURLs();
+
+            Set<JarFile> closables = new LinkedHashSet<JarFile>();
+
+            for(URL url : urls) {
+                if(url.getFile().endsWith(".jar")) {
+                    try {
+                        URL jarURL = new URL("jar:" + url.toExternalForm() + "!/");
+                        JarURLConnection urlConnection = (JarURLConnection) jarURL.openConnection();
+                        JarFile jarFile = urlConnection.getJarFile();
+                        closables.add(jarFile);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            for(JarFile file : closables) {
+                try {
+                    file.close();
+                } catch (IOException e) {
+                    logger.error("Exception closing jar file " + file, e);
+                }
+            }
+        }
     }
 
     public void start(Registry registry, ClassLoader parentClassLoader) {

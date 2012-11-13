@@ -163,16 +163,24 @@ openaksess.admin = {
         this.init = function(updateEventType) {
             openaksess.common.debug("common.StateHandler.init()");
             bindHashChange(updateEventType);
-            $(window).trigger("hashchange");
+            this.triggerHashChange();
         };
 
         this.setState = function(state) {
             openaksess.common.debug("common.StateHandler.setState(): state: " + state);
-            $.bbq.pushState({ state : state });
+            if (state != this.getState()) {
+                $.bbq.pushState({ state : state });
+            } else {
+                this.triggerHashChange();
+            }
         };
 
         this.getState = function() {
             return $.bbq.getState("state");
+        };
+
+        this.triggerHashChange = function() {
+            $(window).trigger("hashchange");
         };
 
         var bindHashChange = function(updateEventType) {
@@ -229,14 +237,16 @@ openaksess.admin = {
          * If not supplied, the preference is saved client side.
          */
         setPreference: function(key, value, permanent, callback){
-
+            openaksess.common.debug("openaksess.admin.userpreferences.setPreference(): Setting preference. key: " + key + ", value: " + value + ", permanent: " + permanent);
             if (callback) {
-                    UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
+                openaksess.common.debug("openaksess.admin.userpreferences.setPreference(): Using server side preference persistence.");
+                UserPreferencesHandler.setPreference({key:key, value:value, permanent:permanent}, callback);
             } else {
                 var ttl = undefined;
                 if (permanent) {
                     ttl = 365;
                 }
+                openaksess.common.debug("openaksess.admin.userpreferences.setPreference(): Using cookie based preference persistence.");
                 openaksess.common.cookies.create(openaksess.admin.userpreferences.cookiePrefix+key, value, ttl);
             }
         },

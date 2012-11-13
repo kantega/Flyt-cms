@@ -199,7 +199,22 @@ ul.breadcrumbs li:first-child {
     background: url("../bitmaps/sprite-common.png") no-repeat 1px -1167px;
 }
 .navigator .icon .media {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px;
+}
+.navigator .icon .media.image {
     background: url("../bitmaps/sprite-common.png") no-repeat 0 -1210px;
+}
+.navigator .icon .media.application-pdf {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px; /* TODO: Replace this with a pdf icon */
+}
+.navigator .icon .media.excel {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px; /* TODO: Replace this with a excel icon */
+}
+.navigator .icon .media.word {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px; /* TODO: Replace this with a word icon */
+}
+.navigator .icon .media.presentation {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -1078px; /* TODO: Replace this with a powerpoint icon */
 }
 .navigator .icon .orgunit {
     background: url("../bitmaps/sprite-common.png") no-repeat 1px -1167px;

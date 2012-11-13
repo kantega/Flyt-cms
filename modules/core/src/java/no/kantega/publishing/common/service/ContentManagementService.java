@@ -30,11 +30,14 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.*;
 import no.kantega.publishing.common.cache.*;
 import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.InvalidTemplateReferenceException;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.service.impl.SiteMapWorker;
 import no.kantega.publishing.common.service.impl.TrafficLogger;
@@ -45,6 +48,8 @@ import no.kantega.publishing.common.util.templates.TemplateHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
@@ -53,6 +58,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
 
+/**
+ *  A monolithic service for fetching content objects, saving them, deleting them,
+ *  as well as some other snacksy operations.
+ */
 public class ContentManagementService {
     private static final String SOURCE = "aksess.ContentManagementService";
 
@@ -62,17 +71,17 @@ public class ContentManagementService {
     private final Cache contentListCache;
     private final Cache siteMapCache;
     private final Cache xmlCache;
-    private EventLogAO eventLogAO;
+    private EventLog eventLog;
     private boolean cachingEnabled;
 
     private ContentManagementService() {
-        final CacheManager cacheManager = RootContext.getInstance().getBean("ehcacheCacheManager", CacheManager.class);
+        final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
         contentCache = cacheManager.getCache("ContentCache");
         contentListCache = cacheManager.getCache("ContentListCache");
         siteMapCache = cacheManager.getCache("SiteMapCache");
         xmlCache = cacheManager.getCache("XmlCache");
 
-        eventLogAO = (EventLogAO) RootContext.getInstance().getBean("eventLogAO");
+        eventLog = RootContext.getInstance().getBean(EventLog.class);
 
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
@@ -93,8 +102,7 @@ public class ContentManagementService {
     }
 
     /**
-     * Hent ut brukerens sikkerhetssesjon
-     * @return - sikkerhetssesjon
+     * @return - the user's SecuritySession
      */
     public SecuritySession getSecuritySession() {
         return securitySession;
@@ -102,14 +110,15 @@ public class ContentManagementService {
 
 
     /**
-     * Sjekk ut innholdsobjekt fra basen
-     * @param id - ContentIdentifier til innholdsobjekt
-     * @return Innholdsobjekt
+     * Check out an content object. The difference from getContent is that checking out
+     * indicates that we want to change the object, so a Lock is created.
+     * @param id - ContentIdentifier for the Content object
+     * @return Content object associated with the ContentIdentifier or null if the content does not exist.
      * @throws SystemException - System error
-     * @throws NotAuthorizedException - dersom bruker ikke har tilgang
-     * @throws InvalidFileException - mal ikke finnes
+     * @throws NotAuthorizedException - if the user is not authorized to update the content.
+     * @throws InvalidFileException - The template
      * @throws InvalidTemplateException - invalid template
-     * @throws ObjectLockedException - Someone else is editing object
+     * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
         ContentLock lock = LockManager.peekAtLock(id.getContentId());
@@ -378,10 +387,18 @@ public class ContentManagementService {
             contentNotifier.newContentPublished(event);
         }
 
-        if (Aksess.isEventLogEnabled()) {
-            String eventType = ContentStatus.getContentStatusAsString(c.getStatus());
-            EventLog.log(securitySession, request, eventType, c.getTitle(), c);
+        String eventName;
+        switch (c.getStatus()) {
+            case ContentStatus.DRAFT:
+                eventName = Event.SAVE_DRAFT;
+                break;
+            case ContentStatus.WAITING_FOR_APPROVAL:
+                eventName = Event.SEND_FOR_APPROVAL;
+                break;
+            default:
+                eventName = Event.PUBLISH_CONTENT;
         }
+        eventLog.log(securitySession, request, eventName, c.getTitle(), c);
 
         return c;
     }
@@ -445,8 +462,8 @@ public class ContentManagementService {
 
     /**
      * Updates the visibility status of a content object
-     * @param content
-     * @param newVisibilityStatus
+     * @param content to set visibility status for
+     * @param newVisibilityStatus the new status
      */
     public void setContentVisibilityStatus(Content content, int newVisibilityStatus) {
         ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
@@ -461,8 +478,7 @@ public class ContentManagementService {
                 contentNotifier.newContentPublished(event);
             }
         }
-        contentNotifier.contentStatusChanged(event);
-        EventLog.log(securitySession, request, "CV-STATUS-" +ContentVisibilityStatus.getName(newVisibilityStatus), content.getTitle(), content);
+        eventLog.log(securitySession, request, "CV-STATUS-" + ContentVisibilityStatus.getName(newVisibilityStatus), content.getTitle(), content);
     }
 
     /**
@@ -514,7 +530,7 @@ public class ContentManagementService {
             }
         }
 
-        EventLog.log(securitySession, request, event, c.getTitle(), c);
+        eventLog.log(securitySession, request, event, c.getTitle(), c);
         Content content = ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
         ContentEvent contentEvent = new ContentEvent().setContent(content);
@@ -527,6 +543,47 @@ public class ContentManagementService {
 
         return content;
     }
+
+    /**
+     * Delete all versions of the Content object.
+     * @param id - ContentIdenfier of one of the ContentVersions
+     * @throws SystemException
+     * @throws ObjectInUseException
+     * @throws NotAuthorizedException
+     */
+    public void deleteContent(ContentIdentifier id) throws SystemException, ObjectInUseException, NotAuthorizedException {
+        ContentIdentifier cid = null;
+        String title = null;
+
+        if (id != null) {
+            Content c = getContent(id);
+            if (c != null) {
+                int priv = Privilege.UPDATE_CONTENT;
+                if (c.getVersion() > 1 || c.getStatus() == ContentStatus.PUBLISHED) {
+                    // Hvis siden er publisert eller versjon > 1 før ikke slettet uten godkjenningsrett
+                    priv = Privilege.APPROVE_CONTENT;
+                }
+                if (!securitySession.isAuthorized(c, priv)) {
+                    throw new NotAuthorizedException("deleteContent", SOURCE);
+                }
+                if (Aksess.isEventLogEnabled()) {
+                    title = c.getTitle();
+                }
+
+                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
+
+                cid = ContentAO.deleteContent(id);
+                if (title != null) {
+                    eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
+                }
+
+                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
+
+
+            }
+        }
+    }
+
 
     /**
      * Sletter en bestemt versjon av et innholdsobjekt.  Dersom objektversjonen er aktiv blir den ikke slettet.
@@ -542,15 +599,13 @@ public class ContentManagementService {
             if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
                 throw new NotAuthorizedException("deleteContentVersion", SOURCE);
             }
-            if (Aksess.isEventLogEnabled()) {
-                if (c != null) {
-                    title = c.getTitle();
-                }
+            if (c != null) {
+                title = c.getTitle();
             }
-            ContentAO.deleteContentVersion(id, false);
-            if (title != null) {
-                EventLog.log(securitySession, request, Event.DELETE_CONTENT_VERSION, title);
-            }
+        }
+        ContentAO.deleteContentVersion(id, false);
+        if (title != null) {
+            eventLog.log(securitySession, request, Event.DELETE_CONTENT_VERSION, title);
         }
     }
 
@@ -674,9 +729,9 @@ public class ContentManagementService {
 
 
     /**
-     * Henter parent cid
-     * @param cid
-     * @return
+     * Get parent content identifier
+     * @param cid of the child we want to get parent identifier for
+     * @return ContentIdenfier for the parent of the content identified by cid
      * @throws SystemException
      */
     public ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
@@ -699,7 +754,7 @@ public class ContentManagementService {
         if (content != null) {
             if (securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
                 ContentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
-                EventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
+                eventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
             } else {
                 throw new NotAuthorizedException(SOURCE, "Cant update display period");
             }
@@ -737,14 +792,13 @@ public class ContentManagementService {
         return getSiteMapFromCache(siteId, depth, language, rootId, path, category);
     }
 
-        /**
+    /**
      * Hent sitemap
      * @param siteId - Site det skal hentes for
      * @param depth - Antall nivåer som skal hentes
      * @param language - Språk det skal hentes for
      * @param associationCategoryName - Spalte / knytning det skal hentes for.  (F.eks alt som er publisert i "venstremeny"
      * @param rootId - Startpunkt for sitemap
-     * @param currentId - Id for side man står på
      * @return
      * @throws SystemException
      */
@@ -843,27 +897,6 @@ public class ContentManagementService {
     public List getPathByContentId(ContentIdentifier cid) throws SystemException {
         return PathWorker.getPathByContentId(cid);
     }
-
-
-    /**
-     * Søk i eventlogg
-     * @param from - Dato fra
-     * @param end - Dato til
-     * @param userId - Brukerid
-     * @param subjectName - Navn på objekt i loggen (navn på side f.eks)
-     * @param eventName - Hendelse
-     * @return
-     * @throws SystemException
-     */
-    public List searchEventLog(Date from, Date end, String userId, String subjectName, String eventName) throws SystemException {
-        return eventLogAO.createQuery()
-                .setFrom(from)
-                .setTo(end)
-                .setUserId(userId)
-                .setSubjectName(subjectName)
-                .setEventName(eventName).list();
-    }
-
 
     /**
      * Hent en liste med visnings og innholdsmaler som er tillatt for et nettsted og en gitt innholdsmal
@@ -1047,7 +1080,7 @@ public class ContentManagementService {
         if (pagesToBeDeleted.size() == 1 || deleteMultiple) {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (Content c : pagesToBeDeleted) {
-                EventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
+                eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
                 ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
             }
         }
@@ -1083,7 +1116,7 @@ public class ContentManagementService {
                 if (oldParent != null && newParent != null) {
                     event += ": " + oldParent.getName() + " -&gt; " + newParent.getName();
                 }
-                EventLog.log(securitySession, request, event, c.getName(), c);
+                eventLog.log(securitySession, request, event, c.getName(), c);
             }
         }
 
@@ -1189,9 +1222,7 @@ public class ContentManagementService {
             }
         }
 
-        if (Aksess.isEventLogEnabled()) {
-            EventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename());
-        }
+        eventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename());
 
         int id = AttachmentAO.setAttachment(attachment);
         attachment.setId(id);
@@ -1231,10 +1262,7 @@ public class ContentManagementService {
         }
 
         AttachmentAO.deleteAttachment(id);
-        ContentListenerUtil.getContentNotifier().attachmentDeleted(new ContentEvent().setAttachment(attachment));
-        if (Aksess.isEventLogEnabled()) {
-            EventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, title);
-        }
+        eventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, title);
     }
 
 

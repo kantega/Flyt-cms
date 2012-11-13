@@ -16,24 +16,27 @@
 
 package no.kantega.commons.taglib.expires;
 
+import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
+import org.springframework.beans.BeansException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.util.Map;
 
 /**
- *
+ * Generates an unique url with ResourceKeyProvider.
  */
 public class ExpiresResourceUrlTag extends TagSupport {
 
+    private UrlPlaceholderResolver urlPlaceholderResolver;
 
-    private ResourceKeyProvider defaultExpiresSettings = new DefaultExpiresResourceKeyProvider();
+    private ResourceKeyProvider provider;
 
     private boolean includeContextPath = true;
 
@@ -45,29 +48,44 @@ public class ExpiresResourceUrlTag extends TagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
-        ResourceKeyProvider provider = defaultExpiresSettings;
-
-        {
-            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
-            Map<String, ResourceKeyProvider> beans = context.getBeansOfType(ResourceKeyProvider.class);
-            if (beans.size() > 0) {
-                provider = beans.values().iterator().next();
-            }
-
-        }
+        initIfNecessary(pageContext);
+        String resolvedUrl = urlPlaceholderResolver.replaceMacros(url, pageContext);
         try {
-            String expireUrl = "/expires/" + provider.getUniqueKey(request, response, url) + url;
-            if (includeContextPath) {
-                expireUrl = request.getContextPath() + expireUrl;
-            }
-            pageContext.getOut().write(expireUrl);
+            StringBuilder expireUrl = new StringBuilder();
+            addContextPathIfSpecified(request, expireUrl);
+            expireUrl.append("/expires/");
+            expireUrl.append(provider.getUniqueKey(request, response, resolvedUrl));
+            expireUrl.append(resolvedUrl);
+
+            pageContext.getOut().write(expireUrl.toString());
         } catch (IOException e) {
             throw new JspException(e);
         }
         return SKIP_BODY;
     }
 
+    private void addContextPathIfSpecified(HttpServletRequest request, StringBuilder expireUrl) {
+        if (includeContextPath) {
+            expireUrl.append(request.getContextPath());
+        }
+    }
+
+    private void initIfNecessary(PageContext pageContext) {
+        if (provider == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            try {
+                provider = context.getBean(ResourceKeyProvider.class);
+            } catch (BeansException e) {
+                provider = new DefaultExpiresResourceKeyProvider();
+            }
+            urlPlaceholderResolver = context.getBean(UrlPlaceholderResolver.class);
+        }
+
+
+    }
+
     public int doEndTag() throws JspException {
+        url = null;
         return EVAL_PAGE;
     }
 

@@ -1,5 +1,5 @@
-<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
+<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
@@ -50,10 +50,21 @@
 
             if (!hasSubmitted) {
                 hasSubmitted = true;
+                var prmstr = window.location.search.substr(1);
+                var prmarr = prmstr.split ("&");
+                var params = {};
+
+                var form = $(document.editmediaform);
+                for ( var i = 0; i < prmarr.length; i++) {
+                    var tmparr = prmarr[i].split("=");
+                    var name = tmparr[0];
+                    if(name == 'ids'){
+                        form.append('<input type="hidden" name="ids" value="' + tmparr[1] +'" />');
+                    }
+                }
                 document.editmediaform.submit();
             }
         }
-
         $(document).ready(function() {
             $("#MultimediaName").focus();
             if (openaksess.common.isPopup()) {

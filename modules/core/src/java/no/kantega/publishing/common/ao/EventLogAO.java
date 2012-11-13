@@ -16,151 +16,133 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.EventLogEntry;
+import com.google.gdata.util.common.base.Pair;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventLogEntry;
+import no.kantega.publishing.eventlog.EventLogQuery;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.User;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import javax.servlet.http.HttpServletRequest;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class EventLogAO {
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-    private DataSource dataSource;
+public class EventLogAO extends JdbcDaoSupport implements EventLog {
 
-    public Query createQuery() {
-        return new Query();
+    @Value("${eventlog.enabled}")
+    private boolean eventlogIsEnabled = false;
+
+    public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery) {
+        Pair<String, List<Object>> queryAndArguments = buildEventLogQueryString(eventLogQuery);
+        return getJdbcTemplate().query(queryAndArguments.first, new EventLogQueryMapper(), queryAndArguments.second.toArray());
     }
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+    public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object) {
+        if (eventlogIsEnabled) {
+            User user = securitySession.getUser();
 
-    public class Query {
-        private Date from;
-        private Date to;
-        private String userId;
-        private String subjectName;
-        private int subjectType = -1;
-        private String eventName;
-
-        public Query setFrom(Date from) {
-            this.from = from;
-            return this;
-        }
-
-        public Query setTo(Date to) {
-            this.to = to;
-            return this;
-        }
-
-        public Query setUserId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Query setSubjectName(String subjectName) {
-            this.subjectName = subjectName;
-            return this;
-        }
-
-        public Query setEventName(String eventName) {
-            this.eventName = eventName;
-            return this;
-        }
-
-        public Query setSubjectType(int subjectType) {
-            this.subjectType = subjectType;
-            return this;
-        }
-
-        public List<EventLogEntry> list() {
-            List<EventLogEntry> events = new ArrayList<EventLogEntry>();
-
-            Connection c = null;
-            try {
-                c = dataSource.getConnection();
-                String where = "";
-                if (from != null) {
-                    where += " where Time >= ?";
-                }
-                if (to != null) {
-                    if (where.length() == 0) where += " where ";
-                    else where += " and ";
-                    where += " Time <= ?";
-                }
-                if (userId != null && userId.length() > 0) {
-                    if (where.length() == 0) where += " where ";
-                    else where += " and ";
-                    where += " UserId like ?";
-                }
-                if (subjectName != null && subjectName.length() > 0) {
-                    if (where.length() == 0) where += " where ";
-                    else where += " and ";
-                    where += " SubjectName like ?";
-                }
-                if (subjectType != -1) {
-                    if (where.length() == 0) where += " where ";
-                    else where += " and ";
-                    where += " SubjectType = ?";
-                }
-                if (eventName != null && eventName.length() > 0) {
-                    if (where.length() == 0) where += " where ";
-                    else where += " and ";
-                    where += " EventName like ?";
-                }
-
-                PreparedStatement st = c.prepareStatement("select * from eventlog " + where + " order by Time desc");
-                int p = 1;
-                if (from != null) {
-                    st.setTimestamp(p++, new Timestamp(from.getTime()));
-                }
-                if (to != null) {
-                    st.setTimestamp(p++, new Timestamp(to.getTime()));
-                }
-                if (userId != null && userId.length() > 0) {
-                    st.setString(p++, "%" + userId + "%");
-                }
-                if (subjectName != null && subjectName.length() > 0) {
-                    st.setString(p++, "%" + subjectName + "%");
-                }
-
-                if (subjectType != -1 ) {
-                    st.setInt(p++, subjectType);
-                }
-                if (eventName != null && eventName.length() > 0) {
-                    st.setString(p, "%" + eventName + "%");
-                }
-                ResultSet rs = st.executeQuery();
-                while (rs.next()) {
-                    EventLogEntry event = new EventLogEntry();
-                    event.setTime(rs.getTimestamp("Time"));
-                    event.setUserId(rs.getString("UserId"));
-                    if (event.getUserId() == null) {
-                        event.setUserId("");
-                    }
-                    event.setEventName(rs.getString("EventName"));
-                    event.setSubjectName(rs.getString("SubjectName"));
-                    event.setRemoteAddress(rs.getString("RemoteAddress"));
-                    event.setSubjectType(rs.getInt("SubjectType"));
-                    event.setSubjectId(rs.getInt("SubjectId"));
-                    events.add(event);
-                }
-                rs.close();
-                st.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                try {
-                    if (c != null) {
-                        c.close();
-                    }
-                } catch (SQLException e) {
-
-                }
+            String remoteAddr = "localhost";
+            if (request != null) {
+                remoteAddr = request.getRemoteAddr();
             }
 
-            return events;
+            String username = "";
+            if (user != null) {
+                username = user.getName();
+            }
+
+            log(username, remoteAddr, event, subject, object);
+        }
+    }
+
+    public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject) {
+        if (eventlogIsEnabled) {
+            log(securitySession, request, event, subject, null);
+        }
+    }
+
+    public void log(String username, String remoteAddr, String event, String subject, BaseObject object) {
+        if (eventlogIsEnabled) {
+            if (event.length() > 255) {
+                event = event.substring(0, 254);
+            }
+            if (subject != null && subject.length() > 255) {
+                subject = subject.substring(0, 254);
+            }
+
+            if (username != null && username.length() > 255) {
+                username = username.substring(0, 254);
+            }
+
+            int subjectType = -1;
+            int subjectId = -1;
+            if (object != null) {
+                subjectType = object.getObjectType();
+                subjectId = object.getId();
+            }
+            getJdbcTemplate().update("insert into eventlog values(?,?,?,?,?,?,?)", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+        }
+    }
+
+    private Pair<String, List<Object>> buildEventLogQueryString(EventLogQuery eventLogQuery) {
+        StringBuilder where = new StringBuilder("select * from eventlog where");
+        List<Object> arguments = new ArrayList<Object>();
+        if (eventLogQuery.getFrom() != null) {
+            where.append(" Time >= ?");
+            arguments.add(eventLogQuery.getFrom());
+        }
+        if (eventLogQuery.getTo() != null) {
+            if (where.length() > 0) where.append(" and");
+            where.append(" Time <= ?");
+            arguments.add(eventLogQuery.getTo());
+        }
+        if (isNotBlank(eventLogQuery.getUserId())) {
+            if (where.length() > 0) where.append(" and");
+            where.append(" UserId like ?");
+            arguments.add("%" + eventLogQuery.getUserId() + "%");
+        }
+        if (isNotBlank(eventLogQuery.getSubjectName())) {
+            if (where.length() > 0) where.append(" and");
+            where.append(" SubjectName like ?");
+            arguments.add("%" + eventLogQuery.getSubjectName()+ "%");
+        }
+        if (eventLogQuery.getSubjectType() != -1) {
+            if (where.length() > 0) where.append(" and");
+            where.append(" SubjectType = ?");
+            arguments.add(eventLogQuery.getSubjectType());
+        }
+        if (isNotBlank(eventLogQuery.getEventName())) {
+            if (where.length() > 0) where.append(" and");
+            where.append(" EventName like ?");
+            arguments.add("%" + eventLogQuery.getEventName() + "%");
+        }
+        where.append(" order by Time desc");
+        return new Pair<String, List<Object>>(where.toString(), arguments);
+    }
+
+    private class EventLogQueryMapper implements RowMapper<EventLogEntry> {
+        public EventLogEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
+            EventLogEntry event = new EventLogEntry();
+            event.setTime(rs.getTimestamp("Time"));
+            event.setUserId(rs.getString("UserId"));
+            if (event.getUserId() == null) {
+                event.setUserId("");
+            }
+            event.setEventName(rs.getString("EventName"));
+            event.setSubjectName(rs.getString("SubjectName"));
+            event.setRemoteAddress(rs.getString("RemoteAddress"));
+            event.setSubjectType(rs.getInt("SubjectType"));
+            event.setSubjectId(rs.getInt("SubjectId"));
+            return event;
         }
     }
 }

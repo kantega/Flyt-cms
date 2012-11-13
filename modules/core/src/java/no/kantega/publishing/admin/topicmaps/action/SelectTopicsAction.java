@@ -16,24 +16,24 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
 
 /**
  *
  */
-public class SelectTopicsAction extends AdminController {
+public class SelectTopicsAction extends AbstractController {
     public String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

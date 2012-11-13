@@ -96,11 +96,24 @@
         <js>/admin/js/date.js</js>
     </group>
 
-    <group name="editmultimedia">
+    <group name="admin-editmultimedia">
+        <css>/admin/css/multimedia.css</css>
+        <css>/admin/css/jquery.Jcrop.css</css>
+        <css>/css/mimetypes.css</css>
         <js>/admin/js/editmultimedia.js</js>
+        <group-ref>editcontext</group-ref>
+        <js>/admin/js/jquery.Jcrop.min.js</js>
+        <js>/aksess/js/swfobject.js</js>
+        <js>/admin/js/navigate.js</js>
+        <js>/admin/js/multimedia.js</js>
     </group>
 
-    <group name="multimedia">
+    <group name="admin-multimedianavigatelayout">
+        <css>/admin/css/navigate.css</css>
+        <css>/admin/css/multimedia.css</css>
+        <css>/css/mimetypes.css</css>
+        <js>/admin/js/jquery.lazyload.mini.js</js>
+        <js>/admin/js/navigate.js</js>
         <js>/admin/js/multimedia.js</js>
     </group>
 

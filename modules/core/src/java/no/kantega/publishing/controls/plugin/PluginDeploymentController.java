@@ -1,14 +1,10 @@
 package no.kantega.publishing.controls.plugin;
 
-import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.plugin.provider.PluginHotDeployProvider;
 import no.kantega.publishing.plugin.provider.PluginInfo;
 import no.kantega.publishing.plugin.provider.ThreadLocalPluginLoaderErrors;
 import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.log4j.Logger;
-import org.kantega.jexmec.PluginManager;
-import org.kantega.jexmec.PluginManagerListener;
-import org.kantega.jexmec.events.PluginLoadingExceptionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +64,8 @@ public class PluginDeploymentController {
             String name = request.getParameter("name");
             String description = request.getParameter("description");
             String dependencies = request.getParameter("dependencies");
+            String runtimeClasspath = request.getParameter("runtimeClasspath");
+            String compileClasspath = request.getParameter("compileClasspath");
 
 
             Set<String> missingParams = new HashSet<String>();
@@ -88,6 +86,8 @@ public class PluginDeploymentController {
             pluginInfo = new PluginInfo(source, groupId, artifactId, version);
             pluginInfo.setName(name);
             pluginInfo.setDescription(description);
+            pluginInfo.setRuntimeClasspath(runtimeClasspath);
+            pluginInfo.setCompileClasspath(compileClasspath);
             if(dependencies != null) {
                 pluginInfo.setDependencies(new HashSet<String>(Arrays.asList(dependencies.split(","))));
             }

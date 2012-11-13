@@ -48,6 +48,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-test</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -67,7 +68,7 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>1.7.5</version>
+            <version>1.8.8</version>
         </dependency>
 
         <dependency>

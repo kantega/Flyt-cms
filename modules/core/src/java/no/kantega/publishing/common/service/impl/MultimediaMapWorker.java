@@ -55,7 +55,7 @@ public class MultimediaMapWorker {
 
     private static MultimediaMapEntry getSiteMapBySQL(String query) throws SystemException {
 
-        List tmpentries = new ArrayList();
+        List<MultimediaMapEntry> tmpentries = new ArrayList<MultimediaMapEntry>();
 
         MultimediaMapEntry sitemap = new MultimediaMapEntry(0, 0, MultimediaType.FOLDER, "Multimediaarkiv");
 
@@ -76,6 +76,7 @@ public class MultimediaMapWorker {
                 if (children > 0) {
                     entry.setHasChildren(true);
                 }
+                entry.setFilename(rs.getString(8));
 
                 tmpentries.add(entry);
             }
@@ -92,33 +93,31 @@ public class MultimediaMapWorker {
             }
         }
 
-        if (sitemap != null) {
-            // Vi har funnet starten på sitemap'en, legg til underelementer
-            addToSiteMap(sitemap, tmpentries);
-        }
+        // Vi har funnet starten på sitemap'en, legg til underelementer
+        addToSiteMap(sitemap, tmpentries);
         return sitemap;
     }
 
 
     public static MultimediaMapEntry getSiteMap() throws SystemException {
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
 
-        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders from multimedia order by ParentId, Type, Name");
+        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders, Filename from multimedia order by ParentId, Type, Name");
         return getSiteMapBySQL(query.toString());
     }
 
 
     public static MultimediaMapEntry getPartialSiteMap(int[] idList, boolean getOnlyFolders) throws SystemException {
-        StringBuffer query = new StringBuffer();
-        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders from multimedia where ParentId in (0");
+        StringBuilder query = new StringBuilder();
+        query.append("select Id, ParentId, Type, Name, SecurityId, NoFiles, NoSubFolders, Filename from multimedia where ParentId in (0");
         if (idList != null) {
-            for (int i = 0; i < idList.length; i++) {
-                query.append("," + idList[i]);
+            for (int anIdList : idList) {
+                query.append(",").append(anIdList);
             }
         }
         query.append(") ");
         if (getOnlyFolders) {
-            query.append(" and Type = " + MultimediaType.FOLDER.getTypeAsInt());
+            query.append(" and Type = ").append(MultimediaType.FOLDER.getTypeAsInt());
         }
         query.append(" and ProfileImageUserId IS NULL order by ParentId, Type, Name");
         return getSiteMapBySQL(query.toString());

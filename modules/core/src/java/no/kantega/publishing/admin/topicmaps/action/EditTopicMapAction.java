@@ -18,10 +18,10 @@ package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ import java.util.Map;
 
 /**
  */
-public class EditTopicMapAction extends AdminController {
+public class EditTopicMapAction extends AbstractController {
     private static String SOURCE = "aksess.EditTopicMapAction";
     private String view;
 

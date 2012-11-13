@@ -16,35 +16,33 @@
 
 package no.kantega.openaksess.groovyscripts;
 
-import no.kantega.publishing.api.annotations.RequestHandler;
-import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
-import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
-import no.kantega.publishing.common.data.Content;
-import org.apache.log4j.Logger;
-import org.springframework.web.context.ServletContextAware;
-import org.springframework.context.ApplicationContext;
-import org.springframework.beans.factory.annotation.Qualifier;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+import no.kantega.publishing.api.annotations.RequestHandler;
+import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
+import no.kantega.publishing.common.data.Content;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLConnection;
-import java.io.IOException;
-import java.io.File;
 import java.util.*;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.annotation.Annotation;
 
 /**
+ * A ContentRequestListener that executes groovy scripts with the same name as a jsp.
  */
 public class GroovyScriptContentRequestListener extends ContentRequestListenerAdapter implements ServletContextAware {
-    private Logger log = Logger.getLogger(getClass());
 
     private GroovyClassLoader classLoader = new GroovyClassLoader(getClass().getClassLoader());
     private ServletContext servletContext;

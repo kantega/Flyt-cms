@@ -15,11 +15,10 @@
  */
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class TopicsAction extends AdminController {
+public class TopicsAction extends AbstractController {
     private String view;
 
     @Override

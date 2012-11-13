@@ -68,10 +68,10 @@ function formEditElement(element) {
 
     $("#form_ChildNo").val($("#form_FormElements .formElement").index(element));
 
-    fieldName = $("div.heading label", element).text();
+    var fieldName = $("div.heading label", element).text();
     $("#form_FieldName").val(fieldName);
 
-    helpText = $("div.helpText", element).html();
+    var helpText = $("div.helpText", element).html();
     if (helpText == undefined || helpText == null) helpText = "";
     $("#form_HelpText").val(helpText);
 
@@ -93,8 +93,8 @@ function formEditElement(element) {
         $("#form_NoBreak").attr("checked", false);
     }
 
-    inputClasses = $("div.inputs", element).attr("class").split(" ");
-    type = "text";
+    var inputClasses = $("div.inputs", element).attr("class").split(" ");
+    var type = "text";
     if (inputClasses.length > 1) {
         type = inputClasses[inputClasses.length - 1];
     }
@@ -229,13 +229,13 @@ function formRemoveEditor() {
 function formNewElement() {
     $("#form_ChildNo").val(-1);
 
-    fieldName = "Felt " + ($("#form_FormElements .formElement").length + 1);
+    var fieldName = "Felt " + ($("#form_FormElements .formElement").length + 1);
 
     formAddOrSaveElement(fieldName, "text", "", -1);
     formBindSort();
 
     // Edit this element
-    elm = $("#form_FormElements .formElement").last();
+    var elm = $("#form_FormElements .formElement").last();
     formEditElement(elm);
 
     $("#form_FieldName").select();
@@ -266,7 +266,7 @@ function formNewSection() {
 
 
 function formAddInputValue(type, fieldName, value, checked) {
-    html = "<div>";
+    var html = "<div>";
     var checkboxType = "radio";
     if (type == "checkbox") {
         checkboxType = "checkbox";
@@ -290,7 +290,7 @@ function formAddInputValue(type, fieldName, value, checked) {
 }
 
 function formAddOrSaveElement(fieldName, type, helpText, childNo) {
-    html = "";
+    var html = "";
     html += '<div class="heading"><label>' + fieldName + '</label></div>';
     html += '<div class="inputs ' + type + '">';
 
@@ -764,7 +764,7 @@ formElementCheckbox.onEdit = function(element) {
     });
 };
 formElementCheckbox.onSave = function (fieldName) {
-    html = "";
+    var html = "";
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
         if (val != "") {

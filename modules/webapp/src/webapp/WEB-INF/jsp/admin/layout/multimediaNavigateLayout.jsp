@@ -24,11 +24,7 @@
             overflow: hidden;
         }
     </style>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/mimetypes.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.lazyload.mini.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-multimedianavigatelayout.css"/>">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
             var properties = { };
@@ -46,7 +42,7 @@
         properties.contextPath = "${pageContext.request.contextPath}";
         properties.objectTypeMultimedia = <%=ObjectType.MULTIMEDIA%>;
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/multimedia.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-multimedianavigatelayout.js"/>"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/interface/MultimediaClipboardHandler.js"></script>
 
 </kantega:section>

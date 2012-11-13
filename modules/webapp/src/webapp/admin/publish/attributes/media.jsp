@@ -5,9 +5,9 @@
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.util.LocaleLabels,
                  no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.data.Multimedia"%>
-<%@ page import="no.kantega.publishing.common.data.attributes.MediaAttribute"%>
-<%@ page import="no.kantega.publishing.common.service.MultimediaService"%>
+                 no.kantega.publishing.common.data.Multimedia" %>
+<%@ page import="no.kantega.publishing.common.data.attributes.MediaAttribute" %>
+<%@ page import="no.kantega.publishing.common.service.MultimediaService" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -25,8 +25,8 @@
   --%>
 
 <%
-    MediaAttribute attribute = (MediaAttribute)request.getAttribute("attribute");
-    String fieldName = (String)request.getAttribute("fieldName");
+    MediaAttribute attribute = (MediaAttribute) request.getAttribute("attribute");
+    String fieldName = (String) request.getAttribute("fieldName");
 
     String value = attribute.getValue();
     String mmname = "";
@@ -60,17 +60,23 @@
             <!-- For users without access to mediaarchive - simple file upload -->
             <c:if test="${fn:length(value) != 0}">
                 <div id="${fieldName}_media">
-                    <aksess:getattribute name="${attribute.nameIncludingPath}" obj="${content}" width="270" cssclass="contentMedia"/>
+                    <aksess:getattribute name="${attribute.nameIncludingPath}" obj="${content}" width="270"
+                                         cssclass="contentMedia"/>
                 </div>
-            </c:if>        
+            </c:if>
             <input type="hidden" name="${fieldName}" value="${value}">
             <input type="file" class="inp" name="${fieldName}_upload" value="" tabindex="<%=attribute.getTabIndex()%>">
+            <input type="text" name="${fieldName}text" id="${fieldName}text" class="fullWidth" value="<%=mmname%>"
+                   onFocus="this.select()">
             <c:if test="${fn:length(value) != 0}">
-                <a id="${fieldName}_remove" href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+                <a id="${fieldName}_remove" href="#"
+                   onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})"
+                   class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label
+                        key="aksess.button.remove"/></span></a>
                 <script type="text/javascript">
                     var button = $("#${fieldName}_remove");
                     var media = $("#${fieldName}_media");
-                    button.click(function() {
+                    button.click(function () {
                         button.remove();
                         media.remove();
                     });
@@ -81,21 +87,28 @@
     <c:otherwise>
         <div class="inputs">
             <input type="hidden" name="${fieldName}" value="${value}" id="${fieldName}">
-            <input type="text" name="${fieldName}text" id="${fieldName}text" class="fullWidth" value="<%=mmname%>" onFocus="this.select()">
+            <input type="text" name="${fieldName}text" id="${fieldName}text" class="fullWidth" value="<%=mmname%>"
+                   onFocus="this.select()">
             <script type="text/javascript">
-                $(document).ready(function() {
+                $(document).ready(function () {
                     $("#${fieldName}text").oaAutocompleteMultimedia({
-                        defaultValue: '<kantega:label key="aksess.insertlink.multimedia.hint"/>',
-                        source: "${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
-                        select: openaksess.editcontext.autocompleteInsertIntoFormCallback
+                        defaultValue:'<kantega:label key="aksess.insertlink.multimedia.hint"/>',
+                        source:"${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
+                        select:openaksess.editcontext.autocompleteInsertIntoFormCallback
                     });
                 });
             </script>
         </div>
         <div class="buttonGroup">
-            <a href="#" onclick="openaksess.editcontext.uploadMultimedia(document.myform.${fieldName})" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="upload"><kantega:label key="aksess.button.upload"/></span></a>
-            <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose-media"/></span></a>
-            <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.uploadMultimedia(document.myform.${fieldName})" class="button"
+               tabindex="<%=attribute.getTabIndex()%>"><span class="upload"><kantega:label
+                    key="aksess.button.upload"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')"
+               class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label
+                    key="aksess.button.choose-media"/></span></a>
+            <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})"
+               class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label
+                    key="aksess.button.remove"/></span></a>
         </div>
     </c:otherwise>
 </c:choose>

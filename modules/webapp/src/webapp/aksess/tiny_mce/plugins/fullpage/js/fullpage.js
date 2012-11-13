@@ -18,7 +18,8 @@
 		'XHTML 1.1=<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">,' +
 		'HTML 4.01 Transitional=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">,' +
 		'HTML 4.01 Strict=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">,' +
-		'HTML 4.01 Frameset=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">';
+		'HTML 4.01 Frameset=<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">,' +
+        'HTML';
 
 	var defaultEncodings = 
 		'Western european (iso-8859-1)=iso-8859-1,' +
@@ -47,7 +48,7 @@
 			else
 				elm.value = value;
 		}
-	};
+	}
 
 	function getVal(id) {
 		var elm = document.getElementById(id);
@@ -59,7 +60,7 @@
 			return elm.checked;
 
 		return elm.value;
-	};
+	}
 
 	window.FullPageDialog = {
 		changedStyle : function() {
@@ -226,7 +227,7 @@
 		updateColor('visited_color_pick', 'visited_color');
 		updateColor('active_color_pick', 'active_color');
 		updateColor('link_color_pick', 'link_color');
-	};
+	}
 
 	tinyMCEPopup.onInit.add(init);
 })();

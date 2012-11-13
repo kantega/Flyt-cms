@@ -16,21 +16,19 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.publishing.common.service.lock.LockManager;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
-
-import no.kantega.publishing.common.service.lock.LockManager;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
+import java.util.Map;
 
 /**
  *
  */
-public class ListContentLocksAction extends AdminController {
+public class ListContentLocksAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

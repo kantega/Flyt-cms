@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kantega.no" xmlns="http://www.kantega.no" elementFormDefault="qualified">
     <xs:element name="template">
+        <xs:annotation>
+            <xs:documentation>
+                A template specifying what attributes should be available for a particullar Content object.
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:all minOccurs="0">
-                <xs:element ref="helptext" maxOccurs="1" minOccurs="0"/>
-                <xs:element ref="attributes" maxOccurs="1" minOccurs="1"/>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Helptext explaining what role the specified Content fulfills.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="attributes" maxOccurs="1" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>
+                            The root node of the attributes comprising the Content object.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:all>
         </xs:complexType>
     </xs:element>
@@ -19,31 +36,158 @@
     <xs:element name="attribute">
         <xs:complexType>
             <xs:all minOccurs="0">
-                <xs:element ref="helptext" maxOccurs="1" minOccurs="0"/>
-                <xs:element ref="options" maxOccurs="1" minOccurs="0"/>
-                <xs:element ref="script" maxOccurs="1" minOccurs="0"/>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Helptext describing the supposed purpose of the attribute.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="options" maxOccurs="1" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            In the cases where the attribute is a list attribute it is possible to specify the possible values.
+                            Example:
+                            <![CDATA[
+                                 <options>
+                                    <option value="explicitvalue">Option text</option>
+                                    <option value="yes">No</option>
+                                    <option value="no">Yes</option>
+                                </options>
+                            ]]>
+                            Setting the value explicitly is optional. When not specified the option text is used as value.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="script" maxOccurs="1" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Javascript wanted to run when editing the attribute when in admin mode. E.g. when the attribute
+                            value is changed.
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:all>
-            <xs:attribute name="contenttemplate" type="xs:string"/>
-            <xs:attribute name="documenttype" type="xs:string"/>
-            <xs:attribute name="default"  type="xs:string"/>
-            <xs:attribute name="displaytemplate" type="xs:string"/>
+            <xs:attribute name="contenttemplate" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using attributetype='contentlist' the element can be filtered by content template name.
+                        E.g. 'article', will list only content published with the article content template.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="documenttype" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using attributetype='contentlist' the element can be filtered by document type name.
+                        E.g. 'article', will list only content published with the article document type.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="default"  type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies the default value used for list attributes. E.g. 'no'
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="displaytemplate" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using attributetype='contentlist' the element can be filtered by display template name.
+                        E.g. 'article', will list only content published with the article display template.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="editable">
+                <xs:annotation>
+                    <xs:documentation>
+                        If this attribute is supposed to not be editable through admin, editable may be set to false.
+                    </xs:documentation>
+                </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="false"/>
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="editablebyrole" type="xs:string"/>
-            <xs:attribute name="listeditablebyrole" type="xs:string"/>
-	        <xs:attribute name="enumclass" type="xs:string"/>
-            <xs:attribute name="featureset" type="xs:string"/>
-            <xs:attribute name="minifeatureset" type="xs:string"/>
-            <xs:attribute name="height" type="xs:integer"/>
-            <xs:attribute name="width" type="xs:integer"/>
-            <xs:attribute name="mediafolder" type="xs:string"/>            
-            <xs:attribute name="hideinsites" type="xs:string"/>
+            <xs:attribute name="editablebyrole" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        A list of roles, separated by ',', specifying that only users having one of the roles may edit
+                        this attribute.
+                        If this attribute is absent or empty all users may edit the attribute.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="listeditablebyrole" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        If this attribute is a listattribute and listeditablebyrole has a non empty value, this
+                        specifies that only users with one of the given roles may edit the possible values of the
+                        editablelist.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+	        <xs:attribute name="enumclass" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using an enumlist type this specifies the targeted enum.
+                    </xs:documentation>
+                </xs:annotation>
+	        </xs:attribute>
+            <xs:attribute name="featureset" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        TODO description
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="minifeatureset" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        TODO description
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="height" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        TODO description
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="width" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        TODO description
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="mediafolder" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When this attribute is an mediaattribute and usemediaarchive is true the folder in the
+                        media archive with the specified name is used as default folder for this media attribute value.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="hideinsites" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        An comma separated list of site aliases specifying that this attribute should not be shown when
+                        editing content published in a site with one of the specified aliases.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="ignorevariant">
+                <xs:annotation>
+                    <xs:documentation>
+                        When fetching the options for an editablelist attribute the locale variant is ignored if
+                        ignorevariant=true.
+                        E.g. Both NO_nb and NO_ny is used, rather than discriminating between them.
+                    </xs:documentation>
+                </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="true"/>
@@ -51,8 +195,20 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="mandatory" type="xs:boolean"/>
+            <xs:attribute name="mandatory" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        When set to true, indicates that this attribute is mandatory when publishing a content with this template.
+                        Default is false.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="mapto">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies that the value in this attribute should be mapped to the given content attribute.
+                    </xs:documentation>
+                </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="title"/>
@@ -70,17 +226,92 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="maxlength" type="xs:integer"/>
-            <xs:attribute name="maxitems" type="xs:integer"/>
-            <xs:attribute name="multiple" type="xs:boolean"/>
-            <xs:attribute name="name" use="required" type="xs:string"/>
-            <xs:attribute name="regexp" type="xs:string"/>
-            <xs:attribute name="site" type="xs:string"/>
-            <xs:attribute name="showinsites" type="xs:string"/>
-            <xs:attribute name="title" type="xs:string"/>
-            <xs:attribute name="topicmapid" type="xs:string"/>
-            <xs:attribute name="topicinstanceof" type="xs:string"/>
+            <xs:attribute name="maxlength" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies that the attribute value cannot be larger than the specified value.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="maxitems" type="xs:integer">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies the maximum number of values possible for this attribute when using a listattribute.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="multiple" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies whether or not it should be possible for this attribute to have multiple values.
+                        Default is false.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" use="required" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        The name of this attribute. If the title attribute is not specified an capitalized version of
+                        name is used as title.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="regexp" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        For text attributes this attrbute may restrict the possible values with a regular expression.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="site" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using contentlist attributes only content published in the specified site are shown
+                        as options for the attribute.
+                        May be either site id or site alias.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="showinsites" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When specified the attribute is shown in edit mode only when editing content published in a
+                        specified site.
+                        May contain a comma separated list of site aliases
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="title" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        A more userfriendly title for this attribute. If not specified an captialized version of name
+                        is used.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="topicmapid" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using a topiclistattribute the topicmapid may be used to filter the possible values such that
+                        they only values from this topicmap is shown.
+                        May be either id or name of the topicmap.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="topicinstanceof" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When using a topiclistattribute topicinstanceof may be used to filter the possible values such that
+                        only options which are instances of the given topic is shown.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="type" use="required">
+                <xs:annotation>
+                    <xs:documentation>
+                        The type this attribute has.
+                    </xs:documentation>
+                </xs:annotation>
                 <xs:simpleType>
                     <xs:restriction base="xs:string">
                         <xs:enumeration value="bean"/>
@@ -111,11 +342,53 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
-            <xs:attribute name="startid" type="xs:string"/>
-            <xs:attribute name="usemediaarchive" type="xs:boolean"/>
+            <xs:attribute name="startid" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        When the attribute type is contentid this may specify that only content published under
+                        the specified content should be shown.
+                        May be either an content association id or on the form ../ or ../../ or /
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="usemediaarchive" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        When the attribute is a mediaattribute, this specifies whether the values should be stored in
+                        the media archive or not.
+                        Default is true.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="showemptyoption" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        For contentlistattribute this specifies whether an empty option should be shown.
+                        Default is true.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
         </xs:complexType>
     </xs:element>
     <xs:element name="repeater">
+        <xs:annotation>
+            <xs:documentation>
+                A repeater attribute is a composite Attribute, used to make repeatable rows with attributes.
+                Explample:
+
+                <![CDATA[
+                <repeater name="utvalgte_sider_promoboks" title="Utvalgte sider med beskrivelse i promoboks">
+                    <attribute name="utvalgt_side_promoboks" title="Utvalgt side" type="contentid" multiple="false" mandatory="true">
+                        <helptext>Side som vises i promoboks, tittel på sida blir tittelen</helptext>
+                    </attribute>
+                    <attribute name="utvalgt_side_tekst_promoboks" title="ledetekst" type="text">
+                        <helptext>Utfyllende tekst under tittel i promoboks</helptext>
+                    </attribute>
+                </repeater>
+                ]]>
+
+            </xs:documentation>
+        </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="attribute" minOccurs="1"/>

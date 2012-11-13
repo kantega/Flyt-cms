@@ -34,13 +34,7 @@
         </property>
     </bean>
 
-    <bean id="failedSubmissionsController" class="org.kantega.openaksess.plugins.failedSubmissions.FailedSubmissionsController">
-        <property name="eventLogAO">
-            <bean class="no.kantega.publishing.common.ao.EventLogAO">
-                <property name="dataSource" ref="aksessDataSource"/>
-            </bean>
-        </property>
-    </bean>
+    <bean id="failedSubmissionsController" class="org.kantega.openaksess.plugins.failedSubmissions.FailedSubmissionsController"/>
 
 
 </beans>

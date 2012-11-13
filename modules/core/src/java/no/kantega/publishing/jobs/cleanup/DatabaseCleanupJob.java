@@ -20,12 +20,13 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.enums.Event;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.service.impl.EventLog;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.sql.Connection;
@@ -37,6 +38,8 @@ import java.util.GregorianCalendar;
 
 public class DatabaseCleanupJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
+    @Autowired
+    private EventLog eventLog;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
@@ -131,7 +134,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
                 cid.setContentId(rs.getInt("ContentId"));
                 String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
                 Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month");
-                EventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
+                eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
                 ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
                 ContentAO.deleteContent(cid);

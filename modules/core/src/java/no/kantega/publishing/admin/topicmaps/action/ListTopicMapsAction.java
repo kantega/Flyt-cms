@@ -16,21 +16,19 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.publishing.common.service.TopicMapService;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-
 /**
  *
  */
-public class ListTopicMapsAction extends AdminController {
+public class ListTopicMapsAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

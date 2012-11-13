@@ -513,6 +513,9 @@ public class Content extends BaseObject {
         return expireAction;
     }
 
+    /**
+     * @param expireAction one of {@link ContentVisibilityStatus}
+     */
     public void setExpireAction(int expireAction) {
         this.expireAction = expireAction;
     }
@@ -554,6 +557,10 @@ public class Content extends BaseObject {
         }
     }
 
+    /**
+     * @param name of the attribute wanting value for
+     * @return the String value of the attribute or empty string.
+     */
     public String getAttributeValue(String name) {
         Attribute attr = getAttribute(name, AttributeDataType.CONTENT_DATA);
         if (attr != null) {
@@ -886,5 +893,10 @@ public class Content extends BaseObject {
 
     public void setAttributesAreUpdatedFromTemplate(boolean attributesAreUpdatedFromTemplate) {
         this.attributesAreUpdatedFromTemplate = attributesAreUpdatedFromTemplate;
+    }
+
+    @Override
+    public String toString() {
+        return getTitle();
     }
 }

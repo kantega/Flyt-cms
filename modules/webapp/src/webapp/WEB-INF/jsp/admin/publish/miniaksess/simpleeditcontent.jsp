@@ -1,5 +1,4 @@
 <%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
 <%@ taglib prefix="miniaksess" uri="http://www.kantega.no/aksess/tags/miniaksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -19,7 +18,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE HTML>
 <html>
 <head>
     <title>OpenAksess7</title>

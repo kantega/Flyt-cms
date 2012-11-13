@@ -16,30 +16,26 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.util.LocaleLabels;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.PathEntry;
+import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.PathEntry;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.util.LocaleLabels;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -92,9 +88,7 @@ public class MultimediaPropertiesAction implements Controller {
                 if (canChange) {
                     enabledButtons.add("UploadButton");
                     enabledButtons.add("NewFolderButton");
-                    if (folder.getNoFiles() == 0 && folder.getNoSubFolders() == 0) {
-                        enabledButtons.add("DeleteFolderButton");                        
-                    }
+                    enabledButtons.add("DeleteFolderButton");
                 }
             }
         } else {

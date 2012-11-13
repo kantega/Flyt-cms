@@ -43,9 +43,8 @@ public class ValidatorHelper {
         }       
 
         try {
-            List associations = content.getAssociations();
-            for (int i = 0; i < associations.size(); i++) {
-                Association association =  (Association)associations.get(i);
+            List<Association> associations = content.getAssociations();
+            for (Association association : associations) {
                 ContentIdentifier cid = ContentIdentifierCache.getContentIdentifierByAlias(association.getSiteId(), alias);
                 if (cid != null && cid.getContentId() != content.getId() && cid.getSiteId() == association.getSiteId()) {
                     errors.add(null, "aksess.error.aliasinuse");

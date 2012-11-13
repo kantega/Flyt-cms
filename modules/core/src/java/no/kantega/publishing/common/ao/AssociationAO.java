@@ -658,7 +658,7 @@ public class AssociationAO  {
 
                 // Marker side for sletting
                 query = new StringBuffer();
-                query.append("UPDATE associations SET IsDeleted = 1 , DeletedItemsId = " + deletedItemsId + " WHERE UniqueId IN ");
+                query.append("UPDATE associations SET IsDeleted = 1 , DeletedItemsId = ").append(deletedItemsId).append(" WHERE UniqueId IN ");
                 appendAssociationsSql(query, ids);
 
                 st = c.prepareStatement(query.toString());
@@ -667,7 +667,7 @@ public class AssociationAO  {
 
                 // Marker undersider for sletting
                 query = new StringBuffer();
-                query.append("UPDATE associations SET IsDeleted = 1, DeletedItemsId = " + deletedItemsId + " WHERE ");
+                query.append("UPDATE associations SET IsDeleted = 1, DeletedItemsId = ").append(deletedItemsId).append(" WHERE ");
                 appendPathSql(query, ids, "OR", "");
 
                 st = c.prepareStatement(query.toString());
@@ -698,19 +698,18 @@ public class AssociationAO  {
     }
 
 
-    public static void setAssociationsPriority(List associations) throws SystemException {
+    public static void setAssociationsPriority(List<Association> associations) throws SystemException {
         if (associations != null && associations.size() > 0) {
             Connection c = null;
 
             try {
                 c = dbConnectionFactory.getConnection();
                 PreparedStatement st = c.prepareStatement("update associations set Priority = ?, Category=? where UniqueId = ?");
-                for (int i = 0; i < associations.size(); i++) {
-                    Association a = (Association)associations.get(i);
+                for (Association association : associations) {
 
-                    st.setInt(1, a.getPriority());
-                    st.setInt(2, a.getCategory().getId());
-                    st.setInt(3, a.getId());
+                    st.setInt(1, association.getPriority());
+                    st.setInt(2, association.getCategory().getId());
+                    st.setInt(3, association.getId());
 
                     st.execute();
                 }

@@ -16,24 +16,23 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.event.ContentListenerUtil;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +46,7 @@ import java.util.Map;
  * Date: Nov 12, 2007
  * Time: 2:56:05 PM
  */
-public class AddContentAction extends AdminController {
+public class AddContentAction extends AbstractController {
     private String view;
 
     private TemplateConfigurationCache templateConfigurationCache;

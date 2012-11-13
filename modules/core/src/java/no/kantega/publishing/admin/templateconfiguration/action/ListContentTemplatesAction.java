@@ -16,23 +16,21 @@
 
 package no.kantega.publishing.admin.templateconfiguration.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.Map;
 
 /**
  */
-public class ListContentTemplatesAction extends AdminController {
+public class ListContentTemplatesAction extends AbstractController {
     private TemplateConfigurationCache templateConfigurationCache;
     private String view;
     

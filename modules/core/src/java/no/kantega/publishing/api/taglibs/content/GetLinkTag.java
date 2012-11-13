@@ -133,6 +133,7 @@ public class GetLinkTag extends BodyTagSupport{
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {
                             Site site = SiteCache.getSiteById(contentObject.getAssociation().getSiteId());
+
                             List hostnames = site.getHostnames();
                             if (hostnames.size() > 0) {
                                 String hostname = (String)hostnames.get(0);

@@ -16,24 +16,21 @@
 
 package no.kantega.publishing.admin.administration.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 
 /**
  *
  */
-public class ListUserChangesAction extends AdminController {
+public class ListUserChangesAction extends AbstractController {
     private String view;
     private String viewDocuments;
 

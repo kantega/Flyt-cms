@@ -44,7 +44,8 @@ public class TopiclistAttribute extends ListAttribute {
     private String instanceOf = null;
     private Logger log = Logger.getLogger(getClass());
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {

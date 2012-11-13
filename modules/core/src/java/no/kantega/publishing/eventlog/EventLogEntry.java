@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data;
+package no.kantega.publishing.eventlog;
 
 import java.util.Date;
 

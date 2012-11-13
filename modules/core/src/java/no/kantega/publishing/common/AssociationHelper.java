@@ -46,13 +46,7 @@ public class AssociationHelper {
             association.setSiteId(parent.getSiteId());
             association.setSecurityId(parent.getSecurityId());
 
-            boolean found = false;
-            for (Integer site : sites) {
-                if (site == association.getSiteId()) {
-                    found = true;
-                    break;
-                }
-            }
+            boolean found = sites.contains(association.getSiteId());
 
             if (!found) {
                 sites.add(association.getSiteId());

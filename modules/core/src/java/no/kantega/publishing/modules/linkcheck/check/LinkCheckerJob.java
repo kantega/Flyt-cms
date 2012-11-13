@@ -252,6 +252,8 @@ public class LinkCheckerJob implements InitializingBean {
             status = CheckStatus.CONNECT_EXCEPTION;
         } catch (IOException e) {
             status = CheckStatus.IO_EXCEPTION;
+        }  catch (Exception e) {
+            status = CheckStatus.INVALID_URL;
         } finally {
             get.releaseConnection();
         }

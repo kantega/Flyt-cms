@@ -16,20 +16,18 @@
 
 package no.kantega.publishing.admin.viewcontroller;
 
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
-import no.kantega.publishing.common.Aksess;
-
 /**
  *
  */
-public class SimpleAdminController extends AdminController {
+public class SimpleAdminController extends AbstractController {
     String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

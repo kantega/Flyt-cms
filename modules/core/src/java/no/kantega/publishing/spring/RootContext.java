@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.spring;
 
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
- *
+ * @deprecated Use WebApplicationContextUtils.getRequiredWebApplicationContext()
  */
 public class RootContext implements ApplicationContextAware {
 

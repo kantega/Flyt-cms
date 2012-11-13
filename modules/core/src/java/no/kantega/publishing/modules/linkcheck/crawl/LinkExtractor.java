@@ -18,6 +18,7 @@ package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -25,23 +26,26 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.eventlog.Event;
+import no.kantega.publishing.eventlog.EventLog;
 import org.cyberneko.html.parsers.SAXParser;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class LinkExtractor {
     private static final String SOURCE = "aksess.LinkExtractor";
 
     private SAXParser parser;
+    private final EventLog eventLog;
 
-    public LinkExtractor() {
+    public LinkExtractor(EventLog eventLog) {
+        this.eventLog = eventLog;
         parser = new SAXParser();
 
         try {
@@ -56,8 +60,6 @@ public class LinkExtractor {
 
     }
     public synchronized void extractLinks(Content content, LinkHandler linkHandler) throws SystemException {
-
-
         LinkExtractingHandler htmlHandler = new LinkExtractingHandler();
 
         parser.setContentHandler(htmlHandler);
@@ -67,23 +69,23 @@ public class LinkExtractor {
         } else {
             content = ContentAO.getContent(new ContentIdentifier(content.getId()), true);
 
-            List attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
-            for (int i = 0; i < attributes.size(); i++) {
-                Attribute a =  (Attribute) attributes.get(i);
-                String attrName = (a.getTitle() != null && !a.getTitle().equals(""))? a.getTitle() : a.getName();
-                if(a instanceof HtmltextAttribute) {
-                    String html = a.getValue();
+            List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
+            for (Attribute attribute : attributes) {
+                String attrName = (isNotBlank(attribute.getTitle())) ? attribute.getTitle() : attribute.getName();
+                if (attribute instanceof HtmltextAttribute) {
+                    String html = attribute.getValue();
                     try {
-                        if(html != null) {
+                        if (html != null) {
                             parser.parse(new InputSource(new StringReader(html)));
                         }
-                    } catch (SAXException e) {
-                        Log.error(SOURCE, e, null, null);
-                    } catch (IOException e) {
+                    } catch (Throwable e) {
+                        eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
+                        Log.error(SOURCE, String.format("contentId: %s, associationid: %s, attribute: %s \n %s",
+                                content.getId(), content.getAssociation().getId(), attrName, html), null, null);
                         Log.error(SOURCE, e, null, null);
                     }
-                } else if (a instanceof UrlAttribute) {
-                    String link = a.getValue();
+                } else if (attribute instanceof UrlAttribute) {
+                    String link = attribute.getValue();
                     if (link != null && link.length() > 0) {
                         if (link.startsWith("/")) {
                             link = Aksess.VAR_WEB + link;
@@ -92,9 +94,7 @@ public class LinkExtractor {
                     }
                 }
 
-                Iterator links = htmlHandler.getLinks().iterator();
-                while (links.hasNext()) {
-                    String link = (String) links.next();
+                for (String link : htmlHandler.getLinks()) {
                     linkHandler.attributeLinkFound(content, link, attrName);
                 }
                 htmlHandler.clear();
@@ -104,11 +104,11 @@ public class LinkExtractor {
 
     }
 
-    class LinkExtractingHandler extends DefaultHandler {
-        private List links = new ArrayList();
+    private class LinkExtractingHandler extends DefaultHandler {
+        private List<String> links = new ArrayList<String>();
 
-        public void startElement(String string, String string1, String string2, Attributes attributes) throws SAXException {
-            if(string1.equalsIgnoreCase("a")) {
+        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+            if(localName.equalsIgnoreCase("a")) {
                 String href = attributes.getValue("href");
                 if(href != null) {
                     links.add(href);
@@ -116,7 +116,7 @@ public class LinkExtractor {
             }
         }
 
-        public List getLinks() {
+        public List<String> getLinks() {
             return links;
         }
 

@@ -19,19 +19,21 @@ package no.kantega.commons.taglib.util;
 import no.kantega.commons.util.LocaleLabels;
 import org.springframework.web.util.JavaScriptUtils;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.tagext.DynamicAttributes;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.tagext.DynamicAttributes;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
- *
+ * Print the value of the property string with the given key.
+ * If the String attribute locale is set this locale will be used, else
+ * the request scoped attribute aksess_locale is tried.
+ * If the request attribute is absent NO_no is used.
  */
 public class LabelTag extends TagSupport implements DynamicAttributes {
     private String key = null;
@@ -58,13 +60,12 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
             out = pageContext.getOut();
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             if (key != null) {
-                Locale locale = (Locale)request.getAttribute("aksess_locale");
+                Locale locale;
                 if (this.locale != null){
                     String[] localePair = this.locale.split("_");
                     locale = new Locale(localePair[0], localePair[1]);
-                }
-                if (locale == null) {
-                    locale = new Locale("no", "NO");
+                } else {
+                    locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
                 }
 
                 String textLabel = LocaleLabels.getLabel(key, bundle, locale, params);

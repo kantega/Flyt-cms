@@ -27,6 +27,8 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  *
  */
@@ -59,27 +61,28 @@ public class HtmltextAttribute extends TextAttribute {
         return miniFeatureSet;
     }
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
         String h  = config.getAttribute("height");
-        if(h != null && !h.trim().equals("")) {
+        if(isNotBlank(h)) {
             height = Integer.parseInt(h);
         }
         String w  = config.getAttribute("width");
-        if(w != null && !w.trim().equals("")) {
+        if(isNotBlank(w)) {
             width = Integer.parseInt(w);
         }
 
         featureSet = config.getAttribute("featureset");
-        if (featureSet == null || featureSet.length() == 0) {
+        if (isNotBlank(featureSet)) {
             featureSet = "default";
         }
         miniFeatureSet = config.getAttribute("minifeatureset");
-        if (miniFeatureSet != null && miniFeatureSet.trim().length() == 0) {
+        if (isNotBlank(miniFeatureSet)) {
             miniFeatureSet = null;
         }
         css = config.getAttribute("css");
-        if (css == null || css.length() == 0) {
+        if (isNotBlank(css)) {
             css = "editor.css";
         }
     }

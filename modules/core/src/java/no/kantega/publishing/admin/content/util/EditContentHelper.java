@@ -79,10 +79,10 @@ public class EditContentHelper {
             cid.setAssociationId(param.getMainParentId());
 
             Content parent = aksessService.getContent(cid);
-            List associations = parent.getAssociations();
+            List<Association> associations = parent.getAssociations();
             int allParents[] = new int[associations.size()];
             for (int i = 0; i < associations.size(); i++) {
-                Association p = (Association)associations.get(i);
+                Association p = associations.get(i);
                 allParents[i] = p.getId();
             }
             param.setParentIds(allParents);
@@ -214,7 +214,7 @@ public class EditContentHelper {
 
             List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
 
-            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
+            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, null, newAttributes, new ArrayList<Attribute>(), xmlElements);
         }
     }
 
@@ -270,7 +270,7 @@ public class EditContentHelper {
 
         List<Attribute> newAttributes = new ArrayList<Attribute>();
 
-        addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
+        addAttributes(template, attributeType, defaultValues, null, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
 
         addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
 
@@ -337,6 +337,7 @@ public class EditContentHelper {
                     }
                 }
             }
+
             if (titleField == null) {
                 throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
             }
@@ -345,17 +346,17 @@ public class EditContentHelper {
 
     /**
      * Create attributes recursively
-     *
      * @param attributeType - type of attributes to create, content or metadata
      * @param defaultValues - used to initialize attributes with default values
      * @param newParentAttribute - parent of attributes
+     * @param oldParentAttribute - parent of oldattributes
      * @param newAttributes - list with new attributes
      * @param oldAttributes - list with old attributes
      * @param xmlAttributes - XML element with definition
      * @throws SystemException -
      * @throws InvalidTemplateException -
      */
-    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
+    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, @Nullable RepeaterAttribute oldParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
             String name = xmlAttribute.getAttribute("name");
@@ -415,7 +416,7 @@ public class EditContentHelper {
                         }
                     }
 
-                    addAttributes(template, attributeType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                    addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
                     repeater.addRow(newRowAttributes);
                 }
             }

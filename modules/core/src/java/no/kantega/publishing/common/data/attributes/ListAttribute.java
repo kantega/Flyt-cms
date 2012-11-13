@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.common.data.ListOption;
@@ -36,7 +37,8 @@ public class ListAttribute extends Attribute {
     protected boolean multiple = false;
     protected List<ListOption> options = null;
 
-    public void setConfig(Element config, Map model) throws InvalidTemplateException, SystemException {
+    @Override
+    public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
 
         if (config != null) {
@@ -64,7 +66,7 @@ public class ListAttribute extends Attribute {
                 }
 
             } catch (TransformerException e) {
-                e.printStackTrace();
+                Log.error(getClass().getName(), e);
             }
         }
     }

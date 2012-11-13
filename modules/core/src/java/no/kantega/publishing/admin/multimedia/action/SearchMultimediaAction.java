@@ -17,10 +17,10 @@
 
 package no.kantega.publishing.admin.multimedia.action;
 
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  *
  */
-public class SearchMultimediaAction extends AdminController {
+public class SearchMultimediaAction extends AbstractController {
 
     private String view;
 

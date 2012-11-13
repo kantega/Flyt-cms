@@ -28,7 +28,7 @@
 
 <%
     String query = request.getParameter("query");
-    if (query == null) {
+    if (query == null || !request.getMethod().equals("POST")) {
         query = "";
     }
 %>

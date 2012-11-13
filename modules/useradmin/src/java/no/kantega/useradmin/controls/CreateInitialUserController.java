@@ -18,7 +18,6 @@ package no.kantega.useradmin.controls;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
@@ -33,6 +32,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,7 +51,7 @@ import java.util.Map;
  * Date: May 27, 2009
  * Time: 12:38:50 PM
  */
-public class CreateInitialUserController extends AdminController {
+public class CreateInitialUserController extends AbstractController {
     public static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
     public static String CONFIRM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserconfirm.jsp";
     public static String EXISTS_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserexists.jsp";

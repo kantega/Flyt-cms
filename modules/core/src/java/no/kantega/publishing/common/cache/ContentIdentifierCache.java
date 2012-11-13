@@ -22,23 +22,65 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.ContentIdentifier;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Apr 4, 2007
- * Time: 11:15:49 AM
+ * ContentIdentifiers cached by alias and site.
  */
 public class ContentIdentifierCache {
     private static final String SOURCE = "aksess.ContentIdentifierCache";
 
-    private static HashMap aliases = new HashMap();
-    private static HashMap contentIdentifiers = new HashMap();
+    private final static Map<String, String> aliases = new ConcurrentHashMap<String, String>();
+    private final static Map<String, Collection<ContentIdentifier>> contentIdentifiers = new ConcurrentHashMap<String, Collection<ContentIdentifier>>();
     private static Date lastUpdate = null;
 
     public static ContentIdentifier getContentIdentifierByAlias(int siteId, String name) throws SystemException {
-        List cids = null;
 
+        reloadCacheIfNecessary();
+
+        Collection<ContentIdentifier> cids = fetchValuesFromCache(name);
+
+        return getContentIdentifierForSite(siteId, cids);
+    }
+
+    private static ContentIdentifier getContentIdentifierForSite(int siteId, Collection<ContentIdentifier> cids) {
+        ContentIdentifier contentIdentifier = null;
+        if (cids != null && cids.size() > 0) {
+            if (cids.size() == 1) {
+                // Finnes kun en side med dette aliaset
+                contentIdentifier =  cids.iterator().next();
+            } else {
+                // Finnes flere, returner den med riktig siteId
+                for (ContentIdentifier tmp : cids) {
+                    if (tmp.getSiteId() == siteId) {
+                        contentIdentifier = tmp;
+                        break;
+                    }
+                }
+            }
+        }
+        return contentIdentifier;
+    }
+
+    private static Collection<ContentIdentifier> fetchValuesFromCache(String name) {
+        Collection<ContentIdentifier> cids;
+        name = name.toLowerCase();
+
+        synchronized (contentIdentifiers) {
+            cids = contentIdentifiers.get(name);
+            if (cids == null) {
+                // Prøv å hent alias med / tilslutt
+                cids = contentIdentifiers.get(name + "/");
+
+            }
+        }
+        return cids;
+    }
+
+    private static void reloadCacheIfNecessary() {
         if (contentIdentifiers.size() == 0) {
             Log.debug(SOURCE, "Loading cache", null, null);
             reloadCache();
@@ -48,36 +90,6 @@ public class ContentIdentifierCache {
         } else if ((lastUpdate == null) || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime())) {
             reloadCache();
         }
-
-        name = name.toLowerCase();
-
-        synchronized (contentIdentifiers) {
-            cids = (List) contentIdentifiers.get(name);
-            if (cids == null) {
-                // Prøv å hent alias med / tilslutt
-                cids = (List) contentIdentifiers.get(name + "/");
-
-            }
-        }
-
-        if (cids != null && cids.size() > 0) {
-            if (cids.size() == 1) {
-                // Finnes kun en side med dette aliaset
-                return (ContentIdentifier)cids.get(0);
-            }
-
-            // Finnes flere, returner den med riktig siteId
-            for (int i = 0; i < cids.size(); i++) {
-                ContentIdentifier tmp = (ContentIdentifier) cids.get(i);
-                if (tmp.getSiteId() == siteId) {
-                    return tmp;
-                }
-            }
-
-            return (ContentIdentifier)cids.get(0);
-        }
-
-        return null;
     }
 
     public static String getAliasByContentIdentifier(int siteId, int associationId) throws SystemException {
@@ -85,40 +97,40 @@ public class ContentIdentifierCache {
             reloadCache();
         }
 
-        synchronized (aliases) {
-            return (String) aliases.get("" + siteId + "-" + associationId);
-        }
+        return aliases.get(getCacheKey(siteId, associationId));
+    }
+
+    private static String getCacheKey(int siteId, int associationId) {
+        StringBuilder keyBuilder = new StringBuilder();
+        keyBuilder.append(siteId);
+        keyBuilder.append('-');
+        keyBuilder.append(associationId);
+        return keyBuilder.toString();
     }
 
 
     public static void reloadCache() throws SystemException {
         Log.debug(SOURCE, "Loading cache", null, null);
 
-        Map newAliases = ContentAO.getContentIdentifierCacheValues();
+        Map<String, Collection<ContentIdentifier>> newAliases = ContentAO.getContentIdentifiersMappedByAlias();
 
         synchronized (contentIdentifiers) {
             contentIdentifiers.clear();
-            Iterator it = newAliases.keySet().iterator();
-            while (it.hasNext()) {
-                String alias = (String)it.next();
-                List cids = (List)newAliases.get(alias);
-                contentIdentifiers.put(alias, cids);
-            }
+            contentIdentifiers.putAll(newAliases);
         }
 
         synchronized (aliases) {
             aliases.clear();
-            Iterator it = newAliases.keySet().iterator();
-            while (it.hasNext()) {
-                String alias = (String)it.next();
-                List cids = (List)newAliases.get(alias);
-                for (int i = 0; i < cids.size(); i++) {
-                    ContentIdentifier cid =  (ContentIdentifier)cids.get(i);
-                    aliases.put("" + cid.getSiteId() + "-" + cid.getAssociationId(), alias);
+            for (String alias : newAliases.keySet()) {
+                Collection<ContentIdentifier> cids = newAliases.get(alias);
+                for (ContentIdentifier cid : cids) {
+                    String key = getCacheKey(cid.getSiteId(), cid.getAssociationId());
+                    aliases.put(key, alias);
                 }
             }
         }
 
         lastUpdate  = new Date();
     }
+
 }

@@ -1,7 +1,6 @@
 package org.kantega.openaksess.plugins.jobexecuter;
 
 import com.google.gdata.util.common.base.Pair;
-import no.kantega.publishing.admin.viewcontroller.AdminController;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.AksessLocaleResolver;
@@ -25,6 +24,7 @@ import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +38,7 @@ import java.util.*;
 /**
  * Controller that lists all jobs and may execute them.
  */
-public class ListJobsController extends AdminController {
+public class ListJobsController extends AbstractController {
 
     @Autowired
     private PluginManager<OpenAksessPlugin> openAksessPluginPluginManager;

@@ -83,7 +83,7 @@ public class XTMImportWorker{
             if(instanceOf != null){
                 instanceOf = removeLeadingSquare(instanceOf);
                 instanceOf = removeIdPrefix(instanceOf);
-                topic.setInstanceOf(new Topic(instanceOf));
+                topic.setInstanceOf(new Topic(instanceOf, topicMapId));
             }
 
             String subjectIdentity = getAttributeValue(topicElement,ATTRIBUTE_HREF, "subjectIdentity/subjectIndicatorRef", "subjectIdentifier");
@@ -130,15 +130,6 @@ public class XTMImportWorker{
         List<TopicBaseName> baseNames = new ArrayList<TopicBaseName>();
         for (int i = 0; i < elmBaseNames.getLength(); i++) {
             Element elmBaseName = (Element)elmBaseNames.item(i);
-            //TODO: Add support to query for mulitiple languages
-            // skip nynorsk, samisk and english
-            Element elmScope = (Element)XPathAPI.selectSingleNode(elmBaseName, "scope/subjectIndicatorRef");
-            if (elmScope != null) {
-                String subjectIndRef = elmScope.getAttribute("xlink:href");
-                if (subjectIndRef != null && (subjectIndRef.indexOf("#nno") != -1 || subjectIndRef.indexOf("#eng") != -1 || subjectIndRef.indexOf("#sme") != -1)) {
-                    continue;
-                }
-            }
 
             TopicBaseName baseName = new TopicBaseName();
             String name  = getString(elmBaseName, "baseNameString", "value");
@@ -146,6 +137,12 @@ public class XTMImportWorker{
 
             String scope = getAttributeValue(elmBaseName, ATTRIBUTE_HREF, "scope/subjectIndicatorRef", "scope/topicRef");
             if (scope != null) {
+                //TODO: Add support to query for mulitiple languages
+                // skip nynorsk, samisk and english
+                if ((scope.indexOf("#nno") != -1 || scope.indexOf("#eng") != -1 || scope.indexOf("#sme") != -1 ||
+                    scope.indexOf("639-eng") != -1 || scope.indexOf("639-nno") != -1 || scope.indexOf("639-sme") != -1)) {
+                    continue;
+                }
                 scope = removeLeadingSquare(scope);
                 baseName.setScope(scope);
             }
@@ -189,7 +186,7 @@ public class XTMImportWorker{
             String occurenceInstanceOf = getAttributeValue(elmOccurrence, ATTRIBUTE_HREF, "type/topicRef","instanceOf/subjectIndicatorRef");
             if (occurenceInstanceOf != null ) {
                 occurenceInstanceOf = removeLeadingSquare(occurenceInstanceOf);
-                occurence.setInstanceOf(new Topic(occurenceInstanceOf));
+                occurence.setInstanceOf(new Topic(occurenceInstanceOf, topicMapId));
             }
             occurences.add(occurence);
         }
@@ -209,8 +206,8 @@ public class XTMImportWorker{
             String instanceOf = getAttributeValue(elmAssociation,ATTRIBUTE_HREF,"type/topicRef","instanceOf/subjectIndicatorRef");
             if (instanceOf != null) {
                 instanceOf = removeIdPrefix(instanceOf);
-                association1.setInstanceOf(new Topic(instanceOf));
-                association2.setInstanceOf(new Topic(instanceOf));
+                association1.setInstanceOf(new Topic(instanceOf, topicMapId));
+                association2.setInstanceOf(new Topic(instanceOf, topicMapId));
             }
 
             NodeList elmMembers = selectNodeList(elmAssociation,"member", "role");
@@ -251,7 +248,7 @@ public class XTMImportWorker{
         String roleSpec = getAttributeValue(memberElement, ATTRIBUTE_HREF, "type/topicRef","roleSpec/subjectIndicatorRef");
         if (roleSpec != null ) {
             roleSpec = removeIdPrefix(roleSpec);
-            association.setRolespec(new Topic(roleSpec));
+            association.setRolespec(new Topic(roleSpec, topicMapId));
         }
     }
 
@@ -293,7 +290,7 @@ public class XTMImportWorker{
                 String instanceOf = topicRef.getAttribute("xlink:href");
                 if (instanceOf != null && instanceOf.charAt(0) == '#') {
                     instanceOf = instanceOf.substring(1, instanceOf.length());
-                    topic.setInstanceOf(new Topic(instanceOf));
+                    topic.setInstanceOf(new Topic(instanceOf, topicMapId));
                 }
             }
 
@@ -361,7 +358,7 @@ public class XTMImportWorker{
                     if (instanceOf != null && instanceOf.charAt(0) == '#') {
                         instanceOf = instanceOf.substring(1, instanceOf.length());
                     }
-                    occurence.setInstanceOf(new Topic(instanceOf));
+                    occurence.setInstanceOf(new Topic(instanceOf, topicMapId));
                 }
                 occurences.add(occurence);
             }
@@ -387,8 +384,8 @@ public class XTMImportWorker{
             String instanceOf = topicRef.getAttribute("xlink:href");
             if (instanceOf != null && instanceOf.charAt(0) == '#') {
                 instanceOf = instanceOf.substring(1, instanceOf.length());
-                association1.setInstanceOf(new Topic(instanceOf));
-                association2.setInstanceOf(new Topic(instanceOf));
+                association1.setInstanceOf(new Topic(instanceOf, topicMapId));
+                association2.setInstanceOf(new Topic(instanceOf, topicMapId));
             }
         }
 
@@ -433,7 +430,7 @@ public class XTMImportWorker{
                 String instanceOf = roleSpec.getAttribute("xlink:href");
                 if (instanceOf != null && instanceOf.charAt(0) == '#') {
                     instanceOf = instanceOf.substring(1, instanceOf.length());
-                    association1.setRolespec(new Topic(instanceOf));
+                    association1.setRolespec(new Topic(instanceOf, topicMapId));
                 }
             }
 
@@ -442,7 +439,7 @@ public class XTMImportWorker{
                 String instanceOf = roleSpec.getAttribute("xlink:href");
                 if (instanceOf != null && instanceOf.charAt(0) == '#') {
                     instanceOf = instanceOf.substring(1, instanceOf.length());
-                    association2.setRolespec(new Topic(instanceOf));
+                    association2.setRolespec(new Topic(instanceOf, topicMapId));
                 }
             }
 

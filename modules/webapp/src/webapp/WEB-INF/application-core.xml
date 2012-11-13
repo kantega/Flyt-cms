@@ -249,6 +249,8 @@
         <property name="velocityEngine" ref="velocityEngine"/>
     </bean>
 
+    <bean id="placeholderResolverStatic" class="no.kantega.publishing.urlplaceholder.UrlPlaceholderResolverStaticImpl"/>
+
     <bean id="aksessPasswordValidator" class="no.kantega.commons.password.PasswordValidator">
         <property name="minLength" value="${security.password.minlength}"/>
         <property name="minDigits" value="${security.password.mindigits}"/>

@@ -90,7 +90,7 @@ public class MailSubscriptionAgent {
      *  Return true iff at least one of the associations for the given Content matches the MailSubscription criteria
      *
      */
-    private boolean isSubscriptionMatch(MailSubscription subscription, Content c, Site site) {
+    protected boolean isSubscriptionMatch(MailSubscription subscription, Content c, Site site) {
         List<Association> associations = c.getAssociations();
         for (Association a : associations) {
             if (site == null || site.getId() == a.getSiteId()) {
@@ -107,7 +107,7 @@ public class MailSubscriptionAgent {
      * Return true if all specified criteria match for an association.
      *
      */
-    private boolean isSubscriptionMatchForAssociation(MailSubscription subscription, Content c, Association a) {
+    protected boolean isSubscriptionMatchForAssociation(MailSubscription subscription, Content c, Association a) {
         // We don't support matching "anything"
         if(subscription.getChannel() <= 0 && subscription.getDocumenttype() <= 0) {
             return false;
