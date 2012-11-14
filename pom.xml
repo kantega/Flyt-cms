@@ -31,6 +31,13 @@
         <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk/</developerConnection>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>mandubian-mvn</id>
+            <url>http://mandubian-mvn.googlecode.com/svn/trunk/mandubian-mvn/repository</url>
+        </repository>
+    </repositories>
+
     <pluginRepositories>
         <pluginRepository>
             <id>opensource.kantega.no</id>
