@@ -25,7 +25,6 @@ import com.google.gdata.data.analytics.DataFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
 import org.apache.log4j.Logger;
@@ -101,7 +100,7 @@ public class GoogleAnalyticsAction implements Controller {
         this.resultsView = resultsView;
     }
 
-
+    
     public class GAProfile {
 
         private String name;
@@ -138,8 +137,8 @@ public class GoogleAnalyticsAction implements Controller {
         private URL dataFeedUrl;
 
 
-        private GAFacade(String username, String password) throws AuthenticationException, MalformedURLException, ConfigurationException {
-            accountFeedUrl = new URL(Aksess.getConfiguration().getString("googleAccountFeedUrl"));
+        private GAFacade(String username, String password) throws AuthenticationException, MalformedURLException {
+            accountFeedUrl = new URL("https://www.google.com/analytics/feeds/accounts/default");
             dataFeedUrl = new URL("https://www.google.com/analytics/feeds/data");
 
             String companyId = "Kantega AS";
@@ -172,7 +171,7 @@ public class GoogleAnalyticsAction implements Controller {
             Date now = cal.getTime();
             cal.add(Calendar.MONTH, -3);
             Date then = cal.getTime();
-
+            
             // Request the top 10 page paths, page titles and pageviews,
             // in descending order by pageviews.
             DataQuery query = new DataQuery(dataFeedUrl);
