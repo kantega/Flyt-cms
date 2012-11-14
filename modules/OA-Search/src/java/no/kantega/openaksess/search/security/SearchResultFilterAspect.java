@@ -15,15 +15,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static com.google.common.collect.Collections2.filter;
 
@@ -32,18 +29,6 @@ import static com.google.common.collect.Collections2.filter;
 public class SearchResultFilterAspect {
     @Autowired
     private SearchLogDao searchLogDao;
-
-    private ExecutorService executorService;
-
-    @PostConstruct
-    public void setupExecutorService(){
-        executorService = Executors.newSingleThreadScheduledExecutor();
-    }
-
-    @PreDestroy
-    public void shutdownExecutorService(){
-        executorService.shutdown();
-    }
 
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
     public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
@@ -57,13 +42,11 @@ public class SearchResultFilterAspect {
         return searchResponse;
     }
 
+    @Async
     private void registerPerformedSearch(final SearchResponse searchResponse, final AksessSearchContext searchContext) {
-        executorService.execute(new Runnable() {
-            public void run() {
-                SearchQuery query = searchResponse.getQuery();
-                searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
-            }
-        });
+        SearchQuery query = searchResponse.getQuery();
+        searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
+
     }
 
     private void filterHits(SearchResponse searchResponse, final SecuritySession session) {

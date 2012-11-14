@@ -258,4 +258,42 @@
         <property name="minUpperCase" value="${security.password.minuppercase}"/>
         <property name="minNonAlphaNumeric" value="${security.password.minnonalpha}"/>
     </bean>
+
+    <bean class="no.kantega.publishing.common.service.impl.TrafficLoggerJdbcImpl">
+        <property name="trafficlogEnabled" value="${trafficlog.enabled:true}"/>
+        <property name="trafficLogIgnoreIPs" value="${trafficlog.ignoreips:}"/>
+        <property name="dataSource" ref="aksessDataSource" />
+        <property name="searchEnginePatterns">
+            <list>
+                <value>http://.*google.*/search.*[\\?&amp;]q=([^&amp;$]*).*</value>
+                <value>http://.*yahoo.*/search.*[\\?&amp;]p=([^&amp;$]*).*</value>
+                <value>http://.*msn.*/results\\.aspx.*[\\?&amp;]q=([^&amp;$]*).*</value>
+                <value>http://.*live.com.*/results\\.aspx.*[\\?&amp;]q=([^&amp;$]*).*</value>
+                <value>http://.*kvasir.*/.*search.*[\\?&amp;]searchExpr=([^&amp;$]*).*</value>
+                <value>http://.*ask.com/web.*[\\?&amp;]q=([^&amp;$]*).*</value>
+            </list>
+        </property>
+        <property name="botsAndSpiders">
+            <list>
+                <value>Googlebot</value>
+                <value>Yahoo! Slurp</value>
+                <value>msnbot</value>
+                <value>Ask Jeeves</value>
+                <value>IPCheck Server Monitor</value>
+                <value>Twiceler</value>
+                <value>YodaoBot</value>
+                <value>bingbot</value>
+                <value>YandexBot</value>
+                <value>Baiduspider</value>
+                <value>Ezooms</value>
+                <value>Eurobot</value>
+                <value>MJ12bot</value>
+                <value>SEOkicks-Robot</value>
+                <value>lssbot</value>
+                <value>TurnitinBot</value>
+                <value>Exabot</value>
+                <value>AhrefsBot</value>
+            </list>
+        </property>
+    </bean>
 </beans>

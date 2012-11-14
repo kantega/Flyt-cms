@@ -40,9 +40,9 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.service.impl.SiteMapWorker;
-import no.kantega.publishing.common.service.impl.TrafficLogger;
 import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
 import no.kantega.publishing.event.ContentEvent;
@@ -73,6 +73,7 @@ public class ContentManagementService {
     private final Cache xmlCache;
     private EventLog eventLog;
     private boolean cachingEnabled;
+    private TrafficLogger trafficLogger;
 
     private ContentManagementService() {
         final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
@@ -82,6 +83,7 @@ public class ContentManagementService {
         xmlCache = cacheManager.getCache("XmlCache");
 
         eventLog = RootContext.getInstance().getBean(EventLog.class);
+        trafficLogger = RootContext.getInstance().getBean(TrafficLogger.class);
 
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
@@ -205,9 +207,8 @@ public class ContentManagementService {
         if (c != null) {
             assertCanView(c, adminMode, securitySession);
         }
-        if (c != null && logView && !adminMode && Aksess.isTrafficLogEnabled() && request != null) {
-            // Log event
-            TrafficLogger.log(c, request);
+        if (c != null && logView && request != null) {
+            trafficLogger.log(c, request);
         }
         return c;
     }

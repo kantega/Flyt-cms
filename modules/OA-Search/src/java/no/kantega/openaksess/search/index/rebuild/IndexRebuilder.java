@@ -6,12 +6,15 @@ import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
@@ -41,29 +44,24 @@ public class IndexRebuilder {
         return progressReporters;
     }
 
+    @Async
     private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
-        final ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute((new Runnable() {
-            public void run() {
-                Log.info(category, "Starting reindex");
-                StopWatch stopWatch = new StopWatch(category);
-                stopWatch.start();
-                try {
-                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
-                        IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
-                        documentIndexer.indexDocument(poll);
-                    }
-                } catch (InterruptedException e) {
-                    Log.error(category, e);
-                } finally {
-                    documentIndexer.commit();
-                    documentIndexer.optimize();
-                    stopWatch.stop();
-                    double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
-                    Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
-                    executorService.shutdown();
-                }
+        Log.info(category, "Starting reindex");
+        StopWatch stopWatch = new StopWatch(category);
+        stopWatch.start();
+        try {
+            while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
+                documentIndexer.indexDocument(poll);
             }
-        }));
+        } catch (InterruptedException e) {
+            Log.error(category, e);
+        } finally {
+            documentIndexer.commit();
+            documentIndexer.optimize();
+            stopWatch.stop();
+            double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+            Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
+        }
     }
 }
