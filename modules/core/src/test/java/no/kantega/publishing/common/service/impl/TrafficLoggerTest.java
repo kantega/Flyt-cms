@@ -59,7 +59,7 @@ public class TrafficLoggerTest {
         "http://.*live.com.*/results\\.aspx.*[\\?&]q=([^&$]*).*",
         "http://.*kvasir.*/.*search.*[\\?&]searchExpr=([^&$]*).*",
         "http://.*ask.com/web.*[\\?&]q=([^&$]*).*");
-        trafficLoggerJdbc.setSearchEnginePatterns(patternStrings);
+        trafficLoggerJdbc.setSearchEngineStringPatterns(patternStrings);
         searchEnginePatterns = trafficLoggerJdbc.getSearchEnginePatterns();
     }
 
