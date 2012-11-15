@@ -16,23 +16,32 @@
 
 package no.kantega.publishing.common.service.lock;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class LockManager {
     private final static String SOURCE = "aksess.LockManager";
 
-    private static Map locks = new HashMap();
+    private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<Integer, ContentLock>();
     private static int lockTimeToLive = Aksess.getLockTimeToLive()* 1000;
 
-
+    /**
+     * @param contentId to get lock for.
+     * @return the ContentLock for the Content with contentId if it exists. Null if not locked or lock is expired.
+     */
     public static ContentLock peekAtLock(int contentId) {
-        ContentLock lock;
-        synchronized(locks) {
-            lock = (ContentLock) locks.get(contentId);
-        }
+        Log.info(SOURCE, "Peeking at lock for content " + contentId);
+        ContentLock lock = locks.get(contentId);
         // No lock
         if(lock == null) {
             return null;
@@ -43,11 +52,10 @@ public class LockManager {
             boolean expired = age > lockTimeToLive;
 
             if(expired) {
+                Log.info(SOURCE, "Expired lock for content " + contentId);
                 // Remove lock and return false (not locked anymore)
-                synchronized(locks) {
-                    locks.remove(contentId);
-                    return null;
-                }
+                locks.remove(contentId);
+                return null;
             } else {
                 // Yes, the content is locked
                 return lock;
@@ -55,7 +63,13 @@ public class LockManager {
         }
     }
 
+    /**
+     * @param owner - User which is locking the Content
+     * @param contentId of the Content to lock.
+     * @return true if a new lock is created. false if a lock for the Content with contentId already exists.
+     */
     public static boolean lockContent(String owner, int contentId) {
+        Log.info(SOURCE, "Lockingcontent " + contentId + " for owner " + owner);
         ContentLock contentLock = peekAtLock(contentId);
         if(contentLock != null) {
             // Content already locked
@@ -65,124 +79,56 @@ public class LockManager {
             releaseLocksForOwner(owner);
 
             ContentLock lock = new ContentLock(owner, contentId);
-            synchronized(locks) {
-                locks.put(contentId, lock);
-            }
+            locks.put(contentId, lock);
             return true;
         }
     }
 
+    /**
+     * Release lock on Content with the given contentId
+     * @param contentId of the Content to release locks for
+     */
     public static void releaseLock(int contentId) {
-        synchronized(locks) {
-            locks.remove(contentId);
-        }
+        Log.info(SOURCE, "Releasing lock for content " + contentId);
+        locks.remove(contentId);
     }
 
-    public static void releaseLocksForOwner(String owner) {
-        synchronized(locks) {
-            Iterator i = LockManager.getLocks().values().iterator();
-            while (i.hasNext()) {
-                ContentLock contentLock = (ContentLock) i.next();
-                if(contentLock.getOwner().equals(owner)) {
-                    locks.remove(contentLock.getContentId());
-                }
+    /**
+     * Release locks owned by owner
+     * @param owner - user owning the locks.
+     */
+    public static void releaseLocksForOwner(final String owner) {
+        Log.info(SOURCE, "Releasinglock for owner " + owner);
+        Map<Integer, ContentLock> locks = getLocks();
+        Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
+        Collection<Map.Entry<Integer, ContentLock>> contentLocksWithOwner = Collections2.filter(lockEntries, new Predicate<Map.Entry<Integer, ContentLock>>() {
+            @Override
+            public boolean apply(@Nullable Map.Entry<Integer, ContentLock> lockEntry) {
+                return lockEntry.getValue().getOwner().equals(owner);
             }
+        });
+        Collection<Integer> lockIdsForOwner = Collections2.transform(contentLocksWithOwner, new Function<Map.Entry<Integer, ContentLock>, Integer>() {
+            @Override
+            public Integer apply(@Nullable Map.Entry<Integer, ContentLock> lockEntry) {
+                return lockEntry.getKey();
+            }
+        });
+        for (Integer lockId : lockIdsForOwner) {
+            locks.remove(lockId);
         }
     }
 
+    /**
+     * Go though all locks and remove expired locks
+     */
     public static void cleanup() {
-        synchronized(locks) {
-
-            Iterator i = LockManager.getLocks().keySet().iterator();
-            while (i.hasNext()) {
-                Integer id = (Integer) i.next();
-                LockManager.peekAtLock(id);
-            }
+        Log.info(SOURCE, "Cleaning locks");
+        for (Integer id : LockManager.getLocks().keySet()) {
+            LockManager.peekAtLock(id);
         }
     }
 
-    public static void main(String[] args) throws InterruptedException {
-
-
-        LockManager.setLockTimeToLive(100);
-        Thread m = new Thread() {
-            public void run() {
-                while(2 < 3)  {
-                    LockManager.cleanup();
-
-                    LockManager.getLocks();
-                    LockManager.printLocks();
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        Log.error(SOURCE, e, null, null);
-                    }
-                }
-            }
-        };
-
-        m.start();
-
-        Random r = new Random();
-        for(int i = 0; i < 100; i++) {
-            TestThread thread = new TestThread(10);
-            thread.start();
-
-            Thread.sleep(Math.abs(r.nextInt()) % 3000);
-
-        }
-
-
-    }
-
-    public static Map getLocks() {
-        synchronized(locks) {
-            return new HashMap(locks);
-        }
-    }
-
-    public static void setLockTimeToLive(int lockTimeToLive) {
-        LockManager.lockTimeToLive = lockTimeToLive;
-    }
-
-    public static void printLocks() {
-        synchronized(locks) {
-            System.out.println("#######################################");
-           Iterator i = locks.values().iterator();
-            while (i.hasNext()) {
-                ContentLock contentLock = (ContentLock) i.next();
-                System.out.println(contentLock.getContentId() +" locked by " +contentLock.getOwner() +" at " + contentLock.getCreateTime());
-            }
-            System.out.println("#######################################");
-        }
+    public static Map<Integer, ContentLock> getLocks() {
+        return locks;
     }
 }
-
- class TestThread extends Thread {
-        private int runs;
-        private Random  random = new Random();
-        public TestThread(int runs) {
-            this.runs = runs;
-        }
-
-        public void run() {
-            for(int i = 0; i < runs; i++) {
-                try {
-
-                    int c = Math.abs(random.nextInt()) % 10;
-                    LockManager.peekAtLock(c);
-                    Thread.sleep(100);
-                    LockManager.lockContent(Thread.currentThread().getName(), c);
-                    Thread.sleep(100);
-                    LockManager.releaseLock(c);
-                    Thread.sleep(200);
-                    if(c==9) {
-                        LockManager.releaseLocksForOwner(Thread.currentThread().getName());
-                    }
-                } catch (InterruptedException e) {
-                    Log.error(getClass().getName(), e, null, null);
-                }
-            }
-            System.out.println(Thread.currentThread() +" finished");
-        }
- }
