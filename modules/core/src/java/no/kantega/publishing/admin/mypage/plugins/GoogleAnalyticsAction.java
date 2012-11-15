@@ -18,13 +18,11 @@ package no.kantega.publishing.admin.mypage.plugins;
 
 import com.google.gdata.client.analytics.AnalyticsService;
 import com.google.gdata.client.analytics.DataQuery;
-import com.google.gdata.data.analytics.AccountEntry;
-import com.google.gdata.data.analytics.AccountFeed;
-import com.google.gdata.data.analytics.DataEntry;
-import com.google.gdata.data.analytics.DataFeed;
+import com.google.gdata.data.analytics.*;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
 import org.apache.log4j.Logger;
@@ -133,13 +131,15 @@ public class GoogleAnalyticsAction implements Controller {
 
         private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         private AnalyticsService analyticsService;
-        private URL accountFeedUrl;
+        private String baseURL;
         private URL dataFeedUrl;
+        private String apiKey;
 
 
-        private GAFacade(String username, String password) throws AuthenticationException, MalformedURLException {
-            accountFeedUrl = new URL("https://www.google.com/analytics/feeds/accounts/default");
-            dataFeedUrl = new URL("https://www.google.com/analytics/feeds/data");
+        private GAFacade(String username, String password) throws AuthenticationException, MalformedURLException, ConfigurationException {
+            baseURL = "https://www.googleapis.com/analytics/v2.4/management/";
+            dataFeedUrl = new URL("https://www.googleapis.com/analytics/v2.4/data");
+            apiKey = Aksess.getConfiguration().getString("google.apiKey");
 
             String companyId = "Kantega AS";
             String appName = "OpenAksess";
@@ -155,13 +155,16 @@ public class GoogleAnalyticsAction implements Controller {
 
         private List<GAProfile> getProfiles() throws IOException, ServiceException {
             List<GAProfile> profiles = new ArrayList<GAProfile>();
-            AccountFeed accountFeed = analyticsService.getFeed(accountFeedUrl, AccountFeed.class);
-            for (AccountEntry entry : accountFeed.getEntries()) {
-                String name = entry.getTitle().getPlainText();
-                String id = entry.getProperty("ga:profileId");
-                String tableId = entry.getTableId().getValue();
+
+            URL profilesURL = new URL(baseURL + "accounts/~all/webproperties/~all/profiles?key=" + apiKey);
+            ManagementFeed profilesFeed = analyticsService.getFeed(profilesURL, ManagementFeed.class);
+            for (ManagementEntry profile : profilesFeed.getEntries()) {
+                String name = profile.getTitle().getPlainText();
+                String id = profile.getProperty("ga:profileId");
+                String tableId = profile.getProperty("dxp:tableId");
                 profiles.add(new GAProfile(name, id, tableId));
             }
+
             return profiles;
         }
 
@@ -182,6 +185,9 @@ public class GoogleAnalyticsAction implements Controller {
             query.setSort("-ga:pageviews");
             query.setMaxResults(10);
             query.setIds(tableId);
+
+            //Add a custom parameter for the API Key
+            query.setStringCustomParameter("key", apiKey);
 
             // Make a request to the API.
             DataFeed dataFeed = analyticsService.getFeed(query.getUrl(), DataFeed.class);
@@ -211,6 +217,9 @@ public class GoogleAnalyticsAction implements Controller {
             query.setMetrics("ga:visits,ga:pageviews");
             query.setMaxResults(1);
             query.setIds(tableId);
+
+            //Add a custom parameter for the API Key
+            query.setStringCustomParameter("key", apiKey);
 
             // Make a request to the API.
             DataFeed dataFeed = analyticsService.getFeed(query.getUrl(), DataFeed.class);

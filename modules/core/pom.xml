@@ -359,8 +359,8 @@
         </dependency>
         <dependency>
             <groupId>com.google.gdata</groupId>
-            <artifactId>gdata-analytics</artifactId>
-            <version>2.1</version>
+            <artifactId>gdata-analytics-2.1</artifactId>
+            <version>1.41.5</version>
         </dependency>
         <dependency>
             <groupId>com.google.collections</groupId>
