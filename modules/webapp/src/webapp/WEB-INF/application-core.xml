@@ -200,14 +200,6 @@
 
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 
-    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
-        <property name="cacheManager" ref="ehcacheCacheManager"/>
-    </bean>
-
-    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory">
-        <property name="configLocation" value="classpath:no/kantega/publishing/cache/ehcache.xml"/>
-    </bean>
-
     <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

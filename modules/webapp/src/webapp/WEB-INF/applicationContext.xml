@@ -28,9 +28,9 @@
                    pool-size="1-10"
                    queue-capacity="100"
                    rejection-policy="CALLER_RUNS"/>
-    <task:annotation-driven executor="executorWithCallerRunsPolicy" />
+    <task:annotation-driven executor="executorWithCallerRunsPolicy" mode="proxy" />
     <aop:aspectj-autoproxy/>
-    <cache:annotation-driven />
+    <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
 
     <import resource="application-jobs.xml"/>
     <import resource="application-datasources.xml"/>
@@ -56,4 +56,11 @@
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
     <bean class="no.kantega.publishing.spring.RootContext"/>
 
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="ehcacheCacheManager"/>
+    </bean>
+
+    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory">
+        <property name="configLocation" value="classpath:no/kantega/publishing/cache/ehcache.xml"/>
+    </bean>
 </beans>

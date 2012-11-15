@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.event;
 
-import org.springframework.context.ApplicationContext;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.context.ApplicationContext;
 
 /**
  *
@@ -25,6 +25,6 @@ import no.kantega.publishing.spring.RootContext;
 public class ContentListenerUtil {
     public static ContentEventListener getContentNotifier() {
         ApplicationContext context = RootContext.getInstance();
-        return (ContentEventListener) context.getBean("contentListenerNotifier");
+        return context.getBean("contentListenerNotifier", ContentEventListener.class);
     }
 }
