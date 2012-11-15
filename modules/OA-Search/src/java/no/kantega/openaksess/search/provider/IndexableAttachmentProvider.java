@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -60,8 +61,9 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         }
 
         public void run() {
+            Connection connection = null;
             try {
-                Connection connection = dataSource.getConnection();
+                connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()){
@@ -69,6 +71,14 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                 }
             } catch (Exception e) {
                 Log.error(getClass().getName(), e);
+            } finally {
+                if(connection != null){
+                    try {
+                        connection.close();
+                    } catch (SQLException e) {
+                        Log.error(getClass().getName(), e);
+                    }
+                }
             }
         }
     }

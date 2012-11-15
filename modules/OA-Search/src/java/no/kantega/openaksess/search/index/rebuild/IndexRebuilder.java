@@ -6,6 +6,7 @@ import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -26,6 +27,10 @@ public class IndexRebuilder {
 
     @Autowired
     private DocumentIndexer documentIndexer;
+
+    @Autowired
+    private TaskExecutor executorService;
+
     private final String category = getClass().getName();
 
     public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude) {
@@ -46,22 +51,27 @@ public class IndexRebuilder {
 
     @Async
     private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
-        Log.info(category, "Starting reindex");
-        StopWatch stopWatch = new StopWatch(category);
-        stopWatch.start();
-        try {
-            while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
-                IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
-                documentIndexer.indexDocument(poll);
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.info(category, "Starting reindex");
+                StopWatch stopWatch = new StopWatch(category);
+                stopWatch.start();
+                try {
+                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                        IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
+                        documentIndexer.indexDocument(poll);
+                    }
+                } catch (InterruptedException e) {
+                    Log.error(category, e);
+                } finally {
+                    documentIndexer.commit();
+                    documentIndexer.optimize();
+                    stopWatch.stop();
+                    double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
+                    Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
+                }
             }
-        } catch (InterruptedException e) {
-            Log.error(category, e);
-        } finally {
-            documentIndexer.commit();
-            documentIndexer.optimize();
-            stopWatch.stop();
-            double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
-            Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
-        }
+        });
     }
 }

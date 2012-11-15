@@ -16,17 +16,16 @@
 
 package no.kantega.publishing.common.cache;
 
-import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.commons.exception.SystemException;
-import java.util.*;
+import no.kantega.publishing.common.data.ContentTemplate;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Nov 13, 2008
- * Time: 10:06:01 AM
- */
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class ContentTemplateCache  {
-    private static final HashMap templates = new HashMap();
+    private static final Map<String, ContentTemplate> templates = new ConcurrentHashMap<String, ContentTemplate>();
     private static Date lastUpdate = null;
 
     public static ContentTemplate getTemplateById(int id) throws SystemException {
@@ -37,13 +36,11 @@ public class ContentTemplateCache  {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
             reloadCache();
         }
-        synchronized (templates) {
-            ContentTemplate template = (ContentTemplate) templates.get("" + id);
-            if (template != null && updateFromFile) {
-                TemplateConfigurationCache.getInstance().updateContentTemplateFromFile(template);
-            }
-            return template;
+        ContentTemplate template = templates.get(Integer.toString(id));
+        if (template != null && updateFromFile) {
+            TemplateConfigurationCache.getInstance().updateContentTemplateFromFile(template);
         }
+        return template;
     }
 
 
@@ -52,9 +49,8 @@ public class ContentTemplateCache  {
             reloadCache();
         }
 
-        for (Object o : templates.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            ContentTemplate template = (ContentTemplate) entry.getValue();
+        for (Map.Entry <String, ContentTemplate> entry : templates.entrySet()) {
+            ContentTemplate template = entry.getValue();
             if (id != null && id.equalsIgnoreCase(template.getPublicId())) {
                 return template;
             }
@@ -63,15 +59,12 @@ public class ContentTemplateCache  {
     }
 
     public static synchronized void reloadCache() throws SystemException {
-        List listtemplates = getTemplates();
+        List<ContentTemplate> listtemplates = getTemplates();
 
-        synchronized (templates) {
-            lastUpdate  = new Date();
-            templates.clear();
-            for (int i = 0; i < listtemplates.size(); i++) {
-                ContentTemplate template = (ContentTemplate)listtemplates.get(i);
-                templates.put("" + template.getId(), template);
-            }
+        lastUpdate  = new Date();
+        templates.clear();
+        for (ContentTemplate template : listtemplates) {
+            templates.put(Integer.toString(template.getId()), template);
         }
     }
 

@@ -466,7 +466,6 @@ class DataSourceWrapper implements InvocationHandler {
 
     public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
         if(method.getName().equalsIgnoreCase("getConnection")) {
-            //System.out.println("ds: o/c: " +dbConnectionFactory.openedConnections +"/" + dbConnectionFactory.closedConnections +"(" +(dbConnectionFactory.openedConnections - dbConnectionFactory.closedConnections) +")");
             Connection c = (Connection)method.invoke(dataSource, objects);
             StackTraceElement[] stacktrace = new Throwable().getStackTrace();
             dbConnectionFactory.connections.put(c, stacktrace);
