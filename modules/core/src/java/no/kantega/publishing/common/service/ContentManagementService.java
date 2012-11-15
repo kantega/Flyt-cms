@@ -76,7 +76,7 @@ public class ContentManagementService {
     private TrafficLogger trafficLogger;
 
     private ContentManagementService() {
-        final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
+        CacheManager cacheManager = RootContext.getInstance().getBean(CacheManager.class);
         contentCache = cacheManager.getCache("ContentCache");
         contentListCache = cacheManager.getCache("ContentListCache");
         siteMapCache = cacheManager.getCache("SiteMapCache");

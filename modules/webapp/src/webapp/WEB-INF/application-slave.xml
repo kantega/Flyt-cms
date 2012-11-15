@@ -12,12 +12,9 @@
                             <property name="targetObject">
                                 <bean class="no.kantega.publishing.cache.SlaveCacheExpiratorJob">
                                     <property name="cacheManager" ref="cacheManager"/>
-                                    <property name="eventLogAO" ref="eventLogAO"/>
                                 </bean>
                             </property>
-                            <property name="targetMethod">
-                                <value>execute</value>
-                            </property>
+                            <property name="targetMethod" value="execute"/>
                         </bean>
                     </property>
                     <property name="delay" value="1000"/>

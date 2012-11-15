@@ -168,7 +168,7 @@ public class TrafficLoggerJdbcImpl extends JdbcDaoSupport implements TrafficLogg
         return info;
     }
 
-    public void setSearchEnginePatterns(List<String> searchEnginePatterns){
+    public void setSearchEngineStringPatterns(List<String> searchEnginePatterns){
         Function<String, Pattern> stringToPatternTransform = new Function<String, Pattern>() {
             @Override
             public Pattern apply(@Nullable String pattern) {

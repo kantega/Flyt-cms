@@ -263,7 +263,7 @@
         <property name="trafficlogEnabled" value="${trafficlog.enabled:true}"/>
         <property name="trafficLogIgnoreIPs" value="${trafficlog.ignoreips:}"/>
         <property name="dataSource" ref="aksessDataSource" />
-        <property name="searchEnginePatterns">
+        <property name="searchEngineStringPatterns">
             <list>
                 <value>http://.*google.*/search.*[\\?&amp;]q=([^&amp;$]*).*</value>
                 <value>http://.*yahoo.*/search.*[\\?&amp;]p=([^&amp;$]*).*</value>
