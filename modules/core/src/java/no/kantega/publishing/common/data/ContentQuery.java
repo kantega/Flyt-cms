@@ -429,7 +429,7 @@ public class ContentQuery {
         }
 
         if (topicType != null) {
-            query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ? and TopicId in (select tmtopic.TopicId from tmtopic where InstanceOf = ?))");
+            query.append(" and content.contentId in (select contentId from ct2topic inner join tmtopic on ct2topic.topicId = tmtopic.topicId and ct2topic.topicMapId = tmtopic.topicMapId where ct2topic.topicMapId=? and tmtopic.InstanceOf=?)");
             parameters.add(topicType.getTopicMapId());
             parameters.add(topicType.getId());
         }
