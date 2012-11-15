@@ -13,6 +13,7 @@ import org.apache.solr.common.util.NamedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -29,6 +30,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     private SolrServer solrServer;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+    @Async
     public void indexDocument(IndexableDocument document) {
         try {
             File fileContent = document.getFileContent();
@@ -42,7 +44,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                 contentStreamUpdateRequest.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
                 NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
                 boolean deletedFileContent = fileContent.delete();
-                if(deletedFileContent){
+                if(!deletedFileContent){
                     log.error("Could not delete file {}", fileContent.getAbsolutePath());
                 }
             }

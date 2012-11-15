@@ -45,6 +45,7 @@
                 <prop key="/Logout.action">LogoutAction</prop>
                 <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
                 <prop key="/robots.txt">RobotsController</prop>
+                <prop key="/search">contentSearchController</prop>
 
                 <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>

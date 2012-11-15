@@ -36,16 +36,23 @@ public class IndexRebuilder {
         documentIndexer.deleteAllDocuments();
 
         final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
-        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>();
-        for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
-            boolean providerIsNotExcluded = !providersToExclude.contains(indexableDocumentProvider.getClass().getSimpleName());
-            if (providerIsNotExcluded) {
-                ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments, nThreads);
-                progressReporters.add(progressReporter);
+        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>(100);
+        if (notAllProvidersAreExcluded(providersToExclude)) {
+            executeRebuild(progressReporters, indexableDocuments);
+
+            for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
+                boolean providerIsNotExcluded = !providersToExclude.contains(indexableDocumentProvider.getClass().getSimpleName());
+                if (providerIsNotExcluded) {
+                    ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments, nThreads);
+                    progressReporters.add(progressReporter);
+                }
             }
         }
-        executeRebuild(progressReporters, indexableDocuments);
         return progressReporters;
+    }
+
+    private boolean notAllProvidersAreExcluded(List<String> providersToExclude) {
+        return providersToExclude.size() < indexableDocumentProviders.size();
     }
 
     private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
