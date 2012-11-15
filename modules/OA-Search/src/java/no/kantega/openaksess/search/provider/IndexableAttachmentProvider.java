@@ -8,6 +8,7 @@ import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,9 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
     @Autowired
     private AttachmentTransformer transformer;
 
+    @Autowired
+    private TaskExecutor executorService;
+
     public long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         return jdbcTemplate.queryForInt("SELECT count(attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
@@ -36,11 +40,11 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue, int numberOfThreadsToUse) {
         LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
-        new Thread(new IDProducer(dataSource, ids)).start();
+        executorService.execute(new IDProducer(dataSource, ids));
         ProgressReporter progressReporter = new ProgressReporter(AttachmentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
 
         for (int i = 0; i < numberOfThreadsToUse; i++){
-            new Thread(new AttachmentProducer(progressReporter, ids, indexableDocumentQueue)).start();
+            executorService.execute(new AttachmentProducer(progressReporter, ids, indexableDocumentQueue));
         }
 
         return progressReporter;

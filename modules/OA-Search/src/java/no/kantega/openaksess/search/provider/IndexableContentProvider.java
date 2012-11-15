@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.provider;
 
 import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
@@ -10,6 +11,7 @@ import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -31,13 +33,17 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     @Autowired
     private ContentTransformer transformer;
 
+    @Autowired
+    private TaskExecutor executorService;
+
     public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments, int numberOfThreads) {
         ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
-        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
-        new Thread(new IDProducer(dataSource, ids)).start();
+        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>(100);
+        executorService.execute(new IDProducer(dataSource, ids));
+
         ProgressReporter progressReporter = new ProgressReporter(ContentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
         for (int i = 0; i < numberOfThreads; i++){
-            new Thread(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments)).start();
+            executorService.execute(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments));
         }
 
         return progressReporter;
@@ -92,7 +98,8 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
                     ContentIdentifier contentIdentifier = new ContentIdentifier();
                     contentIdentifier.setContentId(id);
                     progressReporter.reportProgress();
-                    IndexableDocument indexableDocument = transformer.transform(contentManagementService.getContent(contentIdentifier));
+                    Content content = contentManagementService.getContent(contentIdentifier);
+                    IndexableDocument indexableDocument = transformer.transform(content);
                     indexableDocuments.put(indexableDocument);
                 } catch (Exception e) {
                     Log.error(getClass().getName(), e);
