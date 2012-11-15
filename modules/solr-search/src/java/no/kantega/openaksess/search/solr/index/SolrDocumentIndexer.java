@@ -10,6 +10,8 @@ import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,8 @@ import java.util.Map;
 
 @Component
 public class SolrDocumentIndexer implements DocumentIndexer {
+    private final Logger log  = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private SolrServer solrServer;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -37,7 +41,10 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                 contentStreamUpdateRequest.addFile(fileContent, StringUtils.substringAfterLast(fileContent.getName(), "."));
                 contentStreamUpdateRequest.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
                 NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
-                fileContent.delete();
+                boolean deletedFileContent = fileContent.delete();
+                if(deletedFileContent){
+                    log.error("Could not delete file {}", fileContent.getAbsolutePath());
+                }
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);

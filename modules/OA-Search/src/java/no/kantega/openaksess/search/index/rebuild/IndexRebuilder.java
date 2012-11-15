@@ -7,7 +7,6 @@ import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
@@ -49,7 +48,6 @@ public class IndexRebuilder {
         return progressReporters;
     }
 
-    @Async
     private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
         executorService.execute(new Runnable() {
             @Override

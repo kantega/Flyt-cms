@@ -25,7 +25,7 @@
     <context:annotation-config/>
 
     <task:executor id="executorWithCallerRunsPolicy"
-                   pool-size="1-10"
+                   pool-size="5-10"
                    queue-capacity="100"
                    rejection-policy="CALLER_RUNS"/>
     <task:annotation-driven executor="executorWithCallerRunsPolicy" mode="proxy" />
