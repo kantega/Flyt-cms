@@ -120,22 +120,23 @@ public class InputScreenRenderer {
             attribute.setTabIndex(tabIndex);
 
             if (attribute instanceof RepeaterAttribute) {
-                renderRepeaterAttribute(out, request, fieldErrors, attribute);
+                renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute);
             } else {
                 renderNormalAttribute(out, request, fieldErrors, attribute);
             }
         }
     }
 
-    private void renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute repeaterAttribute) throws IOException {
+    private void renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, RepeaterAttribute repeaterAttribute) throws IOException {
 
         try {
             out.print("\n<div class=\"contentAttributeRepeater\" id=\"" + AttributeHelper.getInputContainerName(repeaterAttribute.getNameIncludingPath()) + "\">\n");
             request.setAttribute("repeater", repeaterAttribute);
             request.setAttribute("repeaterFieldName", AttributeHelper.getInputFieldName(repeaterAttribute.getNameIncludingPath()));
 
-            RepeaterAttribute repeater = (RepeaterAttribute)repeaterAttribute;
-            int numberOfRows = repeater.getNumberOfRows();
+            pageContext.include("/admin/publish/attributes/repeater_row_top.jsp");
+
+            int numberOfRows = repeaterAttribute.getNumberOfRows();
             for (int rowNo = 0; rowNo < numberOfRows; rowNo++) {
                 out.print("<div class=\"contentAttributeRepeaterRow");
                 if (rowNo == 0) {
@@ -144,13 +145,13 @@ public class InputScreenRenderer {
                 out.print("\">\n");
                 request.setAttribute("repeaterRowNo", rowNo);
                 pageContext.include("/admin/publish/attributes/repeater_row_start.jsp");
-                List<Attribute> attributes = repeater.getRow(rowNo);
+                List<Attribute> attributes = repeaterAttribute.getRow(rowNo);
                 for (Attribute attribute : attributes) {
                     renderAttribute(out, request, fieldErrors, attribute, repeaterAttribute.getTabIndex());
                 }
-                pageContext.include("/admin/publish/attributes/repeater_row_end.jsp");
                 out.print("</div>\n");
             }
+            pageContext.include("/admin/publish/attributes/repeater_row_bottom.jsp");
             out.print("</div>");
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
