@@ -3,9 +3,9 @@ package no.kantega.publishing.plugin.provider;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.spring.RuntimeMode;
+import org.kantega.jexmec.ClassLoaderProvider;
 import org.kantega.jexmec.PluginManager;
 import org.kantega.jexmec.PluginManagerListener;
-import org.kantega.jexmec.events.PluginClassLoaderEvent;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.*;
@@ -33,20 +33,21 @@ public class StalePluginClassLoaderFilter implements Filter {
         PluginManager pluginManager = context.getBean(PluginManager.class);
 
         pluginManager.addPluginManagerListener(new PluginManagerListener<OpenAksessPlugin>() {
+
             @Override
-            public void beforeClassLoaderAdded(PluginClassLoaderEvent<OpenAksessPlugin> event) {
-                if (event.getClassLoader() instanceof JavaCompilingPluginClassLoader) {
+            public void beforeClassLoaderAdded(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader) {
+                if (classLoader instanceof JavaCompilingPluginClassLoader) {
                     synchronized (this) {
-                        classLoaders.add((JavaCompilingPluginClassLoader) event.getClassLoader());
+                        classLoaders.add((JavaCompilingPluginClassLoader) classLoader);
                     }
                 }
             }
 
             @Override
-            public void afterClassLoaderRemoved(PluginClassLoaderEvent<OpenAksessPlugin> event) {
-                if (event.getClassLoader() instanceof JavaCompilingPluginClassLoader) {
+            public void afterClassLoaderRemoved(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader) {
+                if (classLoader instanceof JavaCompilingPluginClassLoader) {
                     synchronized (this) {
-                        classLoaders.remove((JavaCompilingPluginClassLoader) event.getClassLoader());
+                        classLoaders.remove((JavaCompilingPluginClassLoader) classLoader);
                     }
                 }
             }

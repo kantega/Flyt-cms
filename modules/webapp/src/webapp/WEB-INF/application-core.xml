@@ -59,14 +59,12 @@
         <property name="pluginClass" value="no.kantega.publishing.api.plugin.OpenAksessPlugin"/>
         <property name="postProcessors">
             <list>
-                <bean class="no.kantega.publishing.spring.AdditionalBeansExposingPostProcessor">
-                    <property name="exposedBeanNames">
-                        <list>
-                            <value>adminRoleInterceptor</value>
-                        </list>
-                    </property>
-                </bean>
                 <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
+            </list>
+        </property>
+        <property name="exposedBeanNames">
+            <list>
+                <value>adminRoleInterceptor</value>
             </list>
         </property>
         <property name="pluginClassLoaderProviders">

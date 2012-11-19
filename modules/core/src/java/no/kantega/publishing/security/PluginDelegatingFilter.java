@@ -8,6 +8,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -39,7 +40,7 @@ public class PluginDelegatingFilter implements Filter {
         return new PluginFilterChain(filters, wrappedChain);
     }
 
-    protected List<OpenAksessPlugin> getPlugins() {
+    protected Collection<OpenAksessPlugin> getPlugins() {
         return pluginManager.getPlugins();
     }
 
