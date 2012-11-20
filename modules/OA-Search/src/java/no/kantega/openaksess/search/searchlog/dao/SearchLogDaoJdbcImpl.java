@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.searchlog.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,10 +26,10 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("time", new Timestamp(new Date().getTime()));
         params.put("query", queryString);
-        params.put("exact_query", exactQuery);
+        params.put("exact_query", StringUtils.join(exactQuery, ","));
         params.put("site_id", siteId);
         params.put("num_hits", numberOfHits);
-        namedjdbcTemplate.update("insert into searchlog (Time, Query, ExactQuery, NumberOfHits, SiteId) VALUES (:time,:query, :exact_query, :site_id, :num_hits)", params);
+        namedjdbcTemplate.update("insert into searchlog (Time, Query, ExactQuery, SiteId, NumberOfHits) VALUES (:time, :query, :exact_query, :site_id, :num_hits)", params);
     }
 
     public int getSearchCountForPeriod(Date after, Date before, int siteId)  {

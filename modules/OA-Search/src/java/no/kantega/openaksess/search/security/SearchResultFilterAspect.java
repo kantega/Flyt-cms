@@ -15,7 +15,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
@@ -30,6 +30,9 @@ public class SearchResultFilterAspect {
     @Autowired
     private SearchLogDao searchLogDao;
 
+    @Autowired
+    private TaskExecutor taskExecutor;
+
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
     public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
         Log.debug("SearchResultFilterAspect", "Filtering search results");
@@ -42,11 +45,14 @@ public class SearchResultFilterAspect {
         return searchResponse;
     }
 
-    @Async
     private void registerPerformedSearch(final SearchResponse searchResponse, final AksessSearchContext searchContext) {
-        SearchQuery query = searchResponse.getQuery();
-        searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
-
+        taskExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                SearchQuery query = searchResponse.getQuery();
+                searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
+            }
+        });
     }
 
     private void filterHits(SearchResponse searchResponse, final SecuritySession session) {

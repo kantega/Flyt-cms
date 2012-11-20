@@ -12,14 +12,13 @@ import no.kantega.search.api.search.Searcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
@@ -27,6 +26,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
  * Performs search for Aksess content.
  */
 @Controller
+@RequestMapping("/oasearch")
 public class ContentSearchController implements AksessController {
     @Autowired
     private Searcher searcher;
@@ -40,6 +40,7 @@ public class ContentSearchController implements AksessController {
     private List<String> facetFields;
     private List<String> facetQueries;
 
+    @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         String query = getQuery(request);
@@ -69,6 +70,14 @@ public class ContentSearchController implements AksessController {
         return model;
     }
 
+    @RequestMapping("/autosuggest")
+    public @ResponseBody List<String> search(HttpServletRequest request, @RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+
+        SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
+        query.setResultsPerPage(limit);
+        return searcher.suggest(query);
+    }
+
     private SearchResponse performSearch(HttpServletRequest request, String query) {
         AksessSearchContext searchContext = aksessSearchContextCreator.getSearchContext(request);
         return searcher.search(getSearchQuery(request, query, searchContext));
@@ -85,7 +94,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
-        List<String> filterQueries = Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM));
+        List<String> filterQueries = new ArrayList<String>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
         if(!searchAllSites){
             filterQueries.add("siteId:" + searchContext.getSiteId());
