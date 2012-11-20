@@ -18,10 +18,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
 
     <context:annotation-config/>
+    <mvc:annotation-driven />
 
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
 
@@ -45,7 +47,6 @@
                 <prop key="/Logout.action">LogoutAction</prop>
                 <prop key="/sitemap.xml">CrawlerSiteMapController</prop>
                 <prop key="/robots.txt">RobotsController</prop>
-                <prop key="/search">contentSearchController</prop>
 
                 <!-- Security -->
                 <prop key="/CreateInitialUser.action">CreateInitialUserAction</prop>
@@ -64,15 +65,10 @@
                 <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
                 <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
 
-                <!-- Rating -->
-                <prop key="/Rating.action">RatingController</prop>
-
                 <!-- Information -->
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
 
                 <prop key="/TestPages.action">testPagesAction</prop>
-
-                <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
             </props>
         </property>
     </bean>
@@ -156,10 +152,7 @@
                 <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
 
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
-                <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
                 <prop key="/admin/publish/ViewDisplayPeriod.action">viewDisplayPeriodAction</prop>
-                <prop key="/admin/publish/UpdateDisplayPeriod.action">updateDisplayPeriodAction</prop>
-                <prop key="/admin/publish/Spellcheck.action">spellcheckAction</prop>
 
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
                 <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
@@ -177,14 +170,11 @@
                 <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
                 <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
                 <prop key="/admin/multimedia/CreateMediaFolder.action">CreateMediaFolderAction</prop>
-                <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
                 <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
-                <prop key="/admin/multimedia/ViewUploadMultimediaForm.action">ViewUploadMultimediaFormAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
                 <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
-                <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
 
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
@@ -396,9 +386,7 @@
     <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
     <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
     <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
-    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
 
     <!-- Search content -->
     <bean id="adminContentSearchController" class="no.kantega.openaksess.search.controller.AdminContentSearchController">
@@ -505,9 +493,7 @@
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
     
-    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction" />
 
     <!-- Preview  -->
     <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveContentPreviewAction">
@@ -548,9 +534,7 @@
     <bean class="no.kantega.publishing.admin.content.action.ViewDisplayPeriodAction" id="viewDisplayPeriodAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/view-displayperiod.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction"/>
 
     <!-- Navigate multimedia -->
     <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">
@@ -600,9 +584,9 @@
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
-    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+
+    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction"/>
+
     <!-- Topic maps -->
     <bean class="no.kantega.publishing.admin.topicmaps.action.TopicsAction" id="TopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/topics.jsp"/>
@@ -760,10 +744,6 @@
         <property name="prefix" value="no/kantega/openaksess/admin/static/"/>
     </bean>
 
-
-
-
-
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>
         <property name="cache" value="true"/>
@@ -783,7 +763,9 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     </bean>
 
-    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
+    <bean id="ratingController" class="no.kantega.publishing.rating.controller.RatingController">
+        <property name="jsonView" ref="aksessJsonView"/>
+    </bean>
 
     <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
 

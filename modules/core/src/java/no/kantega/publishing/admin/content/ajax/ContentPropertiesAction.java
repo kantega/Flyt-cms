@@ -44,27 +44,26 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * A controller which updates breadcrumb and available buttons depending on current page
  */
-public class ContentPropertiesAction implements Controller {
+@Controller
+public class ContentPropertiesAction {
 
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
-    private View aksessJsonView;
 
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping("/admin/publish/ContentProperties.action")
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         String url = request.getParameter("url");
         ContentManagementService cms = new ContentManagementService(request);
@@ -187,7 +186,7 @@ public class ContentPropertiesAction implements Controller {
             model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
 
-            return new ModelAndView(aksessJsonView, model);
+            return model;
 
 
         } catch (ContentNotFoundException e) {
@@ -200,10 +199,6 @@ public class ContentPropertiesAction implements Controller {
             Log.error(this.getClass().getName(), e, null, null);
             return null;
         }
-    }
-
-    public void setAksessJsonView(View aksessJsonView) {
-        this.aksessJsonView = aksessJsonView;
     }
 
     private String formatDateTime(Date date) {

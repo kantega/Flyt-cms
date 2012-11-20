@@ -16,34 +16,33 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.beans.factory.annotation.Autowired;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Date;
 
 /**
  * Update display period (publish and expire date) for a page
  */
-public class UpdateDisplayPeriodAction implements Controller {
-    private View aksessJsonView;
+@Controller
+public class UpdateDisplayPeriodAction {
 
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping("/admin/publish/UpdateDisplayPeriod.action")
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
 
         RequestParameters param = new RequestParameters(request);
@@ -88,10 +87,7 @@ public class UpdateDisplayPeriodAction implements Controller {
             model.put("error", Boolean.TRUE);
         }
 
-        return new ModelAndView(aksessJsonView, model);
+        return model;
     }
 
-    public void setAksessJsonView(View aksessJsonView) {
-        this.aksessJsonView = aksessJsonView;
-    }
 }

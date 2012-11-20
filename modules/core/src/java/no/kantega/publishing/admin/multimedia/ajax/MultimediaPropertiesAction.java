@@ -26,12 +26,11 @@ import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,11 +39,11 @@ import java.util.Map;
 /**
  *
  */
-public class MultimediaPropertiesAction implements Controller {
+@Controller
+public class MultimediaPropertiesAction {
 
-    private View aksessJsonView;
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping("/admin/multimedia/MultimediaProperties.action")
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         RequestParameters param = new RequestParameters(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
@@ -98,10 +97,6 @@ public class MultimediaPropertiesAction implements Controller {
         model.put("path", path);
         model.put("enabledButtons", enabledButtons);
 
-        return new ModelAndView(aksessJsonView, model);
-    }
-
-    public void setAksessJsonView(View aksessJsonView) {
-        this.aksessJsonView = aksessJsonView;
+        return model;
     }
 }

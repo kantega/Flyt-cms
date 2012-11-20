@@ -22,9 +22,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,16 +35,11 @@ import java.util.List;
 import java.util.Map;
 
 
-/**
- * 
- */
-public class SpellcheckAction implements Controller {
+@Controller
+public class SpellcheckAction {
 
     @Autowired
     private SpellcheckerService spellcheckerService;
-
-    private View aksessJsonView;
-
 
     /**
      * Format of received JSON-data (example values in parenthesis):
@@ -59,14 +54,15 @@ public class SpellcheckAction implements Controller {
      * @return
      * @throws Exception
      */
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping("/admin/publish/Spellcheck.action")
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         setResponseValues(response);
         JSONObject jsonObject = getJSONObject(request);
         model.put("id", null);
         model.put("error", null);
         model.put("result", performAction(jsonObject));
-        return new ModelAndView(aksessJsonView, model);
+        return model;
     }
 
     private void setResponseValues(HttpServletResponse response) {
@@ -144,9 +140,5 @@ public class SpellcheckAction implements Controller {
             }
         }
         return retVal;
-    }
-
-    public void setAksessJsonView(View aksessJsonView) {
-        this.aksessJsonView = aksessJsonView;
     }
 }

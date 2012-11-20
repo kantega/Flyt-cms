@@ -20,7 +20,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 @Controller
+@RequestMapping("/Rating.action")
 public class RatingController {
 
     @Autowired private RatingService ratingService;
@@ -32,7 +35,6 @@ public class RatingController {
             @RequestParam(value = "objectId", required = true) String objectId,
             @RequestParam(value = "context", required = true) String context,
             @RequestParam(value = "redirect", required = false) String redirect,
-            @RequestParam(value = "responsetype", required = false) String responsetype,
             ModelMap model,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -49,7 +51,7 @@ public class RatingController {
             setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
         }
 
-        if("json".equalsIgnoreCase(responsetype)) {
+        if(isNotBlank(redirect)) {
             model.put("rating", ratingValue);
             List<Rating> allRatings = ratingService.getRatingsForObject(objectId, context);
             if (allRatings != null) {

@@ -98,7 +98,7 @@ public class LockManager {
      * @param owner - user owning the locks.
      */
     public static void releaseLocksForOwner(final String owner) {
-        Log.info(SOURCE, "Releasinglock for owner " + owner);
+        Log.info(SOURCE, "Releasing lock for owner " + owner);
         Map<Integer, ContentLock> locks = getLocks();
         Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
         Collection<Map.Entry<Integer, ContentLock>> contentLocksWithOwner = Collections2.filter(lockEntries, new Predicate<Map.Entry<Integer, ContentLock>>() {
