@@ -357,7 +357,7 @@ public class SecuritySession {
             // Sjekker om det ikke skal vises sider fra dette nettstedet
             Content c = (Content)object;
             Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
-            if (site.isDisabled()) {
+            if (site == null || site.isDisabled()) {
                 return false;
             }
         }
