@@ -27,6 +27,7 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
@@ -74,15 +75,15 @@ public class HtmltextAttribute extends TextAttribute {
         }
 
         featureSet = config.getAttribute("featureset");
-        if (isNotBlank(featureSet)) {
+        if (isBlank(featureSet)) {
             featureSet = "default";
         }
         miniFeatureSet = config.getAttribute("minifeatureset");
-        if (isNotBlank(miniFeatureSet)) {
+        if (isBlank(miniFeatureSet)) {
             miniFeatureSet = null;
         }
         css = config.getAttribute("css");
-        if (isNotBlank(css)) {
+        if (isBlank(css)) {
             css = "editor.css";
         }
     }
