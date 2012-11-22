@@ -65,8 +65,7 @@ public class SaveHearingCommentAction {
 			// TODO: Check if is hearing instance
 
 			if (comment != null && !comment.trim().equals("")) {
-				ContentIdentifier cid = new ContentIdentifier();
-				cid.setContentId(contentId);
+				ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
 				Content content = ContentAO.getContent(cid,false);
 				String name = SecuritySession.getInstance(request).getUser().getName();
 

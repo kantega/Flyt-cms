@@ -16,22 +16,20 @@
 
 package no.kantega.publishing.client;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.util.URLHelper;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.util.URLHelper;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class RssRequestHandler implements Controller {
     /**
@@ -53,8 +51,7 @@ public class RssRequestHandler implements Controller {
         if(parentId != -1){
             ContentManagementService cms = new ContentManagementService(request);
 
-            ContentIdentifier parent = new ContentIdentifier();
-            parent.setAssociationId(parentId);
+            ContentIdentifier parent =  ContentIdentifier.fromAssociationId(parentId);
 
             Content content = cms.getContent(parent);
             if (content != null && content.getDisplayTemplateId() > 0) {

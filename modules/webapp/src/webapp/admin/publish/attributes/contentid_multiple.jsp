@@ -40,8 +40,7 @@
                 int ids[] = StringHelper.getInts(value, ",");
 
                 for (int i = 0; i < ids.length; i++) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(ids[i]);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(ids[i]);
                     Content c = cms.getContent(cid);
                     if (c != null) {
                         out.write("<option value=\"" + c.getAssociation().getId() + "\">" + c.getTitle() + "</option>");

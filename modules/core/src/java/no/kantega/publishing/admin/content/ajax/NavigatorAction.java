@@ -112,8 +112,7 @@ public class NavigatorAction implements Controller {
                 }
             }
             if (startId != -1) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(startId);
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(startId);
                 if (!openFoldersList.contains(Integer.toString(startId))) {
                     try {
                         Content startContent = cms.getContent(cid);

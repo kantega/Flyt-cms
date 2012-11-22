@@ -248,4 +248,16 @@ public class ContentIdentifier {
         result = 31 * result + status;
         return result;
     }
+
+
+    public static ContentIdentifier fromAssociationId(int associationId) {
+        ContentIdentifier contentIdentifier = new ContentIdentifier();
+        contentIdentifier.setAssociationId(associationId);
+        return contentIdentifier;
+    }
+
+    public static ContentIdentifier fromContentId(int contentId) {
+        ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(contentId);
+        return contentIdentifier;
+    }
 }

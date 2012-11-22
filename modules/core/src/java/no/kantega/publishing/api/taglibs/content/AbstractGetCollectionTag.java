@@ -559,8 +559,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 String elementId = st.nextToken();
                 if (elementId != null && elementId.trim().length() > 0 && Character.isDigit(elementId.trim().charAt(0))) {
                     try {
-                        ContentIdentifier pathElementId = new ContentIdentifier();
-                        pathElementId.setAssociationId(Integer.parseInt(elementId.trim()));
+                        ContentIdentifier pathElementId =  ContentIdentifier.fromAssociationId(Integer.parseInt(elementId.trim()));
                         RequestParameters param = new RequestParameters(request);
                         int language = param.getInt("language");
                         if (language != -1) {

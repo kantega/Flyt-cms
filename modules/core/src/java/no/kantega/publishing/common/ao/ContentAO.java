@@ -144,8 +144,7 @@ public class ContentAO {
             ResultSet resultSet = p.executeQuery();
 
             while(resultSet.next() && !stopper.isStopRequested()) {
-                ContentIdentifier contentIdentifier = new ContentIdentifier();
-                contentIdentifier.setContentId(resultSet.getInt("ContentId"));
+                ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(resultSet.getInt("ContentId"));
 
                 Content content = null;
                 try {
@@ -403,8 +402,7 @@ public class ContentAO {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int contentId = rs.getInt("ContentId");
-                ContentIdentifier contentIdentifier = new ContentIdentifier();
-                contentIdentifier.setContentId(contentId);
+                ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(contentId);
                 content = ContentAO.getContent(contentIdentifier, true);
             }
         } catch (SQLException e) {
@@ -759,8 +757,7 @@ public class ContentAO {
             c = dbConnectionFactory.getConnection();
             int id = SQLHelper.getInt(c, "select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId() , "ParentAssociationId");
 
-            ContentIdentifier parentCid = new ContentIdentifier();
-            parentCid.setAssociationId(id);
+            ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(id);
             parentCid.setLanguage(cid.getLanguage());
             return parentCid;
         } catch (SQLException e) {
@@ -794,8 +791,7 @@ public class ContentAO {
 
             // Get old version if exists
             if (!content.isNew()) {
-                ContentIdentifier oldCid = new ContentIdentifier();
-                oldCid.setAssociationId(content.getAssociation().getAssociationId());
+                ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
                 oldContent = getContent(oldCid, true);
             }
 
@@ -986,8 +982,7 @@ public class ContentAO {
         // If this is a draft, rejected page etc delete previous version
         if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
             // Delete this (previous) version
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(content.getAssociation().getId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
             cid.setVersion(content.getVersion());
             cid.setLanguage(content.getLanguage());
             deleteContentVersion(cid, true);
@@ -1178,8 +1173,7 @@ public class ContentAO {
                 noVersions++;
                 if (noVersions > maxVersions ) {
                     // Slett denne versjonen
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(content.getAssociation().getId());
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
                     cid.setVersion(ver);
                     cid.setLanguage(content.getLanguage());
 
@@ -1502,8 +1496,7 @@ public class ContentAO {
                 int contentId = rs.getInt("ContentId");
                 String alias = rs.getString("alias");
 
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(associationId);
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
                 cid.setContentId(contentId);
                 cid.setSiteId(siteId);
                 contentIdentifiersMappedByAlias.put(alias, cid);

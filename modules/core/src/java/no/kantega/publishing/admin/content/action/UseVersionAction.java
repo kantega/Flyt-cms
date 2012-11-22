@@ -17,23 +17,18 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.content.util.EditContentHelper;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.security.SecuritySession;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class UseVersionAction implements Controller {
 
@@ -49,8 +44,7 @@ public class UseVersionAction implements Controller {
 
             int version = param.getInt("version");
             if (version != -1) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(content.getAssociation().getId());
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
                 cid.setVersion(version);
                 cid.setLanguage(content.getLanguage());
                 content = aksessService.checkOutContent(cid);

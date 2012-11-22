@@ -152,8 +152,7 @@ public class ContentlistAttribute extends ListAttribute {
         List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
         List<String> values = super.getValues();
         for (String v : values) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(Integer.parseInt(v));
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
             cids.add(cid);
         }
         return cids;

@@ -417,8 +417,7 @@ public class ContentManagementService {
     public Content copyContent(Content sourceContent, Association target, AssociationCategory category) throws SystemException, NotAuthorizedException {
 
 
-        ContentIdentifier parentCid = new ContentIdentifier();
-        parentCid.setAssociationId(target.getAssociationId());
+        ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
 
         Content destParent = ContentAO.getContent(parentCid, true);
 
@@ -1056,8 +1055,7 @@ public class ContentManagementService {
                     }
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker på
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(a.getId());
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(a.getId());
                     Content c = ContentAO.getContent(cid, false);
                     if (c == null) {
                         Log.error(SOURCE, "Content == null, associationId =" + a.getId(), null, null);
@@ -1100,17 +1098,14 @@ public class ContentManagementService {
     public void modifyAssociation(Association association) throws SystemException {
         int aid = association.getAssociationId();
         if (aid != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(aid);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(aid);
             Content c = ContentAO.getContent(cid, true);
             Association old = AssociationAO.getAssociationById(association.getId());
             if (c != null && old != null) {
-                ContentIdentifier cidOldParent = new ContentIdentifier();
-                cidOldParent.setAssociationId(old.getParentAssociationId());
+                ContentIdentifier cidOldParent =  ContentIdentifier.fromAssociationId(old.getParentAssociationId());
                 Content oldParent = ContentAO.getContent(cidOldParent, true);
 
-                ContentIdentifier cidNewParent = new ContentIdentifier();
-                cidNewParent.setAssociationId(association.getParentAssociationId());
+                ContentIdentifier cidNewParent =  ContentIdentifier.fromAssociationId(association.getParentAssociationId());
                 Content newParent = ContentAO.getContent(cidNewParent, true);
 
                 String event = Event.MOVE_CONTENT;
@@ -1175,8 +1170,7 @@ public class ContentManagementService {
             int contentId = attachment.getContentId();
             // Må hente ut tilhørende contentobject for å vite om bruker er autorisert og at ikke vedlegget er slettet
             if (contentId != -1) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(contentId);
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
                 if (siteId != -1) {
                     cid.setSiteId(siteId);
                 }
@@ -1215,8 +1209,7 @@ public class ContentManagementService {
         }
 
         if (attachment.getContentId() != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(attachment.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized to add attachment", SOURCE);
@@ -1254,8 +1247,7 @@ public class ContentManagementService {
         title = attachment.getFilename();
 
         if (attachment.getContentId() != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(attachment.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized to delete attachment", SOURCE);

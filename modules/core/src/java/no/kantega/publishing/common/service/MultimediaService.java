@@ -71,8 +71,7 @@ public class MultimediaService {
         Multimedia multimedia = multimediaDao.getMultimedia(id);
 
         if (multimedia.getContentId() > 0) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(multimedia.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = ContentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
                 throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
@@ -239,8 +238,7 @@ public class MultimediaService {
 
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(contentId);
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
             Content content = ContentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);

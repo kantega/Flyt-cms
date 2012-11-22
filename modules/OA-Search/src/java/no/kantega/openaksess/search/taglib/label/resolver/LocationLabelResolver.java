@@ -28,8 +28,7 @@ public class LocationLabelResolver implements LabelResolver {
             retVal = site.getName();
         }else {
             int mostSpecificAssociation = getMostSpecificId(key);
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(mostSpecificAssociation);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(mostSpecificAssociation);
             Content content = ContentAO.getContent(cid, false);
             if (content != null) {
                 retVal = content.getTitle();

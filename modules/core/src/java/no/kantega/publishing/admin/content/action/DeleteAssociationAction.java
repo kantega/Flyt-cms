@@ -17,23 +17,21 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 
 public class DeleteAssociationAction implements Controller {
     private String errorView;
@@ -107,14 +105,12 @@ public class DeleteAssociationAction implements Controller {
                 } else {
                     Content current = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
                     if (current != null) {
-                        ContentIdentifier cid = new ContentIdentifier();
-                        cid.setAssociationId(current.getAssociation().getAssociationId());
+                        ContentIdentifier cid =  ContentIdentifier.fromAssociationId(current.getAssociation().getAssociationId());
                         if (aksessService.getContent(cid, false) == null) {
                             // The page the user is watching is deleted, show parent
                             int parentId = current.getAssociation().getParentAssociationId();
                             if (parentId > 0) {
-                                ContentIdentifier parentCid = new ContentIdentifier();
-                                parentCid.setAssociationId(parentId);
+                                ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(parentId);
                                 current = aksessService.getContent(parentCid, false);
                                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
                                 model.put("currentPage", current);

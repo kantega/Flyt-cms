@@ -75,8 +75,7 @@ public class EditContentHelper {
 
         if (param.getParentIds() == null) {
             // Parent ids not specified, create based on mainParent
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(param.getMainParentId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(param.getMainParentId());
 
             Content parent = aksessService.getContent(cid);
             List<Association> associations = parent.getAssociations();
@@ -153,8 +152,7 @@ public class EditContentHelper {
         content.setType(contentTemplate.getContentType());
 
         // Inherit owner, language etc from parent
-        ContentIdentifier parentCid = new ContentIdentifier();
-        parentCid.setAssociationId(param.getMainParentId());
+        ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(param.getMainParentId());
         Content parent = aksessService.getContent(parentCid);
         content.setSecurityId(parent.getSecurityId());
         content.setOwner(parent.getOwner());

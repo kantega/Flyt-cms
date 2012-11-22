@@ -23,8 +23,7 @@ public class ContentDocumentRetriever implements DocumentRetriever<Content> {
              contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
         }
 
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setContentId(id);
+        ContentIdentifier cid =  ContentIdentifier.fromContentId(id);
         try {
             return contentManagementService.getContent(cid);
         } catch (NotAuthorizedException e) {

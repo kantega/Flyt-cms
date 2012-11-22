@@ -130,8 +130,7 @@ public class LinkCheckerJob implements InitializingBean {
             try {
                 int i = Integer.parseInt(idPart);
                 try {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(i);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(i);
                     Content c = ContentAO.getContent(cid, true);
                     if(c != null) {
                         occurrence.setStatus(CheckStatus.OK);

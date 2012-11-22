@@ -31,8 +31,7 @@
     String contentname = "";
     if (value != null && value.length() > 0) {
         try {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(Integer.parseInt(value));
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(value));
             ContentManagementService cms = new ContentManagementService(request);
             Content c = cms.getContent(cid);
             if (c != null) {

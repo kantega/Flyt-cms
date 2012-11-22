@@ -41,8 +41,7 @@ public class IsEditableDraftTag extends ConditionalTagSupport {
         if (contentObject != null) {
             ContentManagementService cms = new ContentManagementService(request);
             SecuritySession securitySession = cms.getSecuritySession();
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(contentObject.getAssociation().getAssociationId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(contentObject.getAssociation().getAssociationId());
             try {
                 Content lastVersion = cms.getLastVersionOfContent(cid);
                 if (lastVersion != null && lastVersion.getStatus() == ContentStatus.DRAFT && securitySession.isAuthorized(lastVersion, Privilege.UPDATE_CONTENT)) {

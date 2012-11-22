@@ -16,25 +16,23 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.common.service.ContentManagementService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -53,8 +51,7 @@ public class SaveVersionAction extends AbstractSaveContentAction {
     Map<String, Object> getModel(Content content, HttpServletRequest request) {
         Map<String, Object> model = new HashMap<String, Object>();
 
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setContentId(content.getId());
+        ContentIdentifier cid =  ContentIdentifier.fromContentId(content.getId());
         cid.setLanguage(content.getLanguage());
 
         ContentManagementService cms = new ContentManagementService(request);

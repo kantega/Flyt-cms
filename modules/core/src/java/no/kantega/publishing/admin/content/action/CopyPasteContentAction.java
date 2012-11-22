@@ -99,8 +99,7 @@ public class CopyPasteContentAction implements Controller {
     private void copyContent(ContentManagementService aksessService, boolean textCopy, boolean pasteShortCut, int uniqueId, int newParentId, AssociationCategory category, Association parent, Association source) throws NotAuthorizedException {
         if (textCopy) {
             // Copy text from one page to a new page
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(source.getAssociationId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(source.getAssociationId());
             Content content = aksessService.getContent(cid);
 
             aksessService.copyContent(content, parent, category);

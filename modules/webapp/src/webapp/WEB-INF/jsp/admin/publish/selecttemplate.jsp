@@ -168,8 +168,7 @@
                                         }
                                     }
 
-                                    ContentIdentifier cid = new ContentIdentifier();
-                                    cid.setAssociationId(parentAssociation.getId());
+                                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(parentAssociation.getId());
                                     Content c = aksessService.getContent(cid);
                                     if (c != null) {
                                         if (path.size() > 0) {

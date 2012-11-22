@@ -92,8 +92,7 @@ public class ContentidAttribute extends Attribute {
         if (value != null) {
             String[] values = value.split(",");
             for (String v : values) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(Integer.parseInt(v));
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
                 cids.add(cid);
             }
         }

@@ -51,8 +51,7 @@
             int count = 0;
             while (i.hasNext()) {
                 ContentLock contentLock = (ContentLock) i.next();
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(contentLock.getContentId());
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(contentLock.getContentId());
                 Content c = cms.getContent(cid);
     %>
             <tr class="tableRow<%=count++%2%>" >

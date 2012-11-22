@@ -554,8 +554,7 @@ public class ContentQuery {
             } catch (NumberFormatException e) {
 
             }
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(id);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(id);
             this.contentList[i] = cid;
         }
     }

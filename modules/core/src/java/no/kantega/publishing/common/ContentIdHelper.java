@@ -73,20 +73,17 @@ public class ContentIdHelper {
                 throw new ContentNotFoundException(SOURCE, expr);
             }
 
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(pathElements[pathElements.length - exprLength]);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(pathElements[pathElements.length - exprLength]);
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.equalsIgnoreCase(".")) {
             // Hent fra denne siden
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(context.getAssociation().getAssociationId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(context.getAssociation().getAssociationId());
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.equalsIgnoreCase("group")) {
             // Hent fra group
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(context.getGroupId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(context.getGroupId());
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.startsWith("/+")) {
@@ -99,8 +96,7 @@ public class ContentIdHelper {
                 level = pathElements.length;
             }
 
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(pathElements[level]);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(pathElements[level]);
             return cid;
         } else if (expr.equalsIgnoreCase("next") || expr.equalsIgnoreCase("previous")){
 

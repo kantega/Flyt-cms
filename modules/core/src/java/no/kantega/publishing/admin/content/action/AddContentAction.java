@@ -113,8 +113,7 @@ public class AddContentAction extends AbstractController {
                     }
                 }
                 if (!found) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(parent1);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(parent1);
                     Content association = aksessService.getContent(cid);
                     if (association != null) {
                         // Check if user is authorized to publish here

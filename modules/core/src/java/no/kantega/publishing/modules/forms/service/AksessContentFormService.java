@@ -13,8 +13,7 @@ import no.kantega.publishing.security.SecuritySession;
 public class AksessContentFormService implements FormService {
     public Form getFormById(int formId) {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setContentId(formId);
+        ContentIdentifier cid =  ContentIdentifier.fromContentId(formId);
         try {
             Content content = cms.getContent(cid);
             return new AksessContentForm(content);

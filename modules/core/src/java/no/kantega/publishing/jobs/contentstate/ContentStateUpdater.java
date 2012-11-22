@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.jobs.contentstate;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
@@ -24,9 +27,6 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.NotAuthorizedException;
 
 public class ContentStateUpdater {
     public void expireContent() {
@@ -36,8 +36,7 @@ public class ContentStateUpdater {
             Log.info(this.getClass().getName(), "Looking for content that has expired", null, null);
             int i = 0;
             while((i = ContentAO.getNextExpiredContentId(i)) > 0) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(i);
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = ContentAO.getContent(cid, false);
                 if (content != null) {
                     int newVisibilityStatus = ContentVisibilityStatus.EXPIRED;
@@ -51,8 +50,7 @@ public class ContentStateUpdater {
 
             i = 0;
             while((i = ContentAO.getNextWaitingContentId(i)) > 0) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(i);
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = ContentAO.getContent(cid, false);
                 if (content != null) {
                     cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING);
@@ -70,8 +68,7 @@ public class ContentStateUpdater {
             int i = 0;
             Log.info(this.getClass().getName(), "Looking for content that needs activation", null, null);
             while((i = ContentAO.getNextActivationContentId(i)) > 0) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(i);
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = ContentAO.getContent(cid, true);
                 if (content != null) {
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {

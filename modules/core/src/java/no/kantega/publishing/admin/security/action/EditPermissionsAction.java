@@ -16,35 +16,36 @@
 
 package no.kantega.publishing.admin.security.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Permission;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.data.enums.NotificationPriority;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import no.kantega.publishing.security.service.SecurityService;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.security.service.SecurityService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.data.enums.NotificationPriority;
-import no.kantega.publishing.security.data.Permission;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.commons.client.util.RequestParameters;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class EditPermissionsAction extends AbstractController {
     public final static String PERMISSIONS_LIST = "tmpPermissionsList";
@@ -105,8 +106,7 @@ public class EditPermissionsAction extends AbstractController {
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();
                 if (objSecurityId != objectId) {
-                    ContentIdentifier inheritcid = new ContentIdentifier();
-                    inheritcid.setAssociationId(objSecurityId);
+                    ContentIdentifier inheritcid =  ContentIdentifier.fromAssociationId(objSecurityId);
                     Content inheritedFrom = aksessService.getContent(inheritcid);
                     if (inheritedFrom != null) {
                         inheritedTitle = inheritedFrom.getTitle();

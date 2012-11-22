@@ -105,8 +105,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
             while (!progressReporter.isFinished()){
                 try {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
-                    ContentIdentifier contentIdentifier = new ContentIdentifier();
-                    contentIdentifier.setContentId(id);
+                    ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(id);
                     progressReporter.reportProgress();
                     Content content = contentManagementService.getContent(contentIdentifier);
                     IndexableDocument indexableDocument = transformer.transform(content);

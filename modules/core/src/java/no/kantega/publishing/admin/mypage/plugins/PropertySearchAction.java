@@ -46,8 +46,7 @@ public class PropertySearchAction  implements Controller {
             ContentQuery query = new ContentQuery();
             int parent = param.getInt("parent");
             if (parent != -1) {
-                ContentIdentifier cidParent = new ContentIdentifier();
-                cidParent.setAssociationId(parent);
+                ContentIdentifier cidParent =  ContentIdentifier.fromAssociationId(parent);
                 query.setPathElementId(cidParent);
             }
 
