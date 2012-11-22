@@ -257,7 +257,8 @@ public class ContentIdentifier {
     }
 
     public static ContentIdentifier fromContentId(int contentId) {
-        ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(contentId);
+        ContentIdentifier contentIdentifier =  new ContentIdentifier();
+        contentIdentifier.setContentId(contentId);
         return contentIdentifier;
     }
 }
