@@ -2,7 +2,6 @@ package no.kantega.openaksess.search.solr.search;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import no.kantega.search.api.retrieve.DocumentRetriever;
 import no.kantega.search.api.search.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +26,6 @@ public class SolrSearcher implements Searcher {
 
     @Autowired
     private SolrServer solrServer;
-
-    private Map<String, DocumentRetriever> documentRetrievers;
 
     public SearchResponse search(SearchQuery query) {
         try {
@@ -252,7 +248,7 @@ public class SolrSearcher implements Searcher {
         String language = (String) result.getFieldValue("language");
         String languageSuffix = getLanguageSuffix(language);
         String description = getHighlightedDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
-        return new LazyObjectLoadingSearchResult((Integer) result.getFieldValue("id"),
+        return new SearchResult((Integer) result.getFieldValue("id"),
                 (Integer) result.getFieldValue("securityId"),
                 (String) result.getFieldValue("indexedContentType"),
                 (String) result.getFieldValue("title_" + languageSuffix),
@@ -274,29 +270,5 @@ public class SolrSearcher implements Searcher {
             }
         }
         return (String) result.getFieldValue(fieldname);
-    }
-
-    @Autowired
-    public void setDocumentTransformers(List<DocumentRetriever> documentRetrieverList){
-        documentRetrievers  = new HashMap<String, DocumentRetriever>();
-        for (DocumentRetriever documentTransformer : documentRetrieverList) {
-            documentRetrievers.put(documentTransformer.getSupportedContentType(), documentTransformer);
-        }
-    }
-
-    private class LazyObjectLoadingSearchResult extends SearchResult {
-        private final DocumentRetriever documentRetriever;
-        public LazyObjectLoadingSearchResult(int id, int securityId, String indexedContentType, String title, String description, String author, String url) {
-            super(id, securityId, indexedContentType, title, description, author, url);
-            documentRetriever = documentRetrievers.get(indexedContentType);
-            if(documentRetriever == null){
-                throw new IllegalStateException(String.format("Document retriever for %s is null", indexedContentType));
-            }
-        }
-
-        @Override
-        public Object getDocument() {
-            return documentRetriever.getObjectById(getId());
-        }
     }
 }

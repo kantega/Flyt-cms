@@ -29,7 +29,6 @@ public class SearchResult {
     private final String description;
     private final String author;
     private final String url;
-    private Object document;
     private final int securityId;
 
     /**
@@ -73,14 +72,6 @@ public class SearchResult {
 
     public String getUrl() {
         return url;
-    }
-
-    public Object getDocument() {
-        return document;
-    }
-
-    public void setDocument(Object document) {
-        this.document = document;
     }
 
     public int getSecurityId() {

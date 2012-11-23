@@ -26,7 +26,6 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
  * Performs search for Aksess content.
  */
 @Controller
-@RequestMapping("/oasearch")
 public class ContentSearchController implements AksessController {
     @Autowired
     private Searcher searcher;
