@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.solr;
 
-import no.kantega.publishing.common.data.Content;
 import no.kantega.search.api.search.*;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -66,7 +65,7 @@ public class SearcherIntegrationTest {
         SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue("Document was not Content", searchResult.getDocument() instanceof Content);
+                assertTrue("Document was not Content", searchResult.getIndexedContentType().equals("aksess-document"));
             }
         }, searchResponse);
     }
