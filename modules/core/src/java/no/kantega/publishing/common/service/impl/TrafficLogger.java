@@ -74,6 +74,8 @@ public class TrafficLogger {
         botsAndSpiders.add("TurnitinBot");
         botsAndSpiders.add("Exabot");
         botsAndSpiders.add("AhrefsBot");
+        botsAndSpiders.add("Java/");
+        botsAndSpiders.add("Commons-HttpClient");
     }
 
     static {
