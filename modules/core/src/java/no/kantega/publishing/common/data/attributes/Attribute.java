@@ -390,8 +390,7 @@ public abstract class Attribute {
             Site site = SiteCache.getSiteById(siteId);
             // Dersom site er angitt i hideInSites skal den ikke vises
             if (site != null && hideInSites != null) {
-                for (int i = 0; i < hideInSites.length; i++) {
-                    String alias = hideInSites[i];
+                for (String alias : hideInSites) {
                     if (alias.equalsIgnoreCase(site.getAlias())) {
                         return true;
                     }
@@ -399,8 +398,7 @@ public abstract class Attribute {
             }
             // Dersom site er angitt i showInSites skal den vises
             if (site != null && showInSites != null) {
-                for (int i = 0; i < showInSites.length; i++) {
-                    String alias = showInSites[i];
+                for (String alias : showInSites) {
                     if (alias.equalsIgnoreCase(site.getAlias())) {
                         return false;
                     }

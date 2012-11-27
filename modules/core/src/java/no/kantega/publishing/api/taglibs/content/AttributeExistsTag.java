@@ -19,13 +19,13 @@ package no.kantega.publishing.api.taglibs.content;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.security.SecuritySession;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
+
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
  *
@@ -87,23 +87,28 @@ public class AttributeExistsTag extends ConditionalTagSupport {
             if (contentObject == null) {
                 contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
             }
-            GetAttributeCommand cmd = new GetAttributeCommand();
-            cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
-            cmd.setProperty(AttributeProperty.VALUE);
-            cmd.setAttributeType(attributeType);
 
-            SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
-
-            String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
-            if (result != null && result.length() > 0) {
+            if (contentObject != null &&
+                    contentHasAttributeAndAttributeIsNotBlank(contentObject)) {
                 return !negate;
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
         }
 
         return negate;
+    }
+
+    /*
+     * Returns true if content has an attribute with the name specified for this tag and
+     * the attribute is non blank or the attribute is an instance of RepeaterAttribute.
+     * This is because RepeaterAttriubte.getValue() always returns null.
+     *
+     */
+    private boolean contentHasAttributeAndAttributeIsNotBlank(Content content) {
+        Attribute attribute;
+        return (attribute = content.getAttribute(name, attributeType)) != null &&
+                isNotBlank(attribute.getValue());
     }
 
     public int doEndTag() throws JspException  {
