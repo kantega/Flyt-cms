@@ -99,16 +99,9 @@ public class AttributeExistsTag extends ConditionalTagSupport {
         return negate;
     }
 
-    /*
-     * Returns true if content has an attribute with the name specified for this tag and
-     * the attribute is non blank or the attribute is an instance of RepeaterAttribute.
-     * This is because RepeaterAttriubte.getValue() always returns null.
-     *
-     */
     private boolean contentHasAttributeAndAttributeIsNotBlank(Content content) {
-        Attribute attribute;
-        return (attribute = content.getAttribute(name, attributeType)) != null &&
-                isNotBlank(attribute.getValue());
+        Attribute attribute = content.getAttribute(name, attributeType);
+        return attribute != null && isNotBlank(attribute.getValue());
     }
 
     public int doEndTag() throws JspException  {

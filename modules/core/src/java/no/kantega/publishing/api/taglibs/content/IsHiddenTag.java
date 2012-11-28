@@ -77,11 +77,9 @@ public class IsHiddenTag extends ConditionalTagSupport {
                 }
             }
         } catch (InvalidTemplateException ite) {
-            System.err.println(ite);
             Log.error(SOURCE, ite);
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e);
         }
 
