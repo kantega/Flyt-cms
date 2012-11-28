@@ -454,7 +454,8 @@ openaksess.content = {
             infoslider.infoslider('replaceContentIfOpen', infosliderTrigger[0], content);
 
             //Toggle the info slider upon trigger click.
-            infosliderTrigger.unbind('click').bind('click', function(){
+            infosliderTrigger.unbind('click').bind('click', function(event){
+                event.preventDefault();
                 openaksess.common.debug("openaksess.content.contentstatus.bindInfoSliderTrigger(): click");
                 infoslider.infoslider('toggle', infosliderTrigger[0], content);
             }).show();
