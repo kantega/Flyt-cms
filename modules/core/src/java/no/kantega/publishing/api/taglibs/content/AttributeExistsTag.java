@@ -100,7 +100,7 @@ public class AttributeExistsTag extends ConditionalTagSupport {
     }
 
     private boolean contentHasAttributeAndAttributeIsNotBlank(Content content) {
-        Attribute attribute = content.getAttribute(name, attributeType);
+        Attribute attribute = content.getAttribute(AttributeTagHelper.getAttributeName(pageContext, name, repeater), attributeType);
         return attribute != null && isNotBlank(attribute.getValue());
     }
 
