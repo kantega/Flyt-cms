@@ -22,12 +22,15 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
+
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  *
@@ -39,6 +42,7 @@ public class SetVariableTag extends TagSupport {
     private String attribute = null;
     private String contentId = null;
     private String collection = null;
+    private String repeater = null;
     private String format = null;
     private String property = AttributeProperty.HTML;
     private String defaultValue = null;
@@ -57,6 +61,10 @@ public class SetVariableTag extends TagSupport {
 
     public void setCollection(String collection) {
         this.collection = collection;
+    }
+
+    public void setRepeater(String repeater) {
+        this.repeater = repeater;
     }
 
     public void setContentid(String contentId) {
@@ -110,10 +118,10 @@ public class SetVariableTag extends TagSupport {
     public int doStartTag() throws JspException {
         try {
             if (contentObject == null) {
-                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
+                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
             }
             GetAttributeCommand cmd = new GetAttributeCommand();
-            cmd.setName(attribute);
+            cmd.setName(AttributeTagHelper.getAttributeName(pageContext, attribute, repeater));
             cmd.setProperty(property);
             cmd.setMaxLength(maxlen);
             cmd.setAttributeType(attributeType);
@@ -143,6 +151,7 @@ public class SetVariableTag extends TagSupport {
         attribute = null;
         contentId = null;
         collection = null;
+        repeater = null;
         format = null;
         defaultValue = null;
         property = AttributeProperty.HTML;

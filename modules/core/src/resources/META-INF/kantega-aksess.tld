@@ -685,6 +685,12 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <description>For DateAttribute specifies date format, using SimpleDateFormat</description>
             <name>format</name>
             <required>false</required>
