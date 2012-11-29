@@ -16,104 +16,20 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 /**
- *
+ * Determines whether an attribute exists and has value.
+ * @see AttributeNotExistsTag
  */
-public class AttributeExistsTag extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.AttributeExistsTag";
+public class AttributeExistsTag extends AbstractAttributeConditionTag {
 
-    private String name = null;
-    private String contentId = null;
-    private String collection = null;
-    private boolean negate = false;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
-    private Content contentObject = null;
-    private String repeater;
 
-    private boolean inheritFromAncestors = false;
-
-    public void setName(String name) {
-        this.name = name.toLowerCase();
-    }
-
-    public void setCollection(String collection) {
-        this.collection = collection;
-    }
-
-    public void setContentid(String contentId) {
-        if (contentId != null && contentId.length() == 0) {
-            contentId = null;
-        }
-        this.contentId = contentId;
-    }
-
-    public void setObj(Content obj) {
-        this.contentObject = obj;
-    }
-
-    public void setNegate(boolean negate) {
-        this.negate = negate;
-    }
-
-    public void setAttributetype(String attr) {
-        if (attr.equalsIgnoreCase("metadata")) {
-            attributeType = AttributeDataType.META_DATA;
-        } else {
-            attributeType = AttributeDataType.CONTENT_DATA;
-        }
-    }
-
-    public void setInheritfromancestors(boolean inheritFromAncestors) {
-        this.inheritFromAncestors = inheritFromAncestors;
-    }
-
-    public void setRepeater(String repeater) {
-        this.repeater = repeater;
-    }
-
-    protected boolean condition() {
-        try {
-            if (contentObject == null) {
-                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
-            }
-
-            if (contentObject != null &&
-                    contentHasAttributeAndAttributeIsNotBlank(contentObject)) {
-                return !negate;
-            }
-        } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-        }
-
-        return negate;
-    }
-
-    private boolean contentHasAttributeAndAttributeIsNotBlank(Content content) {
-        Attribute attribute = content.getAttribute(AttributeTagHelper.getAttributeName(pageContext, name, repeater), attributeType);
+    @Override
+    protected boolean evaluateCondition(Content content, Attribute attribute) {
         return attribute != null && isNotBlank(attribute.getValue());
-    }
-
-    public int doEndTag() throws JspException  {
-        contentId = null;
-        name = null;
-        collection = null;
-        attributeType = AttributeDataType.CONTENT_DATA;
-        negate = false;
-        inheritFromAncestors = false;
-        contentObject = null;
-        repeater = null;
-        
-        return super.doEndTag();
     }
 }
