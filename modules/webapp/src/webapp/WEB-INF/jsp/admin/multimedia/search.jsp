@@ -34,32 +34,6 @@
                 var id = $(event.target).attr("href");
                 window.parent.openaksess.multimedia.triggerMultimediaupdateEvent(id);
             });
-
-            if ($(event.target).hasClass("name")) {
-                event.stopPropagation();
-                openaksess.multimedia.editMediaName($media);
-            } else if ($media.size() > 0) {
-                if ($media.hasClass("folder")) {
-                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): folder click recieved");
-                    if (openaksess.multimedia.isNameEditInProgress($media)) {
-                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
-                        openaksess.multimedia.updateMediaName($media);
-                    } else {
-                        var idAttr = $media.attr("id"),
-                            idClicked = idAttr.substring("Media".length, idAttr.length);
-                        openaksess.multimedia.triggerMultimediaupdateEvent(idClicked);
-                    }
-                } else if ($media.hasClass("media")) {
-                    openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): media click recieved");
-                    if (openaksess.multimedia.isNameEditInProgress($media)) {
-                        openaksess.common.debug("openaksess.multimedia.addMediaitemClickListeners(): Name edit in progress");
-                        openaksess.multimedia.updateMediaName($media);
-                    } else {
-                        window.location.href = $media.find(".icon a").attr("href");
-                    }
-                }
-            }
-
         });
     </script>
 </kantega:section>
