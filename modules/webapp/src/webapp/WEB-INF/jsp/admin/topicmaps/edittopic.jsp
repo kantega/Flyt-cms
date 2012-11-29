@@ -37,6 +37,7 @@
 </kantega:section>
 
 <kantega:section id="body">
+    <%@ include file="../../admin/layout/fragments/infobox.jsp" %>
     <form action="EditTopic.action" method="POST" id="EditTopicForm">
         <c:if test="${associatedTopicId != null}">
             <%-- When creating a new topic, a association to another topic can be created at the same time --%>

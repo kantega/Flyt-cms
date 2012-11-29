@@ -51,6 +51,10 @@ public class ValidationErrors {
         errors.add(new ValidationError(field, message));
     }
 
+    public void add(ValidationError error) {
+        errors.add(error);
+    }
+
     /**
      * Get number of validation errors
      * @return
