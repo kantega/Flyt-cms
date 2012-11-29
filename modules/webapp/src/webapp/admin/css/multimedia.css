@@ -125,6 +125,15 @@ a.file {
     width: 120px;
 }
 
+.mediaInfo .showfolder {
+    display: block;
+    margin-top: 5px;
+    font-weight: bold;
+    padding-left: 20px;
+    background: url("../bitmaps/common/navigator/folder.png") no-repeat top left;
+}
+
+
 #CropOptions {
     margin-top: 20px;
 }
