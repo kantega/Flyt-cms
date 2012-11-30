@@ -185,31 +185,38 @@ openaksess.content = {
      * Registers click event actions to each tool
      */
     bindToolButtons : function() {
-        $("#ToolsMenu .button .newSubpage").click(function(){
+        $("#ToolsMenu .button .newSubpage").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.newSubpage(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .delete").click(function(){
+        $("#ToolsMenu .button .delete").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.deleteItem(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .cut").click(function(){
+        $("#ToolsMenu .button .cut").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.cut(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .copy").click(function(){
+        $("#ToolsMenu .button .copy").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.copy(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .paste").click(function(){
+        $("#ToolsMenu .button .paste").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.paste(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .displayPeriod").click(function(e){
+        $("#ToolsMenu .button .displayPeriod").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.displayPeriod(stateHandler.getState());
             return false;
         });
-        $("#ToolsMenu .button .privileges").click(function(){
+        $("#ToolsMenu .button .privileges").click(function(event){
+            if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.managePrivileges(stateHandler.getState());
             return false;
         });
