@@ -389,7 +389,8 @@ $.widget("ui.infoslider", {
         opener: undefined,
         floated: true,
         cssClasses : '',
-        resizable: false
+        resizable: false,
+        height: 'auto'
     },
 
     _init: function(){
@@ -483,7 +484,7 @@ $.widget("ui.infoslider", {
                 .wrapInner('<div class="slidercontent"/>')
                 .removeClass()
                 .addClass(this.options.sliderCssClass + " " + this.options.cssClasses)
-                .css({height: 'auto', top: 'auto'});
+                .css({height: this.options.height, top: 'auto'});
         this._applyCloser();
         this._setFloat();
         this._setResizability();
