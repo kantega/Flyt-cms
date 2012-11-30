@@ -29,7 +29,7 @@
     <dwr:configuration>
         <dwr:convert type="bean" class="no.kantega.publishing.admin.preferences.UserPreference" />
     </dwr:configuration>
-    <dwr:annotation-config/>
+    <dwr:annotation-config id="oa-annot-config"/>
     <dwr:url-mapping/>
     <dwr:controller id="dwrController" debug="true"/>
 
