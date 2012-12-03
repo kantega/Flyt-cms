@@ -16,102 +16,19 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.common.data.attributes.Attribute;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 /**
- *
+ * Determines whether an attribute exists or has value.
+ * @see AttributeExistsTag
  */
-public class AttributeNotExistsTag extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.AttributeNotExistsTag";
+public class AttributeNotExistsTag extends AbstractAttributeConditionTag {
 
-    private String name = null;
-    private String contentId = null;
-    private String collection = null;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
-    private Content contentObject = null;
-    private String repeater = null;
-
-    private boolean inheritFromAncestors = false;
-
-    public void setName(String name) {
-        this.name = name.toLowerCase();
+    @Override
+    protected boolean evaluateCondition(Content content, Attribute attribute) {
+        return attribute == null || isBlank(attribute.getValue());
     }
-
-    public void setCollection(String collection) {
-        this.collection = collection;
-    }
-
-    public void setContentid(String contentId) {
-        if (contentId != null && contentId.length() == 0) {
-            contentId = null;
-        }
-        this.contentId = contentId;
-    }
-
-    public void setObj(Content obj) {
-        this.contentObject = obj;
-    }
-
-    public void setAttributetype(String attr) {
-        if (attr.equalsIgnoreCase("metadata")) {
-            attributeType = AttributeDataType.META_DATA;
-        } else {
-            attributeType = AttributeDataType.CONTENT_DATA;
-        }
-    }
-
-    public void setInheritfromancestors(boolean inheritFromAncestors) {
-        this.inheritFromAncestors = inheritFromAncestors;
-    }
-
-    public void setRepeater(String repeater) {
-        this.repeater = repeater;
-    }
-
-    protected boolean condition()  {
-        try {
-            if (contentObject == null) {
-                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
-            }
-
-            GetAttributeCommand cmd = new GetAttributeCommand();
-            cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
-            cmd.setAttributeType(attributeType);
-            cmd.setProperty(AttributeProperty.VALUE);
-
-            SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
-            String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
-            if (result == null || result.length() == 0) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            System.err.println(e);
-            Log.error(SOURCE, e, null, null);
-        }
-
-        return true;
-    }
-
-    public int doEndTag() throws JspException  {
-        contentId = null;
-        name = null;
-        collection = null;
-        attributeType = AttributeDataType.CONTENT_DATA;
-        inheritFromAncestors = false;
-        contentObject = null;
-        repeater = null;
-
-        return super.doEndTag();
-    }    
 }
