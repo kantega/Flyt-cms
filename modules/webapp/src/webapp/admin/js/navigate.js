@@ -323,7 +323,7 @@ openaksess.search = {
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
             var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
-            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false}).infoslider('open', document.getElementById("SearchForm"), content);
+            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false, height: '360px'}).infoslider('open', document.getElementById("SearchForm"), content);
         }
     },
 
