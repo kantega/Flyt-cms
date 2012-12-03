@@ -28,6 +28,8 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 /**
  *
  */
@@ -585,8 +587,8 @@ public class Content extends BaseObject {
     }
 
     public Attribute getAttribute(String name, int type) {
-        if (name == null || name.length() == 0) {
-            return null;
+        if (isBlank(name)) {
+            throw new IllegalArgumentException("Name was blank");
         }
         List<Attribute> list = getAttributeList(name, type);
 

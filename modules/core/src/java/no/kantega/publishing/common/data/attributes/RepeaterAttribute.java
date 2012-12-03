@@ -86,4 +86,20 @@ public class RepeaterAttribute extends Attribute {
     public String getRenderer() {
         return "repeater";
     }
+
+    /**
+     * A repeaterattribute is supposed to be iterated over, either with RepeatAttributesTag or through .getIterator,
+     * this method does return the string representation of its rows.
+     * The reason for this overrided method is that for instance the aksess:exists-tag fetches the attribute and checks
+     * whether the attribute string value has a non-blank value.
+     * @return either Repeaterattribute with {n} rows, or super.getValue() which most likely is null.
+     */
+    @Override
+    public String getValue() {
+        int size = rows.size();
+        if(size > 0){
+            return "Repeaterattribute with " + size + " rows";
+        }
+        return super.getValue();
+    }
 }
