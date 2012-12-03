@@ -89,6 +89,9 @@
                         </c:if>
                         <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/><br />
                         <kantega:label key="aksess.multimedia.nousages" />: ${media.noUsages}
+                        <c:if test="${mediaSearch && media.parentId > 0}">
+                            <a href="${media.parentId}" class="showfolder"><kantega:label key="aksess.multimedia.showfolder"/></a>
+                        </c:if>
                     </div>
                 </div>
             </div>
