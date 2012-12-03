@@ -16,10 +16,10 @@
 
 package no.kantega.commons.client.util;
 
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -49,6 +49,10 @@ public class ValidationErrors {
      */
     public void add(String field, String message) {
         errors.add(new ValidationError(field, message));
+    }
+
+    public void add(ValidationError error) {
+        errors.add(error);
     }
 
     /**

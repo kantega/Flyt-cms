@@ -18,12 +18,15 @@
 package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationError;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.topicmaps.action.util.TopicMapHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -117,6 +120,7 @@ public class EditTopicAction extends AbstractController {
         if (topic.getId() == null) {
             topic.setId(TopicMapHelper.createTopicIdFromName(name));
             if (topicMapService.getTopic(topic.getTopicMapId(), topic.getId()) != null) {
+                addValidationError(request, "aksess.topicmaps.admin.error.topicExists", Pair.of("baseName", topic.getBaseName()));
                 // Topic id exists
                 return handleView(topic, request, response);
             }
@@ -156,6 +160,24 @@ public class EditTopicAction extends AbstractController {
         topic.addOccurence(descriptionTopic);
         return topic;
     }
+
+    private void addValidationError(HttpServletRequest request, String errorCode, Pair<String, String> ... parameters) {
+        ValidationErrors errors;
+        if  (request.getAttribute("errors") != null) {
+            errors = (ValidationErrors) request.getAttribute("errors");
+        } else {
+            errors = new ValidationErrors();
+            request.setAttribute("errors", errors);
+        }
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (parameters != null) {
+            for (Pair<String, String> p : parameters) {
+                params.put(p.getKey(), p.getValue());
+            }
+        }
+        errors.add(new ValidationError(null, errorCode, params));
+    }
+
 
 
     public void setView(String view) {
