@@ -59,7 +59,8 @@ public class SearchEventLogAction extends AbstractController {
                     .setTo(end)
                     .setUserId(p.getString("userid"))
                     .setSubjectName(p.getString("subject"))
-                    .setEventName(p.getString("event"));
+                    .setEventName(p.getString("event"))
+                    .setSubjectType(-1);
             List events = eventLog.getQueryResult(eventLogQuery);
             model.put("events", events);
 

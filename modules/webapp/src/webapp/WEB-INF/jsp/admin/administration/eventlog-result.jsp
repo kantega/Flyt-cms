@@ -88,7 +88,7 @@
                     %>
                 </td>
                 <td><%=event.getUserId()%></td>
-                <td><a href="http://www.ratite.com/whois/whois.cgi?domain=<%=event.getRemoteAddress()%>" target="ipinfo"><%=event.getRemoteAddress()%></a></td>
+                <td><%if (event.getRemoteAddress() != null){%><a href="http://www.ratite.com/whois/whois.cgi?domain=<%=event.getRemoteAddress()%>" target="ipinfo"><%=event.getRemoteAddress()%></a><%}%></td>
             </tr>
             <%
                 }
