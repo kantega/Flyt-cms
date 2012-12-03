@@ -168,6 +168,9 @@ public class MailSender {
             // Send meldingen
             Transport.send(message);
 
+            EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
+            eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
+
             // Logg sending
             Log.debug(SOURCE, "Sending email to " + to + " with subject " + subject, null, null);
         } catch (MessagingException e) {
