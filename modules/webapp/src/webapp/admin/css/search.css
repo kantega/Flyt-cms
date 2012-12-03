@@ -6,6 +6,8 @@ div.search .searchicon {
     position: relative;
     height: 35px;
     width: 35px;
+    left:0;
+    top:0;
 }
 
 #SearchResult {

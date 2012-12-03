@@ -28,6 +28,12 @@
                 placeholder : "../bitmaps/blank.gif",
                 container: $("#SearchResult")
             });
+
+            $("a.showfolder").click(function(event) {
+                event.preventDefault();
+                var id = $(event.target).attr("href");
+                window.parent.openaksess.multimedia.triggerMultimediaupdateEvent(id);
+            });
         });
     </script>
 </kantega:section>
