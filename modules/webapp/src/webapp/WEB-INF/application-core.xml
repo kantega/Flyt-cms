@@ -279,6 +279,8 @@
                 <value>TurnitinBot</value>
                 <value>Exabot</value>
                 <value>AhrefsBot</value>
+                <value>Java</value>
+                <value>Commons-HttpClient</value>
             </list>
         </property>
     </bean>
