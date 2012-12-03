@@ -21,7 +21,7 @@ import com.google.common.collect.Collections2;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.traffic.TrafficLogger;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.scheduling.annotation.Async;
 
 import javax.annotation.Nonnull;
@@ -30,14 +30,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TrafficLoggerJdbcImpl extends JdbcDaoSupport implements TrafficLogger {
+public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implements TrafficLogger {
 
     private Collection<Pattern> searchEnginePatterns = Collections.emptyList();
     private List<String> botsAndSpiders = Collections.emptyList();
@@ -65,11 +62,22 @@ public class TrafficLoggerJdbcImpl extends JdbcDaoSupport implements TrafficLogg
             if (referer != null && referer.length() > 255) {
                 referer = referer.substring(0, 254);
             }
-            getJdbcTemplate().update("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider, UserAgent) values(?,?,?,?,?,?,?,?,?,?,?)",
-                    time, id, language, remoteAddr, referer, sessionId, siteId, refInfo == null ? null  : refInfo.getHost(),
-                    refInfo == null ? null : refInfo.getQuery(),
-                    isBotOrSpider(userAgent),
-                    userAgent != null && userAgent.length() > 255 ? userAgent.substring(0,255) : userAgent);
+
+            Map<String, Object> parameters = new HashMap<String, Object>();
+
+            parameters.put("Time", time);
+            parameters.put("ContentId", id);
+            parameters.put("Language", language);
+            parameters.put("RemoteAddress", remoteAddr);
+            parameters.put("Referer", referer);
+            parameters.put("SessionId", sessionId);
+            parameters.put("SiteId", siteId);
+            parameters.put("RefererHost", refInfo == null ? null : refInfo.getHost());
+            parameters.put("RefererQuery", refInfo == null ? null : refInfo.getQuery());
+            parameters.put("IsSpider", isBotOrSpider(userAgent));
+            parameters.put("UserAgent", userAgent != null && userAgent.length() > 255 ? userAgent.substring(0, 255) : userAgent);
+            getNamedParameterJdbcTemplate().update("insert into trafficlog (Time, ContentId, Language, RemoteAddress, Referer, SessionId, SiteId, RefererHost, RefererQuery, IsSpider, UserAgent) values(:Time, :ContentId, :Language, :RemoteAddress, :Referer, :SessionId, :SiteId, :RefererHost, :RefererQuery, :IsSpider, :UserAgent)",
+                    parameters);
 
         }
     }
