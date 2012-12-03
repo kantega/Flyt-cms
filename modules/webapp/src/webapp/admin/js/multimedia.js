@@ -454,9 +454,9 @@ openaksess.admin.setLayoutSpecificSizes = function(elementProperties) {
             $navigation.width(preferredNavigationWidth + "px");
             navigationWidth = preferredNavigationWidth;
         }
-        $mainPane.width( (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width) + 'px');
+        $mainPane.width( (elementProperties.window.width-navigationWidth-elementProperties.framesplit.width-1) + 'px');
     } else {
-        $mainPane.width( (elementProperties.window.width-elementProperties.framesplit.width-$("#SideBar").outerWidth(true)) + 'px');
+        $mainPane.width( (elementProperties.window.width-elementProperties.framesplit.width-$("#SideBar").outerWidth(true)-1) + 'px');
     }
 
     var $multimediaFolders = $("#MultimediaFolders");
