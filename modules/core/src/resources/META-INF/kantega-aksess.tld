@@ -271,13 +271,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Name of a repeater, use with repeatattributes tag</description>
-            <name>repeater</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Name of a repeater, use with repeatattributes tag</description>
+            <description>Name of the repeater containing the attribute, use with repeatattributes tag</description>
             <name>repeater</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
@@ -687,6 +681,12 @@
         <attribute>
             <description>Id or alias of other page to get attribute from</description>
             <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
