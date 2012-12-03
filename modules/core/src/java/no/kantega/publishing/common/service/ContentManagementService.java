@@ -427,6 +427,7 @@ public class ContentManagementService {
         sourceContent.setVersion(1);
 
         sourceContent.setAlias("");
+        sourceContent.setLocked(false);
 
         // Ta egenskaper fra ny parent
         sourceContent.setSecurityId(destParent.getSecurityId());
