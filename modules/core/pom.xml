@@ -28,6 +28,10 @@
 
     <name>OpenAksess core</name>
 
+    <properties>
+        <wro.version>1.6.1</wro.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -455,7 +459,7 @@
         <dependency>
             <groupId>ro.isdc.wro4j</groupId>
             <artifactId>wro4j-core</artifactId>
-            <version>1.6.1</version>
+            <version>${wro.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -467,7 +471,7 @@
         <dependency>
             <groupId>ro.isdc.wro4j</groupId>
             <artifactId>wro4j-extensions</artifactId>
-            <version>1.5.0</version>
+            <version>${wro.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -500,6 +504,10 @@
                 <exclusion>
                     <groupId>nz.co.edmi</groupId>
                     <artifactId>bourbon-gem-jar</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.sommeri</groupId>
+                    <artifactId>less4j</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
