@@ -23,6 +23,10 @@ em {
 	/*bringing italics back to the em element*/
 	font-style:italic;
 }
+em>strong, strong>em {
+    font-style: italic;
+    font-weight: bold;
+}
 blockquote,ul,ol,dl {
 	/*giving blockquotes and lists room to breath*/
 	margin:1em;
