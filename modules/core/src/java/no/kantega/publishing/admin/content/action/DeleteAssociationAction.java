@@ -17,23 +17,22 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 
 public class DeleteAssociationAction implements Controller {
     private String errorView;
@@ -58,6 +57,12 @@ public class DeleteAssociationAction implements Controller {
 
             // Get content (page) that association points to
             Content content = aksessService.getContent(cid);
+
+            if(content == null){
+                Log.error("DeleteAssociationAction", "Tried to delete non-existing content");
+                model.put("error", "aksess.confirmdelete.doesnotexist");
+                return new ModelAndView(errorView, model);
+            }
 
             String contentTitle = "";
             if (content.getTitle() != null) {
