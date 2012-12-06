@@ -61,7 +61,7 @@
     </group>
 
     <group name="miniaksess">
-        <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
+        <css>/admin/css/jquery-ui-1.9.2.custom.smoothness.min.css</css>
         <css>/admin/css/jquery-ui-additions.css</css>
         <css>/admin/css/miniaksess.css</css>
         <js>/admin/js/common.js</js>
@@ -145,15 +145,14 @@
     </group>
 
     <group name="jquery-core">
-        <js>/aksess/js/jquery-1.5.2.min.js</js>
+        <js>/aksess/js/jquery-1.8.3.min.js</js>
     </group>
 
     <group name="jquery-all">
         <group-ref>jquery-core</group-ref>
-        <css>/admin/css/jquery-ui-1.8.1.custom.css</css>
+        <css>/admin/css/jquery-ui-1.9.2.custom.smoothness.min.css</css>
         <css>/admin/css/jquery-ui-additions.css</css>
-        <js>/admin/js/jquery.dimensions.pack.js</js>
-        <js>/admin/js/jquery-ui-1.8.14.custom.min.js</js>
+        <js>/admin/js/jquery-ui-1.9.2.custom.js</js>
         <js>/admin/js/jquery.contextMenu.js</js>
         <js>/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
         <js>/admin/js/jquery.dataTables.min.js</js>

@@ -129,7 +129,6 @@ openaksess.common = {
             autoOpen: true,
             close: function() {
                 openaksess.common.debug("openaksess.common.modalWindow.close()");
-                $(this).remove();
             },
             overlay: {
                 opacity: 0.2,
