@@ -49,24 +49,30 @@ public class ContentSearchController implements AksessController {
 
             String urlPrefix = "?";
 
-            int currentPage = searchResponse.getCurrentPage();
-            if (currentPage > 0) {
-                String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
-                model.put("prevPageUrl", urlPrefix + prevPageUrl);
-            }
-
-            int numberOfPages = searchResponse.getNumberOfPages();
-            if (currentPage < numberOfPages) {
-                String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
-                model.put("nextPageUrl", urlPrefix + nextPageUrl);
-            }
-
-            if (numberOfPages > 1) {
-                model.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
-            }
+            addLinks(model, searchResponse, urlPrefix);
         }
 
         return model;
+    }
+
+    private void addLinks(Map<String, Object> model, SearchResponse searchResponse, String urlPrefix) {
+        Map<String, Object> links = new HashMap<String, Object>();
+        model.put("links", links);
+        int currentPage = searchResponse.getCurrentPage();
+        if (currentPage > 0) {
+            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
+            links.put("prevPageUrl", urlPrefix + prevPageUrl);
+        }
+
+        int numberOfPages = searchResponse.getNumberOfPages();
+        if (currentPage < numberOfPages) {
+            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
+            links.put("nextPageUrl", urlPrefix + nextPageUrl);
+        }
+
+        if (numberOfPages > 1) {
+            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
+        }
     }
 
     @RequestMapping("/autosuggest")

@@ -7,7 +7,7 @@ import java.util.*;
  * @see SearchQuery
  */
 public class SearchResponse {
-    private final Number numFound;
+    private final Number numberOfHits;
     private int queryTime;
     private List<GroupResultResponse> groupResultResponses;
     private SearchQuery query;
@@ -15,23 +15,23 @@ public class SearchResponse {
     private Map<String, Collection<FacetResult>> facets;
     private final String ALL_DOCUMENTS_GROUPNAME = "all";
 
-    public SearchResponse(SearchQuery query, long numFound, int queryTime, List<SearchResult> searchResults) {
+    public SearchResponse(SearchQuery query, long numberOfHits, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
-        this.numFound = numFound;
+        this.numberOfHits = numberOfHits;
         this.queryTime = queryTime;
-        groupResultResponses = Arrays.asList(new GroupResultResponse(ALL_DOCUMENTS_GROUPNAME, numFound, searchResults));
+        groupResultResponses = Arrays.asList(new GroupResultResponse(ALL_DOCUMENTS_GROUPNAME, numberOfHits, searchResults));
 
     }
 
-    public SearchResponse(SearchQuery query, int matches, int qTime, List<GroupResultResponse> groupResultResponses) {
+    public SearchResponse(SearchQuery query, int matches, int queryTime, List<GroupResultResponse> groupResultResponses) {
         this.query = query;
-        this.numFound = matches;
-        this.queryTime = qTime;
+        this.numberOfHits = matches;
+        this.queryTime = queryTime;
         this.groupResultResponses = groupResultResponses;
     }
 
     public Number getNumberOfHits() {
-         return numFound;
+         return numberOfHits;
     }
 
     /**
@@ -81,7 +81,7 @@ public class SearchResponse {
     }
 
     public int getNumberOfPages() {
-        return (int) Math.ceil(numFound.intValue() / query.getResultsPerPage());
+        return (int) Math.ceil(numberOfHits.intValue() / query.getResultsPerPage());
     }
 
     public void setFacets(Map<String,Collection<FacetResult>> facets) {
