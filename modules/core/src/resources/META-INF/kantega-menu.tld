@@ -355,5 +355,40 @@
             ]]>
         </example>
     </tag>
+
+    <tag>
+        <description>Print a div with the pathentries to a page. The difference from getnavigationpath
+        is that it just prints the path, and is based on the association id of the page, rather than
+        the page it self.</description>
+        <name>printpathelements</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.PrintPathElementsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The associationId of the item to print path elements for</description>
+            <name>associationId</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Custom cssclass for the path elements-div. Default is contentPath</description>
+            <name>cssClass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>String to separate path elements. Default is &gt;</description>
+            <name>separator</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                <menu:printpathelements associationId="${searchHit.securityId}"/>
+            ]]>
+        </example>
+    </tag>
 </taglib>
 

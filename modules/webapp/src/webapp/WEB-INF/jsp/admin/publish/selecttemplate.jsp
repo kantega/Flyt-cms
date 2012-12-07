@@ -1,4 +1,5 @@
 <%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
+<%@ page import="no.kantega.publishing.api.path.PathEntry" %>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache" %>
 <%@ page import="no.kantega.publishing.common.data.*" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>

@@ -16,23 +16,24 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
-
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.util.NavigatorUtil;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaMapEntry;
 import no.kantega.publishing.common.service.MultimediaService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NavigatorAction implements Controller {
 

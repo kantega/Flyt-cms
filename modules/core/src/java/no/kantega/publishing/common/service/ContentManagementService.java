@@ -27,6 +27,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;

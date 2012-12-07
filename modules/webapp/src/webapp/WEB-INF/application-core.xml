@@ -282,4 +282,8 @@
             </list>
         </property>
     </bean>
+
+    <bean class="no.kantega.publishing.common.ao.PathEntryAOLegacyImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 </beans>

@@ -17,13 +17,13 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.model.Clipboard;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.admin.model.Clipboard;
-import no.kantega.publishing.admin.AdminSessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 

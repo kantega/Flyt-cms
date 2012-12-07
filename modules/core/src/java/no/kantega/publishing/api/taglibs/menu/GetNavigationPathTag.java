@@ -17,9 +17,9 @@
 package no.kantega.publishing.api.taglibs.menu;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
