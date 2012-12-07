@@ -1,6 +1,7 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.AttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
@@ -19,26 +20,28 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
     private AttributeFactory attributeFactory;
 
     public Content getContent(ContentIdentifier cid, boolean isAdminMode) {
+        ContentIdHelper.setContentIdFromAssociation(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 
+        int contentId = cid.getContentId();
         if (isAdminMode) {
             if (requestedVersion == -1) {
                 // When in administration mode users should see last version
-                contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? order by ContentVersionId desc", cid.getContentId());
+                contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? order by ContentVersionId desc", contentId);
                 if (contentVersionId == -1) {
                     return null;
                 }
             } else {
-                contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by ContentVersionId desc", cid.getContentId(), requestedVersion);
+                contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by ContentVersionId desc", contentId, requestedVersion);
                 if (contentVersionId == -1) {
                     return null;
                 }
             }
         } else if(cid.getStatus() == ContentStatus.HEARING) {
             // Find version for hearing, if no hearing is found, active version is returned
-            int activeversion = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", cid.getContentId());
-            contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", cid.getContentId(), ContentStatus.HEARING, activeversion);
+            int activeversion = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", contentId);
+            contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING, activeversion);
         } else {
             // Others should see active version
             contentVersionId = -1;
@@ -54,7 +57,7 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
             // Get whatever version is active
             query.append(" and contentversion.IsActive = 1");
         }
-        query.append(" and content.ContentId = ").append(cid.getContentId()).append(" order by ContentVersionId");
+        query.append(" and content.ContentId = ").append(contentId).append(" order by ContentVersionId");
 
 
         // Get data from content and contentversion tables
@@ -82,7 +85,7 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
         getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", attributeRowMapper, content.getVersionId());
 
 
-        List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
+        List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
         content.setTopics(topics);
 
         return content;

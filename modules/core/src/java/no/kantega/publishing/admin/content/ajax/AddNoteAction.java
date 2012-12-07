@@ -55,16 +55,17 @@ public class AddNoteAction extends SimpleAdminController {
             ContentIdentifier cid = null;
             try {
                 cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                int contentId = cid.getContentId();
 
                 Note note = new Note();
                 note.setText(noteText);
                 note.setDate(new Date());
-                note.setContentId(cid.getContentId());
+                note.setContentId(contentId);
                 note.setAuthor(securitySession.getUser().getName());
 
                 notesDao.addNote(note);
-                int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-                ContentAO.setNumberOfNotes(cid.getContentId(), count);
+                int count = notesDao.getNotesByContentId(contentId).size();
+                ContentAO.setNumberOfNotes(contentId, count);
 
             } catch (ContentNotFoundException e) {
                 // Do nothing

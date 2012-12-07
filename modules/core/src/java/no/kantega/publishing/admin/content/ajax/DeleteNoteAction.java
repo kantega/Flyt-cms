@@ -34,8 +34,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
 public class DeleteNoteAction  extends SimpleAdminController {
     @Autowired
@@ -51,8 +49,6 @@ public class DeleteNoteAction  extends SimpleAdminController {
 
         int noteId = params.getInt("noteId");
 
-        // Extracting currently selected content from it's url
-        Content currentContent = null;
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {
@@ -64,8 +60,9 @@ public class DeleteNoteAction  extends SimpleAdminController {
                 if (securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                     if (noteId != -1) {
                         notesDao.removeNote(noteId);
-                        int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-                        ContentAO.setNumberOfNotes(cid.getContentId(), count);
+                        int contentId = cid.getContentId();
+                        int count = notesDao.getNotesByContentId(contentId).size();
+                        ContentAO.setNumberOfNotes(contentId, count);
                     }
                 }
             } catch (ContentNotFoundException e) {
@@ -73,8 +70,6 @@ public class DeleteNoteAction  extends SimpleAdminController {
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put(AdminRequestParameters.ITEM_IDENTIFIER, url);
         return new ModelAndView(new RedirectView("ListNotes.action"));
     }
 }

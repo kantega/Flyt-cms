@@ -18,6 +18,7 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
@@ -197,7 +198,7 @@ public class AttachmentAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-
+            ContentIdHelper.setContentIdFromAssociation(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select " + DB_COLS + " from attachments where ContentId = " + cid.getContentId());
             while(rs.next()) {
                 Attachment mm = getAttachmentFromRS(rs);

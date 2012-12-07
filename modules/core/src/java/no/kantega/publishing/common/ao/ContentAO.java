@@ -24,6 +24,7 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
@@ -57,6 +58,7 @@ public class ContentAO {
         Connection c = null;
 
         try {
+            ContentIdHelper.setContentIdFromAssociation(cid);
             int id = cid.getContentId();
 
             c = dbConnectionFactory.getConnection();
@@ -178,6 +180,7 @@ public class ContentAO {
     }
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
+        ContentIdHelper.setContentIdFromAssociation(cid);
         int id = cid.getContentId();
         int version = cid.getVersion();
         int language = cid.getLanguage();
@@ -240,6 +243,7 @@ public class ContentAO {
         Connection c = null;
 
         try {
+            ContentIdHelper.setContentIdFromAssociation(cid);
             c = dbConnectionFactory.getConnection();
             ResultSet rs = SQLHelper.getResultSet(c, "select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = " + cid.getLanguage() + " and content.ContentId = " + cid.getContentId() + " order by contentversion.Version desc");
             while (rs.next()) {
@@ -271,7 +275,7 @@ public class ContentAO {
 
 
     public static Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
-
+        ContentIdHelper.setContentIdFromAssociation(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 
@@ -279,23 +283,24 @@ public class ContentAO {
 
         try {
             c = dbConnectionFactory.getConnection();
+            int contentId = cid.getContentId();
             if (isAdminMode) {
                 if (requestedVersion == -1) {
                     // When in administration mode users should see last version
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " order by ContentVersionId desc" , "ContentVersionId");
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " order by ContentVersionId desc" , "ContentVersionId");
                     if (contentVersionId == -1) {
                         return null;
                     }
                 } else {
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
                     if (contentVersionId == -1) {
                         return null;
                     }
                 }
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
-                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
-                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
+                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
+                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
             } else {
                 // Others should see active version
                 contentVersionId = -1;
@@ -311,7 +316,7 @@ public class ContentAO {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");
             }
-            query.append(" and content.ContentId = ").append(cid.getContentId()).append(" order by ContentVersionId");
+            query.append(" and content.ContentId = ").append(contentId).append(" order by ContentVersionId");
 
             // Get data from content and contentversion tables
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
@@ -351,7 +356,7 @@ public class ContentAO {
                 if (!foundCurrentAssociation && associations.size() > 0) {
                     Association a = associations.get(0);
                     a.setCurrent(true);
-                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + cid.getContentId(), null, null);
+                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + contentId, null, null);
                 }
             }
 
@@ -367,7 +372,7 @@ public class ContentAO {
             }
             rs.close();
 
-            List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
+            List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
             content.setTopics(topics);
 
             return content;
@@ -1199,25 +1204,26 @@ public class ContentAO {
 
     public static Content setContentStatus(ContentIdentifier cid, int newStatus, Date newPublishDate, String userId) throws SystemException {
         Connection c = null;
-
+        ContentIdHelper.setContentIdFromAssociation(cid);
         try {
             c = dbConnectionFactory.getConnection();
 
-            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL + "," + ContentStatus.PUBLISHED_WAITING + ") order by version desc", "Version");
+            int contentId = cid.getContentId();
+            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + contentId + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL + "," + ContentStatus.PUBLISHED_WAITING + ") order by version desc", "Version");
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
-                    // Sett status = arkivert pø aktiv versjon
+                    // Sett status = arkivert på aktiv versjon
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
                     tmp.setInt(1, ContentStatus.ARCHIVED);
-                    tmp.setInt(2, cid.getContentId());
+                    tmp.setInt(2, contentId);
                     tmp.execute();
                     tmp.close();
 
                     tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ?, ChangeFrom = null where ContentId = ? and Version = ?");
                     tmp.setInt(1, ContentStatus.PUBLISHED);
                     tmp.setString(2, userId);
-                    tmp.setInt(3, cid.getContentId());
+                    tmp.setInt(3, contentId);
                     tmp.setInt(4, version);
                     tmp.execute();
                     tmp.close();
@@ -1227,7 +1233,7 @@ public class ContentAO {
                         // Set publish date if not set
                         tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ?");
                         tmp.setTimestamp(1, new java.sql.Timestamp(newPublishDate.getTime()));
-                        tmp.setInt(2, cid.getContentId());
+                        tmp.setInt(2, contentId);
                         tmp.execute();
                         tmp.close();
                         tmp = null;
@@ -1235,7 +1241,7 @@ public class ContentAO {
                 } else {
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
                     tmp.setInt(1, newStatus);
-                    tmp.setInt(2, cid.getContentId());
+                    tmp.setInt(2, contentId);
                     tmp.setInt(3, cid.getVersion() == -1 ? version : cid.getVersion());
                     tmp.execute();
                     tmp.close();
@@ -1657,6 +1663,7 @@ public class ContentAO {
      * @param updateChildren - true = update children / false = dont update children
      */
     public static void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
+        ContentIdHelper.setContentIdFromAssociation(cid);
         int contentId = cid.getContentId();
         Connection c = null;
 

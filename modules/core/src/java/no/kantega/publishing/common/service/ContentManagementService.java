@@ -28,6 +28,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;
 import no.kantega.publishing.common.cache.*;
 import no.kantega.publishing.common.data.*;
@@ -124,6 +125,7 @@ public class ContentManagementService {
      * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
+        ContentIdHelper.setContentIdFromAssociation(id);
         ContentLock lock = LockManager.peekAtLock(id.getContentId());
         if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
             throw new ObjectLockedException(securitySession.getUser().getId(), SOURCE);
@@ -504,12 +506,15 @@ public class ContentManagementService {
             n.setAuthor(securitySession.getUser().getName());
             n.setDate(new Date());
             n.setText(note);
-            n.setContentId(cid.getContentId());
+
+            ContentIdHelper.setContentIdFromAssociation(cid);
+            int contentId = cid.getContentId();
+            n.setContentId(contentId);
 
             NotesDao notesDao = (NotesDao)RootContext.getInstance().getBean("aksessNotesDao");
             notesDao.addNote(n);
-            int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-            ContentAO.setNumberOfNotes(cid.getContentId(), count);
+            int count = notesDao.getNotesByContentId(contentId).size();
+            ContentAO.setNumberOfNotes(contentId, count);
         }
 
         Date newPublishDate = null;

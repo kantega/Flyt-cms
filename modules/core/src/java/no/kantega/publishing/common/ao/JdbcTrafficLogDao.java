@@ -20,6 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.ContentViewStatistics;
 import no.kantega.publishing.common.data.PeriodViewStatistics;
 import no.kantega.publishing.common.data.RefererOccurrence;
@@ -89,14 +90,16 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
     private String createContentIdClause(TrafficLogQuery query) {
         String clause = "";
-        if (query.getCid() != null) {
-            int contentId = query.getCid().getContentId();
-            int siteId = query.getCid().getSiteId();
+        ContentIdentifier cid = query.getCid();
+        if (cid != null) {
+            ContentIdHelper.setContentIdFromAssociation(cid);
+            int contentId = cid.getContentId();
+            int siteId = cid.getSiteId();
             if (siteId != -1) {
                 clause = " and trafficlog.SiteId = " + siteId;
             }
             if (query.isIncludeSubPages()) {
-                int associationId = query.getCid().getAssociationId();
+                int associationId = cid.getAssociationId();
                 clause += " and (trafficlog.ContentId in (select ContentId from associations where path like '%/" + associationId + "/%') OR trafficlog.ContentId = " + contentId + ") ";
             } else {
                 clause += " and trafficlog.ContentId = " + contentId + " ";
@@ -254,6 +257,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
     @SuppressWarnings("unchecked")
     private List<RefererOccurrence> internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
+        ContentIdHelper.setContentIdFromAssociation(cid);
         final StringBuffer query = new StringBuffer();
         query.append("select ").append(select).append(" from trafficlog where Contentid=? and ").append(groupby).append(" is not null ");
         if(start != null) {

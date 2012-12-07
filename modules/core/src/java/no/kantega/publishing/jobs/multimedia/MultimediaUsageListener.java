@@ -18,6 +18,7 @@ package no.kantega.publishing.jobs.multimedia;
 
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.common.data.Multimedia;
@@ -64,9 +65,11 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier cid) {
-        multimediaUsageDao.removeUsageForContentId(cid.getContentId());
+        ContentIdHelper.setContentIdFromAssociation(cid);
+        int contentId = cid.getContentId();
+        multimediaUsageDao.removeUsageForContentId(contentId);
 
-        List<Multimedia> multimedia = multimediaDao.getMultimediaWithContentId(cid.getContentId());
+        List<Multimedia> multimedia = multimediaDao.getMultimediaWithContentId(contentId);
         for (Multimedia m : multimedia) {
             try {
                 multimediaDao.deleteMultimedia(m.getId());

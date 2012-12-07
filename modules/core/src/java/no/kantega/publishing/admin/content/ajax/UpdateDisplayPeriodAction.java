@@ -22,6 +22,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
@@ -52,6 +53,7 @@ public class UpdateDisplayPeriodAction {
             int associationId = param.getInt("associationId");
             if (associationId != -1) {
                 ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
+                ContentIdHelper.setContentIdFromAssociation(cid);
 
                 Date publishDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());

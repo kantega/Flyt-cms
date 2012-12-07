@@ -39,7 +39,7 @@ public class ValidatorHelper {
                 errors.add(null, "aksess.error.aliasisillegal");
             }
         } catch (RegExpSyntaxException e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         }       
 
         try {
@@ -52,7 +52,7 @@ public class ValidatorHelper {
                 }
             }
         } catch (SystemException ex) {
-            Log.error(SOURCE, ex, null, null);
+            Log.error(SOURCE, ex);
         }
     }
 }
