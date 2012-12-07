@@ -401,7 +401,7 @@
         <dependency>
             <groupId>ro.isdc.wro4j</groupId>
             <artifactId>wro4j-extensions</artifactId>
-            <version>1.5.0</version>
+            <version>1.6.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
