@@ -13,12 +13,11 @@ import java.util.Map;
 * A RepeaterAttribute is a composite Attribute, used to make repeatable rows with attributes
 */
 public class RepeaterAttribute extends Attribute {
-    Attribute parent = null;
 
     List<List<Attribute>> rows = new ArrayList<List<Attribute>>();
 
-    int minOccurs = 1;
-    int maxOccurs = -1;
+    int minOccurs = 0;
+    int maxOccurs = Integer.MAX_VALUE;
 
 
     public Iterator<List<Attribute>> getIterator() {
