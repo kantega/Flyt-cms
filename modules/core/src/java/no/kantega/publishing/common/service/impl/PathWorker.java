@@ -18,8 +18,8 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.util.database.SQLHelper;

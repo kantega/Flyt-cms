@@ -1,8 +1,8 @@
 <%@ page import="no.kantega.publishing.admin.AdminSessionAttributes" %>
+<%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page import="no.kantega.publishing.common.data.Attachment" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>

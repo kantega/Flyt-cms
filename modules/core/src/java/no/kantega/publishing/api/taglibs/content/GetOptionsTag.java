@@ -16,16 +16,14 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.ao.EditableListAO;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.commons.log.Log;
 
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.JspException;
-import java.util.Iterator;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class GetOptionsTag  extends LoopTagSupport {
 
@@ -43,10 +41,7 @@ public class GetOptionsTag  extends LoopTagSupport {
     }
 
     protected boolean hasNext() throws JspTagException {
-        if(i == null){
-            return false;
-        }
-        return i.hasNext();
+        return i != null && i.hasNext();
     }
 
     protected void prepare() throws JspTagException {

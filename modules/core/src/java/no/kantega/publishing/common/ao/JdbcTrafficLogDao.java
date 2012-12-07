@@ -18,12 +18,15 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.ContentViewStatistics;
+import no.kantega.publishing.common.data.PeriodViewStatistics;
+import no.kantega.publishing.common.data.RefererOccurrence;
+import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -198,14 +201,14 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             c = getConnection();
             String query = "";
             String driver = dbConnectionFactory.getDriverName();
-            if ((driver.indexOf("oracle") != -1) || (driver.indexOf("postgresql") != -1)) {
+            if ((driver.contains("oracle")) || (driver.contains("postgresql"))) {
                 String dp = "DD";
                 switch (period) {
                     case Calendar.HOUR:
                         dp = "HH24";
                 }
                 query = "select TO_CHAR(time,'" + dp + "') as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause + contentIdClause + " group by TO_CHAR(time,'" + dp + "') order by period";
-            } else if (driver.indexOf("mysql") != -1) {
+            } else if (driver.contains("mysql")) {
                 String dp = "day";
                 switch (period) {
                     case Calendar.HOUR:

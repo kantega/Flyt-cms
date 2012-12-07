@@ -20,9 +20,10 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.mailsender.MailSender;
@@ -54,7 +55,7 @@ public class ApproveOrRejectAction implements Controller {
 
         HttpSession session = request.getSession(true);
 
-        ContentIdentifier cid = new ContentIdentifier(request, request.getParameter("url"));
+        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, request.getParameter("url"));
 
         ContentManagementService aksessService = new ContentManagementService(request);
 

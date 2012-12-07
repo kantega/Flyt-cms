@@ -1,8 +1,8 @@
 package no.kantega.publishing.common.util;
 
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.client.device.DeviceCategory;
-import no.kantega.publishing.common.data.enums.Language;
 
 public class TemplateMacroHelper {
 

@@ -19,11 +19,12 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -128,7 +129,8 @@ public class GetLinkTag extends BodyTagSupport{
                         Content current = (Content)request.getAttribute("aksess_this");
                         if (current == null) {
                             // Hent denne siden
-                            current = new ContentManagementService(request).getContent(new ContentIdentifier(request), true);
+                            ContentIdentifier contentIdentifier = ContentIdHelper.fromRequest(request);
+                            current = new ContentManagementService(request).getContent(contentIdentifier, true);
                             RequestHelper.setRequestAttributes(request, current);
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {

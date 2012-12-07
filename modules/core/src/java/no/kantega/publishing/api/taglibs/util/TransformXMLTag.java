@@ -16,26 +16,22 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.XMLCacheEntry;
-import no.kantega.publishing.common.ao.XMLCacheAO;
-import no.kantega.commons.util.XMLHelper;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.ao.XMLCacheAO;
+import no.kantega.publishing.common.data.XMLCacheEntry;
+import org.w3c.dom.Document;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerException;
+import javax.servlet.jsp.tagext.TagSupport;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
 import java.io.StringWriter;
-
-import org.w3c.dom.Document;
 
 public class TransformXMLTag extends TagSupport {
     private static final String SOURCE = "aksess.PhotoAlbumHelper";
@@ -57,7 +53,7 @@ public class TransformXMLTag extends TagSupport {
             out = pageContext.getOut();
 
             if (cacheId != null && xslt != null) {
-                XMLCacheEntry cacheEntry = (XMLCacheEntry)XMLCacheAO.getXMLFromCache(cacheId);
+                XMLCacheEntry cacheEntry = XMLCacheAO.getXMLFromCache(cacheId);
                 if (cacheEntry != null) {
                     Document xml = cacheEntry.getXml();
                     if (xml != null) {

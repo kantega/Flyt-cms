@@ -17,9 +17,10 @@
 package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -58,7 +59,7 @@ public class EditPermissionsAction extends AbstractController {
         int objectType = param.getInt("type");
         String url = param.getString("url");
         if (objectId == -1 && url != null) {
-            ContentIdentifier cid = new ContentIdentifier(request, url);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
             objectId = cid.getAssociationId();
         }
 
@@ -101,7 +102,7 @@ public class EditPermissionsAction extends AbstractController {
 
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
-                ContentIdentifier cid = new ContentIdentifier(request, url);
+                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
                 Content content = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();

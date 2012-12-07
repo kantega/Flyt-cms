@@ -21,10 +21,11 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -71,7 +72,7 @@ public class ContentRequestHandler extends AbstractController {
             String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
             if (originalUri == null) {
                 // Direct call
-                cid = new ContentIdentifier(request);
+                cid = ContentIdHelper.fromRequest(request);
             } else {
                 // Called via 404 mechanism, eg. could be a page alias
                 // request_uri contains contextpath, must remove contextpath
@@ -79,7 +80,7 @@ public class ContentRequestHandler extends AbstractController {
                 if (isNotBlank(contextPath) && originalUri.contains(contextPath)) {
                     originalUri = originalUri.substring(contextPath.length(), originalUri.length());
                 }
-                cid = new ContentIdentifier(request, originalUri);
+                cid = ContentIdHelper.fromRequestAndUrl(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 if (request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null) {

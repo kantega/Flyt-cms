@@ -16,22 +16,21 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
-import no.kantega.commons.log.Log;
-
-import java.util.*;
-import java.util.Date;
-import java.sql.*;
-
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
 
 public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
@@ -135,7 +134,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     }
 
     /**
-     * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.common.data.ContentIdentifier, String)
+     * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.api.content.ContentIdentifier, String)
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
         String query = brokenLinkBasisQuery;

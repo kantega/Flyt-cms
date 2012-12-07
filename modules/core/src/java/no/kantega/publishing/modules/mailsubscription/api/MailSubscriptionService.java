@@ -18,7 +18,7 @@ package no.kantega.publishing.modules.mailsubscription.api;
 
 import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;

@@ -19,8 +19,9 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -77,7 +78,7 @@ public class GetUrlTag extends TagSupport {
                         // Hvis adminmodus, legg til siteid på link
                         if (HttpHelper.isAdminMode(request)) {
                             try {
-                                ContentIdentifier cid = new ContentIdentifier(request, url);
+                                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
                                 if (!url.contains("?")) {
                                     url = url + "?siteId=" + cid.getSiteId();
                                 } else {

@@ -2,8 +2,8 @@ package no.kantega.openaksess.search.provider;
 
 import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.IndexableDocument;

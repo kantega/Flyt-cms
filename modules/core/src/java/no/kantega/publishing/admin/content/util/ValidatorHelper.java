@@ -21,10 +21,10 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.RegExp;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.cache.ContentIdentifierCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 
 import java.util.List;
 

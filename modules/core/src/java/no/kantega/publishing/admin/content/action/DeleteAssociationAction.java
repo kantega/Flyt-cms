@@ -18,8 +18,9 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -52,7 +53,7 @@ public class DeleteAssociationAction implements Controller {
 
             // Get association
             String url = request.getParameter("url");
-            ContentIdentifier cid = new ContentIdentifier(request, url);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
 
             // Get content (page) that association points to
             Content content = aksessService.getContent(cid);

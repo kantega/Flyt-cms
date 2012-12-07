@@ -18,12 +18,16 @@ package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaMapEntry;
+import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.MultimediaMapWorker;
@@ -233,8 +237,8 @@ public class MultimediaService {
         return MultimediaMapWorker.getPartialSiteMap(idList, getOnlyFolders);
     }
 
-    public List getUsages(int multimediaId) throws SystemException {
-        List pages = new ArrayList();
+    public List<Content> getUsages(int multimediaId) throws SystemException {
+        List<Content> pages = new ArrayList<Content>();
 
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {

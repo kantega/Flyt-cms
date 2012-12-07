@@ -18,8 +18,8 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Language;
 
 import java.util.Date;
 

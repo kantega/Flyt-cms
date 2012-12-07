@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -7,7 +8,6 @@ import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
-import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
+import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 @Component

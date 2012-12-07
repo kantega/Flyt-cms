@@ -18,9 +18,9 @@ package no.kantega.publishing.common.cache;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.ContentIdentifier;
 
 import java.util.Collection;
 import java.util.Date;

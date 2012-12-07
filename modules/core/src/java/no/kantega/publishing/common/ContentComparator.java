@@ -18,9 +18,9 @@ package no.kantega.publishing.common;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
 import no.kantega.publishing.common.data.attributes.DateAttribute;
@@ -94,7 +94,7 @@ public class ContentComparator implements Comparator<Content> {
         }
         Content cp = (Content)contentPages.get(id);
         if (cp == null) {
-            id = (id.indexOf(",")>-1) ? id.substring(0,id.indexOf(",")) : id;
+            id = (id.contains(",")) ? id.substring(0,id.indexOf(",")) : id;
 
             ContentIdentifier cid = new ContentIdentifier();
             try {

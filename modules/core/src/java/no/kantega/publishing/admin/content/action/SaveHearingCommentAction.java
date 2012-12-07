@@ -18,11 +18,11 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.HearingComment;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.security.SecuritySession;

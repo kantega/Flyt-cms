@@ -19,8 +19,9 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.commons.util.URLHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
@@ -63,7 +64,8 @@ public class EditLinkTag  extends BodyTagSupport {
             Content current = (Content)request.getAttribute("aksess_this");
             if (current == null) {
                 // Hent denne siden
-                current = new ContentManagementService(request).getContent(new ContentIdentifier(request), true);
+                ContentIdentifier ci = ContentIdHelper.fromRequest(request);
+                current = new ContentManagementService(request).getContent(ci, true);
                 RequestHelper.setRequestAttributes(request, current);
             }
 

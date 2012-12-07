@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.commons.util.StringHelper,
+                 no.kantega.publishing.api.content.ContentIdentifier,
                  no.kantega.publishing.common.data.Content,
-                 no.kantega.publishing.common.data.ContentIdentifier,
                  no.kantega.publishing.common.data.attributes.ContentidAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%--

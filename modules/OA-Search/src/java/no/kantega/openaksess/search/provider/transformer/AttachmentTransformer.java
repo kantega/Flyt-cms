@@ -1,12 +1,12 @@
 package no.kantega.openaksess.search.provider.transformer;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.InputStreamHandler;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
-import static no.kantega.publishing.common.data.enums.Language.getLanguageAsISOCode;
+import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 
 @Component
 public class AttachmentTransformer implements DocumentTransformer<Attachment> {

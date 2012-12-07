@@ -1,14 +1,14 @@
 package no.kantega.publishing.admin.dwr;
 
-import org.directwebremoting.annotations.RemoteProxy;
-
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import org.directwebremoting.annotations.RemoteProxy;
 
 /**
  *  Handles cut and copy of Content objects to the clipboard
@@ -20,7 +20,7 @@ public class ContentClipboardHandler extends AbstractClipboardHandler {
         ContentManagementService cms = new ContentManagementService(getRequest());
         Content content = null;
         try {
-            ContentIdentifier cid = new ContentIdentifier(getRequest(), id);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(getRequest(), id);
             content = cms.getContent(cid);
         } catch (NotAuthorizedException e) {
             // Do nothing

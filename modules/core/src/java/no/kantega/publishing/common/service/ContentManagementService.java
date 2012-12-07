@@ -26,6 +26,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.*;
 import no.kantega.publishing.common.cache.*;
@@ -553,7 +554,6 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public void deleteContent(ContentIdentifier id) throws SystemException, ObjectInUseException, NotAuthorizedException {
-        ContentIdentifier cid = null;
         String title = null;
 
         if (id != null) {
@@ -573,7 +573,7 @@ public class ContentManagementService {
 
                 ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
 
-                cid = ContentAO.deleteContent(id);
+                ContentAO.deleteContent(id);
                 if (title != null) {
                     eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }

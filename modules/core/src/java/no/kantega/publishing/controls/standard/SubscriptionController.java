@@ -18,7 +18,7 @@ package no.kantega.publishing.controls.standard;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.RegExp;
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
 import no.kantega.publishing.security.SecuritySession;

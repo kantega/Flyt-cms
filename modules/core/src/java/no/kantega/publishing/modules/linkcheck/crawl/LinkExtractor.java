@@ -18,10 +18,10 @@ package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
@@ -67,7 +67,7 @@ public class LinkExtractor {
         if(content.isExternalLink()) {
             linkHandler.contentLinkFound(content, content.getLocation());
         } else {
-            content = ContentAO.getContent(new ContentIdentifier(content.getId()), true);
+            content = ContentAO.getContent(ContentIdentifier.fromContentId(content.getId()), true);
 
             List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
             for (Attribute attribute : attributes) {

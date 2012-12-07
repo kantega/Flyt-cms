@@ -293,6 +293,7 @@
             ]]>
         </example>
     </tag>
+
     <tag>
         <description>Build and iterate through navigation path (bread crumb) for current page</description>
         <name>getnavigationpath</name>

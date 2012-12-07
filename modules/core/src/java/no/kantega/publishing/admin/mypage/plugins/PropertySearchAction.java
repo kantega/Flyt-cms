@@ -17,8 +17,8 @@
 package no.kantega.publishing.admin.mypage.plugins;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import org.springframework.web.servlet.ModelAndView;

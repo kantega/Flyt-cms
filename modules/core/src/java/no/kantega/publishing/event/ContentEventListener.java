@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.event;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifier;
 
 /**
  * @

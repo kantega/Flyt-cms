@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.cache.SiteCache;

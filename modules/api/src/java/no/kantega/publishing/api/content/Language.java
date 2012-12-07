@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data.enums;
+package no.kantega.publishing.api.content;
 
 import java.util.Locale;
 

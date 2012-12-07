@@ -1,5 +1,5 @@
+<%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.common.service.lock.ContentLock" %>
 <%@ page import="java.text.DateFormat" %>

@@ -24,8 +24,9 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.preferences.UserPreference;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.admin.util.NavigatorUtil;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentProperty;
@@ -84,7 +85,7 @@ public class NavigatorAction implements Controller {
 
             ContentIdentifier cid = null;
             try {
-                cid = new ContentIdentifier(request, url);
+                cid = ContentIdHelper.fromRequestAndUrl(request, url);
                 currentContent = cms.getContent(cid);
             } catch (ContentNotFoundException e) {
                 // Do nothing
@@ -105,7 +106,7 @@ public class NavigatorAction implements Controller {
             if (currentContent == null) {
                 // No folders open and no page is current, set startpage as open                
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(request, "/");
+                    ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, "/");
                     currentId = cid.getAssociationId();
                 } catch (ContentNotFoundException e) {
                     // Do nothing

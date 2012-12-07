@@ -1,20 +1,21 @@
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.AttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import no.kantega.publishing.topicmaps.data.Topic;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.List;
 
-public class JdbcContentDao extends SimpleJdbcDaoSupport implements ContentDao {
+public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
     private AttributeFactory attributeFactory;
 
     public Content getContent(ContentIdentifier cid, boolean isAdminMode) {
@@ -44,22 +45,22 @@ public class JdbcContentDao extends SimpleJdbcDaoSupport implements ContentDao {
         }
 
 
-        StringBuffer query = new StringBuffer();
+        StringBuilder query = new StringBuilder();
         query.append("select * from content, contentversion where content.ContentId = contentversion.ContentId");
         if (contentVersionId != -1) {
             // Get specified version
-            query.append(" and contentversion.ContentVersionId = " + contentVersionId);
+            query.append(" and contentversion.ContentVersionId = ").append(contentVersionId);
         } else {
             // Get whatever version is active
             query.append(" and contentversion.IsActive = 1");
         }
-        query.append(" and content.ContentId = " + cid.getContentId() + " order by ContentVersionId");
+        query.append(" and content.ContentId = ").append(cid.getContentId()).append(" order by ContentVersionId");
 
 
         // Get data from content and contentversion tables
         ContentRowMapper contentRowMapper = new ContentRowMapper(false);
 
-        List<Content> contents = getSimpleJdbcTemplate().query(query.toString(), contentRowMapper);
+        List<Content> contents = getJdbcTemplate().query(query.toString(), contentRowMapper);
         if (contents.size() == 0) {
             return null;
         }
@@ -68,7 +69,7 @@ public class JdbcContentDao extends SimpleJdbcDaoSupport implements ContentDao {
 
         // Get associations
         AssociationRowMapper associationRowMapper = new AssociationRowMapper();
-        List<Association> associations = getSimpleJdbcTemplate().query("SELECT * FROM associations WHERE ContentId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", associationRowMapper, content.getId());
+        List<Association> associations = getJdbcTemplate().query("SELECT * FROM associations WHERE ContentId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", associationRowMapper, content.getId());
         if (associations.size() == 0) {
             // All associations to page are deleted, dont return page
             return null;
@@ -78,10 +79,10 @@ public class JdbcContentDao extends SimpleJdbcDaoSupport implements ContentDao {
 
         // Get attributes
         AttributeRowMapper attributeRowMapper = new AttributeRowMapper(content, attributeFactory);
-        getSimpleJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", attributeRowMapper, content.getVersionId());
+        getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", attributeRowMapper, content.getVersionId());
 
 
-        List topics = TopicAO.getTopicsByContentId(cid.getContentId());
+        List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
         content.setTopics(topics);
 
         return content;

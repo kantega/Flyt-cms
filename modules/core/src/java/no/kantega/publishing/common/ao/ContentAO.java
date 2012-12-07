@@ -21,6 +21,7 @@ import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.cache.ContentTemplateCache;

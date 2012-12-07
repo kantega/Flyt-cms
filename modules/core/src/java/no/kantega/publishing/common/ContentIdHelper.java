@@ -17,16 +17,20 @@
 package no.kantega.publishing.common;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.ContentIdentifierCache;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.springframework.web.bind.ServletRequestBindingException;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -37,6 +41,11 @@ import java.util.List;
 
 public class ContentIdHelper {
     private static final String SOURCE = "aksess.ContentIdHelper";
+
+    private static final int defaultContentID = -1;
+    private static final int defaultSiteId = -1;
+    private static final int defaultContextId = -1;
+    private static final int defaultVersion = -1;
 
     /**
      * Finner en identifikator til et innholdobjekt som er relativt til context
@@ -96,14 +105,13 @@ public class ContentIdHelper {
                 level = pathElements.length;
             }
 
-            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(pathElements[level]);
-            return cid;
+            return ContentIdentifier.fromAssociationId(pathElements[level]);
         } else if (expr.equalsIgnoreCase("next") || expr.equalsIgnoreCase("previous")){
 
             boolean next = expr.equalsIgnoreCase("next");
-            ContentIdentifier parent = new ContentIdentifier();
             Association association = context.getAssociation();
-            parent.setAssociationId(association.getParentAssociationId());
+            ContentIdentifier parent = ContentIdentifier.fromAssociationId(association.getParentAssociationId());
+
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(parent);
             query.setAssociationCategory(association.getCategory());
@@ -251,16 +259,16 @@ public class ContentIdHelper {
 
         // Hvis contentId ikke finnes i URL, slå opp i basen
         if (contentId != -1 || associationId != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setVersion(version);
-            cid.setLanguage(language);
+            ContentIdentifier cid;
 
             if (associationId != -1) {
-                cid.setAssociationId(associationId);
+                cid = ContentIdentifier.fromAssociationId(associationId);
             } else {
-                cid.setContentId(contentId);
+                cid = ContentIdentifier.fromContentId(contentId);
                 cid.setSiteId(siteId);
             }
+            cid.setVersion(version);
+            cid.setLanguage(language);
 
             return cid;
         } else {
@@ -437,5 +445,94 @@ public class ContentIdHelper {
         }
 
         return siteId;
+    }
+
+    public static ContentIdentifier fromRequest(HttpServletRequest request) throws ContentNotFoundException {
+        ContentIdentifier contentIdentifier = null;
+        String url = request.getServletPath();
+        String path = request.getPathInfo();
+        Content current = (Content)request.getAttribute("aksess_this");
+        if (current != null) {
+            contentIdentifier = ContentIdentifier.fromAssociationId(current.getAssociation().getId());
+            contentIdentifier.setLanguage(current.getLanguage());
+            contentIdentifier.setVersion(current.getVersion());
+        } else  if (request.getParameter("contentId") != null || request.getParameter("thisId") != null) {
+            if (request.getParameter("contentId") != null) {
+                contentIdentifier = ContentIdentifier.fromContentId(ServletRequestUtils.getIntParameter(request, "contentId", defaultContentID));
+                contentIdentifier.setSiteId(ServletRequestUtils.getIntParameter(request, "siteId", defaultSiteId));
+                contentIdentifier.setContextId(ServletRequestUtils.getIntParameter(request, "contextId", defaultContextId));
+            } else {
+                try {
+                    contentIdentifier = ContentIdentifier.fromAssociationId(ServletRequestUtils.getIntParameter(request, "thisId"));
+                } catch (ServletRequestBindingException e) {
+                    throw new ContentNotFoundException(request.getParameter("thisId"), SOURCE);
+                }
+            }
+
+            contentIdentifier.setLanguage(ServletRequestUtils.getIntParameter(request, "language", Language.NORWEGIAN_BO));
+
+        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf("/") == 0) {
+            try {
+                int slashIndex = path.indexOf("/", 1);
+                if (slashIndex != -1) {
+                    contentIdentifier = ContentIdentifier.fromAssociationId(Integer.parseInt(path.substring(1, slashIndex)));
+                }
+            } catch (NumberFormatException e) {
+                throw new ContentNotFoundException(path, SOURCE);
+            }
+        } else {
+            String queryString = request.getQueryString();
+            if (queryString != null && queryString.length() > 0) {
+                url = url + "?" + queryString;
+            }
+
+            int siteId = ContentIdHelper.getSiteIdFromRequest(request);
+
+            contentIdentifier = ContentIdHelper.findContentIdentifier(siteId, url);
+        }
+
+        if (contentIdentifier != null) {
+            contentIdentifier.setVersion(ServletRequestUtils.getIntParameter(request, "version", defaultVersion));
+        }
+        return contentIdentifier;
+    }
+
+    public static ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
+        int siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
+        return ContentIdHelper.findContentIdentifier(siteId, url);
+    }
+
+    public static ContentIdentifier fromSiteIdAndUrl(int siteId, String url) throws SystemException, ContentNotFoundException {
+        return ContentIdHelper.findContentIdentifier(siteId, url);
+    }
+
+    public static ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
+        return ContentIdHelper.findContentIdentifier(-1, url);
+    }
+
+    public static void setContentIdFromAssociation(ContentIdentifier contentIdentifier){
+        int associationId = contentIdentifier.getAssociationId();
+        int contentId = contentIdentifier.getContentId();
+        if (contentId == -1 && associationId != -1) {
+            try {
+                contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
+                contentIdentifier.setContentId(contentId);
+            } catch (SystemException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
+    }
+
+    public static void setAssociationIdFromContentId(ContentIdentifier contentIdentifier){
+        int associationId = contentIdentifier.getAssociationId();
+        int contentId = contentIdentifier.getContentId();
+        if (contentId != -1 && associationId == -1) {
+            try {
+                associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
+                contentIdentifier.setAssociationId(associationId);
+            } catch (SystemException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        }
     }
 }

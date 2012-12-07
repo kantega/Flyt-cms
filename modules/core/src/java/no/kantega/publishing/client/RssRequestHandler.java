@@ -18,8 +18,8 @@ package no.kantega.publishing.client;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.URLHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.service.ContentManagementService;

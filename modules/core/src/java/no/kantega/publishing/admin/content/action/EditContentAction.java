@@ -16,28 +16,28 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.exception.MissingTemplateException;
-import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.exception.MissingTemplateException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.util.Map;
 import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import java.util.Map;
 
 public class EditContentAction implements Controller {
     private static String SOURCE = "aksess.EditContentAction";
@@ -47,7 +47,7 @@ public class EditContentAction implements Controller {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cid = new ContentIdentifier(request, url);
+        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
@@ -95,7 +95,7 @@ public class EditContentAction implements Controller {
         }
         session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
 
-        Boolean shouldRedirectToMetadata = new Boolean(request.getParameter(REDIRECT_TO_METADATA_PARAM));
+        Boolean shouldRedirectToMetadata = Boolean.valueOf(request.getParameter(REDIRECT_TO_METADATA_PARAM));
         if(shouldRedirectToMetadata){
             return new ModelAndView(new RedirectView("SaveMetadata.action"), model);
         }

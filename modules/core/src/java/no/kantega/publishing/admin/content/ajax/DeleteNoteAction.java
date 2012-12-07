@@ -19,11 +19,11 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
@@ -56,7 +56,7 @@ public class DeleteNoteAction  extends SimpleAdminController {
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {
-                cid = new ContentIdentifier(request, url);
+                cid = ContentIdHelper.fromRequestAndUrl(request, url);
 
                 ContentManagementService cms = new ContentManagementService(request);
 

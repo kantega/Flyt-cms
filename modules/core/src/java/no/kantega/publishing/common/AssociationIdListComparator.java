@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.common;
 
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 
 import java.util.Comparator;
 
