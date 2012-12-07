@@ -52,7 +52,7 @@ public class SearchResponse {
      * @return a list containing the actual hits of the query if this
      * result is not a result of a grouped query, else an empty list.
      */
-    public List<SearchResult> getDocumentHits() {
+    public List<SearchResult> getSearchHits() {
         List<SearchResult> documentHits = Collections.emptyList();
         for(GroupResultResponse groupResultResponse : groupResultResponses){
             if(groupResultResponse.getGroupValue().equals(ALL_DOCUMENTS_GROUPNAME)){

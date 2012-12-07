@@ -30,6 +30,7 @@ public class SearchResult {
     private final String author;
     private final String url;
     private final int securityId;
+    private final int parentId;
 
     /**
      * @param id of the content this result is based on.
@@ -39,8 +40,9 @@ public class SearchResult {
      * @param description of the document.
      * @param author of the document.
      * @param url of the document.
+     * @param parentId - associationId of the parent of this result.
      */
-    public SearchResult(int id, int securityId, String indexedContentType, String title, String description, String author, String url) {
+    public SearchResult(int id, int securityId, String indexedContentType, String title, String description, String author, String url, int parentId) {
         this.id = id;
         this.securityId = securityId;
         this.indexedContentType = indexedContentType;
@@ -48,6 +50,7 @@ public class SearchResult {
         this.description = description;
         this.author = author;
         this.url = url;
+        this.parentId = parentId;
     }
 
     public int getId() {
@@ -76,5 +79,9 @@ public class SearchResult {
 
     public int getSecurityId() {
         return securityId;
+    }
+
+    public int getParentId() {
+        return parentId;
     }
 }

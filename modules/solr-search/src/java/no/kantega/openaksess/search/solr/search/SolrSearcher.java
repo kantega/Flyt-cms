@@ -254,7 +254,8 @@ public class SolrSearcher implements Searcher {
                 (String) result.getFieldValue("title_" + languageSuffix),
                 description,
                 (String) result.getFieldValue("author"),
-                (String) result.getFieldValue("url"));
+                (String) result.getFieldValue("url"),
+                (Integer) result.getFieldValue("parentId"));
     }
 
     private String getHighlightedDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {

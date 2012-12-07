@@ -126,7 +126,7 @@ public class SearcherIntegrationTest {
         SearchQuery q = new SearchQuery(searchContext, originalQuery);
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
-        for(SearchResult searchResult : response.getDocumentHits()){
+        for(SearchResult searchResult : response.getSearchHits()){
             assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<span class=\"highlight\""));
         }
     }
@@ -136,7 +136,7 @@ public class SearcherIntegrationTest {
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "title_no:Kan*");
         SearchResponse response = searcher.search(q);
-        for(SearchResult searchResult : response.getDocumentHits()){
+        for(SearchResult searchResult : response.getSearchHits()){
             String title = searchResult.getTitle();
             assertTrue(title + " did not contain start with kan", title.toLowerCase().startsWith("kan"));
         }
@@ -148,7 +148,7 @@ public class SearcherIntegrationTest {
 
     private void doForAllhits(Assertion assertion, SearchResponse searchResponse){
 
-        List<SearchResult> documentHits = searchResponse.getDocumentHits();
+        List<SearchResult> documentHits = searchResponse.getSearchHits();
         for (SearchResult documentHit : documentHits) {
             assertion.doAssert(documentHit);
         }

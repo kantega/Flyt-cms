@@ -34,6 +34,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
         if (content.isSearchable()) {
             indexableDocument.setShouldIndex(true);
+            Association association = content.getAssociation();
+
             indexableDocument.setId(String.valueOf(content.getId()));
             indexableDocument.setSecurityId(content.getSecurityId());
             indexableDocument.setTitle(content.getTitle());
@@ -44,9 +46,9 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             int language = content.getLanguage();
             indexableDocument.setLanguage(getLanguageAsISOCode(language));
 
-            Association association = content.getAssociation();
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
+            indexableDocument.setParentId(association.getParentAssociationId());
             indexableDocument.addAttribute("location", locationWithoutTrailingSlash(association));
 
             indexableDocument.addAttribute("contentType", content.getType().name());

@@ -139,6 +139,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         solrInputDocument.addField("indexedContentType", document.getContentType());
         solrInputDocument.addField("description_" + languageSuffix, document.getDescription());
         solrInputDocument.addField("id", document.getId());
+        solrInputDocument.addField("parentId", document.getParentId());
         solrInputDocument.addField("securityId", String.valueOf(document.getSecurityId()));
         solrInputDocument.addField("uid", document.getUId());
         solrInputDocument.addField("language", language);

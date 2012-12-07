@@ -3,6 +3,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/search" prefix="search" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="menu" uri="http://www.kantega.no/aksess/tags/menu" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -46,10 +47,13 @@
     </ul>
 
     <ul id="SearchResult">
-        <c:forEach items="${searchResponse.documentHits}" var="searchHit">
+        <c:forEach items="${searchResponse.searchHits}" var="searchHit">
             <li class="hit">
                 <a href="${searchHit.url}" target="contentmain"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
-                <c:out value="${searchHit.description}" escapeXml="false"/>
+                <menu:printpathelements associationId="${searchHit.securityId}"/>
+                <div class="description">
+                    <c:out value="${searchHit.description}" escapeXml="false"/>
+                </div>
             </li>
         </c:forEach>
 

@@ -27,9 +27,10 @@ public class IndexableDocument {
     private Map<String, Object> attributes = new HashMap<String, Object>();
     private boolean shouldIndex = false;
     private int securityId;
+    private int parentId;
 
     /**
-     * @param uid unique for the qhole index. Typically indexedContentType-Id.
+     * @param uid unique for the whole index. Typically indexedContentType-Id.
      */
     public IndexableDocument(String uid) {
         this.uid = uid;
@@ -133,5 +134,13 @@ public class IndexableDocument {
 
     public int getSecurityId() {
         return securityId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public int getParentId() {
+        return parentId;
     }
 }

@@ -48,6 +48,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
 
             Association association = content.getAssociation();
             int siteId = association.getSiteId();
+            indexableDocument.setParentId(association.getParentAssociationId());
             indexableDocument.setSiteId(siteId);
             indexableDocument.addAttribute("location",
                     String.format("%s/%s", locationWithoutTrailingSlash(association), association.getId()));

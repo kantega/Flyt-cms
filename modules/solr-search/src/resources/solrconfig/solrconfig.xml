@@ -176,7 +176,7 @@
 
     <requestHandler name="/select" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="fl">uid,id,securityId,title_*,description*,indexedContentType,author,url,language</str>
+            <str name="fl">uid,id,parentId,securityId,title_*,description*,indexedContentType,author,url,language</str>
             <str name="df">all_text_no</str>
             <str name="echoParams">explicit</str>
             <int name="rows">50</int>

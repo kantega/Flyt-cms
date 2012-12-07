@@ -59,6 +59,7 @@
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+        <field name="parentId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
         <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="contentType" type="string" indexed="true" stored="true"/>
         <field name="uid" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
