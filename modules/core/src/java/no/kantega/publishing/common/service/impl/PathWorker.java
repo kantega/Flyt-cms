@@ -100,7 +100,7 @@ public class PathWorker {
             if (cid == null) {
                 return pathEntries;
             }
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select Path from associations where UniqueId = " + cid.getAssociationId());
             if (!rs.next()) {
                 return pathEntries;

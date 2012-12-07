@@ -65,7 +65,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier cid) {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
         multimediaUsageDao.removeUsageForContentId(contentId);
 

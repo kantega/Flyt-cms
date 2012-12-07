@@ -20,7 +20,7 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
     private AttributeFactory attributeFactory;
 
     public Content getContent(ContentIdentifier cid, boolean isAdminMode) {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 

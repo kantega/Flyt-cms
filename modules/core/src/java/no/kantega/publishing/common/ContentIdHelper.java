@@ -48,9 +48,9 @@ public class ContentIdHelper {
     private static final int defaultVersion = -1;
 
     /**
-     * Finner en identifikator til et innholdobjekt som er relativt til context
-     * @param context - Innholdsobjekt
-     * @param expr    - Path, f.eks ../ eller ../../ eller /
+     * Find ContentIdentifer for an Content, relative to the context-Content and expr.
+     * @param context - The current Content-contect
+     * @param expr    - Path, e.g. "../", "../../" or "/"
      * @return        - ContentIdentifier
      * @throws SystemException
      * @throws ContentNotFoundException
@@ -83,17 +83,20 @@ public class ContentIdHelper {
             }
 
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(pathElements[pathElements.length - exprLength]);
+            assureContentIdAndAssociationIdSet(cid);
             cid.setLanguage(context.getLanguage());
             return cid;
         } else if (expr.equalsIgnoreCase(".")) {
             // Hent fra denne siden
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(context.getAssociation().getAssociationId());
             cid.setLanguage(context.getLanguage());
+            assureContentIdAndAssociationIdSet(cid);
             return cid;
         } else if (expr.equalsIgnoreCase("group")) {
             // Hent fra group
             ContentIdentifier cid =  ContentIdentifier.fromContentId(context.getGroupId());
             cid.setLanguage(context.getLanguage());
+            assureContentIdAndAssociationIdSet(cid);
             return cid;
         } else if (expr.startsWith("/+")) {
             // Hent fra root + nivå n
@@ -105,7 +108,9 @@ public class ContentIdHelper {
                 level = pathElements.length;
             }
 
-            return ContentIdentifier.fromAssociationId(pathElements[level]);
+            ContentIdentifier contentIdentifier = ContentIdentifier.fromAssociationId(pathElements[level]);
+            assureContentIdAndAssociationIdSet(contentIdentifier);
+            return contentIdentifier;
         } else if (expr.equalsIgnoreCase("next") || expr.equalsIgnoreCase("previous")){
 
             boolean next = expr.equalsIgnoreCase("next");
@@ -144,10 +149,9 @@ public class ContentIdHelper {
 
 
     /**
-     * Finner en identifikator til et innholdsobjekt basert på url/alias
      * @param siteId - Site
-     * @param url    - Url/alias, f.eks /nyheter/
-     * @return
+     * @param url    - Url/alias, e.g. /nyheter/
+     * @return ContentIdentifier for the given site and url.
      * @throws ContentNotFoundException
      * @throws SystemException
      */
@@ -269,7 +273,7 @@ public class ContentIdHelper {
             }
             cid.setVersion(version);
             cid.setLanguage(language);
-
+            assureContentIdAndAssociationIdSet(cid);
             return cid;
         } else {
             int end = url.indexOf('?');
@@ -303,7 +307,8 @@ public class ContentIdHelper {
         }
     }
 
-    public static int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
+
+    private static int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
         int associationId = -1;
 
         Connection c = null;
@@ -369,7 +374,7 @@ public class ContentIdHelper {
         return associationId;
     }
 
-    public static int findContentIdFromAssociationId(int associationId) throws SystemException {
+    private static int findContentIdFromAssociationId(int associationId) throws SystemException {
         int contentId = -1;
 
         Connection c = null;
@@ -399,11 +404,11 @@ public class ContentIdHelper {
         return contentId;
     }
 
-    public static int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
+    private static int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
         return getSiteIdFromRequest(request, null);
     }
 
-    public static int getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
+    private static int getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
         int siteId = -1;
         if (request.getParameter("siteId") != null) {
             try {
@@ -447,6 +452,12 @@ public class ContentIdHelper {
         return siteId;
     }
 
+    /**
+     *
+     * @param request - The current request
+     * @return ContentIdentifier for the given request.
+     * @throws ContentNotFoundException
+     */
     public static ContentIdentifier fromRequest(HttpServletRequest request) throws ContentNotFoundException {
         ContentIdentifier contentIdentifier = null;
         String url = request.getServletPath();
@@ -497,39 +508,59 @@ public class ContentIdHelper {
         return contentIdentifier;
     }
 
+    /**
+     * @param request - The current request
+     * @param url - The url of ContentIdentifier is desired for.
+     * @return ContentIdentifier for url.
+     * @throws ContentNotFoundException
+     * @throws SystemException
+     */
     public static ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
         int siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
         return ContentIdHelper.findContentIdentifier(siteId, url);
     }
 
+    /**
+     *
+     * @param siteId - id of the site we want ContentIdentifier for.
+     * @param url we want ContentIdentifier for.
+     * @return ContentIdentifier for url on site with siteId
+     * @throws SystemException
+     * @throws ContentNotFoundException
+     */
     public static ContentIdentifier fromSiteIdAndUrl(int siteId, String url) throws SystemException, ContentNotFoundException {
         return ContentIdHelper.findContentIdentifier(siteId, url);
     }
 
+    /**
+     * @param url - e.g. "/"
+     * @return ContentIdentifier for url.
+     * @throws ContentNotFoundException
+     * @throws SystemException
+     */
     public static ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
         return ContentIdHelper.findContentIdentifier(-1, url);
     }
 
-    public static void setContentIdFromAssociation(ContentIdentifier contentIdentifier){
+    /**
+     * Make sure the given ContentIdentifier has both contentId and associationId set.
+     * @param contentIdentifier assure both are set on.
+     */
+    public static void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier){
         int associationId = contentIdentifier.getAssociationId();
         int contentId = contentIdentifier.getContentId();
-        if (contentId == -1 && associationId != -1) {
-            try {
-                contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
-                contentIdentifier.setContentId(contentId);
-            } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-        }
-    }
 
-    public static void setAssociationIdFromContentId(ContentIdentifier contentIdentifier){
-        int associationId = contentIdentifier.getAssociationId();
-        int contentId = contentIdentifier.getContentId();
         if (contentId != -1 && associationId == -1) {
             try {
                 associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
                 contentIdentifier.setAssociationId(associationId);
+            } catch (SystemException e) {
+                Log.error(SOURCE, e, null, null);
+            }
+        } else if (contentId == -1 && associationId != -1) {
+            try {
+                contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
+                contentIdentifier.setContentId(contentId);
             } catch (SystemException e) {
                 Log.error(SOURCE, e, null, null);
             }

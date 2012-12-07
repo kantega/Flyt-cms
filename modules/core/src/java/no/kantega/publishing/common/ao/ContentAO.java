@@ -58,7 +58,7 @@ public class ContentAO {
         Connection c = null;
 
         try {
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int id = cid.getContentId();
 
             c = dbConnectionFactory.getConnection();
@@ -180,7 +180,7 @@ public class ContentAO {
     }
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int id = cid.getContentId();
         int version = cid.getVersion();
         int language = cid.getLanguage();
@@ -243,7 +243,7 @@ public class ContentAO {
         Connection c = null;
 
         try {
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             c = dbConnectionFactory.getConnection();
             ResultSet rs = SQLHelper.getResultSet(c, "select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = " + cid.getLanguage() + " and content.ContentId = " + cid.getContentId() + " order by contentversion.Version desc");
             while (rs.next()) {
@@ -275,7 +275,7 @@ public class ContentAO {
 
 
     public static Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 
@@ -761,7 +761,7 @@ public class ContentAO {
 
     public static ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
         Connection c = null;
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         try {
             c = dbConnectionFactory.getConnection();
             int id = SQLHelper.getInt(c, "select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId() , "ParentAssociationId");
@@ -1207,7 +1207,7 @@ public class ContentAO {
 
     public static Content setContentStatus(ContentIdentifier cid, int newStatus, Date newPublishDate, String userId) throws SystemException {
         Connection c = null;
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         try {
             c = dbConnectionFactory.getConnection();
 
@@ -1666,7 +1666,7 @@ public class ContentAO {
      * @param updateChildren - true = update children / false = dont update children
      */
     public static void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
         Connection c = null;
 

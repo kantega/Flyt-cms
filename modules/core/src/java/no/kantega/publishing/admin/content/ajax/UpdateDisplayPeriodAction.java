@@ -53,7 +53,7 @@ public class UpdateDisplayPeriodAction {
             int associationId = param.getInt("associationId");
             if (associationId != -1) {
                 ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
-                ContentIdHelper.setContentIdFromAssociation(cid);
+                ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
                 Date publishDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());

@@ -198,7 +198,7 @@ public class AttachmentAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select " + DB_COLS + " from attachments where ContentId = " + cid.getContentId());
             while(rs.next()) {
                 Attachment mm = getAttachmentFromRS(rs);

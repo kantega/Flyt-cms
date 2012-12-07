@@ -92,7 +92,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         String clause = "";
         ContentIdentifier cid = query.getCid();
         if (cid != null) {
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
             int siteId = cid.getSiteId();
             if (siteId != -1) {
@@ -257,7 +257,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
     @SuppressWarnings("unchecked")
     private List<RefererOccurrence> internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
-        ContentIdHelper.setContentIdFromAssociation(cid);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         final StringBuffer query = new StringBuffer();
         query.append("select ").append(select).append(" from trafficlog where Contentid=? and ").append(groupby).append(" is not null ");
         if(start != null) {

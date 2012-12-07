@@ -125,7 +125,7 @@ public class ContentManagementService {
      * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
-        ContentIdHelper.setContentIdFromAssociation(id);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(id);
         ContentLock lock = LockManager.peekAtLock(id.getContentId());
         if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
             throw new ObjectLockedException(securitySession.getUser().getId(), SOURCE);
@@ -507,7 +507,7 @@ public class ContentManagementService {
             n.setDate(new Date());
             n.setText(note);
 
-            ContentIdHelper.setContentIdFromAssociation(cid);
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
             n.setContentId(contentId);
 

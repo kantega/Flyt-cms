@@ -138,7 +138,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.api.content.ContentIdentifier, String)
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
-        ContentIdHelper.setContentIdFromAssociation(parent);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(parent);
         String query = brokenLinkBasisQuery;
         query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)";
         query += getDefaultOrderByClause();

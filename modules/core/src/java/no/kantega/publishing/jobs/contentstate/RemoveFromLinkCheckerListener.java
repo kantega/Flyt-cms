@@ -43,7 +43,7 @@ public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier) {
-        ContentIdHelper.setContentIdFromAssociation(contentIdentifier);
+        ContentIdHelper.assureContentIdAndAssociationIdSet(contentIdentifier);
         linkDao.deleteLinksForContentId(contentIdentifier.getContentId());
     }
 }
