@@ -12,4 +12,10 @@ public interface PathEntryAO {
      */
     public List<PathEntry> getPathEntriesByContentIdentifier(ContentIdentifier contentIdentifier);
 
+    /**
+     *
+     * @param associationId -
+     * @return The PathEntries on the path to the Content identified by associationId
+     */
+    public List<PathEntry> getPathEntriesByAssociationIdInclusive(Integer associationId);
 }

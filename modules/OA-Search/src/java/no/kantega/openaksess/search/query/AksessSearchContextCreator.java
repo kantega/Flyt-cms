@@ -18,7 +18,7 @@ public class AksessSearchContextCreator {
     private SiteCache siteCache;
 
     public AksessSearchContext getSearchContext(HttpServletRequest request) {
-        String searchUrl = URLHelper.getServerURL(request) + request.getRequestURI();
+        String searchUrl = URLHelper.getServerURL(request) + URLHelper.getCurrentUrl(request);
         return new AksessSearchContext(SecuritySession.getInstance(request), findSiteId(request), searchUrl);
     }
 

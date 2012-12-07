@@ -50,7 +50,7 @@
         <c:forEach items="${searchResponse.searchHits}" var="searchHit">
             <li class="hit">
                 <a href="${searchHit.url}" target="contentmain"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
-                <menu:printpathelements associationId="${searchHit.securityId}"/>
+                <menu:printpathelements associationId="${searchHit.parentId}"/>
                 <div class="description">
                     <c:out value="${searchHit.description}" escapeXml="false"/>
                 </div>

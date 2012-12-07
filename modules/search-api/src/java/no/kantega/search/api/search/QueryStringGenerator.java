@@ -55,7 +55,7 @@ public class QueryStringGenerator {
         return queryStringBuilder;
     }
 
-    public static Map<Integer, String> getPageUrls(SearchResponse searchResponse, int standingOnPage, String urlPrefix) {
+    public static Map<Integer, String> getPageUrls(SearchResponse searchResponse, int standingOnPage) {
         LinkedHashMap<Integer, String> pageUrls = new LinkedHashMap<Integer, String>();
         SearchQuery query = searchResponse.getQuery();
         int page = standingOnPage + 1;
@@ -72,7 +72,7 @@ public class QueryStringGenerator {
             startPage--;
         }
         for (int i = startPage; i <= endPage; i++) {
-            pageUrls.put(i, urlPrefix + getPageUrl(query, i));
+            pageUrls.put(i, getPageUrl(query, i));
         }
         return pageUrls;
     }

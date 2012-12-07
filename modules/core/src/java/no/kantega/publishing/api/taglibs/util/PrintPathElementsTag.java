@@ -1,6 +1,5 @@
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.path.PathEntryAO;
 import org.springframework.web.context.WebApplicationContext;
@@ -34,8 +33,7 @@ public class PrintPathElementsTag extends TagSupport {
     public int doStartTag() throws JspException {
         if(associationId != null){
             try {
-                ContentIdentifier contentIdentifier = ContentIdentifier.fromAssociationId(associationId);
-                List<PathEntry> pathByContentId = pathEntryAO.getPathEntriesByContentIdentifier(contentIdentifier);
+                List<PathEntry> pathByContentId = pathEntryAO.getPathEntriesByAssociationIdInclusive(associationId);
                 JspWriter writer = pageContext.getOut();
 
                 writer.write("<div class=\"");
@@ -63,6 +61,7 @@ public class PrintPathElementsTag extends TagSupport {
 
     @Override
     public int doEndTag() throws JspException {
+        associationId = -1;
         cssClass = defaultCssClass;
         separator = defaultSeparator;
         return super.doEndTag();
@@ -70,5 +69,13 @@ public class PrintPathElementsTag extends TagSupport {
 
     public void setAssociationId(Integer associationId) {
         this.associationId = associationId;
+    }
+
+    public void setCssClass(String cssClass) {
+        this.cssClass = cssClass;
+    }
+
+    public void setSeparator(String separator) {
+        this.separator = separator;
     }
 }

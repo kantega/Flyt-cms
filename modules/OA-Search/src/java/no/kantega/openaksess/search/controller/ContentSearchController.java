@@ -47,31 +47,29 @@ public class ContentSearchController implements AksessController {
             SearchResponse searchResponse = performSearch(request, query);
             model.put("searchResponse", searchResponse);
 
-            String urlPrefix = "?";
-
-            addLinks(model, searchResponse, urlPrefix);
+            addLinks(model, searchResponse);
         }
 
         return model;
     }
 
-    private void addLinks(Map<String, Object> model, SearchResponse searchResponse, String urlPrefix) {
+    private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
         Map<String, Object> links = new HashMap<String, Object>();
         model.put("links", links);
         int currentPage = searchResponse.getCurrentPage();
         if (currentPage > 0) {
             String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
-            links.put("prevPageUrl", urlPrefix + prevPageUrl);
+            links.put("prevPageUrl", prevPageUrl);
         }
 
         int numberOfPages = searchResponse.getNumberOfPages();
         if (currentPage < numberOfPages) {
             String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
-            links.put("nextPageUrl", urlPrefix + nextPageUrl);
+            links.put("nextPageUrl", nextPageUrl);
         }
 
         if (numberOfPages > 1) {
-            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, urlPrefix));
+            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage));
         }
     }
 
