@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class AttributeRowMapper implements RowMapper {
+public class AttributeRowMapper implements RowMapper<Attribute> {
     private Content content;
     private AttributeFactory attributeFactory;
 
@@ -22,7 +22,7 @@ public class AttributeRowMapper implements RowMapper {
         this.attributeFactory = attributeFactory;
     }
 
-    public Object mapRow(ResultSet rs, int i) throws SQLException {
+    public Attribute mapRow(ResultSet rs, int i) throws SQLException {
         Attribute attribute;
         try {
             attribute = attributeFactory.newAttribute(rs.getString("AttributeType"));

@@ -333,7 +333,10 @@ public class ContentAO {
                 Association a = AssociationAO.getAssociationFromRS(rs);
                 if (!foundCurrentAssociation) {
                     // Dersom knytningsid ikke er angitt bruker vi default for angitt site
-                    if ((cid.getAssociationId() == a.getId()) || (cid.getAssociationId() == -1 && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE && a.getSiteId() == cid.getSiteId())) {
+                    int associationId = cid.getAssociationId();
+                    if ((associationId == a.getId()) || (associationId == -1
+                            && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
+                            && a.getSiteId() == cid.getSiteId())) {
                         foundCurrentAssociation = true;
                         a.setCurrent(true);
                     }
@@ -758,7 +761,7 @@ public class ContentAO {
 
     public static ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
         Connection c = null;
-
+        ContentIdHelper.setContentIdFromAssociation(cid);
         try {
             c = dbConnectionFactory.getConnection();
             int id = SQLHelper.getInt(c, "select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId() , "ParentAssociationId");

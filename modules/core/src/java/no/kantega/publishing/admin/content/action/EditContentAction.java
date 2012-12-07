@@ -51,7 +51,8 @@ public class EditContentAction implements Controller {
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
-        if (cid.getAssociationId() == -1 && content == null) {
+        int associationId = cid.getAssociationId();
+        if (associationId == -1 && content == null) {
             Connection c = null;
             try {
                 c = dbConnectionFactory.getConnection();
@@ -76,7 +77,7 @@ public class EditContentAction implements Controller {
 
         String infomessage = "";
 
-        if ((content == null) || (cid.getAssociationId() != content.getAssociation().getId()) || (!content.isCheckedOut())) {
+        if ((content == null) || (associationId != content.getAssociation().getId()) || (!content.isCheckedOut())) {
             // Content is not in session or not correct content
             content = aksessService.checkOutContent(cid);
 

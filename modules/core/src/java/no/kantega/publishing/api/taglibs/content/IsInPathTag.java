@@ -84,7 +84,9 @@ public class IsInPathTag extends ConditionalTagSupport {
 
 
                     String path = association.getPath();
-                    if (content.getAssociation().getId() == cid.getAssociationId() || path.contains("/" + cid.getAssociationId() + "/")) {
+                    int associationId = cid.getAssociationId();
+                    if (content.getAssociation().getId() == associationId
+                            || path.contains("/" + associationId + "/")) {
                         return !negate;
                     }
 

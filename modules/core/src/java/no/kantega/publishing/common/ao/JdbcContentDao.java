@@ -97,7 +97,11 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
         // Get associations for this page
         for (Association association : associations) {
             // Dersom knytningsid ikke er angitt bruker vi default for angitt site
-            if ((cid.getAssociationId() == association.getId()) || (cid.getAssociationId() == -1 && association.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE && association.getSiteId() == cid.getSiteId())) {
+            int associationId = cid.getAssociationId();
+            if ((associationId == association.getId())
+                    || (associationId == -1
+                    && association.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
+                    && association.getSiteId() == cid.getSiteId())) {
                 association.setCurrent(true);
                 return;
             }

@@ -19,6 +19,7 @@ package no.kantega.publishing.common.service.impl;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.PathEntry;
@@ -99,7 +100,7 @@ public class PathWorker {
             if (cid == null) {
                 return pathEntries;
             }
-
+            ContentIdHelper.setContentIdFromAssociation(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select Path from associations where UniqueId = " + cid.getAssociationId());
             if (!rs.next()) {
                 return pathEntries;

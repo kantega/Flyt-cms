@@ -20,6 +20,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
@@ -137,10 +138,12 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.api.content.ContentIdentifier, String)
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
+        ContentIdHelper.setContentIdFromAssociation(parent);
         String query = brokenLinkBasisQuery;
         query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)";
         query += getDefaultOrderByClause();
-        Object[] args = {"%/" + parent.getAssociationId() + "/%", parent.getAssociationId()};
+        int associationId = parent.getAssociationId();
+        Object[] args = {"%/" + associationId + "/%", associationId};
         return findMatchingLinkOccurrences(query, args);
     }
 
@@ -236,8 +239,8 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     }
 
     private List<LinkOccurrence> findMatchingLinkOccurrences(String query, Object[] args) {
-        return getJdbcTemplate().query(query, args, new RowMapper() {
-            public Object mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return getJdbcTemplate().query(query, args, new RowMapper<LinkOccurrence>() {
+            public LinkOccurrence mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return getOccurrenceFromResultSet(rs);
             }
         });
