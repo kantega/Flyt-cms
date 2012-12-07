@@ -1,10 +1,10 @@
 package no.kantega.publishing.plugin.provider;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import org.kantega.jexmec.ClassLoaderProvider;
+import org.kantega.jexmec.PluginLoader;
 import org.kantega.jexmec.PluginManager;
 import org.kantega.jexmec.PluginManagerListener;
-import org.kantega.jexmec.events.PluginLoadingExceptionEvent;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
@@ -14,10 +14,12 @@ public class ThreadLocalPluginLoaderErrors {
 
     public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
         pluginManager.addPluginManagerListener(new PluginManagerListener<OpenAksessPlugin>() {
+
             @Override
-            public void pluginLoadingFailedWithException(PluginLoadingExceptionEvent<OpenAksessPlugin> openAksessPluginPluginLoadingExceptionEvent) {
-                pluginLoadingException.set(openAksessPluginPluginLoadingExceptionEvent.getThrowable());
+            public void pluginLoadingFailedWithException(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader, PluginLoader<OpenAksessPlugin> pluginLoader, Throwable exception) {
+                pluginLoadingException.set(exception);
             }
+
         });
     }
 

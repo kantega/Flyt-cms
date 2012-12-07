@@ -2,13 +2,13 @@ package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import org.kantega.jexmec.*;
-import org.kantega.jexmec.events.PluginLoadingExceptionEvent;
 import org.kantega.jexmec.manager.DefaultPluginManager;
 import org.kantega.jexmec.spring.SpringPluginLoader;
 import org.kantega.jexmec.spring.SpringServiceLocator;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.*;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.FileSystemResource;
@@ -31,10 +31,11 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
     private ApplicationContext applicationContext;
     private ServletContext servletContext;
     private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
-    private List<PluginClassLoaderProvider> pluginClassLoaderProviders;
+    private List<ClassLoaderProvider> pluginClassLoaderProviders;
     private List<BeanFactoryPostProcessor> postProcessors;
     private Class servicesClass;
     private Class pluginClass;
+    private List<String> exposedBeanNames;
 
     public Class getObjectType() {
         return PluginManager.class;
@@ -83,23 +84,35 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
                 return context;
             }
 
+            @Override
+            public void customizeParentContext(ConfigurableApplicationContext parentContext) {
+
+                ConfigurableListableBeanFactory beanFactory = parentContext.getBeanFactory();
+                if(exposedBeanNames != null) {
+                    for (String beanName : exposedBeanNames) {
+                        beanFactory.registerSingleton(beanName, applicationContext.getBean(beanName));
+                    }
+                }
+                beanFactory.registerSingleton("rootApplicationContext", applicationContext);
+            }
         };
         if (postProcessors != null) {
             spring.setBeanFactoryPostProcessors(postProcessors);
         }
 
         pluginClass = OpenAksessPlugin.class;
-        final DefaultPluginManager manager = new DefaultPluginManager(pluginClass);
-        manager.addServiceLocator(serviceLocator);
-        manager.addPluginClassLoader(applicationContext.getClassLoader());
+        DefaultPluginManager.Builder builder = DefaultPluginManager.buildFor(pluginClass);
+
+        builder.withServiceLocator(serviceLocator);
+        builder.withClassLoader(applicationContext.getClassLoader());
         if(pluginClassLoaderProviders != null) {
-            for (PluginClassLoaderProvider provider : pluginClassLoaderProviders) {
-                manager.addPluginClassLoaderProvider(provider);
+            for (ClassLoaderProvider provider : pluginClassLoaderProviders) {
+                builder.withClassLoaderProvider(provider);
             }
         }
-        manager.addPluginLoader(spring);
+        builder.withPluginLoader(spring);
 
-        return manager;
+        return builder.build();
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -119,11 +132,12 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
             try {
                 DefaultPluginManager manager = (DefaultPluginManager) getObject();
                 PluginManagerListener<OpenAksessPlugin> listener = new PluginManagerListener<OpenAksessPlugin>() {
+
                     @Override
-                    public void pluginLoadingFailedWithException(PluginLoadingExceptionEvent<OpenAksessPlugin> event) {
-                        String msg = "PluginLoader " + event.getPluginLoader() + " threw exception loading plugins from class loader " + event.getClassLoader() + " provided by " + event.getProvider() + ". Exception message was " + event.getThrowable().getMessage();
-                        logger.error(msg, event.getThrowable());
-                        throw new RuntimeException(msg, event.getThrowable());
+                    public void pluginLoadingFailedWithException(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader, PluginLoader<OpenAksessPlugin> pluginLoader, Throwable exception) {
+                        String msg = "PluginLoader " + pluginLoader + " threw exception loading plugins from class loader " + classLoader + " provided by " + classLoaderProvider + ". Exception message was " + exception.getMessage();
+                        logger.error(msg, exception);
+                        throw new RuntimeException(msg, exception);
                     }
                 };
                 manager.addPluginManagerListener(listener);
@@ -147,8 +161,12 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         this.pluginClass = pluginClass;
     }
 
-    public void setPluginClassLoaderProviders(List<PluginClassLoaderProvider> pluginClassLoaderProviders) {
+    public void setPluginClassLoaderProviders(List<ClassLoaderProvider> pluginClassLoaderProviders) {
         this.pluginClassLoaderProviders = pluginClassLoaderProviders;
+    }
+
+    public void setExposedBeanNames(List exposedBeanNames) {
+        this.exposedBeanNames = exposedBeanNames;
     }
 
     /**

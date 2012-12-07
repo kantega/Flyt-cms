@@ -62,6 +62,11 @@
                 <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
             </list>
         </property>
+        <property name="exposedBeanNames">
+            <list>
+                <value>adminRoleInterceptor</value>
+            </list>
+        </property>
         <property name="pluginClassLoaderProviders">
             <list>
                 <ref bean="hotDepoyProvider"/>

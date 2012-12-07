@@ -4,7 +4,7 @@ import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.kantega.jexmec.PluginClassLoaderProvider;
+import org.kantega.jexmec.ClassLoaderProvider;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,9 +29,9 @@ import static java.util.Collections.singleton;
 /**
  *
  */
-public class PluginHotDeployProvider implements PluginClassLoaderProvider {
+public class PluginHotDeployProvider implements ClassLoaderProvider {
 
-    private Registry registry;
+    private ClassLoaderProvider.Registry registry;
     private File pluginWorkDirectory;
     private Map<String, DeployedPlugin> loaders = new HashMap<String, DeployedPlugin>();
     private Logger logger = Logger.getLogger(getClass());

@@ -41,7 +41,7 @@ import java.util.*;
 public class ListJobsController extends AbstractController {
 
     @Autowired
-    private PluginManager<OpenAksessPlugin> openAksessPluginPluginManager;
+    private PluginManager<OpenAksessPlugin> pluginManager;
 
     /**
      * ListJobsController is used to find all jobs that are scheduled using a quartz scheduler.
@@ -215,8 +215,7 @@ public class ListJobsController extends AbstractController {
 
     private Collection<ApplicationContext> getPluginApplicationContexts(){
         Collection<ApplicationContext> contexts = new ArrayList<ApplicationContext>();
-        List<OpenAksessPlugin> plugins = openAksessPluginPluginManager.getPlugins();
-        for (OpenAksessPlugin plugin : plugins) {
+        for (OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             // OK, this is a hack, but at least its in a plugin, not in the API
             for (MessageSource messageSource : plugin.getMessageSources()) {
                 if (messageSource instanceof ApplicationContext) {
@@ -254,9 +253,5 @@ public class ListJobsController extends AbstractController {
         return scheduledBeans;
     }
 
-
-    public void setOpenAksessPluginPluginManager(PluginManager<OpenAksessPlugin> openAksessPluginPluginManager) {
-        this.openAksessPluginPluginManager = openAksessPluginPluginManager;
-    }
 }
 
