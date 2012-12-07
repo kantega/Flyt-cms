@@ -23,7 +23,6 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.security.SecuritySession;
@@ -52,7 +51,6 @@ public class AddNoteAction extends SimpleAdminController {
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
         // Extracting currently selected content from it's url
-        Content currentContent = null;
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {

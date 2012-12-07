@@ -435,6 +435,10 @@
                     <groupId>nz.co.edmi</groupId>
                     <artifactId>bourbon-gem-jar</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.sommeri</groupId>
+                    <artifactId>less4j</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
