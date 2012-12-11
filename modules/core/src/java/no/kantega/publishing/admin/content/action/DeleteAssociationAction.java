@@ -59,7 +59,7 @@ public class DeleteAssociationAction implements Controller {
             Content content = aksessService.getContent(cid);
 
             if(content == null){
-                Log.error("DeleteAssociationAction", "Tried to delete non-existing content");
+                Log.error("DeleteAssociationAction", "Attempted to delete non-existing content");
                 model.put("error", "aksess.confirmdelete.doesnotexist");
                 return new ModelAndView(errorView, model);
             }
