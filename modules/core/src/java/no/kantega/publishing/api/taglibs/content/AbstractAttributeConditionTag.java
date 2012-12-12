@@ -9,8 +9,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
 /**
  * @author Kristian Lier Selnæs
  */
@@ -23,6 +21,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
     private Content contentObject = null;
     private String repeater;
     private boolean inheritFromAncestors = false;
+    private final String CATEGORY = getClass().getName();
 
     public void setName(String name) {
         this.name = name.toLowerCase();
@@ -64,24 +63,28 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
     }
 
     protected boolean condition() {
+        boolean result = false;
         try {
             if (contentObject == null) {
                 contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
             }
 
-            if (contentObject == null) {
-                //TODO: consider throwing an exception here.
-                return false;
+            if (contentObject != null) {
+                Attribute attribute = contentObject.getAttribute(AttributeTagHelper.getAttributeName(pageContext, name, repeater), attributeType);
+                result = evaluateCondition(contentObject, attribute);
+            } else {
+                 Log.error(CATEGORY, "Content object was null");
             }
-            Attribute attribute = contentObject.getAttribute(AttributeTagHelper.getAttributeName(pageContext, name, repeater), attributeType);
-
-            return evaluateCondition(contentObject, attribute);
 
         } catch (Exception e) {
-            Log.error(getClass().getName(), e, null, null);
+            Log.error(CATEGORY, e);
         }
 
-        return negate;
+        if (negate) {
+            return !result;
+        } else {
+            return result;
+        }
     }
 
     /**
