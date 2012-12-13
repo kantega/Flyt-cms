@@ -73,7 +73,7 @@ public class ContentSearchController implements AksessController {
         }
     }
 
-    @RequestMapping("/autosuggest")
+    @RequestMapping("/suggest")
     public @ResponseBody List<String> search(HttpServletRequest request, @RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) {
 
         SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);

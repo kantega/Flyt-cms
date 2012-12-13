@@ -52,6 +52,15 @@
                 <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
             </analyzer>
         </fieldType>
+        <!--<fieldType name="text_general_edge_ngram" class="solr.TextField" positionIncrementGap="100">
+            <analyzer type="index">
+                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+                <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15" side="front"/>
+            </analyzer>
+            <analyzer type="query">
+                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+            </analyzer>
+        </fieldType>-->
         <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
@@ -94,11 +103,21 @@
 
         <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
         <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <!--<field name="all_text_ngram" type="text_general_edge_ngram" indexed="true" stored="true" multiValued="true" termVectors="true"/>-->
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
+        <copyField source="keywords" dest="all_text_en" />
+        <copyField source="topics" dest="all_text_en" />
+
         <copyField source="*_no" dest="all_text_no" />
         <copyField source="*_txt" dest="all_text_no" />
+        <copyField source="keywords" dest="all_text_no" />
+        <copyField source="topics" dest="all_text_no" />
+
+        <!--<copyField source="*_txt" dest="all_text_ngram" />
+        <copyField source="*_no" dest="all_text_ngram" />
+        <copyField source="*_en" dest="all_text_ngram" />-->
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>

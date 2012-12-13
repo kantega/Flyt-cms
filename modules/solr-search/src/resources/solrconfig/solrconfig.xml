@@ -178,6 +178,8 @@
         <lst name="defaults">
             <str name="fl">uid,id,parentId,securityId,title_*,description*,indexedContentType,author,url,language</str>
             <str name="df">all_text_no</str>
+            <!--<str name="defType">edismax</str>
+            <str name="df">title_no^2,description_no^1.5,altTitle_no^2,keywords^2,topics^2,all_text_no</str>-->
             <str name="echoParams">explicit</str>
             <int name="rows">50</int>
             <str name="spellcheck.onlyMorePopular">false</str>
@@ -189,41 +191,6 @@
             <str>spellcheck</str>
             <str>elevator</str>
         </arr>
-
-        <!-- "invariants" are a way of letting the Solr maintainer lock down
-           the options available to Solr clients.  Any params values
-           specified here are used regardless of what values may be specified
-           in either the query, the "defaults", or the "appends" params.
-
-           In this example, the facet.field and facet.query params would
-           be fixed, limiting the facets clients can use.  Faceting is
-           not turned on by default - but if the client does specify
-           facet=true in the request, these are the only facets they
-           will be able to see counts for; regardless of what other
-           facet.field or facet.query params they may specify.
-
-           NOTE: there is *absolutely* nothing a client can do to prevent these
-           "invariants" values from being used, so don't use this mechanism
-           unless you are sure you always want it.
-        -->
-        <!--
-         <lst name="invariants">
-           <str name="facet.field">cat</str>
-           <str name="facet.field">manu_exact</str>
-           <str name="facet.query">price:[* TO 500]</str>
-           <str name="facet.query">price:[500 TO *]</str>
-         </lst>
-        -->
-        <!-- If the default list of SearchComponents is not desired, that
-           list can either be overridden completely, or components can be
-           prepended or appended to the default list.  (see below)
-        -->
-        <!--
-         <arr name="components">
-           <str>nameOfCustomComponent1</str>
-           <str>nameOfCustomComponent2</str>
-         </arr>
-        -->
     </requestHandler>
 
 
@@ -354,7 +321,7 @@
         </lst>
     </requestHandler>
 
-    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
+    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/spellcheck">
         <lst name="defaults">
             <str name="spellcheck">true</str>
             <str name="spellcheck.onlyMorePopular">true</str>
@@ -365,49 +332,6 @@
             <str>spellcheck</str>
         </arr>
     </requestHandler>
-
-    <!-- Search Components
-
-      Search components are registered to SolrCore and used by
-      instances of SearchHandler (which can access them by name)
-
-      By default, the following components are available:
-
-      <searchComponent name="query"     class="solr.QueryComponent" />
-      <searchComponent name="facet"     class="solr.FacetComponent" />
-      <searchComponent name="mlt"       class="solr.MoreLikeThisComponent" />
-      <searchComponent name="highlight" class="solr.HighlightComponent" />
-      <searchComponent name="stats"     class="solr.StatsComponent" />
-      <searchComponent name="debug"     class="solr.DebugComponent" />
-
-      Default configuration in a requestHandler would look like:
-
-      <arr name="components">
-        <str>query</str>
-        <str>facet</str>
-        <str>mlt</str>
-        <str>highlight</str>
-        <str>stats</str>
-        <str>debug</str>
-      </arr>
-
-      If you register a searchComponent to one of the standard names,
-      that will be used instead of the default.
-
-      To insert components before or after the 'standard' components, use:
-
-      <arr name="first-components">
-        <str>myFirstComponentName</str>
-      </arr>
-
-      <arr name="last-components">
-        <str>myLastComponentName</str>
-      </arr>
-
-      NOTE: The component registered with the name "debug" will
-      always be executed after the "last-components"
-
-    -->
 
     <!-- Spell Check
 
@@ -420,66 +344,63 @@
 
         <str name="queryAnalyzerFieldType">textSpell</str>
 
-        <!-- Multiple "Spell Checkers" can be declared and used by this
-           component
-        -->
-
-        <!-- a spellchecker built from a field of the main index, and
-           written to disk
-        -->
         <lst name="spellchecker">
             <str name="name">default</str>
             <str name="field">all_text_no</str>
-            <str name="spellcheckIndexDir">spellchecker</str>
-            <str name="buildOnCommit">true</str>
-            <!-- uncomment this to require terms to occur in 1% of the documents
-               in order to be included in the dictionary
-            -->
-            <!--
+            <str name="classname">solr.DirectSolrSpellChecker</str>
+            <!-- the spellcheck distance measure used, the default is the internal levenshtein -->
+            <str name="distanceMeasure">internal</str>
+            <!-- minimum accuracy needed to be considered a valid spellcheck suggestion -->
+            <float name="accuracy">0.5</float>
+            <!-- the maximum #edits we consider when enumerating terms: can be 1 or 2 -->
+            <int name="maxEdits">2</int>
+            <!-- the minimum shared prefix when enumerating terms -->
+            <int name="minPrefix">1</int>
+            <!-- maximum number of inspections per result. -->
+            <int name="maxInspections">5</int>
+            <!-- minimum length of a query term to be considered for correction -->
+            <int name="minQueryLength">4</int>
+            <!-- maximum threshold of documents a query term can appear to be considered for correction -->
+            <float name="maxQueryFrequency">0.01</float>
+            <!-- uncomment this to require suggestions to occur in 1% of the documents
                 <float name="thresholdTokenFrequency">.01</float>
             -->
         </lst>
-
-        <!-- a spellchecker that uses a different distance measure -->
-        <!--
-          <lst name="spellchecker">
-            <str name="name">jarowinkler</str>
-            <str name="field">spell</str>
-            <str name="distanceMeasure">
-              org.apache.lucene.search.spell.JaroWinklerDistance
-            </str>
-            <str name="spellcheckIndexDir">spellcheckerJaro</str>
-          </lst>
-        -->
-
-        <!-- a spellchecker that use an alternate comparator
-
-           comparatorClass be one of:
-            1. score (default)
-            2. freq (Frequency first, then score)
-            3. A fully qualified class name
-        -->
-        <!--
-         <lst name="spellchecker">
-           <str name="name">freq</str>
-           <str name="field">lowerfilt</str>
-           <str name="spellcheckIndexDir">spellcheckerFreq</str>
-           <str name="comparatorClass">freq</str>
-           <str name="buildOnCommit">true</str>
-        -->
-
-        <!-- A spellchecker that reads the list of words from a file -->
-        <!--
-         <lst name="spellchecker">
-           <str name="classname">solr.FileBasedSpellChecker</str>
-           <str name="name">file</str>
-           <str name="sourceLocation">spellings.txt</str>
-           <str name="characterEncoding">UTF-8</str>
-           <str name="spellcheckIndexDir">spellcheckerFile</str>
-         </lst>
-        -->
     </searchComponent>
 
+    <!-- Suggester
+        http://wiki.apache.org/solr/Suggester
+    -->
+
+    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
+        <lst name="defaults">
+            <str name="spellcheck">true</str>
+            <str name="spellcheck.dictionary">suggest</str>
+            <str name="spellcheck.onlyMorePopular">true</str>
+            <str name="spellcheck.count">5</str>
+            <str name="spellcheck.collate">true</str>
+        </lst>
+        <arr name="components">
+            <str>suggest</str>
+        </arr>
+    </requestHandler>
+
+    <searchComponent class="solr.SpellCheckComponent" name="suggest">
+        <lst name="spellchecker">
+            <str name="name">suggest</str>
+            <str name="classname">org.apache.solr.spelling.suggest.Suggester</str>
+            <str name="lookupImpl">org.apache.solr.spelling.suggest.tst.TSTLookup</str>
+            <!-- Alternatives to lookupImpl:
+                 org.apache.solr.spelling.suggest.fst.FSTLookup   [finite state automaton]
+                 org.apache.solr.spelling.suggest.fst.WFSTLookupFactory [weighted finite state automaton]
+                 org.apache.solr.spelling.suggest.jaspell.JaspellLookup [default, jaspell-based]
+                 org.apache.solr.spelling.suggest.tst.TSTLookup   [ternary trees]
+            -->
+            <str name="field">all_text_no</str>
+            <float name="threshold">0.005</float>
+            <str name="buildOnCommit">true</str>
+        </lst>
+    </searchComponent>
 
 
     <!-- Terms Component

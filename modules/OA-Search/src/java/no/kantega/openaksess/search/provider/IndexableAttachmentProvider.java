@@ -3,6 +3,7 @@ package no.kantega.openaksess.search.provider;
 import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.data.Attachment;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
@@ -100,9 +101,14 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                 try {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
 
-                    progressReporter.reportProgress();
-                    IndexableDocument indexableDocument = transformer.transform(AttachmentAO.getAttachment(id));
-                    indexableDocuments.put(indexableDocument);
+                    if (id != null) {
+                        progressReporter.reportProgress();
+                        Attachment attachment = AttachmentAO.getAttachment(id);
+                        if (attachment != null) {
+                            IndexableDocument indexableDocument = transformer.transform(attachment);
+                            indexableDocuments.put(indexableDocument);
+                        }
+                    }
                 } catch (InterruptedException e) {
                     Log.error(getClass().getName(), e);
                 }

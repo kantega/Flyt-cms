@@ -33,7 +33,7 @@ public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport imp
             associationIds.put("associationIds", Arrays.asList(replaceSlashAddCurrent.split(",")));
             pathEntries = getNamedParameterJdbcTemplate().query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:associationIds) order by associations.AssociationId", associationIds, rowMapper);
         } catch (DataAccessException e) {
-            Log.error("PathEntryServiceLegacyImpl", e);
+            Log.error("PathEntryServiceLegacyImpl", e.getMessage());
         }
         return pathEntries;
     }

@@ -105,11 +105,15 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
             while (!progressReporter.isFinished()){
                 try {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
-                    ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(id);
-                    progressReporter.reportProgress();
-                    Content content = contentManagementService.getContent(contentIdentifier);
-                    IndexableDocument indexableDocument = transformer.transform(content);
-                    indexableDocuments.put(indexableDocument);
+                    if (id != null) {
+                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(id);
+                        progressReporter.reportProgress();
+                        Content content = contentManagementService.getContent(contentIdentifier);
+                        if (content != null) {
+                            IndexableDocument indexableDocument = transformer.transform(content);
+                            indexableDocuments.put(indexableDocument);
+                        }
+                    }
                 } catch (Exception e) {
                     Log.error(getClass().getName(), e);
                 }

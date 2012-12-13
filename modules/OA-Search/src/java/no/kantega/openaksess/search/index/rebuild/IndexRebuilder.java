@@ -36,7 +36,7 @@ public class IndexRebuilder {
         documentIndexer.deleteAllDocuments();
 
         final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
-        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>(100);
+        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>(2);
         if (notAllProvidersAreExcluded(providersToExclude)) {
             executeRebuild(progressReporters, indexableDocuments);
 

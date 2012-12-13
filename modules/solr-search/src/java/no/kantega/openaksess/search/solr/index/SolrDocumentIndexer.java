@@ -4,7 +4,6 @@ import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.request.AbstractUpdateRequest;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
@@ -41,12 +40,16 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                 ContentStreamUpdateRequest contentStreamUpdateRequest = new ContentStreamUpdateRequest("/update/extract");
                 contentStreamUpdateRequest.setParams(getStreamParams(document));
                 contentStreamUpdateRequest.addFile(fileContent, StringUtils.substringAfterLast(fileContent.getName(), "."));
-                contentStreamUpdateRequest.setAction(AbstractUpdateRequest.ACTION.COMMIT, true, true);
-                NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
-                boolean deletedFileContent = fileContent.delete();
-                if(!deletedFileContent){
-                    log.error("Could not delete file {}", fileContent.getAbsolutePath());
+
+                try {
+                    NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
+                } finally {
+                    boolean deletedFileContent = fileContent.delete();
+                    if(!deletedFileContent){
+                        log.error("Could not delete file {}", fileContent.getAbsolutePath());
+                    }
                 }
+
             }
         } catch (Exception e) {
             throw new IllegalStateException(e);
@@ -101,6 +104,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         streamParams.add("literal.language", document.getLanguage());
         streamParams.add("literal.description_" + languageSuffix, document.getDescription());
         streamParams.add("literal.id", document.getId());
+        streamParams.add("literal.parentId", String.valueOf(document.getParentId()));
         streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
         streamParams.add("literal.uid", document.getUId());
         streamParams.add("literal.siteId", String.valueOf(document.getSiteId()));
