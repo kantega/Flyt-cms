@@ -84,7 +84,7 @@ public class PathWorker {
      * @param cid to get PathEntries for.
      * @return PathEntries leading to the content identified by ContentIdentifier
      * @throws SystemException
-     * @deprecated use PathEntryAO.getPathEntriesByContentIdentifier()
+     * @deprecated use PathEntryService.getPathEntriesByContentIdentifier()
      */
     @Deprecated
     public static List<PathEntry> getPathByContentId(ContentIdentifier cid) throws SystemException {

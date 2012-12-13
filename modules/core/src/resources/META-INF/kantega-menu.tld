@@ -387,6 +387,11 @@
         <example>
             <![CDATA[
                 <menu:printpathelements associationId="${searchHit.securityId}"/>
+
+                May produce:
+                <div class="contentPath">
+                    <span>Frontpage</span> > <span>some other page</span> > <span>parent of page</span>
+                </div>
             ]]>
         </example>
     </tag>

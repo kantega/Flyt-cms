@@ -4,7 +4,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 
 import java.util.List;
 
-public interface PathEntryAO {
+public interface PathEntryService {
 
     /**
      * @param contentIdentifier -

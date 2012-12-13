@@ -1,7 +1,7 @@
 package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.publishing.api.path.PathEntry;
-import no.kantega.publishing.api.path.PathEntryAO;
+import no.kantega.publishing.api.path.PathEntryService;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -13,6 +13,15 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Tag for printing the path of a page, i.e. its ancestors, given its associationId.
+ * Example output:
+ * &lt;div class=&quot;contentPath&quot;&gt;
+ *  &lt;span&gt;Frontpage&lt;/span&gt; &gt; &lt;span&gt;some other page&lt;/span&gt; &gt; &lt;span&gt;parent of page&lt;/span&gt;
+ * &lt;/div&gt;
+ *
+ * The class of the div and the separator between the spans are configurable.
+ */
 public class PrintPathElementsTag extends TagSupport {
     private final String defaultCssClass = "contentPath";
     private final String defaultSeparator = "&gt;";
@@ -20,20 +29,20 @@ public class PrintPathElementsTag extends TagSupport {
     private Integer associationId;
     private String cssClass = defaultCssClass;
     private String separator = defaultSeparator;
-    private PathEntryAO pathEntryAO;
+    private PathEntryService pathEntryService;
 
     @Override
     public void setPageContext(PageContext pageContext) {
         super.setPageContext(pageContext);
         WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
-        pathEntryAO = context.getBean(PathEntryAO.class);
+        pathEntryService = context.getBean(PathEntryService.class);
     }
 
     @Override
     public int doStartTag() throws JspException {
         if(associationId != null){
             try {
-                List<PathEntry> pathByContentId = pathEntryAO.getPathEntriesByAssociationIdInclusive(associationId);
+                List<PathEntry> pathByContentId = pathEntryService.getPathEntriesByAssociationIdInclusive(associationId);
                 JspWriter writer = pageContext.getOut();
 
                 writer.write("<div class=\"");

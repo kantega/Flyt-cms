@@ -48,7 +48,7 @@ public class ContentIdHelper {
     private static final int defaultVersion = -1;
 
     /**
-     * Find ContentIdentifer for an Content, relative to the context-Content and expr.
+     * Find the ContentIdentifer for a Content, relative to the context-Content and expr.
      * @param context - The current Content-contect
      * @param expr    - Path, e.g. "../", "../../" or "/"
      * @return        - ContentIdentifier

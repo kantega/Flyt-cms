@@ -283,7 +283,7 @@
         </property>
     </bean>
 
-    <bean class="no.kantega.publishing.common.ao.PathEntryAOLegacyImpl">
+    <bean class="no.kantega.publishing.common.ao.PathEntryServiceLegacyImpl">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 </beans>

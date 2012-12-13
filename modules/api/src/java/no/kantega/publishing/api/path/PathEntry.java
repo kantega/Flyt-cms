@@ -16,6 +16,9 @@
 
 package no.kantega.publishing.api.path;
 
+/**
+ * Represents an entry in the a page's path, i.e. an ancestor.
+ */
 public class PathEntry {
     private int id = 0;
     private String title = "";
