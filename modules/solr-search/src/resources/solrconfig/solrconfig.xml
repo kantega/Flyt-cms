@@ -346,7 +346,7 @@
 
         <lst name="spellchecker">
             <str name="name">default</str>
-            <str name="field">all_text_no</str>
+            <str name="field">all_text_unanalyzed</str>
             <str name="classname">solr.DirectSolrSpellChecker</str>
             <!-- the spellcheck distance measure used, the default is the internal levenshtein -->
             <str name="distanceMeasure">internal</str>
@@ -396,7 +396,7 @@
                  org.apache.solr.spelling.suggest.jaspell.JaspellLookup [default, jaspell-based]
                  org.apache.solr.spelling.suggest.tst.TSTLookup   [ternary trees]
             -->
-            <str name="field">all_text_no</str>
+            <str name="field">all_text_unanalyzed</str>
             <float name="threshold">0.005</float>
             <str name="buildOnCommit">true</str>
         </lst>
