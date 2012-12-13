@@ -21,6 +21,8 @@ import no.kantega.commons.log.Log;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 
 public class LocaleLabels {
     static public String DEFAULT_BUNDLE = "TextLabels";
@@ -82,7 +84,7 @@ public class LocaleLabels {
      */
     public static String getLabel(String key, String bundleName, Locale locale) {
         String loc = locale.getLanguage() + "_" + locale.getCountry();
-        if (locale.getVariant() != null) {
+        if (isNotBlank(locale.getVariant())) {
             loc += "_" + locale.getVariant();
         }
         return getLabel(key, bundleName, loc, null);

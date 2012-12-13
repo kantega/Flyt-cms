@@ -4,6 +4,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/search" prefix="search" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="menu" uri="http://www.kantega.no/aksess/tags/menu" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -35,7 +36,7 @@
     <ul id="SearchDrilldown">
         <c:forEach items="${searchResponse.facets}" var="facet">
             <li>
-                <h3><kantega:label key="aksess.search.${facet.key}"/></h3>
+                <h3><kantega:label key="aksess.search.${fn:toLowerCase(facet.key)}"/></h3>
                 <ul>
                     <c:forEach items="${facet.value}" var="facetEntry">
                         <c:set var="facetLabel" value="${facet.key}.${facetEntry.value}"/>
