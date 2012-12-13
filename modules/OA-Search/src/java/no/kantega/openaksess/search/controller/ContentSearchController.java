@@ -89,6 +89,9 @@ public class ContentSearchController implements AksessController {
     private SearchQuery getSearchQuery(HttpServletRequest request, String query, AksessSearchContext searchContext) {
         SearchQuery searchQuery = new SearchQuery(searchContext, query, getFilterQueries(request, searchContext));
 
+        searchQuery.setPageNumber(ServletRequestUtils.getIntParameter(request, "page", 0));
+        searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
+
         searchQuery.setFacetFields(facetFields);
 
         searchQuery.setFacetQueries(facetQueries);
@@ -99,17 +102,34 @@ public class ContentSearchController implements AksessController {
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
         List<String> filterQueries = new ArrayList<String>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
-        if(!searchAllSites){
-            filterQueries.add("siteId:" + searchContext.getSiteId());
-        }
-        if(showOnlyVisibleContent){
-            filterQueries.add("visibilityStatus:" + ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE));
-        }
-        if(showOnlyPublishedContent){
-            filterQueries.add("contentStatus:" + ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
-        }
+        addSiteFilter(searchContext, filterQueries);
+
+        addVisibilityFilter(filterQueries);
+
+        addPublishedFilter(filterQueries);
 
         return filterQueries;
+    }
+
+    private void addPublishedFilter(List<String> filterQueries) {
+        String publishedContentFilter = "contentStatus:" + ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED);
+        if(!filterQueries.contains(publishedContentFilter) && showOnlyPublishedContent){
+            filterQueries.add(publishedContentFilter);
+        }
+    }
+
+    private void addVisibilityFilter(List<String> filterQueries) {
+        String visibleContentFilter = "visibilityStatus:" + ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE);
+        if(!filterQueries.contains(visibleContentFilter) && showOnlyVisibleContent){
+            filterQueries.add(visibleContentFilter);
+        }
+    }
+
+    private void addSiteFilter(AksessSearchContext searchContext, List<String> filterQueries) {
+        String siteFilter = "siteId:" + searchContext.getSiteId();
+        if(!filterQueries.contains(siteFilter) && !searchAllSites){
+            filterQueries.add(siteFilter);
+        }
     }
 
     private String getQuery(HttpServletRequest request) {

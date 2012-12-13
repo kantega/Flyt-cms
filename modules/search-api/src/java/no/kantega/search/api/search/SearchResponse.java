@@ -81,7 +81,7 @@ public class SearchResponse {
     }
 
     public int getNumberOfPages() {
-        return (int) Math.ceil(numberOfHits.intValue() / query.getResultsPerPage());
+        return (int) Math.ceil(numberOfHits.doubleValue() / query.getResultsPerPage());
     }
 
     public void setFacets(Map<String,Collection<FacetResult>> facets) {

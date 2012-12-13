@@ -9,6 +9,8 @@ import java.util.List;
  * @see SearchResponse
  */
 public class SearchQuery {
+    public static final int DEFAULT_RESULTS_PER_PAGE= 50;
+
     private final SearchContext searchContext;
     private final String originalQuery;
     private List<String> filterQueries;
@@ -16,7 +18,7 @@ public class SearchQuery {
     private List<String> facetFields;
     private List<String> facetQueries;
     private List<DateRange> dateRangeFacets;
-    private Integer resultsPerPage = 50;
+    private Integer resultsPerPage = DEFAULT_RESULTS_PER_PAGE;
     private Integer pageNumber = 0;
     private String groupField;
     private List<String> groupQueries;

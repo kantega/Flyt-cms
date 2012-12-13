@@ -42,6 +42,7 @@ public class QueryStringGenerator {
 
     public static String getPageUrl(SearchQuery query, int pageNumber) {
         StringBuilder queryStringBuilder = getUrl(query);
+        queryStringBuilder.append("&");
         queryStringBuilder.append(String.format(keyValueFormat, PAGENO_PARAM, pageNumber));
         return queryStringBuilder.toString();
     }
@@ -58,15 +59,14 @@ public class QueryStringGenerator {
     public static Map<Integer, String> getPageUrls(SearchResponse searchResponse, int standingOnPage) {
         LinkedHashMap<Integer, String> pageUrls = new LinkedHashMap<Integer, String>();
         SearchQuery query = searchResponse.getQuery();
-        int page = standingOnPage + 1;
-        int startPage = ((page / 10) * 10) + 1;
+        int page = standingOnPage;
+        int startPage = ((page / 10) * 10);
         int endPage = startPage + 9;
 
         int numberOfHits = searchResponse.getNumberOfHits().intValue();
         int resultsPerPage = query.getResultsPerPage();
         if (endPage * resultsPerPage >= numberOfHits) {
-            endPage = ((numberOfHits - 1) / numberOfHits);
-            endPage++;
+            endPage = ((numberOfHits - 1) / resultsPerPage);
         }
         if (startPage > 1) {
             startPage--;
