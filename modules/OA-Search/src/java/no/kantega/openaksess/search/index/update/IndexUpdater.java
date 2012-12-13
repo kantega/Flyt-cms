@@ -34,7 +34,11 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     @Override
     public void contentSaved(ContentEvent event) {
         Content content = event.getContent();
-        updateIndex(content);
+        if (content.isSearchable()) {
+            updateIndex(content);
+        } else {
+            contentDeleted(event);
+        }
     }
 
     @Override
