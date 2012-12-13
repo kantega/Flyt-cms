@@ -89,8 +89,17 @@ public class SolrSearcher implements Searcher {
     }
 
     public List<String> suggest(SearchQuery query) {
+        return suggest(query, "/suggest");
+    }
+
+    @Override
+    public List<String> spell(SearchQuery query) {
+        return suggest(query, "/spellcheck");
+    }
+
+    private List<String> suggest(SearchQuery query, String handler) {
         ModifiableSolrParams params = new ModifiableSolrParams();
-        params.set("qt", "/suggest");
+        params.set("qt", handler);
         params.set("q", query.getOriginalQuery());
         Integer resultsPerPage = query.getResultsPerPage();
         params.set("rows", resultsPerPage);

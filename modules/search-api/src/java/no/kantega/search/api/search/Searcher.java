@@ -30,9 +30,20 @@ public interface Searcher {
     public SearchResponse search(SearchQuery query);
 
     /**
+     * Suggest words starting with the content of the query.
+     * e.g. q=spe -> ["spenn","spesielt","spesialiser","spesialisering","spesiell"]
      * @param query a SuggestionQuery
      * @return a list of suggestions based on the query.
      */
     public List<String> suggest(SearchQuery query);
+
+    /**
+     * Suggest words similar to the content of the query.
+     * e.g. q=spe -> [] since spe is a correctly spelled word.
+     * q=spei -> ["speil","spel","sped","spes","spesi"]
+     * @param query a SuggestionQuery
+     * @return a list of spell-suggestions based on the query.
+     */
+    public List<String> spell(SearchQuery query);
 
 }

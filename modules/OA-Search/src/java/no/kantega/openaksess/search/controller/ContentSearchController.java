@@ -81,6 +81,14 @@ public class ContentSearchController implements AksessController {
         return searcher.suggest(query);
     }
 
+    @RequestMapping("/spelling")
+    public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+
+        SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
+        query.setResultsPerPage(limit);
+        return searcher.spell(query);
+    }
+
     private SearchResponse performSearch(HttpServletRequest request, String query) {
         AksessSearchContext searchContext = aksessSearchContextCreator.getSearchContext(request);
         return searcher.search(getSearchQuery(request, query, searchContext));
