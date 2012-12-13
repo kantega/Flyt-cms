@@ -28,7 +28,7 @@
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
                 <property name="objectMapper">
-                    <bean class="no.kantega.publishing.jackson.mapper;OpenAksessMapper"/>
+                    <bean class="no.kantega.publishing.jackson.mapper.OpenAksessMapper"/>
                 </property>
             </bean>
         </mvc:message-converters>
