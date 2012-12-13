@@ -76,7 +76,6 @@
         <module>modules/solr-search</module>
         <module>modules/search-api</module>
         <module>modules/OA-Search</module>
-        <module>modules/jackson-serializers</module>
     </modules>
 
     <dependencyManagement>

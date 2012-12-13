@@ -1,4 +1,4 @@
-package no.kantega.openaksess.jackson.mapper.serializer;
+package no.kantega.publishing.jackson.mapper.serializer;
 
 import no.kantega.search.api.search.SearchQuery;
 import org.codehaus.jackson.JsonGenerator;

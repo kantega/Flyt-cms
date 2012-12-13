@@ -44,6 +44,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>oa-search-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-test</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
@@ -473,6 +479,12 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.5.6</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.9</version>
         </dependency>
     </dependencies>
 
