@@ -36,9 +36,9 @@
     </group>
 
     <group name="admin-searchlayout">
+        <group-ref>jquery-all</group-ref>
         <group-ref>admin-core</group-ref>
         <css>/admin/css/search.css</css>
-        <group-ref>jquery-all</group-ref>
     </group>
 
     <group name="admin-administrationlayout">
