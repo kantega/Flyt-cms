@@ -35,7 +35,8 @@
 <head>
     <title>Untitled</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/default.css">
-    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/jquery-all.css"/>">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-1.8.1.custom.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/jquery-ui-additions.css">
 </head>
 
 <body style="margin: 10px">
