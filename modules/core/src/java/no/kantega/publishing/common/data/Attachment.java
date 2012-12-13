@@ -97,6 +97,10 @@ public class Attachment {
     }
     
     public String getUrl(){
-        return Aksess.getContextPath() + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
+        String contextPath = Aksess.getContextPath();
+        if (!contextPath.endsWith("/")) {
+            contextPath += "/";
+        }
+        return contextPath + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
     }
 }
