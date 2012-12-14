@@ -108,7 +108,7 @@ public class SearcherIntegrationTest {
 
     @Test
     public void searchResultShouldHaveSpellSuggestions(){
-        SearchResponse response = doSearchSiteOne("kan");
+        SearchResponse response = doSearchSiteOne("kante");
         assertFalse("Search did not have spell suggestions", response.getSpellSuggestions().isEmpty());
     }
 
