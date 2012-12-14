@@ -303,8 +303,8 @@
         <jtds.version>1.2.5</jtds.version>
         <mysql.version>5.1.16</mysql.version>
         <servlet.version>3.0.1</servlet.version>
-        <jsp.version>2.1</jsp.version>
-        <jstl.version>1.1.2</jstl.version>
+        <jsp.version>2.2</jsp.version>
+        <jstl.version>1.2</jstl.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
