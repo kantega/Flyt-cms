@@ -320,11 +320,10 @@ openaksess.navigate.updateMainPane = function(itemIdentifier, suppressNavigatorU
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }
-    var multimediaFolders = $("#MultimediaFolders");
-    multimediaFolders.load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
-        multimediaFolders.find("img.thumbnail").lazyload({
+    $("#MultimediaFolders").load(openaksess.multimedia.getViewFolderAction(), {itemIdentifier: itemIdentifier}, function(success){
+        $("#MultimediaFolders img.thumbnail").lazyload({
             placeholder : "../bitmaps/blank.gif",
-            container: multimediaFolders
+            container: $("#MultimediaFolders")
         });
     });
 };

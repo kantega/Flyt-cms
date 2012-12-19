@@ -47,9 +47,8 @@ openaksess.admin = {
 
     bindGlobalButtons : function() {
         $("#OpenAksessInfoButton").click(function() {
-            var topicTabs = $("#TopicTabs");
-            var selected = topicTabs.tabs('option', 'selected');
-            var container = topicTabs.find(".ui-tabs-panel").eq(selected);
+            var selected = $("#TopicTabs").tabs('option', 'selected');
+            var container = $("#TopicTabs .ui-tabs-panel").eq(selected);
             var topicMapId = $(".topicMapId", container).val();
 
             openaksess.common.modalWindow.open({title:properties.title, width: 660, height:550, iframe: true,

@@ -31,7 +31,7 @@ openaksess.organizesubpages = function()  {
      */
     function getAssociationIdsAsParam () {
         var params = new Object();
-        var categories = $("#SubPages").find("ul.associationCategory");
+        var categories = $("#SubPages ul.associationCategory");
         for (var i = 0; i < categories.length; i ++) {
             var currentCategory = $(categories[i]);
             var associations = currentCategory.find("li.page");
@@ -61,10 +61,9 @@ openaksess.organizesubpages = function()  {
             openaksess.content.triggerContentUpdateEvent(this.currentUrl);
 
             openaksess.common.debug("organizesubpages.updateSubPageList(): Calling ListSubPages.action with: " + this.currentUrl);
-            var subPages = $("#SubPages");
-            subPages.load(properties.contextPath + "/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
+            $("#SubPages").load(properties.contextPath + "/admin/publish/ListSubPages.action", {itemIdentifier: this.currentUrl}, function(success){
                 openaksess.common.debug("organizesubpages.updateSubPageList(): response from ListSubPages.action received");
-                subPages.find("ul").sortable({
+                $("#SubPages ul").sortable({
                     connectWith: '.associationCategory',
                     items: 'li:not(.menu)',
                     axis: 'y',
@@ -75,8 +74,8 @@ openaksess.organizesubpages = function()  {
                     }
                 });
 
-                subPages.find("li.page").mousedown(function(event){
-                    var allSelected = subPages.find("li.page.selected");
+                $("#SubPages li.page").mousedown(function(event){
+                    var allSelected = $("#SubPages li.page.selected");
                     if (allSelected.size() == 0 || $(this).hasClass("selected") || event.ctrlKey) {
                         $(this).toggleClass('selected');
                     } else {

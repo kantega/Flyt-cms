@@ -124,10 +124,10 @@ openaksess.content = {
 
         $filterOptions.find(".filtersToggle").live('click', function(){
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Filter clicked. Opening infoslider widget.");
-            $("#Navigation").find(".infoslider").infoslider('option', {cssClasses: 'filters', floated: false}).infoslider('toggle', this, $filterOptions.find(".filters"));
+            $("#Navigation .infoslider").infoslider('option', {cssClasses: 'filters', floated: false}).infoslider('toggle', this, $filterOptions.find(".filters"));
         });
 
-        $("#FilteroptionSort").find("input[name=sort]").change(function(){
+        $("#FilteroptionSort input[name=sort]").change(function(){
             var $this = $(this);
             openaksess.common.debug("openaksess.content.bindFilterEvents(): Sort clicked: "+ $this.val() + "="+$this.is(":checked"));
             if ($this.is(":checked")) {
@@ -137,9 +137,9 @@ openaksess.content = {
             }
         });
 
-        $("#FilteroptionSites").find("input[name=sites]").change(function(){
+        $("#FilteroptionSites input[name=sites]").change(function(){
             var hiddenSites = "";
-            $("#FilteroptionSites").find("input[name=sites]").each(function(){
+            $("#FilteroptionSites input[name=sites]").each(function(){
                 var $site = $(this);
                 if (!$site.is(":checked")) {
                     if (hiddenSites != "") {
@@ -157,7 +157,7 @@ openaksess.content = {
 
         $("#hideexpiredFilteroptionSites_all").live('click',function(e){
             e.preventDefault();
-            $("#Filteroptions").find(".filters input[name=sites]").each(function(){
+            $("#Filteroptions .filters input[name=sites]").each(function(){
                 $(this).attr("checked", "checked");
             });
             openaksess.admin.userpreferences.setPreference(openaksess.admin.userpreferences.keys.filter.sites, '', function() {
@@ -185,38 +185,37 @@ openaksess.content = {
      * Registers click event actions to each tool
      */
     bindToolButtons : function() {
-        var toolsMenu = $("#ToolsMenu");
-        toolsMenu.find(".button .newSubpage").click(function(event){
+        $("#ToolsMenu .button .newSubpage").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.newSubpage(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .delete").click(function(event){
+        $("#ToolsMenu .button .delete").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.deleteItem(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .cut").click(function(event){
+        $("#ToolsMenu .button .cut").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.cut(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .copy").click(function(event){
+        $("#ToolsMenu .button .copy").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.copy(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .paste").click(function(event){
+        $("#ToolsMenu .button .paste").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.paste(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .displayPeriod").click(function(event){
+        $("#ToolsMenu .button .displayPeriod").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.displayPeriod(stateHandler.getState());
             return false;
         });
-        toolsMenu.find(".button .privileges").click(function(event){
+        $("#ToolsMenu .button .privileges").click(function(event){
             if ($(event.target).parent().hasClass("disabled")) return false;
             openaksess.content.publish.managePrivileges(stateHandler.getState());
             return false;
@@ -482,11 +481,11 @@ openaksess.content = {
          */
         unbindInfoSliderTrigger: function(triggerSelector) {
             openaksess.common.debug("ContentStatus.unbindInfoSliderTrigger(): triggerSelector: " + triggerSelector);
-            $("#MainPane").find(".infoslider").infoslider('close', $(triggerSelector)[0]);
+            $("#MainPane .infoslider").infoslider('close', $(triggerSelector)[0]);
         },
 
         disableButtons: function() {
-            $("#ToolsMenu").find("a").addClass("disabled");
+            $("#ToolsMenu a").addClass("disabled");
         },
 
 
@@ -502,10 +501,9 @@ openaksess.content = {
 
         showApproveOrReject: function(showButtons) {
             openaksess.common.debug("ContentStatus.showApproveOrReject: " + showButtons);
-            var editContentButtons = $("#EditContentButtons");
-            var $approveButton = editContentButtons.find(".approve");
+            var $approveButton = $("#EditContentButtons .approve");
             if ($approveButton.size() > 0) {
-                var $buttons = editContentButtons;
+                var $buttons = $("#EditContentButtons");
                 var isHidden = $buttons.is(":hidden");
                 if (showButtons) {
                     $buttons.show();
@@ -560,14 +558,14 @@ openaksess.content = {
             }
 
             //Set sort order
-            $("#FilteroptionSort").find("input.radio").each(function(){
+            $("#FilteroptionSort input.radio").each(function(){
                 var $this = $(this);
                 if ($this.val() == sort) {
                     $this.attr("checked", "checked");
                 }
             });
 
-            $("#FilteroptionSites").find("input.checkbox").each(function(){
+            $("#FilteroptionSites input.checkbox").each(function(){
                 var $this = $(this);
                 var isHidden = false;
                 var siteId = $this.val();
@@ -700,7 +698,7 @@ openaksess.navigate.navigatorResizeOnStart = function() {
         opacity: "0"
     }).attr("id", "Contentoverlay");
 
-    mainPane.find("iframe[name=contentmain]").before(contentoverlay);
+    $("#MainPane iframe[name=contentmain]").before(contentoverlay);
     openaksess.admin.userpreferences.deletePreference(openaksess.admin.userpreferences.keys.content.navigationwidth);
 };
 
@@ -842,9 +840,8 @@ openaksess.navigate.getCurrentItemIdentifier = function() {
 };
 
 openaksess.navigate.getNavigatorParams = function() {
-    var params = {};
-    var navigatorState = $("#NavigatorState");
-    var html = navigatorState.find(".sort").html();
+    var params = new Object();
+    var html = $("#NavigatorState .sort").html();
     if(html != null) {
         params.sort = html;
     }
