@@ -12,6 +12,11 @@ import java.util.concurrent.BlockingQueue;
 public interface IndexableDocumentProvider {
 
     /**
+     * @return a represenative name for the provider.
+     */
+    public String getName();
+
+    /**
      * @param indexableDocumentQueue - The queue this provider should put documents on to submit them for indexing.
      * @param numberOfThreadsToUse - How many threads the provider should use when putting documents on the queue.
      * @return the ProgressReporter that the provider reports progress to as it puts documents on the queue.

@@ -27,6 +27,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class IndexableContentProvider implements IndexableDocumentProvider {
 
+    @Override
+    public String getName() {
+        return getClass().getName();
+    }
+
     @Autowired
     @Qualifier("aksessDataSource")
     private DataSource dataSource;

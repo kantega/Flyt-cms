@@ -40,6 +40,11 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         return jdbcTemplate.queryForInt("SELECT count(attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
     }
 
+    @Override
+    public String getName() {
+        return getClass().getName();
+    }
+
     public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue, int numberOfThreadsToUse) {
         LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
         executorService.execute(new IDProducer(dataSource, ids));
