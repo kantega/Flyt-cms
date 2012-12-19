@@ -528,7 +528,7 @@ public class EditContentHelper {
             Attribute attribute = getAttributeByName(attributes, repeaterName);
             if (attribute instanceof RepeaterAttribute) {
                 RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attribute;
-                if (repeaterAttribute.getNumberOfRows() > 1) {
+                if (repeaterAttribute.getNumberOfRows() > repeaterAttribute.getMinOccurs()) {
                     repeaterAttribute.removeRow(rowNo);
                 }
             }
