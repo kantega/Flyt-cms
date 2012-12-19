@@ -1,50 +1,50 @@
 /*
- * Copyright 2009 Kantega AS
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-//<%@ page import="no.kantega.publishing.common.Aksess" %>
-
+* Copyright 2009 Kantega AS
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+//
 
 
 $(document).ready(function(){
-    openaksess.common.debug("topicmaps.$(document).ready()");
-    openaksess.topicmaps.listTopicTypes(-1, null);
+openaksess.common.debug("topicmaps.$(document).ready()");
+openaksess.topicmaps.listTopicTypes(-1, null);
 
 });
 
 
 /********************************************************************************
- * Namespace for the topicmaps layout
- ********************************************************************************/
+* Namespace for the topicmaps layout
+********************************************************************************/
 
 openaksess.topicmaps = {
 
-    /**
-     * Loads the list of topic types
-     * @param topicMapId
-     * @param topicId
-     */
-    listTopicTypes: function (topicMapId, topicId) {
-        openaksess.common.debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
-        var params = new Object();
-        if (topicMapId != -1) {
-            params.topicMapId = topicMapId;
-            params.topicId = topicId;
-        }
-        $("#TopicTypes").load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
+/**
+* Loads the list of topic types
+* @param topicMapId
+* @param topicId
+*/
+listTopicTypes: function (topicMapId, topicId) {
+openaksess.common.debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
+var params = new Object();
+if (topicMapId != -1) {
+params.topicMapId = topicMapId;
+params.topicId = topicId;
+}
+var topicTypes = $("#TopicTypes");
+topicTypes.load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
             openaksess.common.debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
-            $("#TopicTypes .tab a").click(function (event) {
+            topicTypes.find(".tab a").click(function (event) {
                 event.preventDefault();
                 var href = $(this).attr("href");
                 var topicId = openaksess.common.getQueryParam("topicId", href);

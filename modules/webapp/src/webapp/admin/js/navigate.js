@@ -171,11 +171,11 @@ openaksess.navigate = {
     },
 
     getOpenFolders: function() {
-        return $("#NavigatorState .openFolders").html()
+        return $("#NavigatorState").find(".openFolders").html()
     },
 
     setOpenFolders: function(folderList){
-        $("#NavigatorState .openFolders").html(folderList);
+        $("#NavigatorState").find(".openFolders").html(folderList);
     },
 
     /**
@@ -246,7 +246,7 @@ openaksess.navigate = {
 
 
     setFolderOpen : function (id) {
-        var newList = $("#NavigatorState .openFolders").html();
+        var newList = $("#NavigatorState").find(".openFolders").html();
         openaksess.common.debug("openaksess.navigate.setFolderOpen(): current list: " + newList + ", id: " + id);
 
         var openList = newList.split(",");
@@ -270,7 +270,7 @@ openaksess.navigate = {
 
 
     setFolderClosed : function (id) {
-        var openList = $("#NavigatorState .openFolders").html().split(",");
+        var openList = $("#NavigatorState").find(".openFolders").html().split(",");
         openaksess.common.debug("openaksess.navigate.setFolderClosed(): openList: " + openList + ", id: " + id);
 
         var newOpenList  = "";
@@ -323,7 +323,7 @@ openaksess.search = {
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
             var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(../bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
-            $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false, height: '360px'}).infoslider('open', document.getElementById("SearchForm"), content);
+            $("#MainPane").find(".infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false, height: '360px'}).infoslider('open', document.getElementById("SearchForm"), content);
         }
     },
 

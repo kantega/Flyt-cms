@@ -319,21 +319,6 @@ openaksess.editcontext = function()  {
         },
 
         /*
-         *  Popup window for upload media object
-         */
-        uploadMultimedia : function (formElement) {
-            openaksess.editcontext.focusField = formElement;
-            var id = -1;
-            if (openaksess.editcontext.focusField.value != "") {
-                id = openaksess.editcontext.focusField.value;
-            }
-
-            openaksess.editcontext.doInsertTag = false;
-            openaksess.common.modalWindow.open({title:properties.editcontext.labels.uploadmultimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?fileUploadedFromEditor=true&refresh=" + getRefresh(),width: 450, height:450});
-        },
-
-
-        /*
          * Popup window for selecting media folder
          */
         selectMediaFolder : function (formElement) {
