@@ -454,15 +454,7 @@ public class EditContentHelper {
     }
 
     private static int getMaxNumberOfRows(RepeaterAttribute oldParentAttribute, RepeaterAttribute repeater) {
-        int maxRows;
-        if (repeater.getMaxOccurs() == -1) {
-            // Unlimited number of rows
-            maxRows = Math.max(oldParentAttribute.getNumberOfRows(), 1);
-        } else {
-            // Limited number of rows
-            maxRows = Math.min(oldParentAttribute.getNumberOfRows(), repeater.getMaxOccurs());
-        }
-        return maxRows;
+        return Math.min(oldParentAttribute.getNumberOfRows(), repeater.getMaxOccurs());
     }
 
 
