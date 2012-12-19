@@ -307,9 +307,10 @@ openaksess.content = {
 
 
         init : function() {
-            $("#Statusbar .statusDetails").remove();
-            $("#Statusbar .crossPublish").hide();
-            $("#Statusbar .brokenLink").hide();
+            var statusbar = $("#Statusbar");
+            statusbar.find(".statusDetails").remove();
+            statusbar.find(".crossPublish").hide();
+            statusbar.find(".brokenLink").hide();
         },
 
         breadcrumbs: function (path) {
@@ -415,6 +416,12 @@ openaksess.content = {
                 if (displayTemplate) {
                     details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
                 }
+
+                var contentTemplate = contentProperties.contentTemplate;
+                if (contentTemplate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentContentTemplate + ':</span>&nbsp;'+contentTemplate.name+'&nbsp;('+contentTemplate.templateFile+')</li>';
+                }
+
             }
 
             details +="</ul>";

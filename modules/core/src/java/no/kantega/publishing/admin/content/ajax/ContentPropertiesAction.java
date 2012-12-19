@@ -30,6 +30,7 @@ import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -179,6 +180,7 @@ public class ContentPropertiesAction {
             }
             contentProperties.put("owner", owner);
             contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
+            contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
 
             model.put("showApproveButtons", showApproveButtons);
             model.put("enabledButtons", enabledButtons);

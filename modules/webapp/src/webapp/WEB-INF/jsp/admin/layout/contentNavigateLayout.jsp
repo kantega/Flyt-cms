@@ -60,6 +60,7 @@
             contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson" escapeJavascript="true"/>',
             contentOwner : '<kantega:label key="aksess.contentproperty.owner" escapeJavascript="true"/>',
             contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate" escapeJavascript="true"/>',
+            contentContentTemplate : '<kantega:label key="aksess.contentproperty.contentTemplate" escapeJavascript="true"/>',
             associations : '<kantega:label key="aksess.infoslider.associations" escapeJavascript="true"/>'
         };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
@@ -80,10 +81,11 @@
         }
 
         $(document).ready(function(){
-            $("#EditContentButtons .approve").click(function() {
+            var editContentButtons = $("#EditContentButtons");
+            editContentButtons.find(".approve").click(function() {
                 openaksess.content.publish.approve(stateHandler.getState());
             });
-            $("#EditContentButtons .reject").click(function() {
+            editContentButtons.find(".reject").click(function() {
                 openaksess.content.publish.reject(stateHandler.getState());
             });
         });
