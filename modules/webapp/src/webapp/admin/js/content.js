@@ -307,10 +307,9 @@ openaksess.content = {
 
 
         init : function() {
-            var statusbar = $("#Statusbar");
-            statusbar.find(".statusDetails").remove();
-            statusbar.find(".crossPublish").hide();
-            statusbar.find(".brokenLink").hide();
+            $("#Statusbar .statusDetails").remove();
+            $("#Statusbar .crossPublish").hide();
+            $("#Statusbar .brokenLink").hide();
         },
 
         breadcrumbs: function (path) {
