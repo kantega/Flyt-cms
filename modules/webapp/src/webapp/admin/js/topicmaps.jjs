@@ -13,13 +13,12 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-//
+//<%@ page import="no.kantega.publishing.common.Aksess" %>
 
 
 $(document).ready(function(){
-openaksess.common.debug("topicmaps.$(document).ready()");
-openaksess.topicmaps.listTopicTypes(-1, null);
-
+    openaksess.common.debug("topicmaps.$(document).ready()");
+    openaksess.topicmaps.listTopicTypes(-1, null);
 });
 
 
@@ -29,20 +28,20 @@ openaksess.topicmaps.listTopicTypes(-1, null);
 
 openaksess.topicmaps = {
 
-/**
-* Loads the list of topic types
-* @param topicMapId
-* @param topicId
-*/
-listTopicTypes: function (topicMapId, topicId) {
-openaksess.common.debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
-var params = new Object();
-if (topicMapId != -1) {
-params.topicMapId = topicMapId;
-params.topicId = topicId;
-}
-var topicTypes = $("#TopicTypes");
-topicTypes.load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
+    /**
+     * Loads the list of topic types
+     * @param topicMapId
+     * @param topicId
+     */
+    listTopicTypes: function (topicMapId, topicId) {
+        openaksess.common.debug("topicmaps.listTopicTypes(): Calling ListTopicTypes.action");
+        var params = new Object();
+        if (topicMapId != -1) {
+            params.topicMapId = topicMapId;
+            params.topicId = topicId;
+        }
+        var topicTypes = $("#TopicTypes");
+        topicTypes.load("${pageContext.request.contextPath}/admin/topicmaps/ListTopicTypes.action", params, function(success){
             openaksess.common.debug("topicmaps.listTopicTypes(): response from ListTopicTypes.action received");
             topicTypes.find(".tab a").click(function (event) {
                 event.preventDefault();
