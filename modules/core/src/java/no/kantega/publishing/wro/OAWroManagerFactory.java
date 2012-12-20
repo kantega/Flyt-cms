@@ -1,14 +1,16 @@
 package no.kantega.publishing.wro;
 
+import no.kantega.publishing.spring.RootContext;
+import org.springframework.web.context.WebApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import ro.isdc.wro.manager.WroManager;
 import ro.isdc.wro.manager.factory.ConfigurableWroManagerFactory;
 import ro.isdc.wro.model.factory.WroModelFactory;
 import ro.isdc.wro.model.factory.XmlModelFactory;
 
+import javax.servlet.ServletContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,27 +27,24 @@ public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/wro-oa.xml";
     private static final String PROJECT_XML_CONFIG_FILE = "/WEB-INF/wro-project.xml";
 
-    private WroManager manager;
-
-    @Override
-    protected void onAfterInitializeManager(WroManager manager) {
-        this.manager = manager;
-    }
-
     @Override
     protected WroModelFactory newModelFactory() {
 
         return new XmlModelFactory(){
             @Override
             protected InputStream getModelResourceAsStream() throws IOException {
+                
+                WebApplicationContext wac = (WebApplicationContext) RootContext.getInstance();
+                ServletContext servletContext = wac.getServletContext();
+                
                 try {
-                    InputStream oaResourceStream = manager.getUriLocatorFactory().locate(OA_XML_CONFIG_FILE);
+                    InputStream oaResourceStream = servletContext.getResourceAsStream(OA_XML_CONFIG_FILE);
 
                     if(oaResourceStream == null) {
                         throw new IllegalStateException("Could not find WRO config file at " + OA_XML_CONFIG_FILE);
                     }
 
-                    InputStream projectResourceStream = tryToGetProjectResource();
+                    InputStream projectResourceStream = servletContext.getResourceAsStream(PROJECT_XML_CONFIG_FILE);
 
                     boolean onlyOA = projectResourceStream == null;
                     if(onlyOA) {
@@ -64,21 +63,6 @@ public class OAWroManagerFactory extends ConfigurableWroManagerFactory {
                 } catch (TransformerException e) {
                     throw new RuntimeException(e);
                 }
-            }
-
-            /**
-             * WRO creates the stream in a way that tries to open the file when locating it.
-             * so if it does not exist an IOexception is thrown.
-             * @return a stream or null.
-             */
-            private InputStream tryToGetProjectResource() {
-                InputStream projectResourceStream;
-                try {
-                    projectResourceStream = manager.getUriLocatorFactory().locate(PROJECT_XML_CONFIG_FILE);
-                } catch (IOException e) {
-                    projectResourceStream = null;
-                }
-                return projectResourceStream;
             }
         };
     }
