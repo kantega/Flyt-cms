@@ -28,7 +28,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 public class AttributeNotExistsTag extends AbstractAttributeConditionTag {
 
     @Override
-    protected boolean evaluateCondition(Content content, String value) {
+    protected boolean evaluateCondition(String value) {
         return value == null || isBlank(value);
     }
 }

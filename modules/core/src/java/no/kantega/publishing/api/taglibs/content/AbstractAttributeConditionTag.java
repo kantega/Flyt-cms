@@ -81,11 +81,10 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
                 SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
                 String attributeValue = AttributeTagHelper.getAttribute(session, content, cmd, inheritFromAncestors);
 
-                result = evaluateCondition(contentObject, attributeValue);
+                result = evaluateCondition(attributeValue);
             } else {
-                 Log.error(CATEGORY, "Content object was null");
+                Log.error(CATEGORY, "Content object was null");
             }
-
         } catch (Exception e) {
             Log.error(CATEGORY, e);
         }
@@ -100,11 +99,10 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
     /**
      * Method to be implemented by subclasses. Performs the actual condition evaluation for the concrete subclass tag
      * based on the current content and attribute.
-     * @param content current content object, containing the attribute to evaluate condition on
      * @param attributeValue the attributeValue to evaluate condition on
      * @return true if the condition is met, otherwise false.
      */
-    protected abstract boolean evaluateCondition(Content content, String attributeValue);
+    protected abstract boolean evaluateCondition(String attributeValue);
 
 
     public int doEndTag() throws JspException {
