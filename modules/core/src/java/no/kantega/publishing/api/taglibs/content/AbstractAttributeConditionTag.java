@@ -73,13 +73,14 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
             }
 
             if (contentObject != null) {
-                Content content = AttributeTagHelper.getContent(pageContext, collection, contentId);
+
                 GetAttributeCommand cmd = new GetAttributeCommand();
-                cmd.setName(name);
+                cmd.setName(AttributeTagHelper.getAttributeName(pageContext, name, repeater));
                 cmd.setProperty(AttributeProperty.VALUE);
+                cmd.setAttributeType(attributeType);
 
                 SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
-                String attributeValue = AttributeTagHelper.getAttribute(session, content, cmd, inheritFromAncestors);
+                String attributeValue = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
 
                 result = evaluateCondition(attributeValue);
             } else {
