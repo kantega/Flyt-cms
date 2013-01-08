@@ -38,6 +38,10 @@ public class SecurityService {
      * @throws SystemException if loading of the privilegies fails.
      */
     public static boolean isAuthorized(Role role, BaseObject object, int privilege) throws SystemException {
+        if (object instanceof Content) {
+            Content c = (Content)object;
+            object = c.getAssociation();
+        }
 
         List<Permission> permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
@@ -71,6 +75,11 @@ public class SecurityService {
 
         String ownerPerson = object.getOwnerPerson();
         if ("".equals(ownerPerson)) ownerPerson = null;
+
+        if (object instanceof Content) {
+            Content c = (Content)object;
+            object = c.getAssociation();
+        }
 
         List<Permission> permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
