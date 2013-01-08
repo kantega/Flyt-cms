@@ -116,4 +116,18 @@ public class RemoveNestedSpanTagsFilterTest {
         assertEquals(expectedHtmlAfter, sw.toString());
     }
 
+    @Test
+    public void shouldNotRemoveSameTagIfNotNested() throws SystemException {
+        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
+        pipeline.addFilter(filter);
+
+        String htmlBefore = "<p><span>gg</span>ff<span>hh</span></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(htmlBefore, sw.toString());
+    }
+
 }
