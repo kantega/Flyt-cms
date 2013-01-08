@@ -13,7 +13,8 @@ public class GroovyAuthorizationInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        if(!Boolean.TRUE.equals(request.getSession().getAttribute(AUTHORIZED_KEY))) {
+        boolean isAuthenticationUrl = request.getRequestURL().toString().contains("/admin/groovyauth.action");
+        if(!isAuthenticationUrl && !Boolean.TRUE.equals(request.getSession().getAttribute(AUTHORIZED_KEY))) {
             response.sendRedirect("groovyauth.action");
             return false;
         }
