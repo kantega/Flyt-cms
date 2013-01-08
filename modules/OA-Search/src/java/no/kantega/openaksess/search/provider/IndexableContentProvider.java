@@ -29,7 +29,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
 
     @Override
     public String getName() {
-        return getClass().getName();
+        return getClass().getSimpleName();
     }
 
     @Autowired

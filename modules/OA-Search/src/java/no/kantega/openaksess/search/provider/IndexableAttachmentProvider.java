@@ -42,7 +42,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     @Override
     public String getName() {
-        return getClass().getName();
+        return getClass().getSimpleName();
     }
 
     public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue, int numberOfThreadsToUse) {

@@ -78,7 +78,7 @@ public class RebuildIndexAction extends AbstractController {
     private List<String> getProvidersToExclude(HttpServletRequest request) {
         List<String> excludedProviders = new ArrayList<String>();
         for (IndexableDocumentProvider provider : indexableDocumentProviders) {
-            String simpleName = provider.getClass().getSimpleName();
+            String simpleName = provider.getName();
             if(ServletRequestUtils.getBooleanParameter(request, "exclude." + simpleName, false)){
                 excludedProviders.add(simpleName);
             }
