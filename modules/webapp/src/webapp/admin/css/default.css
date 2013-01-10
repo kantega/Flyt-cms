@@ -277,8 +277,8 @@ table.fullWidth {
     height: 25px;
     padding: 0 10px;
     line-height: 25px;
+    background: #E3E3E3 repeat-x scroll left center;
 }
-
 #Content.mypage .widget-header h2 {
     margin: 0;
     float: left;
