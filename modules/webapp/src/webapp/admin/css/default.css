@@ -238,11 +238,22 @@ table.fullWidth {
 }
 
 #Content.mypage table .date{
-    width: 100px;
+    width: 20%;
 }
 
 #Content.mypage table .modifiedby{
-    width: 120px;
+    width: 20%;
+}
+
+#Content.mypage table .isnew{
+    background-color: #a3d4e2;
+    border-color: #0085BD;
+    border-radius: 10px;
+    border-style: solid;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-width: 1px;
+    float: right;
 }
 
 #Content.mypage table .action{
