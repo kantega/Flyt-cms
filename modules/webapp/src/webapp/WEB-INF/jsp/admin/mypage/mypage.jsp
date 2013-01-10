@@ -93,14 +93,16 @@
                             <th class="title"><kantega:label key="aksess.mypage.page"/></th>
                             <th class="modifiedby"><kantega:label key="aksess.mypage.modifiedby"/></th>
                             <th class="date"><kantega:label key="aksess.mypage.lastmodified"/></th>
+                            <th class="new"></th>
                         </tr>
                         </thead>
                         <tbody>
                         <c:forEach var="item" items="${contentForApproval}" varStatus="status">
                             <tr class="tableRow${status.index mod 2}">
                                 <td class="title"><a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
-                                <td><aksess:getattribute name="modifiedby" obj="${item}"/></td>
+                                <td class="modifiedby"><aksess:getattribute name="modifiedby" obj="${item}"/></td>
                                 <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
+                                <td class="new"><c:if test="${item.version eq 1}"><kantega:label key="aksess.mypage.new"/></c:if></td>
                             </tr>
                         </c:forEach>
                         </tbody>

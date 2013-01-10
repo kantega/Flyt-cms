@@ -277,9 +277,9 @@ table.fullWidth {
     height: 25px;
     padding: 0 10px;
     line-height: 25px;
-    /*cursor: move;*/
-    background: #E3E3E3 url(../bitmaps/default/framework/widget_top_background.png) repeat-x scroll left center;
+    background: #E3E3E3 repeat-x scroll left center;
 }
+
 #Content.mypage .widget-header h2 {
     margin: 0;
     float: left;
