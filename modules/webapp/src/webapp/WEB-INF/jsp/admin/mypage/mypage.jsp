@@ -102,7 +102,11 @@
                                 <td class="title"><a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" obj="${item}"/>"><aksess:getattribute name="title" obj="${item}"/></a></td>
                                 <td class="modifiedby"><aksess:getattribute name="modifiedby" obj="${item}"/></td>
                                 <td class="date"><aksess:getattribute name="lastmodified" obj="${item}"/></td>
-                                <td class="new"><c:if test="${item.version eq 1}"><kantega:label key="aksess.mypage.new"/></c:if></td>
+                                <td class="new">
+                                    <c:if test="${item.version eq 1}">
+                                        <span class="isnew"><kantega:label key="aksess.mypage.new"/></span>
+                                    </c:if>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>
