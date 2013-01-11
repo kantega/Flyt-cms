@@ -19,7 +19,6 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.SaveHearingHelper;
-import no.kantega.publishing.security.interceptors.AdminViewInterceptor;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Hearing;
 import no.kantega.publishing.common.data.HearingInvitee;

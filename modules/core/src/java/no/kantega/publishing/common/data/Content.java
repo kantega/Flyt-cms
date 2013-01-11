@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data;
 
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;

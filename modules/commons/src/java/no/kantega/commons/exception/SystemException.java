@@ -16,7 +16,6 @@
 
 package no.kantega.commons.exception;
 
-import no.kantega.commons.log.Log;
 import org.apache.log4j.Logger;
 
 /**

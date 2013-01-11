@@ -20,6 +20,7 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -75,8 +76,7 @@ public class EditContentHelper {
 
         if (param.getParentIds() == null) {
             // Parent ids not specified, create based on mainParent
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(param.getMainParentId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(param.getMainParentId());
 
             Content parent = aksessService.getContent(cid);
             List<Association> associations = parent.getAssociations();
@@ -130,7 +130,7 @@ public class EditContentHelper {
 
         // Check if user has removed main parent from list of parents, in case just use first parent as main parent
         if (!foundCurrentAssociation) {
-            Association association = (Association)associations.get(0);
+            Association association = associations.get(0);
             association.setCurrent(true);
             param.setMainParentId(association.getParentAssociationId());
         }
@@ -153,8 +153,7 @@ public class EditContentHelper {
         content.setType(contentTemplate.getContentType());
 
         // Inherit owner, language etc from parent
-        ContentIdentifier parentCid = new ContentIdentifier();
-        parentCid.setAssociationId(param.getMainParentId());
+        ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(param.getMainParentId());
         Content parent = aksessService.getContent(parentCid);
         content.setSecurityId(parent.getSecurityId());
         content.setOwner(parent.getOwner());

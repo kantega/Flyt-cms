@@ -17,8 +17,8 @@
 package no.kantega.publishing.controls.standard;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.controls.AksessController;
 
 import javax.servlet.http.HttpServletRequest;

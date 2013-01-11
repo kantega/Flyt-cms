@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="openaksess" version="1.5">
+
+
+    <types>
+        <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="float" class="solr.TrieFloatField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
+        <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
+        <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <charFilter class="solr.HTMLStripCharFilterFactory"/>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+            </analyzer>
+        </fieldType>
+        <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+            <analyzer type="index">
+                <charFilter class="solr.HTMLStripCharFilterFactory"/>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.EnglishPossessiveFilterFactory"/>
+                <!--<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>-->
+                <filter class="solr.PorterStemFilterFactory"/>
+            </analyzer>
+            <analyzer type="query">
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <!--<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>-->
+                <filter class="solr.StopFilterFactory"
+                        ignoreCase="true"  words="lang/stopwords_en.txt" enablePositionIncrements="true" />
+                <filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.EnglishPossessiveFilterFactory"/>
+                <!--<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>-->
+                <filter class="solr.PorterStemFilterFactory"/>
+            </analyzer>
+        </fieldType>
+        <fieldType name="text_no" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <charFilter class="solr.HTMLStripCharFilterFactory"/>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+                <filter class="solr.LowerCaseFilterFactory"/>
+                <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_no.txt" format="snowball" enablePositionIncrements="true"/>
+                <filter class="solr.SnowballPorterFilterFactory" language="Norwegian"/>
+            </analyzer>
+        </fieldType>
+        <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
+            <analyzer>
+                <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
+            </analyzer>
+        </fieldType>
+        <!--<fieldType name="text_general_edge_ngram" class="solr.TextField" positionIncrementGap="100">
+            <analyzer type="index">
+                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+                <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15" side="front"/>
+            </analyzer>
+            <analyzer type="query">
+                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
+            </analyzer>
+        </fieldType>-->
+        <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
+        <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
+    </types>
+
+    <fields>
+        <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+        <field name="parentId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
+        <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="contentType" type="string" indexed="true" stored="true"/>
+        <field name="uid" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="language" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="title_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="altTitle_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="altTitle_eng" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
+        <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
+        <field name="contentTemplateName" type="string" indexed="true" stored="false"/>
+        <field name="metaDataTemplateId" type="int" indexed="true" stored="false"/>
+        <field name="displayTemplateId" type="int" indexed="true" stored="false"/>
+        <field name="displayTemplateName" type="string" indexed="true" stored="false"/>
+        <field name="documentTypeId" type="int" indexed="true" stored="false"/>
+        <field name="documentTypeName" type="string" indexed="true" stored="false"/>
+        <field name="groupId" type="int" indexed="true" stored="true"/>
+        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false"/>
+        <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>
+        <field name="alias" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="createDate" type="date" indexed="true" stored="true"/>
+        <field name="publishDate" type="date" indexed="true" stored="true"/>
+        <field name="lastModified" type="date" indexed="true" stored="true"/>
+        <field name="expireDate" type="date" indexed="true" stored="true"/>
+        <field name="author" type="text_general" indexed="true" stored="true" multiValued="false"/>
+        <field name="keywords" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true"/>
+        <field name="topics" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true"/>
+        <field name="visibilityStatus" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="contentStatus" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="url" type="string" indexed="false" stored="true" required="true" multiValued="false"/>
+
+        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <!--<field name="all_text_ngram" type="text_general_edge_ngram" indexed="true" stored="true" multiValued="true" termVectors="true"/>-->
+
+        <copyField source="*_en" dest="all_text_en"/>
+        <copyField source="*_txt" dest="all_text_en" />
+        <copyField source="keywords" dest="all_text_en" />
+        <copyField source="topics" dest="all_text_en" />
+
+        <copyField source="*_no" dest="all_text_no" />
+        <copyField source="*_txt" dest="all_text_no" />
+        <copyField source="keywords" dest="all_text_no" />
+        <copyField source="topics" dest="all_text_no" />
+
+        <copyField source="*_en" dest="all_text_unanalyzed" />
+        <copyField source="*_no" dest="all_text_unanalyzed" />
+        <copyField source="*_txt" dest="all_text_unanalyzed" />
+        <copyField source="keywords" dest="all_text_unanalyzed" />
+        <copyField source="topics" dest="all_text_unanalyzed" />
+
+
+        <!--<copyField source="*_txt" dest="all_text_ngram" />
+        <copyField source="*_no" dest="all_text_ngram" />
+        <copyField source="*_en" dest="all_text_ngram" />-->
+
+        <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
+        <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
+        <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_b"  type="boolean" indexed="true"  stored="false"/>
+        <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
+        <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
+        <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
+        <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*" type="ignored" multiValued="true" />
+    </fields>
+    <uniqueKey>uid</uniqueKey>
+</schema>

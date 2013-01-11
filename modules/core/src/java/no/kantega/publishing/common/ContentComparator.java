@@ -16,28 +16,28 @@
 
 package no.kantega.publishing.common;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
-import no.kantega.publishing.common.data.attributes.NumberAttribute;
-import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
+import no.kantega.publishing.common.data.attributes.DateAttribute;
+import no.kantega.publishing.common.data.attributes.NumberAttribute;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Map;
 import java.util.HashMap;
-import java.text.Collator;
+import java.util.Map;
 
 /**
- *
+ * Compare content objects based on a given fieldname.
  */
-public class ContentComparator implements Comparator {
+public class ContentComparator implements Comparator<Content> {
     private static final String SOURCE = "aksess.ContentComparator";
 
     Map contentPages = new HashMap();
@@ -94,7 +94,7 @@ public class ContentComparator implements Comparator {
         }
         Content cp = (Content)contentPages.get(id);
         if (cp == null) {
-            id = (id.indexOf(",")>-1) ? id.substring(0,id.indexOf(",")) : id;
+            id = (id.contains(",")) ? id.substring(0,id.indexOf(",")) : id;
 
             ContentIdentifier cid = new ContentIdentifier();
             try {
@@ -111,11 +111,7 @@ public class ContentComparator implements Comparator {
         return (cp == null) ? "" : cp.getTitle();
     }
 
-    public int compare(Object v1, Object v2) {
-        if (v1 instanceof Content && v2 instanceof Content) {
-            Content c1 = (Content)v1;
-            Content c2 = (Content)v2;
-
+    public int compare(Content c1, Content c2) {
             if (fieldName.equalsIgnoreCase(ContentProperty.TITLE)) {
                 return compareStrings(c1.getTitle(), c2.getTitle());
             } else if (fieldName.equalsIgnoreCase(ContentProperty.MODIFIED_BY)) {
@@ -173,7 +169,6 @@ public class ContentComparator implements Comparator {
                     }
                 }
             }
-        }
         return 0;
     }
 }

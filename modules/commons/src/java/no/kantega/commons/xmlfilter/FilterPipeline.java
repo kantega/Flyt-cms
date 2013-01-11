@@ -32,16 +32,10 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import java.io.Reader;
 import java.io.Writer;
-import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Enumeration;
-import java.net.URL;
 
 public class FilterPipeline extends XMLFilterImpl {
     private static final String SOURCE = "FilterPipeline";
@@ -92,30 +86,6 @@ public class FilterPipeline extends XMLFilterImpl {
             mainTransformer.getTransformer().setOutputProperty(OutputKeys.INDENT, "no");
             mainTransformer.getTransformer().setOutputProperty(OutputPropertiesFactory.S_KEY_ENTITIES, resourceUrl.toString());
             mainTransformer.setResult(new StreamResult(writer));
-
-
-            /*
-            OutputFormat of = new OutputFormat();
-            of.setEncoding("utf-8");
-            of.setMethod("html");
-            HTMLSerializer serializer = new HTMLSerializer(false, of) {
-                protected String getEntityRef(int i) {
-                    switch(i) {
-                        case 34:
-                            return "quot";
-                        case 38:
-                            return "amp";
-                        case 60:
-                            return "lt";
-                        case 62:
-                            return "gt";
-                        default:
-                            return null;
-                    }
-                }
-            };
-            serializer.setOutputCharStream(writer);
-            */
 
             this.setEnd(mainTransformer);
             if(filters.size() == 0) {

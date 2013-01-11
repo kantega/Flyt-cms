@@ -17,31 +17,30 @@
 package no.kantega.publishing.client;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import no.kantega.publishing.client.device.DeviceCategory;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.client.filter.UrlContentRewriter;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.CharResponseWrapper;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.kantega.jexmec.PluginManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 

@@ -18,9 +18,10 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
@@ -62,7 +63,8 @@ public class IsInPathTag extends ConditionalTagSupport {
                     if (content == null) {
                         // Ikke hentet side
                         ContentManagementService cs = new ContentManagementService(request);
-                        content = cs.getContent(new ContentIdentifier(request), true);
+                        ContentIdentifier contentIdentifier = ContentIdHelper.fromRequest(request);
+                        content = cs.getContent(contentIdentifier, true);
                         RequestHelper.setRequestAttributes(request, content);
                     }
 
@@ -75,15 +77,16 @@ public class IsInPathTag extends ConditionalTagSupport {
                     ContentIdentifier cid;
                     try {
                         int aId = Integer.parseInt(contentId);
-                        cid = new ContentIdentifier();
-                        cid.setAssociationId(aId);
+                        cid = ContentIdentifier.fromAssociationId(aId);
                     } catch (NumberFormatException e) {
-                        cid = new ContentIdentifier(content.getAssociation().getSiteId(), contentId);
+                        cid = ContentIdHelper.fromSiteIdAndUrl(content.getAssociation().getSiteId(), contentId);
                     }
 
 
                     String path = association.getPath();
-                    if (content.getAssociation().getId() == cid.getAssociationId() || path.indexOf("/" + cid.getAssociationId() + "/") != -1) {
+                    int associationId = cid.getAssociationId();
+                    if (content.getAssociation().getId() == associationId
+                            || path.contains("/" + associationId + "/")) {
                         return !negate;
                     }
 
@@ -100,7 +103,6 @@ public class IsInPathTag extends ConditionalTagSupport {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
         }
 

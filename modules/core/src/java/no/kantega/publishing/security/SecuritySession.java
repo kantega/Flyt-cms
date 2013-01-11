@@ -234,26 +234,20 @@ public class SecuritySession {
      */
     public void handlePostLogin(HttpServletRequest request) throws SystemException, ConfigurationException {
 
-        List roles = realm.lookupRolesForUser(user.getId());
-        for (int i = 0; i < roles.size(); i++) {
-            Role role =  (Role)roles.get(i);
+        List<Role> roles = realm.lookupRolesForUser(user.getId());
+        for (Role role : roles) {
             user.addRole(role);
         }
 
         if (Aksess.isTopicMapsEnabled()) {
-            // Hent topics for bruker
-            List tmp = TopicAO.getTopicsBySID(user);
-            for (int i = 0; i < tmp.size(); i++) {
-                user.addTopic((Topic)tmp.get(i));
-            }
+            user.setTopics(TopicAO.getTopicsBySID(user));
 
             // Og for roller brukeren har tilgang til
             if (user.getRoles() != null) {
-                for (int i = 0; i < roles.size(); i++) {
-                    Role role =  (Role)roles.get(i);
-                    tmp = TopicAO.getTopicsBySID(role);
-                    for (int j = 0; j < tmp.size(); j++) {
-                        user.addTopic((Topic)tmp.get(j));
+                for (Role role : roles) {
+                    List<Topic> topicsForRole = TopicAO.getTopicsBySID(role);
+                    for (Topic aTopicsForRole : topicsForRole) {
+                        user.addTopic( aTopicsForRole );
                     }
                 }
             }
@@ -363,7 +357,7 @@ public class SecuritySession {
             // Sjekker om det ikke skal vises sider fra dette nettstedet
             Content c = (Content)object;
             Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
-            if (site.isDisabled()) {
+            if (site == null || site.isDisabled()) {
                 return false;
             }
         }

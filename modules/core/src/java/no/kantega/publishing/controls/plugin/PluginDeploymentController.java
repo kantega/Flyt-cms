@@ -36,7 +36,7 @@ public class PluginDeploymentController {
     @Autowired
     private ThreadLocalPluginLoaderErrors threadLocalPluginLoaderErrors;
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, value = "/PluginDeployment.action")
     public void post(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if(runtimeMode != RuntimeMode.DEVELOPMENT) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);

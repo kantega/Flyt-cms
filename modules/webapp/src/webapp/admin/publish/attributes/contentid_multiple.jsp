@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.commons.util.StringHelper,
+                 no.kantega.publishing.api.content.ContentIdentifier,
                  no.kantega.publishing.common.data.Content,
-                 no.kantega.publishing.common.data.ContentIdentifier,
                  no.kantega.publishing.common.data.attributes.ContentidAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%--
@@ -40,8 +40,7 @@
                 int ids[] = StringHelper.getInts(value, ",");
 
                 for (int i = 0; i < ids.length; i++) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(ids[i]);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(ids[i]);
                     Content c = cms.getContent(cid);
                     if (c != null) {
                         out.write("<option value=\"" + c.getAssociation().getId() + "\">" + c.getTitle() + "</option>");

@@ -18,8 +18,8 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Language;
 
 import java.util.Date;
 
@@ -97,6 +97,10 @@ public class Attachment {
     }
     
     public String getUrl(){
-        return Aksess.getContextPath() + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
+        String contextPath = Aksess.getContextPath();
+        if (!contextPath.endsWith("/")) {
+            contextPath += "/";
+        }
+        return contextPath + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
     }
 }

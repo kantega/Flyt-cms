@@ -253,7 +253,7 @@ public class AssociationAO  {
 
 
     public static List<Association> getAssociationsByContentId(int contentId) throws SystemException {
-        List associations = new ArrayList();
+        List<Association> associations = new ArrayList<Association>();
 
         Connection c = null;
 
@@ -283,7 +283,7 @@ public class AssociationAO  {
 
 
     public static List getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
-        List associations = new ArrayList();
+        List<Association> associations = new ArrayList<Association>();
 
         Connection c = null;
 

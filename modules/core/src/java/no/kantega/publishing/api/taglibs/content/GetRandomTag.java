@@ -16,19 +16,24 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.*;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.client.util.RequestParameters;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.ArrayList;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetRandomTag  extends BodyTagSupport {
     private static final String SOURCE = "aksess.GetRandomTag";
@@ -94,7 +99,7 @@ public class GetRandomTag  extends BodyTagSupport {
             } else {
                 // Alias
                 try {
-                    associatedId = new ContentIdentifier(request, id);
+                    associatedId = ContentIdHelper.fromRequestAndUrl(request, id);
                 } catch (Exception e) {
                 }
             }
@@ -162,7 +167,7 @@ public class GetRandomTag  extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        associatedId = new ContentIdentifier(request);
+                        associatedId = ContentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
                     // Finner ikke noe innhold

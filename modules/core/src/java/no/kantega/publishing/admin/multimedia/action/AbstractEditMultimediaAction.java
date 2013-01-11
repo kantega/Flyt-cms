@@ -55,7 +55,7 @@ public abstract class AbstractEditMultimediaAction extends AbstractController {
             Map model = modelAndView.getModel();
             model.put("canEdit", canEdit);
             model.put("media", mm);
-            if (mm.getMimeType().getType().indexOf("image") != -1) {
+            if (mm.getMimeType().getType().contains("image")) {
                 // Can crop image
                 model.put("isImage", Boolean.TRUE);
             }

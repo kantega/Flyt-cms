@@ -69,7 +69,7 @@ public class dbConnectionFactory {
 
     private static int openedConnections = 0;
     private static int closedConnections = 0;
-    public static Map connections  = Collections.synchronizedMap(new HashMap());
+    public static Map<Connection, StackTraceElement[]> connections  = Collections.synchronizedMap(new HashMap<Connection, StackTraceElement[]>());
 
     private static boolean debugConnections = false;
 
@@ -466,7 +466,6 @@ class DataSourceWrapper implements InvocationHandler {
 
     public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
         if(method.getName().equalsIgnoreCase("getConnection")) {
-            //System.out.println("ds: o/c: " +dbConnectionFactory.openedConnections +"/" + dbConnectionFactory.closedConnections +"(" +(dbConnectionFactory.openedConnections - dbConnectionFactory.closedConnections) +")");
             Connection c = (Connection)method.invoke(dataSource, objects);
             StackTraceElement[] stacktrace = new Throwable().getStackTrace();
             dbConnectionFactory.connections.put(c, stacktrace);
@@ -489,10 +488,10 @@ class ConnectionWrapper implements InvocationHandler {
         if(method.getName().equalsIgnoreCase("close")) {
             if(dbConnectionFactory.connections.get(wrapped) == null) {
                 StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
-                System.out.println("WOOOPS: Connection.close was already called!");
+                Log.error("ConnectionWrapper", "WOOOPS: Connection.close was already called!");
                 for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
                     StackTraceElement e = stackTraceElement[i];
-                    System.out.println(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
+                    Log.error("ConnectionWrapper"," - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
                 }
             } else {
                 dbConnectionFactory.incrementClosedConnections();

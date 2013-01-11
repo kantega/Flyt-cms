@@ -22,18 +22,18 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.admin.dwr.ContentClipboardHandler;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -46,35 +46,32 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * A controller which updates breadcrumb and available buttons depending on current page
  */
-public class ContentPropertiesAction implements Controller {
+@Controller
+public class ContentPropertiesAction {
 
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
-    private View aksessJsonView;
 
-
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @RequestMapping("/admin/publish/ContentProperties.action")
+    public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         String url = request.getParameter("url");
         ContentManagementService cms = new ContentManagementService(request);
 
         try {
-            ContentIdentifier cid = new ContentIdentifier(request, url);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
             Content content = cms.getContent(cid, false);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
@@ -183,6 +180,7 @@ public class ContentPropertiesAction implements Controller {
             }
             contentProperties.put("owner", owner);
             contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
+            contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
 
             model.put("showApproveButtons", showApproveButtons);
             model.put("enabledButtons", enabledButtons);
@@ -191,7 +189,7 @@ public class ContentPropertiesAction implements Controller {
             model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
 
-            return new ModelAndView(aksessJsonView, model);
+            return model;
 
 
         } catch (ContentNotFoundException e) {
@@ -204,10 +202,6 @@ public class ContentPropertiesAction implements Controller {
             Log.error(this.getClass().getName(), e, null, null);
             return null;
         }
-    }
-
-    public void setAksessJsonView(View aksessJsonView) {
-        this.aksessJsonView = aksessJsonView;
     }
 
     private String formatDateTime(Date date) {

@@ -21,10 +21,10 @@ import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.RegExp;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.cache.ContentIdentifierCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class ValidatorHelper {
                 errors.add(null, "aksess.error.aliasisillegal");
             }
         } catch (RegExpSyntaxException e) {
-            e.printStackTrace();
+            Log.error(SOURCE, e);
         }       
 
         try {
@@ -52,7 +52,7 @@ public class ValidatorHelper {
                 }
             }
         } catch (SystemException ex) {
-            Log.error(SOURCE, ex, null, null);
+            Log.error(SOURCE, ex);
         }
     }
 }

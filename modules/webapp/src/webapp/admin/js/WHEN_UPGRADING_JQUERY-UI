@@ -1,4 +1,0 @@
-WRO-jsmin changes statements like «"..-ui-"+ ++i» into «"..-ui-"+++i», causing the script to be invalid.
-It affects the functions below.
-uniqueId:function(){return this.each(function(){this.id||(this.id="ui-id-"+ ++n)
-_cookie:function(n){var r=[this.cookie||(this.cookie=this.options.cookie.name||"ui-tabs-"+ (++t))]}

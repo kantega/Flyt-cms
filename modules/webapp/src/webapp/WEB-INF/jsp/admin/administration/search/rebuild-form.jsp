@@ -25,23 +25,11 @@
     <form action="RebuildIndex.action" name="searchindex" method="POST">
         <admin:box>
             <h1><kantega:label key="aksess.search.title"/></h1>
-
             <div class="row">
-                <input type="checkbox" class="checkbox" checked="true" name="rebuild" id="rebuild"><label for="rebuild" class="checkbox"><kantega:label key="aksess.search.rebuild.rebuild"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <input type="checkbox" class="checkbox"  checked="true" name="optimize" id="optimize"><label for="optimize" class="checkbox" ><kantega:label key="aksess.search.rebuild.optimize"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <input type="checkbox" class="checkbox"  checked="true" name="spelling" id="spelling"><label for="spelling" class="checkbox"><kantega:label key="aksess.search.rebuild.spelling"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label>
+                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label><br>
                 <c:forEach var="provider" items="${providers}">
-                    <input type="checkbox" class="checkbox" name="exclude${provider}r" id="${provider}"><label for="${provider}" class="checkbox">${provider}</label>
+                    <c:set var="providerName" value="${provider.name}"/>
+                    <input type="checkbox" class="checkbox" name="exclude.${providerName}" id="${providerName}"><label for="${providerName}" class="checkbox">${providerName}</label><br>
                 </c:forEach>
                 <div class="clearing"></div>
             </div>

@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.topicmaps.data;
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Topic {
     private String id = null;
@@ -131,7 +131,7 @@ public class Topic {
             baseNames.add(baseName);
         }
 
-        TopicBaseName tbn = (TopicBaseName)baseNames.get(0);
+        TopicBaseName tbn = baseNames.get(0);
         tbn.setBaseName(name);
     }
 
@@ -161,14 +161,10 @@ public class Topic {
     public boolean equals(Object obj) {
         try {
             Topic t = (Topic)obj;
-            if(this.id == null && t.getId() == null && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            if(this.id.equals(t.getId()) && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            return false;
-            
+            return this.id == null && t.getId() == null
+                    && this.topicMapId == t.getTopicMapId() || this.id.equals(t.getId())
+                    && this.topicMapId == t.getTopicMapId();
+
         } catch (ClassCastException e) {
             return false;
         }

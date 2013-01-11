@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.modules.mailsubscription.data;
 
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.api.content.Language;
 
 public class MailSubscription {
     public static final String DAILY = "daily";

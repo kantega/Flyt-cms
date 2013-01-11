@@ -42,7 +42,6 @@ public class DataDirectoryContextListener implements ServletContextListener {
         dataDirectory.mkdirs();
         new File(dataDirectory, "uploads").mkdirs();
         new File(dataDirectory, "logs").mkdirs();
-        new File(dataDirectory, "index").mkdirs();
     }
 
     public void contextDestroyed(ServletContextEvent sce) {

@@ -18,13 +18,13 @@ package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.servlet.http.HttpServletRequest;

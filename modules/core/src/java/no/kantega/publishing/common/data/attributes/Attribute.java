@@ -31,7 +31,6 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.lucene.document.Document;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -41,7 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Representing a single attribute in a Content object.
  */
 public abstract class Attribute {
     private final String FILE_TOKEN = "file:";
@@ -409,10 +408,6 @@ public abstract class Attribute {
             Log.error("Attribute:" + name, e, null, null);
         }
         return isHidden;
-    }
-
-    public void addIndexFields(Document d) {
-
     }
 
     public boolean isSearchable() {

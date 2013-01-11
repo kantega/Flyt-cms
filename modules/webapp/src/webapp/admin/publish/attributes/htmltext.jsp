@@ -7,12 +7,12 @@
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
 <%@ page import="no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper"%>
 <%@ page import="no.kantega.publishing.admin.content.spellcheck.SpellcheckerService"%>
+<%@ page import="no.kantega.publishing.api.content.Language"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.publishing.common.cache.SiteCache"%>
-<%@ page import="no.kantega.publishing.common.data.Content"%>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="no.kantega.publishing.common.data.Site" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute" %>
-<%@ page import="no.kantega.publishing.common.data.enums.Language" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.spring.RootContext" %>

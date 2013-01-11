@@ -16,11 +16,10 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrenceHandler;
-import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.commons.sqlsearch.SearchTerm;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 
 import java.util.List;
 

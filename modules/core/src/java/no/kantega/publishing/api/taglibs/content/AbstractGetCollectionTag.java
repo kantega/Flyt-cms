@@ -20,8 +20,10 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
@@ -309,7 +311,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        associatedId = new ContentIdentifier(request);
+                        associatedId = ContentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
                     // No content found
@@ -547,7 +549,8 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (!Character.isDigit(id.charAt(0))) {
                 //Alias
                 try {
-                    id = "" + new ContentIdentifier(request, id).getAssociationId();
+                    ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
+                    id = String.valueOf(contentIdentifier.getAssociationId());
                 } catch (Exception e) {
                 }
             }
@@ -559,8 +562,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 String elementId = st.nextToken();
                 if (elementId != null && elementId.trim().length() > 0 && Character.isDigit(elementId.trim().charAt(0))) {
                     try {
-                        ContentIdentifier pathElementId = new ContentIdentifier();
-                        pathElementId.setAssociationId(Integer.parseInt(elementId.trim()));
+                        ContentIdentifier pathElementId =  ContentIdentifier.fromAssociationId(Integer.parseInt(elementId.trim()));
                         RequestParameters param = new RequestParameters(request);
                         int language = param.getInt("language");
                         if (language != -1) {

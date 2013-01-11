@@ -252,6 +252,7 @@ table.fullWidth {
     padding-right: 5px;
     border: 1px solid #0085BD;
     float: right;
+    color: #006385;
 }
 
 #Content.mypage table .action{
@@ -288,7 +289,6 @@ table.fullWidth {
     line-height: 25px;
     background: #E3E3E3 repeat-x scroll left center;
 }
-
 #Content.mypage .widget-header h2 {
     margin: 0;
     float: left;

@@ -17,9 +17,9 @@
 package no.kantega.publishing.jobs.cleanup;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -130,8 +130,7 @@ public class DatabaseCleanupJob  extends QuartzJobBean {
             st = c.prepareStatement("select ContentId from content where ContentId not in (select ContentId from associations)");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(rs.getInt("ContentId"));
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(rs.getInt("ContentId"));
                 String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
                 Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month");
                 eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);

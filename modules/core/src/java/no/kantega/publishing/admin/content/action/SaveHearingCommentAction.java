@@ -18,17 +18,16 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.ao.ContentDao;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.HearingComment;
+import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.security.SecuritySession;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -66,8 +65,7 @@ public class SaveHearingCommentAction {
 			// TODO: Check if is hearing instance
 
 			if (comment != null && !comment.trim().equals("")) {
-				ContentIdentifier cid = new ContentIdentifier();
-				cid.setContentId(contentId);
+				ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
 				Content content = ContentAO.getContent(cid,false);
 				String name = SecuritySession.getInstance(request).getUser().getName();
 

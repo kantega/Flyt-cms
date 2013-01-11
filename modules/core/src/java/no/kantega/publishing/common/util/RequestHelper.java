@@ -17,12 +17,12 @@
 package no.kantega.publishing.common.util;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.DisplayTemplateControllerId;
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.controls.AksessController;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;

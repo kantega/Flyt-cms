@@ -18,8 +18,8 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.data.enums.ObjectType;
 
 public class MultimediaMapEntry extends NavigationMapEntry {
     public MultimediaType type = MultimediaType.MEDIA;

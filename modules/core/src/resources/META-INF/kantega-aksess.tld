@@ -2006,35 +2006,6 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Include JSP search view for customized display of object in search result</description>
-        <name>searchview</name>
-        <tag-class>no.kantega.publishing.api.taglibs.content.SearchViewTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>Name of request variable to store searchHit in</description>
-            <name>var</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>searchhit</name>
-            <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Specify default view for search hits that are normal content pages</description>
-            <name>defaultviewcontent</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Specify view for search hits that are not content pages (eg attachments)</description>
-            <name>otherview</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-    </tag>
 
     <tag>
         <description>Get sitemap and save as request attribute</description>
@@ -2193,161 +2164,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
-    <tag>
-        <description>Search site using Lucene index. No parameters are normally necessary since tag will search request for parameters</description>
-        <name>search</name>
-        <tag-class>no.kantega.publishing.search.taglib.SearchTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <name>query</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>queryref</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>excludequeryref</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>index</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>view</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>parent</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>operator</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>lang</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>notlang</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>requiredwords</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>prohibitedwords</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>phrase</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>siteid</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>sortfield</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>sortreversed</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
-        <attribute>
-            <name>suggestionbase</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>numhitsforsuggestion</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>int</type>
-        </attribute>
-        <attribute>
-            <name>doctypes</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <name>hitsperpage</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
 
-        <example>
-            <![CDATA[
-                        Form for basic search:
-
-                        <form action="" method="post" name="search">
-                            Search: <input type="text" name="q" size="20" value="${param.q}">
-                            <input type="submit" class="button" value="Search">
-                        </form>
-
-                        <c:if test="${param.q != null && param.q != ''}">
-
-                            <aksess:search/>
-
-                            <c:forEach var="searchHit" items="${searchHits}">
-                                <a href="${searchHit.url}"><c:out value="${searchHit.title}" escapeXml="false"/></a><br>
-                                <c:choose>
-                                    <c:when test="${searchHit.contextText != ''}">
-                                        <c:out value="${searchHit.contextText}" escapeXml="false"/>
-                                    </c:when>
-                                    <c:otherwise><c:out value="${searchHit.summary}" escapeXml="false"/></c:otherwise>
-                                </c:choose>
-
-                                <c:if test="${searchHit.pathElements != null}">
-                                    <c:forEach var="pathElement" items="${searchHit.pathElements}">
-                                        <c:out value="${pathElement.title}" escapeXml="false"/> &gt;
-                                    </c:forEach>
-                                    <c:out value="${searchHit.title}" escapeXml="false"/>
-                                </c:if>
-                            </c:forEach>
-
-                            <c:if test="${prevSearchPageUrl != null}">
-                                <a href="${prevSearchPageUrl}">Previous</a>
-                            </c:if>
-
-                            <c:forEach var="searchPageUrl" items="${searchPageUrls}" varStatus="status">
-                                <a href="${searchPageUrl}">${status.index + 1}</a>
-                            </c:forEach>
-
-                            <c:if test="${nextSearchPageUrl != null}">
-                                <a href="${nextSearchPageUrl}">Next</a>
-                            </c:if>
-                        </c:if>
-            ]]>
-        </example>
-
-
-
-    </tag>
     <tag>
         <description>Print IMG tag with icon based on given MIME type (deprecated)</description>
         <name>mimeicon</name>
@@ -2792,52 +2609,6 @@
     </tag>
 
     <tag>
-        <description>Tag used after SearchTag to print pages on the form 1 2 3 ... 45</description>
-        <name>paginateSearch</name>
-        <tag-class>no.kantega.publishing.search.taglib.PaginateSearchTag</tag-class>
-        <body-content>empty</body-content>
-        <attribute>
-            <description>Name of the variable exposed by SearchTag containing a list of urls for the search pages. Default searchPageUrls</description>
-            <name>searchPageUrlsVariableName</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Label for previous link. Leave blank to not use</description>
-            <name>prevlabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Label for next link. Leave blank to not use</description>
-            <name>nextlabel</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Number of links before and after the gap</description>
-            <name>beforeandafterlinks</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <attribute>
-            <description>Name of offset parameter. default offset</description>
-            <name>offsetparam</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-        </attribute>
-        <example>
-            <![CDATA[
-                    <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
-                    <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
-
-                    <aksess:search excludequeryref="query" suggestionbase="<%=q%>"/>
-                    <aksess:paginateSearch prevlabel="forrige" nextlabel="neste"/>
-            ]]>
-        </example>
-    </tag>
-
-    <tag>
         <description>Iterate through repeatable attributes</description>
         <name>repeatattributes</name>
         <tag-class>no.kantega.publishing.api.taglibs.content.RepeatAttributesTag</tag-class>
@@ -2915,4 +2686,5 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+
 </taglib>

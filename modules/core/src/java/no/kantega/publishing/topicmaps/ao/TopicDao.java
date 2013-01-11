@@ -68,4 +68,10 @@ public interface TopicDao {
      * @return Topics that are used on children of content with contentId
      */
     List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId);
+
+    /**
+     * @param contentId of content to get names of associated topics.
+     * @return a list of the names of the topics associated with the content with the given Id.
+     */
+    List<String> getTopicNamesForContent(int contentId);
 }

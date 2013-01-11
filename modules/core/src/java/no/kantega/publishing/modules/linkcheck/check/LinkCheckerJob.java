@@ -19,14 +19,15 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -118,20 +119,19 @@ public class LinkCheckerJob implements InitializingBean {
             String idPart;
             if (link.startsWith(CONTENT_AP)) {
                 idPart = link.substring(CONTENT_AP.length());
-                if (idPart.indexOf("&") != -1) {
+                if (idPart.contains("&")) {
                     idPart = idPart.substring(0, idPart.indexOf("&"));
                 }
             } else {
                 idPart = link.substring(CONTENT.length());
-                if (idPart.indexOf("/") != -1) {
+                if (idPart.contains("/")) {
                     idPart = idPart.substring(0, idPart.indexOf("/"));
                 }
             }
             try {
                 int i = Integer.parseInt(idPart);
                 try {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(i);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(i);
                     Content c = ContentAO.getContent(cid, true);
                     if(c != null) {
                         occurrence.setStatus(CheckStatus.OK);
@@ -149,12 +149,12 @@ public class LinkCheckerJob implements InitializingBean {
             String idPart;
             if (link.startsWith(MULTIMEDIA_AP)) {
                 idPart = link.substring(MULTIMEDIA_AP.length());
-                if (idPart.indexOf("&") != -1) {
+                if (idPart.contains("&")) {
                     idPart = idPart.substring(0, idPart.indexOf("&"));
                 }
             } else {
                 idPart = link.substring(MULTIMEDIA.length());
-                if (idPart.indexOf("/") != -1) {
+                if (idPart.contains("/")) {
                     idPart = idPart.substring(0, idPart.indexOf("/"));
                 }
             }
@@ -178,7 +178,7 @@ public class LinkCheckerJob implements InitializingBean {
         } else if (link.startsWith(ATTACHMENT_AP)) {
             // Vedlegg
             String idPart = link.substring(ATTACHMENT_AP.length());
-            if (idPart.indexOf("&") != -1) {
+            if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf("&"));
             }
             try {
@@ -202,7 +202,7 @@ public class LinkCheckerJob implements InitializingBean {
             // Kan være et alias, sjekk
             String alias = link.substring(Aksess.VAR_WEB.length());
             try {
-                ContentIdentifier cid = new ContentIdentifier(alias);
+                ContentIdentifier cid = ContentIdHelper.fromUrl(alias);
                 Content c = ContentAO.getContent(cid, true);
                 if (c != null) {
                     occurrence.setStatus(CheckStatus.OK);

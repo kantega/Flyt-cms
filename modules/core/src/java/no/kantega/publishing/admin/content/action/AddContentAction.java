@@ -20,7 +20,9 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
@@ -60,7 +62,7 @@ public class AddContentAction extends AbstractController {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cidParent = new ContentIdentifier(request, url);
+        ContentIdentifier cidParent = ContentIdHelper.fromRequestAndUrl(request, url);
         Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
@@ -113,8 +115,7 @@ public class AddContentAction extends AbstractController {
                     }
                 }
                 if (!found) {
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(parent1);
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(parent1);
                     Content association = aksessService.getContent(cid);
                     if (association != null) {
                         // Check if user is authorized to publish here

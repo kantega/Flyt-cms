@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.4.11-SNAPSHOT</version>
+        <version>7.5.0.RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -69,6 +69,12 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>OA-Search</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-webdav</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -78,35 +84,6 @@
             <artifactId>spring-aop</artifactId>
             <version>${springframework.version}</version>
         </dependency>                                
-
-        <dependency>
-            <groupId>net.sf.spring-json</groupId>
-            <artifactId>spring-json</artifactId>
-            <version>1.2.1</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>cglib</groupId>
-                    <artifactId>cglib-full</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-mock</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.thoughtworks.xstream</groupId>
-                    <artifactId>xstream</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <dependency>
             <groupId>ognl</groupId>
@@ -127,29 +104,16 @@
         </dependency>
 
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons-logging.version}</version>
-        </dependency>
-        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>${codec.version}</version>
         </dependency>
 
-        
-        <!-- Is this one really needed?
-        Added by Anders when upgrading to Spring 2.5.5 because he hit a runtime error.
-        -->
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.fontbox</groupId>
-            <artifactId>fontbox</artifactId>
-            <version>0.1.0</version>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>1.6.12</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -219,16 +183,23 @@
 
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet</groupId>
+            <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
+            <version>${jsp.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.9</version>
+            <scope>runtime</scope>
         </dependency>
 
     </dependencies>

@@ -1,21 +1,21 @@
 package no.kantega.publishing.security.action;
 
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.password.PasswordValidator;
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.login.PostResetPasswordHandler;
 import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.DefaultResetPasswordToken;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
-import org.springframework.ui.Model;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResetPasswordAction extends AbstractLoginAction {
     private static final String SOURCE = "aksess.ResetPassordAction";

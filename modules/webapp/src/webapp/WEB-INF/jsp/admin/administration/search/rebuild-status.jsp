@@ -29,12 +29,9 @@
         }
     </script>
 
-    <c:choose>
-        <c:when test="${total < 1}"><kantega:label key="aksess.search.rebuild.starting"/></c:when>
-        <c:otherwise>
-            <kantega:label key="aksess.search.rebuild.indexing"/> ${docType} ${current} of ${total}
-        </c:otherwise>
-    </c:choose>
+    <c:forEach var="progressReporter" items="${progressReporters}">
+        <kantega:label key="aksess.search.rebuild.indexing"/> ${progressReporter.docType} ${progressReporter.current}/${progressReporter.total} <br>
+    </c:forEach>
 
     <script type="text/javascript">
         setTimeout(reloadPage, 2000);

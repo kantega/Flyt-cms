@@ -16,23 +16,21 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.data.enums.ContentType;
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.lock.LockManager;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.lock.LockManager;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.commons.client.util.RequestParameters;
 
 /**
  */

@@ -16,8 +16,9 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -39,7 +40,7 @@ public class ViewDisplayPeriodAction extends AbstractController {
         Map<String, Object> model = new HashMap<String, Object>();
         ContentManagementService cms = new ContentManagementService(request);
         String url = request.getParameter("url");
-        ContentIdentifier cid = new ContentIdentifier(request, url);
+        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
         Content content = cms.getContent(cid, false);
 
         boolean canUpdateSubpages = false;

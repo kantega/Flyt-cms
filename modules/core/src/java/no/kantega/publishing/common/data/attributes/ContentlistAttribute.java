@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.cache.SiteCache;
@@ -152,8 +153,7 @@ public class ContentlistAttribute extends ListAttribute {
         List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
         List<String> values = super.getValues();
         for (String v : values) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(Integer.parseInt(v));
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
             cids.add(cid);
         }
         return cids;

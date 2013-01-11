@@ -18,14 +18,15 @@ package no.kantega.publishing.api.taglibs.sitemap;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.cache.SiteCache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -60,11 +61,12 @@ public class GetSiteMapTag  extends TagSupport {
                 this.rootId = Integer.parseInt(rootId);
             } catch (NumberFormatException e) {
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(rootId);
+                    ContentIdentifier cid = ContentIdHelper.fromUrl(rootId);
                     this.rootId = cid.getAssociationId();
                 } catch (ContentNotFoundException e1) {
+                    Log.error(SOURCE, e);
                 } catch (SystemException e1) {
-                    e1.printStackTrace(); 
+                    Log.error(SOURCE, e);
                 }
             }
         }

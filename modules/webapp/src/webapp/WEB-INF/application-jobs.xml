@@ -17,7 +17,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
 
     <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
 
@@ -207,21 +207,6 @@
         <property name="cronExpression" value="${jobs.contentimport.trigger}"/>
     </bean>
 
-    <bean name="rebuildSearchIndexJob" class="no.kantega.publishing.jobs.search.RebuildSearchIndexJob">
-        <property name="indexManager" ref="indexManager"/>
-    </bean>
-
-    <bean id="rebuildSearchIndexJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="rebuildSearchIndexJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="rebuildSearchIndexJobTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="rebuildSearchIndexJobDetail"/>
-        <property name="cronExpression" value="${jobs.rebuildindex.trigger}"/>
-    </bean>
-
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
@@ -235,7 +220,6 @@
                 <ref local="databaseCleanupTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
-                <ref local="rebuildSearchIndexJobTrigger"/>
                 <ref local="brokenLinkEventTrigger" />
             </list>
         </property>

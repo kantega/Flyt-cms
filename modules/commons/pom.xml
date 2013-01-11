@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.4.11-SNAPSHOT</version>
+        <version>7.5.0.RC1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <artifactId>javax.servlet-api</artifactId>
             <version>${servlet.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -60,6 +60,11 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
         </dependency>
 
         <dependency>
@@ -100,6 +105,12 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${springframework.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

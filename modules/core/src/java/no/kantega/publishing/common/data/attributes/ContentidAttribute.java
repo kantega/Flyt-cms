@@ -18,9 +18,9 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
@@ -92,8 +92,7 @@ public class ContentidAttribute extends Attribute {
         if (value != null) {
             String[] values = value.split(",");
             for (String v : values) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(Integer.parseInt(v));
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
                 cids.add(cid);
             }
         }

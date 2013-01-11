@@ -16,25 +16,25 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
-import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Note;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AddNoteAction extends SimpleAdminController {
     @Autowired
@@ -51,21 +51,21 @@ public class AddNoteAction extends SimpleAdminController {
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
         // Extracting currently selected content from it's url
-        Content currentContent = null;
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {
-                cid = new ContentIdentifier(request, url);
+                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                int contentId = cid.getContentId();
 
                 Note note = new Note();
                 note.setText(noteText);
                 note.setDate(new Date());
-                note.setContentId(cid.getContentId());
+                note.setContentId(contentId);
                 note.setAuthor(securitySession.getUser().getName());
 
                 notesDao.addNote(note);
-                int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-                ContentAO.setNumberOfNotes(cid.getContentId(), count);
+                int count = notesDao.getNotesByContentId(contentId).size();
+                ContentAO.setNumberOfNotes(contentId, count);
 
             } catch (ContentNotFoundException e) {
                 // Do nothing

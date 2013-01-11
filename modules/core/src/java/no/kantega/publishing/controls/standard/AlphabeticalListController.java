@@ -17,8 +17,12 @@
 package no.kantega.publishing.controls.standard;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.controls.AksessController;
@@ -75,7 +79,7 @@ public class AlphabeticalListController implements AksessController {
             }
 
         } else {
-            cid = new ContentIdentifier(request);
+            cid = ContentIdHelper.fromRequest(request);
             query.setAssociatedId(cid);
         }
 

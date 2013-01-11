@@ -16,20 +16,19 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.util.HttpHelper;
 
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.jsp.JspException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final String SOURCE = "aksess.IsEditableByUserTag";
@@ -50,7 +49,8 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             }
             if (contentObject == null) {
                 // Hent denne siden
-                contentObject = cms.getContent(new ContentIdentifier(request), true);
+                ContentIdentifier ci = ContentIdHelper.fromRequest(request);
+                contentObject = cms.getContent(ci, true);
                 RequestHelper.setRequestAttributes(request, contentObject);
             }
 

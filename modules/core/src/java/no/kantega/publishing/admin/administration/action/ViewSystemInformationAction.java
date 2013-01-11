@@ -61,6 +61,7 @@ public class ViewSystemInformationAction extends AbstractController {
             Properties webappVersionInfo = new Properties();
             webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
             model.put("webappRevision", webappVersionInfo.get("revision"));
+            model.put("webappVersion", webappVersionInfo.get("version"));
         } catch (IOException e) {
             Log.info(this.getClass().getName(), "aksess-webapp-version.properties not found", null, null);
         }

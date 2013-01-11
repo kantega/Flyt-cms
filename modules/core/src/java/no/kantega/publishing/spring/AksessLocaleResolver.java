@@ -16,14 +16,12 @@
 
 package no.kantega.publishing.spring;
 
+import no.kantega.publishing.api.content.Language;
 import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Locale;
-
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Language;
 
 /**
  * User: Anders Skar, Kantega AS

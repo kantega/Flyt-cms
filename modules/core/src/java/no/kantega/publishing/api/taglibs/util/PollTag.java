@@ -20,8 +20,8 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
@@ -60,8 +60,7 @@ public class PollTag  extends TagSupport {
         HttpSession session = pageContext.getSession();
 
         try {
-            ContentIdentifier cid =  new ContentIdentifier();
-            cid.setContentId(pollid);
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(pollid);
             containingPage = new ContentManagementService(request).getContent(cid);
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);

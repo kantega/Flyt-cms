@@ -31,8 +31,8 @@ import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.w3c.dom.Document;
 
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public class XMLImportJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.XMLImportJob";
@@ -61,7 +61,7 @@ public class XMLImportJob  extends QuartzJobBean {
                 XMLCacheEntry cacheEntry = new XMLCacheEntry(id, xml);
                 XMLCacheAO.storeXMLInCache(cacheEntry);
 
-                CacheManager cacheManager = (CacheManager) RootContext.getInstance().getBean("cacheManager");
+                CacheManager cacheManager = RootContext.getInstance().getBean(CacheManager.class);
 
                 Cache xmlCache = cacheManager.getCache(CacheManagerFactory.CacheNames.XmlCache.name());
 

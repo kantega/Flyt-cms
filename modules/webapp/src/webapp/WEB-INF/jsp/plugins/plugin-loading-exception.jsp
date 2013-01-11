@@ -1,7 +1,3 @@
-<%@ page import="javax.tools.Diagnostic" %>
-<%@ page import="javax.tools.JavaFileObject" %>
-<%@ page import="java.util.List" %>
-<%@ page import="java.util.Locale" %>
 <%@ page import="java.io.PrintWriter" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>

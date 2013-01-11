@@ -2,8 +2,9 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
@@ -23,7 +24,7 @@ public class AksessSetCurrentPageInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ContentManagementService cms = new ContentManagementService(request);
         try {
-            ContentIdentifier cid = new ContentIdentifier(request, aksessAlias);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, aksessAlias);
             Content currentPage = cms.getContent(cid, true);
             RequestHelper.setRequestAttributes(request, currentPage);
         } catch (NotAuthorizedException e) {

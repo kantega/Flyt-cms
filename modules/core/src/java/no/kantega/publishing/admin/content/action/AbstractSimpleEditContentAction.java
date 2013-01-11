@@ -3,22 +3,18 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.*;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
@@ -110,7 +106,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     }
 
     private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
-        ContentIdentifier cid = new ContentIdentifier(request);
+        ContentIdentifier cid = ContentIdHelper.fromRequest(request);
         return new ContentManagementService(request).getLastVersionOfContent(cid);
     }
 

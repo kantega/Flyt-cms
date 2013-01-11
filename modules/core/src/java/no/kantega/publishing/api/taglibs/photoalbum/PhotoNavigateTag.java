@@ -16,15 +16,16 @@
 
 package no.kantega.publishing.api.taglibs.photoalbum;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
 public class PhotoNavigateTag extends BodyTagSupport {
@@ -62,7 +63,7 @@ public class PhotoNavigateTag extends BodyTagSupport {
 
                 String url = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?";
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(request);
+                    ContentIdentifier cid = ContentIdHelper.fromRequest(request);
                     url = url + "thisId=" + cid.getAssociationId() + "&amp;language=" + cid.getLanguage();
                 } catch (Exception e) {
                     // Kan skje ved testing at malen ikke er knyttet opp til en side

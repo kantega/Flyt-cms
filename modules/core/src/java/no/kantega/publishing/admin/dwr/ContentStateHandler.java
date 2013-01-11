@@ -19,8 +19,9 @@ package no.kantega.publishing.admin.dwr;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.directwebremoting.annotations.RemoteMethod;
@@ -51,7 +52,7 @@ public class ContentStateHandler extends AbstractDwrController {
         if (session != null) {
             try {
                 ContentManagementService cms = new ContentManagementService(getRequest());
-                ContentIdentifier cid = new ContentIdentifier(getRequest(), url);
+                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(getRequest(), url);
                 Content current = cms.getContent(cid);
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {

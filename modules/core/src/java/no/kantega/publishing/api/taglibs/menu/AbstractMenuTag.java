@@ -20,17 +20,17 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.impl.SiteMapWorker;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 
@@ -279,7 +279,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                 content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
             } else if (content == null && siteId != -1) {
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(siteId, "/");
+                    ContentIdentifier cid = ContentIdHelper.fromSiteIdAndUrl(siteId, "/");
                     content = cms.getContent(cid);
                 }  catch (ContentNotFoundException e) {
                     //
