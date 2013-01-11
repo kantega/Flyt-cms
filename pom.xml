@@ -24,12 +24,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.5.0.RC1</version>
+    <version>7.5.0.RC2-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.5.0.RC1</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.5.0.RC1</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-solr</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-solr</developerConnection>
     </scm>
 
     <pluginRepositories>
