@@ -8,6 +8,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>oa-search-api</artifactId>
+    <artifactId>openaksess-search-api</artifactId>
     <name>OpenAksess Search API</name>
 </project>

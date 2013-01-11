@@ -9,7 +9,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
-    <artifactId>solr-search</artifactId>
+    <artifactId>openaksess-search-solr</artifactId>
 
     <name>OpenAksess search - Solr</name>
     <properties>
