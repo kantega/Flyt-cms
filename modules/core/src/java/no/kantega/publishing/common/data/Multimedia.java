@@ -23,6 +23,7 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -116,8 +117,7 @@ public class Multimedia extends BaseObject {
     }
 
     public void setAltname(String altname) {
-        if (altname == null) altname = "";
-        this.altname = altname;
+        this.altname = StringUtils.defaultString(altname, "");
     }
 
     public String getAuthor() {
@@ -125,8 +125,7 @@ public class Multimedia extends BaseObject {
     }
 
     public void setAuthor(String author) {
-        if (author == null) author = "";
-        this.author = author;
+        this.author = StringUtils.defaultString(author, "");
     }
 
     public String getDescription() {
@@ -134,8 +133,7 @@ public class Multimedia extends BaseObject {
     }
 
     public void setDescription(String description) {
-        if (description == null) description = "";
-        this.description = description;
+        this.description = StringUtils.defaultString(description, "");
     }
 
     public String getUsage() {
@@ -143,8 +141,7 @@ public class Multimedia extends BaseObject {
     }
 
     public void setUsage(String usage) {
-        if (usage == null) usage = "";
-        this.usage = usage;
+        this.usage = StringUtils.defaultString(usage, "");
     }
 
     public String getFilename() {
@@ -219,8 +216,7 @@ public class Multimedia extends BaseObject {
     }
 
     public void setModifiedBy(String modifiedBy) {
-        if (modifiedBy == null) modifiedBy = "";
-        this.modifiedBy = modifiedBy;
+        this.modifiedBy = StringUtils.defaultString(modifiedBy, "");
     }
 
     public String getUrl() {

@@ -260,7 +260,7 @@ public final class AttributeTagHelper {
                     } else {
                         result = number.getValue();
                     }
-                } else if(attr instanceof MediaAttribute || attr instanceof ImageAttribute) {
+                } else if(attr instanceof MediaAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
 
                     if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
@@ -288,11 +288,11 @@ public final class AttributeTagHelper {
                     result = content.getTitle();
                     isTextAttribute = true;
                 } else if (name.equals(ContentProperty.ID)) {
-                    result = "" + content.getAssociation().getId();
+                    result = String.valueOf(content.getAssociation().getId());
                 } else if (name.equals(ContentProperty.CONTENTID)) {
-                    result = "" + content.getId();
+                    result = String.valueOf(content.getId());
                 } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
-                    result = "" + content.getAssociation().getNumberOfViews();
+                    result = String.valueOf(content.getAssociation().getNumberOfViews());
                 } else if (name.equals(ContentProperty.URL)) {
                     result = content.getUrl();
                 } else if (name.equals(ContentProperty.ALIAS)) {
