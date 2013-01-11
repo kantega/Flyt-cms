@@ -1,6 +1,4 @@
-<%@ page import="no.kantega.publishing.common.data.WorkList" %>
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
-<%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -34,7 +32,7 @@
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.version"/></div>
                 <div class="content">
-                        ${aksessVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
+                        ${aksessVersion} / ${webappVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
                 </div>
             </div>
 
