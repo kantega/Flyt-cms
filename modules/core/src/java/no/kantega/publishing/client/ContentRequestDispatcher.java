@@ -117,6 +117,11 @@ public class ContentRequestDispatcher {
 
         response.addHeader("X-Powered-By", "OpenAksess " + Aksess.getVersion());
 
+        if(!content.isSearchable()){
+            //	Equivalent to noindex, nofollow
+            response.addHeader("X-Robots-Tag", "none");
+        }
+
         // Run template controllers
         RequestHelper.runTemplateControllers(dt, request, response, servletContext);
 
