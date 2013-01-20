@@ -36,7 +36,8 @@ var formTextEditorHTML = null;
 var formSectionEditorHTML = null;
 
 function formDeleteElement(element) {
-    var parent = $(element).parent();
+    var jqElement = $(element);
+    var parent = jqElement.parent();
     var parentRemoved = false;
 
     if ((parent).hasClass("formSection")) {
@@ -47,7 +48,7 @@ function formDeleteElement(element) {
     }
 
     if (!parentRemoved) {
-        $(element).remove();
+        jqElement.remove();
     }
 
     openaksess.editcontext.setIsModified();
@@ -61,10 +62,11 @@ function formEditElement(element) {
     formEditedElement = element;
 
     // Move edit form to current position
-    $(element).after(formEditorHTML);
+    var jqElement = $(element);
+    jqElement.after(formEditorHTML);
 
     // Hide element being edited
-    $(element).hide();
+    jqElement.hide();
 
     $("#form_ChildNo").val($("#form_FormElements .formElement").index(element));
 
@@ -75,19 +77,19 @@ function formEditElement(element) {
     if (helpText == undefined || helpText == null) helpText = "";
     $("#form_HelpText").val(helpText);
 
-    if ($(element).hasClass("readonly")) {
+    if (jqElement.hasClass("readonly")) {
         $("#form_FieldReadonly").attr("checked", true);
     } else {
         $("#form_FieldReadonly").attr("checked", false);
     }
 
-    if ($(element).hasClass("mandatory")) {
+    if (jqElement.hasClass("mandatory")) {
         $("#form_FieldMandatory").attr("checked", true);
     } else {
         $("#form_FieldMandatory").attr("checked", false);
     }
 
-    if ($(element).hasClass("nobreak")) {
+    if (jqElement.hasClass("nobreak")) {
         $("#form_NoBreak").attr("checked", true);
     } else {
         $("#form_NoBreak").attr("checked", false);
@@ -155,10 +157,11 @@ function formEditText(element) {
     formEditedElement = element;
 
     // Move edit form to current position
-    $(element).after(formTextEditorHTML);
+    var jqElement = $(element);
+    jqElement.after(formTextEditorHTML);
 
     // Hide element being edited
-    $(element).hide();
+    jqElement.hide();
 
     $("#form_TextChildNo").val($("#form_FormElements .formText").index(element));
 
@@ -621,9 +624,9 @@ function FormElementType(name, type) {
 
     this.onActive = function(isSelected) {
     };
-};
+}
 
-var formElementTypes = new Array();
+var formElementTypes = [];
 
 // Text type
 var formElementText = new FormElementType(properties.formeditor.labels.typeText, "text");
@@ -648,7 +651,8 @@ formElementText.onEdit = function(element) {
     $("#form_RegEx").val(regex);
 
     var clz = $input.attr("class");
-    $("#form_Validator").val(clz);
+    var form_Validator = $("#form_Validator");
+    form_Validator.val(clz);
 
     var id = $input.attr('id');
     if ('RecipientEmail' == id) {
@@ -657,7 +661,7 @@ formElementText.onEdit = function(element) {
         $("#form_IsRecipientEmail").removeAttr('checked');
     }
 
-    $("#form_Validator").change(function() {
+    form_Validator.change(function() {
         $(".form_validatorparams_regularexpression").hide();
         $(".form_validatorparams_email").hide();
         var formParamsType = ".form_validatorparams_" + $(this).val();
@@ -915,9 +919,9 @@ formElementHidden.onSave = function (fieldName) {
 formElementHidden.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_hidden").show();
-        $("#form_FieldReadonly").attr("disabled", true);;
-        $("#form_FieldMandatory").attr("disabled", true);;
-        $("#form_NoBreak").attr("disabled", true);;
+        $("#form_FieldReadonly").attr("disabled", true);
+        $("#form_FieldMandatory").attr("disabled", true);
+        $("#form_NoBreak").attr("disabled", true);
     } else {
         $(".form_params_hidden").hide();
         $("#form_FieldReadonly").removeAttr("disabled");
