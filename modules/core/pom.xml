@@ -29,7 +29,7 @@
     <name>OpenAksess core</name>
 
     <properties>
-        <wro.version>1.6.1</wro.version>
+        <wro.version>1.6.2</wro.version>
     </properties>
 
     <dependencies>
