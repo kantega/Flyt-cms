@@ -33,7 +33,7 @@ import java.util.Map;
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static String SOURCE = "SiteCache";
     private List sites = null;
-    private HashMap hostnames = null;
+    private Map<String, Site> hostnames = null;
     private TemplateConfigurationCache templateConfigurationCache;
     private HostnamesDao hostnamesDao;
 
@@ -41,21 +41,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
         if (hostnames == null) {
             reloadCache();
         }
-        Site s = (Site)hostnames.get(hostname);
-        if (s == null) {
-            if (sites.size() > 0) {
-                s = (Site)sites.get(0);
-            } else {
-                // Returnerer en tom default site dersom ikke definert noe enda
-                s = new Site();
-                s.setId(1);
-                s.setName("No name");
-                s.setAlias("/");
-                return s;
-            }
-        }
-
-        return s;
+        return hostnames.get(hostname);
     }
 
     public Site getSiteById(int siteId) throws SystemException {
@@ -108,16 +94,15 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             c = Aksess.getConfiguration();
             // Get hostnames from database and store in hashmap
 
-            hostnames = new HashMap();
+            hostnames = new HashMap<String, Site>();
             for (int s = 0; s < sites.size(); s++) {
                 Site site = (Site)sites.get(s);
                 // Get hostnames from database
-                List siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
+                List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
                 site.setHostnames(siteHostnames);
 
                 // Insert into hashmap
-                for (int h = 0; h < siteHostnames.size(); h++) {
-                    String host = (String)siteHostnames.get(h);
+                for (String host : siteHostnames) {
                     hostnames.put(host, site);
                 }
 

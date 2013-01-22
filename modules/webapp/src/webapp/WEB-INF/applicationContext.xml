@@ -30,7 +30,6 @@
                    rejection-policy="CALLER_RUNS"/>
     <task:annotation-driven executor="executorWithCallerRunsPolicy" mode="proxy" />
     <aop:aspectj-autoproxy/>
-    <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
 
     <import resource="application-jobs.xml"/>
     <import resource="application-datasources.xml"/>
@@ -60,7 +59,11 @@
         <property name="cacheManager" ref="ehcacheCacheManager"/>
     </bean>
 
-    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory">
+    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory" destroy-method="destroy">
         <property name="configLocation" value="classpath:no/kantega/publishing/cache/ehcache.xml"/>
     </bean>
+
+    <beans profile="useCaching">
+        <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
+    </beans>
 </beans>

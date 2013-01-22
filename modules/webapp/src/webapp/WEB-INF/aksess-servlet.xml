@@ -276,7 +276,9 @@
     </bean>
 
     <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
-        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaRequestHandlerHelper">
+            <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
+        </property>
     </bean>
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>

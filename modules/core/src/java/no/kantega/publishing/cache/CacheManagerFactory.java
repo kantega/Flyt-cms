@@ -11,7 +11,7 @@ import java.lang.management.ManagementFactory;
 
 public class CacheManagerFactory extends EhCacheManagerFactoryBean {
 
-    public enum CacheNames {ContentCache, ContentListCache, SiteMapCache, XmlCache}
+    public enum CacheNames {ContentCache, ContentListCache, SiteMapCache, XmlCache, FacetLabelCache, ContentUrlCache, ContentIdentifierCache, ImageCache, UserCache}
     private Logger log = Logger.getLogger(getClass());
 
     @Override

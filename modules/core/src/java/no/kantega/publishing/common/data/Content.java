@@ -361,6 +361,13 @@ public class Content extends BaseObject {
         return getUrl(isAdminMode);
     }
 
+    /**
+     * Aliases are user specified URLs
+     * eg http://www.site.com/news/
+
+     * Alias always starts and ends with /
+     * Alias / is used for frontpage
+     */
     public String getAlias() {
         return alias;
     }

@@ -7,7 +7,7 @@ import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 
 /**
- *
+ * ContentEventListener that flushes caches on events.
  */
 public class CacheExpirator extends ContentEventListenerAdapter {
 

@@ -433,6 +433,9 @@ public final class AttributeTagHelper {
                     site = siteCache.getSiteById(content.getAssociation().getSiteId());
                 } else {
                     site = siteCache.getSiteByHostname(pageContext.getRequest().getServerName());
+                    if(site == null){
+                        site = siteCache.getSiteById(1);
+                    }
                 }
 
                 url = TemplateMacroHelper.replaceMacros(url, site, deviceCategoryDetector.getUserAgentDeviceCategory(request), language);

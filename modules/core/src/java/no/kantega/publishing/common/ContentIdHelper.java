@@ -20,15 +20,16 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.cache.ContentIdentifierCache;
 import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -297,14 +298,36 @@ public class ContentIdHelper {
                         url = site.getAlias();
                     }
                 }
+            } else if ("/".equalsIgnoreCase(url)) {
+                siteId = 1;
+                url = SiteCache.getSiteById(1).getAlias();
+            } else {
+                Site siteByAlias = SiteCache.getSiteByAlias(url);
+                if(siteByAlias != null){
+                    siteId = siteByAlias.getId();
+                }
             }
 
-            ContentIdentifier cid = ContentIdentifierCache.getContentIdentifierByAlias(siteId, url);
-            if (cid == null) {
-                throw new ContentNotFoundException(url, SOURCE);
-            }
-            return cid;
+            return getContentIdentifier(siteId, url);
         }
+    }
+
+    private static ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
+        ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
+        ContentIdentifier cid = null;
+        if (siteId > 0) {
+            cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(siteId, url);
+        } else {
+            // we are likely in development, where no sites are configured.
+            List<ContentIdentifier> contentIdentifiersByAlias = contentIdentifierDao.getContentIdentifiersByAlias(url);
+            if(!contentIdentifiersByAlias.isEmpty()){
+                cid = contentIdentifiersByAlias.get(0);
+            }
+        }
+        if (cid == null) {
+            throw new ContentNotFoundException(url, SOURCE);
+        }
+        return cid;
     }
 
 
@@ -445,7 +468,7 @@ public class ContentIdHelper {
             if (site != null) {
                 siteId = site.getId();
             } else {
-                siteId = 1;
+                siteId = -1;
             }
         }
 

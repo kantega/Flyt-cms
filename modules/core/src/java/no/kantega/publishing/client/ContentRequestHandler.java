@@ -41,7 +41,7 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
+import java.io.IOException;
 import java.util.List;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -56,7 +56,7 @@ public class ContentRequestHandler extends AbstractController {
     private ContentRequestDispatcher contentRequestDispatcher;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        long start = new Date().getTime();
+        long start = System.currentTimeMillis();
 
         boolean isAdminMode = HttpHelper.isAdminMode(request);
 
@@ -65,8 +65,6 @@ public class ContentRequestHandler extends AbstractController {
 
         try {
             ContentManagementService cms = new ContentManagementService(request);
-
-            Site currentSite = siteCache.getSiteByHostname(request.getServerName());
 
             ContentIdentifier cid;
             String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
@@ -98,32 +96,14 @@ public class ContentRequestHandler extends AbstractController {
                     if(!isAdminMode && (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE && content.getVisibilityStatus() != ContentVisibilityStatus.ARCHIVED)) {
                         throw new ContentNotFoundException("", SOURCE);
                     }
-                    if(!isAdminMode && content.getAssociation().getSiteId() != currentSite.getId()) {
-                        // Send user to correct domain if page is from other site
-                        String url = content.getUrl();
-                        Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
-                        List hostnames = site.getHostnames();
-                        if (hostnames.size() > 0) {
-                            String hostname = (String)hostnames.get(0);
-                            int port = request.getServerPort();
-                            String scheme = site.getScheme();
-                            if (scheme == null) {
-                                scheme = request.getScheme();
-                            }
-                            if ("GET".equalsIgnoreCase(request.getMethod())) {
-                                url = createRedirectUrlWithIncomingParameters(request, url);
-                            }
-                            url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
-                            response.sendRedirect(url);
-                            return null;
-                        }
+                    if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
+                        return null;
                     }
                     if (isAdminMode) {
                         response.setDateHeader("Expires", 0);
                     }
                     contentRequestDispatcher.dispatchContentRequest(content, getServletContext(), request, response);
-                    long end = new Date().getTime();
-                    Log.info(this.getClass().getName(), "Tidsforbruk:" + (end- start) + " ms (" + content.getTitle() + ", id: " + content.getId() + ", template:" + content.getDisplayTemplateId() + ")", null, null);
+                    logTimeSpent(start, content);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     throw new ContentNotFoundException(SOURCE, "");
@@ -159,6 +139,45 @@ public class ContentRequestHandler extends AbstractController {
             throw new ServletException(e);
         }
         return null;
+    }
+
+    private void logTimeSpent(long start, Content content) {
+        long end = System.currentTimeMillis();
+        StringBuilder message = new StringBuilder("Tidsforbruk: ");
+        message.append((end - start));
+        message.append(" ms (");
+        message.append(content.getTitle());
+        message.append(", id: ");
+        message.append(content.getId());
+        message.append(", template:");
+        message.append(content.getDisplayTemplateId());
+        message.append(")");
+        Log.info(SOURCE, message.toString());
+    }
+
+    private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {
+        Site currentSite = siteCache.getSiteByHostname(request.getServerName());
+        if(currentSite != null && !adminMode && content.getAssociation().getSiteId() != currentSite.getId()) {
+            // Send user to correct domain if page is from other site
+            String url = content.getUrl();
+            Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
+            List hostnames = site.getHostnames();
+            if (hostnames.size() > 0) {
+                String hostname = (String)hostnames.get(0);
+                int port = request.getServerPort();
+                String scheme = site.getScheme();
+                if (scheme == null) {
+                    scheme = request.getScheme();
+                }
+                if ("GET".equalsIgnoreCase(request.getMethod())) {
+                    url = createRedirectUrlWithIncomingParameters(request, url);
+                }
+                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
+                response.sendRedirect(url);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Autowired

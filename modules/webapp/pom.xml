@@ -112,7 +112,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjtools</artifactId>
-            <version>1.6.12</version>
+            <version>${aspectj.version}</version>
             <scope>runtime</scope>
         </dependency>
 

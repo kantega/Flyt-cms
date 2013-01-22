@@ -16,8 +16,8 @@
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <bean id="commonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
     <bean id="filterMultipartResolver" class="no.kantega.commons.client.util.MultipartResolverFactory">
@@ -25,11 +25,16 @@
         <property name="aksessConfiguration" ref="aksessConfiguration"/>
     </bean>
 
-    <bean id="aksessContentURLCache" class="no.kantega.publishing.common.cache.ContentUrlCache"/>
+    <bean id="aksessContentURLCache" class="no.kantega.publishing.common.util.PrettyURLEncoderUtil"/>
 
     <bean class="no.kantega.publishing.client.filter.UrlContentRewriter">
-        <property name="contentUrlCache" ref="aksessContentURLCache"/>
+        <property name="prettyURLEncoderUtil" ref="aksessContentURLCache"/>
+        <property name="contentIdentifierDao" ref="contentIdentifierDao"/>
     </bean>
 
     <bean id="crossSiteRequestForgeryContentRewriter" class="no.kantega.publishing.client.filter.CrossSiteRequestForgeryContentRewriter"/>
+
+    <beans profile="useCaching">
+        <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
+    </beans>
 </beans>

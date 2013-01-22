@@ -29,13 +29,17 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 /**
- *
+ * Controller for viewing information about the application.
  */
 public class ViewSystemInformationAction extends AbstractController {
     private String view;
@@ -49,11 +53,11 @@ public class ViewSystemInformationAction extends AbstractController {
             conf.setProperties(loader.loadConfiguration());
         }
 
-
         try {
             Properties versionInfo = new Properties();
             versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
             model.put("aksessRevision", versionInfo.get("revision"));
+            model.put("aksessTimestamp", parseDate((String) versionInfo.get("date")));
         } catch (IOException e) {
             Log.info(this.getClass().getName(), "aksess-version.properties not found", null, null);
         }
@@ -62,6 +66,7 @@ public class ViewSystemInformationAction extends AbstractController {
             webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
             model.put("webappRevision", webappVersionInfo.get("revision"));
             model.put("webappVersion", webappVersionInfo.get("version"));
+            model.put("webappTimestamp", parseDate((String) webappVersionInfo.get("date")));
         } catch (IOException e) {
             Log.info(this.getClass().getName(), "aksess-webapp-version.properties not found", null, null);
         }
@@ -94,6 +99,23 @@ public class ViewSystemInformationAction extends AbstractController {
 
         
         return new ModelAndView(view, model);
+    }
+
+    private Date parseDate(String date) {
+        DateFormat svnTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        Date parsedDate = null;
+        try {
+            parsedDate = svnTimestampFormat.parse(date);
+        } catch (ParseException e) {
+            DateFormat timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+            try {
+                parsedDate = timestampFormat.parse(date);
+            } catch (ParseException e1) {
+                Log.error("ViewSystemInformationAction", e1);
+            }
+        }
+
+        return parsedDate;
     }
 
     public void setView(String view) {

@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
@@ -1476,49 +1474,6 @@ public class ContentAO {
                     c.close();
                 } catch (SQLException e) {
                     // Could not close connection, probably closed already
-                }
-            }
-        }
-    }
-
-
-    public static Map<String, Collection<ContentIdentifier>> getContentIdentifiersMappedByAlias() throws SystemException {
-        Multimap<String, ContentIdentifier> contentIdentifiersMappedByAlias = ArrayListMultimap.create();
-        Connection c = null;
-
-        try {
-
-            c = dbConnectionFactory.getConnection();
-            String driver = dbConnectionFactory.getDriverName();
-
-            String where = "";
-            if (driver.contains("oracle")) {
-                where = " content.Alias is not null and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
-            } else {
-                where = " content.Alias is not null and content.Alias <> '' and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
-            }
-
-            PreparedStatement p = c.prepareStatement("select associations.AssociationId, associations.SiteId, content.ContentId, content.Alias from associations, content where " + where + " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)");
-            ResultSet rs = p.executeQuery();
-            while(rs.next()) {
-                int associationId = rs.getInt("AssociationId");
-                int siteId = rs.getInt("SiteId");
-                int contentId = rs.getInt("ContentId");
-                String alias = rs.getString("alias");
-
-                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
-                cid.setContentId(contentId);
-                cid.setSiteId(siteId);
-                contentIdentifiersMappedByAlias.put(alias, cid);
-            }
-            return contentIdentifiersMappedByAlias.asMap();
-        } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
                 }
             }
         }

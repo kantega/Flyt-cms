@@ -40,7 +40,7 @@
     <cache name="XmlCache"
            maxElementsInMemory="10"
            eternal="false"
-           overflowToDisk="false"
+           overflowToDisk="true"
            timeToIdleSeconds="300"
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
@@ -50,6 +50,42 @@
            maxElementsInMemory="30"
            eternal="false"
            overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true"/>
+
+    <cache name="ContentUrlCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true"/>
+
+    <cache name="ContentIdentifierCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true"/>
+
+    <cache name="UserCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true"/>
+
+    <cache name="ImageCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="true"
            timeToIdleSeconds="600"
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"

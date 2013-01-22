@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.client;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.NeedsRefreshException;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
@@ -27,22 +25,18 @@ import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.multimedia.ImageEditor;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class MultimediaRequestHandler implements Controller {
     private static String SOURCE = "MultimediaRequestHandler";
 
-    public static Cache thumbnailCache = new Cache(true, true, true, false, null, 1000);
-
-    private ImageEditor imageEditor;
+    private MultimediaRequestHandlerHelper helper;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -66,6 +60,7 @@ public class MultimediaRequestHandler implements Controller {
                     }
 
                 } catch (Exception e) {
+                    Log.error(SOURCE, e);
                 }
             }
 
@@ -94,10 +89,8 @@ public class MultimediaRequestHandler implements Controller {
 
             ImageResizeParameters resizeParams = new ImageResizeParameters(param);
 
-
-            String key = mmId + "-" + resizeParams + "-"  + mm.getLastModified().getTime();
+            String key = getCacheKey(mmId, mm, resizeParams);
             if (HttpHelper.isInClientCache(request, response, key, mm.getLastModified())) {
-                // Exists in browser cache
                 response.setContentType(mimetype);
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
@@ -109,37 +102,12 @@ public class MultimediaRequestHandler implements Controller {
             int expire = config.getInt("multimedia.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
 
-            if ((mimetype.contains("image") && !mimetype.contains("svg")) && !resizeParams.skipResize()) {
-                byte[] bytes = null;
-
-                try {
-                    bytes = (byte[]) thumbnailCache.getFromCache(key);
-                } catch (NeedsRefreshException e) {
-                    try {
-                        Log.debug(SOURCE, "Resizing image (" + mm.getName() + ", id:" + mm.getId() + ")", null, null);
-
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        mediaService.streamMultimediaData(mmId, new InputStreamHandler(bos));
-                        mm.setData(bos.toByteArray());
-
-                        // shrink
-                        mm = imageEditor.resizeMultimedia(mm, resizeParams);
-
-                        bytes = mm.getData();
-                        thumbnailCache.putInCache(key, bytes, new String[]{Integer.toString(mmId)});
-
-                    } catch (IOException ie) {
-                        // User has cancelled download
-                        thumbnailCache.cancelUpdate(key);
-                    } catch (Throwable t) {
-                        thumbnailCache.cancelUpdate(key);
-                        Log.error(SOURCE, t, null, null);
-                    }
-                }
+            if (shouldResize(mimetype, resizeParams)) {
+                byte[] bytes = helper.getResizedMultimediaBytes(key, mm, resizeParams, mediaService);
 
                 response.setContentType(mm.getMimeType().getType());
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=" + "\"thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension() + "\"");
-                response.addHeader("Content-Length", "" + bytes.length);
+                response.addHeader("Content-Length", String.valueOf(bytes.length));
 
                 out.write(bytes);
 
@@ -147,7 +115,7 @@ public class MultimediaRequestHandler implements Controller {
                 // Send directly
                 response.setContentType(mimetype);
                 if (mm.getSize() != 0) {
-                    response.addHeader("Content-Length", "" + mm.getSize());
+                    response.addHeader("Content-Length", String.valueOf(mm.getSize()));
                 }
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 mediaService.streamMultimediaData(mmId, new InputStreamHandler(out));
@@ -156,13 +124,26 @@ public class MultimediaRequestHandler implements Controller {
             out.flush();
             out.close();
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            Log.error(SOURCE, e);
         }
         return null;
     }
 
+    private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
+        StringBuilder keyBuilder = new StringBuilder(mmId);
+        keyBuilder.append("-");
+        keyBuilder.append(resizeParams.toString());
+        keyBuilder.append("-");
+        keyBuilder.append(mm.getLastModified().getTime());
+        return keyBuilder.toString();
+    }
 
-    public void setImageEditor(ImageEditor imageEditor) {
-        this.imageEditor = imageEditor;
+    private boolean shouldResize(String mimetype, ImageResizeParameters resizeParams) {
+        return (mimetype.contains("image") && !mimetype.contains("svg")) && !resizeParams.skipResize();
+    }
+
+    @Required
+    public void setMultimediaRequestHandlerHelper(MultimediaRequestHandlerHelper helper){
+        this.helper = helper;
     }
 }

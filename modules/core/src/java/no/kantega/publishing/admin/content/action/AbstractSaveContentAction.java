@@ -262,14 +262,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             content.setAlias(alias);
             if (alias.length() > 0) {
                 // If alias contains . or = should not be modififed for historic reasons
-                if (alias.indexOf(".") == -1 && alias.indexOf("=") == -1) {
-                    /*
-                    * Aliases are user specified URLs
-                    * eg http://www.site.com/news/
-
-                    * Alias always starts and ends with /
-                    * Alias / is used for frontpage
-                    */
+                if (!alias.contains(".") && !alias.contains("=")) {
                     if (alias.charAt(0) != '/') {
                         alias = "/" + alias;
                     }

@@ -25,7 +25,7 @@ import java.util.List;
 public interface SiteCache {
     /**
      * @param hostname to get site for
-     * @return the particular site if it exists, otherwise an empty default site.
+     * @return the particular site if it exists, otherwise null.
      */
     Site getSiteByHostname(String hostname) ;
 

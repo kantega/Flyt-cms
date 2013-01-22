@@ -33,7 +33,7 @@ public class SlaveCacheExpiratorJob {
 
     public void execute() {
         if (Aksess.getServerType() != ServerType.SLAVE) {
-            log.error("This job should not run on server type " +Aksess.getServerType());
+            log.error("This job should not run on server type " + Aksess.getServerType());
             return;
         }
         try {

@@ -718,7 +718,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getContentListForApproval() throws SystemException {
+    public List<Content> getContentListForApproval() throws SystemException {
         if (securitySession == null) {
             return null;
         }

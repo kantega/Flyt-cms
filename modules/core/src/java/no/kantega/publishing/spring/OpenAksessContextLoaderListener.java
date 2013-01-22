@@ -190,7 +190,10 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
             final Configuration configuration = new Configuration(properties);
 
-            Configuration.setDefaultConfiguration(configuration);
+
+            if(configuration.getBoolean("caching.enabled", true)){
+                wac.getEnvironment().setActiveProfiles("useCaching");
+            }
 
             // Set and load configuration on these classes since they are not DI-based (hackish..)
             Aksess.setConfiguration(configuration);

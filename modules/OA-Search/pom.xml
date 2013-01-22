@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>1.6.12</version>
+            <version>${aspectj.version}</version>
         </dependency>
 
         <dependency>

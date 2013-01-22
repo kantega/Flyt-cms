@@ -14,7 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * @see MultimediaDao
  */
-public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements MultimediaDao {
+public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
     private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages, " + DB_TABLE + ".ContentId";
 
@@ -40,22 +40,22 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
     public void deleteMultimedia(int id) throws ObjectInUseException {
         // Check if there are any children
-        int noChildren = getSimpleJdbcTemplate().queryForInt("select COUNT(id) from multimedia where ParentId = ?", id);
+        int noChildren = getJdbcTemplate().queryForInt("select COUNT(id) from multimedia where ParentId = ?", id);
         if (noChildren > 0) {
             throw new ObjectInUseException(this.getClass().getSimpleName(), "");
         }
 
         // Get parent id
-        int parentId = getSimpleJdbcTemplate().queryForInt("select parentId from multimedia where Id = ?", id);
+        int parentId = getJdbcTemplate().queryForInt("select parentId from multimedia where Id = ?", id);
 
-        getSimpleJdbcTemplate().update("delete from multimedia where Id = ?", id);
+        getJdbcTemplate().update("delete from multimedia where Id = ?", id);
 
         if (parentId > 0) {
             updateNoSubFoldersAndFiles(parentId);
         }
 
 
-        getSimpleJdbcTemplate().update("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?", id, ObjectType.MULTIMEDIA);
+        getJdbcTemplate().update("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?", id, ObjectType.MULTIMEDIA);
 
         deleteExistingExifData(id);
 
@@ -65,7 +65,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
 
     public Multimedia getMultimedia(int id) {
-        List<Multimedia> media = getSimpleJdbcTemplate().query("select " + DB_COLS + " from multimedia where Id = ?", rowMapper, id);
+        List<Multimedia> media = getJdbcTemplate().query("select " + DB_COLS + " from multimedia where Id = ?", rowMapper, id);
         if (media.size() > 0) {
             return updateMultimediaWithExifData(media).get(0);
         }
@@ -75,7 +75,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
 
     public Multimedia getMultimediaByParentIdAndName(int parentId, String name) {
-        List<Multimedia> media = getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND Name = ?", rowMapper, parentId, name);
+        List<Multimedia> media = getJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND Name = ?", rowMapper, parentId, name);
         if (media.size() > 0) {
             return updateMultimediaWithExifData(media).get(0);
         }
@@ -88,7 +88,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             return null;
         }
 
-        List<Multimedia> media = getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ProfileImageUserId = ?", rowMapper, userId);
+        List<Multimedia> media = getJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ProfileImageUserId = ?", rowMapper, userId);
         if (media.size() > 0) {
             return updateMultimediaWithExifData(media).get(0);
         }
@@ -102,7 +102,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
         }
 
         String query = getQueryForExifData(multimedia);
-        getSimpleJdbcTemplate().query(query, new ExifMetadataToMultimediaRowMapper(multimedia));
+        getJdbcTemplate().query(query, new ExifMetadataToMultimediaRowMapper(multimedia));
 
         return multimedia;
     }
@@ -143,16 +143,16 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     }
 
     public List<Multimedia> getMultimediaList(int parentId) {
-        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL AND ContentId < 0 ORDER BY Type, Name", rowMapper, parentId));
+        return updateMultimediaWithExifData(getJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ParentId = ? AND ProfileImageUserId IS NULL AND ContentId < 0 ORDER BY Type, Name", rowMapper, parentId));
     }
 
     public List<Multimedia> getMultimediaWithContentId(int contentId) {
-        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ContentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, contentId));
+        return updateMultimediaWithExifData(getJdbcTemplate().query("SELECT " + DB_COLS + " FROM multimedia WHERE ContentId = ? AND ProfileImageUserId IS NULL ORDER BY Type, Name", rowMapper, contentId));
     }
 
 
     public int getMultimediaCount() {
-        return getSimpleJdbcTemplate().queryForInt("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?", MultimediaType.MEDIA.getTypeAsInt());
+        return getJdbcTemplate().queryForInt("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?", MultimediaType.MEDIA.getTypeAsInt());
     }
 
     public List<Multimedia> searchMultimedia(String phrase, int site, int parentId) {
@@ -172,9 +172,6 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 phrase = phrase.toLowerCase();
                 where = "LOWER(Name) like ? OR LOWER(Author) like ? OR LOWER(Description) like ? OR LOWER(Filename) like ?";
             }
-            params.add(phrase + "%");
-            params.add(phrase + "%");
-            params.add(phrase + "%");
             params.add(phrase + "%");
         }
 
@@ -219,15 +216,15 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
         query.append("ORDER BY Name");
 
-        return updateMultimediaWithExifData(getSimpleJdbcTemplate().query(query.toString(), rowMapper, params.toArray()));
+        return updateMultimediaWithExifData(getJdbcTemplate().query(query.toString(), rowMapper, params.toArray()));
     }
 
     public void moveMultimedia(int multimediaId, int newParentId) {
         // Get old parent id
-        int oldParentId = getSimpleJdbcTemplate().queryForInt("SELECT parentId FROM multimedia WHERE Id = ? ", multimediaId);
+        int oldParentId = getJdbcTemplate().queryForInt("SELECT parentId FROM multimedia WHERE Id = ? ", multimediaId);
 
         // Set new parent id
-        getSimpleJdbcTemplate().update("UPDATE multimedia SET ParentId = ? WHERE Id = ?", newParentId, multimediaId);
+        getJdbcTemplate().update("UPDATE multimedia SET ParentId = ? WHERE Id = ?", newParentId, multimediaId);
 
         // Update count in old and new folder
         if (oldParentId > 0) {
@@ -278,14 +275,12 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 PreparedStatement st;
                 byte[] data = multimedia.getData();
                 if (multimedia.isNew()) {
-                    // Ny
                     if (!hasData) {
                         st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?,?)", Statement.RETURN_GENERATED_KEYS);
                     } else {
                         st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?)", Statement.RETURN_GENERATED_KEYS);
                     }
                 } else {
-                    // Oppdater
                     if (!hasData) {
                         st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ? where Id = ?");
                     } else {
@@ -324,13 +319,9 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
                 st.setInt(p++, multimedia.getContentId());
 
                 if (!multimedia.isNew()) {
-                    st.setInt(p++, multimedia.getId());
+                    st.setInt(p, multimedia.getId());
                 } else {
-                    st.setString(p++, multimedia.getProfileImageUserId());
-                }
-
-                if (data != null) {
-                    data = null;
+                    st.setString(p, multimedia.getProfileImageUserId());
                 }
 
                 return st;
@@ -339,7 +330,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
     }
 
     private void deleteExistingExifData(int multimediaId) {
-        getSimpleJdbcTemplate().update("DELETE FROM multimediaexifdata WHERE MultimediaId = ?", multimediaId);
+        getJdbcTemplate().update("DELETE FROM multimediaexifdata WHERE MultimediaId = ?", multimediaId);
     }
 
     private void saveExifData(Multimedia multimedia) {
@@ -347,7 +338,7 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
             String values[] = metadata.getValues();
             if (values != null) {
                 for (String value : values) {
-                    getSimpleJdbcTemplate().update("INSERT INTO multimediaexifdata (MultimediaId, Directory, ValueKey, Value) VALUES (?,?,?,?)", multimedia.getId(), metadata.getDirectory(), metadata.getKey(), value);
+                    getJdbcTemplate().update("INSERT INTO multimediaexifdata (MultimediaId, Directory, ValueKey, Value) VALUES (?,?,?,?)", multimedia.getId(), metadata.getDirectory(), metadata.getKey(), value);
                 }
             }
         }
@@ -372,14 +363,14 @@ public class JdbcMultimediaDao extends SimpleJdbcDaoSupport implements Multimedi
 
 
     private void updateNoSubFoldersAndFiles(int parentId) {
-        int noFiles = getSimpleJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.MEDIA.getTypeAsInt());
-        int noSubFolders = getSimpleJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.FOLDER.getTypeAsInt());
-        getSimpleJdbcTemplate().update("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?", noFiles, noSubFolders, parentId);
+        int noFiles = getJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.MEDIA.getTypeAsInt());
+        int noSubFolders = getJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.FOLDER.getTypeAsInt());
+        getJdbcTemplate().update("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?", noFiles, noSubFolders, parentId);
     }
 
     private void updateNumberOfUsages(int multimediaId) {
-        int noUsages = getSimpleJdbcTemplate().queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
-        getSimpleJdbcTemplate().update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
+        int noUsages = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
+        getJdbcTemplate().update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
     }
 
     @Required

@@ -5,6 +5,7 @@
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -32,7 +33,18 @@
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.version"/></div>
                 <div class="content">
-                        ${aksessVersion} / ${webappVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
+                    <div class="formElement">
+                        <div class="content">
+                            <div class="row">
+                                OpenAksess: ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${aksessRevision},
+                                                    <fmt:formatDate value="${aksessTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
+                            </div>
+                            <div class="row">
+                                Webapp: ${webappVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${webappRevision},
+                                            <fmt:formatDate value="${webappTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
