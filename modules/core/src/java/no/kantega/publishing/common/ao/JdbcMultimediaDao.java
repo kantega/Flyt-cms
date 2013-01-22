@@ -173,6 +173,9 @@ public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
                 where = "LOWER(Name) like ? OR LOWER(Author) like ? OR LOWER(Description) like ? OR LOWER(Filename) like ?";
             }
             params.add(phrase + "%");
+            params.add(phrase + "%");
+            params.add(phrase + "%");
+            params.add(phrase + "%");
         }
 
         String join = "";

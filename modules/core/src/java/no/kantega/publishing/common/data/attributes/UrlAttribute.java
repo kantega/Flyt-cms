@@ -18,7 +18,6 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.commons.util.StringHelper;
 
 /**
  *
@@ -32,7 +31,7 @@ public class UrlAttribute extends Attribute {
         }
 
         if (AttributeProperty.HTML.equalsIgnoreCase(property) || AttributeProperty.URL.equalsIgnoreCase(property)) {
-            if (value.indexOf(":") == -1 || value.startsWith("/")) {
+            if (!value.contains(":") || value.startsWith("/")) {
                 return Aksess.getContextPath() + value;
             }
         }
