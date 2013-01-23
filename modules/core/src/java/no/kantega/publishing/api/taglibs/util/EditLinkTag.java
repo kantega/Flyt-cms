@@ -83,13 +83,12 @@ public class EditLinkTag  extends BodyTagSupport {
                 if(body != null) {
                     out.print(body);
                 }
-                out.print("</a>\n");
+                out.print("</a>");
             }
         } catch (ContentNotFoundException e) {
             // Gjør ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
-            System.err.println(e);
-            Log.error(SOURCE, e, null, null);
+            Log.error(SOURCE, e);
             throw new JspTagException(SOURCE + ":" + e.getMessage());
         } finally {
             bodyContent.clearBody();
