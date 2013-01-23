@@ -418,12 +418,11 @@ public class ContentManagementService {
      * @throws SystemException
      * @throws NotAuthorizedException
      */
-    public Content copyContent(Content sourceContent, Association target, AssociationCategory category) throws SystemException, NotAuthorizedException {
-
-
+    public Content copyContent(Content sourceContent, Association target, AssociationCategory category, boolean copyChildren) throws SystemException, NotAuthorizedException {
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
 
         Content destParent = ContentAO.getContent(parentCid, true);
+        ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
 
         // Modifiserer sourcecontent, nullstill id'er
         sourceContent.setId(-1);
@@ -462,7 +461,17 @@ public class ContentManagementService {
         associations.add(association);
         sourceContent.setAssociations(associations);
 
-        return checkInContent(sourceContent, ContentStatus.PUBLISHED);
+        Content content = checkInContent(sourceContent, sourceContent.getStatus());
+        if(copyChildren){
+            ContentQuery query = new ContentQuery();
+            query.setAssociatedId(origialContentIdentifier);
+
+            for (Content child : getContentList(query, -1, null)) {
+                Association childAssociation = content.getAssociation();
+                copyContent(child, childAssociation, childAssociation.getCategory(), true);
+            }
+        }
+        return content;
     }
 
     /**
@@ -1136,7 +1145,7 @@ public class ContentManagementService {
      * @return - Liste med alias (String)
      * @throws SystemException
      */
-    public List findDuplicateAliases(Association parent) throws SystemException {
+    public List<String> findDuplicateAliases(Association parent) throws SystemException {
         return AssociationAO.findDuplicateAliases(parent);
     }
 
