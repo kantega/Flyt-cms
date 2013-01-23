@@ -22,7 +22,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.RegExp;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.ContentIdentifierDaoJdbcImpl;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.spring.RootContext;
@@ -44,7 +44,7 @@ public class ValidatorHelper {
         }       
 
         try {
-            ContentIdentifierDaoJdbcImpl contentIdentifierDaoJdbcImpl = RootContext.getInstance().getBean(ContentIdentifierDaoJdbcImpl.class);
+            ContentIdentifierDao contentIdentifierDaoJdbcImpl = RootContext.getInstance().getBean(ContentIdentifierDao.class);
             List<Association> associations = content.getAssociations();
             for (Association association : associations) {
                 ContentIdentifier cid = contentIdentifierDaoJdbcImpl.getContentIdentifierBySiteIdAndAlias(association.getSiteId(), alias);

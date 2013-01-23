@@ -1,5 +1,5 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="ehcache.xsd">
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
 
     <defaultCache
             maxElementsInMemory="10000"
@@ -84,10 +84,13 @@
 
     <cache name="ImageCache"
            maxElementsInMemory="100"
-           eternal="false"
+           eternal="true"
            overflowToDisk="true"
            timeToIdleSeconds="600"
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
-           statistics="true"/>
+           statistics="true" >
+        <persistence strategy="localTempSwap"/>
+    </cache>
+
 </ehcache>
