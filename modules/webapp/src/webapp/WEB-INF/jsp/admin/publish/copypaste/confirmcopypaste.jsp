@@ -96,9 +96,9 @@
 
         </c:choose>
         <%
-            List allowedAssociations = (List)request.getAttribute("allowedAssociations");
+            List<AssociationCategory> allowedAssociations = (List<AssociationCategory>)request.getAttribute("allowedAssociations");
             if (allowedAssociations.size() == 1) {
-                AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(0);
+                AssociationCategory tmp = allowedAssociations.get(0);
                 out.write("<input type=\"hidden\" name=\"associationCategory\" value=\"" + tmp.getId() + "\">");
             } else {
         %>
@@ -107,13 +107,12 @@
             <%
                 Content selectedContent = (Content)request.getAttribute("selectedContent");
                 int prevAssociationCategory = selectedContent.getAssociation().getCategory().getId();
-                for (int i = 0; i < allowedAssociations.size(); i++) {
-                    AssociationCategory tmp = (AssociationCategory)allowedAssociations.get(i);
-                    out.write("<option value=\"" + tmp.getId() + "\"");
-                    if (tmp.getId() == prevAssociationCategory) {
+                for (AssociationCategory allowedAssociation : allowedAssociations) {
+                    out.write("<option value=\"" + allowedAssociation.getId() + "\"");
+                    if (allowedAssociation.getId() == prevAssociationCategory) {
                         out.write(" checked");
                     }
-                    out.write(">" + tmp.getName() + "</option>");
+                    out.write(">" + allowedAssociation.getName() + "</option>");
                 }
             %>
         </select>
