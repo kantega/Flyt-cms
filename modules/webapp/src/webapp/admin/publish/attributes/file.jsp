@@ -22,7 +22,7 @@
   --%>
 <%
     Attribute attribute = (Attribute)request.getAttribute("attribute");
-    String value = attribute.getValue();                  AP
+    String value = attribute.getValue();
     pageContext.setAttribute("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
     pageContext.setAttribute("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
 %>
