@@ -410,16 +410,18 @@ public class ContentManagementService {
 
 
     /**
-     * Tar et innholdsobjektet og en plassering og lagrer en kopi av objektet på den nye plasseringen
-     * @param sourceContent - Endret objekt
-     * @param target -
-     * @param category -
+     * Create a copy of the source Content and put it under the given target.
+     * @param sourceContent - The Content that is to be copied.
+     * @param target - The association under which the copy is to be placed.
+     * @param category - The AssociationCategory to put the copy into.
+     * @param copyChildren - indicate whether the operation should be recursive, and copy the source's children as well.
      * @return The new copy of sourceContent.
      * @throws SystemException
      * @throws NotAuthorizedException
      */
     public Content copyContent(Content sourceContent, Association target, AssociationCategory category, boolean copyChildren) throws SystemException, NotAuthorizedException {
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
+        Log.info(SOURCE, String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
 
         Content destParent = ContentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
@@ -463,6 +465,7 @@ public class ContentManagementService {
 
         Content content = checkInContent(sourceContent, sourceContent.getStatus());
         if(copyChildren){
+            Log.info(SOURCE, "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(origialContentIdentifier);
 
@@ -516,6 +519,7 @@ public class ContentManagementService {
             n.setAuthor(securitySession.getUser().getName());
             n.setDate(new Date());
             n.setText(note);
+            n.setContentId(cid.getContentId());
 
             ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
