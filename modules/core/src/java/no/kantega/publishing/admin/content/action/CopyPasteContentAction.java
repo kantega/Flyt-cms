@@ -35,6 +35,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Action Controller for performing a paste operation
+ */
 public class CopyPasteContentAction implements Controller {
     private String confirmCopyPasteView;
     private String duplicateAliasesView;
@@ -58,7 +61,7 @@ public class CopyPasteContentAction implements Controller {
         Association parent = aksessService.getAssociationById(newParentId);
         Association source = aksessService.getAssociationById(uniqueId);
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<String, Object>();
 
         if (isCopy) {
             copyContent(aksessService, isTextCopy, pasteShortCut, uniqueId, newParentId, category, parent, source);
@@ -74,7 +77,7 @@ public class CopyPasteContentAction implements Controller {
         }
 
         // Check for duplicate pages
-        List aliases = aksessService.findDuplicateAliases(parent);
+        List<String> aliases = aksessService.findDuplicateAliases(parent);
         if (aliases.size() == 0) {
             model.put("updateNavigator", Boolean.TRUE);
             return new ModelAndView(confirmCopyPasteView, model);
@@ -103,7 +106,7 @@ public class CopyPasteContentAction implements Controller {
             cid.setAssociationId(source.getAssociationId());
             Content content = aksessService.getContent(cid);
 
-            aksessService.copyContent(content, parent, category);
+            aksessService.copyContent(content, parent, category, true);
 
         } else if (pasteShortCut) {
             // Create a shortcut

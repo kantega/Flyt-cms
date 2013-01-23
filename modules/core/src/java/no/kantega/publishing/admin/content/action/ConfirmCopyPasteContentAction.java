@@ -35,15 +35,10 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Oct 1, 2007
- * Time: 11:06:08 AM
+ * Action Controller for confirming a copy paste operation
  */
 public class ConfirmCopyPasteContentAction implements Controller {
     private TemplateConfigurationCache templateConfigurationCache;
@@ -61,7 +56,6 @@ public class ConfirmCopyPasteContentAction implements Controller {
         String url = request.getParameter("newParentUrl");
         ContentIdentifier newParentCid = new ContentIdentifier(request, url);
 
-        boolean pasteShortCut  = param.getBoolean("pasteShortCut");
         boolean forbidMoveCrossSite = false;
 
         Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
@@ -69,8 +63,6 @@ public class ConfirmCopyPasteContentAction implements Controller {
             model.put("error", "aksess.copypaste.emptyclipboard");
             return new ModelAndView(errorView, model);
         }
-
-        boolean isCopy = clipboard.getStatus() == ClipboardStatus.COPIED;
 
         ContentManagementService cms = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
@@ -86,7 +78,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         String parentTitle = newParent.getTitle();
         if (parentTitle.length() > 30) parentTitle = parentTitle.substring(0, 27) + "...";
 
-
+        boolean isCopy = clipboard.getStatus() == ClipboardStatus.COPIED;
         boolean isAuthorized = false;
         // User must be authorized with APPROVE_CONTENT at new location
         if (securitySession.isAuthorized(newParent, Privilege.APPROVE_CONTENT)) {
@@ -101,8 +93,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         }
 
         ContentTemplate template = cms.getContentTemplate(newParent.getContentTemplateId());
-        List allowedAssociations = getAssociationCategories(template);
-
+        List<AssociationCategory> allowedAssociations = getAssociationCategories(template);
 
         if (!isCopy && selectedContent.getAssociation().getSiteId() != newParent.getAssociation().getSiteId()) {
             // Check if template is allowed for pasted page in new site
@@ -127,7 +118,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {
             // Do not allow a page to be pasted onto itself.
             error = "aksess.copypaste.recursion";
-        } else if (allowedAssociations == null || allowedAssociations.size() == 0) {
+        } else if (allowedAssociations.size() == 0) {
             // Not allowed to publish here
             error = "aksess.copypaste.notallowed";
         }
@@ -138,7 +129,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         } else {
 
             model.put("isCopy", isCopy);
-            model.put("pasteShortCut", pasteShortCut);
+            model.put("pasteShortCut", param.getBoolean("pasteShortCut"));
             model.put("uniqueId", selectedPageAssociationId);
             model.put("newParentId", newParentCid.getAssociationId());
             model.put("selectedContent", selectedContent);
@@ -155,12 +146,10 @@ public class ConfirmCopyPasteContentAction implements Controller {
         }
     }
 
-    private List getAssociationCategories(ContentTemplate template) {
+    private List<AssociationCategory> getAssociationCategories(ContentTemplate template) {
         List<AssociationCategory> tmpAllowedAssociations = template.getAssociationCategories();
-        if (tmpAllowedAssociations == null || tmpAllowedAssociations.size() == 0) {
-            return null;
-        } else if (template.getContentType() != ContentType.PAGE) {
-            return null;
+        if (tmpAllowedAssociations.size() == 0 || template.getContentType() != ContentType.PAGE) {
+            return Collections.emptyList();
         }
 
         // Template only holds id of AssociationCategory, get complete AssociationCategory from cache
