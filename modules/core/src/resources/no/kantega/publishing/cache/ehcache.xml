@@ -90,7 +90,6 @@
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            statistics="true" >
-        <persistence strategy="localTempSwap"/>
     </cache>
 
 </ehcache>
