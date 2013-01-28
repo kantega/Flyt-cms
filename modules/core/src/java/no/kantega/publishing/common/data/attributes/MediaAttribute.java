@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
 import java.util.Map;
 
 /**
- *
+ * Attribute referencing a media object.
  */
 public class MediaAttribute extends Attribute {
     private MultipartFile importFile = null;
@@ -102,7 +102,7 @@ public class MediaAttribute extends Attribute {
                     return mm.getMimeType().getType();
                 }
             } catch (Exception e) {
-                Log.error("", e, null, null);
+                Log.error("Error when getting attribute", e);
             }
         }
         return returnValue;
@@ -122,6 +122,7 @@ public class MediaAttribute extends Attribute {
             try {
                 id = Integer.parseInt(value);
             } catch (NumberFormatException e) {
+                Log.error("Error when parsing media id", e);
                 return null;
             }
             cachedMultimediaObj = MultimediaAO.getMultimedia(id);
