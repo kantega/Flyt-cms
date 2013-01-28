@@ -70,7 +70,7 @@ public class EditPermissionsAction extends AbstractController {
 
         // Object with permissions same as object if not content object
         BaseObject permissionObject = null;
-        List permissions = null;
+        List<Permission> permissions = null;
 
         String title = "";
         String inheritedTitle = "";
@@ -90,7 +90,7 @@ public class EditPermissionsAction extends AbstractController {
 
             title = (String)session.getAttribute("tmpPermissionsTitle");
             inheritedTitle = (String)session.getAttribute("tmpPermissionsInheritedTitle");
-            permissions = (List)session.getAttribute(PERMISSIONS_LIST);
+            permissions = (List<Permission>)session.getAttribute(PERMISSIONS_LIST);
             objSecurityId = (Integer)session.getAttribute("tmpObjSecurityId");
         }
 
@@ -162,31 +162,30 @@ public class EditPermissionsAction extends AbstractController {
         }
 
         if (permissions == null) {
-            permissions = new ArrayList();
+            permissions = new ArrayList<Permission>();
         }
 
         // Lookup name for users / roles
         SecurityRealm realm = SecurityRealmFactory.getInstance();
 
-        for (int i = 0; i < permissions.size(); i++) {
-            Permission p = (Permission)permissions.get(i);
+        for (Permission p : permissions) {
 
             SecurityIdentifier secId = p.getSecurityIdentifier();
             // Look up rolename / username
             if (secId instanceof User) {
                 User tmp = realm.lookupUser(secId.getId());
                 if (tmp != null) {
-                    ((User)secId).setGivenName(tmp.getGivenName());
-                    ((User)secId).setSurname(tmp.getSurname());
+                    ((User) secId).setGivenName(tmp.getGivenName());
+                    ((User) secId).setSurname(tmp.getSurname());
                 } else {
-                    ((User)secId).setGivenName(secId.getId());
+                    ((User) secId).setGivenName(secId.getId());
                 }
             } else {
                 Role tmp = realm.lookupRole(secId.getId());
                 if (tmp != null) {
-                    ((Role)secId).setName(tmp.getName());
+                    ((Role) secId).setName(tmp.getName());
                 } else {
-                    ((Role)secId).setName(secId.getId());
+                    ((Role) secId).setName(secId.getId());
                 }
             }
         }
