@@ -109,8 +109,6 @@ public class ContentRequestDispatcher {
             throw new SystemException("DisplayTemplate not found. Check if displaytemplate with databaseid=" + content.getDisplayTemplateId() + " has been deleted from aksess-templateconfig.xml", getClass().getName(), null);
         }
 
-
-
         DeviceCategory deviceCategory = deviceCategoryDetector.getUserAgentDeviceCategory(request);
 
         String view = getView(siteId, dt, deviceCategory);
