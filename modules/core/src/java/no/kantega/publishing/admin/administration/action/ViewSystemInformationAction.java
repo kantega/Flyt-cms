@@ -29,6 +29,8 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -97,7 +99,15 @@ public class ViewSystemInformationAction extends AbstractController {
         Configuration config = Aksess.getConfiguration();
         model.put("configProperties", config.getProperties());
 
-        
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        long jvmStartTime = runtimeMXBean.getStartTime();
+        model.put("jvmStartDate", new Date(jvmStartTime));
+
+        model.put("vmName", runtimeMXBean.getVmName());
+        model.put("vmVendor", runtimeMXBean.getVmVendor());
+        model.put("vmVersion", runtimeMXBean.getVmVersion());
+        model.put("javaVersion", System.getProperty("java.version"));
+
         return new ModelAndView(view, model);
     }
 

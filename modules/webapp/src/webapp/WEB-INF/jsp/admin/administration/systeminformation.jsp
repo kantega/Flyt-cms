@@ -49,9 +49,16 @@
             </div>
 
             <div class="formElement">
+                <div class="heading"><kantega:label key="aksess.systeminfo.starttime"/></div>
+                <div class="content">
+                    <fmt:formatDate value="${jvmStartDate}" pattern="dd.MM.yyyy HH:mm:ss" />
+                </div>
+            </div>
+
+            <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.jvm.version"/></div>
                 <div class="content">
-                    <%=System.getProperty("java.vendor")%> <%=System.getProperty("java.version")%>
+                    ${vmVendor} ${vmName} ${vmVersion}
                 </div>
             </div>
 
