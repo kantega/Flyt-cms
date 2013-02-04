@@ -42,6 +42,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class dbConnectionFactory {
     private static final String SOURCE = "aksess.DataBaseConnectionFactory";
@@ -69,7 +70,7 @@ public class dbConnectionFactory {
 
     private static int openedConnections = 0;
     private static int closedConnections = 0;
-    public static Map connections  = Collections.synchronizedMap(new HashMap());
+    public static Map<Connection, StackTraceElement[]> connections  = new ConcurrentHashMap<Connection, StackTraceElement[]>();
 
     private static boolean debugConnections = false;
 
@@ -152,7 +153,6 @@ public class dbConnectionFactory {
         } catch (Exception e) {
             Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
-            System.out.println("error:" + e);
         }
     }
 
