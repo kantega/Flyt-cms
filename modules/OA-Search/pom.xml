@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>oa-search-api</artifactId>
+            <artifactId>openaksess-search-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 

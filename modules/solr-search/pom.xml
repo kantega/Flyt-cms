@@ -69,7 +69,7 @@
 
         <dependency>
             <groupId>org.kantega.openaksess</groupId>
-            <artifactId>oa-search-api</artifactId>
+            <artifactId>openaksess-search-api</artifactId>
             <version>${project.version}</version>
         </dependency>
 
