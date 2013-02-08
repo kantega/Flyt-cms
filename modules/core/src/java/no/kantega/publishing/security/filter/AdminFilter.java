@@ -121,7 +121,7 @@ public class AdminFilter implements Filter {
                     cause = (Throwable) e;
                 }
             }
-            e.printStackTrace();
+            log.error(cause);
 
             handler.setThrowable(cause, request.getRequestURI());
             request.getSession(true).setAttribute("handler", handler);
@@ -196,12 +196,8 @@ public class AdminFilter implements Filter {
             throw new RuntimeException(e);
         }
 
-        if(!key.xor(rewriter.getSecret()).equals(expected)) {
-            return true;
-        }
+        return !key.xor(rewriter.getSecret()).equals(expected);
 
-
-        return false;
 
     }
 

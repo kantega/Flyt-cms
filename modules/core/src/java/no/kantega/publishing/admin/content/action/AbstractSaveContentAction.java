@@ -257,6 +257,21 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             content.setLocked(param.getBoolean("locked"));
         }
 
+        setAlias(content, param, errors);
+
+        if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
+            content.setLocked(param.getBoolean("locked"));
+        }
+
+        content.setSearchable(param.getBoolean("searchable"));
+        content.setMinorChange(param.getBoolean("minorchange", false));
+
+        updateDisplayTemplateIfChanged(content, param, aksessService);
+
+        return errors;
+    }
+
+    private void setAlias(Content content, RequestParameters param, ValidationErrors errors) {
         String alias = param.getString("alias", 62);
         if (alias != null) {
             content.setAlias(alias);
@@ -279,14 +294,9 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 ValidatorHelper.validateAlias(alias, content, errors);
             }
         }
+    }
 
-        if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
-            content.setLocked(param.getBoolean("locked"));
-        }
-
-        content.setSearchable(param.getBoolean("searchable"));
-        content.setMinorChange(param.getBoolean("minorchange", false));
-
+    private void updateDisplayTemplateIfChanged(Content content, RequestParameters param, ContentManagementService aksessService) {
         int templateId = param.getInt("displaytemplate");
         if (templateId != -1) {
             if (templateId != content.getDisplayTemplateId()) {
@@ -322,8 +332,6 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 }
             }
         }
-
-        return errors;
     }
 
     private boolean dateFieldExists(RequestParameters param, String field) {
