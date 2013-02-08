@@ -16,23 +16,21 @@
 
 package no.kantega.publishing.common.util;
 
-import java.io.OutputStream;
-import java.io.InputStream;
+import org.apache.commons.io.IOUtils;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class InputStreamHandler {
-    OutputStream out = null;
+    private final OutputStream out;
 
     public InputStreamHandler(OutputStream out) {
         this.out = out;
     }
 
     public void handleInputStream(InputStream in) throws IOException {
-        byte[] buf = new byte[32768];
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
+        IOUtils.copyLarge(in, out);
     }
 
     public OutputStream getOutputStream() {

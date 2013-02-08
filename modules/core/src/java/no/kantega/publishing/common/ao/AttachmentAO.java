@@ -162,8 +162,6 @@ public class AttachmentAO {
     }
 
     public static void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        Blob blob;
-
         Connection c = null;
 
         String query = "select Data from attachments where Id = " + id;
@@ -173,7 +171,7 @@ public class AttachmentAO {
             if (!rs.next()) {
                 return;
             }
-            blob = rs.getBlob("Data");
+            Blob blob = rs.getBlob("Data");
             ish.handleInputStream(blob.getBinaryStream());
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);

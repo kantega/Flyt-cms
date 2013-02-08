@@ -17,22 +17,21 @@
 package no.kantega.publishing.client;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
-import no.kantega.commons.configuration.Configuration;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.InputStreamHandler;
 
-
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import java.io.IOException;
 
 public class AttachmentRequestHandler extends HttpServlet {
@@ -96,7 +95,7 @@ public class AttachmentRequestHandler extends HttpServlet {
                 response.addHeader("Content-Disposition", contentDisposition +"; filename=\"" + filename + "\"");
             }
 
-            if (HttpHelper.isInClientCache(request, response, "" + attachmentId, attachment.getLastModified())) {
+            if (HttpHelper.isInClientCache(request, response, String.valueOf(attachmentId), attachment.getLastModified())) {
                 // Found in browser cache
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
@@ -111,7 +110,7 @@ public class AttachmentRequestHandler extends HttpServlet {
 
             try {
                 if (attachment.getSize() > 0) {
- 	  	            response.addHeader("Content-Length", "" + attachment.getSize());
+ 	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
                 }
                 cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
                 out.flush();

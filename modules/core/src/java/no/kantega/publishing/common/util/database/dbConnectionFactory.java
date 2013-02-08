@@ -42,6 +42,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class dbConnectionFactory {
     private static final String SOURCE = "aksess.DataBaseConnectionFactory";
@@ -69,7 +70,7 @@ public class dbConnectionFactory {
 
     private static int openedConnections = 0;
     private static int closedConnections = 0;
-    public static Map<Connection, StackTraceElement[]> connections  = Collections.synchronizedMap(new HashMap<Connection, StackTraceElement[]>());
+    public static Map<Connection, StackTraceElement[]> connections  = new ConcurrentHashMap<Connection, StackTraceElement[]>();
 
     private static boolean debugConnections = false;
 
@@ -454,50 +455,50 @@ public class dbConnectionFactory {
             }
         }
     }
-}
 
-class DataSourceWrapper implements InvocationHandler {
-    DataSource dataSource;
+    private static class DataSourceWrapper implements InvocationHandler {
+        DataSource dataSource;
 
-    public DataSourceWrapper(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-        if(method.getName().equalsIgnoreCase("getConnection")) {
-            Connection c = (Connection)method.invoke(dataSource, objects);
-            StackTraceElement[] stacktrace = new Throwable().getStackTrace();
-            dbConnectionFactory.connections.put(c, stacktrace);
-            dbConnectionFactory.incrementOpenConnections();
-            c = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, new ConnectionWrapper(c));
-            return c;
-        } else {
-            return method.invoke(dataSource, objects);
+        public DataSourceWrapper(DataSource dataSource) {
+            this.dataSource = dataSource;
         }
 
-    }
-}
-
-class ConnectionWrapper implements InvocationHandler {
-    Connection wrapped;
-    ConnectionWrapper(Connection c) {
-        wrapped = c;
-    }
-    public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-        if(method.getName().equalsIgnoreCase("close")) {
-            if(dbConnectionFactory.connections.get(wrapped) == null) {
-                StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
-                Log.error("ConnectionWrapper", "WOOOPS: Connection.close was already called!");
-                for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
-                    StackTraceElement e = stackTraceElement[i];
-                    Log.error("ConnectionWrapper"," - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
-                }
+        public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+            if(method.getName().equalsIgnoreCase("getConnection")) {
+                Connection c = (Connection)method.invoke(dataSource, objects);
+                StackTraceElement[] stacktrace = new Throwable().getStackTrace();
+                dbConnectionFactory.connections.put(c, stacktrace);
+                dbConnectionFactory.incrementOpenConnections();
+                c = (Connection) Proxy.newProxyInstance(Connection.class.getClassLoader(), new Class[] {Connection.class}, new ConnectionWrapper(c));
+                return c;
             } else {
-                dbConnectionFactory.incrementClosedConnections();
-                dbConnectionFactory.connections.remove(wrapped);
+                return method.invoke(dataSource, objects);
             }
-        }
-        return method.invoke(wrapped, objects);
-    }
 
+        }
+
+        private class ConnectionWrapper implements InvocationHandler {
+            Connection wrapped;
+            ConnectionWrapper(Connection c) {
+                wrapped = c;
+            }
+            public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
+                if(method.getName().equalsIgnoreCase("close")) {
+                    if(dbConnectionFactory.connections.get(wrapped) == null) {
+                        StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
+                        Log.error("ConnectionWrapper", "WOOOPS: Connection.close was already called!");
+                        for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
+                            StackTraceElement e = stackTraceElement[i];
+                            Log.error("ConnectionWrapper"," - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
+                        }
+                    } else {
+                        dbConnectionFactory.incrementClosedConnections();
+                        dbConnectionFactory.connections.remove(wrapped);
+                    }
+                }
+                return method.invoke(wrapped, objects);
+            }
+
+        }
+    }
 }
