@@ -16,14 +16,11 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.data.Content;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsExternalLinkTag extends ConditionalTagSupport {
@@ -55,7 +52,6 @@ public class IsExternalLinkTag extends ConditionalTagSupport {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
         }
 

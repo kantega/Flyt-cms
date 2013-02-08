@@ -97,7 +97,7 @@ public class PhotoNavigateTag extends BodyTagSupport {
                 }
             }
         } catch (Exception e) {
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }

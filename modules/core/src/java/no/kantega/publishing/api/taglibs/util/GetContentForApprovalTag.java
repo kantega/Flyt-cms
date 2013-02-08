@@ -16,18 +16,13 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.service.ContentManagementService;
 
-import javax.servlet.jsp.tagext.TagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
 
 public class GetContentForApprovalTag extends TagSupport {
@@ -46,9 +41,8 @@ public class GetContentForApprovalTag extends TagSupport {
             List content = cms.getContentListForApproval();
             request.setAttribute(name, content);
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;

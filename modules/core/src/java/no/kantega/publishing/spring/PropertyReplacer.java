@@ -18,6 +18,7 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -27,7 +28,7 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import java.util.Properties;
 
 /**
- *
+ * Loads configuration and exposes its values as placeholders.
  */
 public class PropertyReplacer implements BeanFactoryPostProcessor {
 
@@ -43,7 +44,7 @@ public class PropertyReplacer implements BeanFactoryPostProcessor {
             cfg.postProcessBeanFactory(configurableListableBeanFactory);
 
         } catch (ConfigurationException e) {
-            System.out.println("Error getting configuration");
+            Log.error(getClass().getSimpleName(), "Error getting configuration");
         }
     }
 }

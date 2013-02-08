@@ -122,7 +122,7 @@ public class CreateTag extends AbstractSimpleEditTag {
                 //
         } catch (IOException e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }

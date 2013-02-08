@@ -183,7 +183,7 @@ public class GetAttributeTag extends TagSupport {
             }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;

@@ -89,10 +89,10 @@ public class EditTag extends AbstractSimpleEditTag {
             }
         } catch (IOException e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } catch (NotAuthorizedException e) {
             //
         } finally {

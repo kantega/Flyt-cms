@@ -350,9 +350,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             status = new CollectionLoopTagStatus(menuitems);
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return doIter();
@@ -386,7 +385,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         try {
             printBody();
         } catch (IOException e) {
-            throw new JspTagException("GetCollectionTag: " + e.getMessage());
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

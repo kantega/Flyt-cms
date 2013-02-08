@@ -16,18 +16,18 @@
 
 package no.kantega.publishing.api.taglibs.photoalbum;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.client.util.RequestParameters;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.List;
 
 public class PhotoImageTag extends TagSupport {
     private static final String SOURCE = "aksess.PhotoImageTag";
@@ -158,7 +158,7 @@ public class PhotoImageTag extends TagSupport {
 
                 }
             } catch (IOException e) {
-                throw new JspTagException(SOURCE + ":" + e.getMessage());
+                throw new JspTagException(SOURCE, e);
             }
         }
 

@@ -191,9 +191,8 @@ public class GetRandomTag  extends BodyTagSupport {
             tmpcollection = cs.getContentList(query, -1, new SortOrder(orderBy, true));
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
         if (tmpcollection != null && tmpcollection.size() > 0) {
             max = Math.min(max, tmpcollection.size());

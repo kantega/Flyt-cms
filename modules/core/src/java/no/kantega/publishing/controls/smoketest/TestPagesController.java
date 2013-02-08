@@ -1,5 +1,6 @@
 package no.kantega.publishing.controls.smoketest;
 
+import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
@@ -84,7 +85,7 @@ public class TestPagesController extends AbstractController {
                 outputter.output(pages, response.getOutputStream());
             }
             catch (IOException e) {
-                System.err.println(e);
+                Log.error("TestPagesController", e);
             }
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);

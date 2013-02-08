@@ -58,9 +58,8 @@ public class SectionNotEmptyTag extends BodyTagSupport {
                 bodyContent.writeOut(getPreviousOut());
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error("ERROR", e, null, null);
-            throw new JspTagException("ERROR" + ":" + e.getMessage());
+            throw new JspTagException("SectionNotEmptyTag", e);
         } finally {
             bodyContent.clearBody();
         }

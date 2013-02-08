@@ -52,9 +52,8 @@ public class HasSectionTag  extends BodyTagSupport {
                 bodyContent.writeOut(getPreviousOut());
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error("ERROR", e, null, null);
-            throw new JspTagException("ERROR" + ":" + e.getMessage());
+            throw new JspTagException("HasSectionTag", e);
         } finally {
             bodyContent.clearBody();
         }

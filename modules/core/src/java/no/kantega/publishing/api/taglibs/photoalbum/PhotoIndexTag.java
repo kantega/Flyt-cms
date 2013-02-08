@@ -160,7 +160,7 @@ public class PhotoIndexTag extends TagSupport {
                 }
             }
         } catch (IOException e) {
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;

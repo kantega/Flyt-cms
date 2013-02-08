@@ -89,7 +89,7 @@ public class EditLinkTag  extends BodyTagSupport {
             // Gjør ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
             Log.error(SOURCE, e);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }
