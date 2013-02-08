@@ -151,8 +151,8 @@ public class EditPermissionsAction extends AbstractController {
             // Data is stored in session so user can add users and remove permissions before saving them
             session.setAttribute("tmpPermissionsTitle", title);
             session.setAttribute("tmpPermissionsInheritedTitle", inheritedTitle);
-            session.setAttribute("tmpPermissionsObject", object);
-            session.setAttribute("tmpPermissionsList", permissions);
+            session.setAttribute(PERMISSIONS_OBJECT, object);
+            session.setAttribute(PERMISSIONS_LIST, permissions);
             session.setAttribute("tmpObjSecurityId", objSecurityId);
         }
 
