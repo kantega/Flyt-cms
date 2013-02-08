@@ -16,12 +16,9 @@
 
 package no.kantega.publishing.common.util;
 
-import no.kantega.commons.util.RegExp;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 
-import java.util.Date;
 import java.util.regex.Pattern;
 
 public class PrettyURLEncoder {
@@ -49,9 +46,9 @@ public class PrettyURLEncoder {
         if (url == null) {
             return "";
         }
-        for (int i = 0; i < map.length; i++) {
-            if (url.indexOf(map[i][0]) != -1) {
-                url = url.replace(map[i][0], map[i][1]);
+        for (char[] aMap : map) {
+            if (url.indexOf(aMap[0]) != -1) {
+                url = url.replace(aMap[0], aMap[1]);
             }
         }
         try {

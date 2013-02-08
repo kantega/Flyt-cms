@@ -21,7 +21,6 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistMediaAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateMediaAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
@@ -62,9 +61,8 @@ public class MediaAttribute extends Attribute {
             return "";
         }
 
-        if (AttributeProperty.URL.equalsIgnoreCase(property)) {
-            return Aksess.getContextPath() + "/multimedia.ap?id=" + value;
-        } else if (AttributeProperty.HTML.equalsIgnoreCase(property)
+        if (AttributeProperty.HTML.equalsIgnoreCase(property)
+                || AttributeProperty.URL.equalsIgnoreCase(property)
                 || AttributeProperty.WIDTH.equalsIgnoreCase(property)
                 || AttributeProperty.HEIGHT.equalsIgnoreCase(property)
                 || AttributeProperty.NAME.equalsIgnoreCase(property)
@@ -77,8 +75,9 @@ public class MediaAttribute extends Attribute {
                 || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
             try {
                 Multimedia mm = getMultimedia();
-
-                if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
+                if(mm == null){
+                    return "";
+                } else if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
                     return MultimediaTagCreator.mm2HtmlTag(mm, null, -1, -1, null);
                 } else if (AttributeProperty.WIDTH.equalsIgnoreCase(property)) {
                     return String.valueOf(mm.getWidth());
@@ -100,6 +99,8 @@ public class MediaAttribute extends Attribute {
                     return Double.toString(mm.getGpsLongitudeAsDouble());
                 } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
                     return mm.getMimeType().getType();
+                } else if (AttributeProperty.URL.equalsIgnoreCase(property)){
+                    return mm.getUrl();
                 }
             } catch (Exception e) {
                 Log.error("Error when getting attribute", e);
