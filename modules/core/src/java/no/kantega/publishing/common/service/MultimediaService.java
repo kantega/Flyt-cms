@@ -74,16 +74,14 @@ public class MultimediaService {
     public Multimedia getMultimediaCheckAuthorization(int id) throws SystemException, NotAuthorizedException {
         Multimedia multimedia = multimediaDao.getMultimedia(id);
 
-        if (multimedia.getContentId() > 0) {
+        if (multimedia != null && multimedia.getContentId() > 0) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = ContentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
                 throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
             }
-        } else {
-            if (!securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
-                throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
-            }
+        } else if (multimedia != null && !securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
+             throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
         }
 
         return multimedia;
