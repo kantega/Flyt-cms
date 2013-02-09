@@ -53,6 +53,7 @@ public class ViewUploadMultimediaFormController {
         model.addAttribute("fileUploadedFromEditor", fileUploadedFromEditor);
         model.addAttribute("id", id);
         model.addAttribute("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
+        model.addAttribute("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
         model.addAttribute("altNameRequired", Aksess.getConfiguration().getBoolean("multimedia.altname.required", false));
         model.addAttribute("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));
 
