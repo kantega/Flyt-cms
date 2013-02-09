@@ -73,7 +73,7 @@ public class PrintListMenuTag extends AbstractMenuTag {
         ulStartElem += ">\n";
         String ulEndElem = "</ul>\n";
 
-        StringBuffer clz = new StringBuffer();
+        StringBuilder clz = new StringBuilder();
         if (liClass != null) {
             clz.append(liClass);
         }
