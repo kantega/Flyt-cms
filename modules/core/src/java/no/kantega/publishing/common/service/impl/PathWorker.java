@@ -58,11 +58,14 @@ public class PathWorker {
 
         try {
             c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, "select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
+            ResultSet rs = SQLHelper.getResultSet(c, "select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
             while(rs.next()) {
                 String title = rs.getString("Title");
                 int id = rs.getInt("AssociationId");
-                pathEntries.add(new PathEntry(id, title));
+                int contentTemplateId = rs.getInt("ContentTemplateId");
+                PathEntry entry = new PathEntry(id, title);
+                entry.setContentTemplateId(contentTemplateId);
+                pathEntries.add(entry);
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
