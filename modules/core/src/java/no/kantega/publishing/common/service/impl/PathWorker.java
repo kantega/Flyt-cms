@@ -61,13 +61,15 @@ public class PathWorker {
 
         try {
             c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, "select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
+            ResultSet rs = SQLHelper.getResultSet(c, "select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
             while(rs.next()) {
                 String title = rs.getString("Title");
                 int id = rs.getInt("AssociationId");
+                int contentTemplateId = rs.getInt("ContentTemplateId");
                 for (PathEntry entry : pathEntries) {
                     if (entry.getId() == id) {
                         entry.setTitle(title);
+                        entry.setContentTemplateId(contentTemplateId);
                         break;
                     }
                 }

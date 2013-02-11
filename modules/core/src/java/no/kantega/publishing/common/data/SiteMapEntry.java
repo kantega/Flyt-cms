@@ -16,10 +16,9 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +46,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     }
 
     @Deprecated
-    public SiteMapEntry(int uniqueId, int currentId, int parentId, ContentType type, int status, int visibilityStatus, String title, int numberOfNotes) {
+    public SiteMapEntry(int uniqueId, int currentId, int parentId, ContentType type, int status, int visibilityStatus, String title, int numberOfNotes, int contentTemplateId) {
         this.uniqueId = uniqueId;
         this.currentId = currentId;
         this.parentId  = parentId;
@@ -56,6 +55,7 @@ public class SiteMapEntry extends NavigationMapEntry {
         this.visibilityStatus = visibilityStatus;
         this.title = title;
         this.numberOfNotes = numberOfNotes;
+        this.contentTemplateId = contentTemplateId;
     }
 
 

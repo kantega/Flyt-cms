@@ -19,6 +19,7 @@ package no.kantega.publishing.common.data;
 public class PathEntry {
     private int id = 0;
     private String title = "";
+    private int contentTemplateId = 0;
 
     public PathEntry(int id, String title) {
         this.id = id;
@@ -39,5 +40,13 @@ public class PathEntry {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getContentTemplateId() {
+        return contentTemplateId;
+    }
+
+    public void setContentTemplateId(int contentTemplateId) {
+        this.contentTemplateId = contentTemplateId;
     }
 }
