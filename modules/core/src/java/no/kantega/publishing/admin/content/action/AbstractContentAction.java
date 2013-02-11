@@ -37,22 +37,14 @@ public abstract class AbstractContentAction extends AbstractController {
     protected void setRequestVariables(HttpServletRequest request, Content current, ContentManagementService aksessService, Map<String, Object> model) {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        if (current.getAssociation().getParentAssociationId() == 0) {
-            model.put("isStartPage", Boolean.TRUE);
-        }
+        model.put("isStartPage", current.getAssociation().getParentAssociationId() == 0);
 
-        if (securitySession.isUserInRole(Aksess.getAdminRole())) {
-            model.put("isAdmin", Boolean.TRUE);
-        }
+        model.put("isAdmin", securitySession.isUserInRole(Aksess.getAdminRole()));
 
         ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(current.getContentTemplateId());
-        if (contentTemplate.isHearingEnabled() && current.getStatus() != ContentStatus.HEARING) {
-            model.put("hearingEnabled", Boolean.TRUE);
-        }
+        model.put("hearingEnabled", contentTemplate.isHearingEnabled() && current.getStatus() != ContentStatus.HEARING);
 
-        if (contentTemplate.isSearchable()) {
-            model.put("toogleSearchableEnabled", Boolean.TRUE);
-        }
+        model.put("toggleSearchableEnabled", contentTemplate.isSearchable());
 
         int saveStatus = ContentStatus.WAITING_FOR_APPROVAL;
         if (securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {
@@ -68,17 +60,11 @@ public abstract class AbstractContentAction extends AbstractController {
             }
         }
 
-        if (Aksess.isTopicMapsEnabled()) {
-            model.put("topicMapsEnabled", Boolean.TRUE);
-        }
+        model.put("topicMapsEnabled", Aksess.isTopicMapsEnabled());
 
-        if (securitySession.isUserInRole(Aksess.getDeveloperRole())) {
-            model.put("isDeveloper", Boolean.TRUE);
-        }
+        model.put("isDeveloper", securitySession.isUserInRole(Aksess.getDeveloperRole()));
 
-        if (current.isModified()) {
-            model.put("hasUnsavedChanges", Boolean.TRUE);
-        }
+        model.put("hasUnsavedChanges", current.isModified());
 
         model.put("saveStatus", saveStatus);
     }
