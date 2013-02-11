@@ -3,7 +3,7 @@
     <xs:element name="template">
         <xs:annotation>
             <xs:documentation>
-                A template specifying what attributes should be available for a particullar Content object.
+                A template specifying what attributes should be available for a particular Content object.
             </xs:documentation>
         </xs:annotation>
         <xs:complexType>

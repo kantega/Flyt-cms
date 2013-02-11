@@ -73,24 +73,95 @@ public class EditContentHelper {
         // Set status = checkedout
         content.setIsCheckedOut(true);
 
-        if (param.getParentIds() == null) {
-            // Parent ids not specified, create based on mainParent
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(param.getMainParentId());
-
-            Content parent = aksessService.getContent(cid);
-            List<Association> associations = parent.getAssociations();
-            int allParents[] = new int[associations.size()];
-            for (int i = 0; i < associations.size(); i++) {
-                Association p = associations.get(i);
-                allParents[i] = p.getId();
-            }
-            param.setParentIds(allParents);
-        }
+        setAncestors(param, aksessService);
 
         // Set author
         content.setPublisher(securitySession.getUser().getName());
 
+        inheritGroup = setContentAndDisplayTemplates(param, aksessService, inheritGroup, content);
+        setAssociations(param, content);
+
+
+        setValuesFromContentTemplate(param, aksessService, content);
+
+        // Inherit owner, language etc from parent
+        ContentIdentifier parentCid = new ContentIdentifier();
+        parentCid.setAssociationId(param.getMainParentId());
+        Content parent = aksessService.getContent(parentCid);
+        content.setSecurityId(parent.getSecurityId());
+        content.setOwner(parent.getOwner());
+        content.setOwnerPerson(parent.getOwnerPerson());
+        content.setLanguage(parent.getLanguage());
+
+        // Set documenttype if documentype is not set for this object and defaultDocumentTypeIdForChildren is set for parent
+        if (content.getDocumentTypeId() <= 0 && parent.getDocumentTypeIdForChildren() > 0) {
+            content.setDocumentTypeId(parent.getDocumentTypeIdForChildren());
+        }
+
+        if (inheritGroup) {
+            // Inherit properties from pages above.  Used to create things which should be special for a subtree, eg a menu
+            content.setGroupId(parent.getGroupId());
+        }
+
+        // Inherit properties set to be inherited in contenttemplate
+        setDefaultProperties(content);
+
+        return content;
+    }
+
+    private static void setValuesFromContentTemplate(ContentCreateParameters param, ContentManagementService aksessService, Content content) {
+        ContentTemplate contentTemplate = aksessService.getContentTemplate(param.getContentTemplateId());
+        if (contentTemplate.getDocumentType() != null) {
+            content.setDocumentTypeId(contentTemplate.getDocumentType().getId());
+        }
+        if (contentTemplate.getDocumentTypeForChildren() != null) {
+            content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
+        }
+        if (contentTemplate.getDefaultPageUrlAlias() != null && contentTemplate.getDefaultPageUrlAlias().length() > 0) {
+            content.setAlias(contentTemplate.getDefaultPageUrlAlias());
+        }
+
+        boolean contentIsSearchable = contentTemplate.isSearchable() && contentTemplate.isDefaultSearchable();
+        content.setSearchable(contentIsSearchable);
+
+
+        content.setType(contentTemplate.getContentType());
+
+        // Set default expiredate if specified in contenttemplate
+        if (contentTemplate.getExpireMonths() != null && contentTemplate.getExpireMonths() > 0) {
+            Calendar calendar = new GregorianCalendar();
+            calendar.add(Calendar.MONTH, contentTemplate.getExpireMonths());
+            content.setExpireDate(calendar.getTime());
+        }
+        if (contentTemplate.getExpireAction() != null) {
+            content.setExpireAction(contentTemplate.getExpireAction());
+        }
+    }
+
+    private static void setAssociations(ContentCreateParameters param, Content content) {
+        // Create associations as specified
+        boolean foundCurrentAssociation = false;
+
+        List<Association> associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
+        for (Association association : associations) {
+            if (association.getParentAssociationId() == param.getMainParentId()) {
+                foundCurrentAssociation = true;
+                association.setCurrent(true);
+            }
+            association.setCategory(new AssociationCategory(param.getCategoryId()));
+
+            content.addAssociation(association);
+        }
+
+        // Check if user has removed main parent from list of parents, in case just use first parent as main parent
+        if (!foundCurrentAssociation) {
+            Association association = associations.get(0);
+            association.setCurrent(true);
+            param.setMainParentId(association.getParentAssociationId());
+        }
+    }
+
+    private static boolean setContentAndDisplayTemplates(ContentCreateParameters param, ContentManagementService aksessService, boolean inheritGroup, Content content) {
         if (param.getDisplayTemplateId() != -1) {
             // Set values from displaytemplate
             DisplayTemplate displayTemplate = aksessService.getDisplayTemplate(param.getDisplayTemplateId());
@@ -113,78 +184,24 @@ public class EditContentHelper {
         } else {
             content.setContentTemplateId(param.getContentTemplateId());
         }
+        return inheritGroup;
+    }
 
-        // Create associations as specified
-        boolean foundCurrentAssociation = false;
+    private static void setAncestors(ContentCreateParameters param, ContentManagementService aksessService) throws NotAuthorizedException {
+        if (param.getParentIds() == null) {
+            // Parent ids not specified, create based on mainParent
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setAssociationId(param.getMainParentId());
 
-        List<Association> associations = AssociationHelper.createAssociationsFromParentIds(param.getParentIds());
-        for (Association association : associations) {
-            if (association.getParentAssociationId() == param.getMainParentId()) {
-                foundCurrentAssociation = true;
-                association.setCurrent(true);
+            Content parent = aksessService.getContent(cid);
+            List<Association> associations = parent.getAssociations();
+            int allParents[] = new int[associations.size()];
+            for (int i = 0; i < associations.size(); i++) {
+                Association p = associations.get(i);
+                allParents[i] = p.getId();
             }
-            association.setCategory(new AssociationCategory(param.getCategoryId()));
-
-            content.addAssociation(association);
+            param.setParentIds(allParents);
         }
-
-        // Check if user has removed main parent from list of parents, in case just use first parent as main parent
-        if (!foundCurrentAssociation) {
-            Association association = (Association)associations.get(0);
-            association.setCurrent(true);
-            param.setMainParentId(association.getParentAssociationId());
-        }
-
-        // Set values from contenttemplate
-        ContentTemplate contentTemplate = aksessService.getContentTemplate(param.getContentTemplateId());
-        if (contentTemplate.getDocumentType() != null) {
-            content.setDocumentTypeId(contentTemplate.getDocumentType().getId());
-        }
-        if (contentTemplate.getDocumentTypeForChildren() != null) {
-            content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
-        }
-        if (contentTemplate.getDefaultPageUrlAlias() != null && contentTemplate.getDefaultPageUrlAlias().length() > 0) {
-            content.setAlias(contentTemplate.getDefaultPageUrlAlias());
-        }
-
-        content.setSearchable(contentTemplate.isSearchable());
-
-
-        content.setType(contentTemplate.getContentType());
-
-        // Inherit owner, language etc from parent
-        ContentIdentifier parentCid = new ContentIdentifier();
-        parentCid.setAssociationId(param.getMainParentId());
-        Content parent = aksessService.getContent(parentCid);
-        content.setSecurityId(parent.getSecurityId());
-        content.setOwner(parent.getOwner());
-        content.setOwnerPerson(parent.getOwnerPerson());
-        content.setLanguage(parent.getLanguage());
-
-        // Set documenttype if documentype is not set for this object and defaultDocumentTypeIdForChildren is set for parent
-        if (content.getDocumentTypeId() <= 0 && parent.getDocumentTypeIdForChildren() > 0) {
-            content.setDocumentTypeId(parent.getDocumentTypeIdForChildren());
-        }
-
-        if (inheritGroup) {
-            // Inherit properties from pages above.  Used to create things which should be special for a subtree, eg a menu
-            content.setGroupId(parent.getGroupId());
-        }
-
-        // Set default expiredate if specified in contenttemplate
-        if (contentTemplate.getExpireMonths() != null && contentTemplate.getExpireMonths() > 0) {
-            Calendar calendar = new GregorianCalendar();
-            calendar.add(Calendar.MONTH, contentTemplate.getExpireMonths());
-            content.setExpireDate(calendar.getTime());
-        }
-        if (contentTemplate.getExpireAction() != null) {
-            content.setExpireAction(contentTemplate.getExpireAction());
-        }
-
-        // Inherit properties set to be inherited in contenttemplate
-        setDefaultProperties(content);
-
-        return content;
     }
 
     public static void addRepeaterRow(Content content, String rowPath, int attributeType) throws InvalidTemplateException {
@@ -387,39 +404,7 @@ public class EditContentHelper {
                 attribute.setParent(newParentAttribute);
             }
 
-            if (attribute instanceof RepeaterAttribute) {
-                /*
-                   RepeaterAttribute is a rowset of repeatable attributes
-                */
-                RepeaterAttribute repeater = (RepeaterAttribute)attribute;
-
-                RepeaterAttribute oldRepeater = null;
-                if (oldAttributes != null) {
-                    Attribute tmpAttr = getAttributeByName(oldAttributes, repeater.getName());
-                    if (tmpAttr != null && tmpAttr instanceof RepeaterAttribute) {
-                        oldRepeater = (RepeaterAttribute)tmpAttr;
-                    }
-                }
-
-                int maxRows = repeater.getMinOccurs();
-                if (oldRepeater != null) {
-                    maxRows = getMaxNumberOfRows(oldRepeater, repeater);
-                }
-
-                for (int rowNumber = 0; rowNumber < maxRows; rowNumber++) {
-                    List<Attribute> newRowAttributes = new ArrayList<Attribute>();
-                    List<Attribute> oldRowAttributes = null;
-
-                    if (oldAttributes != null && oldRepeater != null) {
-                        if (rowNumber < oldRepeater.getNumberOfRows()) {
-                            oldRowAttributes = oldRepeater.getRow(rowNumber);
-                        }
-                    }
-
-                    addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
-                    repeater.addRow(newRowAttributes);
-                }
-            }
+            addRepeaterAttribute(template, attributeType, defaultValues, oldAttributes, xmlAttribute, attribute);
 
             newAttributes.add(attribute);
 
@@ -429,6 +414,42 @@ public class EditContentHelper {
                 if (oldAttribute != null) {
                     attribute.cloneValue(oldAttribute);
                 }
+            }
+        }
+    }
+
+    private static void addRepeaterAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues, List<Attribute> oldAttributes, Element xmlAttribute, Attribute attribute) throws InvalidTemplateException {
+        if (attribute instanceof RepeaterAttribute) {
+            /*
+               RepeaterAttribute is a rowset of repeatable attributes
+            */
+            RepeaterAttribute repeater = (RepeaterAttribute)attribute;
+
+            RepeaterAttribute oldRepeater = null;
+            if (oldAttributes != null) {
+                Attribute tmpAttr = getAttributeByName(oldAttributes, repeater.getName());
+                if (tmpAttr != null && tmpAttr instanceof RepeaterAttribute) {
+                    oldRepeater = (RepeaterAttribute)tmpAttr;
+                }
+            }
+
+            int maxRows = repeater.getMinOccurs();
+            if (oldRepeater != null) {
+                maxRows = getMaxNumberOfRows(oldRepeater, repeater);
+            }
+
+            for (int rowNumber = 0; rowNumber < maxRows; rowNumber++) {
+                List<Attribute> newRowAttributes = new ArrayList<Attribute>();
+                List<Attribute> oldRowAttributes = null;
+
+                if (oldAttributes != null && oldRepeater != null) {
+                    if (rowNumber < oldRepeater.getNumberOfRows()) {
+                        oldRowAttributes = oldRepeater.getRow(rowNumber);
+                    }
+                }
+
+                addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                repeater.addRow(newRowAttributes);
             }
         }
     }

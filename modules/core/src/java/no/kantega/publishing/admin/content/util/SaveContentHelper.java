@@ -16,22 +16,22 @@
 
 package no.kantega.publishing.admin.content.util;
 
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.attributes.*;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.AttributeHandler;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 public class SaveContentHelper {
 
@@ -62,8 +62,7 @@ public class SaveContentHelper {
                     if (mapper != null && attr.getField() != null) {
                         String fieldNames = attr.getField();
                         String[] fields = fieldNames.split(",");
-                        for (int j = 0; j < fields.length; j++) {
-                            String field = fields[j];
+                        for (String field : fields) {
                             mapper.mapAttributeValue(param, content, attr, field, errors);
                         }
                     }
