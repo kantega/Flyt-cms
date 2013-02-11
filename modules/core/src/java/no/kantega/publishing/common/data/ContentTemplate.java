@@ -16,16 +16,16 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.api.model.PublicIdObject;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.ContentType;
 import org.w3c.dom.Element;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- *
+ * A template specifying what attributes should be available for a particular Content object.
  */
 public class ContentTemplate implements PublicIdObject {
 
@@ -37,7 +37,9 @@ public class ContentTemplate implements PublicIdObject {
     private String templateFile;
 
     // This needs to be a Boolean, not boolean, else if will get a default value of false after serialization
-    private Boolean isSearchable;
+    private Boolean isSearchable = Boolean.TRUE;
+
+    private Boolean isDefaultSearchable = Boolean.TRUE;
     private String defaultPageUrlAlias = null;
 
     private Integer expireMonths;
@@ -236,12 +238,27 @@ public class ContentTemplate implements PublicIdObject {
         this.propertyElements = propertyElements;
     }
 
+    /**
+     * @return whether content of this <code>ContentTemplate</code> should be searchable.
+     */
     public boolean isSearchable() {
-        return isSearchable == null || isSearchable;
+        return isSearchable;
     }
 
     public void setSearchable(boolean searchable) {
         this.isSearchable = searchable;
+    }
+
+    /**
+     * @return whether content of this <code>ContentTemplate</code> should be searchable by default.
+     * If set to false the <code>Content</code> object has to be set searchable in the admin interface.
+     */
+    public Boolean isDefaultSearchable() {
+        return isDefaultSearchable;
+    }
+
+    public void setDefaultSearchable(Boolean defaultSearchable) {
+        isDefaultSearchable = defaultSearchable;
     }
 
     public String getDefaultPageUrlAlias() {

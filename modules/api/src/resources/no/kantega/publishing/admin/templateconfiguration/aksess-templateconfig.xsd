@@ -381,6 +381,18 @@
                 <xs:annotation>
                     <xs:documentation>
                         Specifies whether content published with this content template is searchable.
+                        When this is set to false the possibility to toggle whether the content should be
+                        searchable is disabled.
+                        Default is true.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="isDefaultSearchable" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies whether content published with this content template is searchable by default.
+                        When set to false new content has searchable = false, so to make the content appear in search
+                        it has to be marked as such in the admin interface.
                         Default is true.
                     </xs:documentation>
                 </xs:annotation>

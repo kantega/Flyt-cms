@@ -76,6 +76,7 @@ public class XStreamTemplateHelper {
         xstream.useAttributeFor(ContentTemplate.class, "expireAction");
         xstream.useAttributeFor(ContentTemplate.class, "expireMonths");
         xstream.useAttributeFor(ContentTemplate.class, "isSearchable");
+        xstream.useAttributeFor(ContentTemplate.class, "isDefaultSearchable");
 
         // DisplayTemplate aliases
         xstream.useAttributeFor(DisplayTemplate.class, "allowMultipleUsages");
