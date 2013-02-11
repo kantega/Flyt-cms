@@ -44,10 +44,10 @@ public class ValidatorHelper {
         }       
 
         try {
-            ContentIdentifierDao contentIdentifierDaoJdbcImpl = RootContext.getInstance().getBean(ContentIdentifierDao.class);
+            ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
             List<Association> associations = content.getAssociations();
             for (Association association : associations) {
-                ContentIdentifier cid = contentIdentifierDaoJdbcImpl.getContentIdentifierBySiteIdAndAlias(association.getSiteId(), alias);
+                ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(association.getSiteId(), alias);
                 if (cid != null && cid.getContentId() != content.getId() && cid.getSiteId() == association.getSiteId()) {
                     errors.add(null, "aksess.error.aliasinuse");
                     break;

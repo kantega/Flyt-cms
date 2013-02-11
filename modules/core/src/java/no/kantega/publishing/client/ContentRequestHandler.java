@@ -143,7 +143,7 @@ public class ContentRequestHandler extends AbstractController {
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
-        StringBuilder message = new StringBuilder("Tidsforbruk: ");
+        StringBuilder message = new StringBuilder("Execution time: ");
         message.append((end - start));
         message.append(" ms (");
         message.append(content.getTitle());
