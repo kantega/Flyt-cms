@@ -242,7 +242,8 @@ public class ContentTemplate implements PublicIdObject {
      * @return whether content of this <code>ContentTemplate</code> should be searchable.
      */
     public boolean isSearchable() {
-        return isSearchable;
+        // Since templates are created with reflection fields are not instantiated properly.
+        return isSearchable == null || isSearchable;
     }
 
     public void setSearchable(boolean searchable) {
@@ -254,7 +255,8 @@ public class ContentTemplate implements PublicIdObject {
      * If set to false the <code>Content</code> object has to be set searchable in the admin interface.
      */
     public Boolean isDefaultSearchable() {
-        return isDefaultSearchable;
+        // Since templates are created with reflection fields are not instantiated properly.
+        return isDefaultSearchable == null || isDefaultSearchable;
     }
 
     public void setDefaultSearchable(Boolean defaultSearchable) {
