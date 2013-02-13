@@ -23,7 +23,6 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistFileAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateFileAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
@@ -31,28 +30,30 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 public class FileAttribute extends Attribute {
 
     private boolean deleteAttachment = false;
     private boolean keepOldVersions = true;
 
     public String getProperty(String property) {
-        if (value == null || value.length() == 0) {
+        if (isBlank(value)) {
             return "";
         }
-        if (AttributeProperty.HTML.equalsIgnoreCase(property) || AttributeProperty.URL.equalsIgnoreCase(property)) {
-            return Aksess.getContextPath() + "/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=" + value;
-        } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
+        if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
                 || AttributeProperty.NAME.equalsIgnoreCase(property)
-                || AttributeProperty.SIZE.equalsIgnoreCase(property)) {
+                || AttributeProperty.SIZE.equalsIgnoreCase(property)
+                || AttributeProperty.HTML.equalsIgnoreCase(property)
+                || AttributeProperty.URL.equalsIgnoreCase(property)) {
             try {
                 Attachment attachment = AttachmentAO.getAttachment(Integer.parseInt(value));
 
                 if (attachment == null) {
                     return "";
-                }
-
-                if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
+                } else if (AttributeProperty.HTML.equalsIgnoreCase(property) || AttributeProperty.URL.equalsIgnoreCase(property)) {
+                    return attachment.getUrl();
+                } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
                     return attachment.getMimeType().getType();
                 } else if (AttributeProperty.NAME.equalsIgnoreCase(property)) {
                     return attachment.getFilename();

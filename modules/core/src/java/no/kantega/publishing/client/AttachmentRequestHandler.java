@@ -33,9 +33,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * Handles requests for attachments.
+ * Urlpatterns handled are:
+ * - /attachment.ap?id=${id}
+ * - /attachment/${id}/filename
+ */
 public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
+    private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -50,16 +59,19 @@ public class AttachmentRequestHandler extends HttpServlet {
                 try {
                     attachmentId = Integer.parseInt(id);
                 } catch (NumberFormatException e) {
-
+                    Log.error(SOURCE, "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
                 }
             } else {
                 attachmentId = param.getInt("id");
                 if(attachmentId == -1) {
+                    String info = request.getPathInfo();
                     try {
-                        String info = request.getPathInfo();
-                        attachmentId = Integer.parseInt(info.substring(1, info.indexOf(".", 1)));
-                    } catch (Exception e) {
-
+                        Matcher matcher = urlPattern.matcher(info);
+                        if (matcher.matches()){
+                            attachmentId = Integer.parseInt(matcher.group(1));
+                        }
+                    } catch (NumberFormatException e) {
+                        Log.error(SOURCE, "Invalid attachment request " + info);
                     }
                 }
             }

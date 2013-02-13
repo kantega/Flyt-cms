@@ -85,7 +85,8 @@
                     }
 
                     String selected = "";
-                    if (url != null && (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
+                    if (url != null &&
+                        (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
                         || url.endsWith(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId())
                         || url.contains("/attachment/" + a.getId()))) {
                         selected = " selected";
@@ -94,7 +95,7 @@
                     %>
                     var mimeType = '<%=a.getMimeType().getType()%>'.replace(/(\.|\/)/g, '-');
                     attachments.push({
-                        url: '<%= Aksess.getContextPath() + "/attachment.ap?id=" + a.getId() %>',
+                        url: '<%= a.getUrl() %>',
                         clz: 'file <%=a.getMimeType().getFileExtension()%> ' + mimeType
                     });
                     select.append("<option<%=selected%>><%=filename%></option>");

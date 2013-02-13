@@ -101,6 +101,6 @@ public class Attachment {
         if (!contextPath.endsWith("/")) {
             contextPath += "/";
         }
-        return contextPath + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
+        return contextPath + "/" + Aksess.ATTACHMENT_URL_PREFIX + "/" + id + "/" + filename;
     }
 }

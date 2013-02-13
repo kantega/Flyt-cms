@@ -52,6 +52,7 @@ public class LinkCheckerJob implements InitializingBean {
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
     private static final String MULTIMEDIA = Aksess.VAR_WEB + "/" + Aksess.MULTIMEDIA_URL_PREFIX;
     private static final String ATTACHMENT_AP = Aksess.VAR_WEB +"/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=";
+    private static final String ATTACHMENT = Aksess.VAR_WEB +"/" + Aksess.ATTACHMENT_URL_PREFIX;
 
     private String webroot = "http://localhost";
     private String proxyHost;
@@ -115,109 +116,137 @@ public class LinkCheckerJob implements InitializingBean {
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, HttpClient client) {
         if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
-            // Side i AP
-            String idPart;
-            if (link.startsWith(CONTENT_AP)) {
-                idPart = link.substring(CONTENT_AP.length());
-                if (idPart.contains("&")) {
-                    idPart = idPart.substring(0, idPart.indexOf("&"));
-                }
-            } else {
-                idPart = link.substring(CONTENT.length());
-                if (idPart.contains("/")) {
-                    idPart = idPart.substring(0, idPart.indexOf("/"));
-                }
-            }
-            try {
-                int i = Integer.parseInt(idPart);
-                try {
-                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(i);
-                    Content c = ContentAO.getContent(cid, true);
-                    if(c != null) {
-                        occurrence.setStatus(CheckStatus.OK);
-                    } else {
-                        occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
-                    }
-                } catch (SystemException e) {
-                    occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
-                }
-            } catch (NumberFormatException e) {
-                checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
-            }
-        } else if (link.startsWith(MULTIMEDIA_AP) || link.startsWith(MULTIMEDIA_AP)) {
-            // Bilde / multimedia
-            String idPart;
-            if (link.startsWith(MULTIMEDIA_AP)) {
-                idPart = link.substring(MULTIMEDIA_AP.length());
-                if (idPart.contains("&")) {
-                    idPart = idPart.substring(0, idPart.indexOf("&"));
-                }
-            } else {
-                idPart = link.substring(MULTIMEDIA.length());
-                if (idPart.contains("/")) {
-                    idPart = idPart.substring(0, idPart.indexOf("/"));
-                }
-            }
-            try {
-                int i = Integer.parseInt(idPart);
-                try {
-                    Multimedia attachment = MultimediaAO.getMultimedia(i);
+            checkContent(link, occurrence, client);
 
-                    if(attachment != null) {
-                        occurrence.setStatus(CheckStatus.OK);
-                    } else {
-                        occurrence.setStatus(CheckStatus.MULTIMEDIA_AP_NOT_FOUND);
-                    }
-                } catch (SystemException e) {
-                    occurrence.setStatus(CheckStatus.MULTIMEDIA_AP_NOT_FOUND);
-                }
+        } else if (link.startsWith(MULTIMEDIA_AP) || link.startsWith(MULTIMEDIA)) {
+            checkMultimedia(link, occurrence, client);
 
-            } catch(NumberFormatException e) {
-                checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
-            }
-        } else if (link.startsWith(ATTACHMENT_AP)) {
-            // Vedlegg
-            String idPart = link.substring(ATTACHMENT_AP.length());
+        } else if (link.startsWith(ATTACHMENT_AP) || link.startsWith(ATTACHMENT)) {
+            checkAttachment(link, occurrence, client);
+
+        } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
+            checkAlias(link, occurrence, client);
+
+        } else {
+            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        }
+    }
+
+    private void checkContent(String link, LinkOccurrence occurrence, HttpClient client) {
+        // Side i AP
+        String idPart;
+        if (link.startsWith(CONTENT_AP)) {
+            idPart = link.substring(CONTENT_AP.length());
             if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf("&"));
             }
-            try {
-                int i = Integer.parseInt(idPart);
-                try {
-                    Attachment attachment = AttachmentAO.getAttachment(i);
-
-                    if(attachment != null) {
-                        occurrence.setStatus(CheckStatus.OK);
-                    } else {
-                        occurrence.setStatus(CheckStatus.ATTACHMENT_AP_NOT_FOUND);
-                    }
-                } catch (SystemException e) {
-                    occurrence.setStatus(CheckStatus.ATTACHMENT_AP_NOT_FOUND);
-                }
-
-            } catch (NumberFormatException e) {
-                checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        } else {
+            idPart = link.substring(CONTENT.length());
+            if (idPart.contains("/")) {
+                idPart = idPart.substring(0, idPart.indexOf("/"));
             }
-        } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
-            // Kan være et alias, sjekk
-            String alias = link.substring(Aksess.VAR_WEB.length());
+        }
+        try {
+            int i = Integer.parseInt(idPart);
             try {
-                ContentIdentifier cid = ContentIdHelper.fromUrl(alias);
+                ContentIdentifier cid =  ContentIdentifier.fromAssociationId(i);
                 Content c = ContentAO.getContent(cid, true);
-                if (c != null) {
+                if(c != null) {
                     occurrence.setStatus(CheckStatus.OK);
                 } else {
                     occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
                 }
-
-            } catch (ContentNotFoundException e) {
-                // Ikke et alias eller slettet alias
-                checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
             } catch (SystemException e) {
-                occurrence.setStatus(CheckStatus.IO_EXCEPTION);
+                occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
+            }
+        } catch (NumberFormatException e) {
+            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        }
+    }
+
+    private void checkMultimedia(String link, LinkOccurrence occurrence, HttpClient client) {
+        // Bilde / multimedia
+        String idPart;
+        if (link.startsWith(MULTIMEDIA_AP)) {
+            idPart = link.substring(MULTIMEDIA_AP.length());
+            if (idPart.contains("&")) {
+                idPart = idPart.substring(0, idPart.indexOf("&"));
             }
         } else {
+            idPart = link.substring(MULTIMEDIA.length());
+            if (idPart.contains("/")) {
+                idPart = idPart.substring(0, idPart.indexOf("/"));
+            }
+        }
+        try {
+            int i = Integer.parseInt(idPart);
+            try {
+                Multimedia attachment = MultimediaAO.getMultimedia(i);
+
+                if(attachment != null) {
+                    occurrence.setStatus(CheckStatus.OK);
+                } else {
+                    occurrence.setStatus(CheckStatus.MULTIMEDIA_AP_NOT_FOUND);
+                }
+            } catch (SystemException e) {
+                occurrence.setStatus(CheckStatus.MULTIMEDIA_AP_NOT_FOUND);
+            }
+
+        } catch(NumberFormatException e) {
             checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        }
+    }
+
+    private void checkAttachment(String link, LinkOccurrence occurrence, HttpClient client) {
+        // Vedlegg
+        String idPart;
+        if (link.startsWith(ATTACHMENT_AP)) {
+            idPart = link.substring(ATTACHMENT_AP.length());
+            if (idPart.contains("&")) {
+                idPart = idPart.substring(0, idPart.indexOf("&"));
+            }
+        } else {
+            idPart = link.substring(ATTACHMENT.length());
+            if (idPart.contains("/")) {
+                idPart = idPart.substring(0, idPart.indexOf("/"));
+            }
+        }
+        try {
+            int i = Integer.parseInt(idPart);
+            try {
+                Attachment attachment = AttachmentAO.getAttachment(i);
+
+                if(attachment != null) {
+                    occurrence.setStatus(CheckStatus.OK);
+                } else {
+                    occurrence.setStatus(CheckStatus.ATTACHMENT_AP_NOT_FOUND);
+                }
+            } catch (SystemException e) {
+                occurrence.setStatus(CheckStatus.ATTACHMENT_AP_NOT_FOUND);
+            }
+
+        } catch (NumberFormatException e) {
+            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        }
+    }
+
+    private void checkAlias(String link, LinkOccurrence occurrence, HttpClient client) {
+        // Kan være et alias, sjekk
+        String alias = link.substring(Aksess.VAR_WEB.length());
+        try {
+            ContentIdentifier cid = ContentIdHelper.fromUrl(alias);
+            Content c = ContentAO.getContent(cid, true);
+            if (c != null) {
+                occurrence.setStatus(CheckStatus.OK);
+            } else {
+                occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
+            }
+
+        } catch (ContentNotFoundException e) {
+            // Ikke et alias eller slettet alias
+            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+        } catch (SystemException e) {
+            occurrence.setStatus(CheckStatus.IO_EXCEPTION);
         }
     }
 

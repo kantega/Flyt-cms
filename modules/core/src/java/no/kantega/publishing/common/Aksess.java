@@ -40,6 +40,7 @@ public class Aksess {
 
     public static final String CONTENT_URL_PREFIX = "/content";
     public static final String MULTIMEDIA_URL_PREFIX = "/multimedia";
+    public static final String ATTACHMENT_URL_PREFIX = "/attachment";
 
     public static final String CONTENT_REQUEST_HANDLER = "content.ap";
     public static final String ATTACHMENT_REQUEST_HANDLER = "attachment.ap";

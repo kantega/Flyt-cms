@@ -228,7 +228,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
-        <url-pattern>/attachments/*</url-pattern>
+        <url-pattern>/attachment/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
