@@ -130,7 +130,7 @@ public class MultimediaRequestHandler implements Controller {
     }
 
     private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
-        StringBuilder keyBuilder = new StringBuilder(mmId);
+        StringBuilder keyBuilder = new StringBuilder(Integer.toString(mmId));
         keyBuilder.append("-");
         keyBuilder.append(resizeParams.toString());
         keyBuilder.append("-");
