@@ -88,7 +88,7 @@
                     if (url != null &&
                         (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
                         || url.endsWith(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId())
-                        || url.contains("/attachment/" + a.getId()))) {
+                        || url.contains(Aksess.ATTACHMENT_URL_PREFIX +"/" + a.getId()))) {
                         selected = " selected";
                     }
 
