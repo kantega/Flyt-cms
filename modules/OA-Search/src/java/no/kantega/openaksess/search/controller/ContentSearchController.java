@@ -36,8 +36,8 @@ public class ContentSearchController implements AksessController {
     private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
     private boolean showOnlyPublishedContent = true;
-    private List<String> facetFields;
-    private List<String> facetQueries;
+    private List<String> facetFields = Collections.emptyList();
+    private List<String> facetQueries = Collections.emptyList();
 
     @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -63,7 +63,7 @@ public class ContentSearchController implements AksessController {
         }
 
         int numberOfPages = searchResponse.getNumberOfPages();
-        if (currentPage < numberOfPages) {
+        if (currentPage < (numberOfPages - 1)) {
             String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
             links.put("nextPageUrl", nextPageUrl);
         }
@@ -104,11 +104,20 @@ public class ContentSearchController implements AksessController {
         searchQuery.setPageNumber(ServletRequestUtils.getIntParameter(request, "page", 0));
         searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
 
-        searchQuery.setFacetFields(facetFields);
+        searchQuery.setFacetFields(getFacetFields(request));
 
         searchQuery.setFacetQueries(facetQueries);
 
         return searchQuery;
+    }
+
+    private List<String> getFacetFields(HttpServletRequest request) {
+        List<String> fields = facetFields;
+        String parameterfacetFields = ServletRequestUtils.getStringParameter(request, "facetFields", null);
+        if(parameterfacetFields != null){
+            fields = Arrays.asList(parameterfacetFields.split(","));
+        }
+        return fields;
     }
 
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {

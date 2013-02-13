@@ -389,6 +389,7 @@
     <bean id="abstractNavigateAction" abstract="true">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
+
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
         <property name="createRootAction" ref="createRootAction"/>
