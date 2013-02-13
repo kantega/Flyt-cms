@@ -74,16 +74,20 @@ public class ContentSearchController implements AksessController {
     }
 
     @RequestMapping("/suggest")
-    public @ResponseBody List<String> search(HttpServletRequest request, @RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) {
-
+    public @ResponseBody List<String> search(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+        String term = getQorTerm(request);
         SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
         query.setResultsPerPage(limit);
         return searcher.suggest(query);
     }
 
-    @RequestMapping("/spelling")
-    public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(value = "q") String term, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+    private String getQorTerm(HttpServletRequest request) {
+        return ServletRequestUtils.getStringParameter(request, "q", request.getParameter("term"));
+    }
 
+    @RequestMapping("/spelling")
+    public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+        String term = getQorTerm(request);
         SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
         query.setResultsPerPage(limit);
         return searcher.spell(query);
