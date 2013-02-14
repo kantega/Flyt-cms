@@ -79,7 +79,7 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
             openaksess.content.contentstatus.init();
             openaksess.content.contentstatus.disableButtons();
-            $.post(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
+            $.get(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
                 if (data) {
                     openaksess.content.contentstatus.breadcrumbs(data.path);
                     openaksess.content.contentstatus.brokenLinks(data.links);

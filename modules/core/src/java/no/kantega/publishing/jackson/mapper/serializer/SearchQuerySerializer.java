@@ -1,9 +1,9 @@
 package no.kantega.publishing.jackson.mapper.serializer;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import no.kantega.search.api.search.SearchQuery;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.SerializerProvider;
-import org.codehaus.jackson.map.ser.std.SerializerBase;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import java.io.IOException;
  * leading to the following chain:
  * no.kantega.search.api.search.SearchResponse["query"]->no.kantega.search.api.search.SearchQuery["searchContext"]->no.kantega.openaksess.search.security.AksessSearchContext["securitySession"]->no.kantega.publishing.security.SecuritySession["realm"]->no.kantega.publishing.security.realm.SecurityRealm["roleManager"]->no.kantega.security.api.impl.dbuser.role.DbUserRoleManager["jdbcTemplate"]->org.springframework.jdbc.core.JdbcTemplate["dataSource"]->org.apache.commons.dbcp.BasicDataSource["logWriter"])
  */
-public class SearchQuerySerializer extends SerializerBase<SearchQuery> {
+public class SearchQuerySerializer extends StdSerializer<SearchQuery> {
     public SearchQuerySerializer() {
         super(SearchQuery.class);
     }

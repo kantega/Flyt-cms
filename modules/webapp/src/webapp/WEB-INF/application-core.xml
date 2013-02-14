@@ -83,7 +83,7 @@
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
 
-    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+    <bean name="aksessJsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
 
     <bean id="contentTemplateResourceLoader" class="no.kantega.publishing.common.data.CompoundResourceLoader">
         <constructor-arg>
