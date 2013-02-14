@@ -42,15 +42,13 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     @Autowired
     private TaskExecutor executorService;
 
-    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments, int numberOfThreads) {
+    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
         ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
         LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>(100);
         executorService.execute(new IDProducer(dataSource, ids));
 
         ProgressReporter progressReporter = new ProgressReporter(ContentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
-        for (int i = 0; i < numberOfThreads; i++){
-            executorService.execute(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments));
-        }
+        executorService.execute(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments));
 
         return progressReporter;
     }

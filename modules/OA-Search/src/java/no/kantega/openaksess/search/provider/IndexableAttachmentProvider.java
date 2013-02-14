@@ -45,14 +45,12 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         return getClass().getSimpleName();
     }
 
-    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue, int numberOfThreadsToUse) {
+    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
         LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
         executorService.execute(new IDProducer(dataSource, ids));
         ProgressReporter progressReporter = new ProgressReporter(AttachmentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
 
-        for (int i = 0; i < numberOfThreadsToUse; i++){
-            executorService.execute(new AttachmentProducer(progressReporter, ids, indexableDocumentQueue));
-        }
+        executorService.execute(new AttachmentProducer(progressReporter, ids, indexableDocumentQueue));
 
         return progressReporter;
     }
