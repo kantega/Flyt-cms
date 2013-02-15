@@ -139,27 +139,29 @@ public class TemplateHelper {
 
     
     private static boolean isAllowed(Content content, DisplayTemplate dt) {
-        boolean allowed = true;
         if (dt.getId() != content.getDisplayTemplateId()) {
-            for (Site s : dt.getSites()) {
-                // Check if template can be used in site which content is published in
-                List associations = content.getAssociations();
-                for (int i = 0; i < associations.size(); i++) {
-                    Association association =  (Association)associations.get(i);
-                    if (association.getSiteId() != s.getId()) {
-                        allowed = false;
-                        break;
+            if (dt.getSites().size() > 0) {
+                for (Association association : content.getAssociations()) {
+                    boolean templateAllowedForSite = false;
+                    for (Site s : dt.getSites()) {
+                        if (association.getSiteId() == s.getId()) {
+                            templateAllowedForSite = true;
+                        }
+                    }
+                    if (!templateAllowedForSite) {
+                        return false;
                     }
                 }
+
             }
             if (!dt.allowMultipleUsages()) {
                 // Template can only be used once, check if used before
                 if (isTemplateInUse(dt.getId())) {
-                    allowed = false;
+                    return false;
                 }
             }
         }
-        return allowed;
+        return true;
     }
 
 
