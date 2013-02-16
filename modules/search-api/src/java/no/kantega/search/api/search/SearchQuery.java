@@ -22,6 +22,7 @@ public class SearchQuery {
     private Integer pageNumber = 0;
     private String groupField;
     private List<String> groupQueries;
+    private int offset = 0;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -166,5 +167,13 @@ public class SearchQuery {
     public List<String> getGroupQueries() {
         if((groupQueries == null)) return Collections.emptyList();
         return groupQueries;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
     }
 }

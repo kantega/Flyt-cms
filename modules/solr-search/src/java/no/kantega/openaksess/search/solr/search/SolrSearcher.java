@@ -76,7 +76,7 @@ public class SolrSearcher implements Searcher {
 
         Integer resultsPerPage = query.getResultsPerPage();
         solrQuery.setRows(resultsPerPage);
-        solrQuery.setStart(query.getPageNumber() * resultsPerPage);
+        solrQuery.setStart(query.getOffset() + query.getPageNumber() * resultsPerPage);
         solrQuery.set("spellcheck", "on");
 
         setHighlighting(query, solrQuery);

@@ -47,6 +47,7 @@ public class ContentSearchController implements AksessController {
      * groupfield
      * resultsprpage
      * excludelinks
+     * filter
      */
     @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -94,6 +95,7 @@ public class ContentSearchController implements AksessController {
 
         searchQuery.setPageNumber(ServletRequestUtils.getIntParameter(request, "page", 0));
         searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
+        searchQuery.setOffset(ServletRequestUtils.getIntParameter(request, "offset", 0));
 
         searchQuery.setFacetFields(getFacetFields(request));
 
