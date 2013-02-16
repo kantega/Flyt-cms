@@ -39,6 +39,15 @@ public class ContentSearchController implements AksessController {
     private List<String> facetFields = Collections.emptyList();
     private List<String> facetQueries = Collections.emptyList();
 
+    /**
+     * Javadoxxx plx!!!!
+     * q
+     * page
+     * facetFields
+     * groupfield
+     * resultsprpage
+     * excludelinks
+     */
     @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -47,30 +56,12 @@ public class ContentSearchController implements AksessController {
             SearchResponse searchResponse = performSearch(request, query);
             model.put("searchResponse", searchResponse);
 
-            addLinks(model, searchResponse);
+            if(includeLinks(request)){
+                addLinks(model, searchResponse);
+            }
         }
 
         return model;
-    }
-
-    private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
-        Map<String, Object> links = new HashMap<String, Object>();
-        model.put("links", links);
-        int currentPage = searchResponse.getCurrentPage();
-        if (currentPage > 0) {
-            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
-            links.put("prevPageUrl", prevPageUrl);
-        }
-
-        int numberOfPages = searchResponse.getNumberOfPages();
-        if (currentPage < (numberOfPages - 1)) {
-            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
-            links.put("nextPageUrl", nextPageUrl);
-        }
-
-        if (numberOfPages > 1) {
-            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage));
-        }
     }
 
     @RequestMapping("/suggest")
@@ -107,8 +98,12 @@ public class ContentSearchController implements AksessController {
         searchQuery.setFacetFields(getFacetFields(request));
 
         searchQuery.setFacetQueries(facetQueries);
-
+        searchQuery.setGroupField(getGroupField(request));
         return searchQuery;
+    }
+
+    private String getGroupField(HttpServletRequest request) {
+        return ServletRequestUtils.getStringParameter(request, "groupfield", null);
     }
 
     private List<String> getFacetFields(HttpServletRequest request) {
@@ -155,6 +150,30 @@ public class ContentSearchController implements AksessController {
 
     private String getQuery(HttpServletRequest request) {
         return ServletRequestUtils.getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
+    }
+
+    private boolean includeLinks(HttpServletRequest request) {
+        return !ServletRequestUtils.getBooleanParameter(request, "excludelinks", false);
+    }
+
+    private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
+        Map<String, Object> links = new HashMap<String, Object>();
+        model.put("links", links);
+        int currentPage = searchResponse.getCurrentPage();
+        if (currentPage > 0) {
+            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
+            links.put("prevPageUrl", prevPageUrl);
+        }
+
+        int numberOfPages = searchResponse.getNumberOfPages();
+        if (currentPage < (numberOfPages - 1)) {
+            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
+            links.put("nextPageUrl", nextPageUrl);
+        }
+
+        if (numberOfPages > 1) {
+            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage));
+        }
     }
 
     public String getDescription() {
