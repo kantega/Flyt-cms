@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static no.kantega.openaksess.search.solr.index.SolrDocumentIndexer.getLanguageSuffix;
 
@@ -26,6 +27,8 @@ public class SolrSearcher implements Searcher {
 
     @Autowired
     private SolrServer solrServer;
+
+    private final Pattern boundary = Pattern.compile("\\s");
 
     public SearchResponse search(SearchQuery query) {
         try {
@@ -71,7 +74,7 @@ public class SolrSearcher implements Searcher {
     }
 
     private SolrQuery createSearchParams(SearchQuery query) {
-        SolrQuery solrQuery = new SolrQuery(query.getOriginalQuery());
+        SolrQuery solrQuery = new SolrQuery(addFuzzyTermsIfSet(query));
         setFilterQueryIfPresent(query, solrQuery);
 
         Integer resultsPerPage = query.getResultsPerPage();
@@ -86,6 +89,19 @@ public class SolrSearcher implements Searcher {
         addResultGrouping(query, solrQuery);
 
         return solrQuery;
+    }
+
+    private String addFuzzyTermsIfSet(SearchQuery query) {
+        String queryString = query.getOriginalQuery();
+        if(query.isFuzzySearch()){
+            StringBuilder fuzzyQuery = new StringBuilder();
+            for (String token : boundary.split(queryString)) {
+                fuzzyQuery.append(token);
+                fuzzyQuery.append("~ ");
+            }
+            queryString = fuzzyQuery.toString();
+        }
+        return queryString;
     }
 
     public List<String> suggest(SearchQuery query) {

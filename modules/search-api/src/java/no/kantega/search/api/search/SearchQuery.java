@@ -23,6 +23,7 @@ public class SearchQuery {
     private String groupField;
     private List<String> groupQueries;
     private int offset = 0;
+    private boolean fuzzySearch = true;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -175,5 +176,13 @@ public class SearchQuery {
 
     public void setOffset(int offset) {
         this.offset = offset;
+    }
+
+    public boolean isFuzzySearch() {
+        return fuzzySearch;
+    }
+
+    public void setFuzzySearch(boolean fuzzySearch) {
+        this.fuzzySearch = fuzzySearch;
     }
 }
