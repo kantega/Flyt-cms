@@ -66,7 +66,7 @@ public class SearchResult {
     }
 
     public String getDescription() {
-        return description.replaceAll("\"|\n", "");
+        return description;
     }
 
     public String getAuthor() {
