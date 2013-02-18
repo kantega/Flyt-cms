@@ -39,7 +39,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
     -->
-    <luceneMatchVersion>LUCENE_40</luceneMatchVersion>
+    <luceneMatchVersion>LUCENE_41</luceneMatchVersion>
 
     <!-- Data Directory
 
@@ -63,7 +63,7 @@
        persistent, and doesn't work with replication.
     -->
     <directoryFactory name="DirectoryFactory"
-                      class="${solr.directoryFactory:solr.StandardDirectoryFactory}"/>
+                      class="${solr.directoryFactory:solr.NRTCachingDirectoryFactory}"/>
 
     <indexConfig />
 
@@ -321,12 +321,19 @@
         </lst>
     </requestHandler>
 
-    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/spellcheck">
+    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/spellcheck" startup="lazy">
         <lst name="defaults">
-            <str name="spellcheck">true</str>
-            <str name="spellcheck.onlyMorePopular">true</str>
-            <str name="spellcheck.count">5</str>
+            <str name="spellcheck.dictionary">default</str>
+            <str name="spellcheck.dictionary">wordbreak</str>
+            <str name="spellcheck">on</str>
+            <str name="spellcheck.extendedResults">true</str>
+            <str name="spellcheck.count">10</str>
+            <str name="spellcheck.alternativeTermCount">5</str>
+            <str name="spellcheck.maxResultsForSuggest">5</str>
             <str name="spellcheck.collate">true</str>
+            <str name="spellcheck.collateExtendedResults">true</str>
+            <str name="spellcheck.maxCollationTries">10</str>
+            <str name="spellcheck.maxCollations">5</str>
         </lst>
         <arr name="components">
             <str>spellcheck</str>
@@ -365,6 +372,15 @@
             <!-- uncomment this to require suggestions to occur in 1% of the documents
                 <float name="thresholdTokenFrequency">.01</float>
             -->
+        </lst>
+
+        <lst name="spellchecker">
+            <str name="name">wordbreak</str>
+            <str name="classname">solr.WordBreakSolrSpellChecker</str>
+            <str name="field">all_text_unanalyzed</str>
+            <str name="combineWords">true</str>
+            <str name="breakWords">true</str>
+            <int name="maxChanges">10</int>
         </lst>
     </searchComponent>
 

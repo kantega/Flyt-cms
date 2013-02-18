@@ -47,11 +47,12 @@ public class ContentSearchController implements AksessController {
      * groupfield
      * resultsprpage
      * excludelinks
+     * excludedefaultfacets
      * filter
      */
     @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String query = getQuery(request);
         if (isNotEmpty(query)) {
             SearchResponse searchResponse = performSearch(request, query);
@@ -97,19 +98,27 @@ public class ContentSearchController implements AksessController {
         searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
         searchQuery.setOffset(ServletRequestUtils.getIntParameter(request, "offset", 0));
 
-        searchQuery.setFacetFields(getFacetFields(request));
+        addFacetFields(request, searchQuery);
 
-        searchQuery.setFacetQueries(facetQueries);
         searchQuery.setGroupField(getGroupField(request));
         return searchQuery;
+    }
+
+    private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery) {
+        boolean excludeDefaultFacets = ServletRequestUtils.getBooleanParameter(request, "excludedefaultfacets", false);
+        searchQuery.setFacetFields(getFacetFields(request, excludeDefaultFacets));
+
+        if (!excludeDefaultFacets) {
+            searchQuery.setFacetQueries(facetQueries);
+        }
     }
 
     private String getGroupField(HttpServletRequest request) {
         return ServletRequestUtils.getStringParameter(request, "groupfield", null);
     }
 
-    private List<String> getFacetFields(HttpServletRequest request) {
-        List<String> fields = facetFields;
+    private List<String> getFacetFields(HttpServletRequest request, boolean excludeDefaultFacets) {
+        List<String> fields = excludeDefaultFacets? Collections.<String>emptyList() : facetFields;
         String parameterfacetFields = ServletRequestUtils.getStringParameter(request, "facetFields", null);
         if(parameterfacetFields != null){
             fields = Arrays.asList(parameterfacetFields.split(","));
