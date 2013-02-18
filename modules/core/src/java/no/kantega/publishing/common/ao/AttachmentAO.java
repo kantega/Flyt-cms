@@ -46,15 +46,7 @@ public class AttachmentAO {
 
             attachment.setLastModified(new Date());
 
-            boolean attachmentExists = false;
-            if (attachment.getId() != -1) {
-                PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?");
-                st.setInt(1, attachment.getId());
-                ResultSet rs = st.executeQuery();
-                if (rs.next()) {
-                    attachmentExists = true;
-                }
-            }            
+            boolean attachmentExists = doesAttachmentAlreadyExist(attachment, c);
 
             if (attachmentExists) {
                 if (data != null) {
@@ -109,6 +101,19 @@ public class AttachmentAO {
             }
         }
 
+    }
+
+    private static boolean doesAttachmentAlreadyExist(Attachment attachment, Connection c) throws SQLException {
+        boolean attachmentExists = false;
+        if (attachment.getId() != -1) {
+            PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?");
+            st.setInt(1, attachment.getId());
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                attachmentExists = true;
+            }
+        }
+        return attachmentExists;
     }
 
     public static void deleteAttachment(int id) throws SystemException {
@@ -228,5 +233,33 @@ public class AttachmentAO {
         file.setSize(rs.getInt("FileSize"));
 
         return file;
+    }
+
+    /**
+     * Copies each attachment with contentId to a new with a new contentId.
+     * @param contentId of the old attachment.
+     * @param newNontentId, if of the new attachment.
+     */
+    public static void copyAttachment(int contentId, int newNontentId) {
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
+                    "select " + newNontentId +", Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = " + contentId);
+            st.execute();
+
+            st.close();
+        } catch (SQLException e) {
+            throw new SystemException(SOURCE, "SQL feil ved kopiering av vedlegg", e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
     }
 }
