@@ -461,6 +461,8 @@ public class ContentManagementService {
         sourceContent.setAssociations(associations);
 
         Content content = checkInContent(sourceContent, sourceContent.getStatus());
+        AttachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
+
         if(copyChildren){
             Log.info(SOURCE, "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();

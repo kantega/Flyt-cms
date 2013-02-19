@@ -16,22 +16,22 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.ContentIdentifier;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
 import no.kantega.search.index.IndexManager;
 import no.kantega.search.index.IndexManagerImpl;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
-import no.kantega.commons.exception.SystemException;
 
-import java.sql.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 
 public class AttachmentAO {
@@ -48,15 +48,7 @@ public class AttachmentAO {
 
             attachment.setLastModified(new Date());
 
-            boolean attachmentExists = false;
-            if (attachment.getId() != -1) {
-                PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?");
-                st.setInt(1, attachment.getId());
-                ResultSet rs = st.executeQuery();
-                if (rs.next()) {
-                    attachmentExists = true;
-                }
-            }            
+            boolean attachmentExists = doesAttachmentAlreadyExist(attachment, c);
 
             if (attachmentExists) {
                 if (data != null) {
@@ -111,6 +103,19 @@ public class AttachmentAO {
             }
         }
 
+    }
+
+    private static boolean doesAttachmentAlreadyExist(Attachment attachment, Connection c) throws SQLException {
+        boolean attachmentExists = false;
+        if (attachment.getId() != -1) {
+            PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?");
+            st.setInt(1, attachment.getId());
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                attachmentExists = true;
+            }
+        }
+        return attachmentExists;
     }
 
     public static void deleteAttachment(int id) throws SystemException {
@@ -266,5 +271,33 @@ public class AttachmentAO {
         file.setSize(rs.getInt("FileSize"));
 
         return file;
+    }
+
+    /**
+     * Copies each attachment with contentId to a new with a new contentId.
+     * @param contentId of the old attachment.
+     * @param newNontentId, if of the new attachment.
+     */
+    public static void copyAttachment(int contentId, int newNontentId) {
+        Connection c = null;
+
+        try {
+            c = dbConnectionFactory.getConnection();
+
+            PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
+                    "select " + newNontentId +", Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = " + contentId);
+            st.execute();
+
+            st.close();
+        } catch (SQLException e) {
+            throw new SystemException(SOURCE, "SQL feil ved kopiering av vedlegg", e);
+        } finally {
+            try {
+                if (c != null) {
+                    c.close();
+                }
+            } catch (SQLException e) {
+            }
+        }
     }
 }
