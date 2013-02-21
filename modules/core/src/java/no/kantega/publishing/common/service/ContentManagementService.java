@@ -664,7 +664,7 @@ public class ContentManagementService {
         if(cachingEnabled) {
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
-            ParameterCacheKey key = new ParameterCacheKey(qp, maxElements, sort, getAttributes, getTopics);
+            String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
 
             Element element = contentListCache.get(key);
 
@@ -676,6 +676,17 @@ public class ContentManagementService {
         } else {
             return ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
         }
+    }
+
+    private String buildContentListKey(ContentQuery.QueryWithParameters qp, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
+        StringBuilder keyBuilder = new StringBuilder(qp.getQuery());
+        keyBuilder.append(maxElements);
+        keyBuilder.append(sort.getSort1());
+        keyBuilder.append(sort.getSort2());
+        keyBuilder.append(sort.sortDescending());
+        keyBuilder.append(getAttributes);
+        keyBuilder.append(getTopics);
+        return keyBuilder.toString();
     }
 
     private int getMaxElementsToGetBeforeAuthorizationCheck(int maxElements) {
@@ -837,7 +848,7 @@ public class ContentManagementService {
         if (cachingEnabled) {
             int categoryId = category != null ? category.getId() : -1;
 
-            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, path, categoryId);
+            String key = createSiteMapKey(siteId, depth, language, rootId, path, categoryId);
 
             Element element = siteMapCache.get(key);
             if(element == null) {
@@ -849,6 +860,16 @@ public class ContentManagementService {
         } else {
             return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, path);
         }
+    }
+
+    private String createSiteMapKey(int siteId, int depth, int language, int rootId, int[] path, int categoryId) {
+        StringBuilder keybuilder = new StringBuilder(Integer.toString(siteId));
+        keybuilder.append(depth);
+        keybuilder.append(language);
+        keybuilder.append(rootId);
+        keybuilder.append(Arrays.toString(path));
+        keybuilder.append(categoryId);
+        return keybuilder.toString();
     }
 
     /**
@@ -1323,33 +1344,5 @@ public class ContentManagementService {
      */
     public List getXMLCacheSummary() throws SystemException {
         return XMLCacheAO.getSummary();
-    }
-
-
-
-    final static class ParameterCacheKey {
-        private final Object[] cacheKey;
-
-        ParameterCacheKey(Object... cacheKey) {
-            this.cacheKey = cacheKey;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ParameterCacheKey that = (ParameterCacheKey) o;
-
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
-            if (!Arrays.equals(cacheKey, that.cacheKey)) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(cacheKey);
-        }
     }
 }
