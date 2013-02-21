@@ -52,13 +52,13 @@ public class RepeatAttributesTag extends BodyTagSupport {
                         RepeaterAttribute repeater = (RepeaterAttribute)attribute;
                         numberOfRows = repeater.getNumberOfRows();
 
-                    } else {
+                    } else if(attribute != null){
                         Log.error(this.getClass().getName(), "Attribute:" + name + " is not a RepeaterAttribute");
                     }
                 }
             }
         } catch (Exception e) {
-
+            Log.error(this.getClass().getName(), e);
         }
 
         return doIter();
