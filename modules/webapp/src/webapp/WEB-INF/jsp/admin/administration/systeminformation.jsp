@@ -58,7 +58,7 @@
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.jvm.version"/></div>
                 <div class="content">
-                    ${vmVendor} ${vmName} ${vmVersion}
+                     ${vmVendor} ${vmName} ${javaVersion}, ${vmVersion}
                 </div>
             </div>
 

@@ -55,6 +55,35 @@ public class ViewSystemInformationAction extends AbstractController {
             conf.setProperties(loader.loadConfiguration());
         }
 
+        addOAAndWebappVersionInformation(model);
+
+        model.put("aksessVersion", Aksess.getVersion());
+
+        model.put("installDir", Configuration.getApplicationDirectory());
+
+        model.put("databaseUrl", Aksess.getConfiguration().getString("database.url"));
+
+        if (dbConnectionFactory.isPoolingEnabled()) {
+            model.put("dbConnectionPoolEnabled", Boolean.TRUE);
+        }
+
+        addMemoryInformation(model);
+
+        ContentManagementService cms = new ContentManagementService(request);
+        model.put("xmlCache", cms.getXMLCacheSummary());
+
+        Configuration config = Aksess.getConfiguration();
+        model.put("configProperties", config.getProperties());
+
+        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
+        addVMStartDate(model, runtimeMXBean);
+
+        addJVMInformaion(model, runtimeMXBean);
+
+        return new ModelAndView(view, model);
+    }
+
+    private void addOAAndWebappVersionInformation(Map<String, Object> model) {
         try {
             Properties versionInfo = new Properties();
             versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
@@ -72,17 +101,21 @@ public class ViewSystemInformationAction extends AbstractController {
         } catch (IOException e) {
             Log.info(this.getClass().getName(), "aksess-webapp-version.properties not found", null, null);
         }
+    }
 
-        model.put("aksessVersion", Aksess.getVersion());
+    private void addVMStartDate(Map<String, Object> model, RuntimeMXBean runtimeMXBean) {
+        long jvmStartTime = runtimeMXBean.getStartTime();
+        model.put("jvmStartDate", new Date(jvmStartTime));
+    }
 
-        model.put("installDir", Configuration.getApplicationDirectory());
+    private void addJVMInformaion(Map<String, Object> model, RuntimeMXBean runtimeMXBean) {
+        model.put("vmName", runtimeMXBean.getVmName());
+        model.put("vmVendor", runtimeMXBean.getVmVendor());
+        model.put("vmVersion", runtimeMXBean.getVmVersion());
+        model.put("javaVersion", System.getProperty("java.version"));
+    }
 
-        model.put("databaseUrl", Aksess.getConfiguration().getString("database.url"));
-
-        if (dbConnectionFactory.isPoolingEnabled()) {
-            model.put("dbConnectionPoolEnabled", Boolean.TRUE);
-        }
-
+    private void addMemoryInformation(Map<String, Object> model) {
         DecimalFormat format = new DecimalFormat("#,###.##");
         long mb = 1024*1024;
         double free = Runtime.getRuntime().freeMemory()/(double)mb;
@@ -92,23 +125,6 @@ public class ViewSystemInformationAction extends AbstractController {
         model.put("freeMemory", format.format(free));
         model.put("totalMemory", format.format(total));
         model.put("maxMemory", format.format(max));
-
-        ContentManagementService cms = new ContentManagementService(request);
-        model.put("xmlCache", cms.getXMLCacheSummary());
-
-        Configuration config = Aksess.getConfiguration();
-        model.put("configProperties", config.getProperties());
-
-        RuntimeMXBean runtimeMXBean = ManagementFactory.getRuntimeMXBean();
-        long jvmStartTime = runtimeMXBean.getStartTime();
-        model.put("jvmStartDate", new Date(jvmStartTime));
-
-        model.put("vmName", runtimeMXBean.getVmName());
-        model.put("vmVendor", runtimeMXBean.getVmVendor());
-        model.put("vmVersion", runtimeMXBean.getVmVersion());
-        model.put("javaVersion", System.getProperty("java.version"));
-
-        return new ModelAndView(view, model);
     }
 
     private Date parseDate(String date) {
