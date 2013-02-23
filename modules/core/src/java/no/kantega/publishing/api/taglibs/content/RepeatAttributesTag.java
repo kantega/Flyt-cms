@@ -68,7 +68,7 @@ public class RepeatAttributesTag extends BodyTagSupport {
         if (offset < numberOfRows) {
             pageContext.setAttribute(AttributeTagHelper.REPEATER_OFFSET_PAGE_VAR + name, offset);
 
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }
