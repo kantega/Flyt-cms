@@ -62,6 +62,16 @@
             </analyzer>
         </fieldType>-->
         <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
+        <fieldtype name="tlf" stored="true" indexed="true" multiValued="true" class="solr.TextField">
+            <analyzer type="index">
+                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\w)" replacement=""/>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+            </analyzer>
+            <analyzer type="query">
+                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\w)" replacement=""/>
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+            </analyzer>
+        </fieldtype>
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
@@ -137,6 +147,7 @@
         <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_tlf" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>
