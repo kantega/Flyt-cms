@@ -22,15 +22,26 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <style>
+        .providers input, .providers label {
+            float: none;
+        }
+
+        .providers li{
+            list-style: none outside none;
+        }
+    </style>
     <form action="RebuildIndex.action" name="searchindex" method="POST">
         <admin:box>
             <h1><kantega:label key="aksess.search.title"/></h1>
             <div class="row">
                 <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label><br>
+                <ul class="providers">
                 <c:forEach var="provider" items="${providers}">
                     <c:set var="providerName" value="${provider.name}"/>
-                    <input type="checkbox" class="checkbox" name="exclude.${providerName}" id="${providerName}"><label for="${providerName}" class="checkbox">${providerName}</label><br>
+                    <li><input type="checkbox" class="checkbox" name="exclude.${providerName}" id="${providerName}"><label for="${providerName}" class="checkbox">${providerName}</label></li>
                 </c:forEach>
+                </ul>
                 <div class="clearing"></div>
             </div>
             <div class="row">
