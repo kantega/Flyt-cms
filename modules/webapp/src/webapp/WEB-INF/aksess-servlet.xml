@@ -232,7 +232,6 @@
                 <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
                 <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
                 <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
-                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
                 <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>

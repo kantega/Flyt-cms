@@ -105,12 +105,12 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
 
                     if (id != null) {
-                        progressReporter.reportProgress();
                         Attachment attachment = AttachmentAO.getAttachment(id);
                         if (attachment != null) {
                             IndexableDocument indexableDocument = transformer.transform(attachment);
                             indexableDocuments.put(indexableDocument);
                         }
+                        progressReporter.reportProgress();
                     }
                 } catch (InterruptedException e) {
                     Log.error(getClass().getName(), e);

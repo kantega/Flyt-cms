@@ -7,9 +7,12 @@ import java.util.List;
 public class ProgressReporterUtils {
 
     public static boolean notAllProgressReportersAreMarkedAsFinished(List<ProgressReporter> progressReporters) {
-        boolean isFinished = false;
+        if(progressReporters.isEmpty()){
+            return true;
+        }
+        boolean isFinished = true;
         for (ProgressReporter progressReporter : progressReporters) {
-            isFinished |= progressReporter.isFinished();
+            isFinished &= progressReporter.isFinished();
         }
         return !isFinished;
     }

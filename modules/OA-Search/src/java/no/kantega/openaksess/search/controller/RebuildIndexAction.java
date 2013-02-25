@@ -20,21 +20,21 @@ import no.kantega.openaksess.search.index.rebuild.IndexRebuilder;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
-
-public class RebuildIndexAction extends AbstractController {
+@Controller
+public class RebuildIndexAction {
 
     private String formView;
     private String statusView;
@@ -46,17 +46,10 @@ public class RebuildIndexAction extends AbstractController {
     private List<IndexableDocumentProvider> indexableDocumentProviders;
 
 
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        if (progressReporters == null && request.getMethod().equals("POST")) {
-            Integer numberOfConcurrentHandlers = ServletRequestUtils.getIntParameter(request, "numberOfConcurrentHandlers");
-
-            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToExclude(request));
-
-            map.put("progressReporters", progressReporters);
-            return new ModelAndView(statusView, map);
-        } else if(progressReporters == null || !notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+    @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.GET)
+    public ModelAndView handleGet() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        if(progressReporters == null || !notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
             progressReporters = null;
             map.put("providers", indexableDocumentProviders);
             return new ModelAndView(formView, map);
@@ -64,7 +57,37 @@ public class RebuildIndexAction extends AbstractController {
             map.put("progressReporters", progressReporters);
             return new ModelAndView(statusView, map);
         }
+    }
 
+    @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.POST)
+    public ModelAndView handlePost(HttpServletRequest request, @RequestParam Integer numberOfConcurrentHandlers, @RequestParam(required = false, defaultValue = "true") boolean clearIndex) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        if (progressReporters == null) {
+            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToExclude(request), clearIndex);
+        }
+        return new ModelAndView(statusView, map);
+    }
+
+    @RequestMapping(value = "/admin/administration/RebuildIndexStatus.action", method = RequestMethod.GET)
+    public @ResponseBody Map<String, Object> getStatus(){
+        Map<String, Object> model = new HashMap<>();
+        List<Map<String, String>> status = new ArrayList<>();
+
+
+        if(progressReporters != null){
+            for (ProgressReporter progressReporter : progressReporters) {
+                Map<String, String> statusMap = new LinkedHashMap<>();
+                statusMap.put("current", String.valueOf(progressReporter.getCurrent()));
+                statusMap.put("total", String.valueOf(progressReporter.getTotal()));
+                statusMap.put("type", String.valueOf(progressReporter.getDocType()));
+                status.add(statusMap);
+            }
+            model.put("status", status);
+            model.put("allDone", !notAllProgressReportersAreMarkedAsFinished(progressReporters));
+        }
+
+        return model;
     }
 
     public void setFormView(String formView) {
@@ -76,7 +99,7 @@ public class RebuildIndexAction extends AbstractController {
     }
 
     private List<String> getProvidersToExclude(HttpServletRequest request) {
-        List<String> excludedProviders = new ArrayList<String>();
+        List<String> excludedProviders = new ArrayList<>();
         for (IndexableDocumentProvider provider : indexableDocumentProviders) {
             String simpleName = provider.getName();
             if(ServletRequestUtils.getBooleanParameter(request, "exclude." + simpleName, false)){

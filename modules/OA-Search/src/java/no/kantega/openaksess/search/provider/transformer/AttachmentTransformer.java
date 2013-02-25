@@ -32,10 +32,10 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
 
         ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(attachment.getContentId());
         Content content = ContentAO.getContent(contentIdentifier, true);
-        indexableDocument.setSecurityId(content.getSecurityId());
-        indexableDocument.setLanguage(getLanguageAsISOCode(content.getLanguage()));
 
-        if (content.isSearchable()) {
+        if (content != null && content.isSearchable()) {
+            indexableDocument.setLanguage(getLanguageAsISOCode(content.getLanguage()));
+            indexableDocument.setSecurityId(content.getSecurityId());
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
             indexableDocument.setId(String.valueOf(attachment.getId()));
 

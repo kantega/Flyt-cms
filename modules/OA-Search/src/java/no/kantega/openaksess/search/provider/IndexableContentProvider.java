@@ -110,12 +110,13 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
                     if (id != null) {
                         ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(id);
-                        progressReporter.reportProgress();
+
                         Content content = contentManagementService.getContent(contentIdentifier);
                         if (content != null) {
                             IndexableDocument indexableDocument = transformer.transform(content);
                             indexableDocuments.put(indexableDocument);
                         }
+                        progressReporter.reportProgress();
                     }
                 } catch (Exception e) {
                     Log.error(getClass().getName(), e);

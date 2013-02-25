@@ -16,8 +16,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
-
 @Component
 public class IndexRebuilder {
 
@@ -32,13 +30,15 @@ public class IndexRebuilder {
 
     private final String category = getClass().getName();
 
-    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude) {
-        documentIndexer.deleteAllDocuments();
+    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude, boolean clearIndex) {
+        if (clearIndex) {
+            documentIndexer.deleteAllDocuments();
+        }
 
-        final List<ProgressReporter> progressReporters = new ArrayList<ProgressReporter>();
-        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<IndexableDocument>(nThreads);
+        final List<ProgressReporter> progressReporters = new ArrayList<>();
+        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(nThreads);
         if (notAllProvidersAreExcluded(providersToExclude)) {
-            executeRebuild(progressReporters, indexableDocuments);
+            executeRebuild(indexableDocuments);
 
             for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
                 boolean providerIsNotExcluded = !providersToExclude.contains(indexableDocumentProvider.getClass().getSimpleName());
@@ -55,7 +55,7 @@ public class IndexRebuilder {
         return providersToExclude.size() < indexableDocumentProviders.size();
     }
 
-    private void executeRebuild(final List<ProgressReporter> progressReporters, final BlockingQueue<IndexableDocument> indexableDocuments) {
+    private void executeRebuild(final BlockingQueue<IndexableDocument> indexableDocuments) {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -63,10 +63,10 @@ public class IndexRebuilder {
                 StopWatch stopWatch = new StopWatch(category);
                 stopWatch.start();
                 try {
-                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
-                        IndexableDocument poll = indexableDocuments.poll(10, TimeUnit.SECONDS);
+                    IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
+                    do {
                         documentIndexer.indexDocument(poll);
-                    }
+                    } while ((poll = indexableDocuments.poll(60, TimeUnit.SECONDS)) != null);
                 } catch (InterruptedException e) {
                     Log.error(category, e);
                 } finally {
