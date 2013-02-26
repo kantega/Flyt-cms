@@ -40,15 +40,15 @@ public class ContentSearchController implements AksessController {
     private List<String> facetQueries = Collections.emptyList();
 
     /**
-     * Javadoxxx plx!!!!
-     * q
-     * page
-     * facetFields
-     * groupfield
-     * resultsprpage
-     * excludelinks
-     * excludedefaultfacets
-     * filter
+     * q - The query string. e.g. «cheese sale».
+     * page - The result page wanted.
+     * facetFields - The indexed fields to generate facet values from. e.g. «indexedContentType»
+     * groupfield - Group results by the value they are having in this field.
+     * resultsprpage - The number of results per page.
+     * excludelinks - By default links for the paginating of results are generated. Set this parameter to true if this is not desired.
+     * excludedefaultfacets - Faceting on location and documenttype is enabled by default. To disable this set this parameter to true.
+     * filter - Additional filters may be added by setting this parameter. Each filter have to be on the format «field:value».
+     * offset - To offset the results returned set the number of results to offset by in this parameter.
      */
     @RequestMapping("/search")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -66,8 +66,14 @@ public class ContentSearchController implements AksessController {
         return model;
     }
 
+    /**
+     *
+     * @param request with the suggestion query in parameter «q» or «term».
+     * @param limit - the number of suggestion wanted.
+     * @return string suggestions matching the query.
+     */
     @RequestMapping("/suggest")
-    public @ResponseBody List<String> search(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
+    public @ResponseBody List<String> suggest(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String term = getQorTerm(request);
         SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
         query.setResultsPerPage(limit);
@@ -78,6 +84,12 @@ public class ContentSearchController implements AksessController {
         return ServletRequestUtils.getStringParameter(request, "q", request.getParameter("term"));
     }
 
+    /**
+     *
+     * @param request with the spelling query in parameter «q» or «term».
+     * @param limit - the number of spellings wanted.
+     * @return strings with possible spellings.
+     */
     @RequestMapping("/spelling")
     public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String term = getQorTerm(request);
@@ -127,7 +139,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
-        List<String> filterQueries = new ArrayList<String>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
+        List<String> filterQueries = new ArrayList<>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
         addSiteFilter(searchContext, filterQueries);
 
