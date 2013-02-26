@@ -4,9 +4,9 @@ import com.google.common.base.Predicate;
 import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
 import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.search.api.retrieve.IndexableContentTypeToObjectTypeMapping;
 import no.kantega.search.api.search.GroupResultResponse;
 import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.SearchResponse;
@@ -20,7 +20,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.collect.Collections2.filter;
 
@@ -32,6 +34,8 @@ public class SearchResultFilterAspect {
 
     @Autowired
     private TaskExecutor taskExecutor;
+
+    private Map<String, Integer> indexedContentTypeToObjectTypeMapping = new HashMap<>();
 
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
     public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
@@ -56,12 +60,13 @@ public class SearchResultFilterAspect {
     }
 
     private void filterHits(SearchResponse searchResponse, final SecuritySession session) {
-        List<GroupResultResponse> groupResultResponses = new ArrayList<GroupResultResponse>(searchResponse.getGroupResultResponses().size());
+        List<GroupResultResponse> groupResultResponses = new ArrayList<>(searchResponse.getGroupResultResponses().size());
         for (GroupResultResponse groupResultResponse : searchResponse.getGroupResultResponses()) {
             List<SearchResult> originalSearchResults = groupResultResponse.getSearchResults();
-            List<SearchResult> filteredResult = new ArrayList<SearchResult>(filter(originalSearchResults, new Predicate<SearchResult>() {
+            List<SearchResult> filteredResult = new ArrayList<>(filter(originalSearchResults, new Predicate<SearchResult>() {
                 public boolean apply(@Nullable SearchResult documentHit) {
-                    return session.isAuthorized(toBaseObject(documentHit), Privilege.VIEW_CONTENT);
+                    Integer mappedType = indexedContentTypeToObjectTypeMapping.get(documentHit.getIndexedContentType());
+                    return mappedType == null || session.isAuthorized(toBaseObject(documentHit, mappedType), Privilege.VIEW_CONTENT);
                 }
             }));
 
@@ -76,16 +81,23 @@ public class SearchResultFilterAspect {
         return groupResultResponse.getNumFound().intValue() - (originalSearchResults.size() - filteredResult.size());
     }
 
-    private BaseObject toBaseObject(SearchResult documentHit) {
-        return new SearchBaseObject(documentHit);
+    private BaseObject toBaseObject(SearchResult documentHit, int objectType) {
+        return new SearchBaseObject(documentHit, objectType);
+    }
+
+    @Autowired
+    private void setIndexedContentTypeToObjectTypeMappings(List<IndexableContentTypeToObjectTypeMapping> indexedContentTypeToObjectTypeMappings){
+        for (IndexableContentTypeToObjectTypeMapping entry : indexedContentTypeToObjectTypeMappings) {
+            this.indexedContentTypeToObjectTypeMapping.put(entry.getIndexableContentType(), entry.getObjectType());
+        }
     }
 
     private class SearchBaseObject extends BaseObject {
 
         private final int objectType;
 
-        private SearchBaseObject(SearchResult searchResult) {
-            objectType = ObjectType.ASSOCIATION;
+        private SearchBaseObject(SearchResult searchResult, int objectType) {
+            this.objectType = objectType;
             setSecurityId(searchResult.getSecurityId());
         }
 
