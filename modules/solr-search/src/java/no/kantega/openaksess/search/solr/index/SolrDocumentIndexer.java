@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
+
 @Component
 public class SolrDocumentIndexer implements DocumentIndexer {
     private final Logger log  = LoggerFactory.getLogger(getClass());
@@ -115,14 +117,6 @@ public class SolrDocumentIndexer implements DocumentIndexer {
             streamParams.add("literal." + attributeEntry.getKey(), getStringValue(attributeEntry.getValue()));
         }
         return streamParams;
-    }
-
-    public static String getLanguageSuffix(String language) {
-        if(language.equals("eng")){
-            return "en";
-        }else {
-            return "no";
-        }
     }
 
     private String getStringValue(Object value) {

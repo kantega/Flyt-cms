@@ -60,8 +60,8 @@ public class RebuildIndexAction {
     }
 
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.POST)
-    public ModelAndView handlePost(HttpServletRequest request, @RequestParam Integer numberOfConcurrentHandlers, @RequestParam(required = false, defaultValue = "true") boolean clearIndex) throws Exception {
-        Map<String, Object> map = new HashMap<String, Object>();
+    public ModelAndView handlePost(HttpServletRequest request, @RequestParam Integer numberOfConcurrentHandlers, @RequestParam(required = false, defaultValue = "false") boolean clearIndex) throws Exception {
+        Map<String, Object> map = new HashMap<>();
 
         if (progressReporters == null) {
             progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToExclude(request), clearIndex);

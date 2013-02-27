@@ -29,7 +29,7 @@ public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport imp
             String path = getNamedParameterJdbcTemplate().queryForObject("select Path from associations where UniqueId = :associationId",
                     Collections.singletonMap("associationId", associationId), String.class);
             String replaceSlashAddCurrent = StringUtils.removeStart(path, "/").replace("/", ",") + associationId;
-            Map<String,Object> associationIds = new HashMap<String, Object>();
+            Map<String,Object> associationIds = new HashMap<>();
             associationIds.put("associationIds", Arrays.asList(replaceSlashAddCurrent.split(",")));
             pathEntries = getNamedParameterJdbcTemplate().query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:associationIds) order by associations.AssociationId", associationIds, rowMapper);
         } catch (DataAccessException e) {

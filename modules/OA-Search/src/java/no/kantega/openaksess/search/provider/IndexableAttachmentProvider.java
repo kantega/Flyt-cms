@@ -40,13 +40,8 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         return jdbcTemplate.queryForInt("SELECT count(attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
     }
 
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
-
     public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
-        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>();
+        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>();
         executorService.execute(new IDProducer(dataSource, ids));
         ProgressReporter progressReporter = new ProgressReporter(AttachmentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
 
@@ -109,6 +104,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                         if (attachment != null) {
                             IndexableDocument indexableDocument = transformer.transform(attachment);
                             indexableDocuments.put(indexableDocument);
+                            waitSome();
                         }
                         progressReporter.reportProgress();
                     }
@@ -117,5 +113,19 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                 }
             }
         }
+
+        /*
+         * // TODO remove hack.
+         * Most of the processing of attachments are done in the indexer, so to not overload the machine.
+         */
+        private void waitSome() throws InterruptedException {
+            Thread.sleep(250);
+        }
+    }
+
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
     }
 }

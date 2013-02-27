@@ -2,6 +2,8 @@ package no.kantega.openaksess.search.solr.search;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import no.kantega.openaksess.search.solr.provider.DefaultSearchResultDecorator;
+import no.kantega.search.api.provider.SearchResultDecorator;
 import no.kantega.search.api.search.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -15,18 +17,20 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import static no.kantega.openaksess.search.solr.index.SolrDocumentIndexer.getLanguageSuffix;
+import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
+
 
 @Component
 public class SolrSearcher implements Searcher {
 
     @Autowired
     private SolrServer solrServer;
+
+    private Map<String, SearchResultDecorator> resultDecoratorMap;
+    private SearchResultDecorator defaultSearchResultDecorator;
 
     private final Pattern boundary = Pattern.compile("\\s");
 
@@ -54,7 +58,7 @@ public class SolrSearcher implements Searcher {
                 List<Group> groups = value.getValues();
                 int matches = value.getMatches();
 
-                List<GroupResultResponse> groupResultResponses = new ArrayList<GroupResultResponse>(groups.size());
+                List<GroupResultResponse> groupResultResponses = new ArrayList<>(groups.size());
                 for (Group group : groups) {
                     String groupValue = group.getGroupValue();
                     SolrDocumentList result = group.getResult();
@@ -262,7 +266,7 @@ public class SolrSearcher implements Searcher {
 
     private List<String> getSpellSuggestions(SpellCheckResponse spellCheckResponse) {
         List<SpellCheckResponse.Suggestion> suggestions = spellCheckResponse.getSuggestions();
-        List<String> suggestionStrings = new ArrayList<String>();
+        List<String> suggestionStrings = new ArrayList<>();
         for (SpellCheckResponse.Suggestion suggestion : suggestions) {
             suggestionStrings.addAll(suggestion.getAlternatives());
         }
@@ -270,17 +274,17 @@ public class SolrSearcher implements Searcher {
     }
 
     private SearchResult createSearchResult(SolrDocument result, QueryResponse queryResponse, SearchQuery query) {
+        String indexedContentType = (String) result.getFieldValue("indexedContentType");
         String language = (String) result.getFieldValue("language");
         String languageSuffix = getLanguageSuffix(language);
         String description = getHighlightedDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
-        return new SearchResult((Integer) result.getFieldValue("id"),
-                (Integer) result.getFieldValue("securityId"),
-                (String) result.getFieldValue("indexedContentType"),
-                (String) result.getFieldValue("title_" + languageSuffix),
-                description,
-                (String) result.getFieldValue("author"),
-                (String) result.getFieldValue("url"),
-                (Integer) result.getFieldValue("parentId"));
+
+        SearchResultDecorator decorator = resultDecoratorMap.get(indexedContentType);
+        if(decorator == null){
+            decorator = defaultSearchResultDecorator;
+        }
+
+        return decorator.decorate(result, description, query);
     }
 
     private String getHighlightedDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {
@@ -296,5 +300,28 @@ public class SolrSearcher implements Searcher {
             }
         }
         return (String) result.getFieldValue(fieldname);
+    }
+
+    @Autowired
+    public void setResultDecorators(Collection<SearchResultDecorator> resultDecorators) {
+        this.resultDecoratorMap = new HashMap<>();
+        for (SearchResultDecorator<?> resultDecorator : resultDecorators) {
+            for(String handledindexedContentType : resultDecorator.handledindexedContentTypes()){
+                throwIfIsHandledAlready(handledindexedContentType);
+
+                if (handledindexedContentType.equals(DefaultSearchResultDecorator.DEFAULT_INDEXED_CONTENT_TYPE)) {
+                    defaultSearchResultDecorator = resultDecorator;
+                } else {
+                    resultDecoratorMap.put(handledindexedContentType, resultDecorator);
+                }
+            }
+        }
+    }
+
+    private void throwIfIsHandledAlready(String handledindexedContentType) {
+        if(resultDecoratorMap.containsKey(handledindexedContentType)){
+            throw new IllegalStateException("Several SearchResultDecorators handle indexedContentType " +
+                    handledindexedContentType + " only one is allowed");
+        }
     }
 }
