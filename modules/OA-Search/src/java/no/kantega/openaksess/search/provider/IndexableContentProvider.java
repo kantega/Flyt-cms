@@ -71,10 +71,10 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
             Connection connection = null;
             try {
                 connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement("SELECT content.ContentId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+                PreparedStatement preparedStatement = connection.prepareStatement("SELECT associations.associationId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()){
-                    ids.put(resultSet.getInt("ContentId"));
+                    ids.put(resultSet.getInt("associationId"));
                 }
             } catch (Exception e) {
                 Log.error(getClass().getName(), e);
@@ -109,7 +109,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
                 try {
                     Integer id = ids.poll(10, TimeUnit.SECONDS);
                     if (id != null) {
-                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(id);
+                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromAssociationId(id);
 
                         Content content = contentManagementService.getContent(contentIdentifier);
                         if (content != null) {

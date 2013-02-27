@@ -7,8 +7,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- *
- * @param <SR>
+ * Decorator of particular types of search results.
+ * This can be used to add extra information to each result.
+ * There should be only one SearchResultDecorator for any one indexedContentType.
+ * @param <SR> the custom class used ot decorate the search result.
  */
 public interface SearchResultDecorator<SR extends SearchResult> {
     /**
@@ -17,11 +19,10 @@ public interface SearchResultDecorator<SR extends SearchResult> {
     public Collection<String> handledindexedContentTypes();
 
     /**
-     *
-     *
-     * @param resultMap
-     * @param description
-     *@param query @return
+     * Create an instance of SR based on the values of the search result.
+     * @param resultMap containing the values stored in the index.
+     * @param description - Either the value stored in the descripton field in the index, or the highlighted text.
+     * @param query that resulted in the particular result.
      */
     public SR decorate(Map<String, Object> resultMap, String description, SearchQuery query);
 }
