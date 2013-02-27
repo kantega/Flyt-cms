@@ -30,7 +30,6 @@ public class DefaultSearchResultDecorator implements SearchResultDecorator<Searc
                 (String) resultMap.get("indexedContentType"),
                 (String) resultMap.get("title_" + languageSuffix),
                 description,
-                (String) resultMap.get("author"),
                 (String) resultMap.get("url"),
                 (Integer) resultMap.get("parentId"));
     }
