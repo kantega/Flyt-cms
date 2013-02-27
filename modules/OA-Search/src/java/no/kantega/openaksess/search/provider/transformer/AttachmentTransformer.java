@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.provider.transformer;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -13,6 +12,8 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 
 @Component
 public class AttachmentTransformer implements DocumentTransformer<Attachment> {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
 
     public IndexableDocument transform(Attachment attachment) {
@@ -59,7 +61,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
                 AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(new FileOutputStream(attachmentFile)));
                 indexableDocument.setFileContent(attachmentFile);
             } catch (IOException e) {
-                Log.error(getClass().getSimpleName(), e);
+                log.error("Error streaming file", e);
             }finally {
                 IOUtils.closeQuietly(fileStream);
             }

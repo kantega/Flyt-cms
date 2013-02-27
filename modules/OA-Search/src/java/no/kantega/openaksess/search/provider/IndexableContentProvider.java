@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.provider;
 
-import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
@@ -9,6 +8,8 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
@@ -19,7 +20,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -27,10 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class IndexableContentProvider implements IndexableDocumentProvider {
 
-    @Override
-    public String getName() {
-        return getClass().getSimpleName();
-    }
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     @Qualifier("aksessDataSource")
@@ -42,15 +39,50 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     @Autowired
     private TaskExecutor executorService;
 
-    public ProgressReporter provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
-        ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
-        LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>(100);
-        executorService.execute(new IDProducer(dataSource, ids));
+    private ProgressReporter progressReporter;
 
-        ProgressReporter progressReporter = new ProgressReporter(ContentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
-        executorService.execute(new ContentProducer(progressReporter, contentManagementService, ids, indexableDocuments));
+    public void provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
+        try {
+            ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
+            LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>(100);
+            executorService.execute(new IDProducer(dataSource, ids));
+            progressReporter.setStarted();
+            while (!progressReporter.isFinished()){
+                try {
+                    Integer id = ids.poll(10, TimeUnit.SECONDS);
+                    if (id != null) {
+                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromAssociationId(id);
 
-        return progressReporter;
+                        Content content = contentManagementService.getContent(contentIdentifier);
+                        if (content != null) {
+                            IndexableDocument indexableDocument = transformer.transform(content);
+                            indexableDocuments.put(indexableDocument);
+                        }
+                    }
+                } catch (Exception e) {
+                    log.error("Error transforming Content", e);
+                } finally {
+                    progressReporter.reportProgress();
+                }
+
+            }
+        } finally {
+            progressReporter = null;
+        }
+
+    }
+
+    @Override
+    public String getName() {
+        return getClass().getSimpleName();
+    }
+
+    @Override
+    public ProgressReporter getProgressReporter() {
+        if(progressReporter == null){
+            progressReporter = new ProgressReporter(ContentTransformer.HANDLED_DOCUMENT_TYPE, getNumberOfDocuments());
+        }
+        return  progressReporter;
     }
 
     private long getNumberOfDocuments() {
@@ -68,60 +100,14 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         }
 
         public void run() {
-            Connection connection = null;
-            try {
-                connection = dataSource.getConnection();
+            try (Connection connection = dataSource.getConnection()){
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT associations.associationId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 ResultSet resultSet = preparedStatement.executeQuery();
                 while (resultSet.next()){
                     ids.put(resultSet.getInt("associationId"));
                 }
             } catch (Exception e) {
-                Log.error(getClass().getName(), e);
-            } finally {
-                if(connection != null){
-                    try {
-                        connection.close();
-                    } catch (SQLException e) {
-                        Log.error(getClass().getName(), e);
-                    }
-                }
-            }
-        }
-    }
-
-    private class ContentProducer implements Runnable {
-
-        private final ProgressReporter progressReporter;
-        private final ContentManagementService contentManagementService;
-        private final LinkedBlockingQueue<Integer> ids;
-        private final BlockingQueue<IndexableDocument> indexableDocuments;
-
-        public ContentProducer(ProgressReporter progressReporter, ContentManagementService contentManagementService, LinkedBlockingQueue<Integer> ids, BlockingQueue<IndexableDocument> indexableDocuments) {
-            this.progressReporter = progressReporter;
-            this.contentManagementService = contentManagementService;
-            this.ids = ids;
-            this.indexableDocuments = indexableDocuments;
-        }
-
-        public void run() {
-            while (!progressReporter.isFinished()){
-                try {
-                    Integer id = ids.poll(10, TimeUnit.SECONDS);
-                    if (id != null) {
-                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromAssociationId(id);
-
-                        Content content = contentManagementService.getContent(contentIdentifier);
-                        if (content != null) {
-                            IndexableDocument indexableDocument = transformer.transform(content);
-                            indexableDocuments.put(indexableDocument);
-                        }
-                        progressReporter.reportProgress();
-                    }
-                } catch (Exception e) {
-                    Log.error(getClass().getName(), e);
-                }
-
+                log.error("Error getting IDs", e);
             }
         }
     }

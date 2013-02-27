@@ -64,7 +64,7 @@ public class RebuildIndexAction {
         Map<String, Object> map = new HashMap<>();
 
         if (progressReporters == null) {
-            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToExclude(request), clearIndex);
+            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToInclude(request), clearIndex);
         }
         return new ModelAndView(statusView, map);
     }
@@ -98,14 +98,14 @@ public class RebuildIndexAction {
         this.statusView = statusView;
     }
 
-    private List<String> getProvidersToExclude(HttpServletRequest request) {
-        List<String> excludedProviders = new ArrayList<>();
+    private List<String> getProvidersToInclude(HttpServletRequest request) {
+        List<String> includedProviders = new ArrayList<>();
         for (IndexableDocumentProvider provider : indexableDocumentProviders) {
             String simpleName = provider.getName();
-            if(ServletRequestUtils.getBooleanParameter(request, "exclude." + simpleName, false)){
-                excludedProviders.add(simpleName);
+            if(ServletRequestUtils.getBooleanParameter(request, "include." + simpleName, false)){
+                includedProviders.add(simpleName);
             }
         }
-        return excludedProviders;
+        return includedProviders;
     }
 }

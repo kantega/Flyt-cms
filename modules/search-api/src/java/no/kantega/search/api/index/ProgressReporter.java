@@ -29,6 +29,7 @@ public class ProgressReporter {
     private final long total;
     private final AtomicLong current;
     private final AtomicBoolean isFinished;
+    private final AtomicBoolean isStarted;
 
     /**
      * @param docType - the document type of this indexprocess, typically the value of indexedContentType
@@ -39,6 +40,7 @@ public class ProgressReporter {
         this.total = total;
         this.current = new AtomicLong(0L);
         isFinished = new AtomicBoolean(false);
+        isStarted = new AtomicBoolean(false);
     }
 
     /**
@@ -70,5 +72,13 @@ public class ProgressReporter {
 
     public String getDocType() {
         return docType;
+    }
+
+    public AtomicBoolean getStarted() {
+        return isStarted;
+    }
+
+    public void setStarted() {
+        isStarted.set(true);
     }
 }

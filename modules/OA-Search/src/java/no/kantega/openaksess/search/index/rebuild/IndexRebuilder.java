@@ -1,23 +1,33 @@
 package no.kantega.openaksess.search.index.rebuild;
 
-import no.kantega.commons.log.Log;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Collections2.transform;
+
 @Component
 public class IndexRebuilder {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private List<IndexableDocumentProvider> indexableDocumentProviders;
@@ -28,39 +38,41 @@ public class IndexRebuilder {
     @Autowired
     private TaskExecutor executorService;
 
-    private final String category = getClass().getName();
-
-    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToExclude, boolean clearIndex) {
+    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToInclude, boolean clearIndex) {
         if (clearIndex) {
             documentIndexer.deleteAllDocuments();
         }
 
-        final List<ProgressReporter> progressReporters = new ArrayList<>();
-        final BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(nThreads);
-        if (notAllProvidersAreExcluded(providersToExclude)) {
-            executeRebuild(indexableDocuments);
+        BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(nThreads);
 
-            for (IndexableDocumentProvider indexableDocumentProvider : indexableDocumentProviders) {
-                boolean providerIsNotExcluded = !providersToExclude.contains(indexableDocumentProvider.getClass().getSimpleName());
-                if (providerIsNotExcluded) {
-                    ProgressReporter progressReporter = indexableDocumentProvider.provideDocuments(indexableDocuments);
-                    progressReporters.add(progressReporter);
-                }
-            }
-        }
+        Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
+        List<ProgressReporter> progressReporters = getProgressReporters(providers);
+
+        startConsumer(indexableDocuments);
+        startProducer(indexableDocuments, providers);
+
         return progressReporters;
     }
 
-    private boolean notAllProvidersAreExcluded(List<String> providersToExclude) {
-        return providersToExclude.size() < indexableDocumentProviders.size();
-    }
-
-    private void executeRebuild(final BlockingQueue<IndexableDocument> indexableDocuments) {
+    private void startProducer(final BlockingQueue<IndexableDocument> indexableDocuments, final Collection<IndexableDocumentProvider> indexableDocumentProviders) {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                Log.info(category, "Starting reindex");
-                StopWatch stopWatch = new StopWatch(category);
+                for (IndexableDocumentProvider provider : indexableDocumentProviders) {
+                    log.info("Starting IndexableDocumentProvider {}", provider.getName());
+                    provider.provideDocuments(indexableDocuments);
+                    log.info("Finished IndexableDocumentProvider {}", provider.getName());
+                }
+            }
+        });
+    }
+
+    private void startConsumer(final BlockingQueue<IndexableDocument> indexableDocuments) {
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                log.info("Starting reindex");
+                StopWatch stopWatch = new StopWatch("IndexRebuilder");
                 stopWatch.start();
                 try {
                     IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
@@ -68,15 +80,34 @@ public class IndexRebuilder {
                         documentIndexer.indexDocument(poll);
                     } while ((poll = indexableDocuments.poll(60, TimeUnit.SECONDS)) != null);
                 } catch (InterruptedException e) {
-                    Log.error(category, e);
+                    log.error("Interrupted!", e);
                 } finally {
                     documentIndexer.commit();
                     documentIndexer.optimize();
                     stopWatch.stop();
                     double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
-                    Log.info(category, String.format("Finished reindex. Used %s seconds ", totalTimeSeconds));
+                    log.info("Finished reindex. Used {} seconds ", totalTimeSeconds);
                 }
             }
         });
+    }
+
+    private Collection<IndexableDocumentProvider> filterProviders(final List<String> providersToInclude) {
+        return filter(indexableDocumentProviders, new Predicate<IndexableDocumentProvider>() {
+            @Override
+            public boolean apply(@Nullable IndexableDocumentProvider input) {
+                return providersToInclude.contains(input.getClass().getSimpleName());
+            }
+        });
+    }
+
+    private ArrayList<ProgressReporter> getProgressReporters(Collection<IndexableDocumentProvider> providers) {
+        return new ArrayList<>(transform(providers, new Function<IndexableDocumentProvider, ProgressReporter>() {
+            @Nullable
+            @Override
+            public ProgressReporter apply(@Nullable IndexableDocumentProvider input) {
+                return input.getProgressReporter();
+            }
+        }));
     }
 }

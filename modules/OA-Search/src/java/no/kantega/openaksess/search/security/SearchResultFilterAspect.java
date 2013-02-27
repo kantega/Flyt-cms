@@ -1,7 +1,6 @@
 package no.kantega.openaksess.search.security;
 
 import com.google.common.base.Predicate;
-import no.kantega.commons.log.Log;
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
@@ -14,6 +13,8 @@ import no.kantega.search.api.search.SearchResult;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,8 @@ import static com.google.common.collect.Collections2.filter;
 @Aspect
 @Component
 public class SearchResultFilterAspect {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private SearchLogDao searchLogDao;
 
@@ -39,7 +42,7 @@ public class SearchResultFilterAspect {
 
     @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
     public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
-        Log.debug("SearchResultFilterAspect", "Filtering search results");
+        log.debug("Filtering search results");
         SearchResponse searchResponse = (SearchResponse) pjp.proceed();
         AksessSearchContext searchContext = (AksessSearchContext) searchResponse.getQuery().getSearchContext();
         SecuritySession session = searchContext.getSecuritySession();
