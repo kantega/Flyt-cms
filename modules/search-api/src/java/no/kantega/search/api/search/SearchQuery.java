@@ -14,7 +14,7 @@ public class SearchQuery {
     private final SearchContext searchContext;
     private final String originalQuery;
     private List<String> filterQueries;
-    private boolean highlightSearchResultDescription;
+    private boolean highlightSearchResultDescription = true;
     private List<String> facetFields;
     private List<String> facetQueries;
     private List<DateRange> dateRangeFacets;

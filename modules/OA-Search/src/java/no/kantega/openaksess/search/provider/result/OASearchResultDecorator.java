@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
-
 @Component
 public class OASearchResultDecorator implements SearchResultDecorator<OASearchResult> {
 
@@ -26,15 +24,13 @@ public class OASearchResultDecorator implements SearchResultDecorator<OASearchRe
     }
 
     @Override
-    public OASearchResult decorate(Map<String, Object> resultMap, String description, SearchQuery query) {
-        String language = (String) resultMap.get("language");
-        String languageSuffix = getLanguageSuffix(language);
+    public OASearchResult decorate(Map<String, Object> resultMap, String title, String description, SearchQuery query) {
         Integer parentId = (Integer) resultMap.get("parentId");
 
         return new OASearchResult((Integer) resultMap.get("id"),
                 (Integer) resultMap.get("securityId"),
                 (String) resultMap.get("indexedContentType"),
-                (String) resultMap.get("title_" + languageSuffix),
+                title,
                 description,
                 (String) resultMap.get("author"),
                 (String) resultMap.get("url"),

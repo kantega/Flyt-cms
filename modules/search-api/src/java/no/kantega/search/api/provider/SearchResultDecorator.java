@@ -21,8 +21,9 @@ public interface SearchResultDecorator<SR extends SearchResult> {
     /**
      * Create an instance of SR based on the values of the search result.
      * @param resultMap containing the values stored in the index.
+     * @param title - Either the value stored in the title field in the index, or the highlighted text.
      * @param description - Either the value stored in the descripton field in the index, or the highlighted text.
      * @param query that resulted in the particular result.
      */
-    public SR decorate(Map<String, Object> resultMap, String description, SearchQuery query);
+    public SR decorate(Map<String, Object> resultMap,String title, String description, SearchQuery query);
 }

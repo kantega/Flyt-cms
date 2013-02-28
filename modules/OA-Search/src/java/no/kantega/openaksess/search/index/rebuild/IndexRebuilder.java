@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
+import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
 @Component
 public class IndexRebuilder {
@@ -48,7 +49,7 @@ public class IndexRebuilder {
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
         List<ProgressReporter> progressReporters = getProgressReporters(providers);
 
-        startConsumer(indexableDocuments);
+        startConsumer(indexableDocuments, progressReporters);
         startProducer(indexableDocuments, providers);
 
         return progressReporters;
@@ -67,7 +68,7 @@ public class IndexRebuilder {
         });
     }
 
-    private void startConsumer(final BlockingQueue<IndexableDocument> indexableDocuments) {
+    private void startConsumer(final BlockingQueue<IndexableDocument> indexableDocuments, final List<ProgressReporter> progressReporters) {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
@@ -75,10 +76,14 @@ public class IndexRebuilder {
                 StopWatch stopWatch = new StopWatch("IndexRebuilder");
                 stopWatch.start();
                 try {
-                    IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
-                    do {
-                        documentIndexer.indexDocument(poll);
-                    } while ((poll = indexableDocuments.poll(60, TimeUnit.SECONDS)) != null);
+                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                        IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
+                        if (poll != null) {
+                            documentIndexer.indexDocument(poll);
+                        } else {
+                            log.error("Polling IndexableDocumentQueue resultet in null!");
+                        }
+                    }
                 } catch (InterruptedException e) {
                     log.error("Interrupted!", e);
                 } finally {

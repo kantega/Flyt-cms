@@ -9,8 +9,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
-import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
-
 @Component
 public class DefaultSearchResultDecorator implements SearchResultDecorator<SearchResult> {
     public static final String DEFAULT_INDEXED_CONTENT_TYPE = "default";
@@ -21,14 +19,11 @@ public class DefaultSearchResultDecorator implements SearchResultDecorator<Searc
     }
 
     @Override
-    public SearchResult decorate(Map<String, Object> resultMap, String description, SearchQuery query) {
-        String language = (String) resultMap.get("language");
-        String languageSuffix = getLanguageSuffix(language);
-
-        return new SearchResult((Integer) resultMap.get("id"),
+    public SearchResult decorate(Map<String, Object> resultMap, String title, String description, SearchQuery query) {
+       return new SearchResult((Integer) resultMap.get("id"),
                 (Integer) resultMap.get("securityId"),
                 (String) resultMap.get("indexedContentType"),
-                (String) resultMap.get("title_" + languageSuffix),
+                title,
                 description,
                 (String) resultMap.get("url"),
                 (Integer) resultMap.get("parentId"));

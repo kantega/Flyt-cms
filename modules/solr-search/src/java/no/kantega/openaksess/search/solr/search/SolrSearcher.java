@@ -26,6 +26,7 @@ import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 @Component
 public class SolrSearcher implements Searcher {
 
+    private final String DESCRIPTION_HIHLIGHTING_FIELD = "all_text_unanalyzed";
     @Autowired
     private SolrServer solrServer;
 
@@ -243,13 +244,14 @@ public class SolrSearcher implements Searcher {
 
     private void setHighlighting(SearchQuery query, SolrQuery params) {
         params.setHighlight(query.isHighlightSearchResultDescription());
-        params.setHighlightSimplePre("<span class=\"highlight\"/>");
-        params.setHighlightSimplePost("</span>");
-        params.set("hl.fl", "description*");
+        params.setHighlightSimplePre("<em class=\"highlight\"/>");
+        params.setHighlightSimplePost("</em>");
+        params.set("hl.fl", DESCRIPTION_HIHLIGHTING_FIELD, "title_no", "title_en");
+        params.set("hl.useFastVectorHighlighter", true);
     }
 
     private List<SearchResult> addSearchResults(SearchQuery query, QueryResponse queryResponse, SolrDocumentList results) {
-        List<SearchResult> searchResults = new ArrayList<SearchResult>();
+        List<SearchResult> searchResults = new ArrayList<>();
         for (SolrDocument result : results) {
             searchResults.add(createSearchResult(result, queryResponse, query));
         }
@@ -277,29 +279,52 @@ public class SolrSearcher implements Searcher {
         String indexedContentType = (String) result.getFieldValue("indexedContentType");
         String language = (String) result.getFieldValue("language");
         String languageSuffix = getLanguageSuffix(language);
-        String description = getHighlightedDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
+        TitleAndDescription titleAndDescription = getHighlightedTitleAndDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
 
         SearchResultDecorator decorator = resultDecoratorMap.get(indexedContentType);
         if(decorator == null){
             decorator = defaultSearchResultDecorator;
         }
 
-        return decorator.decorate(result, description, query);
+        return decorator.decorate(result, titleAndDescription.title, titleAndDescription.description, query);
     }
 
-    private String getHighlightedDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {
-        String fieldname = "description_" + languageSuffix;
+    private TitleAndDescription getHighlightedTitleAndDescriptionIfEnabled(SolrDocument result, QueryResponse queryResponse, SearchQuery query, String languageSuffix) {
+        TitleAndDescription titleAndDescription;
         if(query.isHighlightSearchResultDescription()){
             Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
-            Map<String, List<String>> uid = highlighting.get((String) result.getFieldValue("uid"));
-            if(uid != null){
-                List<String> highlightedDescription = uid.get(fieldname);
-                if(highlightedDescription != null && !highlightedDescription.isEmpty()){
-                    return highlightedDescription.get(0);
-                }
+            Map<String, List<String>> thisResult = highlighting.get((String) result.getFieldValue("uid"));
+            if(thisResult != null){
+                String description = highlightedValueOrDefault(result, thisResult, DESCRIPTION_HIHLIGHTING_FIELD);
+                String title = highlightedValueOrDefault(result, thisResult, "title_" + languageSuffix);
+                titleAndDescription = new TitleAndDescription(title, description);
+            } else {
+                titleAndDescription = notHighlightedTitleAndDescription(result, languageSuffix);
             }
+        } else {
+            titleAndDescription = notHighlightedTitleAndDescription(result, languageSuffix);
+
         }
-        return (String) result.getFieldValue(fieldname);
+        return titleAndDescription;
+    }
+
+    private String highlightedValueOrDefault(SolrDocument result, Map<String, List<String>> thisResult, String titleKey) {
+        List<String> titleValue = thisResult.get(titleKey);
+        String title;
+        if (titleValue != null) {
+            title = titleValue.get(0);
+        } else {
+            title = (String) result.getFirstValue(titleKey);
+        }
+        return title;
+    }
+
+    private TitleAndDescription notHighlightedTitleAndDescription(SolrDocument result, String languageSuffix) {
+        TitleAndDescription titleAndDescription;
+        String description = (String) result.getFieldValue("description_" + languageSuffix);
+        String title = (String) result.getFieldValue("title_" + languageSuffix);
+        titleAndDescription = new TitleAndDescription(title, description);
+        return titleAndDescription;
     }
 
     @Autowired
@@ -322,6 +347,16 @@ public class SolrSearcher implements Searcher {
         if(resultDecoratorMap.containsKey(handledindexedContentType)){
             throw new IllegalStateException("Several SearchResultDecorators handle indexedContentType " +
                     handledindexedContentType + " only one is allowed");
+        }
+    }
+
+    private class TitleAndDescription {
+        final String title;
+        final String description;
+
+        public TitleAndDescription(String title, String description) {
+            this.title = title;
+            this.description = description;
         }
     }
 }

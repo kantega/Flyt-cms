@@ -127,7 +127,18 @@ public class SearcherIntegrationTest {
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
-            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<span class=\"highlight\""));
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<em class=\"highlight\""));
+        }
+    }
+
+    @Test
+    public void titleShouldBehighlighted(){
+        SearchContext searchContext = getDummySearchContext();
+        SearchQuery q = new SearchQuery(searchContext, originalQuery);
+        q.setHighlightSearchResultDescription(true);
+        SearchResponse response = searcher.search(q);
+        for(SearchResult searchResult : response.getSearchHits()){
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getTitle().contains("<em class=\"highlight\""));
         }
     }
 
@@ -135,6 +146,7 @@ public class SearcherIntegrationTest {
     public void testTitleStartingWith(){
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "title_no:Kan*");
+        q.setHighlightSearchResultDescription(false);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
             String title = searchResult.getTitle();

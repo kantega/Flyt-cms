@@ -24,17 +24,14 @@
                 <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_en.txt" enablePositionIncrements="true"/>
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.EnglishPossessiveFilterFactory"/>
-                <!--<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>-->
                 <filter class="solr.PorterStemFilterFactory"/>
             </analyzer>
             <analyzer type="query">
                 <tokenizer class="solr.StandardTokenizerFactory"/>
-                <!--<filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>-->
                 <filter class="solr.StopFilterFactory"
                         ignoreCase="true"  words="lang/stopwords_en.txt" enablePositionIncrements="true" />
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.EnglishPossessiveFilterFactory"/>
-                <!--<filter class="solr.KeywordMarkerFilterFactory" protected="protwords.txt"/>-->
                 <filter class="solr.PorterStemFilterFactory"/>
             </analyzer>
         </fieldType>
@@ -52,15 +49,7 @@
                 <tokenizer class="solr.PathHierarchyTokenizerFactory" delimiter="/"/>
             </analyzer>
         </fieldType>
-        <!--<fieldType name="text_general_edge_ngram" class="solr.TextField" positionIncrementGap="100">
-            <analyzer type="index">
-                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
-                <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15" side="front"/>
-            </analyzer>
-            <analyzer type="query">
-                <tokenizer class="solr.LowerCaseTokenizerFactory"/>
-            </analyzer>
-        </fieldType>-->
+
         <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
         <fieldtype name="tlf" stored="true" indexed="true" multiValued="true" class="solr.TextField">
             <analyzer type="index">
@@ -86,7 +75,7 @@
         <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="title_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="altTitle_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
-        <field name="altTitle_eng" type="text_en" indexed="true" stored="true" termVectors="true"/>
+        <field name="altTitle_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
@@ -113,8 +102,7 @@
 
         <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
         <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
-        <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="false" multiValued="true" termVectors="true"/>
-        <!--<field name="all_text_ngram" type="text_general_edge_ngram" indexed="true" stored="true" multiValued="true" termVectors="true"/>-->
+        <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
@@ -131,11 +119,6 @@
         <copyField source="*_txt" dest="all_text_unanalyzed" />
         <copyField source="keywords" dest="all_text_unanalyzed" />
         <copyField source="topics" dest="all_text_unanalyzed" />
-
-
-        <!--<copyField source="*_txt" dest="all_text_ngram" />
-        <copyField source="*_no" dest="all_text_ngram" />
-        <copyField source="*_en" dest="all_text_ngram" />-->
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
