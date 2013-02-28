@@ -21,10 +21,10 @@ public class IndexableDocument {
     private String description;
     private String contentStatus;
     private String visibility;
-    private int siteId;
+    private int siteId = -1;
     private String language;
     private File fileContent;
-    private Map<String, Object> attributes = new HashMap<String, Object>();
+    private Map<String, Object> attributes = new HashMap<>();
     private boolean shouldIndex = false;
     private int securityId;
     private int parentId;
