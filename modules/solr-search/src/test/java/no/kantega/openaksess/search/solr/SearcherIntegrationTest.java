@@ -1,6 +1,7 @@
 package no.kantega.openaksess.search.solr;
 
 import no.kantega.search.api.search.*;
+import org.apache.commons.collections.Predicate;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Collection;
 import java.util.List;
 
 import static junit.framework.Assert.*;
 import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
+import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -22,6 +25,18 @@ public class SearcherIntegrationTest {
 
     private SearchResponse doSearchSiteOne(String query){
         return doSearch(query, "siteId:1");
+    }
+
+    private SearchResponse doSearchSiteIdAbsent(String query){
+        return doSearch(query, "-siteId:*");
+    }
+
+    private SearchResponse doSearchSiteOneAndSiteAbsent(String query){
+        return doSearch(query, "siteId:1 OR (*:* -siteId:[* TO *])");
+    }
+
+    private SearchResponse doSearchNoSiteFilter(String query){
+        return doSearch(query, "");
     }
 
     private SearchResponse doSearch(String query, String filter){
@@ -35,6 +50,34 @@ public class SearcherIntegrationTest {
     public void resultShouldHaveHits(){
         SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         assertTrue("Number of hits should be larger than 0", searchResponse.getNumberOfHits().intValue() > 0);
+    }
+
+    @Test
+    public void resultShouldHaveHitsFromSiteOneAndSiteNegativeOne(){
+        // «Avanade AS» is english, «AS» is threated as stopword.
+        SearchResponse searchResponse = doSearchSiteOne(originalQuery);
+        int hitsOnSiteOne = searchResponse.getNumberOfHits().intValue();
+
+        searchResponse = doSearchSiteOneAndSiteAbsent(originalQuery);
+        int hitsOnSiteOneAndAbsent = searchResponse.getNumberOfHits().intValue();
+
+        assertTrue("There should be more hits when searching site 1 and -1", hitsOnSiteOneAndAbsent > hitsOnSiteOne);
+
+        searchResponse = doSearchNoSiteFilter(originalQuery);
+        int hitsWihoutSiteFilter = searchResponse.getNumberOfHits().intValue();
+        assertEquals("Should be same result size", hitsOnSiteOneAndAbsent, hitsWihoutSiteFilter);
+    }
+
+    @Test
+    public void resultShouldHaveAccandoForAbsentSiteId(){
+        SearchResponse searchResponse = doSearchSiteIdAbsent(originalQuery);
+        Collection accando = select(searchResponse.getSearchHits(), new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                return ((SearchResult) o).getTitle().contains("Accando");
+            }
+        });
+        assertTrue("Should have size one", accando.size() == 1);
     }
 
     @Test

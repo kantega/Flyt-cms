@@ -165,7 +165,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addSiteFilter(AksessSearchContext searchContext, List<String> filterQueries) {
-        String siteFilter = "siteId:" + searchContext.getSiteId();
+        String siteFilter = "siteId:" + searchContext.getSiteId() + " OR (*:* -siteId:[* TO *])";
         if(!filterQueries.contains(siteFilter) && !searchAllSites){
             filterQueries.add(siteFilter);
         }
@@ -180,7 +180,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
-        Map<String, Object> links = new HashMap<String, Object>();
+        Map<String, Object> links = new HashMap<>();
         model.put("links", links);
         int currentPage = searchResponse.getCurrentPage();
         if (currentPage > 0) {
