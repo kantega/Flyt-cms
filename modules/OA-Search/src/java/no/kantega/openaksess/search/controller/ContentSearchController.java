@@ -165,7 +165,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addSiteFilter(AksessSearchContext searchContext, List<String> filterQueries) {
-        String siteFilter = "siteId:" + searchContext.getSiteId() + " OR (*:* -siteId:[* TO *])";
+        String siteFilter = "siteId:" + searchContext.getSiteId() + " OR siteId:\\-1";
         if(!filterQueries.contains(siteFilter) && !searchAllSites){
             filterQueries.add(siteFilter);
         }

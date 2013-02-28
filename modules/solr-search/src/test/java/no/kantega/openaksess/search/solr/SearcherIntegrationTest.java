@@ -28,11 +28,11 @@ public class SearcherIntegrationTest {
     }
 
     private SearchResponse doSearchSiteIdAbsent(String query){
-        return doSearch(query, "-siteId:*");
+        return doSearch(query, "siteId:\\-1");
     }
 
     private SearchResponse doSearchSiteOneAndSiteAbsent(String query){
-        return doSearch(query, "siteId:1 OR (*:* -siteId:[* TO *])");
+        return doSearch(query, "siteId:1 OR siteId:\\-1");
     }
 
     private SearchResponse doSearchNoSiteFilter(String query){
@@ -61,7 +61,7 @@ public class SearcherIntegrationTest {
         searchResponse = doSearchSiteOneAndSiteAbsent(originalQuery);
         int hitsOnSiteOneAndAbsent = searchResponse.getNumberOfHits().intValue();
 
-        assertTrue("There should be more hits when searching site 1 and -1", hitsOnSiteOneAndAbsent > hitsOnSiteOne);
+        assertTrue("There should be more hits when searching site 1 and no site", hitsOnSiteOneAndAbsent > hitsOnSiteOne);
 
         searchResponse = doSearchNoSiteFilter(originalQuery);
         int hitsWihoutSiteFilter = searchResponse.getNumberOfHits().intValue();

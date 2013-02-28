@@ -8,6 +8,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -28,7 +29,9 @@ public class AksessSearchContextCreator {
         Content content = (Content)request.getAttribute("aksess_this");
         if (content != null) {
             siteId = content.getAssociation().getSiteId();
-        } else {
+        } else if(request.getParameter("siteId") != null){
+            siteId = ServletRequestUtils.getIntParameter(request, "siteId", siteId);
+        }else {
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
