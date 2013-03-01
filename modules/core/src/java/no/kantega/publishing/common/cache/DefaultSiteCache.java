@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.cache;
 
+import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
@@ -26,9 +27,13 @@ import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.context.ApplicationContext;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.collect.Collections2.filter;
 
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static String SOURCE = "SiteCache";
@@ -94,7 +99,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             c = Aksess.getConfiguration();
             // Get hostnames from database and store in hashmap
 
-            hostnames = new HashMap<String, Site>();
+            hostnames = new HashMap<>();
             for (int s = 0; s < sites.size(); s++) {
                 Site site = (Site)sites.get(s);
                 // Get hostnames from database
@@ -123,6 +128,21 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             throw new SystemException("Configuration error", "", e);
         }
 
+    }
+
+    @Override
+    public no.kantega.publishing.api.model.Site getDefaultSite() {
+        Collection<Site> defaultSites = filter((Collection<Site>) sites, new Predicate<Site>() {
+            @Override
+            public boolean apply(@Nullable Site o) {
+                return o.isDefault();
+            }
+        });
+        int size = defaultSites.size();
+        if(size != 1){
+            throw new IllegalStateException(size + " default sites exists, only 1 permitted");
+        }
+        return defaultSites.iterator().next();
     }
 
     public static DefaultSiteCache getInstance() {

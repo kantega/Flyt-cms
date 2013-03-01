@@ -36,4 +36,6 @@ public interface SiteCache {
     List<Site> getSites() ;
 
     public void reloadCache();
+
+    Site getDefaultSite();
 }

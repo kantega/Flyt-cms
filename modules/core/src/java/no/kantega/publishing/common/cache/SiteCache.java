@@ -45,6 +45,10 @@ public class SiteCache {
         return (Site) getInstance().getSiteByPublicIdOrAlias(id);
     }
 
+    public static Site getDefaultSite() throws SystemException {
+        return (Site) getInstance().getDefaultSite();
+    }
+
     public static List<Site> getSites() throws SystemException {
         return (List) getInstance().getSites();
     }

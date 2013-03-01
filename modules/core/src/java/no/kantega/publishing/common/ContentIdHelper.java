@@ -468,7 +468,7 @@ public class ContentIdHelper {
             if (site != null) {
                 siteId = site.getId();
             } else {
-                siteId = -1;
+                siteId = SiteCache.getDefaultSite().getId();
             }
         }
 

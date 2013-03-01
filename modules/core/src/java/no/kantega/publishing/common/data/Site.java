@@ -30,6 +30,7 @@ public class Site implements PublicIdObject, no.kantega.publishing.api.model.Sit
     private String scheme;
     private String publicId = "";
     private String displayTemplateId;
+    private boolean isDefault;
 
     private List<String> hostnames = null;
 
@@ -103,6 +104,16 @@ public class Site implements PublicIdObject, no.kantega.publishing.api.model.Sit
 
     public String getDisplayTemplateId() {
         return displayTemplateId;
+    }
+
+    @Override
+    public void setIsDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return isDefault;
     }
 
     public void setDisplayTemplateId(String displayTemplateId) {

@@ -35,7 +35,7 @@ public class TemplateConfigurationValidator {
      * @return - List of validationerrors
      */
     public List<TemplateConfigurationValidationError> validate(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
 
         errors.addAll(validateSites(configuration));
         errors.addAll(validateDocumentTypes(configuration));

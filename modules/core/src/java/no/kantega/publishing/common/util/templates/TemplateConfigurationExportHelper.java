@@ -121,13 +121,14 @@ public class TemplateConfigurationExportHelper {
     }
 
     private static List<Site> getSites(Connection c) throws SQLException {
-        List<Site> sites = new ArrayList<Site>();
+        List<Site> sites = new ArrayList<>();
         ResultSet rs = SQLHelper.getResultSet(c, "select * from sites");
         while (rs.next()) {
             Site site = new Site();
             site.setId(rs.getInt("SiteId"));
             site.setName(rs.getString("Name"));
             site.setAlias(rs.getString("Alias"));
+            site.setIsDefault(rs.getBoolean("IsDefaul"));
             String publicId = site.getAlias();
             if (publicId.length() > 1) {
                 publicId = publicId.substring(1, publicId.length() - 1);
@@ -143,7 +144,7 @@ public class TemplateConfigurationExportHelper {
     private static List<DocumentType> getDocumentTypes(Connection c) throws SQLException {
         ResultSet rs;
         rs = SQLHelper.getResultSet(c, "select * from documenttype");
-        List<DocumentType> doctypes = new ArrayList<DocumentType>();
+        List<DocumentType> doctypes = new ArrayList<>();
         while (rs.next()) {
             DocumentType doctype = new DocumentType(rs.getInt("Id"), rs.getString("Name"));
             doctype.setPublicId(doctype.getName());

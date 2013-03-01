@@ -36,4 +36,8 @@ public interface Site {
     String getScheme();
 
     String getDisplayTemplateId();
+
+    void setIsDefault(boolean isDefault);
+
+    boolean isDefault();
 }

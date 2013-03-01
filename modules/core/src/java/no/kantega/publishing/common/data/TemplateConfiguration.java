@@ -25,12 +25,12 @@ import java.util.ArrayList;
  * Time: 9:34:38 AM
  */
 public class TemplateConfiguration {
-    List<Site> sites = new ArrayList<Site>();
-    List<AssociationCategory> associationCategories = new ArrayList<AssociationCategory>();
-    List<DocumentType> documentTypes = new ArrayList<DocumentType>();
-    List<ContentTemplate> contentTemplates = new ArrayList<ContentTemplate>();
-    List<ContentTemplate> metadataTemplates = new ArrayList<ContentTemplate>();
-    List<DisplayTemplate> displayTemplates = new ArrayList<DisplayTemplate>();
+    List<Site> sites = new ArrayList<>();
+    List<AssociationCategory> associationCategories = new ArrayList<>();
+    List<DocumentType> documentTypes = new ArrayList<>();
+    List<ContentTemplate> contentTemplates = new ArrayList<>();
+    List<ContentTemplate> metadataTemplates = new ArrayList<>();
+    List<DisplayTemplate> displayTemplates = new ArrayList<>();
 
     public List<Site> getSites() {
         return sites;
