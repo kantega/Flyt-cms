@@ -45,6 +45,7 @@ public class ContentSearchController implements AksessController {
      * facetFields - The indexed fields to generate facet values from. e.g. «indexedContentType»
      * groupfield - Group results by the value they are having in this field.
      * resultsprpage - The number of results per page.
+     * includeContentWithoutSite - if set to true, indexed content with siteId:-1 is included in search.
      * excludelinks - By default links for the paginating of results are generated. Set this parameter to true if this is not desired.
      * excludedefaultfacets - Faceting on location and documenttype is enabled by default. To disable this set this parameter to true.
      * filter - Additional filters may be added by setting this parameter. Each filter have to be on the format «field:value».
@@ -141,7 +142,7 @@ public class ContentSearchController implements AksessController {
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
         List<String> filterQueries = new ArrayList<>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
-        addSiteFilter(searchContext, filterQueries);
+        addSiteFilter(searchContext, filterQueries, ServletRequestUtils.getBooleanParameter(request, "includeContentWithoutSite", false));
 
         addVisibilityFilter(filterQueries);
 
@@ -164,8 +165,13 @@ public class ContentSearchController implements AksessController {
         }
     }
 
-    private void addSiteFilter(AksessSearchContext searchContext, List<String> filterQueries) {
-        String siteFilter = "siteId:" + searchContext.getSiteId() + " OR siteId:\\-1";
+    private void addSiteFilter(AksessSearchContext searchContext, List<String> filterQueries, boolean includeContentWithoutSite) {
+        StringBuilder siteFilterBuilder = new StringBuilder("siteId:");
+        siteFilterBuilder.append(searchContext.getSiteId());
+        if(includeContentWithoutSite){
+            siteFilterBuilder.append(" OR siteId:\\-1");
+        }
+        String siteFilter = siteFilterBuilder.toString();
         if(!filterQueries.contains(siteFilter) && !searchAllSites){
             filterQueries.add(siteFilter);
         }
