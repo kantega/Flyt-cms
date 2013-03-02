@@ -40,8 +40,12 @@ public class SearcherIntegrationTest {
     }
 
     private SearchResponse doSearch(String query, String filter){
+        return doSearch(query, filter, "indexedContentType:aksess-document");
+    }
+
+    private SearchResponse doSearch(String query, String filter, String indexedContentType){
         SearchContext searchContext = getDummySearchContext();
-        SearchQuery q = new SearchQuery(searchContext, query, filter, "indexedContentType:aksess-document");
+        SearchQuery q = new SearchQuery(searchContext, query, filter, indexedContentType);
         q.setHighlightSearchResultDescription(true);
         return searcher.search(q);
     }
@@ -54,7 +58,6 @@ public class SearcherIntegrationTest {
 
     @Test
     public void resultShouldHaveHitsFromSiteOneAndSiteNegativeOne(){
-        // «Avanade AS» is english, «AS» is threated as stopword.
         SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         int hitsOnSiteOne = searchResponse.getNumberOfHits().intValue();
 
@@ -65,6 +68,7 @@ public class SearcherIntegrationTest {
 
         searchResponse = doSearchNoSiteFilter(originalQuery);
         int hitsWihoutSiteFilter = searchResponse.getNumberOfHits().intValue();
+
         assertEquals("Should be same result size", hitsOnSiteOneAndAbsent, hitsWihoutSiteFilter);
     }
 
@@ -181,7 +185,8 @@ public class SearcherIntegrationTest {
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
-            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getTitle().contains("<em class=\"highlight\""));
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getTitle().contains("<em class=\"highlight\"")
+                    || searchResult.getDescription().contains("<em class=\"highlight\""));
         }
     }
 
@@ -199,6 +204,15 @@ public class SearcherIntegrationTest {
         assertTrue("Number of hits should be larger than 0", response.getNumberOfHits().intValue() > 0);
     }
 
+    @Test
+    public void titleAndDescriptionShouldBeBoosted(){
+        SearchResponse kantega = doSearch("kantega", "", "indexedContentType:herp-document");
+        List<SearchResult> searchHits = kantega.getSearchHits();
+        assertEquals("Wrong number of search results", 3, searchHits.size());
+        assertEquals(5, searchHits.get(0).getId());
+        assertEquals(6, searchHits.get(1).getId());
+        assertEquals(7, searchHits.get(2).getId());
+    }
 
 
     private void doForAllhits(Assertion assertion, SearchResponse searchResponse){
