@@ -127,12 +127,13 @@ public class SearcherFacetIntegrationTest {
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "rett");
         q.setFacetFields(Arrays.asList("location"));
+
         SearchResponse search = searcher.search(q);
 
-        assertEquals(8, search.getNumberOfHits().intValue());
+        assertEquals(12, search.getNumberOfHits().intValue());
         Collection<FacetResult> location = search.getFacets().get("location");
         assertEquals(4, location.size());
-        assertEquals(1, select(location, getPredicate("/1", 8L)).size());
+        assertEquals(1, select(location, getPredicate("/1", 12L)).size());
         assertEquals(1, select(location, getPredicate("/1/1", 3L)).size());
         assertEquals(1, select(location, getPredicate("/1/2", 2L)).size());
         assertEquals(1, select(location, getPredicate("/1/3", 1L)).size());

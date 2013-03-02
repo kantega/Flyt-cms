@@ -26,8 +26,10 @@ public class GroupingIntegrationTest {
         q.setGroupField("indexedContentType");
 
         SearchResponse search = searcher.search(q);
-        // Avanade has english as language, "as" is then ignored since it is an english stopword.
-        assertEquals("Wrong number of results", 12, search.getNumberOfHits());
+
+        assertEquals("Wrong number of content types", 3, search.getGroupResultResponses().size());
+
+        assertEquals("Wrong number of results", 13, search.getNumberOfHits());
         GroupResultResponse aksessDocument = (GroupResultResponse) select(search.getGroupResultResponses(), getGroupValuePredicate("aksess-document")).iterator().next();
         assertEquals("Wrong number of results", 6, aksessDocument.getNumFound().intValue());
 
