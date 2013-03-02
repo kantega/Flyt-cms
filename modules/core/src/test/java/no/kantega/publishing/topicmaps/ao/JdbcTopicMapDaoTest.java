@@ -15,25 +15,28 @@
  */
 package no.kantega.publishing.topicmaps.ao;
 
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.jdbc.JdbcTestUtils.deleteFromTables;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
 public class JdbcTopicMapDaoTest {
-    JdbcTopicMapDao dao;
+    @Autowired
+    private JdbcTopicMapDao dao;
 
-    @Before
-    public void setUp() throws Exception {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
-        dao = new JdbcTopicMapDao();
-        dao.setDataSource(dataSource);
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
     public void shouldGetTopicMapAfterSave() throws Exception {
@@ -137,5 +140,10 @@ public class JdbcTopicMapDaoTest {
 
         // Then
         assertEquals(0, topicMaps.size());
+    }
+
+    @After
+    public void after(){
+        deleteFromTables(jdbcTemplate, "tmmaps", "tmtopic", "tmbasename", "role2topic", "ct2topic");
     }
 }

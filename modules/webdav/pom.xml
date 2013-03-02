@@ -43,13 +43,6 @@
         </dependency>
 
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>openaksess-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.ettrema</groupId>
             <artifactId>milton-servlet</artifactId>
             <version>1.5.10</version>

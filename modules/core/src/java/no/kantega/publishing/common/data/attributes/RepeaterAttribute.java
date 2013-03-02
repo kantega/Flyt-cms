@@ -14,7 +14,7 @@ import java.util.Map;
 */
 public class RepeaterAttribute extends Attribute {
 
-    List<List<Attribute>> rows = new ArrayList<List<Attribute>>();
+    List<List<Attribute>> rows = new ArrayList<>();
 
     int minOccurs = 0;
     int maxOccurs = Integer.MAX_VALUE;

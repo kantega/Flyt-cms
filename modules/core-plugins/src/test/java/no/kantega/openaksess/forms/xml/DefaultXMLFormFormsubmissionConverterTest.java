@@ -1,12 +1,16 @@
 package no.kantega.openaksess.forms.xml;
 
-import no.kantega.publishing.api.forms.model.*;
+import no.kantega.publishing.api.forms.model.DefaultFormSubmission;
+import no.kantega.publishing.api.forms.model.DefaultFormValue;
+import no.kantega.publishing.api.forms.model.Form;
+import no.kantega.publishing.api.forms.model.FormSubmission;
 import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
+
 
 public class DefaultXMLFormFormsubmissionConverterTest {
     @Test

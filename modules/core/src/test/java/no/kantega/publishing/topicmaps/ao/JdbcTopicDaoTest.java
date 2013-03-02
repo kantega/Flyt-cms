@@ -20,25 +20,52 @@ import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.jdbc.JdbcTestUtils.deleteFromTables;
 
-public class JdbcTopicDaoTest extends AbstractTestJdbcTopicMap {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
+public class JdbcTopicDaoTest {
     private Topic description;
+    @Autowired
+    protected TopicDao topicDao;
+    @Autowired
+    protected TopicMapDao topicMapDao;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    protected TopicMap topicMap;
+
+    protected Topic instanceOf;
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-
+        TopicMap newTopicMap = new TopicMap();
+        newTopicMap.setName("My topicmap");
+        topicMap = topicMapDao.saveOrUpdateTopicMap(newTopicMap);
         description = new Topic("description", topicMap.getId());
         description.setBaseName("Description");
 
+        instanceOf = new Topic("topic", topicMap.getId());
+        instanceOf.setIsTopicType(false);
+        instanceOf.setBaseName("topic");
+        instanceOf.setIsSelectable(true);
     }
 
     @Test
@@ -246,7 +273,7 @@ public class JdbcTopicDaoTest extends AbstractTestJdbcTopicMap {
         topicDao.deleteTopic(topic);
 
         // Then
-        assertEquals(0, topicDao.getAllTopics().size());
+        assertNull("Topic existed after deletion", topicDao.getTopic(topic.getTopicMapId(), topic.getId()));
     }
 
     @Test
@@ -271,7 +298,7 @@ public class JdbcTopicDaoTest extends AbstractTestJdbcTopicMap {
         topicDao.addTopicToContentAssociation(topic, 1);
 
         // When
-        topicDao.deleteTopicToContentAssociation(topic, 1);
+        topicDao.deleteTopicAssociationsForContent(1);
         List<Topic> topics = topicDao.getTopicsByContentId(1);
 
         // Then
@@ -304,8 +331,8 @@ public class JdbcTopicDaoTest extends AbstractTestJdbcTopicMap {
         final List<Topic> foundTopics = topicDao.getAllTopics();
 
         // Then
-        assertEquals(1, foundTopics.size());
-        assertEquals(topic.getId(), foundTopics.get(0).getId());
+        assertFalse(foundTopics.isEmpty());
+        assertTrue(foundTopics.contains(topic));
     }
 
     @Test
@@ -331,5 +358,10 @@ public class JdbcTopicDaoTest extends AbstractTestJdbcTopicMap {
         topic.setInstanceOf(instanceOf);
         topicDao.setTopic(topic);
         return topic;
+    }
+
+    @After
+    public void after(){
+        deleteFromTables(jdbcTemplate, "tmtopic", "tmbasename", "role2topic", "ct2topic");
     }
 }

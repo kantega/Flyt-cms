@@ -1,37 +1,36 @@
 package no.kantega.publishing.rating.dao;
 
-import org.junit.Test;
 import no.kantega.publishing.api.rating.Rating;
-import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.sql.DataSource;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
 
-/**
- *
- */
-public class JdbcRatingDaoTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:testContext.xml")
+public class JdbcRatingDaoTest {
     private static final String CONTENT = "content";
 
-    public void testGetRatingsForObject() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-rating-db.sql")).createDatabase();
+    @Autowired
+    private RatingDao dao;
 
-        JdbcRatingDao dao = new JdbcRatingDao();
-        dao.setDataSource(dataSource);
+    @Test
+    public void testGetRatingsForObject() {
 
         List<Rating> ratings = dao.getRatingsForObject("1", CONTENT);
 
         assertEquals(ratings.size(), 1);
     }
 
+    @Test
     public void testDeleteRatingsForObject() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-rating-db.sql")).createDatabase();
-
-        JdbcRatingDao dao = new JdbcRatingDao();
-        dao.setDataSource(dataSource);
 
         Rating r = new Rating();
         r.setUserid("andska");
@@ -55,12 +54,8 @@ public class JdbcRatingDaoTest extends TestCase {
 
     }
 
+    @Test
     public void testGetRatingsForUser() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-rating-db.sql")).createDatabase();
-
-        JdbcRatingDao dao = new JdbcRatingDao();
-        dao.setDataSource(dataSource);
-
         List<Rating> ratings = dao.getRatingsForUser("andska");
 
         assertEquals(ratings.size(), 2);

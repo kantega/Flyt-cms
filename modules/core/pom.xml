@@ -54,13 +54,6 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>openaksess-test</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-db</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>

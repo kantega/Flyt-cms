@@ -18,50 +18,35 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
-import org.junit.Before;
+import no.kantega.publishing.common.traffic.TrafficLogger;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
 public class TrafficLoggerTest {
 
-    private Collection<Pattern> searchEnginePatterns;
-    private TrafficLoggerJdbcImpl trafficLoggerJdbc;
+    @Autowired
+    private TrafficLogger trafficLoggerJdbc;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Before
-    public void setup(){
-        trafficLoggerJdbc = new TrafficLoggerJdbcImpl();
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
-
-        jdbcTemplate = new JdbcTemplate(dataSource);
-        trafficLoggerJdbc.setJdbcTemplate(jdbcTemplate);
-        List<String> patternStrings = Arrays.asList(
-        "http://.*google.*/search.*[\\?&]q=([^&$]*).*",
-        "http://.*yahoo.*/search.*[\\?&]p=([^&$]*).*",
-        "http://.*msn.*/results\\.aspx.*[\\?&]q=([^&$]*).*",
-        "http://.*live.com.*/results\\.aspx.*[\\?&]q=([^&$]*).*",
-        "http://.*kvasir.*/.*search.*[\\?&]searchExpr=([^&$]*).*",
-        "http://.*ask.com/web.*[\\?&]q=([^&$]*).*");
-        trafficLoggerJdbc.setSearchEngineStringPatterns(patternStrings);
-        searchEnginePatterns = trafficLoggerJdbc.getSearchEnginePatterns();
-    }
 
     @Test
     public void testLogContentAccess(){
@@ -105,7 +90,7 @@ public class TrafficLoggerTest {
     public void testGetRenfererInfoGoogle() throws UnsupportedEncodingException {
         String referer = "http://www.google.no/search?hl=en&client=firefox-a&rls=org.mozilla%3Anb-NO%3Aofficial&q=%22eirik+anders%22&btnG=Search";
         referer = URLDecoder.decode(referer, "utf-8");
-        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, searchEnginePatterns);
+        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, ((TrafficLoggerJdbcImpl)trafficLoggerJdbc).getSearchEnginePatterns());
         assertEquals("www.google.no", info.getHost());
         assertEquals("\"eirik anders\"", info.getQuery());
         assertEquals(referer, info.getReferer());
@@ -114,7 +99,7 @@ public class TrafficLoggerTest {
     @Test
     public void testGetRenfererInfoYahoo() {
         String referer = "http://search.yahoo.com/search?p=hey&fr=yfp-t-501&toggle=1&cop=mss&ei=UTF-8&vc=&fp_ip=NO";
-        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, searchEnginePatterns);
+        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, ((TrafficLoggerJdbcImpl)trafficLoggerJdbc).getSearchEnginePatterns());
         assertEquals("search.yahoo.com", info.getHost());
         assertEquals("hey", info.getQuery());
         assertEquals(referer, info.getReferer());
@@ -123,7 +108,7 @@ public class TrafficLoggerTest {
     @Test
     public void testGetRenfererInfoMSN() {
         String referer = "http://search.msn.com/results.aspx?q=tullball&FORM=MSNH";
-        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, searchEnginePatterns);
+        TrafficLoggerJdbcImpl.RefererInfo info = TrafficLoggerJdbcImpl.getRefererInfo(referer, ((TrafficLoggerJdbcImpl)trafficLoggerJdbc).getSearchEnginePatterns());
         assertEquals("search.msn.com", info.getHost());
         assertEquals("tullball", info.getQuery());
         assertEquals(referer, info.getReferer());

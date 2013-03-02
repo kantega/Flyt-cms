@@ -18,13 +18,13 @@ package no.kantega.publishing.topicmaps.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.topicmaps.data.Topic;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TopicUsageCounter extends SimpleJdbcDaoSupport {
+public class TopicUsageCounter extends JdbcDaoSupport {
     public void updateTopicUsageCount(List<Topic> topics) throws SystemException {
         if (topics == null || topics.size() == 0) {
             return;
@@ -32,7 +32,7 @@ public class TopicUsageCounter extends SimpleJdbcDaoSupport {
 
         List<Object> params = new ArrayList<Object>();
 
-        StringBuffer sql = new StringBuffer();
+        StringBuilder sql = new StringBuilder();
 
         sql.append("select count(distinct ContentId) as Cnt, TopicId from ct2topic where TopicMapId = ?");
         params.add(topics.get(0).getTopicMapId());
@@ -45,7 +45,7 @@ public class TopicUsageCounter extends SimpleJdbcDaoSupport {
         }
         sql.append(") group by TopicId");
 
-        List<Map<String, Object>> rows = getSimpleJdbcTemplate().queryForList(sql.toString(), params.toArray());
+        List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql.toString(), params.toArray());
         for (Map row : rows) {
             Number cnt = (Number)row.get("Cnt");
             String topicId = (String)row.get("TopicId");

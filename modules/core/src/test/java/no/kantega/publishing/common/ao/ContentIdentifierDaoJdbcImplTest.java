@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="classpath*:spring/ContentIdentifierTestContext.xml")
+@ContextConfiguration(locations= "classpath*:spring/testContext.xml")
 public class ContentIdentifierDaoJdbcImplTest {
 
     @Autowired
