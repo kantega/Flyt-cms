@@ -14,6 +14,8 @@ import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.GroupParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +27,7 @@ import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 
 @Component
 public class SolrSearcher implements Searcher {
+    private final Logger log  = LoggerFactory.getLogger(getClass());
 
     private final String DESCRIPTION_HIHLIGHTING_FIELD = "all_text_unanalyzed";
     @Autowired
@@ -253,7 +256,11 @@ public class SolrSearcher implements Searcher {
     private List<SearchResult> addSearchResults(SearchQuery query, QueryResponse queryResponse, SolrDocumentList results) {
         List<SearchResult> searchResults = new ArrayList<>();
         for (SolrDocument result : results) {
-            searchResults.add(createSearchResult(result, queryResponse, query));
+            try {
+                searchResults.add(createSearchResult(result, queryResponse, query));
+            } catch (Exception e) {
+                log.error("Error adding result for document:" + result, e);
+            }
         }
         return searchResults;
     }
