@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ProgressReporterUtils {
 
-    public static boolean notAllProgressReportersAreMarkedAsFinished(List<ProgressReporter> progressReporters) {
+    public synchronized static boolean notAllProgressReportersAreMarkedAsFinished(List<ProgressReporter> progressReporters) {
         boolean isFinished = true;
         for (ProgressReporter progressReporter : progressReporters) {
             isFinished &= progressReporter.isFinished();
