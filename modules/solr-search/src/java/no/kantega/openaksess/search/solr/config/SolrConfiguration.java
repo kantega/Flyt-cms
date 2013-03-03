@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static no.kantega.openaksess.search.solr.config.SolrConfigInitializer.initSolrConfigIfAbsent;
 
@@ -20,9 +21,12 @@ public class SolrConfiguration {
     @Value("${appDir}/solr")
     private File solrHome;
 
+    @Value("${disableUpdateSolrHome:false}")
+    private boolean disableUpdateSolrHome;
+
     @Bean(destroyMethod = "shutdown")
-    public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException {
-        File solrConfigFile = initSolrConfigIfAbsent(solrHome);
+    public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
+        File solrConfigFile = initSolrConfigIfAbsent(solrHome, disableUpdateSolrHome);
         CoreContainer container = new CoreContainer(solrHome.getAbsolutePath(), solrConfigFile);
 
         return new EmbeddedSolrServer(container, "oacore");
