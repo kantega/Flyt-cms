@@ -104,12 +104,16 @@ public class SolrSearcher implements Searcher {
         if(query.isFuzzySearch()){
             StringBuilder fuzzyQuery = new StringBuilder();
             for (String token : boundary.split(queryString)) {
+                // Search for exact string and fuzzy string since search for only fuzzy string does not return exact matches
+                fuzzyQuery.append("(");
                 fuzzyQuery.append(token);
-                fuzzyQuery.append("~ ");
+                fuzzyQuery.append(" OR ");
+                fuzzyQuery.append(token);
+                fuzzyQuery.append("~) ");
             }
             queryString = fuzzyQuery.toString();
         }
-        return queryString;
+         return queryString;
     }
 
     public List<String> suggest(SearchQuery query) {
@@ -268,7 +272,13 @@ public class SolrSearcher implements Searcher {
     private void setSpellResponse(SearchResponse searchResponse, QueryResponse queryResponse) {
         SpellCheckResponse spellCheckResponse = queryResponse.getSpellCheckResponse();
         if(spellCheckResponse != null && !spellCheckResponse.isCorrectlySpelled()){
-            List<String> suggestionStrings = getSpellSuggestions(spellCheckResponse);
+            List<String> suggestionStrings = new ArrayList<String>();
+            // Remove duplicate suggestions caused by searching for both exact and fuzzy words
+            for (String s : getSpellSuggestions(spellCheckResponse)) {
+                if (!suggestionStrings.contains(s)) {
+                    suggestionStrings.add(s);
+                }
+            }
             searchResponse.setSpellSuggestions(suggestionStrings);
         }
     }
