@@ -53,6 +53,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                         Attachment attachment = AttachmentAO.getAttachment(id);
                         if (attachment != null) {
                             IndexableDocument indexableDocument = transformer.transform(attachment);
+                            log.debug("Transformed Attachment {}", attachment.getFilename());
                             indexableDocumentQueue.put(indexableDocument);
                         }
                     }

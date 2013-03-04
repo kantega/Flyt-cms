@@ -56,6 +56,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
                         Content content = contentManagementService.getContent(contentIdentifier);
                         if (content != null) {
                             IndexableDocument indexableDocument = transformer.transform(content);
+                            log.debug("Transformed Content {} {}", content.getTitle(), content.getId());
                             indexableDocuments.put(indexableDocument);
                         }
                     }
