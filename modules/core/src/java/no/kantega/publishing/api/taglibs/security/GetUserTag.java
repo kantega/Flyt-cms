@@ -33,6 +33,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class GetUserTag  extends TagSupport {
     private static final String SOURCE = "aksess.GetUserTag";
 
@@ -49,7 +51,7 @@ public class GetUserTag  extends TagSupport {
             User user = null;
 
             SecuritySession session = SecuritySession.getInstance(request);
-            if(userid != null) {
+            if(!isBlank(userid)) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
                     user = realm.lookupUser(userid, useCache);
