@@ -174,7 +174,7 @@ public class SearcherIntegrationTest {
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
-            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<em class=\"highlight\""));
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getDescription().contains("<em"));
         }
     }
 
@@ -185,8 +185,8 @@ public class SearcherIntegrationTest {
         q.setHighlightSearchResultDescription(true);
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
-            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getTitle().contains("<em class=\"highlight\">")
-                    || searchResult.getDescription().contains("<em class=\"highlight\">"));
+            assertTrue(searchResult.getTitle() + " did not contain highlight", searchResult.getTitle().contains("<em")
+                    || searchResult.getDescription().contains("<em"));
         }
     }
 

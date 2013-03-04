@@ -251,8 +251,6 @@ public class SolrSearcher implements Searcher {
 
     private void setHighlighting(SearchQuery query, SolrQuery params) {
         params.setHighlight(query.isHighlightSearchResultDescription());
-        params.setHighlightSimplePre("<em class=\"highlight\">");
-        params.setHighlightSimplePost("</em>");
         params.set("hl.fl", DESCRIPTION_HIHLIGHTING_FIELD, "title_no", "title_en");
         params.set("hl.useFastVectorHighlighter", true);
     }
