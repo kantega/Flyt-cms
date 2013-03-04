@@ -72,8 +72,8 @@
         <field name="contentType" type="string" indexed="true" stored="true"/>
         <field name="uid" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="language" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false"/>
-        <field name="title_en" type="text_en" indexed="true" stored="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false"/>
+        <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
+        <field name="title_en" type="text_en" indexed="true" stored="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
         <field name="altTitle_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="altTitle_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
@@ -102,7 +102,7 @@
 
         <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
         <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
-        <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="true" compressed="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false"/>
+        <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="true" compressed="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
