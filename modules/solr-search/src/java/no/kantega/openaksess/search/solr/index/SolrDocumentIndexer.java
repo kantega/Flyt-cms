@@ -3,6 +3,7 @@ package no.kantega.openaksess.search.solr.index;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.pdfbox.cos.COSName;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -50,6 +51,8 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                     if(!deletedFileContent){
                         log.error("Could not delete file {}", fileContent.getAbsolutePath());
                     }
+                    // Remove when memory leak is fixed http://www.searchworkings.org/forum/-/message_boards/view_message/510823
+                    COSName.clearResources();
                 }
 
             }

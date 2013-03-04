@@ -79,7 +79,7 @@ public class IndexRebuilder {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
-                            log.debug("Indexing document {} {}", poll.getUId(), poll.getTitle());
+                            log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
                             log.error("Polling IndexableDocumentQueue resultet in null!");
