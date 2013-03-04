@@ -39,7 +39,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
             progressReporter.setStarted();
             while (!progressReporter.isFinished()){
                 try {
-                    provideAttachment(indexableDocumentQueue);
+                    provideAttachments(indexableDocumentQueue);
 
                 } finally {
                     progressReporter.reportProgress();
@@ -50,21 +50,29 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         }
     }
 
-    private void provideAttachment(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
+    private void provideAttachments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
         try (Connection connection = dataSource.getConnection()){
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 int id = resultSet.getInt("Id");
-                Attachment attachment = AttachmentAO.getAttachment(id);
-                if (attachment != null) {
-                    IndexableDocument indexableDocument = transformer.transform(attachment);
-                    log.info("Transformed Attachment {}", attachment.getFilename());
-                    indexableDocumentQueue.put(indexableDocument);
-                }
+                provideDocument(indexableDocumentQueue, id);
             }
         } catch (Exception e) {
             log.error("Error getting IDs", e);
+        }
+    }
+
+    private void provideDocument(BlockingQueue<IndexableDocument> indexableDocumentQueue, int id) throws InterruptedException {
+        try {
+            Attachment attachment = AttachmentAO.getAttachment(id);
+            if (attachment != null) {
+                IndexableDocument indexableDocument = transformer.transform(attachment);
+                log.info("Transformed Attachment {}", attachment.getFilename());
+                indexableDocumentQueue.put(indexableDocument);
+            }
+        } finally {
+            progressReporter.reportProgress();
         }
     }
 

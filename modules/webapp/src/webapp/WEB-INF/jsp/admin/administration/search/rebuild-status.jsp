@@ -40,7 +40,8 @@
                 progressList.html(html);
                 if(!data.allDone){
                     setTimeout(updateStatus, 2000);
-                    progressList.before("<em><kantega:label key="aksess.search.rebuild.done"/></em>")
+                } else {
+                    progressList.before("<em><kantega:label key="aksess.search.rebuild.done"/></em>");
                 }
             });
         }
