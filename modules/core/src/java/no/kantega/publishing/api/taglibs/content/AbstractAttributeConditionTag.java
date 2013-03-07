@@ -1,11 +1,13 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
@@ -73,7 +75,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
                 Attribute attribute = contentObject.getAttribute(AttributeTagHelper.getAttributeName(pageContext, name, repeater), attributeType);
                 result = evaluateCondition(contentObject, attribute);
             } else {
-                Log.error(CATEGORY, "Content object was null");
+                Log.error(CATEGORY, "Content object was null, URL:"  + URLHelper.getCurrentUrl((HttpServletRequest) pageContext.getRequest()));
             }
 
         } catch (Exception e) {
