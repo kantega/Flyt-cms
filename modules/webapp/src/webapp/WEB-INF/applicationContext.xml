@@ -59,9 +59,7 @@
         <property name="cacheManager" ref="ehcacheCacheManager"/>
     </bean>
 
-    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory" destroy-method="destroy">
-        <property name="configLocation" value="classpath:no/kantega/publishing/cache/ehcache.xml"/>
-    </bean>
+    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory" destroy-method="destroy"/>
 
     <beans profile="useCaching">
         <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
