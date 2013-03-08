@@ -1,5 +1,5 @@
+<%@ page import="no.kantega.publishing.api.model.Site" %>
 <%@ page import="java.util.List" %>
-<%@ page import="no.kantega.publishing.common.data.Site" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
