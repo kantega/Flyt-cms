@@ -19,11 +19,11 @@ package no.kantega.publishing.security;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.data.CachedBaseObject;
 import no.kantega.publishing.security.data.Role;
@@ -57,6 +57,7 @@ public class SecuritySession {
     private User user = null;
     private Identity identity = null;
     private SecurityRealm realm = null;
+    private SiteCache siteCache;
 
     // Husker sist tilgangssjekk
     private CachedBaseObject prevObject = null;
@@ -356,7 +357,8 @@ public class SecuritySession {
         if (object instanceof Content) {
             // Sjekker om det ikke skal vises sider fra dette nettstedet
             Content c = (Content)object;
-            Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
+            setSiteCacheIfNull();
+            Site site = siteCache.getSiteById(c.getAssociation().getSiteId());
             if (site == null || site.isDisabled()) {
                 return false;
             }
@@ -398,5 +400,11 @@ public class SecuritySession {
 
     public SecurityRealm getRealm() {
         return realm;
+    }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
     }
 }

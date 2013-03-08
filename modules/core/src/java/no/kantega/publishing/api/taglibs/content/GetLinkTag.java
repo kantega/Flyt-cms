@@ -19,16 +19,17 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -53,6 +54,8 @@ public class GetLinkTag extends BodyTagSupport{
     private Content contentObject = null;
     private String title = null;
     private String rel = null;
+
+    private SiteCache siteCache;
 
     public void setCollection(String collection) {
         this.collection = collection;
@@ -134,7 +137,8 @@ public class GetLinkTag extends BodyTagSupport{
                             RequestHelper.setRequestAttributes(request, current);
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {
-                            Site site = SiteCache.getSiteById(contentObject.getAssociation().getSiteId());
+                            setSiteCacheIfNull();
+                            Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
 
                             List hostnames = site.getHostnames();
                             if (hostnames.size() > 0) {
@@ -233,4 +237,11 @@ public class GetLinkTag extends BodyTagSupport{
 
         return SKIP_BODY;
      }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
+        }
+    }
+
 }

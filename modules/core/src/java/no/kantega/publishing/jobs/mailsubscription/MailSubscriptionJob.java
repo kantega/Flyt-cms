@@ -20,10 +20,10 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
@@ -42,6 +42,8 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     private String interval = MailSubscription.IMMEDIATE;
 
     private MailSubscriptionAgent mailSubscriptionAgent;
+
+    private SiteCache siteCache;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
@@ -76,19 +78,14 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
                         mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, null);
                     } else {
                         // Send en epost for hver site
-                        List sites = SiteCache.getSites();
-                        for (int i = 0; i < sites.size(); i++) {
-                            Site site = (Site) sites.get(i);
+                        List<Site> sites = siteCache.getSites();
+                        for (Site site : sites) {
                             Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
                             mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, site);
                         }
                     }
                 }
-            } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            } catch (ConfigurationException e) {
+            } catch (SystemException | SQLException | ConfigurationException e) {
                 Log.error(SOURCE, e, null, null);
             }
         }
@@ -100,5 +97,9 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
     public void setMailSubscriptionAgent(MailSubscriptionAgent mailSubscriptionAgent) {
         this.mailSubscriptionAgent = mailSubscriptionAgent;
+    }
+
+    public void setSiteCache(SiteCache siteCache) {
+        this.siteCache = siteCache;
     }
 }

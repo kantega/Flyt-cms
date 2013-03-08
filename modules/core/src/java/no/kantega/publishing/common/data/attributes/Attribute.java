@@ -21,11 +21,11 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -386,7 +386,7 @@ public abstract class Attribute {
         try {
             Association association = content.getAssociation();
             int siteId =  association.getSiteId();
-            Site site = SiteCache.getSiteById(siteId);
+            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(siteId);
             // Dersom site er angitt i hideInSites skal den ikke vises
             if (site != null && hideInSites != null) {
                 for (String alias : hideInSites) {

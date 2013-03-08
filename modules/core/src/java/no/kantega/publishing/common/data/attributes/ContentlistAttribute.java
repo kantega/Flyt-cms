@@ -18,13 +18,15 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.spring.RootContext;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -139,7 +141,7 @@ public class ContentlistAttribute extends ListAttribute {
                     requestedSiteId = Integer.parseInt(siteId);
                 } catch (NumberFormatException e) {
                     // site er et alias
-                    Site s = SiteCache.getSiteByPublicIdOrAlias(siteId);
+                    Site s = RootContext.getInstance().getBean(SiteCache.class).getSiteByPublicIdOrAlias(siteId);
                     if(s != null) {
                         requestedSiteId = s.getId();
                     }
@@ -150,7 +152,7 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {
-        List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
+        List<ContentIdentifier> cids = new ArrayList<>();
         List<String> values = super.getValues();
         for (String v : values) {
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));

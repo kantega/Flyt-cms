@@ -20,17 +20,19 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -92,7 +94,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     protected boolean shuffle = false;
     protected int shuffleMax = -1;
 
-
+    private SiteCache siteCache;
 
     /**
      * Cleanup after tag is finished
@@ -436,7 +438,8 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 this.siteId = Integer.parseInt(siteId);
             } catch (NumberFormatException e) {
                 try {
-                    Site site = SiteCache.getSiteByPublicIdOrAlias(siteId);
+                    setSiteCacheIfNull();
+                    Site site = siteCache.getSiteByPublicIdOrAlias(siteId);
                     if (site != null) {
                         this.siteId = site.getId();
                     }
@@ -444,6 +447,12 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     Log.error(SOURCE, e1, null, null);
                 }
             }
+        }
+    }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
         }
     }
 

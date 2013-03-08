@@ -19,9 +19,13 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
@@ -51,9 +55,7 @@ public class MailSubscriptionAgent {
      * @throws SystemException -
      */
     public void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
-
-
-        Map<String, List<Content>> subscribers = new HashMap<String, List<Content>>();
+        Map<String, List<Content>> subscribers = new HashMap<>();
 
         for (MailSubscription subscription : subscriptions) {
             String email = subscription.getEmail();

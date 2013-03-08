@@ -19,12 +19,16 @@ package no.kantega.publishing.common;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -51,6 +55,7 @@ public class ContentIdHelper {
     private static final int defaultContextId = -1;
     private static final int defaultVersion = -1;
 
+    private static SiteCache siteCache;
     /**
      * Find the ContentIdentifer for a Content, relative to the context-Content and expr.
      * @param context - The current Content-contect
@@ -59,7 +64,6 @@ public class ContentIdHelper {
      * @throws SystemException
      * @throws ContentNotFoundException
      */
-
     public static ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
         if (context == null || expr == null) {
             return null;
@@ -214,24 +218,25 @@ public class ContentIdHelper {
                     url = url.substring(0, end);
                 }
             }
+            setSiteCacheIfNull();
             if (siteId != -1) {
                 if ("/".equalsIgnoreCase(url)) {
-                    Site site = SiteCache.getSiteById(siteId);
+                    Site site = siteCache.getSiteById(siteId);
                     if (site != null) {
                         url = site.getAlias();
                     }
                 }
             } else if ("/".equalsIgnoreCase(url)) {
-                Site defaultSite = SiteCache.getDefaultSite();
+                Site defaultSite = siteCache.getDefaultSite();
                 if (defaultSite != null) {
                     siteId = defaultSite.getId();
                     url = defaultSite.getAlias();
                 } else {
                     siteId = 1;
-                    url = SiteCache.getSiteById(1).getAlias();
+                    url = siteCache.getSiteById(1).getAlias();
                 }
             } else  {
-                List<Site> sites = SiteCache.getSites();
+                List<Site> sites = siteCache.getSites();
                 for (Site site : sites){
                     String siteAliasWithoutTrailingSlash = removeEnd(site.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
@@ -492,12 +497,13 @@ public class ContentIdHelper {
             }
         }
 
+        setSiteCacheIfNull();
         if (siteId == -1) {
-            Site site = SiteCache.getSiteByHostname(request.getServerName());
+            Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
-            } else {
-                List<Site> sites = SiteCache.getSites();
+            } else if(url != null) {
+                List<Site> sites = siteCache.getSites();
                 for (Site s : sites){
                     String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
@@ -508,7 +514,7 @@ public class ContentIdHelper {
             }
         }
         if(siteId == -1){
-            siteId = SiteCache.getDefaultSite().getId();
+            siteId = siteCache.getDefaultSite().getId();
         }
 
         return siteId;
@@ -626,6 +632,12 @@ public class ContentIdHelper {
             } catch (SystemException e) {
                 Log.error(SOURCE, e, null, null);
             }
+        }
+    }
+
+    private static void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
         }
     }
 }

@@ -89,6 +89,7 @@
             <map>
                 <entry key="interval" value="immediate"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
     </bean>
@@ -99,6 +100,7 @@
             <map>
                 <entry key="interval" value="daily"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
     </bean>
@@ -109,6 +111,7 @@
             <map>
                 <entry key="interval" value="weekly"/>
                 <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
     </bean>

@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.common.data;
 
-import java.util.List;
+import no.kantega.publishing.api.model.Site;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Dec 17, 2008
- * Time: 9:34:38 AM
+ * Object containing the current Template configuration
  */
 public class TemplateConfiguration {
     List<Site> sites = new ArrayList<>();

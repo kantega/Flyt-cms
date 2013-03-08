@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.util.templates;
 
 import com.thoughtworks.xstream.XStream;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 
 /**

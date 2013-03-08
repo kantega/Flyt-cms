@@ -17,11 +17,12 @@
 package no.kantega.publishing.common.data;
 
 import no.kantega.publishing.api.model.PublicIdObject;
+import no.kantega.publishing.api.model.Site;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  *
@@ -195,7 +196,7 @@ public class DisplayTemplate implements PublicIdObject {
 
     public List<Site> getSites() {
         if (sites == null) {
-            sites = new ArrayList<Site>();
+            sites = new ArrayList<>();
         }
         return sites;
     }

@@ -17,10 +17,11 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.spring.RootContext;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,12 +33,8 @@ public class AssociationAOHelper {
     private static final String SOURCE = "aksess.AssociationAOHelper";
 
     public static void fixDefaultPostings() throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            List sites = SiteCache.getSites();
+        try (Connection c = dbConnectionFactory.getConnection()) {
+            List<Site> sites = RootContext.getInstance().getBean(SiteCache.class).getSites();
 
             // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
             String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + " AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
@@ -47,12 +44,11 @@ public class AssociationAOHelper {
             String updateQuery = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid = ? AND (IsDeleted IS NULL OR IsDeleted = 0)";
             PreparedStatement updateSt = c.prepareStatement(updateQuery);
 
-            for (int i = 0; i < sites.size(); i++) {
-                Site site =  (Site)sites.get(i);
+            for (Site site : sites) {
                 st.setInt(1, site.getId());
                 st.setInt(2, site.getId());
                 ResultSet rs = st.executeQuery();
-                while(rs.next()) {
+                while (rs.next()) {
                     int id = rs.getInt(1);
                     updateSt.setInt(1, id);
                     updateSt.executeUpdate();
@@ -62,23 +58,12 @@ public class AssociationAOHelper {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
 
     public static void deleteShortcuts() throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             if (dbConnectionFactory.isMySQL()) {
                 // MySQL støtter ikke å slette tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
@@ -95,25 +80,13 @@ public class AssociationAOHelper {
                     updateSt.executeUpdate();
                 }
                 rs.close();
-                rs = null;
-
-
             } else {
                 PreparedStatement st = c.prepareStatement("DELETE FROM associations WHERE type = " + AssociationType.SHORTCUT + " AND AssociationId NOT IN (SELECT UniqueId FROM associations WHERE (IsDeleted IS NULL OR IsDeleted = 0)) AND (IsDeleted IS NULL OR IsDeleted = 0)");
                 st.executeUpdate();
                 st.close();
-                st = null;
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 }

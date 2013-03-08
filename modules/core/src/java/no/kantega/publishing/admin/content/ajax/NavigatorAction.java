@@ -24,15 +24,15 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.preferences.UserPreference;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.admin.util.NavigatorUtil;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.SiteManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
@@ -45,12 +45,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 03.jul.2009
- * Time: 14:13:45
- */
 public class NavigatorAction implements Controller {
+
+    @Autowired
+    private SiteCache siteCache;
 
     @Autowired
     private UserPreferencesManager userPreferencesManager;
@@ -68,7 +66,6 @@ public class NavigatorAction implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        SiteManagementService siteService = new SiteManagementService(request);
 
         // Users should be able to navigate to all pages, must act as admin
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
@@ -137,7 +134,7 @@ public class NavigatorAction implements Controller {
 
         int[] openIds = StringHelper.getInts(openFoldersList, ",");
         List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
-        for (Site site : siteService.getSites()) {
+        for (Site site : siteCache.getSites()) {
             if (!site.isDisabled() && !isHiddenByUser(site.getId(), request)) {
                 SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, isShowExpired(request), categoryList);
                 if (sitemap != null) {
@@ -147,7 +144,7 @@ public class NavigatorAction implements Controller {
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(AdminRequestParameters.NAVIGATION_SITES, sites);
         model.put(AdminRequestParameters.NAVIGATION_SORT_ORDER, sort);
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);

@@ -16,22 +16,22 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.api.model.PublicIdObject;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.PublicIdObject;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.spring.RootContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
-import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.*;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -54,9 +54,7 @@ public class TemplateConfigurationExportHelper {
     public static TemplateConfiguration getConfigururationFromDatabase() throws SystemException {
         TemplateConfiguration tc = new TemplateConfiguration();
 
-        Connection c = dbConnectionFactory.getConnection();
-
-        try {
+        try (Connection c = dbConnectionFactory.getConnection()){
             tc.setSites(getSites(c));
             tc.setAssociationCategories(getAssociationCategories(c));
             tc.setContentTemplates(getContentTemplates(c, AttributeDataType.CONTENT_DATA));
@@ -91,20 +89,13 @@ public class TemplateConfigurationExportHelper {
 
         } catch (Exception e) {
             Log.error("TemplateConfigurationExportHelper", e, null, null);
-        } finally {
-            try {
-                c.close();
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-
         }
         return tc;
 
     }
 
     private static List<AssociationCategory> getAssociationCategories(Connection c) throws SQLException {
-        List<AssociationCategory> categories = new ArrayList<AssociationCategory>();
+        List<AssociationCategory> categories = new ArrayList<>();
         ResultSet rs = SQLHelper.getResultSet(c, "select * from associationcategory");
         while (rs.next()) {
             AssociationCategory category = new AssociationCategory();
@@ -128,7 +119,7 @@ public class TemplateConfigurationExportHelper {
             site.setId(rs.getInt("SiteId"));
             site.setName(rs.getString("Name"));
             site.setAlias(rs.getString("Alias"));
-            site.setIsDefault(rs.getBoolean("IsDefaul"));
+            site.setDefault(rs.getBoolean("IsDefault"));
             String publicId = site.getAlias();
             if (publicId.length() > 1) {
                 publicId = publicId.substring(1, publicId.length() - 1);
@@ -157,17 +148,14 @@ public class TemplateConfigurationExportHelper {
     private static List<DisplayTemplate> getDisplayTemplates(Connection c) throws SQLException {
         ResultSet rs;
         rs = SQLHelper.getResultSet(c, "select * from displaytemplates");
-        List<DisplayTemplate> displayTemplates = new ArrayList<DisplayTemplate>();
+        List<DisplayTemplate> displayTemplates = new ArrayList<>();
         while(rs.next()) {
             DisplayTemplate template = new DisplayTemplate();
             template.setId(rs.getInt("DisplayTemplateId"));
             int siteId = rs.getInt("Site");
             if (siteId > 0) {
-                List<Site> sites = new ArrayList<Site>();
-                Site site = new Site();
-                site.setId(siteId);
-                sites.add(site);              
-                template.setSites(sites);
+                Site siteById = RootContext.getInstance().getBean(SiteCache.class).getSiteById(siteId);
+                template.setSites(Arrays.asList(siteById));
             }
             int contentTemplateId = rs.getInt("ContentTemplateId");
             ContentTemplate ct =  new ContentTemplate();
@@ -188,8 +176,8 @@ public class TemplateConfigurationExportHelper {
             String miniview = rs.getString("URLMiniView");
             if (miniview == null) miniview = "";
             template.setMiniView(miniview);
-            template.setAllowMultipleUsages(rs.getInt("AllowMultipleUsages") == 1 ? true : false);
-            template.setIsNewGroup(rs.getInt("IsNewGroup") == 1 ? true : false);
+            template.setAllowMultipleUsages(rs.getBoolean("AllowMultipleUsages"));
+            template.setIsNewGroup(rs.getBoolean("IsNewGroup"));
             long defaultForumId = rs.getLong("DefaultForumId");
             if (defaultForumId >= 0) {
                 template.setDefaultForumId(defaultForumId);

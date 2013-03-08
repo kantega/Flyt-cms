@@ -26,12 +26,17 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;
-import no.kantega.publishing.common.cache.*;
+import no.kantega.publishing.common.cache.AssociationCategoryCache;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentStatus;
@@ -77,6 +82,7 @@ public class ContentManagementService {
     private EventLog eventLog;
     private boolean cachingEnabled;
     private TrafficLogger trafficLogger;
+    private SiteCache siteCache;
 
     private ContentManagementService() {
         CacheManager cacheManager = RootContext.getInstance().getBean(CacheManager.class);
@@ -925,7 +931,8 @@ public class ContentManagementService {
     public List<PathEntry> getPathByAssociation(Association association) throws SystemException {
         List<PathEntry> paths = PathWorker.getPathByAssociation(association);
         if (paths != null && paths.size() > 0) {
-            Site site = SiteCache.getSiteById(paths.get(0).getId());
+            setSiteCacheIfNull();
+            Site site = siteCache.getSiteById(paths.get(0).getId());
             if (site != null) {
                 paths.get(0).setTitle(site.getName());
             }
@@ -933,6 +940,11 @@ public class ContentManagementService {
         return paths;
     }
 
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
+    }
     /**
      * Hent sti basert på ContentIdentifier
      * @param cid - Innholdsid

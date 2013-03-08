@@ -18,12 +18,13 @@ package no.kantega.publishing.client.filter;
 
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.util.PrettyURLEncoderUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +37,8 @@ public class UrlContentRewriter implements ContentRewriter {
     private PrettyURLEncoderUtil prettyURLEncoderUtil;
     private String key;
     private ContentIdentifierDao contentIdentifierDao;
+    @Autowired
+    private SiteCache siteCache;
 
     public UrlContentRewriter() {
         this.key = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?thisId=";
@@ -95,7 +98,7 @@ public class UrlContentRewriter implements ContentRewriter {
                             if (currentPage != null) {
                                 siteId = currentPage.getAssociation().getSiteId();
                             } else {
-                                Site site = SiteCache.getSiteByHostname(request.getServerName());
+                                Site site = siteCache.getSiteByHostname(request.getServerName());
                                 if (site != null) {
                                     siteId = site.getId();
                                 }

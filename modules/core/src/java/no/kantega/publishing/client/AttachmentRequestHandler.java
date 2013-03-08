@@ -20,12 +20,13 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -45,6 +46,8 @@ import java.util.regex.Pattern;
 public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
     private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
+    @Autowired
+    private SiteCache siteCache;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -83,7 +86,7 @@ public class AttachmentRequestHandler extends HttpServlet {
             String anchor = param.getString("anchor");
 
             int siteId = -1;
-            Site site = SiteCache.getSiteByHostname(request.getServerName());
+            Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
             }
