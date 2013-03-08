@@ -81,7 +81,7 @@ public class ContentRequestHandler extends AbstractController {
                 cid = ContentIdHelper.fromRequestAndUrl(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
 
-                if (request.getMethod().toLowerCase().equals("post") && request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null) {
+                if (request.getMethod().toLowerCase().equals("post") && (request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {
                     Log.error(SOURCE, "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action");
                 }
             }
