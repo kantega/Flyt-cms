@@ -30,6 +30,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -39,6 +40,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelper {
     private static final String SOURCE = "aksess.ContentIdHelper";
@@ -170,97 +173,17 @@ public class ContentIdHelper {
             url = url.substring(0, url.indexOf("#"));
         }
 
-        url = url.toLowerCase();
-        if (url.startsWith("http://") || url.startsWith("https://")) {
-            url = url.substring(url.indexOf("://") + 3, url.length());
-            if (url.indexOf('/') != -1) {
-                url = url.substring(url.indexOf('/'), url.length());
-            }
+        url = getPath(url);
 
-            String contextPath = Aksess.getContextPath().toLowerCase();
-            if (url.length() > contextPath.length()) {
-                url = url.substring(contextPath.length(), url.length());
-            }
-            if (url.length() == 0) {
-                url = "/";
-            }
-        }
+        associationId = getAssociationIdFromPrettyUrl(url, associationId);
 
-        int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
-        if (contentPos != -1 && url.length() > Aksess.CONTENT_URL_PREFIX.length() + 1) {
-            String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
-            int end = idStr.indexOf("/");
-            if (end != -1) {
-                idStr = idStr.substring(0, end);
-            }
-            try {
-                associationId = Integer.parseInt(idStr);
-            } catch (NumberFormatException e) {
-                // Do nothing
-            }
-        }
+        associationId = getAssociationIdFromThisId(url, associationId);
 
-        String aIdToken = "thisid=";
-        int aIdPos = url.indexOf(aIdToken);
-        if (aIdPos != -1) {
-            String idStr = url.substring(aIdPos + aIdToken.length(), url.length());
-            int end = idStr.indexOf('&');
-            if (end != -1) {
-                idStr = idStr.substring(0, end);
-            }
-            try {
-                associationId = Integer.parseInt(idStr);
-            } catch (NumberFormatException e) {
-                // Gjør ingenting
-            }
-        }
+        contentId = getContentIdFromParameter(url, contentId, associationId);
 
-        if (associationId == -1) {
-            String idToken = "contentid=";
-            int idPos = url.indexOf(idToken);
-            if (idPos != -1) {
-                String idStr = url.substring(idPos + idToken.length(), url.length());
-                int end = idStr.indexOf('&');
-                if (end != -1) {
-                    idStr = idStr.substring(0, end);
-                }
-                try {
-                    contentId = Integer.parseInt(idStr);
-                } catch (NumberFormatException e) {
-                    // Gjør ingenting
-                }
-            }
-        }
+        language = getLanguage(url, language);
 
-        String languageToken = "language=";
-        int languagePos = url.indexOf(languageToken);
-        if (languagePos != -1) {
-            String languageStr = url.substring(languagePos + languageToken.length(), url.length());
-            int end = languageStr.indexOf('&');
-            if (end != -1) {
-                languageStr = languageStr.substring(0, end);
-            }
-            try {
-                language = Integer.parseInt(languageStr);
-            } catch (NumberFormatException e) {
-                // Standard språk
-            }
-        }
-
-        String versionToken = "version=";
-        int versionPos = url.indexOf(versionToken);
-        if (versionPos != -1) {
-            String versionStr = url.substring(versionPos + versionToken.length(), url.length());
-            int end = versionStr.indexOf('&');
-            if (end != -1) {
-                versionStr = versionStr.substring(0, end);
-            }
-            try {
-                version = Integer.parseInt(versionStr);
-            } catch (NumberFormatException e) {
-                // Siste versjon
-            }
-        }
+        version = getVersion(url, version);
 
         // Hvis contentId ikke finnes i URL, slå opp i basen
         if (contentId != -1 || associationId != -1) {
@@ -299,17 +222,143 @@ public class ContentIdHelper {
                     }
                 }
             } else if ("/".equalsIgnoreCase(url)) {
-                siteId = 1;
-                url = SiteCache.getSiteById(1).getAlias();
-            } else {
-                Site siteByAlias = SiteCache.getSiteByAlias(url);
-                if(siteByAlias != null){
-                    siteId = siteByAlias.getId();
+                Site defaultSite = SiteCache.getDefaultSite();
+                if (defaultSite != null) {
+                    siteId = defaultSite.getId();
+                    url = defaultSite.getAlias();
+                } else {
+                    siteId = 1;
+                    url = SiteCache.getSiteById(1).getAlias();
+                }
+            } else  {
+                List<Site> sites = SiteCache.getSites();
+                for (Site site : sites){
+                    String siteAliasWithoutTrailingSlash = removeEnd(site.getAlias(), "/");
+                    if(url.startsWith(siteAliasWithoutTrailingSlash)){
+                        url = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
+                        siteId = site.getId();
+                    }
                 }
             }
 
             return getContentIdentifier(siteId, url);
         }
+    }
+
+    private static int getVersion(String url, int version) {
+        String versionToken = "version=";
+        int versionPos = url.indexOf(versionToken);
+        if (versionPos != -1) {
+            String versionStr = url.substring(versionPos + versionToken.length(), url.length());
+            int end = versionStr.indexOf('&');
+            if (end != -1) {
+                versionStr = versionStr.substring(0, end);
+            }
+            try {
+                version = Integer.parseInt(versionStr);
+            } catch (NumberFormatException e) {
+                // Siste versjon
+            }
+        }
+        return version;
+    }
+
+    private static int getContentIdFromParameter(String url, int contentId, int associationId) {
+        if (associationId == -1) {
+            String idToken = "contentid=";
+            int idPos = url.indexOf(idToken);
+            if (idPos != -1) {
+                String idStr = url.substring(idPos + idToken.length(), url.length());
+                int end = idStr.indexOf('&');
+                if (end != -1) {
+                    idStr = idStr.substring(0, end);
+                }
+                try {
+                    contentId = Integer.parseInt(idStr);
+                } catch (NumberFormatException e) {
+                    // Gjør ingenting
+                }
+            }
+        }
+        return contentId;
+    }
+
+    private static int getAssociationIdFromThisId(String url, int associationId) {
+        String aIdToken = "thisid=";
+        int aIdPos = url.indexOf(aIdToken);
+        if (aIdPos != -1) {
+            String idStr = url.substring(aIdPos + aIdToken.length(), url.length());
+            int end = idStr.indexOf('&');
+            if (end != -1) {
+                idStr = idStr.substring(0, end);
+            }
+            try {
+                associationId = Integer.parseInt(idStr);
+            } catch (NumberFormatException e) {
+                // Gjør ingenting
+            }
+        }
+        return associationId;
+    }
+
+    /*
+     Looks for /content/ID/name
+     */
+    private static int getAssociationIdFromPrettyUrl(String url, int associationId) {
+        int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
+        if (contentPos != -1 && url.length() > Aksess.CONTENT_URL_PREFIX.length() + 1) {
+            String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
+            int end = idStr.indexOf("/");
+            if (end != -1) {
+                idStr = idStr.substring(0, end);
+            }
+            try {
+                associationId = Integer.parseInt(idStr);
+            } catch (NumberFormatException e) {
+                // Do nothing
+            }
+        }
+        return associationId;
+    }
+
+    /*
+     Removes protocol and servername.
+     */
+    private static String getPath(String url) {
+        url = url.toLowerCase();
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            url = url.substring(url.indexOf("://") + 3, url.length());
+            if (url.indexOf('/') != -1) {
+                url = url.substring(url.indexOf('/'), url.length());
+            }
+
+            String contextPath = Aksess.getContextPath().toLowerCase();
+            if (url.length() > contextPath.length()) {
+                url = url.substring(contextPath.length(), url.length());
+            }
+            if (url.length() == 0) {
+                url = "/";
+            }
+        }
+        return url;
+    }
+
+    private static int getLanguage(String url, int language) {
+        String languageToken = "language=";
+        int languagePos = url.indexOf(languageToken);
+        if (languagePos != -1) {
+            String languageStr = url.substring(languagePos + languageToken.length(), url.length());
+            int end = languageStr.indexOf('&');
+            if (end != -1) {
+                languageStr = languageStr.substring(0, end);
+            }
+            try {
+                language = Integer.parseInt(languageStr);
+            } catch (NumberFormatException e) {
+                // Standard språk
+            }
+        }
+        return language;
     }
 
     private static ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
@@ -334,9 +383,7 @@ public class ContentIdHelper {
     private static int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
         int associationId = -1;
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st;
             ResultSet rs;
@@ -384,14 +431,6 @@ public class ContentIdHelper {
             }
         } catch (SQLException e) {
             throw new SystemException("Feil ved SQL kall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return associationId;
@@ -400,9 +439,7 @@ public class ContentIdHelper {
     private static int findContentIdFromAssociationId(int associationId) throws SystemException {
         int contentId = -1;
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement st = c.prepareStatement("select ContentId from associations where AssociationId = ?");
             st.setInt(1, associationId);
             ResultSet rs = st.executeQuery();
@@ -414,14 +451,6 @@ public class ContentIdHelper {
             st.close();
         } catch (SQLException e) {
             throw new SystemException("Feil ved SQL kall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return contentId;
@@ -468,8 +497,18 @@ public class ContentIdHelper {
             if (site != null) {
                 siteId = site.getId();
             } else {
-                siteId = SiteCache.getDefaultSite().getId();
+                List<Site> sites = SiteCache.getSites();
+                for (Site s : sites){
+                    String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
+                    if(url.startsWith(siteAliasWithoutTrailingSlash)){
+                        url = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
+                        siteId = s.getId();
+                    }
+                }
             }
+        }
+        if(siteId == -1){
+            siteId = SiteCache.getDefaultSite().getId();
         }
 
         return siteId;
