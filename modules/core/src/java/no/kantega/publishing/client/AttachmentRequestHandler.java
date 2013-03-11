@@ -66,8 +66,8 @@ public class AttachmentRequestHandler extends HttpServlet {
                 }
             } else {
                 attachmentId = param.getInt("id");
-                if(attachmentId == -1) {
-                    String info = request.getPathInfo();
+                String info = request.getPathInfo();
+                if(attachmentId == -1 && info != null) {
                     try {
                         Matcher matcher = urlPattern.matcher(info);
                         if (matcher.matches()){
