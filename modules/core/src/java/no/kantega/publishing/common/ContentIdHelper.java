@@ -615,22 +615,24 @@ public class ContentIdHelper {
      * @param contentIdentifier assure both are set on.
      */
     public static void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier){
-        int associationId = contentIdentifier.getAssociationId();
-        int contentId = contentIdentifier.getContentId();
+        if (contentIdentifier != null) {
+            int associationId = contentIdentifier.getAssociationId();
+            int contentId = contentIdentifier.getContentId();
 
-        if (contentId != -1 && associationId == -1) {
-            try {
-                associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
-                contentIdentifier.setAssociationId(associationId);
-            } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-        } else if (contentId == -1 && associationId != -1) {
-            try {
-                contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
-                contentIdentifier.setContentId(contentId);
-            } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
+            if (contentId != -1 && associationId == -1) {
+                try {
+                    associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
+                    contentIdentifier.setAssociationId(associationId);
+                } catch (SystemException e) {
+                    Log.error(SOURCE, e, null, null);
+                }
+            } else if (contentId == -1 && associationId != -1) {
+                try {
+                    contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
+                    contentIdentifier.setContentId(contentId);
+                } catch (SystemException e) {
+                    Log.error(SOURCE, e, null, null);
+                }
             }
         }
     }
