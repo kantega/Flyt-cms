@@ -26,7 +26,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
     private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
-    @Autowired
+
     private SiteCache siteCache;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -86,6 +86,7 @@ public class AttachmentRequestHandler extends HttpServlet {
             String anchor = param.getString("anchor");
 
             int siteId = -1;
+            initSiteCacheIfNull();
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
@@ -121,15 +122,12 @@ public class AttachmentRequestHandler extends HttpServlet {
             int expire = config.getInt("attachments.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
             
-            ServletOutputStream out = response.getOutputStream();
-
-            try {
+            try (ServletOutputStream out = response.getOutputStream()){
                 if (attachment.getSize() > 0) {
  	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
                 }
                 cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
                 out.flush();
-                out.close();
             } catch (Exception e) {
                 // Client has aborted / connection closed
             }
@@ -138,8 +136,14 @@ public class AttachmentRequestHandler extends HttpServlet {
         }
     }
 
+    private void initSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
+    }
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 }
 
