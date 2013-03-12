@@ -128,6 +128,7 @@ public class Aksess {
     private static ServerType serverType;
 
     private static String queryStringEncoding;
+    private static int xmlCacheMaxAge = 3;
 
     public static void loadConfiguration() {
 
@@ -199,6 +200,8 @@ public class Aksess {
                 Log.info(SOURCE, "Module enabled: Traffic log");
             }
             trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
+            deletedItemsMaxAge = c.getInt("deleteditems.maxage", deletedItemsMaxAge);
+            xmlCacheMaxAge = c.getInt("xmlcache.maxage", xmlCacheMaxAge);
 
             internalIpSegment = c.getStrings("trafficlog.internalipsegment", "172.16.1");
 
@@ -577,5 +580,9 @@ public class Aksess {
 
     public static boolean isDefaultMinorChange() {
         return isDefaultMinorChange;
+    }
+
+    public static int getXmlCacheMaxAge() {
+        return xmlCacheMaxAge;
     }
 }

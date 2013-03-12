@@ -68,9 +68,7 @@ public class XMLImportJob  extends QuartzJobBean {
                 xmlCache.remove((Object) id);
             }
 
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (MalformedURLException e) {
+        } catch (SystemException | MalformedURLException e) {
             Log.error(SOURCE, e, null, null);
         }
         Log.info(SOURCE, "XMLImport ended:" + id, null, null);
