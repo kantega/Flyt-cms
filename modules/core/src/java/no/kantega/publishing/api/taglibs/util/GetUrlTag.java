@@ -20,7 +20,6 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,91 +30,67 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.taglibs.standard.tag.common.core.ImportSupport.isAbsoluteUrl;
+
 public class GetUrlTag extends TagSupport {
     private static String SOURCE = "aksess.GetUrlTag";
 
     String url = null;
     String queryParams = null;
     boolean addcontextpath = true;
+    boolean addserver = false;
     boolean escapeurl = true;
 
     private UrlPlaceholderResolver urlPlaceholderResolver;
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public void setQueryparams(String queryParams) {
-        this.queryParams = queryParams;
-    }
-
-    public void setAddcontextpath(boolean addcontextpath){
-       this.addcontextpath = addcontextpath;
-    }
-
-    public void setEscapeurl(boolean escapeurl) {
-        this.escapeurl = escapeurl;
-    }
 
     public int doStartTag() throws JspException {
         JspWriter out;
         try {
             out = pageContext.getOut();
 
-            initUrlPlaceholderResolverIfNull();
-
-            url = urlPlaceholderResolver.replaceMacros(url, pageContext);
-
-            String absoluteurl = addcontextpath ? Aksess.getContextPath(): "";
-
-            if (url != null && url.length() > 0) {
-                if (url.contains("http:") || url.contains("https:")) {
-                    absoluteurl = url;
-                } else {
+            if(isNotBlank(url)){
+                initUrlPlaceholderResolverIfNull();
+                StringBuilder urlBuilder = new StringBuilder();
+                HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+                if(isAbsoluteUrl(url)){
+                    urlBuilder.append(url);
+                }else {
+                    if(addserver){
+                        addSchemeServerAndContextPath(urlBuilder, request);
+                    }
+                    if(addcontextpath && !addserver){
+                        urlBuilder.append(request.getContextPath());
+                    }
                     if (url.charAt(0) == '/') {
-                        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+                        urlBuilder.append(url);
+                    } else {
+                        urlBuilder.append('/');
+                        urlBuilder.append(url);
+                    }
+                }
 
-                        // Hvis adminmodus, legg til siteid på link
-                        if (HttpHelper.isAdminMode(request)) {
-                            try {
-                                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
-                                if (!url.contains("?")) {
-                                    url = url + "?siteId=" + cid.getSiteId();
-                                } else {
-                                    url = url + "&amp;siteId=" + cid.getSiteId();
-                                }
+                addSiteIdIfInAdminMode(urlBuilder, request);
 
-                            } catch (ContentNotFoundException e) {
-
-                            }
+                if (queryParams != null) {
+                    if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?")) && (!queryParams.startsWith("#"))) {
+                        if (urlBuilder.indexOf("?") == -1) {
+                            urlBuilder.append("?");
+                        } else {
+                            urlBuilder.append("&amp;");
                         }
-
-                        absoluteurl += url;
-                    } else {
-                        absoluteurl += "/" + url;
                     }
+                    urlBuilder.append(queryParams.replaceAll("&", "&amp;"));
                 }
 
-
-            }
-
-            if (queryParams != null) {
-                if ((!queryParams.startsWith("&")) && (!queryParams.startsWith("?")) && (!queryParams.startsWith("#"))) {
-                    if (!absoluteurl.contains("?")) {
-                        queryParams = "?" + queryParams;
-                    } else {
-                        queryParams = "&" + queryParams;
-                    }
+                String buildUrl = urlPlaceholderResolver.replaceMacros(urlBuilder.toString(), pageContext);
+                if (!escapeurl) {
+                    out.write(buildUrl.replaceAll("&amp;", "&"));
+                } else {
+                    out.write(buildUrl);
                 }
-                queryParams = queryParams.replaceAll("&", "&amp;");
-                absoluteurl = absoluteurl + queryParams;
-            }
 
-            if (!escapeurl) {
-                absoluteurl = absoluteurl.replaceAll("&amp;", "&");
             }
-
-            out.write(absoluteurl);
 
         } catch (Exception e){
             Log.error(SOURCE, e);
@@ -125,6 +100,42 @@ public class GetUrlTag extends TagSupport {
         resetVars();
 
         return SKIP_BODY;
+    }
+
+    private void addSiteIdIfInAdminMode(StringBuilder urlBuilder, HttpServletRequest request) {
+        if (HttpHelper.isAdminMode(request)) {
+            try {
+                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, getUrlWithLeadingSlash(url));
+                if (!url.contains("?")) {
+                    urlBuilder.append("?siteId=").append(cid.getSiteId());
+                } else {
+                    urlBuilder.append("&siteId=").append(cid.getSiteId());
+                }
+
+            } catch (ContentNotFoundException e) {
+
+            }
+        }
+    }
+
+    private String getUrlWithLeadingSlash(String url) {
+        if (url.charAt(0) == '/') {
+            return url;
+        } else {
+            return "/" + url;
+        }
+    }
+
+    private void addSchemeServerAndContextPath(StringBuilder urlBuilder, HttpServletRequest request) {
+        urlBuilder.append(request.getScheme());
+        urlBuilder.append("://");
+        urlBuilder.append(request.getServerName());
+        int serverPort = request.getServerPort();
+        if(serverPort != 80 && serverPort != 443){
+            urlBuilder.append(":");
+            urlBuilder.append(serverPort);
+        }
+        urlBuilder.append(request.getContextPath());
     }
 
     private void initUrlPlaceholderResolverIfNull() {
@@ -137,9 +148,31 @@ public class GetUrlTag extends TagSupport {
         queryParams = null;
         escapeurl = true;
         addcontextpath = true;
+        addserver = false;
     }
 
     public int doEndTag() throws JspException {
          return EVAL_PAGE;
+    }
+
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setQueryparams(String queryParams) {
+        this.queryParams = queryParams;
+    }
+
+    public void setAddcontextpath(boolean addcontextpath){
+        this.addcontextpath = addcontextpath;
+    }
+
+    public void setEscapeurl(boolean escapeurl) {
+        this.escapeurl = escapeurl;
+    }
+
+    public void setAddserver(boolean addserver) {
+        this.addserver = addserver;
     }
 }

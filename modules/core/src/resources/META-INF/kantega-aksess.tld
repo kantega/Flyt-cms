@@ -65,10 +65,16 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Specifies wether to add context path to start of url or not. default is 'true'</description>
+            <description>Specifies whether to add context path to start of url or not. default is 'true'</description>
             <name>addcontextpath</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies whether to add server to start of url or not. default is 'false'</description>
+            <name>addserver</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
         <attribute>
             <description>Extra query parameters which should be added to the generated URL</description>

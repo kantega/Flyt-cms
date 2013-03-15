@@ -79,7 +79,7 @@ public class HttpHelper {
     }
 
     public static String createQueryStringFromRequestParameters(HttpServletRequest request) {
-        StringBuffer params = new StringBuffer();
+        StringBuilder params = new StringBuilder();
         Enumeration parameterNames = request.getParameterNames();
         boolean first = true;
         while (parameterNames.hasMoreElements()) {
