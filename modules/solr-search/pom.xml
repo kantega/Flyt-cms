@@ -13,7 +13,7 @@
 
     <name>OpenAksess search - Solr</name>
     <properties>
-        <solr.version>4.1.0</solr.version>
+        <solr.version>4.2.0</solr.version>
     </properties>
 
     <dependencies>
@@ -21,6 +21,12 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-solrj</artifactId>
             <version>${solr.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
