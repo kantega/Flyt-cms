@@ -97,20 +97,20 @@ public class Content extends BaseObject {
     private long forumId = -1;
 
     // Associations to this content object
-    private List<Association> associations = new ArrayList<Association>();
+    private List<Association> associations = new ArrayList<>();
 
     // Attributes
-    private List<Attribute> contentAttributes = new ArrayList<Attribute>();
-    private List<Attribute> metaAttributes = new ArrayList<Attribute>();
+    private List<Attribute> contentAttributes = new ArrayList<>();
+    private List<Attribute> metaAttributes = new ArrayList<>();
 
     // File attachments - only used to hold attachments when editing a page which is not saved yet
-    private List<Attachment> attachments = new ArrayList<Attachment>();
+    private List<Attachment> attachments = new ArrayList<>();
 
     // Multimedia - only used to hold multimedia when editing a page which is not saved yet
-    private List<Multimedia> multimedia = new ArrayList<Multimedia>();
+    private List<Multimedia> multimedia = new ArrayList<>();
 
     // Topics
-    private List<Topic> topics = new ArrayList<Topic>();
+    private List<Topic> topics = new ArrayList<>();
 
     // Status
     boolean isModified = false;
@@ -613,16 +613,7 @@ public class Content extends BaseObject {
     }
 
     private List<Attribute> getAttributeList(String name, int type) {
-        List<Attribute> list;
-        if (type == AttributeDataType.CONTENT_DATA) {
-            list = contentAttributes;
-        } else if (type == AttributeDataType.META_DATA) {
-            list = metaAttributes;
-        } else {
-            list = new ArrayList<Attribute>();
-            list.addAll(contentAttributes);
-            list.addAll(metaAttributes);
-        }
+        List<Attribute> list = getAttributesByType(type);
 
         if (name.contains("[") && name.contains("].")) {
             String rowStr = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
@@ -633,15 +624,33 @@ public class Content extends BaseObject {
             for (Attribute attr : list) {
                 if (attr.getName().equalsIgnoreCase(name) && attr instanceof RepeaterAttribute) {
                     RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
-                    if (repeaterAttribute.getNumberOfRows() >= row) {
+                    if (row < repeaterAttribute.getNumberOfRows()) {
                         return repeaterAttribute.getRow(row);
                     }
                 }
             }
-            return new ArrayList<Attribute>();
+            return new ArrayList<>();
         }
 
 
+        return list;
+    }
+
+    private List<Attribute> getAttributesByType(int type) {
+        List<Attribute> list;
+        switch (type) {
+            case AttributeDataType.CONTENT_DATA:
+                list = contentAttributes;
+                break;
+            case AttributeDataType.META_DATA:
+                list = metaAttributes;
+                break;
+            default:
+                list = new ArrayList<>();
+                list.addAll(contentAttributes);
+                list.addAll(metaAttributes);
+                break;
+        }
         return list;
     }
 
@@ -704,7 +713,7 @@ public class Content extends BaseObject {
 
     public void addTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList<Topic>();
+            topics = new ArrayList<>();
         }
         boolean found = false;
         for (Topic t : topics) {
