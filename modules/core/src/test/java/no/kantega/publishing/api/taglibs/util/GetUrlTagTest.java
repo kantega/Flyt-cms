@@ -124,6 +124,25 @@ public class GetUrlTagTest {
         assertEquals("/alias?siteId=1", response.getContentAsString());
     }
 
+    @Test
+    public void shouldUseHttpsIfHttpsIsRequestScheme() throws UnsupportedEncodingException, JspException {
+        request.setScheme("https");
+        getUrlTag.setUrl("someurl");
+        getUrlTag.setAddserver(true);
+        getUrlTag.doStartTag();
+        assertEquals("https://localhost/someurl", response.getContentAsString());
+    }
+
+    @Test
+    public void shouldAddPortIfNot80Or443() throws UnsupportedEncodingException, JspException {
+        request.setScheme("https");
+        request.setServerPort(8443);
+        getUrlTag.setUrl("someurl");
+        getUrlTag.setAddserver(true);
+        getUrlTag.doStartTag();
+        assertEquals("https://localhost:8443/someurl", response.getContentAsString());
+    }
+
     private void createFakeContent() {
         ContentIdentifier contentIdentifier = new ContentIdentifier();
         contentIdentifier.setSiteId(1);
