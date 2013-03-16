@@ -24,8 +24,8 @@ import java.io.IOException;
 /**
  */
 public class AksessRequestFilter implements Filter {
-    private static ThreadLocal<HttpServletRequest> request = new ThreadLocal<HttpServletRequest>();
-    private static ThreadLocal<HttpServletResponse> response = new ThreadLocal<HttpServletResponse>();
+    private static ThreadLocal<HttpServletRequest> request = new ThreadLocal<>();
+    private static ThreadLocal<HttpServletResponse> response = new ThreadLocal<>();
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         AksessRequestFilter.request.set((HttpServletRequest) request);

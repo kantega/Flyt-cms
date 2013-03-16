@@ -17,12 +17,13 @@
 package no.kantega.publishing.client.filter;
 
 import no.kantega.commons.exception.ConfigurationException;
-import static no.kantega.publishing.common.Aksess.getConfiguration;
 
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
+
+import static no.kantega.publishing.common.Aksess.getConfiguration;
 
 /**
  * The class allows for configuring a filters init-params from aksess.conf.
@@ -86,13 +87,7 @@ public class OpenAksessConfiguredFilter implements Filter {
                 }
             });
             
-        } catch (ClassNotFoundException e) {
-            throw new ServletException(e);
-        } catch (IllegalAccessException e) {
-            throw new ServletException(e);
-        } catch (InstantiationException e) {
-            throw new ServletException(e);
-        } catch (ConfigurationException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ConfigurationException e) {
             throw new ServletException(e);
         }
     }
