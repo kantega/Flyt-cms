@@ -34,7 +34,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.taglibs.standard.tag.common.core.ImportSupport.isAbsoluteUrl;
 
 public class GetUrlTag extends TagSupport {
-    private static String SOURCE = "aksess.GetUrlTag";
 
     String url = null;
     String queryParams = null;
@@ -49,10 +48,10 @@ public class GetUrlTag extends TagSupport {
         try {
             out = pageContext.getOut();
 
+            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             if(isNotBlank(url)){
                 initUrlPlaceholderResolverIfNull();
                 StringBuilder urlBuilder = new StringBuilder();
-                HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
                 if(isAbsoluteUrl(url)){
                     urlBuilder.append(url);
                 }else {
@@ -90,11 +89,13 @@ public class GetUrlTag extends TagSupport {
                     out.write(buildUrl);
                 }
 
+            } else {
+                out.write(request.getContextPath());
             }
 
         } catch (Exception e){
-            Log.error(SOURCE, e);
-            throw new JspException("ERROR: GetUrlTag", e);
+            Log.error("aksess.GetUrlTag", e);
+            throw new JspException(e);
         }
 
         resetVars();

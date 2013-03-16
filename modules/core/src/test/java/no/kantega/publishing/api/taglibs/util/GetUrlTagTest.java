@@ -143,6 +143,13 @@ public class GetUrlTagTest {
         assertEquals("https://localhost:8443/someurl", response.getContentAsString());
     }
 
+    @Test
+    public void shouldPrintContextPathIfUrlNotSet() throws JspException, UnsupportedEncodingException {
+        request.setContextPath("/contextpath");
+        getUrlTag.doStartTag();
+        assertEquals("/contextpath", response.getContentAsString());
+    }
+
     private void createFakeContent() {
         ContentIdentifier contentIdentifier = new ContentIdentifier();
         contentIdentifier.setSiteId(1);
