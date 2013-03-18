@@ -95,7 +95,6 @@ public class XMLCacheImpl implements XmlCache {
         }
     }
 
-    @Autowired
     public List<XMLCacheEntry> getSummary() {
         List<XMLCacheEntry> list = new ArrayList<>();
 
