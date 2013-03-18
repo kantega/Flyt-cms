@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.client;
 
+import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
@@ -50,7 +51,7 @@ public class AttachmentRequestHandler extends HttpServlet {
     @Autowired
     private SiteCache siteCache;
 
-
+    @Timed
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
