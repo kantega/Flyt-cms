@@ -26,7 +26,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.spring.RootContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -47,7 +47,9 @@ public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
     private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
 
+    @Autowired
     private SiteCache siteCache;
+
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
@@ -86,7 +88,7 @@ public class AttachmentRequestHandler extends HttpServlet {
             String anchor = param.getString("anchor");
 
             int siteId = -1;
-            initSiteCacheIfNull();
+
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
@@ -133,12 +135,6 @@ public class AttachmentRequestHandler extends HttpServlet {
             }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-        }
-    }
-
-    private void initSiteCacheIfNull() {
-        if(siteCache == null){
-            siteCache = RootContext.getInstance().getBean(SiteCache.class);
         }
     }
 

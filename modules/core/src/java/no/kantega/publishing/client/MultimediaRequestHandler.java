@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.client;
 
+import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
@@ -38,6 +39,7 @@ public class MultimediaRequestHandler implements Controller {
 
     private MultimediaRequestHandlerHelper helper;
 
+    @Timed
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 

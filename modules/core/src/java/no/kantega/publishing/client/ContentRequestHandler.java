@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.client;
 
+import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
@@ -55,6 +56,7 @@ public class ContentRequestHandler extends AbstractController {
     private SiteCache siteCache;
     private ContentRequestDispatcher contentRequestDispatcher;
 
+    @Timed
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
 

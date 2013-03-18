@@ -447,6 +447,12 @@
             <artifactId>metrics-web</artifactId>
             <version>${metrics.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-spring</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
