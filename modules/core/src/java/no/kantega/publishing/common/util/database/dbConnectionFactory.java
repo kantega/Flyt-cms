@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.common.util.database;
 
+import com.yammer.metrics.Metrics;
+import com.yammer.metrics.core.Gauge;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
@@ -43,6 +45,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class dbConnectionFactory {
     private static final String SOURCE = "aksess.DataBaseConnectionFactory";
@@ -68,8 +71,8 @@ public class dbConnectionFactory {
 
     private static boolean dbNTMLAuthentication = false;
 
-    private static int openedConnections = 0;
-    private static int closedConnections = 0;
+    private static AtomicInteger openedConnections = new AtomicInteger();
+    private static AtomicInteger closedConnections = new AtomicInteger();
     public static Map<Connection, StackTraceElement[]> connections  = new ConcurrentHashMap<Connection, StackTraceElement[]>();
 
     private static boolean debugConnections = false;
@@ -154,6 +157,31 @@ public class dbConnectionFactory {
             Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
             Log.error(SOURCE, e, null, null);
         }
+
+
+        addMetricsGauges();
+    }
+
+    private static void addMetricsGauges() {
+        Metrics.newGauge(dbConnectionFactory.class, "open-connections", new Gauge<Integer>() {
+            @Override
+            public Integer value() {
+                return getActiveConnections();
+            }
+        });
+        Metrics.newGauge(dbConnectionFactory.class, "idle-connections", new Gauge<Integer>() {
+            @Override
+            public Integer value() {
+                return getIdleConnections();
+            }
+        });
+
+        Metrics.newGauge(dbConnectionFactory.class, "max-connections", new Gauge<Integer>() {
+            @Override
+            public Integer value() {
+                return getMaxConnections();
+            }
+        });
     }
 
     private static void setConfiguration() throws ConfigurationException {
@@ -180,7 +208,7 @@ public class dbConnectionFactory {
 
             String message = "Database configuration is not complete. The following settings are missing: ";
 
-            List<String> props = new ArrayList<String>();
+            List<String> props = new ArrayList<>();
             if(dbUrl == null) {
                 props.add("database.url");
             }
@@ -239,10 +267,7 @@ public class dbConnectionFactory {
     }
 
     private static void ensureDatabaseExists(DataSource dataSource) {
-        Connection c  = null;
-        try {
-            c = dataSource.getConnection();
-
+        try (Connection c = dataSource.getConnection()){
             boolean hasTables = true;
 
             try {
@@ -257,52 +282,20 @@ public class dbConnectionFactory {
             }
         } catch (SQLException e) {
             throw new SystemException("Can't connect to database, please check configuration", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Ignore
-                }
-            }
         }
     }
 
     private static void createTables(DataSource dataSource) {
-        Connection c = null;
-
         String productName = null;
 
-        try {
-            c = dataSource.getConnection();
+        try (Connection c = dataSource.getConnection()){
             productName = c.getMetaData().getDatabaseProductName();
 
         } catch (SQLException e) {
             throw new SystemException("Error creating tables for Aksess", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Ignore
-                }
-            }
         }
 
-        String dbType = null;
-        if(productName.contains("Microsoft"))  {
-            dbType = "mssql";
-        } else if(productName.contains("Derby")) {
-            dbType = "derby";
-        } else if(productName.contains("MySQL")) {
-            dbType = "mysql";
-        } else if(productName.contains("Oracle")) {
-            dbType = "oracle";
-        } else if(productName.contains("PostgreSQL")) {
-            dbType = "postgresql";
-        } else {
-            throw new RuntimeException("Unknow database product " + productName +", can't create database tables");
-        }
+        String dbType = getDBVendor(productName);
 
         final URL resource = dbConnectionFactory.class.getClassLoader().getResource("dbschema/aksess-database-" + dbType + ".sql");
 
@@ -337,6 +330,24 @@ public class dbConnectionFactory {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static String getDBVendor(String productName) {
+        String dbType;
+        if(productName.contains("Microsoft"))  {
+            dbType = "mssql";
+        } else if(productName.contains("Derby")) {
+            dbType = "derby";
+        } else if(productName.contains("MySQL")) {
+            dbType = "mysql";
+        } else if(productName.contains("Oracle")) {
+            dbType = "oracle";
+        } else if(productName.contains("PostgreSQL")) {
+            dbType = "postgresql";
+        } else {
+            throw new RuntimeException("Unknow database product " + productName +", can't create database tables");
+        }
+        return dbType;
     }
 
     public static Connection getConnection() throws SystemException {
@@ -426,24 +437,24 @@ public class dbConnectionFactory {
         dbConnectionFactory.servletContext = servletContext;
     }
 
-    public static synchronized void incrementOpenConnections() {
-        openedConnections++;
+    public static void incrementOpenConnections() {
+        openedConnections.incrementAndGet();
     }
 
-    public static synchronized void incrementClosedConnections() {
-        closedConnections++;
+    public static void incrementClosedConnections() {
+        closedConnections.incrementAndGet();
     }
 
-    public static synchronized int getOpenedConnections() {
-        return openedConnections;
+    public static int getOpenedConnections() {
+        return openedConnections.get();
     }
 
-    public static synchronized int getClosedConnections() {
-        return closedConnections;
+    public static int getClosedConnections() {
+        return closedConnections.get();
     }
 
     public static synchronized Map<Connection, StackTraceElement[]> getConnections() {
-        return new HashMap<Connection, StackTraceElement[]>(connections);
+        return new HashMap<>(connections);
     }
 
     public static void closePool() {

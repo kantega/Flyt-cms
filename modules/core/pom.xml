@@ -441,6 +441,12 @@
             <artifactId>spring-mobile-device</artifactId>
             <version>1.0.1.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.yammer.metrics</groupId>
+            <artifactId>metrics-web</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
