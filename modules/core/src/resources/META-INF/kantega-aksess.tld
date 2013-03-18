@@ -71,8 +71,8 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <description>Specifies whether to add server to start of url or not. default is 'false'</description>
-            <name>addserver</name>
+            <description>Specifies whether to generate an absolute url, with scheme, domain and port(if not 80 or 443). default is 'false'</description>
+            <name>absoluteUrl</name>
             <required>false</required>
             <rtexprvalue>false</rtexprvalue>
         </attribute>
@@ -92,7 +92,9 @@
         <example>
             <![CDATA[
                     Print URL to root:
-                        <aksess:geturl/>
+                        <aksess:geturl/> -> /contextpath
+                        <aksess:geturl url="/someresource"/> -> /contextpath/someresource
+                        <aksess:geturl url="/someresource"/ absoluteUrl="true"> -> http(s)://server(:8080)/contextpath/someresource
             ]]>
         </example>
     </tag>

@@ -8,5 +8,8 @@ public interface XmlCache {
 
     public void storeXMLInCache(XMLCacheEntry cacheEntry);
 
+    /**
+     * @return All entries in the XmlCache, without document field set.
+     */
     public List<XMLCacheEntry> getSummary();
 }

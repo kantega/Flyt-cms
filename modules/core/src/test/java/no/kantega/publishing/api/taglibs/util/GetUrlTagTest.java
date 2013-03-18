@@ -71,9 +71,16 @@ public class GetUrlTagTest {
     }
 
     @Test
+    public void shouldNotAddSlashIfPresent() throws JspException, UnsupportedEncodingException {
+        getUrlTag.setUrl("/someurl");
+        getUrlTag.doStartTag();
+        assertEquals("/someurl", response.getContentAsString());
+    }
+
+    @Test
     public void shouldAddServerUrl() throws JspException, UnsupportedEncodingException {
         getUrlTag.setUrl("/someurl");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.doStartTag();
         assertEquals("http://localhost/someurl", response.getContentAsString());
     }
@@ -81,7 +88,7 @@ public class GetUrlTagTest {
     @Test
     public void shouldAddServerUrlAndSlash() throws JspException, UnsupportedEncodingException {
         getUrlTag.setUrl("someurl");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.doStartTag();
         assertEquals("http://localhost/someurl", response.getContentAsString());
     }
@@ -89,7 +96,7 @@ public class GetUrlTagTest {
     @Test
     public void shouldAddQueryParams() throws JspException, UnsupportedEncodingException {
         getUrlTag.setUrl("someurl");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.setQueryparams("q=abc&p=cba");
         getUrlTag.doStartTag();
         assertEquals("http://localhost/someurl?q=abc&amp;p=cba", response.getContentAsString());
@@ -98,7 +105,7 @@ public class GetUrlTagTest {
     @Test
     public void shouldAddQueryParamsToExistingParams() throws JspException, UnsupportedEncodingException {
         getUrlTag.setUrl("someurl?a=cde");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.setQueryparams("q=abc&p=cba");
         getUrlTag.doStartTag();
         assertEquals("http://localhost/someurl?a=cde&amp;q=abc&amp;p=cba", response.getContentAsString());
@@ -128,7 +135,7 @@ public class GetUrlTagTest {
     public void shouldUseHttpsIfHttpsIsRequestScheme() throws UnsupportedEncodingException, JspException {
         request.setScheme("https");
         getUrlTag.setUrl("someurl");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.doStartTag();
         assertEquals("https://localhost/someurl", response.getContentAsString());
     }
@@ -138,7 +145,7 @@ public class GetUrlTagTest {
         request.setScheme("https");
         request.setServerPort(8443);
         getUrlTag.setUrl("someurl");
-        getUrlTag.setAddserver(true);
+        getUrlTag.setAbsoluteUrl(true);
         getUrlTag.doStartTag();
         assertEquals("https://localhost:8443/someurl", response.getContentAsString());
     }

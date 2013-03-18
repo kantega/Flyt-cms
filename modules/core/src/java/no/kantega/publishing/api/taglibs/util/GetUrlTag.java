@@ -38,7 +38,7 @@ public class GetUrlTag extends TagSupport {
     String url = null;
     String queryParams = null;
     boolean addcontextpath = true;
-    boolean addserver = false;
+    boolean absoluteUrl = false;
     boolean escapeurl = true;
 
     private UrlPlaceholderResolver urlPlaceholderResolver;
@@ -55,10 +55,10 @@ public class GetUrlTag extends TagSupport {
                 if(isAbsoluteUrl(url)){
                     urlBuilder.append(url);
                 }else {
-                    if(addserver){
+                    if(absoluteUrl){
                         addSchemeServerAndContextPath(urlBuilder, request);
                     }
-                    if(addcontextpath && !addserver){
+                    if(addcontextpath && !absoluteUrl){
                         urlBuilder.append(request.getContextPath());
                     }
                     if (url.charAt(0) == '/') {
@@ -149,7 +149,7 @@ public class GetUrlTag extends TagSupport {
         queryParams = null;
         escapeurl = true;
         addcontextpath = true;
-        addserver = false;
+        absoluteUrl = false;
     }
 
     public int doEndTag() throws JspException {
@@ -173,7 +173,7 @@ public class GetUrlTag extends TagSupport {
         this.escapeurl = escapeurl;
     }
 
-    public void setAddserver(boolean addserver) {
-        this.addserver = addserver;
+    public void setAbsoluteUrl(boolean absoluteUrl) {
+        this.absoluteUrl = absoluteUrl;
     }
 }
