@@ -18,9 +18,13 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XMLHelper;
-import no.kantega.publishing.common.data.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,15 +34,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class XMLCacheAO {
+public class XMLCacheImpl implements XmlCache {
     private static final String SOURCE = "XMLCacheAO";
 
-    public static XMLCacheEntry getXMLFromCache(String id) throws SystemException {
+    @Cacheable("XMLCache")
+    @Override
+    public XMLCacheEntry getXMLFromCache(String id){
         XMLCacheEntry cacheEntry = null;
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement st = c.prepareStatement("select * from xmlcache where id = ?");
             st.setString(1, id);
             ResultSet rs = st.executeQuery();
@@ -52,23 +56,15 @@ public class XMLCacheAO {
             st.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return cacheEntry;
     }
 
-    public static void storeXMLInCache(XMLCacheEntry cacheEntry) throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+    @CacheEvict(value = "XMLCache", key = "#cacheEntry.id")
+    @Override
+    public void storeXMLInCache(XMLCacheEntry cacheEntry){
+        try (Connection c = dbConnectionFactory.getConnection()){
             boolean isUpdate = false;
 
             PreparedStatement st = c.prepareStatement("select id from xmlcache where id = ?");
@@ -96,23 +92,14 @@ public class XMLCacheAO {
 
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
-    public static List<XMLCacheEntry> getSummary() throws SystemException {
-        List list = new ArrayList();
+    @Autowired
+    public List<XMLCacheEntry> getSummary() {
+        List<XMLCacheEntry> list = new ArrayList<>();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             ResultSet rs = SQLHelper.getResultSet(c, "select Id, LastUpdated from xmlcache");
             while (rs.next()) {
                 XMLCacheEntry cacheEntry = new XMLCacheEntry();
@@ -123,14 +110,6 @@ public class XMLCacheAO {
             rs.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return list;
     }

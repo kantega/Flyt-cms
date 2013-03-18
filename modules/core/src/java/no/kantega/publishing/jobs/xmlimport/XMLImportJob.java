@@ -16,17 +16,13 @@
 
 package no.kantega.publishing.jobs.xmlimport;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
-import no.kantega.publishing.cache.CacheManagerFactory;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.XMLCacheAO;
-import no.kantega.publishing.common.data.XMLCacheEntry;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.spring.RootContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.w3c.dom.Document;
@@ -39,10 +35,10 @@ public class XMLImportJob  extends QuartzJobBean {
     private String id  = null;
     private String url = null;
     private XMLImportValidator validator = new DefaultXMLImportValidator();
-
+    private XmlCache xmlCache;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
-        
+        xmlCache = (XmlCache)jobExecutionContext.getMergedJobDataMap().get("xmlCache");
         if (Aksess.getServerType() == ServerType.SLAVE) {
             Log.info(SOURCE, "Job is disabled for server type slave", null, null);
             return;
@@ -59,13 +55,7 @@ public class XMLImportJob  extends QuartzJobBean {
 
             if (isValidXML(xml)) {
                 XMLCacheEntry cacheEntry = new XMLCacheEntry(id, xml);
-                XMLCacheAO.storeXMLInCache(cacheEntry);
-
-                CacheManager cacheManager = RootContext.getInstance().getBean(CacheManager.class);
-
-                Cache xmlCache = cacheManager.getCache(CacheManagerFactory.CacheNames.XmlCache.name());
-
-                xmlCache.remove((Object) id);
+                xmlCache.storeXMLInCache(cacheEntry);
             }
 
         } catch (SystemException | MalformedURLException e) {

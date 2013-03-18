@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data;
+package no.kantega.publishing.api.xmlcache;
 
 import org.w3c.dom.Document;
 

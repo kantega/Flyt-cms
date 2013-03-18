@@ -17,8 +17,10 @@
 package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.ao.XMLCacheAO;
-import no.kantega.publishing.common.data.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.w3c.dom.Document;
 
 import javax.servlet.jsp.JspException;
@@ -34,10 +36,12 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.StringWriter;
 
 public class TransformXMLTag extends TagSupport {
-    private static final String SOURCE = "aksess.PhotoAlbumHelper";
+    private static final String SOURCE = "aksess.TransformXMLTag";
     
-    String cacheId = null;
-    String xslt = null;
+    private String cacheId = null;
+    private String xslt = null;
+    private XmlCache xmlCache;
+
 
     public void setCacheid(String cacheId) {
         this.cacheId = cacheId;
@@ -53,7 +57,8 @@ public class TransformXMLTag extends TagSupport {
             out = pageContext.getOut();
 
             if (cacheId != null && xslt != null) {
-                XMLCacheEntry cacheEntry = XMLCacheAO.getXMLFromCache(cacheId);
+                initXmlCacheIfNull();
+                XMLCacheEntry cacheEntry = xmlCache.getXMLFromCache(cacheId);
                 if (cacheEntry != null) {
                     Document xml = cacheEntry.getXml();
                     if (xml != null) {
@@ -81,6 +86,12 @@ public class TransformXMLTag extends TagSupport {
         xslt = null;
 
         return SKIP_BODY;
+    }
+
+    private void initXmlCacheIfNull() {
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        xmlCache = context.getBean(XmlCache.class);
+
     }
 
     public int doEndTag() throws JspException {

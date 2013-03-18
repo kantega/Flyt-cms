@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.common.service;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.InvalidFileException;
@@ -30,6 +30,8 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;
@@ -61,6 +63,7 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
@@ -75,24 +78,26 @@ public class ContentManagementService {
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;
-    private final Cache contentCache;
-    private final Cache contentListCache;
-    private final Cache siteMapCache;
-    private final Cache xmlCache;
+    private final Ehcache contentCache;
+    private final Ehcache contentListCache;
+    private final Ehcache siteMapCache;
+    private final XmlCache xmlCache;
     private EventLog eventLog;
     private boolean cachingEnabled;
     private TrafficLogger trafficLogger;
     private SiteCache siteCache;
 
     private ContentManagementService() {
-        CacheManager cacheManager = RootContext.getInstance().getBean(CacheManager.class);
-        contentCache = cacheManager.getCache("ContentCache");
-        contentListCache = cacheManager.getCache("ContentListCache");
-        siteMapCache = cacheManager.getCache("SiteMapCache");
-        xmlCache = cacheManager.getCache("XmlCache");
+        ApplicationContext context = RootContext.getInstance();
 
-        eventLog = RootContext.getInstance().getBean(EventLog.class);
-        trafficLogger = RootContext.getInstance().getBean(TrafficLogger.class);
+        CacheManager cacheManager = context.getBean(CacheManager.class);
+        contentCache = cacheManager.getEhcache("ContentCache");
+        contentListCache = cacheManager.getEhcache("ContentListCache");
+        siteMapCache = cacheManager.getEhcache("SiteMapCache");
+
+        eventLog = context.getBean(EventLog.class);
+        trafficLogger = context.getBean(TrafficLogger.class);
+        xmlCache = context.getBean(XmlCache.class);
 
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
@@ -1336,17 +1341,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
-        if(cachingEnabled) {
-            final Object key = (Object) id;
-            Element element = xmlCache.get(key);
-            if(element == null) {
-                element = new Element(key, XMLCacheAO.getXMLFromCache(id));
-                xmlCache.put(element);
-            }
-            return (XMLCacheEntry) element.getObjectValue();
-        } else {
-            return XMLCacheAO.getXMLFromCache(id);
-        }
+            return xmlCache.getXMLFromCache(id);
     }
 
     /**
@@ -1357,6 +1352,6 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List getXMLCacheSummary() throws SystemException {
-        return XMLCacheAO.getSummary();
+        return xmlCache.getSummary();
     }
 }
