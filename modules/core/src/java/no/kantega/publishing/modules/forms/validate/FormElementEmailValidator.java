@@ -8,7 +8,7 @@ import java.util.List;
 
 import no.kantega.publishing.api.forms.model.FormValue;
 
-public class FormElementEmailValidator  implements FormElementValidator {
+public class FormElementEmailValidator implements FormElementValidator {
     private static String id = "email";
     private static String emailRegex = "^[\\w-_.]*[\\w-_.]\\@[\\w].+[\\w]+[\\w]$";
 
