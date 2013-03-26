@@ -19,6 +19,17 @@ public class RepeaterAttribute extends Attribute {
     int minOccurs = 0;
     int maxOccurs = Integer.MAX_VALUE;
 
+    public RepeaterAttribute() {
+        super();
+    }
+
+    public RepeaterAttribute(String name, List<List<Attribute>> values) {
+        setName(name);
+        rows = values;
+        for (List<Attribute> attributeRow : rows) {
+            setParent(attributeRow);
+        }
+    }
 
     public Iterator<List<Attribute>> getIterator() {
         return rows.iterator();
@@ -26,10 +37,25 @@ public class RepeaterAttribute extends Attribute {
 
     public void addRow(List<Attribute> attributes) {
         rows.add(attributes);
+        setParent(attributes);
     }
 
     public void addRow(int i, List<Attribute> attributes) {
         rows.add(i, attributes);
+        setParent(attributes);
+    }
+
+    private void setParent(List<Attribute> attributes) {
+        for (Attribute attribute : attributes) {
+            attribute.setParent(this);
+        }
+    }
+
+    public void setRows(List<List<Attribute>> attributes){
+        rows = attributes;
+        for (List<Attribute> attributeRow : attributes) {
+            setParent(attributeRow);
+        }
     }
 
     public List<Attribute> getRow(int i) {
