@@ -19,7 +19,6 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.util.RegExp;
-import no.kantega.commons.client.util.ValidationErrors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +28,14 @@ import java.util.Map;
  */
 public class EmailAttribute extends Attribute {
     protected boolean isSearchable = true;
+
+    public EmailAttribute(String name, String value) {
+        super(name, value);
+    }
+
+    public EmailAttribute() {
+        super();
+    }
 
     public void validate(ValidationErrors errors) throws RegExpSyntaxException {
         super.validate(errors);

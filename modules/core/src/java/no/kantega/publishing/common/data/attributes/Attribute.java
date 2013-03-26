@@ -31,6 +31,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -38,6 +39,8 @@ import org.w3c.dom.Element;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Representing a single attribute in a Content object.
@@ -416,5 +419,17 @@ public abstract class Attribute {
 
     public String[] getEditableByRoles() {
         return editableByRole;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder toString = new StringBuilder(getClass().getSimpleName());
+        toString.append(" ");
+        toString.append(getTitle());
+        if (isNotBlank(value)) {
+            toString.append(": ");
+            toString.append(StringUtils.abbreviate(value, 20));
+        }
+        return toString.toString();
     }
 }

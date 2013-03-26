@@ -31,7 +31,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- *
+ * Attribute representing htmltext
  */
 public class HtmltextAttribute extends TextAttribute {
     protected boolean isCData = true;
@@ -41,6 +41,14 @@ public class HtmltextAttribute extends TextAttribute {
 
     protected int height  = -1;
     protected int width = -1;
+
+    public HtmltextAttribute() {
+        super();
+    }
+
+    public HtmltextAttribute(String name, String value) {
+        super(name, value);
+    }
 
     public String getRenderer() {
         return "htmltext";

@@ -27,9 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 24.jan.2008
- * Time: 12:16:04
+ * Attribute with both date and time.
  */
 public class DatetimeAttribute extends DateAttribute {
 
@@ -48,7 +46,7 @@ public class DatetimeAttribute extends DateAttribute {
         }
 
         int end = Aksess.getDefaultDateFormat().length();
-        if (value.indexOf(Aksess.getDefaultDatetimeSeparator()) != -1) {
+        if (value.contains(Aksess.getDefaultDatetimeSeparator())) {
             end = Math.min(end, value.indexOf(Aksess.getDefaultDatetimeSeparator()));
         }
         return value.substring(0, end);
@@ -59,7 +57,7 @@ public class DatetimeAttribute extends DateAttribute {
             return "";
         }
 
-        if (value.indexOf(Aksess.getDefaultDatetimeSeparator()) != -1) {
+        if (value.contains(Aksess.getDefaultDatetimeSeparator())) {
             int start = value.indexOf(Aksess.getDefaultDatetimeSeparator()) + Aksess.getDefaultDatetimeSeparator().length();
             return value.substring(start, value.length());
         }
@@ -68,7 +66,7 @@ public class DatetimeAttribute extends DateAttribute {
     }
 
     public void validate(ValidationErrors errors) throws RegExpSyntaxException {
-        Map<String, Object> objects = new HashMap<String, Object>();
+        Map<String, Object> objects = new HashMap<>();
         objects.put("field", title);
 
         if (mandatory && (value == null || value.trim().length() == 0)) {

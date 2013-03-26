@@ -16,21 +16,27 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.commons.util.RegExp;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.util.RegExp;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 /**
- *
+ * Attribute representing an number.
  */
 public class NumberAttribute extends Attribute {
     protected String regexp = "^\\-?[\\d]{1,}$";
+
+    public NumberAttribute() {
+        super();
+    }
+
+    public NumberAttribute(String name, Number value) {
+        super(name, value.toString());
+    }
 
     public void validate(ValidationErrors errors) throws RegExpSyntaxException {
         super.validate(errors);
@@ -40,11 +46,13 @@ public class NumberAttribute extends Attribute {
 
         if ((value != null) && (value.length() > 0) && (regexp != null) && (regexp.length() > 0)) {
             if (!RegExp.matches(regexp, value)) {
-                Map<String, Object> objects = new HashMap<String, Object>();
-                objects.put("field", title);
-                errors.add(name, "aksess.feil.invalidnumber", objects);
+                errors.add(name, "aksess.feil.invalidnumber", Collections.<String, Object>singletonMap("field", title));
             }
         }
+    }
+
+    public void setValue(Number value) {
+        super.setValue(value.toString());
     }
 
     @Override

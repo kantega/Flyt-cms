@@ -175,12 +175,12 @@ public class ContentManagementService {
         Calendar cal = new GregorianCalendar(Aksess.getDefaultLocale());
         defaultValues.put(AttributeDefaultValues.YEAR, "" + cal.get(Calendar.YEAR));
         int month = cal.get(Calendar.MONTH)+1;
-        String m = (month<10) ? "0"+month : ""+month;
+        String m = String.valueOf((month<10) ? "0"+month : month);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String d = (day<10) ? "0"+day : ""+day;
         defaultValues.put(AttributeDefaultValues.MONTH, m);
-        defaultValues.put(AttributeDefaultValues.DAY, "" + d);
-        defaultValues.put(AttributeDefaultValues.WEEK, "" + cal.get(Calendar.WEEK_OF_YEAR));
+        defaultValues.put(AttributeDefaultValues.DAY, d);
+        defaultValues.put(AttributeDefaultValues.WEEK, String.valueOf(cal.get(Calendar.WEEK_OF_YEAR)));
 
         // Last attributter fra XML fil
         EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());

@@ -40,6 +40,12 @@ public class DateAttribute extends Attribute {
          setFormat(Aksess.getDefaultDateFormat());
     }
 
+    public DateAttribute(String name, Date value) {
+        this();
+        this.name  = name;
+        setValue(value);
+    }
+
     public DateAttribute(String name, String value) {
         this();
         this.name  = name;

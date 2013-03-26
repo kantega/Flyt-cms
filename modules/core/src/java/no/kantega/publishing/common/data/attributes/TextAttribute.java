@@ -29,12 +29,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- *
+ * Attribute representing plain text.
  */
 public class TextAttribute extends Attribute {
 
-    public void setValue(String value) {
-        this.value = value;
+    public TextAttribute() {
+        super();
+    }
+
+    public TextAttribute(String name, String value) {
+        super(name, value);
     }
 
     public String getProperty(String property) {

@@ -20,9 +20,17 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 
 /**
- *
+ * Attribute for URL value.
  */
 public class UrlAttribute extends Attribute {
+
+    public UrlAttribute() {
+        super();
+    }
+
+    public UrlAttribute(String name, String value) {
+        super(name, value);
+    }
 
     public String getProperty(String property) {
         String returnValue = value;

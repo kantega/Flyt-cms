@@ -706,6 +706,9 @@ public class ContentQuery {
         }
     }
 
+    /**
+     * @param keyword - to look for in title and alttitle.
+     */
     public void setKeyword(String keyword) {
         if (keyword != null) {
             keyword = keyword.replaceAll("\\*", "%");
