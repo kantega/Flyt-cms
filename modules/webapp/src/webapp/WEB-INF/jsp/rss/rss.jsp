@@ -20,8 +20,7 @@
             <item>
                 <title><aksess:getattribute name="title" collection="undersider"/></title>
                 <link>
-                    <c:out value="${baseUrl}"/>
-                    <aksess:getattribute name="url" collection="undersider"/>
+                    <c:out value="${baseUrl}"/><aksess:getattribute name="url" collection="undersider"/>
                 </link>
                 <description>
                     <![CDATA[<aksess:getattribute name="description" collection="undersider"/>]]>
