@@ -45,7 +45,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         if (name.equalsIgnoreCase("div")) {
             checkIfDivTagIsNewFormElement(name, attributes);
         } else if (name.equalsIgnoreCase("span")) {
-            checkIfSpanTagContainsRegexp(name, attributes);
+            checkIfSpanTagContainsRegexpOrDateFormat(name, attributes);
         } else if (name.equalsIgnoreCase("input")
                 || name.equalsIgnoreCase("radio")
                 || name.equalsIgnoreCase("checkbox")
@@ -86,10 +86,10 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         }
     }
 
-    private void checkIfSpanTagContainsRegexp(String name, Attributes attributes) {
+    private void checkIfSpanTagContainsRegexpOrDateFormat(String name, Attributes attributes) {
         capture = attributes != null
                 && attributes.getValue("class") != null
-                && attributes.getValue("class").contains("regex");
+                && (attributes.getValue("class").contains("regex") || attributes.getValue("class").contains("dateformat"));
     }
 
     private void processFormElement(String name, Attributes attributes) {

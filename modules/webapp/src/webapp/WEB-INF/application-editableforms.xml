@@ -6,6 +6,7 @@
     <bean id="aksessFormElementValidatorFactory" class="no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory">
         <property name="formElementValidators">
             <list>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementDateValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
                 <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>

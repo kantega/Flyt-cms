@@ -292,12 +292,14 @@ function formAddInputValue(type, fieldName, value, checked) {
 
 function formAddOrSaveElement(fieldName, type, helpText, childNo) {
     var html = "";
-    html += '<div class="heading"><label>' + fieldName + '</label></div>';
+
+    var handler = formGetElementTypeHandler(type);
+
+    html += '<div class="heading"><label>' + fieldName + '</label>' + handler.getFieldHint() + '</div>';
     html += '<div class="inputs ' + type + '">';
 
-    handler = formGetElementTypeHandler(type);
     if (handler != null) {
-        html += handler.onSave(fieldName);
+        html += handler.getHTMLForField(fieldName);
     }
 
     html += '</div>';
@@ -618,9 +620,13 @@ function FormElementType(name, type) {
     this.onEdit = function(element) {
     };
 
-    this.onSave = function(fieldName) {
+    this.getHTMLForField = function(fieldName) {
         return '<input type="text" name="' + fieldName + '" disabled>';
     };
+
+    this.getFieldHint = function() {
+        return "";
+    }
 
     this.onActive = function(isSelected) {
     };
@@ -650,6 +656,9 @@ formElementText.onEdit = function(element) {
     var regex = $("div.inputs span.regex", element).html();
     $("#form_RegEx").val(regex);
 
+    var dateformat = $("div.inputs span.dateformat", element).html();
+    $("#form_DateFormat").val(dateformat);
+
     var clz = $input.attr("class");
     var form_Validator = $("#form_Validator");
     form_Validator.val(clz);
@@ -668,10 +677,15 @@ formElementText.onEdit = function(element) {
         $(formParamsType).show();
     });
 };
-formElementText.onSave = function (fieldName) {
+formElementText.getHTMLForField = function (fieldName) {
     var size = $("#form_Length").val();
     if (size != "") {
         size = parseInt(size, 10);
+    }
+
+    var maxsize = $("#form_MaxLength").val();
+    if (maxsize != "") {
+        maxsize = parseInt(maxsize, 10);
     }
 
     var html = '';
@@ -682,12 +696,17 @@ formElementText.onSave = function (fieldName) {
         html += '<span class="regex" style="display:none">' + regex + '</span>';
     }
 
+    if ("date" == validator) {
+        var dateformat = $("#form_DateFormat").val();
+        html += '<span class="dateformat" style="display:none">' + dateformat + '</span>';
+        size = dateformat.length;
+        maxsize = size;
+    }
+
     html += '<input type="text" name="' + fieldName + '" disabled';
     if (!isNaN(size) && size > 0) {
         html += ' size="' + size + '"';
     }
-
-    var maxsize = $("#form_MaxLength").val();
 
     if (!isNaN(maxsize) && maxsize > 0) {
         html += ' maxlength="' + maxsize + '"';
@@ -704,6 +723,18 @@ formElementText.onSave = function (fieldName) {
 
     return html;
 };
+
+formElementText.getFieldHint = function (fieldName) {
+    var hint = "";
+
+    var validator = $("#form_Validator").val();
+    if ("date" == validator) {
+        hint = " (" + $("#form_DateFormat :selected").text() + ")";
+    }
+
+    return hint;
+};
+
 formElementText.onActive = function (isSelected) {
     if (isSelected) {
         $("#form_Validator").change();
@@ -733,7 +764,7 @@ formElementTextArea.onEdit = function(element) {
     }
 };
 
-formElementTextArea.onSave = function(fieldName) {
+formElementTextArea.getHTMLForField = function(fieldName) {
     var rows = $("#form_Rows").val();
     if (rows != "") {
         rows = parseInt(rows, 10);
@@ -772,7 +803,7 @@ formElementCheckbox.onEdit = function(element) {
         formAddInputValue("checkbox", fieldName, this.value, this.checked);
     });
 };
-formElementCheckbox.onSave = function (fieldName) {
+formElementCheckbox.getHTMLForField = function (fieldName) {
     var html = "";
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
@@ -815,7 +846,7 @@ formElementRadio.onEdit = function(element) {
         formAddInputValue("radio", fieldName, this.value, this.checked);
     });
 };
-formElementRadio.onSave = function (fieldName) {
+formElementRadio.getHTMLForField = function (fieldName) {
     html = "";
     $("#form_Values div").each(function (i) {
         var val = $("input[type=text]", this).val();
@@ -862,7 +893,7 @@ formElementSelect.onEdit = function(element) {
     });
 };
 
-formElementSelect.onSave = function (fieldName) {
+formElementSelect.getHTMLForField = function (fieldName) {
     html = '<select name="' + fieldName + '" disabled>';
     $("#form_Values div").each(function (i) {
         val = $("input[type=text]", this).val();
@@ -912,7 +943,7 @@ formElementHidden.onEdit = function(element) {
     var val = $("div.inputs input", element).attr("value");
     $("#form_HiddenValue").val(val);
 };
-formElementHidden.onSave = function (fieldName) {
+formElementHidden.getHTMLForField = function (fieldName) {
     var val = $("#form_HiddenValue").val();
     return '<input type="hidden" name="' + fieldName + '" value="' + val + '" disabled>';
 };
