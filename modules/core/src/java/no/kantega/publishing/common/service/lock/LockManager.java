@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LockManager {
     private final static String SOURCE = "aksess.LockManager";
 
-    private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<Integer, ContentLock>();
+    private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<>();
     private static int lockTimeToLive = Aksess.getLockTimeToLive()* 1000;
 
     /**
@@ -69,7 +69,7 @@ public class LockManager {
      * @return true if a new lock is created. false if a lock for the Content with contentId already exists.
      */
     public static boolean lockContent(String owner, int contentId) {
-        Log.info(SOURCE, "Lockingcontent " + contentId + " for owner " + owner);
+        Log.info(SOURCE, "Locking content " + contentId + " for owner " + owner);
         ContentLock contentLock = peekAtLock(contentId);
         if(contentLock != null) {
             // Content already locked
