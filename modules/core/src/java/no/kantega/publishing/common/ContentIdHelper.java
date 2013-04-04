@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common;
 
+import com.google.gdata.util.common.base.Pair;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
@@ -462,11 +463,16 @@ public class ContentIdHelper {
     }
 
     private static int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
-        return getSiteIdFromRequest(request, null);
+        return getSiteIdFromRequest(request, null).first;
     }
 
-    private static int getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
+    /**
+     * @return pair containing found siteId and the alias tried found.
+     * If url is siteId/alias, url is adjusted to /alias
+     */
+    private static Pair<Integer, String> getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
         int siteId = -1;
+        String adjustedUrl = url;
         if (request.getParameter("siteId") != null) {
             try {
                 siteId = Integer.parseInt(request.getParameter("siteId"));
@@ -505,8 +511,9 @@ public class ContentIdHelper {
                 for (Site s : sites){
                     String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
-                        url = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
+                        adjustedUrl = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
                         siteId = s.getId();
+                        break;
                     }
                 }
             } else if (site != null) {
@@ -517,7 +524,7 @@ public class ContentIdHelper {
             siteId = siteCache.getDefaultSite().getId();
         }
 
-        return siteId;
+        return new Pair<>(siteId, adjustedUrl);
     }
 
     /**
@@ -584,8 +591,8 @@ public class ContentIdHelper {
      * @throws SystemException
      */
     public static ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
-        int siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
-        return ContentIdHelper.findContentIdentifier(siteId, url);
+        Pair<Integer, String> siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
+        return ContentIdHelper.findContentIdentifier(siteId.first, siteId.second);
     }
 
     /**
