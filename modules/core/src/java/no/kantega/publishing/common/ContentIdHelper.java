@@ -506,6 +506,7 @@ public class ContentIdHelper {
         setSiteCacheIfNull();
         if (siteId == -1) {
             Site site = siteCache.getSiteByHostname(request.getServerName());
+            siteId = site.getId();
             if(url != null) {
                 List<Site> sites = siteCache.getSites();
                 for (Site s : sites){
@@ -517,8 +518,6 @@ public class ContentIdHelper {
                         break;
                     }
                 }
-            } else if (site != null) {
-                siteId = site.getId();
             }
         }
         if(siteId == -1){

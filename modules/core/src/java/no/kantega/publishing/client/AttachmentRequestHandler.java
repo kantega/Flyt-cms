@@ -27,7 +27,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.kantega.publishing.spring.RootContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -48,13 +48,15 @@ public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
     private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
 
-    @Autowired
     private SiteCache siteCache;
 
     @Timed
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
         try {
             ContentManagementService cs = new ContentManagementService(request);
 
