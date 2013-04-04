@@ -512,6 +512,7 @@ public class ContentIdHelper {
                     String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
                         adjustedUrl = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
+                        if(adjustedUrl.equals("")) adjustedUrl = "/";
                         siteId = s.getId();
                         break;
                     }
