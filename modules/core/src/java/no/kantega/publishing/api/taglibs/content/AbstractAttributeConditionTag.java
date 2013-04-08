@@ -84,7 +84,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
 
                 result = evaluateCondition(attributeValue);
             } else {
-                Log.error(CATEGORY, "Content object was null");
+                Log.debug(CATEGORY, "Content object was null. ContentId:" + contentId);
             }
         } catch (Exception e) {
             Log.error(CATEGORY, e);
