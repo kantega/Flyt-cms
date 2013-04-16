@@ -1,13 +1,8 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: larlon
-  Date: 02.04.13
-  Time: 11:23
---%>
 <%@ page contentType="text/xml;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
     <channel>
         <title><aksess:getattribute name="title"/></title>
