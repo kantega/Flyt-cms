@@ -30,7 +30,9 @@ public class OASearchResultDecorator implements SearchResultDecorator<OASearchRe
         Integer parentId = (Integer) resultMap.get("parentId");
 
         List<PathEntry> pathEntries = pathEntryService.getPathEntriesByAssociationIdInclusive(parentId);
-        pathEntries.remove(0);
+        if (pathEntries.size() > 0) {
+            pathEntries.remove(0);
+        }
         return new OASearchResult((Integer) resultMap.get("id"),
                 (Integer) resultMap.get("securityId"),
                 (String) resultMap.get("indexedContentType"),
