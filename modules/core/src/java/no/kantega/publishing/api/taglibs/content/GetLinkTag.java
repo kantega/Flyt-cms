@@ -140,7 +140,7 @@ public class GetLinkTag extends BodyTagSupport{
                             setSiteCacheIfNull();
                             Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
 
-                            List hostnames = site.getHostnames();
+                            List<String> hostnames = site.getHostnames();
                             if (hostnames.size() > 0) {
                                 String hostname = (String)hostnames.get(0);
                                 String scheme = site.getScheme();
