@@ -164,7 +164,7 @@ public class ContentIdHelper {
      * @throws ContentNotFoundException
      * @throws SystemException
      */
-    public static ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
+    private static ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
         int contentId = -1;
         int associationId = -1;
         int version  = -1;
