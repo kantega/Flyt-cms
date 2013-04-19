@@ -21,16 +21,15 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent;
-import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
 import org.quartz.StatefulJob;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
     // Denne jobben kjøres ved ulike intervall for å sende ut meldinger, trenger å vite hvilket intervall
     // dette er for å sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
-    private String interval = MailSubscription.IMMEDIATE;
+    private MailSubscriptionInterval interval = MailSubscriptionInterval.immediate;
 
     private MailSubscriptionAgent mailSubscriptionAgent;
 
@@ -85,13 +84,13 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
                         }
                     }
                 }
-            } catch (SystemException | SQLException | ConfigurationException e) {
+            } catch (SystemException | ConfigurationException e) {
                 Log.error(SOURCE, e, null, null);
             }
         }
     }
 
-    public void setInterval(String interval) {
+    public void setInterval(MailSubscriptionInterval interval) {
         this.interval = interval;
     }
 

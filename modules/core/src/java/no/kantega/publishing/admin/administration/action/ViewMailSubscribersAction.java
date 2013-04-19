@@ -17,32 +17,31 @@
 package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
 
 /**
- *
+ * Controller for viewing all mailsubscriptions.
  */
 public class ViewMailSubscribersAction extends AbstractController {
     private String view;
+    @Autowired
+    private MailSubscriptionService mailSubscriptionService;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
         String deleteEmail = param.getString("delete");
         if (deleteEmail != null) {
-            MailSubscriptionService.removeAllMailSubscriptions(deleteEmail);
+            mailSubscriptionService.removeAllMailSubscriptions(deleteEmail);
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
-        model.put("subscriptions", MailSubscriptionService.getAllMailSubscriptions());
-
-        return new ModelAndView(view, model);
+        return new ModelAndView(view, Collections.singletonMap("subscriptions", mailSubscriptionService.getAllMailSubscriptions()));
     }
 
     public void setView(String view) {

@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.modules.mailsubscription.data;
+package no.kantega.publishing.api.mailsubscription;
 
 import no.kantega.publishing.api.content.Language;
 
 public class MailSubscription {
-    public static final String DAILY = "daily";
-    public static final String IMMEDIATE = "immediate";
-    public static final String WEEKLY = "weekly";
 
     private int channel = -1;
     private int documenttype = -1;
     private int language = Language.NORWEGIAN_BO;
-    private String interval = DAILY;
+    private MailSubscriptionInterval interval = MailSubscriptionInterval.daily;
     private String email = null;
 
     public int getChannel() {
@@ -53,11 +50,11 @@ public class MailSubscription {
         this.language = language;
     }
 
-    public String getInterval() {
+    public MailSubscriptionInterval getInterval() {
         return interval;
     }
 
-    public void setInterval(String interval) {
+    public void setInterval(MailSubscriptionInterval interval) {
         this.interval = interval;
     }
 
@@ -68,6 +65,4 @@ public class MailSubscription {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 }

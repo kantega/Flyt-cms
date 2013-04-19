@@ -69,6 +69,9 @@
         <property name="topicUsageCounter" ref="aksessTopicUsageCounter"/>
     </bean>
 
+    <bean id="mailSubscriptionService" class="no.kantega.publishing.modules.mailsubscription.MailSubscriptionServiceJdbcImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 
     <bean id="aksessNotesDao" class="no.kantega.publishing.common.ao.JdbcNotesDao">
         <property name="dataSource" ref="aksessDataSource"/>

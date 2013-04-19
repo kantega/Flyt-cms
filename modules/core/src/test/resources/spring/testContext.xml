@@ -81,6 +81,10 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.modules.mailsubscription.MailSubscriptionServiceJdbcImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
     <bean class="no.kantega.publishing.topicmaps.ao.JdbcTopicDao">
         <property name="dataSource" ref="dataSource"/>
         <property name="topicUsageCounter" ref="topicUsageCounter"/>
