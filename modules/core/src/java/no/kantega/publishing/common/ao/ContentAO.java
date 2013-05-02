@@ -1093,10 +1093,10 @@ public class ContentAO {
 
         boolean isNew = content.isNew();
         if (isNew) {
-            contentSt = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
+            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
         } else {
             // Update
-            contentSt = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
+            contentSt = c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
         }
 
         int p = 1;
@@ -1585,7 +1585,7 @@ public class ContentAO {
         Connection c = null;
         try {
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
             p.setInt(1, ContentVisibilityStatus.ACTIVE);
             p.setInt(2, ContentType.PAGE.getTypeAsInt());
             ResultSet rs = p.executeQuery();
@@ -1674,7 +1674,7 @@ public class ContentAO {
         for (ContentTemplate ct : templateConfiguration.getContentTemplates()) {
             // Update database with correct value for type
             JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-            template.update("update content set Type = ? where ContentTemplateId = ? and Type <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
+            template.update("update content set ContentType = ? where ContentTemplateId = ? and ContentType <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
         }
     }
 

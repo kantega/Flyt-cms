@@ -21,7 +21,7 @@ public class ContentRowMapper implements RowMapper<Content> {
         // Content table
         content.setId(rs.getInt("ContentId"));
 
-        content.setType(ContentType.getContentTypeAsEnum(rs.getInt("Type")));
+        content.setType(ContentType.getContentTypeAsEnum(rs.getInt("ContentType")));
         content.setContentTemplateId(rs.getInt("ContentTemplateId"));
         content.setMetaDataTemplateId(rs.getInt("MetaDataTemplateId"));
         content.setDisplayTemplateId(rs.getInt("DisplayTemplateId"));

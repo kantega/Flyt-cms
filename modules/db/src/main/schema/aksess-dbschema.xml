@@ -58,7 +58,7 @@
     </table>
     <table name="content">
         <column name="ContentId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
-        <column name="Type" required="true" type="INTEGER" size="10"/>
+        <column name="ContentType" required="true" type="INTEGER" size="10"/>
         <column name="ContentTemplateId" required="false" type="INTEGER" size="10"/>
         <column name="MetaDataTemplateId" required="false" type="INTEGER" size="10"/>
         <column name="DisplayTemplateId" required="false" type="INTEGER" size="10"/>
