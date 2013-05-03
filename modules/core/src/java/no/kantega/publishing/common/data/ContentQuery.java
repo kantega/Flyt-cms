@@ -248,7 +248,7 @@ public class ContentQuery {
         }
 
         if (contentType != null) {
-            query.append(" and content.Type = ?");
+            query.append(" and content.ContentType = ?");
             parameters.add(contentType.getTypeAsInt());
         }
 
