@@ -158,10 +158,9 @@ public class LoginAction extends AbstractLoginAction {
         }
         
         ApplicationContext context = RootContext.getInstance();
-        Map managers = context.getBeansOfType(RoleManager.class);
+        Map<String, RoleManager> managers = context.getBeansOfType(RoleManager.class);
         if (managers != null) {
-            for (Object o : managers.values()) {
-                RoleManager roleManager = (RoleManager) o;
+            for (RoleManager roleManager : managers.values()) {
                 if (roleManager.getAllRoles().hasNext()) {
                     rolesExists = true;
                     return true;

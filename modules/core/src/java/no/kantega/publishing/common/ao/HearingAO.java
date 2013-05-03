@@ -244,7 +244,7 @@ public class HearingAO {
             if (activeversion == -1) {
                 return -1;
             }
-            return SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " + ContentStatus.HEARING +" AND Version > " +activeversion +" order by Version desc" , "ContentVersionId");
+            return SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " + ContentStatus.HEARING.getTypeAsInt() +" AND Version > " +activeversion +" order by Version desc" , "ContentVersionId");
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             return -1;

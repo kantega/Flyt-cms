@@ -40,7 +40,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
@@ -58,34 +57,39 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
 @Controller
-public class ContentRequestHandler implements ServletContextAware {
+public class ContentRequestHandler {
     private static String SOURCE = "ContentRequestHandler";
 
+    @Autowired
     private SiteCache siteCache;
+    @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
+    @Autowired
     private ServletContext servletContext;
+    @Autowired
+    private ContentManagmentService cms;
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
-    public ModelAndView handlePrettyUrl(@PathVariable int thisId, ContentManagmentService contentService){
-
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId){
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
         return null;
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId, ContentManagmentService contentService){
+    public ModelAndView handleContent_Ap(@RequestParam int thisId){
 
         return null;
     }
 
     @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleAlias(@PathVariable String alias, ContentManagmentService contentService){
+    public ModelAndView handleAlias(@PathVariable String alias){
 
         return null;
     }
 
     @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}/{secondAlias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias, ContentManagmentService contentService){
-        return handleAlias(alias + "/" + secondAlias, contentService);
+    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias){
+        return handleAlias(alias + "/" + secondAlias);
     }
 
 
@@ -237,10 +241,5 @@ public class ContentRequestHandler implements ServletContextAware {
             }
         }
         return url;
-    }
-
-    @Override
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 }
