@@ -2,7 +2,7 @@ package no.kantega.openaksess.search.controller;
 
 import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
-import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.search.api.search.QueryStringGenerator;
@@ -152,7 +152,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addPublishedFilter(List<String> filterQueries) {
-        String publishedContentFilter = "contentStatus:" + ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED);
+        String publishedContentFilter = "contentStatus:" + ContentStatus.PUBLISHED.name();
         if(!filterQueries.contains(publishedContentFilter) && showOnlyPublishedContent){
             filterQueries.add(publishedContentFilter);
         }

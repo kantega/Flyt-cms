@@ -1,4 +1,4 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
+<%@ page import="no.kantega.publishing.api.content.ContentStatus" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>

@@ -28,6 +28,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
@@ -41,7 +42,6 @@ import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -296,7 +296,7 @@ public class ContentManagementService {
      * @throws SystemException
      * @throws NotAuthorizedException
      */
-    public Content checkInContent(Content content, int newStatus) throws SystemException, NotAuthorizedException {
+    public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException, NotAuthorizedException {
         LockManager.releaseLock(content.getId());
         boolean hasBeenPublished = ContentAO.hasBeenPublished(content.getId());
 
@@ -405,10 +405,10 @@ public class ContentManagementService {
 
         String eventName;
         switch (c.getStatus()) {
-            case ContentStatus.DRAFT:
+            case DRAFT:
                 eventName = Event.SAVE_DRAFT;
                 break;
-            case ContentStatus.WAITING_FOR_APPROVAL:
+            case WAITING_FOR_APPROVAL:
                 eventName = Event.SEND_FOR_APPROVAL;
                 break;
             default:
@@ -520,7 +520,7 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      * @throws SystemException
      */
-    public Content setContentStatus(ContentIdentifier cid, int newStatus, String note) throws NotAuthorizedException, SystemException {
+    public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, String note) throws NotAuthorizedException, SystemException {
         Content c = getContent(cid);
         boolean hasBeenPublished = ContentAO.hasBeenPublished(c.getId());
         if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {

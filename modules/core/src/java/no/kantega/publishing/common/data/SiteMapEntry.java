@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ObjectType;
@@ -46,7 +47,7 @@ public class SiteMapEntry extends NavigationMapEntry {
     }
 
     @Deprecated
-    public SiteMapEntry(int uniqueId, int currentId, int parentId, ContentType type, int status, int visibilityStatus, String title, int numberOfNotes, int contentTemplateId) {
+    public SiteMapEntry(int uniqueId, int currentId, int parentId, ContentType type, ContentStatus status, int visibilityStatus, String title, int numberOfNotes, int contentTemplateId) {
         this.uniqueId = uniqueId;
         this.currentId = currentId;
         this.parentId  = parentId;
@@ -71,7 +72,7 @@ public class SiteMapEntry extends NavigationMapEntry {
         return visibilityStatus;
     }
 
-    public int getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
@@ -239,7 +240,7 @@ public class SiteMapEntry extends NavigationMapEntry {
         this.type = type;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 

@@ -19,9 +19,9 @@ package no.kantega.publishing.api.taglibs.mini;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 
@@ -53,7 +53,7 @@ public class FormTag extends BodyTagSupport {
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
         boolean canApprove = securitySession.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
-        int contentStatus = (canApprove)? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
+        ContentStatus contentStatus = (canApprove) ? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
 
         if (action == null) {
             action = request.getContextPath()+"/admin/publish/SimpleEditContent.action";

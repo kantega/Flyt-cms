@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
@@ -78,7 +79,7 @@ public class Content extends BaseObject {
     /**
      * The publishing status of this content. One of the values in ContentStatus
      */
-    private int status = -1;
+    private ContentStatus status = ContentStatus.DRAFT;
     private int language = 0;
 
     private String title = "Uten tittel";
@@ -221,11 +222,11 @@ public class Content extends BaseObject {
         this.version = version;
     }
 
-    public int getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 

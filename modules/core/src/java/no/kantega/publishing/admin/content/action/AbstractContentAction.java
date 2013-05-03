@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
@@ -46,7 +46,7 @@ public abstract class AbstractContentAction extends AbstractController {
 
         model.put("toggleSearchableEnabled", contentTemplate.isSearchable());
 
-        int saveStatus = ContentStatus.WAITING_FOR_APPROVAL;
+        ContentStatus saveStatus = ContentStatus.WAITING_FOR_APPROVAL;
         if (securitySession.isAuthorized(current, Privilege.APPROVE_CONTENT)) {
             // User is authorized to publish page
             saveStatus = ContentStatus.PUBLISHED;

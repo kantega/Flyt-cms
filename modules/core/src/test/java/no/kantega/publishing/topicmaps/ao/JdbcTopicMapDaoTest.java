@@ -40,6 +40,7 @@ public class JdbcTopicMapDaoTest {
 
     @Test
     public void shouldGetTopicMapAfterSave() throws Exception {
+        int originalNumber = dao.getTopicMaps().size();
         // Given
         TopicMap topicMap = new TopicMap();
         topicMap.setName("My topicmap");
@@ -49,7 +50,7 @@ public class JdbcTopicMapDaoTest {
         List<TopicMap> topicMapsFromDB = dao.getTopicMaps();
 
         // Then
-        assertEquals(topicMapsFromDB.size(), 1);
+        assertEquals(originalNumber + 1, topicMapsFromDB.size());
     }
 
     @Test

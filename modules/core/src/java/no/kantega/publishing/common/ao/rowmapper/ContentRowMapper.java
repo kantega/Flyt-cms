@@ -1,5 +1,6 @@
 package no.kantega.publishing.common.ao.rowmapper;
 
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentType;
 import org.springframework.jdbc.core.RowMapper;
@@ -53,7 +54,7 @@ public class ContentRowMapper implements RowMapper<Content> {
         // ContentVersion table
         content.setVersionId(rs.getInt("ContentVersionId"));
         content.setVersion(rs.getInt("Version"));
-        content.setStatus(rs.getInt("Status"));
+        content.setStatus(ContentStatus.getContentStatusAsEnum(rs.getInt("Status")));
         content.setLanguage(rs.getInt("Language"));
         content.setTitle(rs.getString("Title"));
         content.setAltTitle(rs.getString("AltTitle"));

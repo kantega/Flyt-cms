@@ -18,12 +18,16 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
@@ -105,7 +109,7 @@ public class SiteMapWorker {
                 boolean isSearchable = rs.getInt(p++) == 1;
                 int contentTemplateId = rs.getInt(p++);
                 int displayTemplateId = rs.getInt(p++);
-                int status  = rs.getInt(p++);
+                ContentStatus status  = ContentStatus.getContentStatusAsEnum(rs.getInt(p++));
                 String title = rs.getString(p++);
                 String altTitle = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);

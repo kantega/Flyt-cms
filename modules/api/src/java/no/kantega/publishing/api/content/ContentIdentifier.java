@@ -24,7 +24,7 @@ public class ContentIdentifier {
     private int contextId = -1; // Brukes sammen contentId for å finne en associationId
     private int language = Language.NORWEGIAN_BO;
     private int version = -1;
-    private int status = -1;
+    private ContentStatus status = ContentStatus.DRAFT;
 
     public int getContentId() {
         return contentId;
@@ -87,11 +87,11 @@ public class ContentIdentifier {
         return idStr;
     }
 
-    public int getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 
@@ -102,15 +102,14 @@ public class ContentIdentifier {
 
         ContentIdentifier that = (ContentIdentifier) o;
 
-        if (associationId != that.associationId) return false;
-        if (contentId != that.contentId) return false;
-        if (contextId != that.contextId) return false;
-        if (language != that.language) return false;
-        if (siteId != that.siteId) return false;
-        if (status != that.status) return false;
-        if (version != that.version) return false;
+        return associationId == that.associationId
+                && contentId == that.contentId
+                && contextId == that.contextId
+                && language == that.language
+                && siteId == that.siteId
+                && status == that.status
+                && version == that.version;
 
-        return true;
     }
 
     @Override
@@ -121,7 +120,7 @@ public class ContentIdentifier {
         result = 31 * result + contextId;
         result = 31 * result + language;
         result = 31 * result + version;
-        result = 31 * result + status;
+        result = 31 * result + status.getTypeAsInt();
         return result;
     }
 

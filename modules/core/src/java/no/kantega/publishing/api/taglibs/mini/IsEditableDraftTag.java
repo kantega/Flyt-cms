@@ -18,8 +18,8 @@ package no.kantega.publishing.api.taglibs.mini;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;

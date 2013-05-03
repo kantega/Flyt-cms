@@ -19,6 +19,7 @@ package no.kantega.publishing.common.ao;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
@@ -73,7 +74,7 @@ public class ContentAOHelper {
         // Felter fra ContentVersion
         content.setVersionId(rs.getInt("ContentVersionId"));
         content.setVersion(rs.getInt("Version"));
-        content.setStatus(rs.getInt("Status"));
+        content.setStatus(ContentStatus.getContentStatusAsEnum(rs.getInt("Status")));
         content.setLanguage(rs.getInt("Language"));
         content.setTitle(rs.getString("Title"));
         content.setAltTitle(rs.getString("AltTitle"));
