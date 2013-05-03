@@ -27,12 +27,12 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -81,7 +81,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             //  This flag is only a signal for user that content is modified, content is always saved when user requests a save
             content.setIsModified(isModified);
 
-            int status = param.getInt("status");
+            ContentStatus status = ContentStatus.getContentStatusAsEnum(param.getInt("status"));
             String action = param.getString("action");
 
             ValidationErrors errors = updateSubmittedValues(aksessService, content, param);
@@ -126,11 +126,11 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         return errors;
     }
 
-    private ModelAndView handleSaveFromUser(HttpServletRequest request, ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status, String action, ValidationErrors errors) throws NotAuthorizedException {
+    private ModelAndView handleSaveFromUser(HttpServletRequest request, ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status, String action, ValidationErrors errors) throws NotAuthorizedException {
         if (errors.getLength() > 0) {
             return showErrorsToUser(request, aksessService, content, model, errors);
         } else {
-            if (status != -1 && errors.getLength() == 0) {
+            if (status != null && errors.getLength() == 0) {
                 return saveContentInDb(aksessService, session, content, model, status);
             }
             session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
@@ -162,22 +162,22 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     }
 
 
-    private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status) throws NotAuthorizedException {
+    private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status) throws NotAuthorizedException {
         String message;
         content = aksessService.checkInContent(content, status);
         message = null;
         status = content.getStatus();
         switch (status) {
-            case ContentStatus.DRAFT:
+            case DRAFT:
                 message = "draft";
                 break;
-            case ContentStatus.PUBLISHED:
+            case PUBLISHED:
                 message = "published";
                 break;
-            case ContentStatus.WAITING_FOR_APPROVAL:
+            case WAITING_FOR_APPROVAL:
                 message = "waiting";
                 break;
-            case ContentStatus.HEARING:
+            case HEARING:
                 message = "hearing";
                 break;
         }

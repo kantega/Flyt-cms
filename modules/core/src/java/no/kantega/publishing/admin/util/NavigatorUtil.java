@@ -18,8 +18,8 @@ package no.kantega.publishing.admin.util;
 
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 
@@ -36,7 +36,7 @@ public class NavigatorUtil {
      * @param status
      * @return
      */
-    public static String getIcon(ContentType type, int vStatus, int status) {
+    public static String getIcon(ContentType type, int vStatus, ContentStatus status) {
         if (vStatus == ContentVisibilityStatus.WAITING) {
             return "waiting";
         } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
@@ -75,7 +75,7 @@ public class NavigatorUtil {
      * @return
      */
     //TODO: Use locale labels
-    public static String getIconText(ContentType type, int vStatus, int status) {
+    public static String getIconText(ContentType type, int vStatus, ContentStatus status) {
         if (vStatus == ContentVisibilityStatus.WAITING) {
             return "Utsatt publisering";
         } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
@@ -130,7 +130,7 @@ public class NavigatorUtil {
      * @param status
      * @return
      */
-    public static String getContextMenuType(ContentType type, int vStatus, int status) {
+    public static String getContextMenuType(ContentType type, int vStatus, ContentStatus status) {
         if (type == ContentType.LINK) {
             return "link";
         } else if (type == ContentType.FILE) {

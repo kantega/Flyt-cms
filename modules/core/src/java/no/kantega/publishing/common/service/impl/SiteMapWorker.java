@@ -18,12 +18,16 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
@@ -68,7 +72,7 @@ public class SiteMapWorker {
         List tmpentries = new ArrayList();
 
         StringBuilder query = new StringBuilder();
-        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
+        query.append("select content.ContentId, content.ContentType, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = " + ContentStatus.PUBLISHED);
@@ -105,7 +109,7 @@ public class SiteMapWorker {
                 boolean isSearchable = rs.getInt(p++) == 1;
                 int contentTemplateId = rs.getInt(p++);
                 int displayTemplateId = rs.getInt(p++);
-                int status  = rs.getInt(p++);
+                ContentStatus status  = ContentStatus.getContentStatusAsEnum(rs.getInt(p++));
                 String title = rs.getString(p++);
                 String altTitle = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);

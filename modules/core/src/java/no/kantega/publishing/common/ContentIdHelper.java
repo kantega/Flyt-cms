@@ -158,6 +158,7 @@ public class ContentIdHelper {
 
 
     /**
+     *      * // TODO ATTACK!
      * @param siteId - Site
      * @param url    - Url/alias, e.g. /nyheter/
      * @return ContentIdentifier for the given site and url.
@@ -530,7 +531,7 @@ public class ContentIdHelper {
     }
 
     /**
-     *
+     * // TODO ATTACK!
      * @param request - The current request
      * @return ContentIdentifier for the given request.
      * @throws ContentNotFoundException
@@ -586,6 +587,7 @@ public class ContentIdHelper {
     }
 
     /**
+     *      * // TODO ATTACK!
      * @param request - The current request
      * @param url - The url of ContentIdentifier is desired for.
      * @return ContentIdentifier for url.
@@ -610,6 +612,7 @@ public class ContentIdHelper {
     }
 
     /**
+     * // TODO try to remove
      * @param url - e.g. "/"
      * @return ContentIdentifier for url.
      * @throws ContentNotFoundException

@@ -20,6 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.ContentIdHelper;
@@ -149,7 +150,6 @@ public class ContentAO {
             log.error(e);
             throw new RuntimeException(e);
         }
-
     }
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
@@ -200,7 +200,7 @@ public class ContentAO {
     }
 
     public static List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
-        List<Content> contentVersions = new ArrayList<Content>();
+        List<Content> contentVersions = new ArrayList<>();
 
         try(Connection c = dbConnectionFactory.getConnection()){
 
@@ -370,7 +370,7 @@ public class ContentAO {
             // Hent content og contentversion
             PreparedStatement st = c.prepareStatement("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ");
             st.setInt(1, associationId);
-            st.setInt(2, ContentStatus.PUBLISHED);
+            st.setInt(2, ContentStatus.PUBLISHED.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int prevContentId = -1;
             if (rs.next()) {
@@ -405,9 +405,9 @@ public class ContentAO {
 
             // Get drafts, pages waiting for approval and rejected pages
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
-            st.setInt(1, ContentStatus.DRAFT);
-            st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL);
-            st.setInt(3, ContentStatus.REJECTED);
+            st.setInt(1, ContentStatus.DRAFT.getTypeAsInt());
+            st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
+            st.setInt(3, ContentStatus.REJECTED.getTypeAsInt());
             st.setString(4, user.getId());
             st.setInt(5, AssociationType.DEFAULT_POSTING_FOR_SITE);
             ResultSet rs = st.executeQuery();
@@ -432,7 +432,7 @@ public class ContentAO {
 
             // Get pages which expire soon
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ExpireAction = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and content.ExpireDate > ? and content.ExpireDate < ? order by content.ExpireDate desc");
-            st.setInt(1, ContentStatus.PUBLISHED);
+            st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setInt(2, ExpireAction.REMIND);
             st.setString(3, user.getId());
             st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
@@ -453,7 +453,7 @@ public class ContentAO {
 
             // Get the 10 last modified pages
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and LastModified > ? order by contentversion.LastModified desc");
-            st.setInt(1, ContentStatus.PUBLISHED);
+            st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setString(2, user.getId());
             st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()-(long)1000*60*60*24*90));
             rs = st.executeQuery();
@@ -505,7 +505,7 @@ public class ContentAO {
 
             // Hent content og contentversion
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 order by contentversion.Title");
-            st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL);
+            st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int prevContentId = -1;
             while (rs.next()) {
@@ -651,7 +651,7 @@ public class ContentAO {
     }
 
 
-    public static Content checkInContent(Content content, int newStatus) throws SystemException {
+    public static Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
 
         Connection c = null;
         Content oldContent = null ;
@@ -834,7 +834,7 @@ public class ContentAO {
         }
     }
 
-    private static boolean archiveOldVersion(Connection c, Content content, int newStatus, boolean newVersionIsActive) throws SQLException {
+    private static boolean archiveOldVersion(Connection c, Content content, ContentStatus newStatus, boolean newVersionIsActive) throws SQLException {
         // Find next version
         int currentVersion = SQLHelper.getInt(c, "select version from contentversion where ContentId = " + content.getId() + " order by version desc", "version");
         if (currentVersion > 0) {
@@ -844,7 +844,7 @@ public class ContentAO {
         if (newStatus == ContentStatus.PUBLISHED) {
             // Set newStatus = ARCHIVED on currently active version
             PreparedStatement tmp = c.prepareStatement("update contentversion set Status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-            tmp.setInt(1, ContentStatus.ARCHIVED);
+            tmp.setInt(1, ContentStatus.ARCHIVED.getTypeAsInt());
             tmp.setInt(2, content.getId());
             tmp.execute();
             tmp.close();
@@ -868,12 +868,12 @@ public class ContentAO {
     }
 
 
-    private static void addContentVersion(Connection c, Content content, int newStatus, boolean activeVersion) throws SQLException {
+    private static void addContentVersion(Connection c, Content content, ContentStatus newStatus, boolean activeVersion) throws SQLException {
         // Insert new version
         PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         contentVersionSt.setInt(1, content.getId());
         contentVersionSt.setInt(2, content.getVersion());
-        contentVersionSt.setInt(3, newStatus);
+        contentVersionSt.setInt(3, newStatus.getTypeAsInt());
         contentVersionSt.setInt(4, activeVersion ? 1 : 0);
         contentVersionSt.setInt(5, content.getLanguage());
         contentVersionSt.setString(6, content.getTitle());
@@ -906,10 +906,10 @@ public class ContentAO {
 
         boolean isNew = content.isNew();
         if (isNew) {
-            contentSt = c.prepareStatement("insert into content (Type, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
+            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
         } else {
             // Update
-            contentSt = c.prepareStatement("update content set Type = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
+            contentSt = c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
         }
 
         int p = 1;
@@ -1041,7 +1041,7 @@ public class ContentAO {
 
             PreparedStatement st = c.prepareStatement("select * from contentversion where ContentId = ? and Status <> ? order by Version desc");
             st.setInt(1, content.getId());
-            st.setInt(2, ContentStatus.PUBLISHED);
+            st.setInt(2, ContentStatus.PUBLISHED.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int noVersions = 0;
             while(rs.next()) {
@@ -1064,7 +1064,7 @@ public class ContentAO {
         }
     }
 
-    public static Content setContentStatus(ContentIdentifier cid, int newStatus, Date newPublishDate, String userId) throws SystemException {
+    public static Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
@@ -1075,13 +1075,13 @@ public class ContentAO {
                 if (newStatus == ContentStatus.PUBLISHED) {
                     // Sett status = arkivert på aktiv versjon
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-                    tmp.setInt(1, ContentStatus.ARCHIVED);
+                    tmp.setInt(1, ContentStatus.ARCHIVED.getTypeAsInt());
                     tmp.setInt(2, contentId);
                     tmp.execute();
                     tmp.close();
 
                     tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ?, ChangeFrom = null where ContentId = ? and Version = ?");
-                    tmp.setInt(1, ContentStatus.PUBLISHED);
+                    tmp.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
                     tmp.setString(2, userId);
                     tmp.setInt(3, contentId);
                     tmp.setInt(4, version);
@@ -1100,7 +1100,7 @@ public class ContentAO {
                     }
                 } else {
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
-                    tmp.setInt(1, newStatus);
+                    tmp.setInt(1, newStatus.getTypeAsInt());
                     tmp.setInt(2, contentId);
                     tmp.setInt(3, cid.getVersion() == -1 ? version : cid.getVersion());
                     tmp.execute();
@@ -1195,7 +1195,7 @@ public class ContentAO {
             p.setInt(3, ContentVisibilityStatus.ARCHIVED);
             p.setInt(4, ContentVisibilityStatus.EXPIRED);
             p.setTimestamp(5, new Timestamp(now));
-            p.setInt(6, ContentStatus.PUBLISHED_WAITING);
+            p.setInt(6, ContentStatus.PUBLISHED_WAITING.getTypeAsInt());
             p.setTimestamp(7, new Timestamp(now));
             p.setInt(8, after);
             ResultSet rs = p.executeQuery();
@@ -1327,7 +1327,7 @@ public class ContentAO {
         for (ContentTemplate ct : templateConfiguration.getContentTemplates()) {
             // Update database with correct value for type
             JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-            template.update("update content set Type = ? where ContentTemplateId = ? and Type <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
+            template.update("update content set ContentType = ? where ContentTemplateId = ? and ContentType <> ?", ct.getContentType().getTypeAsInt(), ct.getId(), ct.getContentType().getTypeAsInt());
         }
     }
 

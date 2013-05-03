@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data.enums;
+package no.kantega.publishing.api.content;
 
-public enum  ContentStatus {
+public enum ContentStatus {
     /**
      *Content is waiting for approval from editor.
      */
@@ -45,14 +45,24 @@ public enum  ContentStatus {
      * Content is sent to hearing.
      */
     HEARING(40);
-    
-    private final int legacyId;
 
-    ContentStatus(int legacyId) {
-        this.legacyId = legacyId;
+    private final int statusAsInt;
+
+    ContentStatus(int statusAsInt) {
+        this.statusAsInt = statusAsInt;
     }
 
-    private int getLegacyId() {
-        return legacyId;
+    public int getTypeAsInt() {
+        return statusAsInt;
+    }
+
+    public static ContentStatus getContentStatusAsEnum(int typeAsInt) {
+        for (ContentStatus type : ContentStatus.values()) {
+            if (type.getTypeAsInt() == typeAsInt) {
+                return type;
+            }
+        }
+
+        return ContentStatus.DRAFT;
     }
 }

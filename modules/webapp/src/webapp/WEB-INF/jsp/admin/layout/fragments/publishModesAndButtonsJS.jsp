@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
+<%@ page import="no.kantega.publishing.api.content.ContentStatus" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~

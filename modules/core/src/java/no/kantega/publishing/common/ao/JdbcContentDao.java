@@ -1,6 +1,7 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.AttributeRowMapper;
@@ -8,7 +9,6 @@ import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;

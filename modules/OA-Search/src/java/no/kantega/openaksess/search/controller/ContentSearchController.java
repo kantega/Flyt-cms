@@ -2,7 +2,7 @@ package no.kantega.openaksess.search.controller;
 
 import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
-import no.kantega.publishing.common.data.enums.ContentStatus;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.search.api.search.QueryStringGenerator;
