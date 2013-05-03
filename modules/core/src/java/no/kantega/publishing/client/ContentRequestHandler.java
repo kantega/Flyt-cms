@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.client;
 
+import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
@@ -24,6 +25,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.services.ContentManagmentService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
@@ -34,11 +36,16 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,12 +57,39 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 /**
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
-public class ContentRequestHandler extends AbstractController {
+@Controller
+public class ContentRequestHandler implements ServletContextAware {
     private static String SOURCE = "ContentRequestHandler";
 
     private SiteCache siteCache;
     private ContentRequestDispatcher contentRequestDispatcher;
+    private ServletContext servletContext;
 
+    @RequestMapping("/content/{thisId:[0-9]+}/*")
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId, ContentManagmentService contentService){
+
+        return null;
+    }
+
+    @RequestMapping("/content.ap")
+    public ModelAndView handleContent_Ap(@RequestParam int thisId, ContentManagmentService contentService){
+
+        return null;
+    }
+
+    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}")
+    public ModelAndView handleAlias(@PathVariable String alias, ContentManagmentService contentService){
+
+        return null;
+    }
+
+    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}/{secondAlias:[a-zA-Z0-9-.+]+}")
+    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias, ContentManagmentService contentService){
+        return handleAlias(alias + "/" + secondAlias, contentService);
+    }
+
+
+    @Metered
     @Timed
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         long start = System.currentTimeMillis();
@@ -104,7 +138,7 @@ public class ContentRequestHandler extends AbstractController {
                     if (isAdminMode) {
                         response.setDateHeader("Expires", 0);
                     }
-                    contentRequestDispatcher.dispatchContentRequest(content, getServletContext(), request, response);
+                    contentRequestDispatcher.dispatchContentRequest(content, servletContext, request, response);
                     logTimeSpent(start, content);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -203,5 +237,10 @@ public class ContentRequestHandler extends AbstractController {
             }
         }
         return url;
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 }

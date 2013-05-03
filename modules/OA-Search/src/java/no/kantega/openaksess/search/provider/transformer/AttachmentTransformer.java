@@ -43,7 +43,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
 
             indexableDocument.setShouldIndex(true);
             indexableDocument.setTitle(attachment.getFilename());
-            indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED));
+            indexableDocument.setContentStatus(ContentStatus.PUBLISHED.name());
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE));
             indexableDocument.addAttribute("publishDate", attachment.getLastModified());
             indexableDocument.addAttribute("url", attachment.getUrl());

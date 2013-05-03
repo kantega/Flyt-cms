@@ -152,7 +152,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addPublishedFilter(List<String> filterQueries) {
-        String publishedContentFilter = "contentStatus:" + ContentStatus.getContentStatusAsString(ContentStatus.PUBLISHED);
+        String publishedContentFilter = "contentStatus:" + ContentStatus.PUBLISHED.name();
         if(!filterQueries.contains(publishedContentFilter) && showOnlyPublishedContent){
             filterQueries.add(publishedContentFilter);
         }

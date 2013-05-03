@@ -6,7 +6,6 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.*;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
@@ -51,7 +50,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.setTitle(content.getTitle());
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
             indexableDocument.setDescription(content.getDescription());
-            indexableDocument.setContentStatus(ContentStatus.getContentStatusAsString(content.getStatus()));
+            indexableDocument.setContentStatus(content.getStatus().name());
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(content.getVisibilityStatus()));
             int language = content.getLanguage();
             indexableDocument.setLanguage(getLanguageAsISOCode(language));

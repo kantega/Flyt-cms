@@ -16,33 +16,43 @@
 
 package no.kantega.publishing.common.data.enums;
 
-public class ContentStatus {
-    public static final int WAITING_FOR_APPROVAL = 0;
-    public static final int REJECTED = 5;   // Rejected by editor
-    public static final int ARCHIVED = 10;
-    public static final int DRAFT = 20;
-    public static final int PUBLISHED_WAITING = 25; // Waiting to become PUBLISHED
-    public static final int PUBLISHED = 30;
-    public static final int HEARING = 40; // Sent to hearing
+public enum  ContentStatus {
+    /**
+     *Content is waiting for approval from editor.
+     */
+    WAITING_FOR_APPROVAL(0),
+    /**
+     *Content is rejected by editor.
+     */
+    REJECTED(5),
+    /**
+     *Content has been rejected.
+     */
+    ARCHIVED(10),
+    /**
+     * Content is saved as draft.
+     */
+    DRAFT(20),
+    /**
+     * Content is waiting to become PUBLISHED.
+     */
+    PUBLISHED_WAITING(25),
+    /**
+     * Content is published.
+     */
+    PUBLISHED(30),
+    /**
+     * Content is sent to hearing.
+     */
+    HEARING(40);
+    
+    private final int legacyId;
 
-    public static String getContentStatusAsString(int contentStatus) {
-        switch (contentStatus){
-            case ContentStatus.ARCHIVED:
-                return "ARCHIVED";
-            case ContentStatus.DRAFT:
-                return "DRAFT";
-            case ContentStatus.HEARING:
-                return "HEARING";
-            case ContentStatus.PUBLISHED:
-                return "PUBLISHED";
-            case ContentStatus.PUBLISHED_WAITING:
-                return "PUBLISHED_WAITING";
-            case ContentStatus.REJECTED:
-                return "REJECTED";
-            case ContentStatus.WAITING_FOR_APPROVAL:
-                return "WAITING_FOR_APPROVAL";
-            default:
-                return "UNKNOWN";
-        }
+    ContentStatus(int legacyId) {
+        this.legacyId = legacyId;
+    }
+
+    private int getLegacyId() {
+        return legacyId;
     }
 }

@@ -78,7 +78,7 @@ public class Content extends BaseObject {
     /**
      * The publishing status of this content. One of the values in ContentStatus
      */
-    private int status = -1;
+    private ContentStatus status = ContentStatus.DRAFT;
     private int language = 0;
 
     private String title = "Uten tittel";
@@ -221,11 +221,11 @@ public class Content extends BaseObject {
         this.version = version;
     }
 
-    public int getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 
