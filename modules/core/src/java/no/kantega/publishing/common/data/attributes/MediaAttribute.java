@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.FormatHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistMediaAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
@@ -72,7 +73,8 @@ public class MediaAttribute extends Attribute {
                 || AttributeProperty.LATITUDE.equalsIgnoreCase(property)
                 || AttributeProperty.LONGITUDE.equalsIgnoreCase(property)
                 || AttributeProperty.PARENTID.equalsIgnoreCase(property)
-                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
+                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
+                || AttributeProperty.SIZE.equalsIgnoreCase(property)) {
             try {
                 Multimedia mm = getMultimedia();
                 if(mm == null){
@@ -101,6 +103,13 @@ public class MediaAttribute extends Attribute {
                     return mm.getMimeType().getType();
                 } else if (AttributeProperty.URL.equalsIgnoreCase(property)){
                     return mm.getUrl();
+                } else if (AttributeProperty.SIZE.equalsIgnoreCase(property)) {
+                    int size = mm.getSize();
+                    if (size > 0) {
+                        return FormatHelper.formatSize(size);
+                    } else {
+                        return "";
+                    }
                 }
             } catch (Exception e) {
                 Log.error("Error when getting attribute", e);
