@@ -294,14 +294,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- Has been moved to spring-test in spring-3.2-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test-mvc</artifactId>
-            <version>1.0.0.M2</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.directwebremoting</groupId>
             <artifactId>dwr</artifactId>

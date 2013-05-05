@@ -26,7 +26,6 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.api.services.ContentManagmentService;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
@@ -40,6 +39,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
@@ -57,40 +57,40 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
 @Controller
-public class ContentRequestHandler {
+public abstract class ContentRequestHandler implements ServletContextAware{
     private static String SOURCE = "ContentRequestHandler";
 
     @Autowired
     private SiteCache siteCache;
     @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
-    @Autowired
+
     private ServletContext servletContext;
-    @Autowired
-    private ContentManagmentService cms;
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
-    public ModelAndView handlePrettyUrl(@PathVariable int thisId){
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response){
         ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
+        SecuritySession securitySession = getSecuritySession();
         return null;
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId){
-
-        return null;
+    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response){
+        return handlePrettyUrl(thisId, request, response);
     }
 
     @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleAlias(@PathVariable String alias){
-
+    public ModelAndView handleAlias(@PathVariable String alias, HttpServletRequest request, HttpServletResponse response){
+        SecuritySession securitySession = getSecuritySession();
         return null;
     }
 
     @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}/{secondAlias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias){
-        return handleAlias(alias + "/" + secondAlias);
+    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias, HttpServletRequest request, HttpServletResponse response){
+        return handleAlias(alias + "/" + secondAlias, request, response);
     }
+
+    protected abstract SecuritySession getSecuritySession();
 
 
     @Metered
@@ -229,6 +229,11 @@ public class ContentRequestHandler {
     @Autowired
     public void setSiteCache(SiteCache siteCache) {
         this.siteCache = siteCache;
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
     }
 
     private String createRedirectUrlWithIncomingParameters(HttpServletRequest request, String url) {

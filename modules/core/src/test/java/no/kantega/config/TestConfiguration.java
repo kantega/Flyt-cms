@@ -8,7 +8,7 @@ import static org.mockito.Mockito.mock;
 
 @Configuration
 public class TestConfiguration {
-    @Bean
+    @Bean(name = "aksessSiteCache")
     public SiteCache getSiteCache(){
         return mock(SiteCache.class);
     }
