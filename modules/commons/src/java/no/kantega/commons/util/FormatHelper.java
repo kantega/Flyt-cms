@@ -16,31 +16,21 @@
 
 package no.kantega.commons.util;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Apr 4, 2007
- * Time: 9:50:09 AM
- */
+import java.text.DecimalFormat;
+
+
 public class FormatHelper {
-    private final static int MB = 1048576;
-    private final static int KB = 1024;
-    private final static int B = 1;
 
+    private static final String[] units = new String[] { "B", "KB", "MB", "GB", "TB" };
+
+    /**
+     * Formats a file size in bytes into a human readable file size, e.g 10,4 MB etc.
+     * @param size file size in bytes.
+     * @return file size with denomination.
+     */
     public static String formatSize(int size){
-        String unit = "B";
-        int div = B;
-        float sizeF;
-        if (size > MB) {
-            div = MB;
-            unit = "MB";
-        } else if (size > KB) {
-            div = KB;
-            unit = "KB";
-        }
-
-        sizeF = (float)size/div;
-        sizeF = (float)Math.round(sizeF*10)/10;
-
-        return "" + sizeF + " " + unit;
+        if(size <= 0) return "0";
+        int digitGroups = (int) (Math.log10(size)/Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size/Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }
