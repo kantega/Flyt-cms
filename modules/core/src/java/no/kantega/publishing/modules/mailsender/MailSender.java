@@ -38,6 +38,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Date;
@@ -260,6 +261,32 @@ public class MailSender {
             return attachmentPart1;
         } catch (MessagingException e) {
             throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+        }
+    }
+
+    /**
+     * Helper method to create a MimeBodyPart from a binary file.
+     *
+     * @param data Data
+     * @param contentType The Mime content type of the file.
+     * @param fileName   The name of the file - as it will appear for the mail recipient.
+     * @return The resulting MimeBodyPart.
+     * @throws SystemException if the MimeBodyPart can't be created.
+     */
+    public static MimeBodyPart createMimeBodyPartFromData(byte[] data, final String contentType, String fileName) throws SystemException {
+        try {
+            MimeBodyPart attachmentPart1 = new MimeBodyPart();
+            ByteArrayDataSource dataSource = new ByteArrayDataSource(data, contentType) {
+                @Override
+                public String getContentType() {
+                    return contentType;
+                }
+            };
+            attachmentPart1.setDataHandler(new DataHandler(dataSource));
+            attachmentPart1.setFileName(fileName);
+            return attachmentPart1;
+        } catch (MessagingException e) {
+            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra data[]", e);
         }
     }
 
