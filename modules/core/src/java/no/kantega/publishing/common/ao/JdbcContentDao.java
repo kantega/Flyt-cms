@@ -41,7 +41,7 @@ public class JdbcContentDao extends JdbcDaoSupport implements ContentDao {
         } else if(cid.getStatus() == ContentStatus.HEARING) {
             // Find version for hearing, if no hearing is found, active version is returned
             int activeversion = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", contentId);
-            contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING, activeversion);
+            contentVersionId = getJdbcTemplate().queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
         } else {
             // Others should see active version
             contentVersionId = -1;

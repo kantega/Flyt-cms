@@ -74,15 +74,15 @@
         // These buttons are only displayed when user is editing a page or previewing with a changed page
         $("#EditContentButtons input.publish").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.publish");
-            saveContent(<%=ContentStatus.PUBLISHED%>);
+            saveContent(<%=ContentStatus.PUBLISHED.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.save").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.save");
-            saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
+            saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.savedraft").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");
-            saveContent(<%=ContentStatus.DRAFT%>);
+            saveContent(<%=ContentStatus.DRAFT.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.hearing").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");

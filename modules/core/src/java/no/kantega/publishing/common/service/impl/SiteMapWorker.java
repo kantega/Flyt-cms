@@ -75,7 +75,7 @@ public class SiteMapWorker {
         query.append("select content.ContentId, content.ContentType, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
-            query.append(" and contentversion.Status = " + ContentStatus.PUBLISHED);
+            query.append(" and contentversion.Status = ").append(ContentStatus.PUBLISHED.getTypeAsInt());
             query.append(" and (content.VisibilityStatus = " + ContentVisibilityStatus.ACTIVE + ")");
         }
         query.append(" order by associations.ParentAssociationId ");

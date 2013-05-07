@@ -23,7 +23,7 @@
 
 <kantega:section id="head">
     <script language="Javascript" type="text/javascript">
-        getParent().saveContent(<%=ContentStatus.HEARING%>);
+        getParent().saveContent(<%=ContentStatus.HEARING.getTypeAsInt()%>);
         closeWindow();
     </script>
 </kantega:section>

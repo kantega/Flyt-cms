@@ -113,9 +113,9 @@ public class FormTag extends BodyTagSupport {
             out.write(body);
 
             String submitButtonLabel = (canApprove)? LocaleLabels.getLabel("aksess.button.publish", locale) : LocaleLabels.getLabel("aksess.button.save", locale);
-            out.write("    <input class=\"editContentButton submit\" type=\"button\" value=\""+submitButtonLabel+"\" onclick=\"saveContent(" + ContentStatus.PUBLISHED + ")\">");
+            out.write("    <input class=\"editContentButton submit\" type=\"button\" value=\""+submitButtonLabel+"\" onclick=\"saveContent(" + ContentStatus.PUBLISHED.getTypeAsInt() + ")\">");
             if (allowDraft) {
-                out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"saveContent(" + ContentStatus.DRAFT + ")\">");
+                out.write("    <input class=\"editContentButton draft\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.savedraft", locale)+"\" onclick=\"saveContent(" + ContentStatus.DRAFT.getTypeAsInt() + ")\">");
             }
             if (hearingEnabled != null && hearingEnabled) {
                 String url = "openaksess.common.modalWindow.open({title:'" + LocaleLabels.getLabel("aksess.hearing.title", locale) + "', iframe:true, href: '" + request.getContextPath() + "/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});";

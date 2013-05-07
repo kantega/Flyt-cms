@@ -250,7 +250,7 @@ public class ContentAO {
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
                 int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
-                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
+                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " +ContentStatus.HEARING.getTypeAsInt() +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
             } else {
                 // Others should see active version
                 contentVersionId = -1;
@@ -1069,7 +1069,7 @@ public class ContentAO {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
             int contentId = cid.getContentId();
-            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + contentId + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL + "," + ContentStatus.PUBLISHED_WAITING + ") order by version desc", "Version");
+            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + contentId + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt() + "," + ContentStatus.PUBLISHED_WAITING.getTypeAsInt() + ") order by version desc", "Version");
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
@@ -1341,7 +1341,7 @@ public class ContentAO {
             return false;
         }
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED);
+        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
         return cnt > 0;
     }
 
