@@ -59,7 +59,7 @@ public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
 
     private String removeFileExtension(String filename) {
         String name;
-        if (filename.indexOf(".") != -1) {
+        if (filename.contains(".")) {
             name = filename.substring(0, filename.lastIndexOf('.'));
         } else {
             name = filename;
@@ -68,7 +68,7 @@ public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
     }
 
     private Multimedia resizeMultimedia(Multimedia multimedia) throws InvalidImageFormatException {
-        if (multimedia.getMimeType().getType().indexOf("image") != -1 && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
+        if (multimedia.getMimeType().getType().contains("image") && (Aksess.getMaxMediaWidth() > 0 || Aksess.getMaxMediaHeight() > 0)) {
             if (imageIsLargerThanMaxWidthOrHeight(multimedia)) {
                 try {
                     multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
