@@ -1,28 +1,17 @@
 package no.kantega.publishing.common.util;
 
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.media.ImageInfo;
-import no.kantega.commons.media.MimeType;
-import no.kantega.commons.media.MimeTypes;
-
-import java.io.ByteArrayInputStream;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- */
 public class MultimediaHelper {
     public static List<Integer> getMultimediaIdsFromText(String text) {
         List<Integer> ids = new ArrayList<Integer>();
         if (text != null) {
-            ids.addAll(findUsagesInText(text, "multimedia.ap?id="));
+            ids.addAll(findUsagesInText(text, "/multimedia.ap?id="));
             ids.addAll(findUsagesInText(text, "/multimedia/"));
         }
         return ids;
     }
-
 
     private static List<Integer> findUsagesInText(String value, String key) {
         List<Integer> ids = new ArrayList<Integer>();
@@ -51,9 +40,15 @@ public class MultimediaHelper {
             }
 
             // Find next
-            foundPos = value.indexOf(key, foundPos);
+            foundPos = value.indexOf(key);
         }
 
         return ids;
+    }
+
+    public static String replaceMultimediaUrlsWithCid(String text) {
+        text = text.replaceAll("(src=.*?/multimedia.ap.id=)([0-9]+)(\")", "src=\"cid:image$2\"");
+        text = text.replaceAll("(src=.*?/multimedia/)([0-9]+)(/.*?\")", "src=\"cid:image$2\"");
+        return text;
     }
 }
