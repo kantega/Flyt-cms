@@ -55,10 +55,10 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
         try {
             jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "Unable to read aksess configuration", null, null);
+            Log.error(SOURCE, "Unable to read aksess configuration", null, null);
         }
         if(jobDisabled){
-            Log.debug(SOURCE, "Mailsubscriptionjob disabled", null, null);
+            Log.info(SOURCE, "Mailsubscriptionjob disabled", null, null);
         }else{
             Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
             try {
