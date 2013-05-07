@@ -373,13 +373,16 @@ public class ContentIdHelper {
         ContentIdentifier cid = null;
         if (siteId > 0) {
             cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(siteId, url);
-        } else {
+        }
+
+        if(cid == null) {
             // we are likely in development, where no sites are configured.
             List<ContentIdentifier> contentIdentifiersByAlias = contentIdentifierDao.getContentIdentifiersByAlias(url);
             if(!contentIdentifiersByAlias.isEmpty()){
                 cid = contentIdentifiersByAlias.get(0);
             }
         }
+
         if (cid == null) {
             throw new ContentNotFoundException(url, SOURCE);
         }
