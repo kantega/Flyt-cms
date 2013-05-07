@@ -36,6 +36,7 @@ import java.util.Map;
 
 public class RequestHelper {
     private static SiteCache siteCache;
+    private static BeanFactory beanFactory;
 
     public static void setRequestAttributes(HttpServletRequest request, Content content) throws SystemException {
         setSiteCacheIfNull();
@@ -61,12 +62,12 @@ public class RequestHelper {
 
         Map model = new HashMap();
 
-        BeanFactory context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        setBeanFactoryIfNull(servletContext);
 
         // Run all controllers
         if(dt.getControllers() != null) {
             for (DisplayTemplateControllerId displayTemplateController : dt.getControllers()) {
-                AksessController aksessController = context.getBean(displayTemplateController.getId(), AksessController.class);
+                AksessController aksessController = beanFactory.getBean(displayTemplateController.getId(), AksessController.class);
                 model.putAll(aksessController.handleRequest(request, response));
             }
         }
@@ -75,6 +76,12 @@ public class RequestHelper {
         for (Object o : model.keySet()) {
             String name = o.toString();
             request.setAttribute(name, model.get(name));
+        }
+    }
+
+    private static void setBeanFactoryIfNull(ServletContext servletContext) {
+        if (beanFactory == null) {
+            beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         }
     }
 
