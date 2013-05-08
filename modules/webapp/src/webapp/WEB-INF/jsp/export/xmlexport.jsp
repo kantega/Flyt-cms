@@ -20,14 +20,15 @@
 
 <page id="<aksess:getattribute name="id" obj="${page}"/>" displaytemplateid="<aksess:getattribute name="displaytemplateid" obj="${page}"/>">
     <title><aksess:getattribute name="title" obj="${page}"/></title>
-    <url><aksess:getattribute name="url" obj="${page}"/></url>
+    <c:set var="alias"><aksess:getattribute name="alias" obj="${page}"/></c:set>
+    <url <c:if test="${not empty alias}">alias="${alias}"</c:if> absolute="/content/<aksess:getattribute name="id"/>/"></url>
     <publishdate><aksess:getattribute name="publishdate" format="yyyy-MM-dd'T'HH:mm:ssZ" obj="${page}"/></publishdate>
     <lastmajorchange><aksess:getattribute name="lastmajorchange" format="yyyy-MM-dd'T'HH:mm:ssZ" obj="${page}"/></lastmajorchange>
     <expiredate><aksess:getattribute name="expiredate" format="yyyy-MM-dd'T'HH:mm:ssZ" obj="${page}"/></expiredate>
     <c:out value="${xml}" escapeXml="false"/>
     <children>
         <aksess:getcollection name="undersider" associatedid="${page.association.id}" orderby="priority">
-            <child id="<aksess:getattribute name="id" collection="undersider"/>" url="<aksess:getattribute name="url" collection="undersider"/>"/>
+            <child id="<aksess:getattribute name="id" collection="undersider"/>" absoluteurl="/content/<aksess:getattribute name="id" collection="undersider"/>/"/>
         </aksess:getcollection>
     </children>
 </page>
