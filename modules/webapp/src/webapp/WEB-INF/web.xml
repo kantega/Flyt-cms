@@ -252,6 +252,10 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
+        <url-pattern>/export.ap</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
         <url-pattern>/oasearch/*</url-pattern>
     </servlet-mapping>
 
