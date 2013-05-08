@@ -192,13 +192,7 @@ public class ContentPropertiesAction {
             return model;
 
 
-        } catch (ContentNotFoundException e) {
-            // Do nothing
-            return null;
-        } catch (SystemException e) {
-            Log.error(this.getClass().getName(), e, null, null);
-            return null;
-        } catch (NotAuthorizedException e) {
+        } catch (SystemException | NotAuthorizedException | ContentNotFoundException e) {
             Log.error(this.getClass().getName(), e, null, null);
             return null;
         }

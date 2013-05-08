@@ -1,4 +1,4 @@
-package no.kantega.publishing.admin.dwr;
+package no.kantega.publishing.admin.ajax;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
@@ -8,23 +8,25 @@ import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import org.directwebremoting.annotations.RemoteProxy;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  *  Handles cut and copy of Content objects to the clipboard
  */
-@RemoteProxy(name="ContentClipboardHandler")
-public class ContentClipboardHandler extends AbstractClipboardHandler {
+@Controller
+@RequestMapping("/admin/publish/ContentClipboard")
+public class ContentClipboardHandler extends AbstractClipboardHandler{
 
-    public BaseObject getBaseObjectFromId(String id) {
-        ContentManagementService cms = new ContentManagementService(getRequest());
+    public BaseObject getBaseObjectFromId(String id, HttpServletRequest request) {
+        ContentManagementService cms = new ContentManagementService(request);
         Content content = null;
         try {
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(getRequest(), id);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, id);
             content = cms.getContent(cid);
-        } catch (NotAuthorizedException e) {
-            // Do nothing
-        } catch (ContentNotFoundException e) {
+        } catch (NotAuthorizedException | ContentNotFoundException e) {
             // Do nothing
         }
         return content;

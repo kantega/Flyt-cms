@@ -43,7 +43,6 @@
         properties.objectTypeMultimedia = <%=ObjectType.MULTIMEDIA%>;
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-multimedianavigatelayout.js"/>"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/dwr/interface/MultimediaClipboardHandler.js"></script>
 
 </kantega:section>
 

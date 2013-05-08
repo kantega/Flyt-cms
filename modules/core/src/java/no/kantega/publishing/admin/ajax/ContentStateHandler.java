@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.admin.dwr;
+package no.kantega.publishing.admin.ajax;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.log.Log;
@@ -24,35 +24,35 @@ import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import org.directwebremoting.annotations.RemoteMethod;
-import org.directwebremoting.annotations.RemoteProxy;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
- * Used by DWR to maintain the state of the user's currentContent session attribute,
- * i.e. the last content viewed by the user.
- *
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 03.jul.2009
- * Time: 09:20:13
+ * Controller for maintaining the state of the user's currentContent session attribute,
  */
-@RemoteProxy(name="ContentStateHandler")
-public class ContentStateHandler extends AbstractDwrController {
-
+@Controller
+@RequestMapping("/admin/publish/ContentState")
+public class ContentStateHandler {
 
     /**
      * Updates the user's session with the currently viewed content.
      *
      * @param url Url of currently viewed page.
      */
-    @RemoteMethod
-    public void notifyContentUpdate(String url) {
-        HttpSession session = getSession();
+    @RequestMapping(value = "/notifyContentUpdate.action", method = RequestMethod.POST)
+    public ResponseEntity notifyContentUpdate(@RequestParam String url, HttpServletRequest request) {
+        HttpSession session = request.getSession();
         if (session != null) {
             try {
-                ContentManagementService cms = new ContentManagementService(getRequest());
-                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(getRequest(), url);
+                ContentManagementService cms = new ContentManagementService(request);
+                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
                 Content current = cms.getContent(cid);
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {
@@ -61,22 +61,6 @@ public class ContentStateHandler extends AbstractDwrController {
                 Log.error(this.getClass().getName(), e, null, null);
             }
         }
+        return new ResponseEntity(HttpStatus.OK);
     }
-
-    /**
-     * Returns the last viewed content from the user's session.
-      * @return associationId
-     */
-    @RemoteMethod
-    public int getCurrentContent() {
-        HttpSession session = getSession();
-        if (session != null) {
-            Content current = (Content) session.getAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT);
-            if (current != null) {
-                return current.getAssociation().getId();
-            }
-        }
-        return -1;
-    }
-
 }

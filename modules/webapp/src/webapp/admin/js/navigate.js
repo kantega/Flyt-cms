@@ -163,7 +163,7 @@ openaksess.navigate = {
 
             if (typeof clipBoardHandler == "object") {
                 clipBoardHandler.isClipboardEmpty(function(clipboardEmpty){
-                    openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
+                    openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from ClipboardHandler. Clipboard empty: " + clipboardEmpty);
                     openaksess.navigate.setContextMenus(clipboardEmpty);
                 });
             }

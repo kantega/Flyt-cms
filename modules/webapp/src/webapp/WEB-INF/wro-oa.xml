@@ -26,7 +26,10 @@
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
         <js>/admin/js/common.js</js>
+        <js>/admin/js/contentState.js</js>
         <js>/admin/js/admin.js</js>
+        <js>/admin/js/clipboard.js</js>
+        <js>/admin/js/userPreferences.js</js>
     </group>
 
     <group name="admin-popuplayout">

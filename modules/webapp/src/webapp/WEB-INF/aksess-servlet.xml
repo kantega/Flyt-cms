@@ -398,9 +398,10 @@
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
-    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
-    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
-    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.ajax.ContentStateHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.ajax.MultimediaClipboardHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.ajax.ContentClipboardHandler"/>
+    <bean class="no.kantega.publishing.admin.ajax.UserPreferencesHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
 
     <!-- Search content -->

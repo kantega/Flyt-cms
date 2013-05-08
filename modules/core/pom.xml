@@ -294,12 +294,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.directwebremoting</groupId>
-            <artifactId>dwr</artifactId>
-            <version>3.0.RC2</version>
-        </dependency>
-
         <!--
             cglib is included by Hibernate.
             Adding a dependency to the cglib version used by Hibernate 3.6.2.
