@@ -432,4 +432,9 @@ public abstract class Attribute {
         }
         return toString.toString();
     }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new SimpleAttributeValueXMLExporter();
+    }
+
 }

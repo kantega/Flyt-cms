@@ -20,6 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateHtmltextAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -117,4 +118,9 @@ public class HtmltextAttribute extends TextAttribute {
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
         return new UpdateHtmltextAttributeFromRequestBehaviour();
     }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new HtmlAttributeValueXMLExporter();
+    }
+
 }

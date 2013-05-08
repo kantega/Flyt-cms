@@ -100,4 +100,7 @@ public class ContentidAttribute extends Attribute {
         return cids;
     }
 
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new ContentidAttributeValueXMLExporter();
+    }
 }
