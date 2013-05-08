@@ -72,6 +72,9 @@
                 <prop key="/TestPages.action">testPagesAction</prop>
 
                 <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
+
+                <!-- xml export -->
+                <prop key="/export.ap">XmlExportRequestHandler</prop>
             </props>
         </property>
     </bean>
@@ -747,6 +750,8 @@
         <property name="pluginManager" ref="pluginManager"/>
         <property name="prefix" value="no/kantega/openaksess/admin/static/"/>
     </bean>
+
+    <bean id="XmlExportRequestHandler" class="no.kantega.publishing.controls.export.XmlExport"/>
 
 
 

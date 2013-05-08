@@ -422,4 +422,9 @@ public abstract class Attribute {
     public String[] getEditableByRoles() {
         return editableByRole;
     }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new SimpleAttributeValueXMLExporter();
+    }
+
 }
