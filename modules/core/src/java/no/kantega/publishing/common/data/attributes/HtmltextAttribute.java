@@ -18,6 +18,7 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.admin.content.behaviours.attributes.HtmlAttributeValueXMLExporter;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateHtmltextAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;

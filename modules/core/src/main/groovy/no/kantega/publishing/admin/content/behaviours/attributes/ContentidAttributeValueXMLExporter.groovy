@@ -1,6 +1,6 @@
 package no.kantega.publishing.admin.content.behaviours.attributes
 import groovy.xml.MarkupBuilder
-import no.kantega.publishing.common.data.ContentIdentifier
+import no.kantega.publishing.api.content.ContentIdentifier
 import no.kantega.publishing.common.data.attributes.Attribute
 import no.kantega.publishing.common.data.attributes.ContentidAttribute
 
