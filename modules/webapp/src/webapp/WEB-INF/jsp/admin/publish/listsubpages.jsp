@@ -34,11 +34,11 @@
             <li id="${page.association.id}" class="page">
                 <span class="name">${page.title}</span>
                 <c:choose>
-                    <c:when test="${page.status == 30}">
-                        <c:set var="statusId" value="${page.status}_${page.visibilityStatus}"/>
+                    <c:when test="${page.status.typeAsInt == 'PUBLISHED'}">
+                        <c:set var="statusId" value="${page.status.typeAsInt}_${page.visibilityStatus}"/>
                     </c:when>
                     <c:otherwise>
-                        <c:set var="statusId" value="${page.status}"/>
+                        <c:set var="statusId" value="${page.status.typeAsInt}"/>
                     </c:otherwise>
                 </c:choose>
                 <span class="contentStatus"><span class="description status${statusId}"><kantega:label key="aksess.versions.status.${statusId}"/></span></span>
