@@ -54,11 +54,7 @@ public class AssociationAO  {
     public static Association getAssociationById(int id) throws SystemException {
         Association a = null;
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement st = c.prepareStatement("select * from associations where uniqueid = ?");
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
@@ -67,14 +63,6 @@ public class AssociationAO  {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return a;
@@ -163,26 +151,15 @@ public class AssociationAO  {
     public static void addAssociation(Association association) throws SystemException {
 
         if (association.getAssociationtype() == AssociationType.SHORTCUT && association.getAssociationId() == -1) {
-            // Kan ikke opprette en snarvei uten ø ha en knytningsid
+            // Kan ikke opprette en snarvei uten å ha en knytningsid
             return;
         }
 
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             addAssociation(c, association);
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
@@ -232,22 +209,11 @@ public class AssociationAO  {
             return null;
         }
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             return copyAssociations(c, source, target, category, copyChildren);
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
@@ -255,10 +221,7 @@ public class AssociationAO  {
     public static List<Association> getAssociationsByContentId(int contentId) throws SystemException {
         List<Association> associations = new ArrayList<Association>();
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st = c.prepareStatement("select * from associations where contentid = ?");
             st.setInt(1, contentId);
@@ -268,27 +231,15 @@ public class AssociationAO  {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
-
         return associations;
     }
 
 
-    public static List getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
+    public static List<Association> getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
         List<Association> associations = new ArrayList<Association>();
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like '%/" + parentId + "/%'");
             st.setInt(1, contentId);
@@ -298,14 +249,6 @@ public class AssociationAO  {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return associations;
@@ -327,11 +270,9 @@ public class AssociationAO  {
 
                 int contentId = newAssociation.getContentId();
 
-                List associations = getAssociationsByContentId(contentId);
-                for (int i = 0; i < associations.size(); i++) {
+                List<Association> associations = getAssociationsByContentId(contentId);
+                for (Association copy : associations) {
                     // Finn om dette er krysspublisert og finn startpunkt for krysspublisering
-                    Association copy = (Association)associations.get(i);
-
 
                     if (newAssociation.getId() != copy.getId()) {
                         int path[] = oldAssociation.getPathElementIds();
@@ -360,9 +301,9 @@ public class AssociationAO  {
                         if (startCrossPublished != null) {
                             // Sjekk under startpunktet om vi finner side med samme contentid som den som skal flyttes
                             Association parent = getAssociationById(newAssociation.getParentAssociationId());
-                            List tmp = getAssociationsByContentIdAndParentId(parent.getContentId(), startCrossPublished.getId());
+                            List<Association> tmp = getAssociationsByContentIdAndParentId(parent.getContentId(), startCrossPublished.getId());
                             if (tmp.size() == 1) {
-                                Association newAssociationCopy = (Association)tmp.get(0);
+                                Association newAssociationCopy = tmp.get(0);
                                 copy.setParentAssociationId(newAssociationCopy.getId());
                                 modifyAssociation(copy, updateGroup);
                             }
@@ -395,10 +336,7 @@ public class AssociationAO  {
         }
         newAssociation.setDepth(depth);
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             int currentGroupId = SQLHelper.getInt(c, "select GroupId from content where ContentId = " + oldAssocation.getContentId(), "GroupId");
             int parentContentId = SQLHelper.getInt(c, "select ContentId from associations where UniqueId = " + newAssociation.getParentAssociationId(), "ContentId");
             int parentGroupId  = SQLHelper.getInt(c, "select GroupId from content where ContentId = " + parentContentId, "GroupId");
@@ -489,19 +427,11 @@ public class AssociationAO  {
             groupst.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
 
-    private static void appendPathSql(StringBuffer where, List ids, String op, String not) {
+    private static void appendPathSql(StringBuilder where, List ids, String op, String not) {
         where.append("(");
         for (int i = 0; i < ids.size(); i++) {
             Integer id = (Integer)ids.get(i);
@@ -514,7 +444,7 @@ public class AssociationAO  {
     }
 
 
-    private static void appendAssociationsSql(StringBuffer where, List ids) {
+    private static void appendAssociationsSql(StringBuilder where, List ids) {
         where.append("(");
         for (int i = 0; i < ids.size(); i++) {
             Integer id = (Integer)ids.get(i);
@@ -529,16 +459,13 @@ public class AssociationAO  {
 
     public static List<Content> deleteAssociationsById(List ids, boolean deleteMultiple, String userId) throws SystemException {
 
-        List<Content> deletedContent = new ArrayList<Content>();
+        List<Content> deletedContent = new ArrayList<>();
 
         if (ids == null || ids.size() == 0) {
             return deletedContent;
         }
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             /*
              * Sjekk om denne siden vil bli slettet
@@ -561,7 +488,7 @@ public class AssociationAO  {
 
             st.close();
 
-            StringBuffer query = new StringBuffer();
+            StringBuilder query = new StringBuilder();
 
             query.append("SELECT COUNT(ContentId) AS Cnt FROM associations WHERE ContentId = ");
             query.append(current.getId());
@@ -579,7 +506,7 @@ public class AssociationAO  {
             /*
              * Finn underobjekter som vil bli slettet
              */
-            query = new StringBuffer();
+            query = new StringBuilder();
 
             StringBuilder titleQuery = new StringBuilder();
             titleQuery.append("SELECT ContentId, Title FROM contentversion WHERE ContentId IN (");
@@ -624,11 +551,10 @@ public class AssociationAO  {
             }
 
             st.close();
-            st = null;
 
             titleQuery.append(") AND contentversion.IsActive = 1");
 
-            // ø hente ut tittel er splittet opp i to operasjoner, fordi det gør sø sinnsykt tregt pø MySQL enkelte ganger
+            // å hente ut tittel er splittet opp i to operasjoner, fordi det gør så sinnsykt tregt på MySQL enkelte ganger
             if (a > 0) {
                 PreparedStatement titleSt = c.prepareStatement(titleQuery.toString());
                 ResultSet titleRs = titleSt.executeQuery();
@@ -640,10 +566,8 @@ public class AssociationAO  {
                 }
 
                 titleSt.close();
-                titleSt = null;
 
                 titleRs.close();
-                titleRs = null;
             }
 
             if (deleteMultiple || deletedContent.size() <= 1) {
@@ -657,7 +581,7 @@ public class AssociationAO  {
 
 
                 // Marker side for sletting
-                query = new StringBuffer();
+                query = new StringBuilder();
                 query.append("UPDATE associations SET IsDeleted = 1 , DeletedItemsId = ").append(deletedItemsId).append(" WHERE UniqueId IN ");
                 appendAssociationsSql(query, ids);
 
@@ -666,15 +590,13 @@ public class AssociationAO  {
                 st.close();
 
                 // Marker undersider for sletting
-                query = new StringBuffer();
+                query = new StringBuilder();
                 query.append("UPDATE associations SET IsDeleted = 1, DeletedItemsId = ").append(deletedItemsId).append(" WHERE ");
                 appendPathSql(query, ids, "OR", "");
 
                 st = c.prepareStatement(query.toString());
                 st.executeUpdate();
                 st.close();
-
-                st = null;
 
                 // Slett snarveier til ting som er slettet
                 AssociationAOHelper.deleteShortcuts();
@@ -686,24 +608,13 @@ public class AssociationAO  {
             return deletedContent;
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
 
     public static void setAssociationsPriority(List<Association> associations) throws SystemException {
         if (associations != null && associations.size() > 0) {
-            Connection c = null;
-
-            try {
-                c = dbConnectionFactory.getConnection();
+            try (Connection c = dbConnectionFactory.getConnection()){
                 PreparedStatement st = c.prepareStatement("update associations set Priority = ?, Category=? where UniqueId = ?");
                 for (Association association : associations) {
 
@@ -716,14 +627,6 @@ public class AssociationAO  {
                 st.close();
             } catch (SQLException e) {
                 throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-            } finally {
-                try {
-                    if (c != null) {
-                        c.close();
-                    }
-                } catch (SQLException e) {
-
-                }
             }
         }
     }
@@ -772,12 +675,10 @@ public class AssociationAO  {
      * @throws SystemException
      */
     public static int restoreAssociations(int deletedItemsId) throws SystemException {
-        Connection c = null;
 
         int parentId = -1;
 
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st = c.prepareStatement("SELECT * FROM associations WHERE IsDeleted = 1 AND DeletedItemsId = ? ORDER BY Depth");
 
@@ -820,14 +721,6 @@ public class AssociationAO  {
             DeletedItemsAO.purgeDeletedItem(deletedItemsId);
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return parentId;
     }
@@ -835,10 +728,7 @@ public class AssociationAO  {
     public static List<String> findDuplicateAliases(Association parent) throws SystemException {
         List<String> duplicates = new ArrayList<String>();
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
 
             String sql = "SELECT Alias FROM content, associations WHERE ";
             if (dbConnectionFactory.isOracle()) {
@@ -872,14 +762,6 @@ public class AssociationAO  {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return duplicates;

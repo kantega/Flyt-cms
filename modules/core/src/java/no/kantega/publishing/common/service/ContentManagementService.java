@@ -1214,7 +1214,6 @@ public class ContentManagementService {
      */
     public int restoreDeletedItem(int id) throws SystemException {
         int parentId = AssociationAO.restoreAssociations(id);
-        DeletedItemsAO.purgeDeletedItem(id);
         return parentId;
     }
 
