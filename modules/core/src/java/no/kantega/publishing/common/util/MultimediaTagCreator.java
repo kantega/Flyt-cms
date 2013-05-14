@@ -204,11 +204,10 @@ public class MultimediaTagCreator {
                 tag.append("</div>");
                 tag.append("<noscript>");
             }
-            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"" + width + "\" height=\"" + height + "\">");
-            tag.append("<PARAM name=\"movie\" value=\"" + url + "\">");
-            tag.append("<PARAM name=\"quality\" value=\"high\">");
-            tag.append("<PARAM name=\"wmode\" value=\"transparent\">");
-            tag.append("<EMBED src=\"" + url + "\" quality=\"high\" wmode=\"transparent\" pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
+            tag.append("<object type=\"application/x-shockwave-flash\" data=\"" + url + "\" width=\"" + width + "\" height=\"" + height + "\">");
+            tag.append("<param name=\"movie\" value=\"" + url + "\" />");
+            tag.append("<param name=\"quality\" value=\"high\" />");
+            tag.append("</object>");
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
