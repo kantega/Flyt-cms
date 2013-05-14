@@ -34,7 +34,7 @@
             <li id="${page.association.id}" class="page">
                 <span class="name">${page.title}</span>
                 <c:choose>
-                    <c:when test="${page.status.typeAsInt == 'PUBLISHED'}">
+                    <c:when test="${page.status == 'PUBLISHED'}">
                         <c:set var="statusId" value="${page.status.typeAsInt}_${page.visibilityStatus}"/>
                     </c:when>
                     <c:otherwise>
