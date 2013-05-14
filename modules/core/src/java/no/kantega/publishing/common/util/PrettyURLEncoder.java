@@ -46,18 +46,19 @@ public class PrettyURLEncoder {
         if (url == null) {
             return "";
         }
+        String prettyUrl = url.trim();
         for (char[] aMap : map) {
-            if (url.indexOf(aMap[0]) != -1) {
-                url = url.replace(aMap[0], aMap[1]);
+            if (prettyUrl.indexOf(aMap[0]) != -1) {
+                prettyUrl = prettyUrl.replace(aMap[0], aMap[1]);
             }
         }
         try {
-            url = pattern.matcher(url).replaceAll("");
+            prettyUrl = pattern.matcher(prettyUrl).replaceAll("");
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
         }
 
-        return url;
+        return prettyUrl;
     }
 
     public static String createContentUrl(int associationId, String title) {
