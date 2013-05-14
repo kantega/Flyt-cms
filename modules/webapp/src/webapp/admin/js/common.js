@@ -93,7 +93,7 @@ openaksess.common = {
     },
 
     isPopup : function() {
-        return opener || window.name == 'openAksessPopup';
+        return window.parent != window || window.name == 'openAksessPopup';
     },
 
 
