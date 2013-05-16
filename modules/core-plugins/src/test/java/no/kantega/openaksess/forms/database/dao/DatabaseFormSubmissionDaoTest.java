@@ -1,50 +1,46 @@
 package no.kantega.openaksess.forms.database.dao;
 
-import junit.framework.TestCase;
-
-import javax.sql.DataSource;
-
-import no.kantega.publishing.api.forms.model.DefaultForm;
 import no.kantega.publishing.api.forms.model.*;
-import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-/**
- *
- */
-public class DatabaseFormSubmissionDaoTest extends TestCase {
+import static junit.framework.Assert.assertEquals;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:testContext.xml")
+public class DatabaseFormSubmissionDaoTest {
+
+    @Autowired
+    private FormSubmissionDao dao;
+
+    @Test
     public void testGetFormSubmissionById() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
-
         FormSubmission output = dao.getFormSubmissionById(1);
 
         assertEquals("donald@duck.com", output.getSubmittedByEmail());
         assertEquals(3, output.getValues().size());
     }
 
+    @Test
     public void testGetFormSubmissionsByFormId() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
-
         List submissions = dao.getFormSubmissionsByFormId(1);
         assertEquals(4, submissions.size());
     }
 
+    @Test
     public void testGetFormSubmissionsByFormIdAndIdentity() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
         List submissions = dao.getFormSubmissionsByFormIdAndIdentity(1, "donald");
         assertEquals(1, submissions.size());
     }
 
+    @Test
     public void testSaveFormSubmission() {
         DefaultForm form = new DefaultForm();
         form.setId(100);
@@ -52,7 +48,7 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
 
         DefaultFormSubmission formSubmission = new DefaultFormSubmission();
 
-        formSubmission.setFormSubmissionId(1);
+        formSubmission.setFormSubmissionId(11);
         formSubmission.setForm(form);
         formSubmission.setSubmissionDate(new Date());
         formSubmission.setSubmittedByEmail("donald@duck.com");
@@ -71,21 +67,11 @@ public class DatabaseFormSubmissionDaoTest extends TestCase {
 
         formSubmission.setValues(values);
 
-
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
-
         dao.saveFormSubmission(formSubmission);
     }
 
+    @Test
     public void testGetFieldNamesForForm() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
-
-        DatabaseFormSubmissionDao dao = new DatabaseFormSubmissionDao();
-        dao.setDataSource(dataSource);
-
         List fieldNames = dao.getFieldNamesForForm(1);
 
         assertEquals(3, fieldNames.size());        

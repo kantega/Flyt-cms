@@ -87,6 +87,15 @@
         <filter-class>no.kantega.commons.filter.FarFutureExpiresDirectoryFilter</filter-class>
     </filter>
 
+    <filter>
+        <filter-name>webappMetricsFilter</filter-name>
+        <filter-class>com.yammer.metrics.web.DefaultWebappMetricsFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>webappMetricsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>FakeDirectoryExpires</filter-name>
@@ -153,6 +162,10 @@
         <listener-class>no.kantega.publishing.spring.OpenAksessContextLoaderListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>com.yammer.metrics.reporting.MetricsServletContextListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>aksess</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -161,20 +174,6 @@
     <servlet>
         <servlet-name>useradmin</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>dwr</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
-        <init-param>
-            <param-name>debug</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>crossDomainSessionSecurity</param-name>
-            <param-value>false</param-value>
-        </init-param>
     </servlet>
 
     <servlet>
@@ -210,6 +209,11 @@
         <servlet-class>no.kantega.publishing.TinyMCEServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>metricsServlet</servlet-name>
+        <servlet-class>com.yammer.metrics.reporting.MetricsServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/content.ap</url-pattern>
@@ -228,7 +232,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
-        <url-pattern>/attachments/*</url-pattern>
+        <url-pattern>/attachment/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
@@ -247,6 +251,15 @@
         <url-pattern>*.action</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/export.ap</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/oasearch/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
         <url-pattern>/admin/administration/useradmin/*</url-pattern>
     </servlet-mapping>
@@ -254,11 +267,6 @@
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/admin/oap/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>dwr</servlet-name>
-        <url-pattern>/admin/dwr/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -299,6 +307,11 @@
     <servlet-mapping>
         <servlet-name>TinyMCEServlet</servlet-name>
         <url-pattern>/aksess/tiny_mce/tiny_mce_gzip.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>metricsServlet</servlet-name>
+        <url-pattern>/admin/metrics</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>

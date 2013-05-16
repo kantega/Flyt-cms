@@ -1,12 +1,10 @@
 package no.kantega.publishing.api.rating;
 
-import no.kantega.publishing.api.rating.ScoreCalculator;
-import no.kantega.publishing.api.rating.Rating;
 
 import java.util.List;
 
 /**
- *
+ * ScoreCalculator calculating the average of the given Ratings.
  */
 public class AverageRatingScoreCalculator implements ScoreCalculator {
     public float getScoreForRatings(List<Rating> ratings) {

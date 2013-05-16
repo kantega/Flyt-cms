@@ -16,12 +16,15 @@
 
 package no.kantega.publishing.controls.standard;
 
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.util.RegExp;
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.api.mailsubscription.MailSubscription;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.modules.mailsubscription.api.MailSubscriptionService;
 import no.kantega.publishing.security.SecuritySession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,51 +32,50 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 20.des.2006
- * Time: 12:14:50
+ * Controller for adding subscriptions.
+ * If the parameter «epost» is present it is assumed that we want to add or remove a subscription.
+ * The controller assumes the associationId one wants to subscribe to is present
+ * as a request parameter with the value «on». If the value is «off» we want to unsubscribe to the given associationId.
  */
 public class SubscriptionController implements AksessController {
 
-    private static final String SOURCE = "aksess.SubscriptionController";
+    @Autowired
+    private MailSubscriptionService mailSubscriptionService;
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        RequestParameters param = new RequestParameters(request);
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String epost = ServletRequestUtils.getRequiredStringParameter(request, "epost");
 
-        String epost = param.getString("epost");
-        String interval = param.getString("interval");
-        int documentType = -1;
-        try{
-            documentType = Integer.parseInt(param.getString("documenttype"));
-        } catch(NumberFormatException e) {
-           // default to -1
-        }
+        int documentType = ServletRequestUtils.getIntParameter(request, "documenttype", -1);
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
-        if (epost != null && epost.length() > 0) {
-            // Remove spaces
+        if (isNotBlank(epost)) {
             epost = epost.trim();
 
             if (validEmail(epost)) {
                 Enumeration parameters = request.getParameterNames();
                 while(parameters.hasMoreElements()){
                     String paramName = (String)parameters.nextElement();
-                    try {
-                        int channelId = Integer.parseInt(paramName, 10);
-                        String op = param.getString(paramName);
-                        if ("av".equalsIgnoreCase(op) || "off".equalsIgnoreCase(op)) {
-                            MailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
-                            model.put("meldtAv", Boolean.TRUE);  // Backwards compability
-                            model.put("unsubscribed", Boolean.TRUE);
-                        } else if ("pa".equalsIgnoreCase(op) || "on".equalsIgnoreCase(op)) {
-                            MailSubscriptionService.addMailSubscription(epost, channelId, documentType, interval, Language.NORWEGIAN_BO);
-                            model.put("meldtPa", Boolean.TRUE);  // Backwards compability
-                            model.put("subscribed", Boolean.TRUE);
-                        }
-                    } catch (NumberFormatException e) {
-                         //
+                    int channelId = Integer.parseInt(paramName, 10);
+                    String op = ServletRequestUtils.getStringParameter(request, paramName);
+                    if ("av".equalsIgnoreCase(op) || "off".equalsIgnoreCase(op)) {
+                        mailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
+                        model.put("meldtAv", Boolean.TRUE);  // Backwards compability
+                        model.put("unsubscribed", Boolean.TRUE);
+                    } else if ("pa".equalsIgnoreCase(op) || "on".equalsIgnoreCase(op)) {
+                        MailSubscription mailSubscription = new MailSubscription();
+                        mailSubscription.setChannel(channelId);
+                        mailSubscription.setDocumenttype(documentType);
+                        mailSubscription.setEmail(epost);
+                        mailSubscription.setLanguage(Language.NORWEGIAN_BO);
+                        MailSubscriptionInterval interval = MailSubscriptionInterval.valueOf(ServletRequestUtils.getRequiredStringParameter(request, "interval"));
+                        mailSubscription.setInterval(interval);
+                        mailSubscriptionService.addMailSubscription(mailSubscription);
+                        model.put("meldtPa", Boolean.TRUE);  // Backwards compability
+                        model.put("subscribed", Boolean.TRUE);
                     }
                 }
             } else {

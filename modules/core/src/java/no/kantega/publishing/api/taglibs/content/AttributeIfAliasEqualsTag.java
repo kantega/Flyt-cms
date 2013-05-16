@@ -58,7 +58,6 @@ public class AttributeIfAliasEqualsTag  extends ConditionalTagSupport {
             return negate ? !aliasEquals : aliasEquals;
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
         }
 

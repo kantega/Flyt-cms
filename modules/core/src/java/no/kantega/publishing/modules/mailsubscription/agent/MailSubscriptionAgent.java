@@ -19,20 +19,22 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.mailsubscription.MailSubscription;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.modules.mailsubscription.data.MailSubscription;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -41,6 +43,8 @@ import java.util.*;
 public class MailSubscriptionAgent {
     private static final String SOURCE = "aksess.MailSubscriptionAgent";
     private MailSubscriptionDeliveryService mailSubscriptionDeliveryService;
+    @Autowired
+    private MailSubscriptionService mailSubscriptionService;
 
     /**
      *
@@ -51,9 +55,7 @@ public class MailSubscriptionAgent {
      * @throws SystemException -
      */
     public void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
-
-
-        Map<String, List<Content>> subscribers = new HashMap<String, List<Content>>();
+        Map<String, List<Content>> subscribers = new HashMap<>();
 
         for (MailSubscription subscription : subscriptions) {
             String email = subscription.getEmail();
@@ -122,10 +124,7 @@ public class MailSubscriptionAgent {
     }
 
 
-    public void emailNewContentSincePreviousDate(Date previousRun, String interval, Site site) throws SystemException, ConfigurationException, SQLException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+    public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval, Site site) throws ConfigurationException {
             if (previousRun != null) {
                 ContentQuery query = new ContentQuery();
                 query.setPublishDateFrom(previousRun);
@@ -136,7 +135,7 @@ public class MailSubscriptionAgent {
                 List<Content> allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
 
                 // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
-                List<Content> contentList = new ArrayList<Content>();
+                List<Content> contentList = new ArrayList<>();
                 Role everyone = new Role();
                 everyone.setId(Aksess.getEveryoneRole());
 
@@ -163,30 +162,11 @@ public class MailSubscriptionAgent {
                 }
 
                 if (contentList.size() > 0) {
-                    List<MailSubscription> subscriptions = new ArrayList<MailSubscription>();
-                    PreparedStatement st = c.prepareStatement("select * from mailsubscription where MailInterval = ? order by Email");
-                    st.setString(1, interval);
-                    ResultSet rs = st.executeQuery();
-                    while(rs.next()) {
-                        MailSubscription s = new MailSubscription();
-                        s.setChannel(rs.getInt("Channel"));
-                        s.setDocumenttype(rs.getInt("Documenttype"));
-                        s.setLanguage(rs.getInt("Language"));
-                        s.setEmail(rs.getString("Email"));
-
-                        subscriptions.add(s);
-                    }
+                    List<MailSubscription> subscriptions = mailSubscriptionService.getMailSubscriptionByInterval(interval);
 
                     sendEmail(contentList, subscriptions, site);
                 }
             }
-        } catch (SQLException e) {
-            throw new SystemException("SQL-error", SOURCE, e);
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
     }
 
     public void setMailSubscriptionDeliveryService(MailSubscriptionDeliveryService mailSubscriptionDeliveryService) {

@@ -16,33 +16,29 @@
 
 package no.kantega.publishing.jobs.xmlimport;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
-import no.kantega.publishing.cache.CacheManagerFactory;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.XMLCacheAO;
-import no.kantega.publishing.common.data.XMLCacheEntry;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.spring.RootContext;
 import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.w3c.dom.Document;
 
-import java.net.URL;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 public class XMLImportJob  extends QuartzJobBean {
     private static final String SOURCE = "aksess.jobs.XMLImportJob";
     private String id  = null;
     private String url = null;
     private XMLImportValidator validator = new DefaultXMLImportValidator();
-
+    private XmlCache xmlCache;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
-        
+        xmlCache = (XmlCache)jobExecutionContext.getMergedJobDataMap().get("xmlCache");
         if (Aksess.getServerType() == ServerType.SLAVE) {
             Log.info(SOURCE, "Job is disabled for server type slave", null, null);
             return;
@@ -59,18 +55,10 @@ public class XMLImportJob  extends QuartzJobBean {
 
             if (isValidXML(xml)) {
                 XMLCacheEntry cacheEntry = new XMLCacheEntry(id, xml);
-                XMLCacheAO.storeXMLInCache(cacheEntry);
-
-                CacheManager cacheManager = (CacheManager) RootContext.getInstance().getBean("cacheManager");
-
-                Cache xmlCache = cacheManager.getCache(CacheManagerFactory.CacheNames.XmlCache.name());
-
-                xmlCache.remove((Object) id);
+                xmlCache.storeXMLInCache(cacheEntry);
             }
 
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (MalformedURLException e) {
+        } catch (SystemException | MalformedURLException e) {
             Log.error(SOURCE, e, null, null);
         }
         Log.info(SOURCE, "XMLImport ended:" + id, null, null);

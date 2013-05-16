@@ -16,33 +16,26 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
 import no.kantega.publishing.topicmaps.data.Topic;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
 public class TopicUsageCounterTest {
-    TopicUsageCounter counter;
-    JdbcTopicDao topicDao;
 
-    @Before
-    public void setUp() throws Exception {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
-        counter = new TopicUsageCounter();
-        counter.setDataSource(dataSource);
-
-        topicDao = new JdbcTopicDao();
-        topicDao.setDataSource(dataSource);
-        topicDao.setTopicUsageCounter(counter);
-
-
-    }
+    @Autowired
+    private TopicUsageCounter counter;
+    @Autowired
+    private JdbcTopicDao topicDao;
 
     @Test
     public void addTopicAssociationAndGetCorrectCount() {

@@ -61,10 +61,10 @@ openaksess.editcontext = function()  {
             editor.getDoc().execCommand("unlink", false, null);
             editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
             elements = getParent().tinymce.grep(
-                editor.dom.select("a"),
-                function(n) {
-                    return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
-                });
+                    editor.dom.select("a"),
+                    function(n) {
+                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
+                    });
         } else {
             elements.push(element);
         }
@@ -157,13 +157,13 @@ openaksess.editcontext = function()  {
 
         addTopicAutocomplete : function() {
             var $input = $("#TopicInput");
-
+            
             var defaultValue = $input.val();
             $input.focus(function(){
                 $(this).val("");
             }).blur(function(){
-                    $(this).val(defaultValue);
-                });
+                $(this).val(defaultValue);
+            });
 
             var ths = this;
             $input.autocomplete({
@@ -291,16 +291,6 @@ openaksess.editcontext = function()  {
         },
 
         /*
-         *  Popup window for selecting a category
-         */
-        selectCategory : function (formElement) {
-            openaksess.editcontext.focusField = formElement;
-            openaksess.editcontext.doInsertTag = false;
-            var catwin = window.open("../popups/selectcategory.jsp?refresh=" + getRefresh(), "usrWindow", "toolbar=no,width=300,height=300,resizable=yes,scrollbars=no");
-            catwin.focus();
-        },
-
-        /*
          *  Popup window for selecting media object
          */
         selectMultimedia : function (formElement, filter) {
@@ -327,7 +317,6 @@ openaksess.editcontext = function()  {
             openaksess.editcontext.doInsertTag = false;
             openaksess.common.modalWindow.open({title:properties.editcontext.labels.uploadmultimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?fileUploadedFromEditor=true&refresh=" + getRefresh(),width: 450, height:450});
         },
-
 
         /*
          * Popup window for selecting media folder
@@ -365,34 +354,25 @@ openaksess.editcontext = function()  {
             option.value = value;
             option.text = value;
 
-
-            if (openaksess.editcontext.focusField.options.length == 0) {
-                try {
-                    openaksess.editcontext.focusField.add(option);
-                } catch (ex) {
-                    openaksess.editcontext.focusField.add(option, null);
-                }
-            } else {
-                for(var i = 0; i < openaksess.editcontext.focusField.options.length; i++) {
-                    var o = openaksess.editcontext.focusField.options[i];
-                    if(value < o.value) {
-                        try {
-                            openaksess.editcontext.focusField.add(option, focusField.options[i]);
-                        } catch(ex) { // IE
-                            openaksess.editcontext.focusField.add(option, i);
-                        }
-                        break;
-                    } else if(i == openaksess.editcontext.focusField.options.length - 1) {
-                        try {
-                            openaksess.editcontext.focusField.add(option);
-                        } catch (ex) {
-                            openaksess.editcontext.focusField.add(option, null);
-                        }
-
-                        break;
+            for(var i = 0; i < openaksess.editcontext.focusField.options.length; i++) {
+                var o = openaksess.editcontext.focusField.options[i];
+                if(value < o.value) {
+                    try {
+                        openaksess.editcontext.focusField.add(option, focusField.options[i]);
+                    } catch(ex) { // IE
+                        openaksess.editcontext.focusField.add(option, i);
+                    }
+                    break;
+                } else if(i == openaksess.editcontext.focusField.options.length - 1) {
+                    try {
+                        openaksess.editcontext.focusField.add(option);
+                    } catch (ex) {
+                        openaksess.editcontext.focusField.add(option, null);
                     }
 
+                    break;
                 }
+
             }
             option.selected = true;
         },
@@ -584,8 +564,8 @@ $.widget('ui.oaAutocomplete', $.ui.autocomplete, {
     },
     _blur: function(){
         var formElement = this.element,
-            elementName = formElement[0].name,
-            elementId = formElement[0].id;
+        elementName = formElement[0].name,
+        elementId = formElement[0].id;
         openaksess.common.debug("openaksesswidget.oaAutocomplete._blur(): Blur on " + elementId);
         if (formElement.val().length == 0) {
             formElement.val(this.options.defaultValue);

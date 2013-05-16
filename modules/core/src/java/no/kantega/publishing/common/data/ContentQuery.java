@@ -18,13 +18,14 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -155,15 +156,15 @@ public class ContentQuery {
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
         query.append("and contentversion.Status IN (");
-        query.append(ContentStatus.PUBLISHED);
+        query.append(ContentStatus.PUBLISHED.getTypeAsInt());
         if(onHearingFor != null) {
-            query.append("," + ContentStatus.HEARING);
+            query.append(",").append(ContentStatus.HEARING.getTypeAsInt());
         }
         if (includeDrafts) {
-            query.append("," + ContentStatus.DRAFT);
+            query.append(",").append(ContentStatus.DRAFT.getTypeAsInt());
         }
         if(includeWaitingForApproval){
-            query.append("," + ContentStatus.WAITING_FOR_APPROVAL);
+            query.append(",").append(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
         }
 
         query.append(") and content.ContentId = associations.ContentId");
@@ -554,8 +555,7 @@ public class ContentQuery {
             } catch (NumberFormatException e) {
 
             }
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(id);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(id);
             this.contentList[i] = cid;
         }
     }
@@ -706,6 +706,9 @@ public class ContentQuery {
         }
     }
 
+    /**
+     * @param keyword - to look for in title and alttitle.
+     */
     public void setKeyword(String keyword) {
         if (keyword != null) {
             keyword = keyword.replaceAll("\\*", "%");

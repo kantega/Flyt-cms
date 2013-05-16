@@ -29,11 +29,13 @@
             <tr>
                 <th><kantega:label key="aksess.displaytemplates.usages.title"/></th>
                 <th><kantega:label key="aksess.displaytemplates.usages.lastmodified"/></th>
+                <th class="showinadmin"></th>
             </tr>
             <aksess:getcollection name="pages" contentquery="${query}" skipattributes="true" max="50" varStatus="status">
                 <tr class="tableRow<c:out value="${status.index mod 2}"/>">
                     <td><aksess:link collection="pages" target="_blank"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
                     <td><aksess:getattribute name="lastmodified" collection="pages"/></td>
+                    <td class="showinadmin"><a href="<aksess:geturl url="/admin/?thisId=" /><aksess:getattribute name="id" collection="pages"/>"><kantega:label key="aksess.displaytemplates.usages.openinadmin"/></a></td>
                 </tr>
             </aksess:getcollection>
         </table>

@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.publishing.common.data.Content;
@@ -43,8 +44,8 @@ public class LinkAO {
     public static void deleteAllLinks() {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        template.update("delete from link");
-        template.update("delete from linkoccurrence");
+        template.update("DELETE FROM link");
+        template.update("DELETE FROM linkoccurrence");
 
     }
 
@@ -55,15 +56,15 @@ public class LinkAO {
         template.execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
 
-                final PreparedStatement checkLinkStatement = connection.prepareStatement("SELECT Id from link where url=?");
+                final PreparedStatement checkLinkStatement = connection.prepareStatement("SELECT Id FROM link WHERE url=?");
 
-                final PreparedStatement checkOccurrenceStatementAttribute = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName=?");
+                final PreparedStatement checkOccurrenceStatementAttribute = connection.prepareStatement("SELECT Id FROM linkoccurrence WHERE linkId=? AND ContentId=? AND AttributeName=?");
 
-                final PreparedStatement checkOccurrenceStatement = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName IS NULL");
+                final PreparedStatement checkOccurrenceStatement = connection.prepareStatement("SELECT Id FROM linkoccurrence WHERE linkId=? AND ContentId=? AND AttributeName IS NULL");
 
                 final PreparedStatement insLinkStatement = connection.prepareStatement("INSERT INTO link (url, firstfound, timeschecked) VALUES (?,?,0)", Statement.RETURN_GENERATED_KEYS);
 
-                final PreparedStatement insOccurrenceStatement = connection.prepareStatement("INSERT into linkoccurrence (LinkId, ContentId, AttributeName) VALUES (?, ?, ?) ");
+                final PreparedStatement insOccurrenceStatement = connection.prepareStatement("INSERT INTO linkoccurrence (LinkId, ContentId, AttributeName) VALUES (?, ?, ?) ");
 
 
                 emitter.emittLinks(new LinkHandler() {
@@ -137,7 +138,7 @@ public class LinkAO {
 
         final String query = term.getQuery("Id, url", dialect.getResultLimitorStrategy());
 
-        System.out.println("query=" + query);
+        Log.debug("LinkAo", "query=" + query);
 
         template.execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {

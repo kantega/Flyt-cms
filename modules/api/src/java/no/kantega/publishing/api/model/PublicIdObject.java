@@ -16,13 +16,7 @@
 
 package no.kantega.publishing.api.model;
 
-import java.util.List;
-
 /**
- * User: Anders Skar, Kantega AS
- * Date: Feb 11, 2009
- * Time: 11:05:12 AM
- *
  * Base class for templates, documenttypes and associationcategories which are defined in templateconfiguration
  * 
  */

@@ -20,11 +20,11 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
 public class PhotoLinkTag extends BodyTagSupport {
@@ -81,7 +81,7 @@ public class PhotoLinkTag extends BodyTagSupport {
                 out.write("</a>");
             }
         } catch (Exception e) {
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
             url = DEFAULT_URL;

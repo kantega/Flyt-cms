@@ -17,19 +17,20 @@
 package no.kantega.publishing.jobs.multimedia;
 
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.event.ContentEvent;
-import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListenerAdapter;
 
 import java.util.List;
 
@@ -64,9 +65,11 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier cid) {
-        multimediaUsageDao.removeUsageForContentId(cid.getContentId());
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        int contentId = cid.getContentId();
+        multimediaUsageDao.removeUsageForContentId(contentId);
 
-        List<Multimedia> multimedia = multimediaDao.getMultimediaWithContentId(cid.getContentId());
+        List<Multimedia> multimedia = multimediaDao.getMultimediaWithContentId(contentId);
         for (Multimedia m : multimedia) {
             try {
                 multimediaDao.deleteMultimedia(m.getId());

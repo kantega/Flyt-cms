@@ -124,7 +124,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
         currentId = -1;
         highlightCurrent = true;
@@ -142,7 +142,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
         NavigationMapEntry currentItem = (NavigationMapEntry)status.getCurrent();
 
         String ulStartElem = "<ul class=\"navigator\">";
-        String ulEndElem = "</ul>\n";
+        String ulEndElem = "</ul>";
         StringBuilder clz = new StringBuilder();
 
         if (highlightCurrent && selectedClass != null && currentItem.isSelected()) {
@@ -164,19 +164,19 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             nrul++;
         } else if (currentItem.getDepth() < prevDepth) {
             for (int i = prevDepth; i > currentItem.getDepth(); i--) {
-                out.write("</li>\n");
+                out.write("</li>");
                 out.write(ulEndElem);
                 nrul--;
             }
         } else if (currentItem.getDepth() == prevDepth && status.getIndex() > 0){
-            out.write("</li>\n");
+            out.write("</li>");
         }
 
-        out.write("\t<li");
+        out.write("<li");
         if (clz.length() > 0) {
             out.write(" class=\"" + clz.toString() + "\"");
         }
-        out.write(">\n");
+        out.write(">");
 
         printBody(currentItem);
 
@@ -184,10 +184,10 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
         if (status.isLast()) {
             for (int i = 0; i < nrul; i++) {
-                out.write("</li>\n");
+                out.write("</li>");
                 out.write(ulEndElem);
             }
-            out.write("</li>\n");
+            out.write("</li>");
             out.write(ulEndElem);
         }
     }

@@ -17,6 +17,8 @@
 package no.kantega.publishing.common.data;
 
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
@@ -77,7 +79,7 @@ public class Content extends BaseObject {
     /**
      * The publishing status of this content. One of the values in ContentStatus
      */
-    private int status = -1;
+    private ContentStatus status = ContentStatus.DRAFT;
     private int language = 0;
 
     private String title = "Uten tittel";
@@ -96,20 +98,20 @@ public class Content extends BaseObject {
     private long forumId = -1;
 
     // Associations to this content object
-    private List<Association> associations = new ArrayList<Association>();
+    private List<Association> associations = new ArrayList<>();
 
     // Attributes
-    private List<Attribute> contentAttributes = new ArrayList<Attribute>();
-    private List<Attribute> metaAttributes = new ArrayList<Attribute>();
+    private List<Attribute> contentAttributes = new ArrayList<>();
+    private List<Attribute> metaAttributes = new ArrayList<>();
 
     // File attachments - only used to hold attachments when editing a page which is not saved yet
-    private List<Attachment> attachments = new ArrayList<Attachment>();
+    private List<Attachment> attachments = new ArrayList<>();
 
     // Multimedia - only used to hold multimedia when editing a page which is not saved yet
-    private List<Multimedia> multimedia = new ArrayList<Multimedia>();
+    private List<Multimedia> multimedia = new ArrayList<>();
 
     // Topics
-    private List<Topic> topics = new ArrayList<Topic>();
+    private List<Topic> topics = new ArrayList<>();
 
     // Status
     boolean isModified = false;
@@ -220,11 +222,11 @@ public class Content extends BaseObject {
         this.version = version;
     }
 
-    public int getStatus() {
+    public ContentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(ContentStatus status) {
         this.status = status;
     }
 
@@ -360,6 +362,13 @@ public class Content extends BaseObject {
         return getUrl(isAdminMode);
     }
 
+    /**
+     * Aliases are user specified URLs
+     * eg http://www.site.com/news/
+
+     * Alias always starts and ends with /
+     * Alias / is used for frontpage
+     */
     public String getAlias() {
         return alias;
     }
@@ -605,16 +614,7 @@ public class Content extends BaseObject {
     }
 
     private List<Attribute> getAttributeList(String name, int type) {
-        List<Attribute> list;
-        if (type == AttributeDataType.CONTENT_DATA) {
-            list = contentAttributes;
-        } else if (type == AttributeDataType.META_DATA) {
-            list = metaAttributes;
-        } else {
-            list = new ArrayList<Attribute>();
-            list.addAll(contentAttributes);
-            list.addAll(metaAttributes);
-        }
+        List<Attribute> list = getAttributesByType(type);
 
         if (name.contains("[") && name.contains("].")) {
             String rowStr = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
@@ -625,15 +625,33 @@ public class Content extends BaseObject {
             for (Attribute attr : list) {
                 if (attr.getName().equalsIgnoreCase(name) && attr instanceof RepeaterAttribute) {
                     RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
-                    if (repeaterAttribute.getNumberOfRows() >= row) {
+                    if (row < repeaterAttribute.getNumberOfRows()) {
                         return repeaterAttribute.getRow(row);
                     }
                 }
             }
-            return new ArrayList<Attribute>();
+            return new ArrayList<>();
         }
 
 
+        return list;
+    }
+
+    private List<Attribute> getAttributesByType(int type) {
+        List<Attribute> list;
+        switch (type) {
+            case AttributeDataType.CONTENT_DATA:
+                list = contentAttributes;
+                break;
+            case AttributeDataType.META_DATA:
+                list = metaAttributes;
+                break;
+            default:
+                list = new ArrayList<>();
+                list.addAll(contentAttributes);
+                list.addAll(metaAttributes);
+                break;
+        }
         return list;
     }
 
@@ -696,7 +714,7 @@ public class Content extends BaseObject {
 
     public void addTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList<Topic>();
+            topics = new ArrayList<>();
         }
         boolean found = false;
         for (Topic t : topics) {

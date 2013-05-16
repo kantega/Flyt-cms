@@ -3,21 +3,26 @@ body {
 }
 div.search .searchicon {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -1069px;
-    position: absolute;
+    position: relative;
     height: 35px;
     width: 35px;
     left:0;
     top:0;
 }
+
 #SearchResult {
     float: left;
     padding: 1em 1em 1em 30px;
+    width: 75%;
+    margin: 0;
+    list-style: none outside none;
 }
 
 #SearchDrilldown {
-    padding-top: 40px;
     padding-left: 10px;
     float: left;
+    width: 19%;
+    margin:0;
 }
 
 .hit {
@@ -30,6 +35,7 @@ div.search .searchicon {
 
 .hitCount {
     font-weight: bold;
+    margin-left: 10px;
 }
 
 .paging {

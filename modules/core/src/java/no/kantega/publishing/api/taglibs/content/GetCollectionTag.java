@@ -18,7 +18,7 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Content;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -54,9 +54,8 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
             pageContext.setAttribute("aksess_collection_size" + name, collection.size());
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
         return doIter();
     }

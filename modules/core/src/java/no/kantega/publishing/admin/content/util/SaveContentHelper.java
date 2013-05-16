@@ -80,10 +80,8 @@ public class SaveContentHelper {
 
     private boolean roleCanEdit(Attribute attr, ServletRequest request) {
         String[] roles = attr.getEditableByRoles();
-        if (roles != null && roles.length > 0) {
-            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
-        }
+        return !(roles != null && roles.length > 0)
+               || SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
 
-        return true;
     }
 }

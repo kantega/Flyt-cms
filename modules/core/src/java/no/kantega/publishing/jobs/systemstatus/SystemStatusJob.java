@@ -25,8 +25,9 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
 import java.lang.management.MemoryUsage;
+import java.sql.Connection;
 import java.text.DecimalFormat;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,12 +36,12 @@ public class SystemStatusJob extends QuartzJobBean {
 
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
-        StringBuffer msg = new StringBuffer();
+        StringBuilder msg = new StringBuilder();
 
         msg.append("connections: {");
-        msg.append( dbConnectionFactory.getActiveConnections() +" active; ");
-        msg.append( dbConnectionFactory.getIdleConnections() +" idle; ");
-        msg.append( dbConnectionFactory.getMaxConnections() +" max.}");
+        msg.append(dbConnectionFactory.getActiveConnections()).append(" active; ");
+        msg.append(dbConnectionFactory.getIdleConnections()).append(" idle; ");
+        msg.append(dbConnectionFactory.getMaxConnections()).append(" max.}");
 
         DecimalFormat format = new DecimalFormat("#,###.##");
         long mb = 1024*1024;
@@ -49,10 +50,10 @@ public class SystemStatusJob extends QuartzJobBean {
         for (MemoryPoolMXBean mbean: memoryBeans) {
             String name = mbean.getName();
             MemoryUsage usage = mbean.getUsage();
-            msg.append( " memory: " + name + " {");
-            msg.append( format.format(usage.getUsed()/(double)mb) +" MB used; ");
-            msg.append( format.format(usage.getInit()/(double)mb) +" MB init; ");
-            msg.append( format.format(usage.getMax()/(double)mb) +" MB max}");
+            msg.append(" memory: ").append(name).append(" {");
+            msg.append(format.format(usage.getUsed() / (double) mb)).append(" MB used; ");
+            msg.append(format.format(usage.getInit() / (double) mb)).append(" MB init; ");
+            msg.append(format.format(usage.getMax() / (double) mb)).append(" MB max}");
         }
 
         int debugConnectionsLogThreshold = 10;
@@ -60,23 +61,20 @@ public class SystemStatusJob extends QuartzJobBean {
             debugConnectionsLogThreshold = Aksess.getConfiguration().getInt("database.debugconnections.logthreshold", 10);
         } catch (ConfigurationException e) {
             Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
-            Log.error(SOURCE, e, null, null);
-            System.out.println("error:" + e);
+            Log.error(SOURCE, e);
         }
 
         if (dbConnectionFactory.isDebugConnections() && dbConnectionFactory.getActiveConnections() >= debugConnectionsLogThreshold) {
             msg.append("\nWarning: DBCP open connections is high. ");
-            msg.append("(DBCP open connections: " + dbConnectionFactory.getActiveConnections() + ", ");
-            Map map = dbConnectionFactory.connections;
-            msg.append("Aksess open connections: " + map.values().size() + ")\n");
-            Iterator it = map.values().iterator();
-            while (it.hasNext()) {
-              msg.append("*****\n");
-              StackTraceElement[] stackTraceElement = (StackTraceElement[]) it.next();
-              for (int i = 0; i < stackTraceElement.length && i < 5; i++) {
-                  StackTraceElement e = stackTraceElement[i];
-                  msg.append(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") \n");
-              }
+            msg.append("(DBCP open connections: ").append(dbConnectionFactory.getActiveConnections()).append(", ");
+            Map<Connection, StackTraceElement[]> map = new HashMap<Connection, StackTraceElement[]>(dbConnectionFactory.connections);
+            msg.append("Aksess open connections: ").append(map.values().size()).append(")\n");
+            for (StackTraceElement[] stackTraceElement : map.values()) {
+                msg.append("*****\n");
+                for (int i = 0; i < stackTraceElement.length && i < 5; i++) {
+                    StackTraceElement e = stackTraceElement[i];
+                    msg.append(" - ").append(e.getClassName()).append(".").append(e.getMethodName()).append(" (").append(e.getLineNumber()).append(") \n");
+                }
             }
         }
         Log.info(SOURCE, msg.toString(), null, null);

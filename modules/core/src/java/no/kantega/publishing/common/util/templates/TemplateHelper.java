@@ -17,9 +17,13 @@
 package no.kantega.publishing.common.util.templates;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.InvalidTemplateReferenceException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -28,11 +32,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Dec 17, 2008
- * Time: 3:23:58 PM
- */
 public class TemplateHelper {
     private final static String SOURCE = "aksess.TemplateHelper";
 

@@ -1,6 +1,10 @@
-<%@ page import="no.kantega.publishing.common.cache.SiteCache" %>
+<%@ page import="no.kantega.publishing.api.cache.SiteCache" %>
+<%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
+<%@ page import="no.kantega.publishing.api.model.Site" %>
+<%@ page import="no.kantega.publishing.api.path.PathEntry" %>
 <%@ page import="no.kantega.publishing.common.data.*" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -161,21 +165,20 @@
                                         }
                                         if (j == 0) {
                                             // On the first level we print the site name
-                                            Site site = SiteCache.getSiteById(parentAssociation.getSiteId());
+                                            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(parentAssociation.getSiteId());
                                             out.write(site.getName());
                                         } else {
                                             out.write(title);
                                         }
                                     }
 
-                                    ContentIdentifier cid = new ContentIdentifier();
-                                    cid.setAssociationId(parentAssociation.getId());
+                                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(parentAssociation.getId());
                                     Content c = aksessService.getContent(cid);
                                     if (c != null) {
                                         if (path.size() > 0) {
                                             out.write("&nbsp;&gt;&nbsp;<b>" + c.getTitle() + "</b>");
                                         } else {
-                                            Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
+                                            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(c.getAssociation().getSiteId());
                                             out.write(site.getName());
                                         }
                                     }

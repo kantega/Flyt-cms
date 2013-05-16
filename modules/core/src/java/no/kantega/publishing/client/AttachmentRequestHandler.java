@@ -16,31 +16,47 @@
 
 package no.kantega.publishing.client;
 
+import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
-import no.kantega.commons.configuration.Configuration;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.spring.RootContext;
 
-
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+/**
+ * Handles requests for attachments.
+ * Urlpatterns handled are:
+ * - /attachment.ap?id=${id}
+ * - /attachment/${id}/filename
+ */
 public class AttachmentRequestHandler extends HttpServlet {
     private static String SOURCE = "aksess.AttachmentRequestHandler";
+    private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
 
+    private SiteCache siteCache;
+
+    @Timed
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
         try {
             ContentManagementService cs = new ContentManagementService(request);
 
@@ -51,16 +67,19 @@ public class AttachmentRequestHandler extends HttpServlet {
                 try {
                     attachmentId = Integer.parseInt(id);
                 } catch (NumberFormatException e) {
-
+                    Log.error(SOURCE, "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
                 }
             } else {
                 attachmentId = param.getInt("id");
-                if(attachmentId == -1) {
+                String info = request.getPathInfo();
+                if(attachmentId == -1 && info != null) {
                     try {
-                        String info = request.getPathInfo();
-                        attachmentId = Integer.parseInt(info.substring(1, info.indexOf(".", 1)));
-                    } catch (Exception e) {
-
+                        Matcher matcher = urlPattern.matcher(info);
+                        if (matcher.matches()){
+                            attachmentId = Integer.parseInt(matcher.group(1));
+                        }
+                    } catch (NumberFormatException e) {
+                        Log.error(SOURCE, "Invalid attachment request " + info);
                     }
                 }
             }
@@ -72,7 +91,8 @@ public class AttachmentRequestHandler extends HttpServlet {
             String anchor = param.getString("anchor");
 
             int siteId = -1;
-            Site site = SiteCache.getSiteByHostname(request.getServerName());
+
+            Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
             }
@@ -96,7 +116,7 @@ public class AttachmentRequestHandler extends HttpServlet {
                 response.addHeader("Content-Disposition", contentDisposition +"; filename=\"" + filename + "\"");
             }
 
-            if (HttpHelper.isInClientCache(request, response, "" + attachmentId, attachment.getLastModified())) {
+            if (HttpHelper.isInClientCache(request, response, String.valueOf(attachmentId), attachment.getLastModified())) {
                 // Found in browser cache
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
                 return;
@@ -107,15 +127,12 @@ public class AttachmentRequestHandler extends HttpServlet {
             int expire = config.getInt("attachments.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
             
-            ServletOutputStream out = response.getOutputStream();
-
-            try {
+            try (ServletOutputStream out = response.getOutputStream()){
                 if (attachment.getSize() > 0) {
- 	  	            response.addHeader("Content-Length", "" + attachment.getSize());
+ 	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
                 }
                 cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
                 out.flush();
-                out.close();
             } catch (Exception e) {
                 // Client has aborted / connection closed
             }
@@ -125,7 +142,7 @@ public class AttachmentRequestHandler extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        doGet(request, response);
+        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 }
 

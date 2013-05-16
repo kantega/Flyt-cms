@@ -22,22 +22,30 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <ul id="progress"></ul>
 
     <script type="text/javascript">
-        function reloadPage() {
-            location.href = "RebuildIndex.action?refresh=" + new Date();
+        var progressList = $("#progress");
+        var previousHasReturned = false;
+        function updateStatus() {
+            $.get('<aksess:geturl url="/admin/administration/RebuildIndexStatus.action"/>', function (data) {
+                var html = "";
+                var status = data.status;
+                for (var i = 0; i < status.length; i++) {
+                    var provider = status[i];
+                    html += "<li><kantega:label key="aksess.search.rebuild.indexing"/> ";
+                    html += provider.type + " " + provider.current + "/" + provider.total;
+                    html += "</li>";
+                }
+                progressList.html(html);
+                if(!data.allDone){
+                    setTimeout(updateStatus, 2000);
+                } else {
+                    progressList.before("<em><kantega:label key="aksess.search.rebuild.done"/></em>");
+                }
+            });
         }
-    </script>
-
-    <c:choose>
-        <c:when test="${total < 1}"><kantega:label key="aksess.search.rebuild.starting"/></c:when>
-        <c:otherwise>
-            <kantega:label key="aksess.search.rebuild.indexing"/> ${docType} ${current} of ${total}
-        </c:otherwise>
-    </c:choose>
-
-    <script type="text/javascript">
-        setTimeout(reloadPage, 2000);
+        updateStatus();
     </script>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

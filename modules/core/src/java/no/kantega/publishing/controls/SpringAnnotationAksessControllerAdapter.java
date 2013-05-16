@@ -37,7 +37,7 @@ public class SpringAnnotationAksessControllerAdapter implements AksessController
     /**
      * {@inheritDoc}
      */
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         AnnotationMethodHandlerAdapter handlerAdapter = new AnnotationMethodHandlerAdapter();
         ModelAndView mav = handlerAdapter.handle(request, response, controller);
         Map model = Collections.emptyMap();

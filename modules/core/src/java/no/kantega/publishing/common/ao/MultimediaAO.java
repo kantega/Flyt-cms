@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.client.MultimediaRequestHandler;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
@@ -157,13 +156,9 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int setMultimedia(Multimedia mm) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
+        MultimediaDao dao = RootContext.getInstance().getBean("aksessMultimediaDao", MultimediaDao.class);
 
         dao.setMultimedia(mm);
-
-        if (mm.isNew()) {
-            MultimediaRequestHandler.thumbnailCache.flushGroup(Integer.toString(mm.getId()));
-        }
 
         if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
             PermissionsAO.setPermissions(mm, null);

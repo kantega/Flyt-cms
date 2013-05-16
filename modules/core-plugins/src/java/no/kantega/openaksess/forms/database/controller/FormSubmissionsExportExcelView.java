@@ -6,11 +6,7 @@ import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.forms.model.FormValue;
 import no.kantega.publishing.api.forms.service.FormService;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
@@ -100,7 +96,6 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
         Pattern pattern = Pattern.compile(chars);
         Matcher m = pattern.matcher(title);
         while (m.find()){
-            System.out.println(m.start() + ", " + m .group());
             title = title.replace(m.group(),"_");
         }
         if (title.length() >30){

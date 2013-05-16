@@ -3,7 +3,6 @@ package no.kantega.publishing.common.data;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.enums.Cropping;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.ServletRequestUtils;
 
 public class ImageResizeParameters {
 
@@ -21,7 +20,7 @@ public class ImageResizeParameters {
 
     @Override
     public String toString() {
-        return "" + maxHeight + "-" + maxWidth + "-" + cropping;
+        return maxHeight + "-" + maxWidth + "-" + cropping;
     }
 
     public int getMaxWidth() {

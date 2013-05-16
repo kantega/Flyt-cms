@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="no.kantega.openaksess.search"/>
+    <alias name="contentSearchController" alias="aksessSearchController"/>
+
+    <bean id="facetFields"  class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>documentTypeId</value>
+                <value>location</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="facetQueries"  class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <value>lastModified:[NOW/DAY-7DAYS TO NOW]</value>
+                <value>lastModified:[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]</value>
+                <value>lastModified:[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]</value>
+                <value>lastModified:[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]</value>
+                <value>lastModified:[* TO NOW/YEAR-3YEARS]</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="facetValueToLabelKeys"  class="org.springframework.beans.factory.config.MapFactoryBean">
+        <property name="sourceMap">
+            <map>
+                <entry key="lastModified.[NOW/DAY-7DAYS TO NOW]" value="aksess.search.lastweek" />
+                <entry key="lastModified.[NOW/MONTH-1MONTH TO NOW/DAY-7DAYS]" value="aksess.search.lastmonth" />
+                <entry key="lastModified.[NOW/YEAR-1YEAR TO NOW/MONTH-1MONTH]" value="aksess.search.lastyear" />
+                <entry key="lastModified.[NOW/YEAR-3YEARS TO NOW/YEAR-1YEAR]" value="aksess.search.lessthan3years" />
+                <entry key="lastModified.[* TO NOW/YEAR-3YEARS]" value="aksess.search.morethan3years" />
+            </map>
+        </property>
+    </bean>
+</beans>

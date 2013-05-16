@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8"%>
-<%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ page import="no.kantega.commons.client.util.ValidationError"%>
+<%@ page import="no.kantega.publishing.common.Aksess"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>

@@ -16,28 +16,28 @@
 
 package no.kantega.publishing.security.data;
 
-import no.kantega.publishing.security.ao.PermissionsAO;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.security.ao.PermissionsAO;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 public class PermissionsCache {
     private static final String SOURCE = "aksess.PermissionsCache";
 
-    private static HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
+    private static final HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
     private static Date lastUpdate = null;
 
     public static List<Permission> getPermissions(BaseObject object) throws SystemException {
         if ((lastUpdate == null) || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime())) {
             reloadCache();
         }
-
-        return permissions.get("" + object.getSecurityId() + "/" + object.getObjectType());
+        String key = String.format("%s/%s", object.getSecurityId() , object.getObjectType());
+        return permissions.get(key);
     }
 
     public static void reloadCache() throws SystemException {
@@ -46,7 +46,7 @@ public class PermissionsCache {
         synchronized (permissions) {
             lastUpdate  = new Date();
 
-            HashMap tmp = PermissionsAO.getPermissionMap();
+            HashMap<String, List<Permission>> tmp = PermissionsAO.getPermissionMap();
             permissions.clear();
             permissions.putAll(tmp);
         }

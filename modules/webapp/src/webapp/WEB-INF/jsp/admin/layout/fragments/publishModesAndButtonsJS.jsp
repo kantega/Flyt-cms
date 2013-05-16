@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="no.kantega.publishing.common.data.enums.ContentStatus" %>
+<%@ page import="no.kantega.publishing.api.content.ContentStatus" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -74,15 +74,15 @@
         // These buttons are only displayed when user is editing a page or previewing with a changed page
         $("#EditContentButtons input.publish").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.publish");
-            saveContent(<%=ContentStatus.PUBLISHED%>);
+            saveContent(<%=ContentStatus.PUBLISHED.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.save").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.save");
-            saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL%>);
+            saveContent(<%=ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.savedraft").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");
-            saveContent(<%=ContentStatus.DRAFT%>);
+            saveContent(<%=ContentStatus.DRAFT.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.hearing").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");

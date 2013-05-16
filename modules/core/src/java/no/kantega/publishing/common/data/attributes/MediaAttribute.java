@@ -32,6 +32,8 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  * Attribute referencing a media object.
  */
@@ -128,7 +130,7 @@ public class MediaAttribute extends Attribute {
 
     public Multimedia getMultimedia() {
         int id;
-        if (cachedMultimediaObj == null) {
+        if (cachedMultimediaObj == null && isNotBlank(value)) {
             try {
                 id = Integer.parseInt(value);
             } catch (NumberFormatException e) {

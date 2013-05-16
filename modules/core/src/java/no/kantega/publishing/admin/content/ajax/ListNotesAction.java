@@ -15,23 +15,22 @@
  */
 package no.kantega.publishing.admin.content.ajax;
 
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
-import no.kantega.publishing.admin.AdminRequestParameters;
-import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Note;
 import no.kantega.commons.client.util.RequestParameters;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.web.servlet.ModelAndView;
+import no.kantega.publishing.admin.AdminRequestParameters;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.common.data.Note;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -53,7 +52,7 @@ public class ListNotesAction extends SimpleAdminController {
         ContentIdentifier cid = null;
         if (!"".equals(url)) {
             try {
-                cid = new ContentIdentifier(request, url);
+                cid = ContentIdHelper.fromRequestAndUrl(request, url);
 
                 List<Note> notes = notesDao.getNotesByContentId(cid.getContentId());
 

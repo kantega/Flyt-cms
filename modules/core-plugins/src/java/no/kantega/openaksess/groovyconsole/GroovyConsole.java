@@ -19,7 +19,6 @@ package no.kantega.openaksess.groovyconsole;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-import org.codehaus.groovy.control.CompilationFailedException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationContext;
@@ -59,7 +58,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
     @RequestMapping(method = RequestMethod.POST)
     public String processSubmit(@RequestParam("code") String code, HttpServletRequest request, ModelMap model) {
         Binding binding = new Binding();
-        Map<String, Object> inVariables = new HashMap<String, Object>();
+        Map<String, Object> inVariables = new HashMap<>();
 
         StringWriter out = new StringWriter();
 
@@ -101,14 +100,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
             }
 
             model.put("variables", variables);
-        } catch (CompilationFailedException e) {
-            model.put("exception", e);
-            StringWriter sw = new StringWriter();
-            e.printStackTrace(new PrintWriter(sw));
-            model.put("exception", e);
-            model.put("out", sw.toString());
-
-        }  catch (Exception e) {
+        } catch (Exception e) {
             model.put("exception", e);
             StringWriter sw = new StringWriter();
             e.printStackTrace(new PrintWriter(sw));

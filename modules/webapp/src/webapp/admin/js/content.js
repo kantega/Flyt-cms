@@ -79,7 +79,7 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
             openaksess.content.contentstatus.init();
             openaksess.content.contentstatus.disableButtons();
-            $.post(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
+            $.get(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
                 if (data) {
                     openaksess.content.contentstatus.breadcrumbs(data.path);
                     openaksess.content.contentstatus.brokenLinks(data.links);
@@ -415,6 +415,12 @@ openaksess.content = {
                 if (displayTemplate) {
                     details += '<li><span class="label">' + properties.content.labels.contentDisplayTemplate + ':</span>&nbsp;'+displayTemplate.name+'&nbsp;('+displayTemplate.view+')</li>';
                 }
+
+                var contentTemplate = contentProperties.contentTemplate;
+                if (contentTemplate) {
+                    details += '<li><span class="label">' + properties.content.labels.contentContentTemplate + ':</span>&nbsp;'+contentTemplate.name+'&nbsp;('+contentTemplate.templateFile+')</li>';
+                }
+
             }
 
             details +="</ul>";
@@ -680,8 +686,9 @@ openaksess.admin.isResizeNecessary = function() {
 
 openaksess.navigate.navigatorResizeOnStart = function() {
     openaksess.common.debug("openaksess.content.navigatorResizeOnStart(): Adding overlay");
-    var height = $("#MainPane").height();
-    var width = $("#MainPane").width();
+    var mainPane = $("#MainPane");
+    var height = mainPane.height();
+    var width = mainPane.width();
     var contentoverlay = $("<div/>").css({
         position: "absolute",
         height: height + "px",
@@ -833,8 +840,9 @@ openaksess.navigate.getCurrentItemIdentifier = function() {
 
 openaksess.navigate.getNavigatorParams = function() {
     var params = new Object();
-    if($("#NavigatorState .sort").html() != null) {
-        params.sort = $("#NavigatorState .sort").html();
+    var html = $("#NavigatorState .sort").html();
+    if(html != null) {
+        params.sort = html;
     }
     params.showExpired = !$("#FilteroptionHideExpired").is(":checked");
     return params;

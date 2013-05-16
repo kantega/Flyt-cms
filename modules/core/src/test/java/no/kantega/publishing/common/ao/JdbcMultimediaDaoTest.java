@@ -1,33 +1,24 @@
 package no.kantega.publishing.common.ao;
 
-import no.kantega.commons.sqlsearch.dialect.DerbySQLDialect;
 import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
-import org.junit.Before;
 import org.junit.Test;
-
-import javax.sql.DataSource;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
 public class JdbcMultimediaDaoTest {
-    JdbcMultimediaDao dao;
 
-    @Before
-    public void setUp() {
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
-        dao = new JdbcMultimediaDao();
-        dao.setDataSource(dataSource);
-        dao.setSqlDialect(new DerbySQLDialect());
-
-        JdbcMultimediaUsageDao usageDao =  new JdbcMultimediaUsageDao();
-        usageDao.setDataSource(dataSource);
-        dao.setMultimediaUsageDao(usageDao);
-    }
+    @Autowired
+    private JdbcMultimediaDao dao;
 
     @Test
     public void testDeleteMultimedia() throws Exception {

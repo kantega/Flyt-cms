@@ -41,13 +41,15 @@
         }
 
         var updateTextNotification = function(title){
-            openaksess.common.debug("Visible:" +  $("#AddedContent").is(":visible"));
-            if( ! $("#AddedContent").is(":visible")){
-                $("#AddedContent").removeClass("hidden");
+            var addedContent = $("#AddedContent");
+            var isVisible = addedContent.is(":visible");
+            openaksess.common.debug("Visible:" +  isVisible);
+            if( ! isVisible){
+                addedContent.removeClass("hidden");
             }
             var text = "<kantega:label key='aksess.selectcontent.notification'/>" + title;
-            $("#AddedContent").html(text).fadeIn("slow");
-        }
+            addedContent.html(text).fadeIn("slow");
+        };
 
         openaksess.navigate.getNavigatorAction = function() {
             return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action?startId=${startId}&highlightCurrent=false";
@@ -78,11 +80,11 @@
                 </c:when>
                 <c:otherwise>
                     id = openaksess.common.getQueryParam("thisId", href);
-                    url = "/content.ap?thisId=" + id;
+                    url = "/content/" + id + "/" + title;
                 </c:otherwise>
             </c:choose>
             updateParentWindowWithContentAttributes(id, title,url);
-        }
+        };
 
         var autocompleteCallback = function(event, ui){
             var url;

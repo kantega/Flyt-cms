@@ -16,38 +16,20 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 
-import javax.sql.DataSource;
 
-public class AbstractTestJdbcTopicMap {
-    protected JdbcTopicDao topicDao;
+public abstract class AbstractTestJdbcTopicMap {
+
+
     protected TopicMap topicMap;
+
     protected Topic instanceOf;
-    protected DataSource dataSource;
 
     public void setUp() throws Exception {
-        dataSource = new DerbyDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("dbschema/aksess-database-derby-test.sql")).createDatabase();
-        JdbcTopicMapDao topicMapDao = new JdbcTopicMapDao();
-        topicMapDao.setDataSource(dataSource);
 
-        TopicMap newTopicMap = new TopicMap();
-        newTopicMap.setName("My topicmap");
-        topicMap = topicMapDao.saveOrUpdateTopicMap(newTopicMap);
 
-        topicDao = new JdbcTopicDao();
-        topicDao.setDataSource(dataSource);
-
-        TopicUsageCounter usageCounter = new TopicUsageCounter();
-        usageCounter.setDataSource(dataSource);
-        topicDao.setTopicUsageCounter(usageCounter);
-
-        instanceOf = new Topic("topic", topicMap.getId());
-        instanceOf.setIsTopicType(false);
-        instanceOf.setBaseName("topic");
-        instanceOf.setIsSelectable(true);
     }
 
 }

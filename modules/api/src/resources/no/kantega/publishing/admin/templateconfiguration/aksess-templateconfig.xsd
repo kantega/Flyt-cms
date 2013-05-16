@@ -63,12 +63,13 @@
         <xs:complexType>
             <xs:all>
                 <xs:element name="name" type="xs:string"/>
-                <xs:element name="disabled" type="xs:boolean" minOccurs="0"/>
+                <xs:element name="disabled" type="xs:boolean"/>
             </xs:all>
             <xs:attribute name="alias" use="required" type="xs:string"/>
             <xs:attribute name="databaseId" use="required" type="xs:integer"/>
             <xs:attribute name="id" use="required" type="xs:string"/>
             <xs:attribute name="displayTemplateId" use="required" type="xs:string"/>
+            <xs:attribute name="isDefault" type="xs:boolean"/>
         </xs:complexType>
     </xs:element>
 

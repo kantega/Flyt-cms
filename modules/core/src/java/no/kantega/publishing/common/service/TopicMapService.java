@@ -20,7 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.publishing.common.exception.ObjectInUseException;
-import no.kantega.publishing.controls.standard.NewsArchiveController;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
@@ -146,9 +145,9 @@ public class TopicMapService {
         if (topic.getBaseNames().size() == 0) {
             topic.setBaseName(topic.getId());
         }
-//        for(TopicBaseName topicBaseName: topic.getBaseNames()){
-//            topicBaseName.setScope(topic.getInstanceOf().getId());
-//        }
+        for(TopicBaseName topicBaseName: topic.getBaseNames()){
+            topicBaseName.setScope(topic.getInstanceOf().getId());
+        }
         topicDao.setTopic(topic);
         createInstanceOf(topicMapId, topic);
     }

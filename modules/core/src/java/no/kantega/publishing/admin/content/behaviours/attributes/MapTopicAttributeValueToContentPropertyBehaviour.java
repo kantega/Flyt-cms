@@ -19,9 +19,9 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.TopicAttribute;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 
 
 public class MapTopicAttributeValueToContentPropertyBehaviour  implements MapAttributeValueToContentPropertyBehaviour {

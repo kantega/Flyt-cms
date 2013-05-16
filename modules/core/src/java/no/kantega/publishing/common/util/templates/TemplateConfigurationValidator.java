@@ -16,17 +16,15 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.api.model.PublicIdObject;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.data.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 1:49:30 PM
- *
- */
 public class TemplateConfigurationValidator {
 
     /**
@@ -35,7 +33,7 @@ public class TemplateConfigurationValidator {
      * @return - List of validationerrors
      */
     public List<TemplateConfigurationValidationError> validate(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
 
         errors.addAll(validateSites(configuration));
         errors.addAll(validateDocumentTypes(configuration));

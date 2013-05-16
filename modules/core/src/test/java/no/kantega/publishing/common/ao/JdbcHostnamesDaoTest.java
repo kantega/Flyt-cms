@@ -16,30 +16,32 @@
 
 package no.kantega.publishing.common.ao;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
-import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
+import static junit.framework.Assert.assertEquals;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 15, 2009
- * Time: 1:49:44 PM
- */
-public class JdbcHostnamesDaoTest extends TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
+public class JdbcHostnamesDaoTest {
+
+    @Autowired
+    private HostnamesDao hostnamesDao;
+
+    @Test
     public void testHostnames() {
-        DataSource dataSource = new HSQLDBDatabaseCreator("aksess", getClass().getClassLoader().getResourceAsStream("aksess-db.sql")).createDatabase();
 
-        List<String> hostnames = new ArrayList<String>();
+        List<String> hostnames = new ArrayList<>();
         hostnames.add("www.kantega.no");
         hostnames.add("kantega.no");
         hostnames.add("kurs.kantega.no");
 
-        JdbcHostnamesDao hostnamesDao = new JdbcHostnamesDao();
-        hostnamesDao.setDataSource(dataSource);
         hostnamesDao.setHostnamesForSiteId(1, hostnames);
 
         List<String> tmp = hostnamesDao.getHostnamesForSiteId(1);

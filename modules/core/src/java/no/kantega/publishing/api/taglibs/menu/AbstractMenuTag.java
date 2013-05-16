@@ -20,19 +20,21 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
-import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Site;
+import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.impl.SiteMapWorker;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -65,7 +67,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     String associationCategory = null;
     protected boolean expandAll = false;
 
-    private List menuitems = null;
+    private List<NavigationMapEntry> menuitems =  new ArrayList<NavigationMapEntry>();
 
     protected String var = "entry";
     protected String varStatus = "status";
@@ -74,6 +76,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
 
     protected abstract void printBody() throws IOException;
     protected abstract void reset();
+
+    private SiteCache siteCache;
 
     public void setName(String name) {
         this.name = name;
@@ -86,7 +90,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                 this.siteId = Integer.parseInt(siteId);
             } catch (NumberFormatException e) {
                 try {
-                    Site site = SiteCache.getSiteByPublicIdOrAlias(siteId);
+                    setSiteCacheIfNull();
+                    Site site = siteCache.getSiteByPublicIdOrAlias(siteId);
                     if (site != null) {
                         this.siteId = site.getId();
                     }
@@ -94,6 +99,12 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                     Log.error(SOURCE, e1, null, null);
                 }
             }
+        }
+    }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
         }
     }
 
@@ -214,7 +225,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     }
 
 
-    private void addToSiteMap(SecuritySession securitySession, SiteMapEntry sitemap, int currentDepth) {
+    private void addToSiteMap(SecuritySession securitySession, NavigationMapEntry sitemap, int currentDepth) {
         sitemap.setDepth(currentDepth);
 
         sitemap.setSelected(sitemap.getId() == currentId);
@@ -231,131 +242,160 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             }
         }
 
-        List children = sitemap.getChildren();
-        if (children != null) {
-            for (int i = 0; i < children.size(); i++) {
-                SiteMapEntry child = (SiteMapEntry)children.get(i);
+        addChildrenToSiteMap(securitySession, sitemap, currentDepth);
+    }
 
-                child.setFirstChild(i == 0);
-                child.setLastChild(i == children.size() - 1);
+    private void addChildrenToSiteMap(SecuritySession securitySession, NavigationMapEntry sitemap, int currentDepth) {
+        List<NavigationMapEntry> children = sitemap.getChildren();
+        for (int i = 0; i < children.size(); i++) {
+            NavigationMapEntry child = children.get(i);
 
-                boolean isOpen = false;
-                if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.contains("/" + child.getParentId() + "/") || child.getParentId() == defaultOpenId || defaultOpenPath.contains("/" + child.getParentId() + "/")){
-                    isOpen = true;
-                }
-                if (expandAll || isOpen) {
-                    sitemap.setOpen(isOpen);
+            child.setFirstChild(i == 0);
+            child.setLastChild(i == children.size() - 1);
 
-                    // We get one more level than we need, don't display all
-                    int maxDepth = depth - Math.max(startDepth, 0);
-                    if (depth == -1 || currentDepth < maxDepth) {
-                        boolean isAuthorized = false;
-                        if (checkAuthorization) {
-                            try {
-                                isAuthorized = securitySession.isAuthorized(child, Privilege.VIEW_CONTENT);
-                            } catch (SystemException e) {
-                                Log.error(SOURCE, e, null, null);
-                            }
+            boolean isOpen = determineWhetherIsOpen(child);
+            if (expandAll || isOpen) {
+                sitemap.setOpen(isOpen);
+
+                // We get one more level than we need, don't display all
+                int maxDepth = depth - Math.max(startDepth, 0);
+                if (depth == -1 || currentDepth < maxDepth) {
+                    boolean isAuthorized = false;
+                    if (checkAuthorization) {
+                        try {
+                            isAuthorized = securitySession.isAuthorized(child, Privilege.VIEW_CONTENT);
+                        } catch (SystemException e) {
+                            Log.error(SOURCE, e, null, null);
                         }
-                        if (isAuthorized || !checkAuthorization) {
-                            addToSiteMap(securitySession, child, currentDepth + 1);
-                        }
+                    }
+                    if (isAuthorized || !checkAuthorization) {
+                        addToSiteMap(securitySession, child, currentDepth + 1);
                     }
                 }
             }
         }
     }
 
-    public int doStartTag() throws JspException {
-        menuitems = new ArrayList();
+    private boolean determineWhetherIsOpen(NavigationMapEntry child) {
+        boolean isOpen = false;
+        if (child.getParentId() == 0 || child.getParentId() == currentId || currentPath.contains("/" + child.getParentId() + "/") || child.getParentId() == defaultOpenId || defaultOpenPath.contains("/" + child.getParentId() + "/")){
+            isOpen = true;
+        }
+        return isOpen;
+    }
 
+    public int doStartTag() throws JspException {
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             ContentManagementService cms = new ContentManagementService(request);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
-            Content content = AttributeTagHelper.getContent(pageContext, null, null);
-            if (content == null && defaultId != -1) {
-                content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
-            } else if (content == null && siteId != -1) {
-                try {
-                    ContentIdentifier cid = new ContentIdentifier(siteId, "/");
-                    content = cms.getContent(cid);
-                }  catch (ContentNotFoundException e) {
-                    //
-                }
-            }
+            Content content = setContent(cms);
+            setLanguage(request, content);
 
-            if (language == -1 && !ignoreLanguage) {
-                String lang = request.getParameter("language");
-                if (lang != null) {
-                    language = Integer.parseInt(lang);
-                }
+            setSiteId(content);
+            int depth = setDepth();
 
-                if (language == -1) {
-                    if (content != null) {
-                        language = content.getLanguage();
-                    }
-                }
-                if (language == -1) {
-                    language = Language.NORWEGIAN_BO;
-                }
-            }
+            SiteMapEntry sitemap = setSiteMap(cms, depth);
 
-            if(ignoreLanguage) {
-                language = -1;
-            }
-
-            if (content != null) {
-                currentId = content.getAssociation().getAssociationId();
-                currentPath = content.getAssociation().getPath();
-            }
-
-            if (siteId == -1) {
-                if (content != null) {
-                    siteId = content.getAssociation().getSiteId();
-                }
-            }
-
-            if (siteId == -1) {
-                siteId = 1;
-            }
-
-            // To determine if elements have children we have to get more level than we should display
-            int getDepth = depth;
-            if (depth != -1) {
-                getDepth = depth + 1;
-            }
-
-            SiteMapEntry sitemap;
-            if (alwaysIncludeCurrentId) {
-                sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, currentId);
-            } else if (alwaysIncludeCurrentPath && currentPath.length() > 0) {
-                sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, StringHelper.getInts(currentPath + "/" + currentId, "/"));
-            } else {
-                sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, -1);
-            }
-
-
-            if (sitemap != null) {
-                if (currentId == sitemap.getId() && defaultOpenId != -1) {
-                    Content openContent = AttributeTagHelper.getContent(pageContext, null, "" + defaultOpenId);
-                    if (openContent != null) {
-                        defaultOpenPath = openContent.getAssociation().getPath();
-                    }
-                }
-
-                addToSiteMap(securitySession, sitemap, 0);
-            }
+            setOpenElement(securitySession, sitemap);
             status = new CollectionLoopTagStatus(menuitems);
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return doIter();
+    }
+
+    private void setOpenElement(SecuritySession securitySession, SiteMapEntry sitemap) throws NotAuthorizedException {
+        if (sitemap != null) {
+            if (currentId == sitemap.getId() && defaultOpenId != -1) {
+                Content openContent = AttributeTagHelper.getContent(pageContext, null, String.valueOf(defaultOpenId));
+                if (openContent != null) {
+                    defaultOpenPath = openContent.getAssociation().getPath();
+                }
+            }
+
+            addToSiteMap(securitySession, sitemap, 0);
+        }
+    }
+
+    private SiteMapEntry setSiteMap(ContentManagementService cms, int getDepth) {
+        SiteMapEntry sitemap;
+        if (alwaysIncludeCurrentId) {
+            sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, currentId);
+        } else if (alwaysIncludeCurrentPath && currentPath.length() > 0) {
+            sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, StringHelper.getInts(currentPath + "/" + currentId, "/"));
+        } else {
+            sitemap = cms.getSiteMap(siteId, getDepth, language, associationCategory, rootId, -1);
+        }
+        return sitemap;
+    }
+
+    private Content setContent(ContentManagementService cms) throws NotAuthorizedException {
+        Content content = AttributeTagHelper.getContent(pageContext, null, null);
+        if (content == null && defaultId != -1) {
+            content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
+        } else if (content == null && siteId != -1) {
+            try {
+                ContentIdentifier cid = ContentIdHelper.fromSiteIdAndUrl(siteId, "/");
+                content = cms.getContent(cid);
+            }  catch (ContentNotFoundException e) {
+                //
+            }
+        }
+
+
+        if (content != null) {
+            currentId = content.getAssociation().getAssociationId();
+            currentPath = content.getAssociation().getPath();
+        }
+        return content;
+    }
+
+    private int setDepth() {
+        // To determine if elements have children we have to get more level than we should display
+        int getDepth = depth;
+        if (depth != -1) {
+            getDepth = depth + 1;
+        }
+        return getDepth;
+    }
+
+    private void setSiteId(Content content) {
+        if (siteId == -1) {
+            if (content != null) {
+                siteId = content.getAssociation().getSiteId();
+            }
+        }
+
+        if (siteId == -1) {
+            siteId = 1;
+        }
+    }
+
+    private void setLanguage(HttpServletRequest request, Content content) {
+        if (language == -1 && !ignoreLanguage) {
+            String lang = request.getParameter("language");
+            if (lang != null) {
+                language = Integer.parseInt(lang);
+            }
+
+            if (language == -1) {
+                if (content != null) {
+                    language = content.getLanguage();
+                }
+            }
+            if (language == -1) {
+                language = Language.NORWEGIAN_BO;
+            }
+        }
+
+        if(ignoreLanguage) {
+            language = -1;
+        }
     }
 
     private int doIter() {
@@ -386,7 +426,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         try {
             printBody();
         } catch (IOException e) {
-            throw new JspTagException("GetCollectionTag: " + e.getMessage());
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }
@@ -414,7 +454,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         startDepth = -1;
         checkAuthorization = false;
         expandAll = false;
-        menuitems = null;
+        menuitems.clear();
 
         reset();
 

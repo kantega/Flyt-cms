@@ -17,6 +17,14 @@
 
 <database name="aksess_db" xmlns="http://db.apache.org/ddlutils/schema/1.1">
 
+    <table name="associationcategory">
+        <column name="AssociationId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="AssociationName" required="true" type="VARCHAR" size="255"/>
+        <column name="Description" required="true" type="CLOB" size="2147483647" />
+        <column name="PublicId" required="false" type="VARCHAR" size="255"/>
+        <column name="LastModified" required="true" type="TIMESTAMP" size="23,3"/>
+    </table>
+    
     <table name="associations">
         <column name="UniqueId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
         <column name="AssociationId" required="false" type="INTEGER" size="10"/>
@@ -344,6 +352,13 @@
         <column name="SiteId" required="true" type="INTEGER" size="10"/>
         <column name="NumberOfHits" required="true" type="INTEGER" size="10"/>
     </table>
+
+    <table name="sites">
+        <column name="SiteId" primaryKey="true" required="true" type="INTEGER" size="10" autoIncrement="true"/>
+        <column name="Name" required="true" type="VARCHAR" size="255"/>
+        <column name="Alias" required="true" type="VARCHAR" size="255"/>
+    </table>
+
     <table name="site2hostname">
         <column name="SiteId" required="true" type="INTEGER" size="10"/>
         <column name="Hostname" required="true" type="VARCHAR" size="255"/>

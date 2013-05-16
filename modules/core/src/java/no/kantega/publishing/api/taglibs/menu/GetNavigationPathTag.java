@@ -16,25 +16,23 @@
 
 package no.kantega.publishing.api.taglibs.menu;
 
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.ArrayList;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GetNavigationPathTag  extends BodyTagSupport {
     private static final String SOURCE = "aksess.GetNavigationPathTag";
@@ -90,7 +88,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
             Content content = AttributeTagHelper.getContent(pageContext, null, null);
             if (content == null && defaultId != -1) {
-                content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
+                content = AttributeTagHelper.getContent(pageContext, null, String.valueOf(defaultId));
             }
 
             if (content != null) {
@@ -118,9 +116,8 @@ public class GetNavigationPathTag  extends BodyTagSupport {
                 }
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return doIter();

@@ -18,10 +18,12 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.Language;
 
 import java.util.Date;
+
+import static no.kantega.publishing.common.util.PrettyURLEncoder.encode;
 
 public class Attachment {
     private static final String SOURCE = "aksess.Attachment";
@@ -61,7 +63,7 @@ public class Attachment {
     }
 
     public String getFilename() {
-        return filename;
+        return getFilenameWithSuffixLowerCase();
     }
 
     public void setFilename(String filename) {
@@ -96,7 +98,22 @@ public class Attachment {
         this.size = size;
     }
     
-    public String getUrl(){
-        return Aksess.getContextPath() + Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + id;
+    public String getUrl() {
+        String contextPath = Aksess.getContextPath();
+        if (contextPath.endsWith("/")) {
+            contextPath = contextPath.substring(0, contextPath.length() - 1);
+        }
+        return contextPath + Aksess.ATTACHMENT_URL_PREFIX + "/" + id + "/" + encode(getFilenameWithSuffixLowerCase());
+    }
+
+    private String getFilenameWithSuffixLowerCase() {
+        int inx = filename.lastIndexOf('.');
+        if(inx != -1){
+            int length = filename.length();
+            String extension = filename.substring(inx, length).toLowerCase();
+            return filename.substring(0, inx) +  extension;
+        }else {
+            return filename;
+        }
     }
 }

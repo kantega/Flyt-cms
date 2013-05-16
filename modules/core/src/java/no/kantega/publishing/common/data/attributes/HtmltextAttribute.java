@@ -18,7 +18,10 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.publishing.admin.content.behaviours.attributes.HtmlAttributeValueXMLExporter;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.UpdateHtmltextAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -26,11 +29,11 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- *
+ * Attribute representing htmltext
  */
 public class HtmltextAttribute extends TextAttribute {
     protected boolean isCData = true;
@@ -40,6 +43,14 @@ public class HtmltextAttribute extends TextAttribute {
 
     protected int height  = -1;
     protected int width = -1;
+
+    public HtmltextAttribute() {
+        super();
+    }
+
+    public HtmltextAttribute(String name, String value) {
+        super(name, value);
+    }
 
     public String getRenderer() {
         return "htmltext";

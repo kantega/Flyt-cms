@@ -21,9 +21,15 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.model.ClipboardStatus;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.event.ContentEvent;
@@ -54,7 +60,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         Map<String, Object> model = new HashMap<String, Object>();
 
         String url = request.getParameter("newParentUrl");
-        ContentIdentifier newParentCid = new ContentIdentifier(request, url);
+        ContentIdentifier newParentCid = ContentIdHelper.fromRequestAndUrl(request, url);
 
         boolean forbidMoveCrossSite = false;
 

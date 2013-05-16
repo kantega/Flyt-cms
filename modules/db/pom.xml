@@ -18,12 +18,11 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.4.17-SNAPSHOT</version>
+        <version>7.5.4-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess-db</artifactId>
     <packaging>jar</packaging>
 
@@ -91,6 +90,15 @@
                             </fileset>
                             <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
                             <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby-test.sql" doDrops="true" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="derby">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby-test-nodrop.sql" doDrops="false" />
                         </ddlToDatabase>
 
 

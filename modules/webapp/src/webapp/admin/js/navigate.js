@@ -163,7 +163,7 @@ openaksess.navigate = {
 
             if (typeof clipBoardHandler == "object") {
                 clipBoardHandler.isClipboardEmpty(function(clipboardEmpty){
-                    openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from DWR. Clipboard empty: " + clipboardEmpty);
+                    openaksess.common.debug("openaksess.navigate.updateNavigator(): Response from ClipboardHandler. Clipboard empty: " + clipboardEmpty);
                     openaksess.navigate.setContextMenus(clipboardEmpty);
                 });
             }
@@ -322,7 +322,7 @@ openaksess.search = {
         var searchAction = openaksess.search.getSearchAction();
         if (searchAction) {
             var searchUrl = searchAction + "?q=" + query;
-            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
+            var content = '<iframe name="search" title="Search results" src="' + searchUrl + '" frameborder="0" style="height: 100%; width:100%; background: url(../bitmaps/common/icons/small/loader_framework.gif) no-repeat center">';
             $("#MainPane .infoslider").infoslider('option', {cssClasses: 'search', resizable: true, floated: false, height: '360px'}).infoslider('open', document.getElementById("SearchForm"), content);
         }
     },

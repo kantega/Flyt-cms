@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 
 import java.util.Date;

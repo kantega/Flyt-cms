@@ -20,10 +20,10 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.model.Clipboard;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
@@ -102,8 +102,7 @@ public class CopyPasteContentAction implements Controller {
     private void copyContent(ContentManagementService aksessService, boolean textCopy, boolean pasteShortCut, int uniqueId, int newParentId, AssociationCategory category, Association parent, Association source) throws NotAuthorizedException {
         if (textCopy) {
             // Copy text from one page to a new page
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(source.getAssociationId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(source.getAssociationId());
             Content content = aksessService.getContent(cid);
 
             aksessService.copyContent(content, parent, category, true);

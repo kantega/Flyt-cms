@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.util.templates;
 
 import com.thoughtworks.xstream.XStream;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 
 /**
@@ -44,6 +45,7 @@ public class XStreamTemplateHelper {
         xstream.aliasField("databaseId", Site.class, "id");
         xstream.useAttributeFor(Site.class, "publicId");
         xstream.aliasField("id", Site.class, "publicId");
+        xstream.useAttributeFor(Site.class, "isDefault");
         xstream.useAttributeFor(Site.class, "displayTemplateId");
 
         xstream.useAttributeFor(AssociationCategory.class, "id");

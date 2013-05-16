@@ -22,6 +22,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.Aksess;
@@ -31,7 +33,6 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
@@ -78,7 +79,7 @@ public final class AttributeTagHelper {
                     content = (Content)request.getAttribute("aksess_this");
                     if (content == null) {
                         // Hent denne siden
-                        content = cs.getContent(new ContentIdentifier(request), true);
+                        content = cs.getContent(ContentIdHelper.fromRequest(request), true);
                         RequestHelper.setRequestAttributes(request, content);
                     }
 
@@ -98,7 +99,7 @@ public final class AttributeTagHelper {
                             content = (Content)request.getAttribute("aksess_this");
                             if (content == null) {
                                 // Hent denne siden
-                                content = cs.getContent(new ContentIdentifier(request), true);
+                                content = cs.getContent(ContentIdHelper.fromRequest(request), true);
                                 RequestHelper.setRequestAttributes(request, content);
                             }
                         } else {
@@ -143,7 +144,7 @@ public final class AttributeTagHelper {
                         } catch (NumberFormatException e) {
                             if (contentId.charAt(0) != '/') contentId = "/" + contentId;
                             if (contentId.charAt(contentId.length() - 1) != '/') contentId = contentId + "/";
-                            cid = new ContentIdentifier(request, contentId);
+                            cid = ContentIdHelper.fromRequestAndUrl(request, contentId);
                         }
 
                         content = (Content)request.getAttribute("aksess_content" + cid.getAssociationId());
@@ -259,7 +260,7 @@ public final class AttributeTagHelper {
                     } else {
                         result = number.getValue();
                     }
-                } else if(attr instanceof MediaAttribute || attr instanceof ImageAttribute) {
+                } else if(attr instanceof MediaAttribute) {
                     MediaAttribute media = (MediaAttribute)attr;
 
                     if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
@@ -287,11 +288,11 @@ public final class AttributeTagHelper {
                     result = content.getTitle();
                     isTextAttribute = true;
                 } else if (name.equals(ContentProperty.ID)) {
-                    result = "" + content.getAssociation().getId();
+                    result = String.valueOf(content.getAssociation().getId());
                 } else if (name.equals(ContentProperty.CONTENTID)) {
-                    result = "" + content.getId();
+                    result = String.valueOf(content.getId());
                 } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
-                    result = "" + content.getAssociation().getNumberOfViews();
+                    result = String.valueOf(content.getAssociation().getNumberOfViews());
                 } else if (name.equals(ContentProperty.URL)) {
                     result = content.getUrl();
                 } else if (name.equals(ContentProperty.ALIAS)) {
@@ -404,8 +405,10 @@ public final class AttributeTagHelper {
             } else {
                 //Alias
                 try {
-                    associationId = new ContentIdentifier(request, id).getAssociationId();
+                    ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
+                    associationId = contentIdentifier.getAssociationId();
                 } catch (Exception e) {
+                    Log.error("AttributeTagHelper", e);
                 }
             }
         }
@@ -430,6 +433,9 @@ public final class AttributeTagHelper {
                     site = siteCache.getSiteById(content.getAssociation().getSiteId());
                 } else {
                     site = siteCache.getSiteByHostname(pageContext.getRequest().getServerName());
+                    if(site == null){
+                        site = siteCache.getSiteById(1);
+                    }
                 }
 
                 url = TemplateMacroHelper.replaceMacros(url, site, deviceCategoryDetector.getUserAgentDeviceCategory(request), language);

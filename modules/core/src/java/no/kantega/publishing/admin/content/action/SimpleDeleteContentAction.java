@@ -17,9 +17,9 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -27,8 +27,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -43,8 +41,7 @@ public class SimpleDeleteContentAction implements Controller {
         ContentManagementService cms = new ContentManagementService(request);
 
         int parentId = -1;
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(associationId);
+        ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
         Content current = cms.getContent(cid, false);
         if (current != null) {
             parentId = current.getAssociation().getParentAssociationId();
@@ -59,8 +56,7 @@ public class SimpleDeleteContentAction implements Controller {
         } else {
             Content parent = null;
             if (parentId != -1) {
-                ContentIdentifier parentCid = new ContentIdentifier();
-                parentCid.setAssociationId(parentId);
+                ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(parentId);
                 parent = cms.getContent(parentCid);
             }
             if (parent != null) {

@@ -23,9 +23,10 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.administration.action.CreateRootAction;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.springframework.web.servlet.ModelAndView;
@@ -62,9 +63,9 @@ public class NavigateController extends AbstractContentAction {
         if (url != null || request.getParameter(AdminRequestParameters.THIS_ID) != null || request.getParameter(AdminRequestParameters.CONTENT_ID) != null) {
             ContentIdentifier cid = null;
             if (url != null) {
-                cid = new ContentIdentifier(request, url);
+                cid = ContentIdHelper.fromRequestAndUrl(request, url);
             } else {
-                cid = new ContentIdentifier(request);
+                cid = ContentIdHelper.fromRequest(request);
             }
             current = aksessService.getContent(cid);
         }
@@ -73,7 +74,7 @@ public class NavigateController extends AbstractContentAction {
             ContentIdentifier cid = null;
             try {
                 // No current object, go to start page
-                cid = new ContentIdentifier(request, "/");
+                cid = ContentIdHelper.fromRequestAndUrl(request, "/");
             } catch (ContentNotFoundException cnfe) {
                 // Start page has not been created
                 Site site = siteCache.getSiteByHostname(request.getServerName());
@@ -85,7 +86,7 @@ public class NavigateController extends AbstractContentAction {
                     site = sites.get(0);
                 }
                 createRootAction.createRootPage(site.getId(), request);
-                cid = new ContentIdentifier(request, "/");
+                cid = ContentIdHelper.fromRequestAndUrl(request, "/");
             }
             current = aksessService.getContent(cid);
         }

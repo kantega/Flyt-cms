@@ -1,11 +1,11 @@
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.Iterator" %>
+<%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
+<%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
+<%@ page import="no.kantega.publishing.common.service.lock.ContentLock" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
-<%@ page import="no.kantega.publishing.common.service.lock.ContentLock" %>
+<%@ page import="java.util.Iterator" %>
+<%@ page import="java.util.Map" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -55,8 +55,7 @@
                     int count = 0;
                     while (i.hasNext()) {
                         ContentLock contentLock = (ContentLock) i.next();
-                        ContentIdentifier cid = new ContentIdentifier();
-                        cid.setContentId(contentLock.getContentId());
+                        ContentIdentifier cid =  ContentIdentifier.fromContentId(contentLock.getContentId());
                         Content c = cms.getContent(cid);
                 %>
                 <tr class="tableRow<%=count++%2%>" >

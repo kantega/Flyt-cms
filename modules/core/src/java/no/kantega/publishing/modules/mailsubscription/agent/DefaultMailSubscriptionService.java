@@ -4,10 +4,10 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.MultimediaHelper;
@@ -27,7 +27,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
     public void sendEmail(String recipient, List<Content> subscriberContent, Site site) throws  ConfigurationException, SystemException {
         Configuration config = Aksess.getConfiguration();
         // Send email to this user
-        Map<String, Object> param = new HashMap<String, Object>();
+        Map<String, Object> param = new HashMap<>();
 
         String baseurl = Aksess.getBaseUrl();
 
@@ -37,7 +37,9 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
         if (site != null && !site.getAlias().equals("/")) {
             alias = site.getAlias();
             alias = alias.replace('/', '.');
-            baseurl = site.getDefaultBaseUrl();
+            if(!site.getHostnames().isEmpty()){
+                baseurl = site.getHostnames().get(0);
+            }
         }
 
         String from = getMailFrom(config, alias);

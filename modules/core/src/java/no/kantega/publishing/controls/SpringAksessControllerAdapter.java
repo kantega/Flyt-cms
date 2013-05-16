@@ -31,12 +31,12 @@ public class SpringAksessControllerAdapter implements AksessController {
 
     private String description;
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ModelAndView modelAndView = controller.handleRequest(request, response);
         if (modelAndView.getView() instanceof RedirectView) {
             RedirectView view = (RedirectView)modelAndView.getView();
             response.sendRedirect(view.getUrl());
-            return new HashMap();
+            return new HashMap<>();
         } else {
             return modelAndView.getModel();
         }

@@ -18,14 +18,16 @@ package no.kantega.publishing.api.taglibs.sitemap;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.cache.SiteCache;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -46,6 +48,8 @@ public class GetSiteMapTag  extends TagSupport {
 
     String associationCategory = null;
 
+    private SiteCache siteCache;
+
     public void setName(String name) {
         this.name = name.toLowerCase();
     }
@@ -60,11 +64,10 @@ public class GetSiteMapTag  extends TagSupport {
                 this.rootId = Integer.parseInt(rootId);
             } catch (NumberFormatException e) {
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(rootId);
+                    ContentIdentifier cid = ContentIdHelper.fromUrl(rootId);
                     this.rootId = cid.getAssociationId();
-                } catch (ContentNotFoundException e1) {
-                } catch (SystemException e1) {
-                    e1.printStackTrace(); 
+                } catch (ContentNotFoundException | SystemException e1) {
+                    Log.error(SOURCE, e);
                 }
             }
         }
@@ -140,7 +143,8 @@ public class GetSiteMapTag  extends TagSupport {
             }
 
             if (siteId == -1) {
-                Site site = SiteCache.getSiteByHostname(pageContext.getRequest().getServerName());
+                setSiteCacheIfNull();
+                Site site = siteCache.getSiteByHostname(pageContext.getRequest().getServerName());
                 siteId = (site != null)? site.getId() : 1;
             }
 
@@ -153,9 +157,8 @@ public class GetSiteMapTag  extends TagSupport {
             request.setAttribute(name, sitemap);
 
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;
@@ -174,6 +177,12 @@ public class GetSiteMapTag  extends TagSupport {
         ignoreLanguage = false;
 
         return EVAL_PAGE;
+    }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
+        }
     }
 }
 

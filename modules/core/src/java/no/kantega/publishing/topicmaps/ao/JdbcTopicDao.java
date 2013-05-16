@@ -28,9 +28,9 @@ import no.kantega.publishing.topicmaps.ao.rowmapper.TopicRowMapper;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
+public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
     private static TopicRowMapper topicRowMapper = new TopicRowMapper();
     private static TopicBaseNameRowMapper topicBaseNameRowMapper = new TopicBaseNameRowMapper();
     private static TopicOccurenceRowMapper topicOccurenceRowMapper = new TopicOccurenceRowMapper();
@@ -50,9 +50,9 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
         List<Topic> topics;
         if (topicMapId != -1) {
-            topics = getSimpleJdbcTemplate().query("SELECT * FROM tmtopic WHERE TopicId = ? AND TopicMapId = ?", topicRowMapper, topicId, topicMapId);
+            topics = getJdbcTemplate().query("SELECT * FROM tmtopic WHERE TopicId = ? AND TopicMapId = ?", topicRowMapper, topicId, topicMapId);
         } else {
-            topics = getSimpleJdbcTemplate().query("SELECT * FROM tmtopic WHERE TopicId = ?", topicRowMapper, topicId);
+            topics = getJdbcTemplate().query("SELECT * FROM tmtopic WHERE TopicId = ?", topicRowMapper, topicId);
         }
 
         if (topics.size() == 0) {
@@ -61,7 +61,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
         Topic topic = topics.get(0);
 
-        List<TopicBaseName> baseNames = getSimpleJdbcTemplate().query("SELECT * FROM tmbasename WHERE TopicId = ? AND TopicMapId = ?",
+        List<TopicBaseName> baseNames = getJdbcTemplate().query("SELECT * FROM tmbasename WHERE TopicId = ? AND TopicMapId = ?",
                 topicBaseNameRowMapper, topic.getId(), topic.getTopicMapId());
 
         topic.setBaseNames(baseNames);
@@ -71,7 +71,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         sql += "   INNER JOIN tmbasename ON (tmoccurence.InstanceOf = tmbasename.TopicId) AND (tmoccurence.TopicMapId = tmbasename.TopicMapId)";
         sql += " WHERE tmoccurence.TopicId = ? AND tmoccurence.TopicMapId = ?";
 
-        List<TopicOccurence> occurences = getSimpleJdbcTemplate().query(sql,
+        List<TopicOccurence> occurences = getJdbcTemplate().query(sql,
                 topicOccurenceRowMapper, topic.getId(), topic.getTopicMapId());
 
         topic.setOccurences(occurences);
@@ -85,49 +85,49 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     public void deleteTopic(Topic topic, boolean deleteRelatedTables) throws SystemException {
         // Slett eksisterende topic
-        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
+        getJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
+        getJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
+        getJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
 
 
         if (deleteRelatedTables) {
-            getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
+            getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
 
-            getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
+            getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
         }
     }
 
     public void deleteAllTopics(int topicMapId) {
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ?", topicMapId);
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ?", topicMapId);
 
     }
 
     public void deleteAllImportedTopics(int topicMapId) {
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
+        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND Imported = 1", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND Imported = 1", topicMapId);
+        getJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
     }
 
@@ -135,7 +135,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         // Delete topic without support tables and reinsert
         deleteTopic(topic, false);
 
-        getSimpleJdbcTemplate().update("INSERT INTO tmtopic VALUES (?,?,?,?,?,?,?,?,?)",
+        getJdbcTemplate().update("INSERT INTO tmtopic VALUES (?,?,?,?,?,?,?,?,?)",
                 topic.getId(), topic.getTopicMapId(),
                 topic.getInstanceOf() == null ? null : topic.getInstanceOf().getId(),
                 topic.isTopicType() ? 1 : 0,
@@ -148,13 +148,13 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         // Topics som andre er instans av merkes med et flagg
         if (topic.getInstanceOf() != null) {
             Topic instanceOf = topic.getInstanceOf();
-            getSimpleJdbcTemplate().update("UPDATE tmtopic SET IsTopicType = 1 WHERE TopicId = ? AND TopicMapId = ?", instanceOf.getId(), instanceOf.getTopicMapId());
+            getJdbcTemplate().update("UPDATE tmtopic SET IsTopicType = 1 WHERE TopicId = ? AND TopicMapId = ?", instanceOf.getId(), instanceOf.getTopicMapId());
         }
 
         List<TopicBaseName> baseNames = topic.getBaseNames();
         if (baseNames != null) {
             for (TopicBaseName tbn : baseNames) {
-                getSimpleJdbcTemplate().update("INSERT INTO tmbasename VALUES(?,?,?,?)", topic.getId(), topic.getTopicMapId(), tbn.getScope(), tbn.getBaseName());
+                getJdbcTemplate().update("INSERT INTO tmbasename VALUES(?,?,?,?)", topic.getId(), topic.getTopicMapId(), tbn.getScope(), tbn.getBaseName());
             }
         }
 
@@ -162,7 +162,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         if (occurences != null) {
             for (TopicOccurence occurence : occurences) {
                 if (occurence.getInstanceOf() != null) {
-                    getSimpleJdbcTemplate().update("INSERT INTO tmoccurence VALUES(?,?,?,?)", topic.getId(), topic.getTopicMapId(), occurence.getInstanceOf().getId(), occurence.getResourceData());
+                    getJdbcTemplate().update("INSERT INTO tmoccurence VALUES(?,?,?,?)", topic.getId(), topic.getTopicMapId(), occurence.getInstanceOf().getId(), occurence.getResourceData());
                 }
             }
         }
@@ -173,15 +173,15 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
             return;
         }
 
-        int noExisting = getSimpleJdbcTemplate().queryForInt("SELECT COUNT(*) FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
+        int noExisting = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
                 topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
         if (noExisting == 0) {
-            getSimpleJdbcTemplate().update("INSERT INTO role2topic VALUES (?, ?, ?, ?)", topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
+            getJdbcTemplate().update("INSERT INTO role2topic VALUES (?, ?, ?, ?)", topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
         }
     }
 
     public void deleteTopicToSecurityIdentifierAssociation(Topic topic, SecurityIdentifier securityIdentifier) {
-        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
+        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
                 topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
     }
 
@@ -190,15 +190,15 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
             return;
         }
 
-        int noExisting = getSimpleJdbcTemplate().queryForInt("SELECT COUNT(*) FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?",
+        int noExisting = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?",
                 topic.getTopicMapId(), topic.getId(), contentId);
         if (noExisting == 0) {
-            getSimpleJdbcTemplate().update("INSERT INTO ct2topic VALUES (?, ?, ?)", contentId, topic.getTopicMapId(), topic.getId());
+            getJdbcTemplate().update("INSERT INTO ct2topic VALUES (?, ?, ?)", contentId, topic.getTopicMapId(), topic.getId());
         }
     }
 
     public void deleteTopicToContentAssociation(Topic topic, int contentId) {
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicId = ? AND TopicMapId = ? AND ContentId = ?",
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicId = ? AND TopicMapId = ? AND ContentId = ?",
                 topic.getId(), topic.getTopicMapId(), contentId);
     }
 
@@ -208,13 +208,13 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
      * @param contentId
      */
     public void deleteTopicAssociationsForContent(int contentId) {
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE ContentId = ?", contentId);
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE ContentId = ?", contentId);
     }
 
     public List<Role> getRolesForTopic(Topic topic) {
-        List<Role> roles = new ArrayList<Role>();
+        List<Role> roles = new ArrayList<>();
 
-        List<Map<String, Object>> rows = getSimpleJdbcTemplate().queryForList("SELECT Role FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? ORDER BY Role",
+        List<Map<String, Object>> rows = getJdbcTemplate().queryForList("SELECT Role FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? ORDER BY Role",
                 topic.getTopicMapId(), topic.getId(), new Role().getType());
 
         for (Map<String, Object> row : rows) {
@@ -295,7 +295,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     public List<Topic> getTopicsByNameAndTopicMapId(String topicName, int topicMapId) {
         String sql = "";
         if (topicName == null) {
-            return new ArrayList<Topic>();
+            return new ArrayList<>();
         }
 
         topicName = topicName.trim();
@@ -343,7 +343,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
         sql += "   FROM tmtopic";
         sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 
-        List<Topic> topics = getSimpleJdbcTemplate().query(sql + whereClause, topicRowMapper);
+        List<Topic> topics = getJdbcTemplate().query(sql + whereClause, topicRowMapper);
 
         // Update with usage count
         topicUsageCounter.updateTopicUsageCount(topics);
@@ -353,7 +353,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     public List<Topic> getTopicsInUseByChildrenOf(int contentId, final int topicMapId) {
         String sql = "SELECT DISTINCT t.topicid,b.topicmapid,b.basename,tp.instanceof FROM associations a RIGHT JOIN content c ON a.contentid=c.contentid RIGHT JOIN ct2topic t ON a.contentid=t.contentid JOIN tmtopic tp ON t.topicid=tp.topicid AND t.topicmapid=tp.topicmapid RIGHT JOIN tmbasename b ON t.topicid=b.topicid AND t.topicmapid=b.topicmapid WHERE c.expiredate > ? AND t.topicmapid=? AND a.isdeleted=0 AND a.path like ? ORDER BY t.topicid";
-        SimpleJdbcTemplate template = getSimpleJdbcTemplate();
+        JdbcTemplate template = getJdbcTemplate();
         return template.query(sql, new RowMapper<Topic>() {
             public Topic mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Topic t = new Topic();
@@ -371,5 +371,13 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     public void setTopicUsageCounter(TopicUsageCounter topicUsageCounter) {
         this.topicUsageCounter = topicUsageCounter;
+    }
+
+    public List<String> getTopicNamesForContent(int contentId) {
+            return getJdbcTemplate().queryForList("SELECT tmbasename.Basename " +
+                    "FROM ct2topic, tmbasename " +
+                    "WHERE ContentId=? " +
+                    "AND tmbasename.TopicId=ct2topic.TopicId " +
+                    "AND tmbasename.TopicMapId=ct2topic.TopicMapId", String.class, contentId);
     }
 }

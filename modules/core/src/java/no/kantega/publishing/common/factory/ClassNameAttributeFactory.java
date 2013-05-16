@@ -1,6 +1,5 @@
 package no.kantega.publishing.common.factory;
 
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 
 public class ClassNameAttributeFactory implements AttributeFactory {

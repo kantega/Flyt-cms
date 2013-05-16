@@ -16,14 +16,13 @@
 
 package no.kantega.publishing.api.taglibs.security;
 
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.security.SecuritySession;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
-import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class IsNotLoggedInTag extends BodyTagSupport {
     private static final String SOURCE = "aksess.IsLoggedInTag";
@@ -42,9 +41,8 @@ public class IsNotLoggedInTag extends BodyTagSupport {
                 bodyContent.writeOut(getPreviousOut());
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();
         }

@@ -3,25 +3,21 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.*;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
@@ -110,7 +106,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     }
 
     private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
-        ContentIdentifier cid = new ContentIdentifier(request);
+        ContentIdentifier cid = ContentIdHelper.fromRequest(request);
         return new ContentManagementService(request).getLastVersionOfContent(cid);
     }
 
@@ -173,10 +169,8 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
             } else {
                 if (errors.getLength() == 0) {
                     // No errors, save
-                    int status = param.getInt("status");
-                    if (status == -1) {
-                        status = ContentStatus.PUBLISHED;
-                    }
+                    int statusParam = param.getInt("status");
+                    ContentStatus status = getContentStatus(statusParam);
 
                     boolean isNew = content.isNew();
 
@@ -196,6 +190,16 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         session.removeAttribute("adminMode");
 
         return new ModelAndView(new RedirectView(Aksess.getContextPath()));
+    }
+
+    private ContentStatus getContentStatus(int statusParam) {
+        ContentStatus status;
+        if (statusParam == -1) {
+            status = ContentStatus.PUBLISHED;
+        } else {
+            status = ContentStatus.getContentStatusAsEnum(statusParam);
+        }
+        return status;
     }
 
     protected void addRepeaterRow(Content content, String addRepeaterRow) {

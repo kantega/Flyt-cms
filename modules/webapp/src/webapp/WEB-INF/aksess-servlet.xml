@@ -18,10 +18,24 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:cache="http://www.springframework.org/schema/cache"
+       xmlns:metrics="http://www.yammer.com/schema/metrics"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd">
 
     <context:annotation-config/>
+
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="no.kantega.publishing.jackson.mapper.OpenAksessMapper"/>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
     <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
 
@@ -35,7 +49,7 @@
                 <prop key="/content/**">ContentRequestHandler</prop>
                 <prop key="/content.ap">ContentRequestHandler</prop>
                 <prop key="/attachment.ap">AttachmentRequestHandler</prop>
-                <prop key="/attachments/*">AttachmentRequestHandler</prop>
+                <prop key="/attachment/**">AttachmentRequestHandler</prop>
                 <prop key="/multimedia.ap">MultimediaRequestHandler</prop>
                 <prop key="/multimedia/**">MultimediaRequestHandler</prop>
                 <prop key="/rss.ap">RssRequestHandler</prop>
@@ -62,9 +76,6 @@
                 <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
                 <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
                 <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
-
-                <!-- Rating -->
-                <prop key="/Rating.action">RatingController</prop>
 
                 <!-- Information -->
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
@@ -159,10 +170,7 @@
                 <prop key="/SimpleEditCancel.action">SimpleEditCancelAction</prop>
 
                 <prop key="/admin/publish/UseVersion.action">UseVersionAction</prop>
-                <prop key="/admin/publish/ContentProperties.action">contentPropertiesAction</prop>
                 <prop key="/admin/publish/ViewDisplayPeriod.action">viewDisplayPeriodAction</prop>
-                <prop key="/admin/publish/UpdateDisplayPeriod.action">updateDisplayPeriodAction</prop>
-                <prop key="/admin/publish/Spellcheck.action">spellcheckAction</prop>
 
                 <prop key="/admin/publish/popups/SelectContent.action">SelectContentAction</prop>
                 <prop key="/admin/publish/popups/SelectOrgUnit.action">SelectOrgUnitAction</prop>
@@ -180,14 +188,11 @@
                 <prop key="/admin/multimedia/ConfirmCopyPaste.action">ConfirmCopyPasteMultimediaAction</prop>
                 <prop key="/admin/multimedia/CopyPasteMultimedia.action">CopyPasteMultimediaAction</prop>
                 <prop key="/admin/multimedia/CreateMediaFolder.action">CreateMediaFolderAction</prop>
-                <prop key="/admin/multimedia/DeleteMultimedia.action">DeleteMultimediaAction</prop>
                 <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
-                <prop key="/admin/multimedia/ViewUploadMultimediaForm.action">ViewUploadMultimediaFormAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
                 <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
-                <prop key="/admin/multimedia/MultimediaProperties.action">multimediaPropertiesAction</prop>
 
                 <!-- Topic maps -->
                 <prop key="/admin/topicmaps/Topics.action">TopicsAction</prop>
@@ -237,7 +242,6 @@
                 <prop key="/admin/administration/ListAliases.action">listAliasesAction</prop>
                 <prop key="/admin/administration/SearchEventLog.action">searchEventLogAction</prop>
                 <prop key="/admin/administration/ViewMailSubscribers.action">viewMailSubscribersAction</prop>
-                <prop key="/admin/administration/RebuildIndex.action">rebuildIndexAction</prop>
                 <prop key="/admin/administration/ViewSearchLog.action">viewSearchLogAction</prop>
                 <prop key="/admin/administration/ListContentExpiration.action">listContentExpirationAction</prop>
                 <prop key="/admin/administration/ListUserChanges.action">listUserChangesAction</prop>
@@ -281,7 +285,9 @@
     </bean>
 
     <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
-        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="multimediaRequestHandlerHelper">
+            <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
+        </property>
     </bean>
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
@@ -290,6 +296,7 @@
         <property name="servletClass" value="no.kantega.publishing.client.AttachmentRequestHandler"/>
         <property name="servletName" value="AttachmentRequestHandler"/>
     </bean>
+
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
         <property name="loginView" value="${security.login.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>
@@ -392,6 +399,7 @@
     <bean id="abstractNavigateAction" abstract="true">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
+
     <bean id="contentNavigateAction" class="no.kantega.publishing.admin.content.action.NavigateController" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigate.jsp"/>
         <property name="createRootAction" ref="createRootAction"/>
@@ -399,17 +407,34 @@
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
-    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
-    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
-    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
-    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.ajax.ContentStateHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.ajax.MultimediaClipboardHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.ajax.ContentClipboardHandler"/>
+    <bean class="no.kantega.publishing.admin.ajax.UserPreferencesHandler"/>
+    <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
+
     <!-- Search content -->
-    <bean id="adminContentSearchController" class="no.kantega.publishing.search.control.AdminContentSearchController">
-        <property name="searchService" ref="adminSearchService"/>
+    <bean id="adminContentSearchController" class="no.kantega.openaksess.search.controller.AdminContentSearchController">
         <property name="view" value="/WEB-INF/jsp/admin/publish/search.jsp"/>
+        <property name="contentSearchController">
+            <bean class="no.kantega.openaksess.search.controller.ContentSearchController">
+                <property name="searchAllSites" value="true"/>
+                <property name="showOnlyPublishedContent" value="false"/>
+                <property name="showOnlyVisibleContent" value="false"/>
+                <property name="facetFields" ref="facetFields"/>
+                <property name="facetQueries" ref="facetQueries"/>
+            </bean>
+        </property>
     </bean>
+
+    <bean class="no.kantega.openaksess.search.controller.ContentSearchController">
+        <property name="searchAllSites" value="false"/>
+        <property name="showOnlyPublishedContent" value="true"/>
+        <property name="showOnlyVisibleContent" value="true"/>
+        <property name="facetFields" ref="facetFields"/>
+        <property name="facetQueries" ref="facetQueries"/>
+    </bean>
+
     <!-- Organize subpages -->
     <bean id="OrganizeSubPagesAction" class="no.kantega.publishing.admin.content.action.OrganizeSubPagesAction" parent="abstractNavigateAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/organizesubpages.jsp"/>
@@ -501,9 +526,7 @@
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
     
-    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction" />
 
     <!-- Preview  -->
     <bean class="no.kantega.publishing.admin.content.action.SaveEmptyAction" id="SaveContentPreviewAction">
@@ -544,9 +567,7 @@
     <bean class="no.kantega.publishing.admin.content.action.ViewDisplayPeriodAction" id="viewDisplayPeriodAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/view-displayperiod.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.content.ajax.UpdateDisplayPeriodAction" id="updateDisplayPeriodAction"/>
 
     <!-- Navigate multimedia -->
     <bean id="multimediaNavigateAction" class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController">
@@ -596,9 +617,9 @@
     <bean class="no.kantega.publishing.admin.multimedia.ajax.UpdateMediaNameAction" id="UpdateMediaNameAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
-    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction">
-        <property name="aksessJsonView" ref="aksessJsonView"/>
-    </bean>
+
+    <bean id="multimediaPropertiesAction" class="no.kantega.publishing.admin.multimedia.ajax.MultimediaPropertiesAction"/>
+
     <!-- Topic maps -->
     <bean class="no.kantega.publishing.admin.topicmaps.action.TopicsAction" id="TopicsAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/topics.jsp"/>
@@ -654,12 +675,13 @@
     <bean class="no.kantega.publishing.admin.administration.action.ViewMailSubscribersAction" id="viewMailSubscribersAction">
         <property name="view" value="/WEB-INF/jsp/admin/administration/listmailsubscribers.jsp"/>
     </bean>
-    <bean id="rebuildIndexAction" class="no.kantega.publishing.admin.administration.action.RebuildIndexAction">
-        <property name="indexManager" ref="indexManager" />
+
+    <bean id="rebuildIndexAction" class="no.kantega.openaksess.search.controller.RebuildIndexAction">
         <property name="formView" value="/WEB-INF/jsp/admin/administration/search/rebuild-form.jsp"/>
         <property name="statusView" value="/WEB-INF/jsp/admin/administration/search/rebuild-status.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.administration.action.ViewSearchLogAction" id="viewSearchLogAction">
+
+    <bean class="no.kantega.openaksess.search.searchlog.action.ViewSearchLogAction" id="viewSearchLogAction">
         <property name="siteCache" ref="aksessSiteCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/search/viewsearchlog.jsp"/>
     </bean>
@@ -757,10 +779,6 @@
 
     <bean id="XmlExportAction" class="no.kantega.publishing.controls.export.XmlExportAction"/>
 
-
-
-
-
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>
         <property name="cache" value="true"/>
@@ -780,10 +798,17 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     </bean>
 
-    <bean id="RatingController" class="no.kantega.publishing.rating.controller.RatingController"/>
+    <bean id="ratingController" class="no.kantega.publishing.rating.controller.RatingController">
+        <property name="jsonView" ref="aksessJsonView"/>
+    </bean>
 
     <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
 
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
 
+    <metrics:annotation-driven />
+
+    <beans profile="useCaching">
+        <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
+    </beans>
 </beans>

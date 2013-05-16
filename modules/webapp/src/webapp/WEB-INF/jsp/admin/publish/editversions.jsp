@@ -72,7 +72,7 @@
                     if (title.length() > 30) {
                         title = title.substring(0, 27) + "...";
                     }
-                    String statusKey = "aksess.versions.status." + c.getStatus();
+                    String statusKey = "aksess.versions.status." + c.getStatus().getTypeAsInt();
                     if (c.getStatus() == ContentStatus.PUBLISHED) {
                         statusKey += "_" + c.getVisibilityStatus();
                     }

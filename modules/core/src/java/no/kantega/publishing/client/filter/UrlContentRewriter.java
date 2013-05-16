@@ -17,14 +17,14 @@
 package no.kantega.publishing.client.filter;
 
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.cache.ContentIdentifierCache;
-import no.kantega.publishing.common.cache.ContentUrlCache;
-import no.kantega.publishing.common.cache.SiteCache;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.util.HttpHelper;
-import no.kantega.publishing.common.util.PrettyURLEncoder;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.util.PrettyURLEncoderUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -34,8 +34,11 @@ import java.io.IOException;
 /**
  */
 public class UrlContentRewriter implements ContentRewriter {
-    private ContentUrlCache contentUrlCache;
+    private PrettyURLEncoderUtil prettyURLEncoderUtil;
     private String key;
+    private ContentIdentifierDao contentIdentifierDao;
+    @Autowired
+    private SiteCache siteCache;
 
     public UrlContentRewriter() {
         this.key = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?thisId=";
@@ -53,7 +56,7 @@ public class UrlContentRewriter implements ContentRewriter {
         }
     }
 
-    public String rewriteURLs(ServletRequest request, String html) throws IOException {
+    private String rewriteURLs(ServletRequest request, String html) throws IOException {
         String contextPath = Aksess.getContextPath();
 
         CharArrayWriter caw = new CharArrayWriter();
@@ -95,19 +98,16 @@ public class UrlContentRewriter implements ContentRewriter {
                             if (currentPage != null) {
                                 siteId = currentPage.getAssociation().getSiteId();
                             } else {
-                                Site site = SiteCache.getSiteByHostname(request.getServerName());
+                                Site site = siteCache.getSiteByHostname(request.getServerName());
                                 if (site != null) {
                                     siteId = site.getId();
                                 }
                             }
 
                             // Get alias or url
-                            newUrl = ContentIdentifierCache.getAliasByContentIdentifier(siteId, thisId);
+                            newUrl = contentIdentifierDao.getAliasBySiteIdAndAssociationId(siteId, thisId);
                             if (newUrl == null) {
-                                newUrl = contentUrlCache.getUrl(thisId);
-                                if (newUrl == null) {
-                                    newUrl = PrettyURLEncoder.createContentUrl(thisId, "");
-                                }
+                                newUrl = prettyURLEncoderUtil.getUrl(thisId);
                             }
 
                             // Alias found
@@ -153,7 +153,11 @@ public class UrlContentRewriter implements ContentRewriter {
         return caw.toString();
     }
 
-    public void setContentUrlCache(ContentUrlCache contentUrlCache) {
-        this.contentUrlCache = contentUrlCache;
+    public void setPrettyURLEncoderUtil(PrettyURLEncoderUtil prettyURLEncoderUtil) {
+        this.prettyURLEncoderUtil = prettyURLEncoderUtil;
+    }
+
+    public void setContentIdentifierDao(ContentIdentifierDao contentIdentifierDao) {
+        this.contentIdentifierDao = contentIdentifierDao;
     }
 }

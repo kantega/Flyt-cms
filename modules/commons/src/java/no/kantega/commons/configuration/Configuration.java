@@ -18,13 +18,13 @@ package no.kantega.commons.configuration;
 
 import no.kantega.commons.exception.ConfigurationException;
 
-import java.util.Properties;
-import java.util.List;
-import java.util.ArrayList;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
- *
+ * Object containing the current configuration.
  */
 public class Configuration {
 
@@ -34,15 +34,6 @@ public class Configuration {
 
     private List<ConfigurationListener> listeners = new ArrayList<ConfigurationListener>();
 
-    @Deprecated
-    private static Configuration defaultConfiguration;
-
-    @Deprecated
-    public Configuration(String file) throws ConfigurationException {
-        properties = defaultConfiguration.getProperties();
-    }
-
-    
     public Configuration(Properties properties) {
         this.properties = properties;
     }
@@ -67,7 +58,7 @@ public class Configuration {
     }
 
 
-    public String getString(String name) throws ConfigurationException, IllegalArgumentException {
+    public String getString(String name) throws IllegalArgumentException {
         if (name == null) {
             throw new IllegalArgumentException("name kan ikke vaere null");
         }
@@ -79,7 +70,7 @@ public class Configuration {
     }
 
 
-    public String getString(String name, String defaultValue) throws ConfigurationException, IllegalArgumentException {
+    public String getString(String name, String defaultValue) throws IllegalArgumentException {
         String val = getString(name);
         if (val == null) {
             return defaultValue;
@@ -88,7 +79,7 @@ public class Configuration {
         }
     }
 
-    public String[] getStrings(String name) throws ConfigurationException, IllegalArgumentException {
+    public String[] getStrings(String name) throws IllegalArgumentException {
         String val[] = null;
 
         if (name == null) {
@@ -104,7 +95,7 @@ public class Configuration {
     }
 
 
-    public String[] getStrings(String name, String defaultValue) throws ConfigurationException, IllegalArgumentException {
+    public String[] getStrings(String name, String defaultValue) throws IllegalArgumentException {
         String[] val = getStrings(name);
         if (val == null) {
             return defaultValue.split(",");
@@ -114,12 +105,12 @@ public class Configuration {
     }
 
 
-    public boolean getBoolean(String name, boolean defaultValue) throws ConfigurationException, IllegalArgumentException {
+    public boolean getBoolean(String name, boolean defaultValue) throws IllegalArgumentException {
         String val = getString(name);
         if (val  == null) {
             return defaultValue;
         } else {
-            return Boolean.valueOf(val).booleanValue();
+            return Boolean.valueOf(val);
         }
     }
 
@@ -147,7 +138,7 @@ public class Configuration {
                 return Integer.parseInt(val);
             }
         } catch (NumberFormatException e) {
-            throw new ConfigurationException("Forventet int:" + name, e);
+            throw new ConfigurationException("Forventet int: " + name, e);
         }
     }
 
@@ -164,11 +155,6 @@ public class Configuration {
         for(ConfigurationListener listener : listeners) {
             listener.configurationRefreshed(this);
         }
-    }
-
-    @Deprecated
-    public static void setDefaultConfiguration(Configuration defaultConfiguration) {
-        Configuration.defaultConfiguration = defaultConfiguration;
     }
 
     public void addConfigurationListener(ConfigurationListener listener) {

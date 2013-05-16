@@ -16,7 +16,7 @@ public class ImageWidthAndHeightExtractor implements MultimediaMetadataExtractor
     public Multimedia extractMetadata(Multimedia multimedia) {
         MimeType mimeType = MimeTypes.getMimeType(multimedia.getFilename());
 
-        if (mimeType.getType().indexOf("image") != -1 || mimeType.getType().indexOf("flash") != -1) {
+        if (mimeType.getType().contains("image") || mimeType.getType().contains("flash")) {
             // For images and Flash we can find the dimensions
             ImageInfo ii = new ImageInfo();
             ii.setInput(new ByteArrayInputStream(multimedia.getData()));

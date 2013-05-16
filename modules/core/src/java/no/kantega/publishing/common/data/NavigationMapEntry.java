@@ -16,16 +16,18 @@
 
 package no.kantega.publishing.common.data;
 
-import java.util.List;
+import no.kantega.publishing.api.content.ContentStatus;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class NavigationMapEntry extends BaseObject {
     public int currentId = 0;
     public int parentId = 0;
-    public int status = 0;
+    public ContentStatus status;
     public String title = "";
 
-    List<NavigationMapEntry> children = null;
+    List<NavigationMapEntry> children = new ArrayList<>();
     protected int depth = 0;
     protected boolean isOpen = false;
     protected boolean isSelected = false;
@@ -33,13 +35,7 @@ public abstract class NavigationMapEntry extends BaseObject {
     protected boolean isLastChild = false;
     protected boolean isFirstChild = false;
 
-    public NavigationMapEntry() {
-    }
-
     public void addChild(NavigationMapEntry child) {
-        if (children == null) {
-            children = new ArrayList<NavigationMapEntry>();
-        }
         children.add(child);
         hasChildren = true;
     }

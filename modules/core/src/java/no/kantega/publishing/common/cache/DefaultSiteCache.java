@@ -16,24 +16,29 @@
 
 package no.kantega.publishing.common.cache;
 
+import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.context.ApplicationContext;
 
+import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.collect.Collections2.filter;
+
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static String SOURCE = "SiteCache";
-    private List sites = null;
-    private HashMap hostnames = null;
+    private List<Site> sites = null;
+    private Map<String, Site> hostnames = null;
     private TemplateConfigurationCache templateConfigurationCache;
     private HostnamesDao hostnamesDao;
 
@@ -41,21 +46,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
         if (hostnames == null) {
             reloadCache();
         }
-        Site s = (Site)hostnames.get(hostname);
-        if (s == null) {
-            if (sites.size() > 0) {
-                s = (Site)sites.get(0);
-            } else {
-                // Returnerer en tom default site dersom ikke definert noe enda
-                s = new Site();
-                s.setId(1);
-                s.setName("No name");
-                s.setAlias("/");
-                return s;
-            }
-        }
-
-        return s;
+        return hostnames.get(hostname);
     }
 
     public Site getSiteById(int siteId) throws SystemException {
@@ -63,8 +54,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             reloadCache();
         }
 
-        for (int i = 0; i < sites.size(); i++) {
-            Site site = (Site)sites.get(i);
+        for (Site site : sites) {
             if (siteId == site.getId()) {
                 return site;
             }
@@ -81,8 +71,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             if (id.charAt(id.length() - 1) != '/') id = id + "/";
         }
 
-        for (int i = 0; i < sites.size(); i++) {
-            Site site = (Site)sites.get(i);
+        for (Site site : sites) {
             if (id.equalsIgnoreCase(site.getPublicId()) || id.equalsIgnoreCase(site.getAlias())) {
                 return site;
             }
@@ -108,16 +97,14 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             c = Aksess.getConfiguration();
             // Get hostnames from database and store in hashmap
 
-            hostnames = new HashMap();
-            for (int s = 0; s < sites.size(); s++) {
-                Site site = (Site)sites.get(s);
+            hostnames = new HashMap<>();
+            for (Site site : sites) {
                 // Get hostnames from database
-                List siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
+                List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
                 site.setHostnames(siteHostnames);
 
                 // Insert into hashmap
-                for (int h = 0; h < siteHostnames.size(); h++) {
-                    String host = (String)siteHostnames.get(h);
+                for (String host : siteHostnames) {
                     hostnames.put(host, site);
                 }
 
@@ -129,7 +116,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
                 if (isDisabled) {
                     Log.info(SOURCE, "Slår av site:" + site.getName(), null, null);
                 }
-                site.setIsDisabled(isDisabled);
+                site.setDisabled(isDisabled);
 
                 String scheme = c.getString("site" + alias + "scheme", null);
                 site.setScheme(scheme);
@@ -138,6 +125,21 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             throw new SystemException("Configuration error", "", e);
         }
 
+    }
+
+    @Override
+    public no.kantega.publishing.api.model.Site getDefaultSite() {
+        Collection<Site> defaultSites = filter((Collection<Site>) sites, new Predicate<Site>() {
+            @Override
+            public boolean apply(@Nullable Site o) {
+                return o.isDefault();
+            }
+        });
+        int size = defaultSites.size();
+        if(size != 1){
+            throw new IllegalStateException(size + " default sites exists, only 1 permitted");
+        }
+        return defaultSites.iterator().next();
     }
 
     public static DefaultSiteCache getInstance() {

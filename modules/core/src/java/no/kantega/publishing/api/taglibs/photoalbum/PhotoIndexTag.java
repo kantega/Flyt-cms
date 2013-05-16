@@ -16,20 +16,21 @@
 
 package no.kantega.publishing.api.taglibs.photoalbum;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.client.util.RequestParameters;
 
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
+import java.util.List;
 
 public class PhotoIndexTag extends TagSupport {
     private static final String SOURCE = "aksess.PhotoImageTag";
@@ -91,7 +92,7 @@ public class PhotoIndexTag extends TagSupport {
 
                 String url = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?";
                 try {
-                    ContentIdentifier cid = new ContentIdentifier(request);
+                    ContentIdentifier cid = ContentIdHelper.fromRequest(request);
                     url = url + "thisId=" + cid.getAssociationId() + "&amp;language=" + cid.getLanguage();
                 } catch (Exception e) {
                     // Kan skje ved testing at malen ikke er knyttet opp til en side
@@ -129,7 +130,7 @@ public class PhotoIndexTag extends TagSupport {
                         css = selectedCssClass;
                     }
 
-                    if (type == MultimediaType.MEDIA && mimeType.indexOf("image") != -1) {
+                    if (type == MultimediaType.MEDIA && mimeType.contains("image")) {
                         if (space != -1 && colNo > 0) {
                             out.write("<td style=\"width: " + space + "px;\"></td>");
                         }
@@ -159,7 +160,7 @@ public class PhotoIndexTag extends TagSupport {
                 }
             }
         } catch (IOException e) {
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;

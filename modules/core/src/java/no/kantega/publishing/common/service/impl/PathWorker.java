@@ -18,10 +18,11 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.PathEntry;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
@@ -31,11 +32,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PathWorker {
 
     private static final String SOURCE = "aksess.PathWorker";
-
 
     public static List<PathEntry> getPathByAssociation(Association association) throws SystemException {
         List<PathEntry> pathEntries = new ArrayList<PathEntry>();
@@ -49,8 +48,6 @@ public class PathWorker {
 
         // Legg inn alle element fra path i rekkefølge
         for (int i = 0; i < pathIds.length; i++) {
-            PathEntry entry = new PathEntry(pathIds[i], "");
-            pathEntries.add(entry);
             if (i > 0) {
                 strIds += ",";
             }
@@ -66,13 +63,9 @@ public class PathWorker {
                 String title = rs.getString("Title");
                 int id = rs.getInt("AssociationId");
                 int contentTemplateId = rs.getInt("ContentTemplateId");
-                for (PathEntry entry : pathEntries) {
-                    if (entry.getId() == id) {
-                        entry.setTitle(title);
-                        entry.setContentTemplateId(contentTemplateId);
-                        break;
-                    }
-                }
+                PathEntry entry = new PathEntry(id, title);
+                entry.setContentTemplateId(contentTemplateId);
+                pathEntries.add(entry);
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
@@ -89,7 +82,14 @@ public class PathWorker {
         return pathEntries;
     }
 
-
+    /**
+     *
+     * @param cid to get PathEntries for.
+     * @return PathEntries leading to the content identified by ContentIdentifier
+     * @throws SystemException
+     * @deprecated use PathEntryService.getPathEntriesByContentIdentifier()
+     */
+    @Deprecated
     public static List<PathEntry> getPathByContentId(ContentIdentifier cid) throws SystemException {
         List<PathEntry> pathEntries = new ArrayList<PathEntry>();
 
@@ -101,7 +101,7 @@ public class PathWorker {
             if (cid == null) {
                 return pathEntries;
             }
-
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select Path from associations where UniqueId = " + cid.getAssociationId());
             if (!rs.next()) {
                 return pathEntries;
@@ -118,8 +118,6 @@ public class PathWorker {
 
             // Legg inn alle element fra path i rekkefølge
             for (int i = 0; i < pathIds.length; i++) {
-                PathEntry entry = new PathEntry(pathIds[i], "");
-                pathEntries.add(entry);
                 if (i > 0) {
                     strIds += ",";
                 }
@@ -130,13 +128,7 @@ public class PathWorker {
             while(rs.next()) {
                 String title = rs.getString("Title");
                 int id = rs.getInt("AssociationId");
-
-                for (PathEntry entry : pathEntries) {
-                    if (entry.getId() == id) {
-                        entry.setTitle(title);
-                        break;
-                    }
-                }
+                pathEntries.add(new PathEntry(id, title));
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);

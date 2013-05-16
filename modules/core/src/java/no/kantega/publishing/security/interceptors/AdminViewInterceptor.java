@@ -3,7 +3,6 @@ package no.kantega.publishing.security.interceptors;
 import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
-import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

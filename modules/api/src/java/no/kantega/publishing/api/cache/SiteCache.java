@@ -23,6 +23,10 @@ import java.util.List;
 /**
  */
 public interface SiteCache {
+    /**
+     * @param hostname to get site for
+     * @return the particular site if it exists, otherwise null.
+     */
     Site getSiteByHostname(String hostname) ;
 
     Site getSiteById(int siteId);
@@ -32,4 +36,6 @@ public interface SiteCache {
     List<Site> getSites() ;
 
     public void reloadCache();
+
+    Site getDefaultSite();
 }

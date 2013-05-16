@@ -21,17 +21,17 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.lucene.document.Document;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -40,8 +40,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
- *
+ * Representing a single attribute in a Content object.
  */
 public abstract class Attribute {
     private final String FILE_TOKEN = "file:";
@@ -387,7 +389,7 @@ public abstract class Attribute {
         try {
             Association association = content.getAssociation();
             int siteId =  association.getSiteId();
-            Site site = SiteCache.getSiteById(siteId);
+            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(siteId);
             // Dersom site er angitt i hideInSites skal den ikke vises
             if (site != null && hideInSites != null) {
                 for (String alias : hideInSites) {
@@ -411,16 +413,24 @@ public abstract class Attribute {
         return isHidden;
     }
 
-    public void addIndexFields(Document d) {
-
-    }
-
     public boolean isSearchable() {
         return false;
     }
 
     public String[] getEditableByRoles() {
         return editableByRole;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder toString = new StringBuilder(getClass().getSimpleName());
+        toString.append(" ");
+        toString.append(getTitle());
+        if (isNotBlank(value)) {
+            toString.append(": ");
+            toString.append(StringUtils.abbreviate(value, 20));
+        }
+        return toString.toString();
     }
 
     public XMLAttributeValueExporter getXMLAttributeValueExporter() {

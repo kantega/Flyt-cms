@@ -26,13 +26,13 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -81,7 +81,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             //  This flag is only a signal for user that content is modified, content is always saved when user requests a save
             content.setIsModified(isModified);
 
-            int status = param.getInt("status");
+            ContentStatus status = ContentStatus.getContentStatusAsEnum(param.getInt("status"));
             String action = param.getString("action");
 
             ValidationErrors errors = updateSubmittedValues(aksessService, content, param);
@@ -126,11 +126,11 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         return errors;
     }
 
-    private ModelAndView handleSaveFromUser(HttpServletRequest request, ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status, String action, ValidationErrors errors) throws NotAuthorizedException {
+    private ModelAndView handleSaveFromUser(HttpServletRequest request, ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status, String action, ValidationErrors errors) throws NotAuthorizedException {
         if (errors.getLength() > 0) {
             return showErrorsToUser(request, aksessService, content, model, errors);
         } else {
-            if (status != -1 && errors.getLength() == 0) {
+            if (status != null && errors.getLength() == 0) {
                 return saveContentInDb(aksessService, session, content, model, status);
             }
             session.setAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT, content);
@@ -162,22 +162,22 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     }
 
 
-    private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, int status) throws NotAuthorizedException {
+    private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status) throws NotAuthorizedException {
         String message;
         content = aksessService.checkInContent(content, status);
         message = null;
         status = content.getStatus();
         switch (status) {
-            case ContentStatus.DRAFT:
+            case DRAFT:
                 message = "draft";
                 break;
-            case ContentStatus.PUBLISHED:
+            case PUBLISHED:
                 message = "published";
                 break;
-            case ContentStatus.WAITING_FOR_APPROVAL:
+            case WAITING_FOR_APPROVAL:
                 message = "waiting";
                 break;
-            case ContentStatus.HEARING:
+            case HEARING:
                 message = "hearing";
                 break;
         }
@@ -257,19 +257,27 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             content.setLocked(param.getBoolean("locked"));
         }
 
+        setAlias(content, param, errors);
+
+        if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
+            content.setLocked(param.getBoolean("locked"));
+        }
+
+        content.setSearchable(param.getBoolean("searchable"));
+        content.setMinorChange(param.getBoolean("minorchange", false));
+
+        updateDisplayTemplateIfChanged(content, param, aksessService);
+
+        return errors;
+    }
+
+    private void setAlias(Content content, RequestParameters param, ValidationErrors errors) {
         String alias = param.getString("alias", 62);
         if (alias != null) {
             content.setAlias(alias);
             if (alias.length() > 0) {
                 // If alias contains . or = should not be modififed for historic reasons
                 if (!alias.contains(".") && !alias.contains("=")) {
-                    /*
-                    * Aliases are user specified URLs
-                    * eg http://www.site.com/news/
-
-                    * Alias always starts and ends with /
-                    * Alias / is used for frontpage
-                    */
                     if (alias.charAt(0) != '/') {
                         alias = "/" + alias;
                     }
@@ -286,14 +294,9 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 ValidatorHelper.validateAlias(alias, content, errors);
             }
         }
+    }
 
-        if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
-            content.setLocked(param.getBoolean("locked"));
-        }
-
-        content.setSearchable(param.getBoolean("searchable"));
-        content.setMinorChange(param.getBoolean("minorchange", false));
-
+    private void updateDisplayTemplateIfChanged(Content content, RequestParameters param, ContentManagementService aksessService) {
         int templateId = param.getInt("displaytemplate");
         if (templateId != -1) {
             if (templateId != content.getDisplayTemplateId()) {
@@ -329,8 +332,6 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 }
             }
         }
-
-        return errors;
     }
 
     private boolean dateFieldExists(RequestParameters param, String field) {

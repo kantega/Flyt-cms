@@ -19,8 +19,13 @@ package no.kantega.publishing.topicmaps.ao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,21 +33,33 @@ import java.util.List;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class JdbcTopicAssociationDaoTest extends AbstractTestJdbcTopicMap {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
+public class JdbcTopicAssociationDaoTest {
     Topic topic1, topic2;
     TopicAssociation association1, association2;
-    JdbcTopicAssociationDao associationDao;
+    @Autowired
+    private TopicAssociationDao associationDao;
+
+    @Autowired
+    protected TopicDao topicDao;
+    @Autowired
+    protected TopicMapDao topicMapDao;
+
+    protected TopicMap topicMap;
+
+    protected Topic instanceOf;
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
+        TopicMap newTopicMap = new TopicMap();
+        newTopicMap.setName("My topicmap");
+        topicMap = topicMapDao.saveOrUpdateTopicMap(newTopicMap);
 
-        associationDao = new JdbcTopicAssociationDao();
-        associationDao.setDataSource(dataSource);
-
-        TopicUsageCounter topicUsageCounter = new TopicUsageCounter();
-        topicUsageCounter.setDataSource(dataSource);
-        associationDao.setTopicUsageCounter(topicUsageCounter);
+        instanceOf = new Topic("topic", topicMap.getId());
+        instanceOf.setIsTopicType(false);
+        instanceOf.setBaseName("topic");
+        instanceOf.setIsSelectable(true);
 
         topic1 = new Topic("topic1", topicMap.getId());
         topic1.setBaseName("topic1");

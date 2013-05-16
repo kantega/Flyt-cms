@@ -19,11 +19,10 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 
-import java.util.Date;
 import java.util.StringTokenizer;
 
 /**
- *
+ * Object representing an association for a Content object.
  */
 public class Association extends BaseObject {
     private int associationId = -1;
@@ -32,7 +31,7 @@ public class Association extends BaseObject {
     private AssociationCategory category = null;
     private int siteId = 1;
     private int associationtype = AssociationType.DEFAULT_POSTING_FOR_SITE;
-    private int priority = (int)((new Date().getTime())/1000);
+    private int priority = -1;
     private String name = "";
     private String path = "";
     private int depth = 0;
@@ -96,6 +95,9 @@ public class Association extends BaseObject {
     }
 
     public int getPriority() {
+        if(priority == -1){
+            return (int)((System.currentTimeMillis())/1000);
+        }
         return priority;
     }
 
@@ -131,7 +133,7 @@ public class Association extends BaseObject {
         if (path == null) {
             return new int[0];
         }
-        
+
         StringTokenizer tokens = new StringTokenizer(path, "/");
         int ints[] = new int[tokens.countTokens()];
         int i = 0;
@@ -174,6 +176,7 @@ public class Association extends BaseObject {
         this.numberOfViews = numberOfViews;
     }
 
+    @Override
     public String toString() {
         return String.format("associationId: %s\ncontentId: %s\nparentAssociationId: %s\nsiteId: %s\nassociationType: %s",
         associationId,contentId,parentAssociationId,siteId,associationtype);

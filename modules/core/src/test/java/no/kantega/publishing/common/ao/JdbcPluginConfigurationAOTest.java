@@ -1,33 +1,20 @@
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.test.database.DerbyDatabaseCreator;
-import org.junit.Before;
 import org.junit.Test;
-
-import javax.sql.DataSource;
-import java.io.ByteArrayInputStream;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-/**
- *
- */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations="classpath*:spring/testContext.xml")
 public class JdbcPluginConfigurationAOTest {
-    private PluginConfigurationAO dao;
 
-    @Before
-    public void setup() {
-        
-        String create= "DROP table pluginConfiguration; create table pluginConfiguration (pluginNamespace varchar(255) not null, configName varchar(512) NOT NULL, configValue CLOB NOT NULL);";
-        
-        DataSource dataSource = new DerbyDatabaseCreator("aksess", new ByteArrayInputStream(create.getBytes())).createDatabase();
-        
-        JdbcPluginConfigurationAO dao = new JdbcPluginConfigurationAO();
-        dao.setDataSource(dataSource);
-        this.dao = dao;
-                
-    }
+    @Autowired
+    private PluginConfigurationAO dao;
 
     @Test
     public void shouldReadWrittenProperties() {

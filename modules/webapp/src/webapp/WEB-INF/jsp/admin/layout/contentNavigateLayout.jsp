@@ -60,12 +60,12 @@
             contentOwnerPerson : '<kantega:label key="aksess.contentproperty.ownerperson" escapeJavascript="true"/>',
             contentOwner : '<kantega:label key="aksess.contentproperty.owner" escapeJavascript="true"/>',
             contentDisplayTemplate : '<kantega:label key="aksess.contentproperty.displayTemplate" escapeJavascript="true"/>',
+            contentContentTemplate : '<kantega:label key="aksess.contentproperty.contentTemplate" escapeJavascript="true"/>',
             associations : '<kantega:label key="aksess.infoslider.associations" escapeJavascript="true"/>'
         };
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-contentnavigatelayout.js"/>"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
     <script type="text/javascript">
@@ -80,10 +80,11 @@
         }
 
         $(document).ready(function(){
-            $("#EditContentButtons .approve").click(function() {
+            var editContentButtons = $("#EditContentButtons");
+            editContentButtons.find(".approve").click(function() {
                 openaksess.content.publish.approve(stateHandler.getState());
             });
-            $("#EditContentButtons .reject").click(function() {
+            editContentButtons.find(".reject").click(function() {
                 openaksess.content.publish.reject(stateHandler.getState());
             });
         });

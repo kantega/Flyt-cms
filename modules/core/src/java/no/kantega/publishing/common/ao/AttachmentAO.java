@@ -17,14 +17,12 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.ContentIdentifier;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.search.index.jobs.RemoveAttachmentJob;
-import no.kantega.search.index.IndexManager;
-import no.kantega.search.index.IndexManagerImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -127,8 +125,6 @@ public class AttachmentAO {
             st.setInt(1, id);
             st.execute();
             st.close();
-            IndexManager indexManager = IndexManagerImpl.getInstance();
-            indexManager.addIndexJob(new RemoveAttachmentJob(""+id, "aksessAttachments"));
 
         } catch (SQLException e) {
             throw new SystemException(SOURCE, "SQL feil ved sletting av vedlegg", e);
@@ -170,41 +166,7 @@ public class AttachmentAO {
         }
     }
 
-
-    @Deprecated
-    public static String getAttachmentDataAsString(int id) throws SystemException {
-        Blob blob = null;
-
-        Connection c = null;
-
-        String query = "select Data from attachments where Id = " + id;
-        try {
-            c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, query);
-            if (!rs.next()) {
-                return null;
-            }
-            blob = rs.getBlob("Data");
-            byte[] data = blob.getBytes(1, (int)blob.length()-1);
-
-            String text = new String(data);
-            return text;
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
-    }
-
     public static void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        Blob blob;
-
         Connection c = null;
 
         String query = "select Data from attachments where Id = " + id;
@@ -214,7 +176,7 @@ public class AttachmentAO {
             if (!rs.next()) {
                 return;
             }
-            blob = rs.getBlob("Data");
+            Blob blob = rs.getBlob("Data");
             ish.handleInputStream(blob.getBinaryStream());
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
@@ -239,7 +201,7 @@ public class AttachmentAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select " + DB_COLS + " from attachments where ContentId = " + cid.getContentId());
             while(rs.next()) {
                 Attachment mm = getAttachmentFromRS(rs);

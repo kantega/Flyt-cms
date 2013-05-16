@@ -38,6 +38,7 @@ import java.util.*;
  * Time: 2:41:31 PM
  */
 public class ViewUsersWithRoleController extends AbstractUserAdminController {
+
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
@@ -85,11 +86,6 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
 
                 if (p != null) {
                     profiles.add(p);
-                } else {
-                    DefaultProfile tmp = new DefaultProfile();
-                    tmp.setIdentity(identity);
-                    tmp.setGivenName(identity.getUserId());
-                    profiles.add(tmp);
                 }
             }
 
@@ -103,4 +99,3 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
         return new ModelAndView("/role/userswithrole", model);
     }
 }
-

@@ -1,13 +1,13 @@
 package no.kantega.publishing.cache;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 
 /**
- *
+ * ContentEventListener that flushes caches on events.
  */
 public class CacheExpirator extends ContentEventListenerAdapter {
 
@@ -70,13 +70,13 @@ public class CacheExpirator extends ContentEventListenerAdapter {
         removeContentFromCache(event);
     }
 
-    private Cache getContentCache() {
-        return cacheManager.getCache(CacheManagerFactory.CacheNames.ContentCache.name());
+    private Ehcache getContentCache() {
+        return cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentCache.name());
     }
 
     private void removeContentFromCache(ContentEvent event) {
         // Remove the content that was changed
-        final Cache contentCache = getContentCache();
+        final Ehcache contentCache = getContentCache();
 
         for(Association a : event.getContent().getAssociations())  {
             Object key = a.getAssociationId();
@@ -87,14 +87,14 @@ public class CacheExpirator extends ContentEventListenerAdapter {
 
     private void removeAllContentListsAndSiteMaps() {
         // Flush the content list cache
-        cacheManager.getCache(CacheManagerFactory.CacheNames.ContentListCache.name()).removeAll();
+        cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentListCache.name()).removeAll();
         // Flush the site map cache
-        cacheManager.getCache(CacheManagerFactory.CacheNames.SiteMapCache.name()).removeAll();
+        cacheManager.getEhcache(CacheManagerFactory.CacheNames.SiteMapCache.name()).removeAll();
     }
 
     private void removeAllContent() {
         // Remove the content that was changed
-        final Cache contentCache = getContentCache();
+        final Ehcache contentCache = getContentCache();
         contentCache.removeAll();
     }
 

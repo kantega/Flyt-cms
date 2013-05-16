@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.templateconfiguration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.security.interceptors.AdminViewInterceptor;
 import no.kantega.publishing.common.data.ContentQuery;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;

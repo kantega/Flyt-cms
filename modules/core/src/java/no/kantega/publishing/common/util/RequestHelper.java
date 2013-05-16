@@ -17,13 +17,14 @@
 package no.kantega.publishing.common.util;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.cache.SiteCache;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.DisplayTemplateControllerId;
-import no.kantega.publishing.common.data.enums.Language;
 import no.kantega.publishing.controls.AksessController;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -34,9 +35,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RequestHelper {
+    private static SiteCache siteCache;
+    private static BeanFactory beanFactory;
+
     public static void setRequestAttributes(HttpServletRequest request, Content content) throws SystemException {
+        setSiteCacheIfNull();
         if (content == null) {
-            Site site = SiteCache.getSiteByHostname(request.getServerName());
+            Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null){
                 String alias = site.getAlias();
                 request.setAttribute("aksess_site", alias);
@@ -44,7 +49,7 @@ public class RequestHelper {
 
         } else {
             int siteId = content.getAssociation().getSiteId();
-            Site site = SiteCache.getSiteById(siteId);
+            Site site = siteCache.getSiteById(siteId);
             String alias = site.getAlias();
             request.setAttribute("aksess_locale", (Language.getLanguageAsLocale(content.getLanguage())));
             request.setAttribute("aksess_language", content.getLanguage());
@@ -57,12 +62,12 @@ public class RequestHelper {
 
         Map model = new HashMap();
 
-        BeanFactory context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        setBeanFactoryIfNull(servletContext);
 
         // Run all controllers
         if(dt.getControllers() != null) {
             for (DisplayTemplateControllerId displayTemplateController : dt.getControllers()) {
-                AksessController aksessController = (AksessController) context.getBean(displayTemplateController.getId(), AksessController.class);
+                AksessController aksessController = beanFactory.getBean(displayTemplateController.getId(), AksessController.class);
                 model.putAll(aksessController.handleRequest(request, response));
             }
         }
@@ -71,6 +76,18 @@ public class RequestHelper {
         for (Object o : model.keySet()) {
             String name = o.toString();
             request.setAttribute(name, model.get(name));
+        }
+    }
+
+    private static void setBeanFactoryIfNull(ServletContext servletContext) {
+        if (beanFactory == null) {
+            beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        }
+    }
+
+    private static void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
         }
     }
 }

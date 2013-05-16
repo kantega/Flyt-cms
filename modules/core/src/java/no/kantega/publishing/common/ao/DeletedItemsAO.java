@@ -16,24 +16,20 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.Note;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.DeletedItem;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.commons.exception.SystemException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 
 public class DeletedItemsAO {
     private static final String SOURCE = "aksess.DeletedItemsAO";
 
     public static int addDeletedItem(DeletedItem item) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("INSERT INTO deleteditems (Title, ObjectType, DeletedDate, DeletedBy) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
             p.setString(1, item.getTitle());
@@ -52,56 +48,34 @@ public class DeletedItemsAO {
 
         } catch (SQLException e) {
           throw new SystemException("SQL exception while adding deleteditem", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
 
     public static void purgeDeletedItem(int id) throws SystemException {
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("DELETE  FROM deleteditems WHERE Id = ?");
             p.setInt(1, id);
             p.executeUpdate();
         } catch (SQLException e) {
             throw new SystemException("SQL Exception while purging deleteditem", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
 
     public static List<DeletedItem> getDeletedItems(String userId) throws SystemException {
 
-        List items = new ArrayList();
+        List<DeletedItem> items = new ArrayList<>();
 
-        Connection c = null;
-
-        String query = "";
+        String query;
         if (userId != null && userId.length() != 0) {
             query = "SELECT * FROM deleteditems WHERE DeletedBy = ?";
         } else {
             query = "SELECT * FROM deleteditems";
         }
 
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement(query + " ORDER By DeletedDate");
             if (userId != null && userId.length() != 0) {
                 p.setString(1, userId);
@@ -112,14 +86,6 @@ public class DeletedItemsAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Exception while getting deleteditems", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
         return items;
     }

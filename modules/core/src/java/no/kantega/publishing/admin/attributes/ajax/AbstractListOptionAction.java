@@ -17,7 +17,7 @@
 package no.kantega.publishing.admin.attributes.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.data.enums.Language;
+import no.kantega.publishing.api.content.Language;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.AbstractView;

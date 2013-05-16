@@ -16,33 +16,34 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import java.sql.SQLException;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.InvalidParameterException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.exception.RootExistsException;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import no.kantega.publishing.api.services.DefaultContentCreator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import java.sql.SQLException;
 
 public class CreateRootAction  extends AbstractController {
 

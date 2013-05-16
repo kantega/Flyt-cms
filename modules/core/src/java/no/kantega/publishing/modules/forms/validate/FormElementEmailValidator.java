@@ -4,9 +4,9 @@
 
 package no.kantega.publishing.modules.forms.validate;
 
-import java.util.List;
-
 import no.kantega.publishing.api.forms.model.FormValue;
+
+import java.util.List;
 
 public class FormElementEmailValidator implements FormElementValidator {
     private static String id = "email";

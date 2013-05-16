@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.data.attributes.Attribute,
-                 no.kantega.publishing.common.data.enums.AttributeProperty"%>
-<%@ page import="no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper" %>
+<%@ page import="no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper,
+                 no.kantega.publishing.common.data.attributes.Attribute"%>
+<%@ page import="no.kantega.publishing.common.data.enums.AttributeProperty" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%--

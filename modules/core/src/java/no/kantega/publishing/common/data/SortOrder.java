@@ -19,29 +19,25 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 
 public class SortOrder {
-    private String sort1 = null;
+    private final String sort1;
     private String sort2 = null;
 
     private boolean descending = false;
 
     public SortOrder(String sortOrder) {
-        if (sortOrder.indexOf(",") != -1) {
+        if (sortOrder.contains(",")) {
             sort1 = sortOrder.substring(0, sortOrder.indexOf(",")).trim();
             sort2 = sortOrder.substring(sortOrder.indexOf(",") + 1, sortOrder.length()).trim();
         } else {
             sort1 = sortOrder.trim();
         }
 
-        if (sort1.equalsIgnoreCase(ContentProperty.RATING_SCORE) ||
-            sort1.equalsIgnoreCase(ContentProperty.LAST_MODIFIED) ||
-            sort1.equalsIgnoreCase(ContentProperty.LAST_MAJOR_CHANGE) ||
-            sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
-            sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_COMMENTS) ||
-            sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_RATINGS)) {
-            this.descending = true;
-        } else {
-            this.descending = false;
-        }
+        this.descending = sort1.equalsIgnoreCase(ContentProperty.RATING_SCORE) ||
+                sort1.equalsIgnoreCase(ContentProperty.LAST_MODIFIED) ||
+                sort1.equalsIgnoreCase(ContentProperty.LAST_MAJOR_CHANGE) ||
+                sort1.equalsIgnoreCase(ContentProperty.PUBLISH_DATE) ||
+                sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_COMMENTS) ||
+                sort1.equalsIgnoreCase(ContentProperty.NUMBER_OF_RATINGS);
 
     }
 
@@ -99,9 +95,8 @@ public class SortOrder {
 
         if (descending != sortOrder.descending) return false;
         if (sort1 != null ? !sort1.equals(sortOrder.sort1) : sortOrder.sort1 != null) return false;
-        if (sort2 != null ? !sort2.equals(sortOrder.sort2) : sortOrder.sort2 != null) return false;
+        return !(sort2 != null ? !sort2.equals(sortOrder.sort2) : sortOrder.sort2 != null);
 
-        return true;
     }
 
     @Override

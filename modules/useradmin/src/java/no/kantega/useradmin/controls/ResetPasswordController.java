@@ -16,33 +16,28 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.password.PasswordValidator;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.modules.mailsender.MailSender;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.password.PasswordManager;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.VelocityContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.*;
-import java.security.SecureRandom;
 import java.math.BigInteger;
-
-import no.kantega.commons.password.PasswordValidator;
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.security.api.password.PasswordManager;
-import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.security.api.profile.Profile;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.util.LocaleLabels;
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.modules.mailsender.MailSender;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS

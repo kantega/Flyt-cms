@@ -22,31 +22,34 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <style>
+        .providers input, .providers label {
+            float: none;
+        }
+
+        .providers li{
+            list-style: none outside none;
+        }
+    </style>
     <form action="RebuildIndex.action" name="searchindex" method="POST">
         <admin:box>
             <h1><kantega:label key="aksess.search.title"/></h1>
-
             <div class="row">
-                <input type="checkbox" class="checkbox" checked="true" name="rebuild" id="rebuild"><label for="rebuild" class="checkbox"><kantega:label key="aksess.search.rebuild.rebuild"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <input type="checkbox" class="checkbox"  checked="true" name="optimize" id="optimize"><label for="optimize" class="checkbox" ><kantega:label key="aksess.search.rebuild.optimize"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <input type="checkbox" class="checkbox"  checked="true" name="spelling" id="spelling"><label for="spelling" class="checkbox"><kantega:label key="aksess.search.rebuild.spelling"/></label>
-                <div class="clearing"></div>
-            </div>
-            <div class="row">
-                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToExclude"/></label>
+                <label class="checkbox"><kantega:label key="aksess.search.rebuild.providersToInclude"/></label><br>
+                <ul class="providers">
                 <c:forEach var="provider" items="${providers}">
-                    <input type="checkbox" class="checkbox" name="exclude${provider}r" id="${provider}"><label for="${provider}" class="checkbox">${provider}</label>
+                    <c:set var="providerName" value="${provider.name}"/>
+                    <li><input type="checkbox" class="checkbox" name="include.${providerName}" id="${providerName}" checked><label for="${providerName}" class="checkbox">${providerName}</label></li>
                 </c:forEach>
+                </ul>
                 <div class="clearing"></div>
             </div>
             <div class="row">
                 <label for="numberOfConcurrentHandlers" class="checkbox"><kantega:label key="aksess.search.rebuild.numberOfConcurrentHandlers"/></label><input type="text" class="text" name="numberOfConcurrentHandlers" id="numberOfConcurrentHandlers" value="1">
+                <div class="clearing"></div>
+            </div>
+            <div class="row">
+                <label for="clearIndex" class="checkbox"><kantega:label key="aksess.search.rebuild.clearIndex"/></label><input type="checkbox" class="checkbox" name="clearIndex" id="clearIndex" checked >
                 <div class="clearing"></div>
             </div>
             <div class="buttonGroup">

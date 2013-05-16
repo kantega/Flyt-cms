@@ -19,11 +19,11 @@ package no.kantega.publishing.security;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.data.CachedBaseObject;
 import no.kantega.publishing.security.data.Role;
@@ -57,6 +57,7 @@ public class SecuritySession {
     private User user = null;
     private Identity identity = null;
     private SecurityRealm realm = null;
+    private SiteCache siteCache;
 
     // Husker sist tilgangssjekk
     private CachedBaseObject prevObject = null;
@@ -234,26 +235,20 @@ public class SecuritySession {
      */
     public void handlePostLogin(HttpServletRequest request) throws SystemException, ConfigurationException {
 
-        List roles = realm.lookupRolesForUser(user.getId());
-        for (int i = 0; i < roles.size(); i++) {
-            Role role =  (Role)roles.get(i);
+        List<Role> roles = realm.lookupRolesForUser(user.getId());
+        for (Role role : roles) {
             user.addRole(role);
         }
 
         if (Aksess.isTopicMapsEnabled()) {
-            // Hent topics for bruker
-            List tmp = TopicAO.getTopicsBySID(user);
-            for (int i = 0; i < tmp.size(); i++) {
-                user.addTopic((Topic)tmp.get(i));
-            }
+            user.setTopics(TopicAO.getTopicsBySID(user));
 
             // Og for roller brukeren har tilgang til
             if (user.getRoles() != null) {
-                for (int i = 0; i < roles.size(); i++) {
-                    Role role =  (Role)roles.get(i);
-                    tmp = TopicAO.getTopicsBySID(role);
-                    for (int j = 0; j < tmp.size(); j++) {
-                        user.addTopic((Topic)tmp.get(j));
+                for (Role role : roles) {
+                    List<Topic> topicsForRole = TopicAO.getTopicsBySID(role);
+                    for (Topic aTopicsForRole : topicsForRole) {
+                        user.addTopic( aTopicsForRole );
                     }
                 }
             }
@@ -362,8 +357,9 @@ public class SecuritySession {
         if (object instanceof Content) {
             // Sjekker om det ikke skal vises sider fra dette nettstedet
             Content c = (Content)object;
-            Site site = SiteCache.getSiteById(c.getAssociation().getSiteId());
-            if (site.isDisabled()) {
+            setSiteCacheIfNull();
+            Site site = siteCache.getSiteById(c.getAssociation().getSiteId());
+            if (site == null || site.isDisabled()) {
                 return false;
             }
         }
@@ -404,5 +400,11 @@ public class SecuritySession {
 
     public SecurityRealm getRealm() {
         return realm;
+    }
+
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
     }
 }

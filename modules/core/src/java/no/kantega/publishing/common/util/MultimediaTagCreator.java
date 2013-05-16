@@ -67,7 +67,7 @@ public class MultimediaTagCreator {
     }
 
     public static String mm2HtmlTag(String baseUrl, Multimedia mm, String align, int resizeWidth, int resizeHeight, Cropping cropping, String cssClass, boolean skipImageMap) {
-        StringBuffer tag = new StringBuffer();
+        StringBuilder tag = new StringBuilder();
 
         String url = mm.getUrl();
         String altname = mm.getAltname();
@@ -78,7 +78,7 @@ public class MultimediaTagCreator {
 
         String mimeType = mm.getMimeType().getType();
 
-        if (mimeType.indexOf("image") != -1) {
+        if (mimeType.contains("image")) {
             // Bilde
             tag.append("<img ");
 
@@ -117,11 +117,11 @@ public class MultimediaTagCreator {
 
             if ((resizeWidth != -1 && resizeWidth < width) || (resizeHeight != -1 && resizeHeight < height)) {
                 if (resizeWidth != -1) {
-                    url += url.indexOf("?") == -1 ? "?" : "&amp;";
+                    url += !url.contains("?") ? "?" : "&amp;";
                     url += "width=" + resizeWidth;
                 }
                 if (resizeHeight != -1) {
-                    url += url.indexOf("?") == -1 ? "?" : "&amp;";
+                    url += !url.contains("?") ? "?" : "&amp;";
                     url += "height=" + resizeHeight;
                 }
 
@@ -135,20 +135,20 @@ public class MultimediaTagCreator {
             } else {
                 // Image will not be resised, specify dimensions in tag
                 if (width > 0) {
-                    tag.append(" width=" + width);
+                    tag.append(" width=").append(width);
                 }
                 if (height > 0) {
-                    tag.append(" height=" + height);
+                    tag.append(" height=").append(height);
                 }
             }
             if (cssClass != null && cssClass.length() > 0) {
-                tag.append(" class=\"" + cssClass + "\"");
+                tag.append(" class=\"").append(cssClass).append("\"");
             }
 
             if (align != null && align.length() > 0) {
-                tag.append(" align=" + align);
+                tag.append(" align=").append(align);
             }
-            tag.append(" src=\"" + url + "\"");
+            tag.append(" src=\"").append(url).append("\"");
 
             if (!skipImageMap && mm.hasImageMap()) {
                 try {
@@ -174,13 +174,12 @@ public class MultimediaTagCreator {
                                 if (mim.getCoordUrlMap()[i].isOpenInNewWindow()) {
                                     target = " onclick=\"window.open(this.href); return false\"";
                                 }
-                                tag.append("<area shape=\"rect\" coords=\"" + coord + "\" href=\"" + mapURL + "\" title=\"" + mim.getCoordUrlMap()[i].getAltName() + "\" alt=\"" + mim.getCoordUrlMap()[i].getAltName() + "\"" + target + ">");
+                                tag.append("<area shape=\"rect\" coords=\"").append(coord).append("\" href=\"").append(mapURL).append("\" title=\"").append(mim.getCoordUrlMap()[i].getAltName()).append("\" alt=\"").append(mim.getCoordUrlMap()[i].getAltName()).append("\"").append(target).append(">");
                             }
                         }
                         tag.append("</map>");
                     }
                 } catch(SystemException e){
-                    System.err.println(e);
                     Log.error(SOURCE, e, null, null);
                 }
             }
@@ -189,43 +188,44 @@ public class MultimediaTagCreator {
                 tag.append(">");
             }
 
-        } else if (mimeType.indexOf("flash") != -1) {
+        } else if (mimeType.contains("flash")) {
             int width  = mm.getWidth();
             int height = mm.getHeight();
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("<script type=\"text/javascript\">");
                 tag.append("try {");
-                tag.append("aksessMultimedia.embedFlash(\"" + url + "\", " + mm.getId() + ", " + width + ", " + height + ");");
+                tag.append("aksessMultimedia.embedFlash(\"").append(url).append("\", ").append(mm.getId()).append(", ").append(width).append(", ").append(height).append(");");
                 tag.append("} catch (e) {");
                 tag.append("}");
                 tag.append("</script>");
-                tag.append("<div id=\"swf" + mm.getId() + "\">");
+                tag.append("<div id=\"swf").append(mm.getId()).append("\">");
                 tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>");
                 tag.append("</div>");
                 tag.append("<noscript>");
             }
-            tag.append("<object type=\"application/x-shockwave-flash\" data=\"" + url + "\" width=\"" + width + "\" height=\"" + height + "\">");
-            tag.append("<param name=\"movie\" value=\"" + url + "\" />");
-            tag.append("<param name=\"quality\" value=\"high\" />");
-            tag.append("</object>");
+            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
+            tag.append("<PARAM name=\"movie\" value=\"").append(url).append("\">");
+            tag.append("<PARAM name=\"quality\" value=\"high\">");
+            tag.append("<PARAM name=\"wmode\" value=\"transparent\">");
+            tag.append("<EMBED src=\"").append(url).append("\" quality=\"high\" wmode=\"transparent\" pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"").append(width).append("\" height=\"").append(height).append("\"></EMBED></OBJECT>");
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
-        } else if(mimeType.indexOf("x-ms-wmv") != -1 || mimeType.indexOf("x-msvideo") != -1) {
+        } else if(mimeType.contains("x-ms-wmv") || mimeType.contains("x-msvideo")) {
             int width  = mm.getWidth();
             int height = mm.getHeight();
             tag.append("<OBJECT ID=\"MediaPlayer\"");
             tag.append(" classid=\"CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95\"");
             tag.append(" codebase=\"http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112\"");
-            tag.append(" type=\"application/x-oleobject\" width=\""+width+"\" height=\""+height+"\">");
-            tag.append("<PARAM name=\"filename\" value=\"" + url+ "\">");
-            tag.append("<PARAM name=\"autostart\" value=\"" + Aksess.isFlashVideoAutoplay() + "\">");
+            tag.append(" type=\"application/x-oleobject\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
+            tag.append("<PARAM name=\"filename\" value=\"").append(url).append("\">");
+            tag.append("<PARAM name=\"autostart\" value=\"").append(Aksess.isFlashVideoAutoplay()).append("\">");
             tag.append("<EMBED type=\"application/x-mplayer2\"");
             tag.append(" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/AllDownloads.aspx\"");
-            tag.append(" width=\""+width+"\"");
-            tag.append(" height=\""+height+"\"");
-            tag.append(" src=\""+url +"\">");
-            tag.append(" autostart=\"" + Aksess.isFlashVideoAutoplay() + "\" ");
+            tag.append(" width=\"").append(width).append("\"");
+            tag.append(" height=\"").append(height).append("\"");
+            tag.append(" src=\"").append(url).append("\">");
+            tag.append(" autostart=\"").append(Aksess.isFlashVideoAutoplay()).append("\" ");
             tag.append("</EMBED>");
             tag.append("</OBJECT>");
         } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
@@ -244,20 +244,20 @@ public class MultimediaTagCreator {
                 String id = "swf" + mm.getId();
                 tag.append("<script type=\"text/javascript\">\n");
                 tag.append("try {\n");
-                tag.append("aksessMultimedia.embedFlashVideo(\"" + movieUrl + "\", " + mm.getId() + ", " + width + ", " + height + ");\n");
+                tag.append("aksessMultimedia.embedFlashVideo(\"").append(movieUrl).append("\", ").append(mm.getId()).append(", ").append(width).append(", ").append(height).append(");\n");
                 tag.append("} catch (e) {\n");
                 tag.append("}\n");
                 tag.append("</script>\n");
-                tag.append("<div id=\"" + id + "\">\n");
+                tag.append("<div id=\"").append(id).append("\">\n");
                 tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>\n");
                 tag.append("</div>\n");
                 tag.append("<noscript>");
             }
-            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"" + width + "\" height=\"" + height + "\">");
-            tag.append("<PARAM name=\"movie\" value=\"" + playerStr + "\">");
+            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
+            tag.append("<PARAM name=\"movie\" value=\"").append(playerStr).append("\">");
             tag.append("<PARAM name=\"quality\" value=\"high\">");
             tag.append("<PARAM name=\"allowFullScreen\" value=\"true\" />");
-            tag.append("<EMBED src=\"" + playerStr + "\" quality=\"high\" allowFullScreen=\"true\"  pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"" + width + "\" height=\"" + height + "\"></EMBED></OBJECT>");
+            tag.append("<EMBED src=\"").append(playerStr).append("\" quality=\"high\" allowFullScreen=\"true\"  pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"").append(width).append("\" height=\"").append(height).append("\"></EMBED></OBJECT>");
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
@@ -266,13 +266,13 @@ public class MultimediaTagCreator {
             mimeType = mimeType.replace('.', '-');
             SimpleDateFormat sdf = new SimpleDateFormat(Aksess.getDefaultDateFormat());
             String lastModifiedDateString = sdf.format(mm.getLastModified());
-            tag.append("<a href=\"" + url + "\"><div class=\"media\"><div class=\"icon\">");
-            tag.append("<span class=\"mediafile\"><span class=\"file " + mimeType + "\"></span></span>");
+            tag.append("<a href=\"").append(url).append("\"><div class=\"media\"><div class=\"icon\">");
+            tag.append("<span class=\"mediafile\"><span class=\"file ").append(mimeType).append("\"></span></span>");
             tag.append("</div><div class=\"mediaInfo\">");
-            tag.append("<div class=\"name\">"+mm.getName()+"</div>");
+            tag.append("<div class=\"name\">").append(mm.getName()).append("</div>");
             tag.append("<div class=\"details\">");
-            tag.append(LocaleLabels.getLabel("aksess.multimedia.size", Aksess.getDefaultLocale())+": "+mm.getSize()+" bytes<br>");
-            tag.append(LocaleLabels.getLabel("aksess.multimedia.lastmodified", Aksess.getDefaultLocale())+": "+lastModifiedDateString+"<br>");
+            tag.append(LocaleLabels.getLabel("aksess.multimedia.size", Aksess.getDefaultLocale())).append(": ").append(mm.getSize()).append(" bytes<br>");
+            tag.append(LocaleLabels.getLabel("aksess.multimedia.lastmodified", Aksess.getDefaultLocale())).append(": ").append(lastModifiedDateString).append("<br>");
             tag.append("</div></div></div></a>");
         }
         return tag.toString();

@@ -16,13 +16,14 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
@@ -42,12 +43,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static com.google.common.collect.Lists.partition;
 
 /**
  *
@@ -59,12 +54,9 @@ public class ContentAO {
     public static ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
         ContentIdentifier parent = getParent(cid);
 
-        Connection c = null;
-
-        try {
+        try(Connection c = dbConnectionFactory.getConnection()){
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int id = cid.getContentId();
-
-            c = dbConnectionFactory.getConnection();
 
             // Slett tilgangsrettigheter
             PreparedStatement st = c.prepareStatement("delete from objectpermissions where ObjectSecurityId in (select AssociationId from associations where ContentId = ?) and ObjectType = ?");
@@ -128,93 +120,20 @@ public class ContentAO {
             st.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-        }
+        } 
         return parent;
     }
 
-    public static void forAllContentObjects(final ContentHandler contentHandler, final ContentHandlerStopper stopper, int numberOfConcurrentHandlers) {
-        try {
-            log.info("Starting forAllContentObjects, number of concurrent handlers: " + numberOfConcurrentHandlers);
-            ExecutorService pool = Executors.newFixedThreadPool(numberOfConcurrentHandlers);
-            List<ContentIdentifier> allContentIdentifiers = getAllContentIdentifiers();
-            int partitionSize = (allContentIdentifiers.size() / numberOfConcurrentHandlers) + 1;
-            List<List<ContentIdentifier>> contentIdentifiersPartition = partition(allContentIdentifiers, partitionSize);
+    public static void forAllContentObjects(final ContentHandler contentHandler, ContentHandlerStopper stopper) {
 
-            CyclicBarrier cyclicBarrier = new CyclicBarrier(contentIdentifiersPartition.size() + 1);
-            for(List<ContentIdentifier> identifiers : contentIdentifiersPartition){
-                pool.submit(new ContentHandlerWorker(stopper, contentHandler, identifiers, cyclicBarrier));
-            }
-            cyclicBarrier.await();
-            log.info("All threads done executing handlers");
-        } catch (SystemException e) {
-            log.error(e);
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            log.error("Interrupted", e);
-        } catch (BrokenBarrierException e) {
-            log.error("Broken barrier", e);
-        }
-    }
-
-    public static void forAllContentObjects(final ContentHandler contentHandler, final ContentHandlerStopper stopper) {
-        forAllContentObjects(contentHandler, stopper, 1);
-    }
-
-    private static List<ContentIdentifier> getAllContentIdentifiers(){
-        List<ContentIdentifier> contentIdentifiers = new ArrayList<ContentIdentifier>();
-
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content");
 
             ResultSet resultSet = p.executeQuery();
-            while (resultSet.next()){
-                ContentIdentifier contentIdentifier = new ContentIdentifier();
-                contentIdentifier.setContentId(resultSet.getInt("ContentId"));
-                contentIdentifiers.add(contentIdentifier);
-            }
-        } catch (SQLException e) {
-            log.error(e.getMessage(), e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
-        }
-        return contentIdentifiers;
-    }
-                                    
-    private static class ContentHandlerWorker implements Runnable {
-        final ContentHandler contentHandler;
-        private final List<ContentIdentifier> contentIdentifiers;
-        private final CyclicBarrier cyclicBarrier;
-        final ContentHandlerStopper stopper;
-        
-        public ContentHandlerWorker(ContentHandlerStopper stopper, ContentHandler contentHandler, List<ContentIdentifier> contentIdentifiers, CyclicBarrier cyclicBarrier) {
-            this.stopper = stopper;
-            this.contentHandler = contentHandler;
 
-            this.contentIdentifiers = contentIdentifiers;
-            this.cyclicBarrier = cyclicBarrier;
-        }
+            while(resultSet.next() && !stopper.isStopRequested()) {
+                ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(resultSet.getInt("ContentId"));
 
-        public void run() {
-            for (ContentIdentifier contentIdentifier : contentIdentifiers) {
-                if(stopper.isStopRequested()){
-                    break;
-                }
                 Content content = null;
                 try {
                     content = ContentAO.getContent(contentIdentifier, false);
@@ -226,26 +145,20 @@ public class ContentAO {
                     contentHandler.handleContent(content);
                 }
             }
-            try {
-                log.info("Thread done handling content");
-                cyclicBarrier.await();
-            } catch (InterruptedException e) {
-                log.error("Worker interupted", e);
-            } catch (BrokenBarrierException e) {
-                log.error("Barrier error", e);
-            }
+
+        } catch (SystemException | SQLException e) {
+            log.error(e);
+            throw new RuntimeException(e);
         }
     }
 
     public static void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int id = cid.getContentId();
         int version = cid.getVersion();
         int language = cid.getLanguage();
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
 
             // Check status for page
             PreparedStatement st = c.prepareStatement("select * from contentversion where ContentId = ? and Version = ? and Language = ?");
@@ -283,24 +196,15 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
     public static List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
-        List<Content> contentVersions = new ArrayList<Content>();
+        List<Content> contentVersions = new ArrayList<>();
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = " + cid.getLanguage() + " and content.ContentId = " + cid.getContentId() + " order by contentversion.Version desc");
             while (rs.next()) {
                 Content content = ContentAOHelper.getContentFromRS(rs, false);
@@ -309,14 +213,6 @@ public class ContentAO {
             rs.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return contentVersions;
     }
@@ -331,31 +227,30 @@ public class ContentAO {
 
 
     public static Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
-
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
+            int contentId = cid.getContentId();
             if (isAdminMode) {
                 if (requestedVersion == -1) {
                     // When in administration mode users should see last version
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " order by ContentVersionId desc" , "ContentVersionId");
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " order by ContentVersionId desc" , "ContentVersionId");
                     if (contentVersionId == -1) {
                         return null;
                     }
                 } else {
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
+                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
                     if (contentVersionId == -1) {
                         return null;
                     }
                 }
             } else if(cid.getStatus() == ContentStatus.HEARING) {
                 // Find version for hearing, if no hearing is found, active version is returned
-                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
-                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + cid.getContentId() +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
+                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
+                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " +ContentStatus.HEARING.getTypeAsInt() +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
             } else {
                 // Others should see active version
                 contentVersionId = -1;
@@ -371,7 +266,7 @@ public class ContentAO {
                 // Hent aktiv versjon
                 query.append(" and contentversion.IsActive = 1");
             }
-            query.append(" and content.ContentId = ").append(cid.getContentId()).append(" order by ContentVersionId");
+            query.append(" and content.ContentId = ").append(contentId).append(" order by ContentVersionId");
 
             // Get data from content and contentversion tables
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
@@ -388,7 +283,10 @@ public class ContentAO {
                 Association a = AssociationAO.getAssociationFromRS(rs);
                 if (!foundCurrentAssociation) {
                     // Dersom knytningsid ikke er angitt bruker vi default for angitt site
-                    if ((cid.getAssociationId() == a.getId()) || (cid.getAssociationId() == -1 && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE && a.getSiteId() == cid.getSiteId())) {
+                    int associationId = cid.getAssociationId();
+                    if ((associationId == a.getId()) || (associationId == -1
+                            && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
+                            && a.getSiteId() == cid.getSiteId())) {
                         foundCurrentAssociation = true;
                         a.setCurrent(true);
                     }
@@ -409,9 +307,9 @@ public class ContentAO {
                 }
 
                 if (!foundCurrentAssociation && associations.size() > 0) {
-                    Association a = (Association)associations.get(0);
+                    Association a = associations.get(0);
                     a.setCurrent(true);
-                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + cid.getContentId(), null, null);
+                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + contentId, null, null);
                 }
             }
 
@@ -427,21 +325,13 @@ public class ContentAO {
             }
             rs.close();
 
-            List<Topic> topics = TopicAO.getTopicsByContentId(cid.getContentId());
+            List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
             content.setTopics(topics);
 
             return content;
 
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
         }
     }
 
@@ -455,28 +345,18 @@ public class ContentAO {
     public static Content getContent(OrgUnit orgUnit) throws SystemException {
         Content content = null;
 
-        Connection conn = null;
-        try {
-            conn = dbConnectionFactory.getConnection();
+        try(Connection conn = dbConnectionFactory.getConnection()){
+
             PreparedStatement ps = conn.prepareStatement("select ContentId, ContentTemplateId from content where Owner = ? and (ContentTemplateId = 7 or ContentTemplateId = 13) order by ContentTemplateId");
             ps.setString(1, orgUnit.getId());
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int contentId = rs.getInt("ContentId");
-                ContentIdentifier contentIdentifier = new ContentIdentifier();
-                contentIdentifier.setContentId(contentId);
+                ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(contentId);
                 content = ContentAO.getContent(contentIdentifier, true);
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return content;
@@ -485,14 +365,12 @@ public class ContentAO {
     public static String getTitleByAssociationId(int associationId) {
         String title = null;
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             // Hent content og contentversion
             PreparedStatement st = c.prepareStatement("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ");
             st.setInt(1, associationId);
-            st.setInt(2, ContentStatus.PUBLISHED);
+            st.setInt(2, ContentStatus.PUBLISHED.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int prevContentId = -1;
             if (rs.next()) {
@@ -500,46 +378,36 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return title;
 
     }
 
     public static List<WorkList<Content>> getMyContentList(User user) throws SystemException {
-        List<WorkList<Content>> workList = new ArrayList<WorkList<Content>>();
+        List<WorkList<Content>> workList = new ArrayList<>();
 
-        WorkList<Content> draft = new WorkList<Content>();
+        WorkList<Content> draft = new WorkList<>();
         draft.setDescription("draft");
 
-        WorkList<Content> waiting = new WorkList<Content>();
+        WorkList<Content> waiting = new WorkList<>();
         waiting.setDescription("waiting");
 
-        WorkList<Content> rejected = new WorkList<Content>();
+        WorkList<Content> rejected = new WorkList<>();
         rejected.setDescription("rejected");
 
-        WorkList<Content> lastpublished = new WorkList<Content>();
+        WorkList<Content> lastpublished = new WorkList<>();
         lastpublished.setDescription("lastpublished");
 
-        WorkList<Content> remind = new WorkList<Content>();
+        WorkList<Content> remind = new WorkList<>();
         remind.setDescription("remind");
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             // Get drafts, pages waiting for approval and rejected pages
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
-            st.setInt(1, ContentStatus.DRAFT);
-            st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL);
-            st.setInt(3, ContentStatus.REJECTED);
+            st.setInt(1, ContentStatus.DRAFT.getTypeAsInt());
+            st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
+            st.setInt(3, ContentStatus.REJECTED.getTypeAsInt());
             st.setString(4, user.getId());
             st.setInt(5, AssociationType.DEFAULT_POSTING_FOR_SITE);
             ResultSet rs = st.executeQuery();
@@ -564,7 +432,7 @@ public class ContentAO {
 
             // Get pages which expire soon
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ExpireAction = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and content.ExpireDate > ? and content.ExpireDate < ? order by content.ExpireDate desc");
-            st.setInt(1, ContentStatus.PUBLISHED);
+            st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setInt(2, ExpireAction.REMIND);
             st.setString(3, user.getId());
             st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
@@ -585,7 +453,7 @@ public class ContentAO {
 
             // Get the 10 last modified pages
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and LastModified > ? order by contentversion.LastModified desc");
-            st.setInt(1, ContentStatus.PUBLISHED);
+            st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setString(2, user.getId());
             st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()-(long)1000*60*60*24*90));
             rs = st.executeQuery();
@@ -625,14 +493,6 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return workList;
     }
@@ -641,13 +501,11 @@ public class ContentAO {
     public static List<Content> getContentListForApproval() throws SystemException {
         List<Content> contentList = new ArrayList<Content>();
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             // Hent content og contentversion
             PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 order by contentversion.Title");
-            st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL);
+            st.setInt(1, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int prevContentId = -1;
             while (rs.next()) {
@@ -659,14 +517,6 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
         return contentList;
     }
@@ -677,7 +527,7 @@ public class ContentAO {
 
     public static List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         final Map<Integer, Content> contentMap   = new HashMap<Integer, Content>();
-        final List<Content> contentList = new ArrayList<Content>();
+        final List<Content> contentList = new ArrayList<>();
 
         final StringBuilder cvids = new StringBuilder();
 
@@ -693,11 +543,7 @@ public class ContentAO {
         });
 
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
+        try(Connection c = dbConnectionFactory.getConnection()){
 
             int listSize = contentList.size();
             if (listSize > 0 && getAttributes) {
@@ -729,34 +575,24 @@ public class ContentAO {
 
                 ContentIdentifier[] cids = contentQuery.getContentList();
                 if (cids != null && ContentProperty.PRIORITY.equalsIgnoreCase(sort1)) {
-                    Comparator comparator = new AssociationIdListComparator(cids);
+                    Comparator<Content> comparator = new AssociationIdListComparator(cids);
                     Collections.sort(contentList, comparator);
                 } else {
                     // Kan sorteres etter inntil to kriterier
                     if (sort2 != null) {
-                        Comparator comparator = new ContentComparator(sort2, sort.sortDescending());
+                        Comparator<Content> comparator = new ContentComparator(sort2, sort.sortDescending());
                         Collections.sort(contentList, comparator);
                     }
 
                     if (!contentQuery.useSqlSort() && sort1 != null) {
-                        Comparator comparator = new ContentComparator(sort1, sort.sortDescending());
+                        Comparator<Content> comparator = new ContentComparator(sort1, sort.sortDescending());
                         Collections.sort(contentList, comparator);
                     }
                 }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
-
-
         return contentList;
     }
 
@@ -768,10 +604,7 @@ public class ContentAO {
         // Query will be faster if we don't get all records
         contentQuery.setMaxRecords(maxElements);
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st = contentQuery.getPreparedStatement(c);
 
@@ -779,7 +612,7 @@ public class ContentAO {
                 return;
             }
 
-            Map<Integer, Integer> contentIds = new HashMap<Integer, Integer>();
+            Map<Integer, Integer> contentIds = new HashMap<>();
 
             // Get content objects
             ResultSet rs = st.executeQuery();
@@ -800,43 +633,25 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
 
     public static ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int id = SQLHelper.getInt(c, "select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId() , "ParentAssociationId");
 
-            ContentIdentifier parentCid = new ContentIdentifier();
-            parentCid.setAssociationId(id);
+            ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(id);
             parentCid.setLanguage(cid.getLanguage());
             return parentCid;
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
         }
     }
 
 
-    public static Content checkInContent(Content content, int newStatus) throws SystemException {
+    public static Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
 
         Connection c = null;
         Content oldContent = null ;
@@ -854,8 +669,7 @@ public class ContentAO {
 
             // Get old version if exists
             if (!content.isNew()) {
-                ContentIdentifier oldCid = new ContentIdentifier();
-                oldCid.setAssociationId(content.getAssociation().getAssociationId());
+                ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
                 oldContent = getContent(oldCid, true);
             }
 
@@ -1020,7 +834,7 @@ public class ContentAO {
         }
     }
 
-    private static boolean archiveOldVersion(Connection c, Content content, int newStatus, boolean newVersionIsActive) throws SQLException {
+    private static boolean archiveOldVersion(Connection c, Content content, ContentStatus newStatus, boolean newVersionIsActive) throws SQLException {
         // Find next version
         int currentVersion = SQLHelper.getInt(c, "select version from contentversion where ContentId = " + content.getId() + " order by version desc", "version");
         if (currentVersion > 0) {
@@ -1030,7 +844,7 @@ public class ContentAO {
         if (newStatus == ContentStatus.PUBLISHED) {
             // Set newStatus = ARCHIVED on currently active version
             PreparedStatement tmp = c.prepareStatement("update contentversion set Status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-            tmp.setInt(1, ContentStatus.ARCHIVED);
+            tmp.setInt(1, ContentStatus.ARCHIVED.getTypeAsInt());
             tmp.setInt(2, content.getId());
             tmp.execute();
             tmp.close();
@@ -1046,8 +860,7 @@ public class ContentAO {
         // If this is a draft, rejected page etc delete previous version
         if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
             // Delete this (previous) version
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(content.getAssociation().getId());
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
             cid.setVersion(content.getVersion());
             cid.setLanguage(content.getLanguage());
             deleteContentVersion(cid, true);
@@ -1055,12 +868,12 @@ public class ContentAO {
     }
 
 
-    private static void addContentVersion(Connection c, Content content, int newStatus, boolean activeVersion) throws SQLException {
+    private static void addContentVersion(Connection c, Content content, ContentStatus newStatus, boolean activeVersion) throws SQLException {
         // Insert new version
         PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
         contentVersionSt.setInt(1, content.getId());
         contentVersionSt.setInt(2, content.getVersion());
-        contentVersionSt.setInt(3, newStatus);
+        contentVersionSt.setInt(3, newStatus.getTypeAsInt());
         contentVersionSt.setInt(4, activeVersion ? 1 : 0);
         contentVersionSt.setInt(5, content.getLanguage());
         contentVersionSt.setString(6, content.getTitle());
@@ -1199,7 +1012,7 @@ public class ContentAO {
         st.setString(2, "%/" +associationId +"/%");
         ResultSet rs = st.executeQuery();
 
-        StringBuffer whereClause = new StringBuffer();
+        StringBuilder whereClause = new StringBuilder();
         while(rs.next()) {
             whereClause.append(String.valueOf(rs.getInt("contentid")));
             if(!rs.isLast()) {
@@ -1224,13 +1037,11 @@ public class ContentAO {
      * @throws SystemException
      */
     private static void deleteOldContentVersions(Content content, int maxVersions) throws SystemException {
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             PreparedStatement st = c.prepareStatement("select * from contentversion where ContentId = ? and Status <> ? order by Version desc");
             st.setInt(1, content.getId());
-            st.setInt(2, ContentStatus.PUBLISHED);
+            st.setInt(2, ContentStatus.PUBLISHED.getTypeAsInt());
             ResultSet rs = st.executeQuery();
             int noVersions = 0;
             while(rs.next()) {
@@ -1238,8 +1049,7 @@ public class ContentAO {
                 noVersions++;
                 if (noVersions > maxVersions ) {
                     // Slett denne versjonen
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(content.getAssociation().getId());
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
                     cid.setVersion(ver);
                     cid.setLanguage(content.getLanguage());
 
@@ -1251,38 +1061,29 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("Feil ved lagring", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                // Could not close connection, probably closed already
-            }
         }
     }
 
-    public static Content setContentStatus(ContentIdentifier cid, int newStatus, Date newPublishDate, String userId) throws SystemException {
-        Connection c = null;
+    public static Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) throws SystemException {
+        try(Connection c = dbConnectionFactory.getConnection()){
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + cid.getContentId() + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL + "," + ContentStatus.PUBLISHED_WAITING + ") order by version desc", "Version");
+            int contentId = cid.getContentId();
+            int version = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + contentId + " AND status IN (" + ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt() + "," + ContentStatus.PUBLISHED_WAITING.getTypeAsInt() + ") order by version desc", "Version");
 
             if (version != -1) {
                 if (newStatus == ContentStatus.PUBLISHED) {
-                    // Sett status = arkivert pø aktiv versjon
+                    // Sett status = arkivert på aktiv versjon
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ?, isActive = 0 where ContentId = ? and isActive = 1");
-                    tmp.setInt(1, ContentStatus.ARCHIVED);
-                    tmp.setInt(2, cid.getContentId());
+                    tmp.setInt(1, ContentStatus.ARCHIVED.getTypeAsInt());
+                    tmp.setInt(2, contentId);
                     tmp.execute();
                     tmp.close();
 
                     tmp = c.prepareStatement("update contentversion set status = ?, isActive = 1, ApprovedBy = ?, ChangeFrom = null where ContentId = ? and Version = ?");
-                    tmp.setInt(1, ContentStatus.PUBLISHED);
+                    tmp.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
                     tmp.setString(2, userId);
-                    tmp.setInt(3, cid.getContentId());
+                    tmp.setInt(3, contentId);
                     tmp.setInt(4, version);
                     tmp.execute();
                     tmp.close();
@@ -1292,15 +1093,15 @@ public class ContentAO {
                         // Set publish date if not set
                         tmp = c.prepareStatement("update content set PublishDate = ? where ContentId = ?");
                         tmp.setTimestamp(1, new java.sql.Timestamp(newPublishDate.getTime()));
-                        tmp.setInt(2, cid.getContentId());
+                        tmp.setInt(2, contentId);
                         tmp.execute();
                         tmp.close();
                         tmp = null;
                     }
                 } else {
                     PreparedStatement tmp = c.prepareStatement("update contentversion set status = ? where ContentId = ? and Version = ?");
-                    tmp.setInt(1, newStatus);
-                    tmp.setInt(2, cid.getContentId());
+                    tmp.setInt(1, newStatus.getTypeAsInt());
+                    tmp.setInt(2, contentId);
                     tmp.setInt(3, cid.getVersion() == -1 ? version : cid.getVersion());
                     tmp.execute();
                     tmp.close();
@@ -1310,14 +1111,6 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("Feil ved lagring", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                // Could not close connection, probably closed already
-            }
         }
 
         Content content = ContentAO.getContent(cid, false);
@@ -1343,9 +1136,7 @@ public class ContentAO {
 
     public static int getNextExpiredContentId(int after) throws SystemException {
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE ExpireDate < ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(new Date().getTime()));
             p.setInt(2, ContentVisibilityStatus.ACTIVE);
@@ -1358,22 +1149,12 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
     public static int getNextWaitingContentId(int after) throws SystemException {
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE PublishDate > ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(new Date().getTime()));
             p.setInt(2, ContentVisibilityStatus.ACTIVE);
@@ -1386,14 +1167,6 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
@@ -1408,10 +1181,8 @@ public class ContentAO {
      */
     public static int getNextActivationContentId(int after) throws SystemException {
 
-        Connection c = null;
-        try {
+        try(Connection c = dbConnectionFactory.getConnection()){
             long now = new Date().getTime() + 1000*60*1;
-            c = dbConnectionFactory.getConnection();
             PreparedStatement p = c.prepareStatement("SELECT DISTINCT content.ContentId FROM content,contentversion " +
                     "WHERE content.contentId=contentversion.contentid " +
                     "AND ((PublishDate < ? AND VisibilityStatus = ?) " +
@@ -1424,7 +1195,7 @@ public class ContentAO {
             p.setInt(3, ContentVisibilityStatus.ARCHIVED);
             p.setInt(4, ContentVisibilityStatus.EXPIRED);
             p.setTimestamp(5, new Timestamp(now));
-            p.setInt(6, ContentStatus.PUBLISHED_WAITING);
+            p.setInt(6, ContentStatus.PUBLISHED_WAITING.getTypeAsInt());
             p.setTimestamp(7, new Timestamp(now));
             p.setInt(8, after);
             ResultSet rs = p.executeQuery();
@@ -1435,24 +1206,14 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
 
     public static void setContentVisibilityStatus(int contentId, int newStatus) throws SystemException {
 
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             PreparedStatement tmp = c.prepareStatement("update content set VisibilityStatus = ? where ContentId = ?");
             tmp.setInt(1, newStatus);
             tmp.setInt(2, contentId);
@@ -1460,28 +1221,13 @@ public class ContentAO {
             tmp.close();
 
         } catch (SQLException e) {
-            try {
-                c.close();
-            } catch (SQLException e1) {
-                // Could not close connection, probably closed already
-            }
             throw new SystemException("Feil ved setting av visningsstatus", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                // Could not close connection, probably closed already
-            }
         }
     }
 
     public static void setNumberOfNotes(int contentId, int count) throws SystemException {
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("UPDATE content SET NumberOfNotes = ? WHERE ContentId = ?");
             p.setInt(1, count);
             p.setInt(2, contentId);
@@ -1489,27 +1235,16 @@ public class ContentAO {
 
         } catch (SQLException e) {
             throw new SystemException("Feil ved setting av NumberOfNotes", SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
     public static List<UserContentChanges> getNoChangesPerUser(int months) throws SystemException {
         List<UserContentChanges> ucclist = new ArrayList<UserContentChanges>();
-        Connection c = null;
-
-        try {
+        try(Connection c = dbConnectionFactory.getConnection()){
 
             Calendar calendar = new GregorianCalendar();
             calendar.add(Calendar.MONTH, -months);
 
-            c = dbConnectionFactory.getConnection();
             PreparedStatement p = c.prepareStatement("select count(contentversion.lastmodifiedby) as nochanges, contentversion.lastmodifiedby from contentversion where contentversion.lastmodified > ? group by lastmodifiedby order by nochanges desc");
             p.setDate(1, new java.sql.Date(calendar.getTime().getTime()));
             ResultSet rs = p.executeQuery();
@@ -1526,66 +1261,12 @@ public class ContentAO {
             return ucclist;
         } catch (SQLException e) {
             throw new SystemException("SQL error",SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
-        }
-    }
-
-
-    public static Map<String, Collection<ContentIdentifier>> getContentIdentifiersMappedByAlias() throws SystemException {
-        Multimap<String, ContentIdentifier> contentIdentifiersMappedByAlias = ArrayListMultimap.create();
-        Connection c = null;
-
-        try {
-
-            c = dbConnectionFactory.getConnection();
-            String driver = dbConnectionFactory.getDriverName();
-
-            String where = "";
-            if (driver.contains("oracle")) {
-                where = " content.Alias is not null and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
-            } else {
-                where = " content.Alias is not null and content.Alias <> '' and associations.Type = " + AssociationType.DEFAULT_POSTING_FOR_SITE;
-            }
-
-            PreparedStatement p = c.prepareStatement("select associations.AssociationId, associations.SiteId, content.ContentId, content.Alias from associations, content where " + where + " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)");
-            ResultSet rs = p.executeQuery();
-            while(rs.next()) {
-                int associationId = rs.getInt("AssociationId");
-                int siteId = rs.getInt("SiteId");
-                int contentId = rs.getInt("ContentId");
-                String alias = rs.getString("alias");
-
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setAssociationId(associationId);
-                cid.setContentId(contentId);
-                cid.setSiteId(siteId);
-                contentIdentifiersMappedByAlias.put(alias, cid);
-            }
-            return contentIdentifiersMappedByAlias.asMap();
-        } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
         }
     }
 
     public static int getContentCount() throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
+        try(Connection c = dbConnectionFactory.getConnection()){
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
             p.setInt(1, ContentVisibilityStatus.ACTIVE);
             p.setInt(2, ContentType.PAGE.getTypeAsInt());
             ResultSet rs = p.executeQuery();
@@ -1596,21 +1277,11 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
     public static int getLinkCount() throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
             p.setInt(1, ContentVisibilityStatus.ACTIVE);
             p.setInt(2, ContentType.LINK.getTypeAsInt());
@@ -1622,21 +1293,11 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
     public static int getContentProducerCount() throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(DISTINCT LastModifiedBy) AS count FROM contentversion");
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
@@ -1646,14 +1307,6 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    // Could not close connection, probably closed already
-                }
-            }
         }
     }
 
@@ -1688,7 +1341,7 @@ public class ContentAO {
             return false;
         }
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED, ContentStatus.ARCHIVED);
+        int cnt = template.queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
         return cnt > 0;
     }
 
@@ -1723,11 +1376,10 @@ public class ContentAO {
      * @param updateChildren - true = update children / false = dont update children
      */
     public static void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
+        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
-        Connection c = null;
+        try(Connection c = dbConnectionFactory.getConnection()){
 
-        try {
-            c = dbConnectionFactory.getConnection();
             PreparedStatement p = c.prepareStatement("UPDATE content SET PublishDate = ?, ExpireDate = ? WHERE ContentId = ?");
             p.setTimestamp(1, publishDate == null ? null : new java.sql.Timestamp(publishDate.getTime()));
             p.setTimestamp(2, expireDate == null ? null : new java.sql.Timestamp(expireDate.getTime()));
@@ -1743,13 +1395,6 @@ public class ContentAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL error",SOURCE, e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
         }
     }
 

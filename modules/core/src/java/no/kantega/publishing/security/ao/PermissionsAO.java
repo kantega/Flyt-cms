@@ -41,7 +41,7 @@ import java.util.List;
 public class PermissionsAO {
     private static final String SOURCE = "aksess.PermissionsAO";
 
-    public static HashMap getPermissionMap() throws SystemException {
+    public static HashMap<String, List<Permission>> getPermissionMap() throws SystemException {
         HashMap<String, List<Permission>> permissionSets = new HashMap<String, List<Permission>>();
 
         Connection c = null;
@@ -59,7 +59,8 @@ public class PermissionsAO {
                 int objectType = rs.getInt("ObjectType");
                 if (objectSecurityId != prevObjectSecurityId || objectType != prevObjectType) {
                     if (permissionSet != null) {
-                        permissionSets.put("" + prevObjectSecurityId + "/" + prevObjectType, permissionSet);
+                        String key = String.format("%s/%s", prevObjectSecurityId, prevObjectType);
+                        permissionSets.put(key, permissionSet);
                     }
                     permissionSet = new ArrayList<Permission>();
                 }
@@ -106,7 +107,7 @@ public class PermissionsAO {
     }
 
 
-    public static void setPermissions(BaseObject object, List permissions) throws SystemException {
+    public static void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
         int securityId = object.getSecurityId();
 
         Connection c = null;
@@ -137,8 +138,7 @@ public class PermissionsAO {
 
             // Sett inn nye rettigheter
             if (permissions != null) {
-                for (int i = 0; i < permissions.size(); i++) {
-                    Permission permission = (Permission)permissions.get(i);
+                for (Permission permission : permissions) {
                     SecurityIdentifier sid = permission.getSecurityIdentifier();
                     st.setInt(1, object.getId());
                     st.setInt(2, object.getObjectType());
@@ -188,8 +188,8 @@ public class PermissionsAO {
         }
     }
 
-    public static List getPermissionsOverview(int objectType) throws SystemException {
-        List overview = new ArrayList();
+    public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
+        List<ObjectPermissionsOverview> overview = new ArrayList<ObjectPermissionsOverview>();
 
         Connection c = null;
         try {
@@ -206,7 +206,7 @@ public class PermissionsAO {
             st.setInt(1, objectType);
             ResultSet rs = st.executeQuery();
 
-            List permissions = new ArrayList();
+            List<Permission> permissions = new ArrayList<Permission>();
             int prev = -1;
             while(rs.next()) {
                 String name = rs.getString("Name");
@@ -214,7 +214,7 @@ public class PermissionsAO {
                 if (id != prev) {
                     ObjectPermissionsOverview opo = new ObjectPermissionsOverview();
                     opo.setName(name);
-                    permissions = new ArrayList();
+                    permissions = new ArrayList<Permission>();
                     opo.setPermissions(permissions);
                     overview.add(opo);
                     prev = id;

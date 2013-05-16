@@ -16,32 +16,30 @@
 
 package no.kantega.publishing.security.realm;
 
-import com.opensymphony.oscache.base.Cache;
-import com.opensymphony.oscache.base.NeedsRefreshException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.util.SecurityHelper;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.profile.ProfileManager;
-import no.kantega.security.api.profile.Profile;
-import no.kantega.security.api.identity.IdentityResolver;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.util.SecurityHelper;
 import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.role.RoleManager;
 import no.kantega.security.api.search.SearchResult;
+import org.springframework.cache.annotation.Cacheable;
 
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class SecurityRealm {
     private static final String SOURCE = "aksess.SecurityRealm";
 
-    private Cache userCache = new Cache(true, true, true, false, null, 1000);
     ProfileManager profileManager;
     RoleManager roleManager;
     IdentityResolver identityResolver;
@@ -101,9 +99,17 @@ public class SecurityRealm {
      * @param userid
      * @return User or null if not found.
      * @throws SystemException
+     * @throws IllegalArgumentException if userid is null or empty String
      */
-    public User lookupUser(String userid) throws SystemException {
-        return lookupUser(userid, false);
+    @Cacheable("UserCache")
+    public User lookupUser(String userid) throws SystemException, IllegalArgumentException {
+        if(isBlank(userid)) throw new IllegalArgumentException("Userid was null or empty String");
+        try {
+            Profile profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
+            return SecurityHelper.createAksessUser(profile);
+        } catch (no.kantega.security.api.common.SystemException e) {
+            throw new SystemException("Exception when retrieving profile for user " + userid, "SecurityRealm", e);
+        }
     }
 
     /**
@@ -113,40 +119,11 @@ public class SecurityRealm {
      * If the user is not found in the cache, an ordinary user lookup is performed and the user is added to the cache.
      * @return User or null if not found.
      * @throws SystemException
+     * @deprecated use lookupUser(String userid)
      */
+    @Deprecated
     public User lookupUser(String userid, boolean useCache) throws SystemException {
-        if (userid==null || userid.trim().length() == 0) { return null;}
-
-        Profile profile = null;
-
-        if (useCache) {
-            try {
-                profile = (Profile) userCache.getFromCache(userid);
-            } catch (NeedsRefreshException e) {
-                try {
-                    profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
-                    if (profile != null) {
-                        userCache.putInCache(userid, profile);
-                    } else {
-                        userCache.cancelUpdate(userid);
-                    }
-                } catch (no.kantega.security.api.common.SystemException e1) {
-                    userCache.cancelUpdate(userid);
-                }
-            }
-        } else {
-            try {
-                profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
-            } catch (no.kantega.security.api.common.SystemException e) {
-                Log.error(this.getClass().getName(), e, null, null);
-            }
-        }
-
-        if (profile == null) {
-            return null;
-        }
-
-        return SecurityHelper.createAksessUser(profile);
+        return lookupUser(userid);
     }
 
     public List<Role> lookupRolesForUser(String userid) throws SystemException {

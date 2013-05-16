@@ -22,23 +22,18 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 
 /**
- * User: tarkil
- * Date: Mar 25, 2008
- * Time: 12:45:38 PM
+ * Controller for generating robots.txt
  */
 public class RobotsController implements Controller {
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
-        if (Aksess.getConfiguration().getBoolean("crawler.sitemap.enabled", false)) {
-            model.put("crawlerSiteMapEnabled", Boolean.valueOf(true));
-        }
+        Map<String, Boolean> model = Collections.singletonMap("crawlerSiteMapEnabled", Aksess.getConfiguration().getBoolean("crawler.sitemap.enabled", false));
         return new ModelAndView("/WEB-INF/jsp/robots/robots.jsp", model);
     }
 

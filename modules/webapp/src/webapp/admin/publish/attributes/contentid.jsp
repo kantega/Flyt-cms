@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.commons.util.LocaleLabels,
-                 no.kantega.publishing.common.Aksess,
-                 no.kantega.publishing.common.data.Content"%>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier"%>
+                 no.kantega.publishing.api.content.ContentIdentifier,
+                 no.kantega.publishing.common.Aksess"%>
+<%@ page import="no.kantega.publishing.common.data.Content"%>
 <%@ page import="no.kantega.publishing.common.data.attributes.ContentidAttribute"%>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%--
@@ -31,8 +31,7 @@
     String contentname = "";
     if (value != null && value.length() > 0) {
         try {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(Integer.parseInt(value));
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(value));
             ContentManagementService cms = new ContentManagementService(request);
             Content c = cms.getContent(cid);
             if (c != null) {

@@ -18,25 +18,33 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:task="http://www.springframework.org/schema/task" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <context:annotation-config/>
+
+    <task:executor id="executorWithCallerRunsPolicy"
+                   pool-size="5-10"
+                   queue-capacity="100"
+                   rejection-policy="CALLER_RUNS"/>
+    <task:annotation-driven executor="executorWithCallerRunsPolicy" mode="proxy" />
+    <aop:aspectj-autoproxy/>
 
     <import resource="application-jobs.xml"/>
     <import resource="application-datasources.xml"/>
     <import resource="application-core.xml"/>
     <import resource="application-web.xml"/>
     <import resource="application-security.xml"/>
-    <import resource="application-search.xml"/>
     <import resource="application-event.xml"/>
     <import resource="application-editableforms.xml"/>
+    <import resource="classpath*:META-INF/applicationContext-search.xml"/>
 
     <bean class="no.kantega.publishing.spring.ConditionalResourceImporter">
         <property name="propertyName" value="server.type"/>
         <property name="propertyValue" value="SLAVE"/>
         <property name="resourceLocation" value="/WEB-INF/application-slave.xml"/>
     </bean>
-
 
     <bean class="no.kantega.publishing.spring.ConditionalResourceImporter">
         <property name="propertyName" value="server.type"/>
@@ -47,6 +55,13 @@
     <bean class="no.kantega.publishing.spring.PropertyReplacer"/>
     <bean class="no.kantega.publishing.spring.RootContext"/>
 
-    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">
+        <property name="cacheManager" ref="ehcacheCacheManager"/>
+    </bean>
+
+    <bean id="ehcacheCacheManager" class="no.kantega.publishing.cache.CacheManagerFactory" destroy-method="destroy"/>
+
+    <beans profile="useCaching">
+        <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
+    </beans>
 </beans>

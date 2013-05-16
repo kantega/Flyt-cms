@@ -37,7 +37,7 @@ import java.io.IOException;
  */
 public class EditTag extends AbstractSimpleEditTag {
 
-    private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
+    private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.EditTag";
     private String associationId = null;
     private String action;
 
@@ -53,7 +53,7 @@ public class EditTag extends AbstractSimpleEditTag {
             SecuritySession securitySession = SecuritySession.getInstance(request);
             if (content != null && securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
 
-                StringBuffer link = new StringBuffer();
+                StringBuilder link = new StringBuilder();
                 link.append("<a");
                 if (cssclass != null) {
                     link.append(" class=\"").append(cssclass).append("\"");
@@ -89,10 +89,10 @@ public class EditTag extends AbstractSimpleEditTag {
             }
         } catch (IOException e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } catch (SystemException e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         } catch (NotAuthorizedException e) {
             //
         } finally {

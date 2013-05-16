@@ -36,43 +36,23 @@ public class LegacySystemConfiguration implements SystemConfiguration {
     }
 
     public String getString(String name) {
-        try {
-            return configuration.getString(name);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getString(name);
     }
 
     public String getString(String name, String defaultValue) {
-        try {
-            return configuration.getString(name, defaultValue);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getString(name, defaultValue);
     }
 
     public String[] getStrings(String name) {
-        try {
-            return configuration.getStrings(name);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getStrings(name);
     }
 
     public String[] getStrings(String name, String defaultValue) {
-        try {
-            return configuration.getStrings(name, defaultValue);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getStrings(name, defaultValue);
     }
 
     public boolean getBoolean(String name, boolean defaultValue) {
-        try {
-            return configuration.getBoolean(name, defaultValue);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getBoolean(name, defaultValue);
     }
 
     public long getLong(String name, long defaultValue) {

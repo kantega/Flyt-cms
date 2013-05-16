@@ -20,6 +20,7 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -226,17 +227,17 @@ public class EditContentHelper {
         if (attr != null &&  attr instanceof RepeaterAttribute) {
             RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
 
-            List<Attribute> newAttributes = new ArrayList<Attribute>();
+            List<Attribute> newAttributes = new ArrayList<>();
             repeaterAttribute.addRow(newAttributes);
 
             List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
 
-            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, null, newAttributes, new ArrayList<Attribute>(), xmlElements);
+            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
         }
     }
 
     private static List<Element> getXMLElementsForRepeater(String rowPath, ContentTemplate template) {
-        List<Element> xmlElements = new ArrayList<Element>();
+        List<Element> xmlElements = new ArrayList<>();
         for (Element xmlElement : template.getAttributeElements()) {
             String name = xmlElement.getAttribute("name");
             if (name != null && name.equals(rowPath)) {
@@ -287,7 +288,7 @@ public class EditContentHelper {
 
         List<Attribute> newAttributes = new ArrayList<Attribute>();
 
-        addAttributes(template, attributeType, defaultValues, null, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
+        addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
 
         addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
 
@@ -366,14 +367,15 @@ public class EditContentHelper {
      * @param attributeType - type of attributes to create, content or metadata
      * @param defaultValues - used to initialize attributes with default values
      * @param newParentAttribute - parent of attributes
-     * @param oldParentAttribute - parent of oldattributes
      * @param newAttributes - list with new attributes
      * @param oldAttributes - list with old attributes
      * @param xmlAttributes - XML element with definition
      * @throws SystemException -
      * @throws InvalidTemplateException -
      */
-    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues, @Nullable RepeaterAttribute newParentAttribute, @Nullable RepeaterAttribute oldParentAttribute, List<Attribute> newAttributes, List<Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
+    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
+                                      @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
+                                      List<? extends Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
             String name = xmlAttribute.getAttribute("name");
@@ -384,25 +386,7 @@ public class EditContentHelper {
                 type = xmlAttribute.getAttribute("type");
             }
 
-            AttributeFactory attributeFactory = new ClassNameAttributeFactory();
-
-            Attribute attribute = null;
-            try {
-                attribute = attributeFactory.newAttribute(type);
-            } catch (ClassNotFoundException e) {
-                throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
-            } catch (Exception e) {
-                throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
-            }
-
-            attribute.setName(name);
-            attribute.setType(attributeType);
-
-            attribute.setConfig(xmlAttribute, defaultValues);
-
-            if (newParentAttribute != null) {
-                attribute.setParent(newParentAttribute);
-            }
+            Attribute attribute = createAttribute(template, attributeType, defaultValues, newParentAttribute, xmlAttribute, name, type);
 
             addRepeaterAttribute(template, attributeType, defaultValues, oldAttributes, xmlAttribute, attribute);
 
@@ -418,7 +402,31 @@ public class EditContentHelper {
         }
     }
 
-    private static void addRepeaterAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues, List<Attribute> oldAttributes, Element xmlAttribute, Attribute attribute) throws InvalidTemplateException {
+    private static Attribute createAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues, RepeaterAttribute newParentAttribute, Element xmlAttribute, String name, String type) throws InvalidTemplateException {
+        AttributeFactory attributeFactory = new ClassNameAttributeFactory();
+
+        Attribute attribute;
+        try {
+            attribute = attributeFactory.newAttribute(type);
+        } catch (ClassNotFoundException e) {
+            throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
+        } catch (Exception e) {
+            throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+        }
+
+        attribute.setName(name);
+        attribute.setType(attributeType);
+
+        attribute.setConfig(xmlAttribute, defaultValues);
+
+        if (newParentAttribute != null) {
+            attribute.setParent(newParentAttribute);
+        }
+        return attribute;
+    }
+
+    private static void addRepeaterAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
+                                             List<? extends Attribute> oldAttributes, Element xmlAttribute, Attribute attribute) throws InvalidTemplateException {
         if (attribute instanceof RepeaterAttribute) {
             /*
                RepeaterAttribute is a rowset of repeatable attributes
@@ -439,7 +447,7 @@ public class EditContentHelper {
             }
 
             for (int rowNumber = 0; rowNumber < maxRows; rowNumber++) {
-                List<Attribute> newRowAttributes = new ArrayList<Attribute>();
+                List<Attribute> newRowAttributes = new ArrayList<>();
                 List<Attribute> oldRowAttributes = null;
 
                 if (oldAttributes != null && oldRepeater != null) {
@@ -448,7 +456,7 @@ public class EditContentHelper {
                     }
                 }
 
-                addAttributes(template, attributeType, defaultValues, repeater, oldRepeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                addAttributes(template, attributeType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
                 repeater.addRow(newRowAttributes);
             }
         }
@@ -466,7 +474,7 @@ public class EditContentHelper {
         return xmlChildren;
     }
 
-    private static Attribute getAttributeByName(List<Attribute> attributes, String name) {
+    private static Attribute getAttributeByName(List<? extends Attribute> attributes, String name) {
         for (Attribute a : attributes) {
             if (a.getName().equals(name)) {
                 return a;

@@ -1,11 +1,9 @@
 <%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
-<%@ page import="no.kantega.publishing.spring.RootContext" %>
-<%@ page import="no.kantega.publishing.forum.ForumProvider" %>
+<%@ page import="no.kantega.publishing.api.content.Language" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.OrgunitAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.UserAttribute" %>
-<%@ page import="no.kantega.publishing.common.data.enums.Language" %>
+<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
+<%@ page import="no.kantega.publishing.forum.ForumProvider" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>

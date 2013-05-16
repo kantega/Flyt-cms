@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.controls.standard;
 
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.controls.AksessController;
 
@@ -28,81 +29,54 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.Collator;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
- * Author: Kristian Lier Selnæs, Kantega
- * Date: 22.mar.2007
- * Time: 13:41:37
+ * Controller that returns a model containing the subpages of the content it is defined on.
  */
 public class AlphabeticalListController implements AksessController {
 
     private String associationCategory;
-    private String rootUrl;
     private boolean skipAttributes = false;
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService cms = new ContentManagementService(request);
 
         ContentQuery query = new ContentQuery();
 
-        if (associationCategory != null && !associationCategory.equals("")) {
-            AssociationCategory association = cms.getAssociationCategoryByName(associationCategory);
+        if (isNotBlank(associationCategory)) {
+            AssociationCategory association = cms.getAssociationCategoryByPublicId(associationCategory);
             if (association != null) {
                 query.setAssociationCategory(association);
             }
         }
 
-        ContentIdentifier cid = null;
-        if (rootUrl != null && !rootUrl.equals("")) {
-
-            try {
-                int rootId = Integer.parseInt(rootUrl);
-                cid = new ContentIdentifier();
-                cid.setAssociationId(rootId);
-            } catch (NumberFormatException e) {
-                int siteId = -1;
-                Content current = (Content) request.getAttribute("aksess_this");
-                if (current != null && current.getAssociation() != null) {
-                    siteId = current.getAssociation().getSiteId();
-                }
-                try {
-                    cid = ContentIdHelper.findContentIdentifier(siteId, rootUrl);
-                } catch (ContentNotFoundException e1) {
-                    Log.info("aksess.AlphabeticalListContoller", "Could not find cid for rootUrl: " + rootUrl, null, null);
-                }
-            }
-            if (cid != null) {
-                query.setPathElementId(cid);
-            }
-
-        } else {
-            cid = new ContentIdentifier(request);
-            query.setAssociatedId(cid);
-        }
+        Content current = (Content)request.getAttribute("aksess_this");
+        ContentIdentifier cid = current.getContentIdentifier();
+        query.setAssociatedId(cid);
 
         SortOrder sort = new SortOrder("title", false);
-        List contentList;
+        List<Content> contentList;
         if(skipAttributes) {
             contentList = cms.getContentSummaryList(query, -1, sort);
         } else {
             contentList = cms.getContentList(query, -1, sort);
         }
-        Map letters = new TreeMap(Collator.getInstance(new Locale("no", "NO")));
+        Map<String, List<Content>> letters = new TreeMap<>(Collator.getInstance(new Locale("no", "NO")));
 
-
-        for (int i = 0; i < contentList.size(); i++) {
-            Content content = (Content) contentList.get(i);
+        for (Content content : contentList) {
             String title = content.getTitle();
             String letter = title.substring(0, 1).toUpperCase();
 
-            if(letters.get(letter) == null) {
-                letters.put(letter, new ArrayList());
+            if (letters.get(letter) == null) {
+                letters.put(letter, new ArrayList<Content>());
             }
 
-            List links = (List) letters.get(letter);
+            List<Content> links = letters.get(letter);
             links.add(content);
         }
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("letters", letters);
 
@@ -113,14 +87,8 @@ public class AlphabeticalListController implements AksessController {
         return "Alfabetisk liste";
     }
 
-
     public void setAssociationCategory(String associationCategory) {
         this.associationCategory = associationCategory;
-    }
-
-
-    public void setRootUrl(String rootUrl) {
-        this.rootUrl = rootUrl;
     }
 
     public void setSkipAttributes(boolean skipAttributes) {

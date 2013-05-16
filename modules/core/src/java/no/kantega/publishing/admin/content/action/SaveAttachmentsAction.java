@@ -1,20 +1,20 @@
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentIdentifier;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.common.service.ContentManagementService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -39,8 +39,7 @@ public class SaveAttachmentsAction extends AbstractSaveContentAction {
 
         List<Attachment> attachments;
         if (!content.isNew()) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(content.getId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(content.getId());
             cid.setLanguage(content.getLanguage());
             attachments = cms.getAttachmentList(cid);
         } else {

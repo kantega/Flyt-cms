@@ -36,7 +36,7 @@ public class ViewUploadMultimediaFormController {
     private static final String UPLOAD_FORM_VIEW = "/WEB-INF/jsp/admin/multimedia/uploadform.jsp";
 
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/multimedia/ViewUploadMultimediaForm.action", method = RequestMethod.GET)
     public String showForm(Model model,
                            @RequestParam(value = "id", required = false, defaultValue = "-1") Integer id,
                            @RequestParam(value = "parentId", required = false, defaultValue = "-1") Integer folderId,

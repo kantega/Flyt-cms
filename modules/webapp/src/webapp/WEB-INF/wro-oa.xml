@@ -26,7 +26,10 @@
         <group-ref>admin-core</group-ref>
         <group-ref>jquery-all</group-ref>
         <js>/admin/js/common.js</js>
+        <js>/admin/js/contentState.js</js>
         <js>/admin/js/admin.js</js>
+        <js>/admin/js/clipboard.js</js>
+        <js>/admin/js/userPreferences.js</js>
     </group>
 
     <group name="admin-popuplayout">
@@ -156,7 +159,7 @@
         <js>/admin/js/jquery.dimensions.pack.js</js>
         <js minimize="false">/admin/js/jquery-ui-1.8.14.custom.min.js</js>
         <js>/admin/js/jquery.contextMenu.js</js>
-        <js minimize="false">/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
+        <js>/admin/js/jquery.ba-bbq-1.0.3.min.js</js>
         <js minimize="false">/admin/js/jquery.dataTables.min.js</js>
         <js>/admin/js/jquery.interface.js</js>
         <js>/admin/js/jquery.lazyload.mini.js</js>

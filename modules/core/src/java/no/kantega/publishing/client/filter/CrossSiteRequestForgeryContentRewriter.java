@@ -19,11 +19,11 @@ package no.kantega.publishing.client.filter;
 import no.kantega.commons.util.HttpHelper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.security.SecureRandom;
-import java.math.BigInteger;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
     private Pattern pattern = Pattern.compile("<(form|FORM)[^>]*>");
@@ -41,7 +41,7 @@ public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
         int prev = 0;
         while(matcher.find()) {
             builder.append(content.substring(prev, matcher.end()));
-            builder.append("<div style=\"display: none\"><input type=\"hidden\" name=\"" + CSRF_KEY +"\" value=\"" + generateKey(request) + "\"></div>");
+            builder.append("<div style=\"display: none\"><input type=\"hidden\" name=\"" + CSRF_KEY + "\" value=\"").append(generateKey(request)).append("\"></div>");
             prev = matcher.end();
         }
         if(prev < content.length()) {

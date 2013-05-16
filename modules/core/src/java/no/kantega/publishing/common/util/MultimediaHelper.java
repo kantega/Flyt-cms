@@ -1,7 +1,7 @@
 package no.kantega.publishing.common.util;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultimediaHelper {
     public static List<Integer> getMultimediaIdsFromText(String text) {

@@ -18,10 +18,10 @@ package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.log.Log;
 
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspException;
-import java.util.List;
+import javax.servlet.jsp.JspTagException;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Gets collection from database, shows body if collection not empty
@@ -43,9 +43,8 @@ public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {
                 return SKIP_BODY;
             }
         } catch (Exception e) {
-            System.err.println(e);
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return EVAL_BODY_TAG;

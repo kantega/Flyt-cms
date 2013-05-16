@@ -18,12 +18,16 @@ package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.MultimediaMapEntry;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.MultimediaMapWorker;
@@ -71,8 +75,7 @@ public class MultimediaService {
         Multimedia multimedia = multimediaDao.getMultimedia(id);
 
         if (multimedia != null && multimedia.getContentId() > 0) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(multimedia.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = ContentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
                 throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
@@ -237,8 +240,7 @@ public class MultimediaService {
 
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(contentId);
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
             Content content = ContentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);

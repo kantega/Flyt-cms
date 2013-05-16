@@ -2,8 +2,7 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
-<%@ page import="no.kantega.publishing.security.data.Role"%>
-<%@ page import="no.kantega.publishing.security.data.User" %>
+<%@ page import="no.kantega.publishing.security.data.enums.RoleType" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -104,7 +103,7 @@
                                                             <c:when test="${canModifyPermissions}">
                                                                 <select name="notification_${p.securityIdentifier.id}">
                                                                     <c:forEach var="priority" items="${priorities}">
-                                                                        <option value="${priority.notificationPriorityAsInt}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority}"/></option>
+                                                                        <option value="${priority.notificationPriorityAsInt}" <c:if test="${priority == p.notificationPriority}">selected="selected"</c:if>><kantega:label key="aksess.editpermissions.notification${priority.notificationPriorityAsInt}"/></option>
                                                                     </c:forEach>
                                                                 </select>
                                                             </c:when>
@@ -126,8 +125,8 @@
                 </table>
                 <c:if test="${canModifyPermissions}">
                     <div class="buttonGroup" style="text-align: right; margin-bottom:10px">
-                        <a href="Javascript:addRole('<%=new Role().getType()%>')" class="button"><span class="add"><kantega:label key="aksess.editpermissions.addrole"/></span></a>
-                        <a href="Javascript:addUser('<%=new User().getType()%>')" class="button"><span class="add"><kantega:label key="aksess.editpermissions.adduser"/></span></a>
+                        <a href="Javascript:addRole('<%=RoleType.ROLE%>')" class="button"><span class="add"><kantega:label key="aksess.editpermissions.addrole"/></span></a>
+                        <a href="Javascript:addUser('<%=RoleType.USER %>')" class="button"><span class="add"><kantega:label key="aksess.editpermissions.adduser"/></span></a>
                     </div>
                 </c:if>
 

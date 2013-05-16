@@ -16,14 +16,13 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
-import no.kantega.publishing.security.interceptors.AdminViewInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

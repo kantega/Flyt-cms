@@ -21,7 +21,6 @@ import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.publishing.common.data.enums.HTMLVersion;
 import no.kantega.publishing.common.data.enums.ServerType;
 
 import java.io.IOException;
@@ -41,6 +40,7 @@ public class Aksess {
 
     public static final String CONTENT_URL_PREFIX = "/content";
     public static final String MULTIMEDIA_URL_PREFIX = "/multimedia";
+    public static final String ATTACHMENT_URL_PREFIX = "/attachment";
 
     public static final String CONTENT_REQUEST_HANDLER = "content.ap";
     public static final String ATTACHMENT_REQUEST_HANDLER = "attachment.ap";
@@ -109,8 +109,6 @@ public class Aksess {
 
     private static boolean topicMapsEnabled = false;
 
-    private static String luceneIndexDir;
-
     private static int securitySessionTimeout = 7200;
     private static int lockTimeToLive = 3600;
     private static boolean linkCheckerEnabled = false;
@@ -119,8 +117,6 @@ public class Aksess {
 
     private static String language;
     private static String country;
-
-    private static String htmlVersion;
 
     private static boolean csrfCheckEnabled = true;
     private static boolean javascriptDebugEnabled;
@@ -132,13 +128,14 @@ public class Aksess {
     private static ServerType serverType;
 
     private static String queryStringEncoding;
+    private static int xmlCacheMaxAge = 3;
 
     public static void loadConfiguration() {
 
         try {
             contextPath = c.getString("location.contextpath", "");
             if (contextPath.length() > 0) {
-                if (contextPath.indexOf("/") != -1) {
+                if (contextPath.contains("/")) {
                     // Fjern ekstra / start eller slutt av adresse
                     contextPath = StringHelper.replace(contextPath, "/", "");
                 }
@@ -203,6 +200,8 @@ public class Aksess {
                 Log.info(SOURCE, "Module enabled: Traffic log");
             }
             trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
+            deletedItemsMaxAge = c.getInt("deleteditems.maxage", deletedItemsMaxAge);
+            xmlCacheMaxAge = c.getInt("xmlcache.maxage", xmlCacheMaxAge);
 
             internalIpSegment = c.getStrings("trafficlog.internalipsegment", "172.16.1");
 
@@ -227,11 +226,6 @@ public class Aksess {
                 Log.info(SOURCE, "Module enabled: Link checker");
             }
 
-
-            // Location of search-index
-            luceneIndexDir = c.getString("lucene.index.dir", Configuration.getApplicationDirectory() +"/index");
-
-
             // Roller
             roleAdmin = c.getString("security.role.admin", "admin");
             roleAuthor = c.getStrings("security.role.author", "innholdsprodusent");
@@ -249,8 +243,6 @@ public class Aksess {
             language = c.getString("admin.locale.language", "no");
             country = c.getString("admin.locale.country", "NO");
 
-            htmlVersion = c.getString("html.version", HTMLVersion.HTML_401_TRANS);
-            
             javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
 
             // Format of alt and title-attributes
@@ -477,10 +469,6 @@ public class Aksess {
         return outputImageQuality;
     }
 
-    public static String getLuceneIndexDir() {
-        return luceneIndexDir;
-    }
-
     public static String[] getInternalIpSegment() {
         return internalIpSegment;
     }
@@ -511,10 +499,6 @@ public class Aksess {
 
     public static int getDeletedItemsMaxAge() {
         return deletedItemsMaxAge;
-    }
-
-    public static String getHtmlVersion() {
-        return htmlVersion;
     }
 
     public static boolean isJavascriptDebugEnabled() {
@@ -596,5 +580,9 @@ public class Aksess {
 
     public static boolean isDefaultMinorChange() {
         return isDefaultMinorChange;
+    }
+
+    public static int getXmlCacheMaxAge() {
+        return xmlCacheMaxAge;
     }
 }

@@ -1,13 +1,13 @@
 package no.kantega.publishing.cache;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.ao.XMLCacheAO;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.XMLCacheEntry;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
@@ -29,11 +29,14 @@ public class SlaveCacheExpiratorJob {
     @Autowired
     private EventLog eventLog;
 
+    @Autowired
+    private XmlCache xmlCache;
+
     private CacheManager cacheManager;
 
     public void execute() {
         if (Aksess.getServerType() != ServerType.SLAVE) {
-            log.error("This job should not run on server type " +Aksess.getServerType());
+            log.error("This job should not run on server type " + Aksess.getServerType());
             return;
         }
         try {
@@ -44,9 +47,9 @@ public class SlaveCacheExpiratorJob {
             throw new RuntimeException(e);
         }
 
-        final Cache contentCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentCache.name());
-        final Cache contentListCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentListCache.name());
-        final Cache siteMapCache = cacheManager.getCache(CacheManagerFactory.CacheNames.SiteMapCache.name());
+        final Ehcache contentCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentCache.name());
+        final Ehcache contentListCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentListCache.name());
+        final Ehcache siteMapCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.SiteMapCache.name());
         // Find content that was changed
 
         long thisRun = System.currentTimeMillis();
@@ -83,11 +86,11 @@ public class SlaveCacheExpiratorJob {
         }
 
         // Flush any XML caches changed since last time
-        for(XMLCacheEntry e : XMLCacheAO.getSummary()) {
+        for(XMLCacheEntry e : xmlCache.getSummary()) {
             if(e.getLastUpdated().getTime() > lastRun) {
                 final Object key = e.getId();
                 log.debug("Flushing XML cache " + key);
-                cacheManager.getCache(CacheManagerFactory.CacheNames.XmlCache.name()).remove(key);
+                cacheManager.getEhcache(CacheManagerFactory.CacheNames.XmlCache.name()).remove(key);
             }
         }
 

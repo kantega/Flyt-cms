@@ -16,16 +16,18 @@
 
 package no.kantega.publishing.jobs.alerts;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
-import no.kantega.publishing.common.cache.SiteCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.Site;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -33,13 +35,19 @@ import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ExpireContentAlertJob {
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 14;
     private static String SOURCE = "ExpireContentAlertJob";
+
+    @Autowired
+    private SiteCache siteCache;
 
     public void execute() {
 
@@ -52,9 +60,8 @@ public class ExpireContentAlertJob {
             Log.info(SOURCE, "Looking for content will expire in less than " + daysBeforeWarning + " days", null, null);
 
 
-            List sites = SiteCache.getSites();
-            for (int i = 0; i < sites.size(); i++) {
-                Site site = (Site)sites.get(i);
+            List<Site> sites = siteCache.getSites();
+            for (Site site : sites) {
                 String alias = ".";
                 if (site != null && !site.getAlias().equals("/")) {
                     alias = site.getAlias();
@@ -72,7 +79,7 @@ public class ExpireContentAlertJob {
                 query.setSiteId(site.getId());
 
                 SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
-                List contentList = ContentAO.getContentList(query, -1, sort, false);
+                List<Content> contentList = ContentAO.getContentList(query, -1, sort, false);
 
                 String defaultUserEmail = null;
 
@@ -83,11 +90,10 @@ public class ExpireContentAlertJob {
                     Log.error(SOURCE, e, null, null);
                 }
 
-                Map users = new HashMap();
+                Multimap<String, Content> users = ArrayListMultimap.create();
 
                 // Insert docs into hashmap
-                for (int j = 0; j < contentList.size(); j++) {
-                    Content content = (Content)contentList.get(j);
+                for (Content content : contentList) {
 
                     if (content.getExpireAction() == ExpireAction.REMIND) {
                         String userId;
@@ -100,41 +106,23 @@ public class ExpireContentAlertJob {
                                 userId = content.getModifiedBy();
                             }
                         }
-                        if (userId != null && userId.length() > 0) {
-                            List userContentList = (List)users.get(userId);
-                            if (userContentList == null) {
-                                userContentList =  new ArrayList();
-                                users.put(userId, userContentList);
-                            }
-                            userContentList.add(content);
+                        if (isNotBlank(userId)) {
+                            users.put(userId, content);
                         }
                     }
                 }
 
                 // Iterate through users
-                Iterator it = users.keySet().iterator();
-                while (it.hasNext()) {
-                    String userId = (String)it.next();
-
-                    List userContentList = (List)users.get(userId);
-
-                    User user = null;
-                    if (userId.contains("@")) {
-                        user = new User();
-                        user.setId(userId);
-                        user.setEmail(userId);
-                    } else {
-                        // Lookup user with userid
-                        SecurityRealm realm = SecurityRealmFactory.getInstance();
-                        user = realm.lookupUser(userId);
-                    }
+                for (Map.Entry<String, Collection<Content>> entry : users.asMap().entrySet()) {
+                    String userId = entry.getKey();
+                    User user = getUser(userId);
 
 
                     // Send message using listeners
+                    List<Content> userContentList = new ArrayList<>(entry.getValue());
                     if (user != null) {
                         Log.info(SOURCE, "Sending alert to user " + user.getId() + " - " + userContentList.size() + " docs about to expire", null, null);
-                        for (int j = 0; j < listeners.length; j++) {
-                            ContentAlertListener listener = listeners[j];
+                        for (ContentAlertListener listener : listeners) {
                             listener.sendContentAlert(user, userContentList);
                         }
                     } else {
@@ -149,6 +137,20 @@ public class ExpireContentAlertJob {
             Log.error(SOURCE, e, null, null);
         }
 
+    }
+
+    private User getUser(String userId) {
+        User user = null;
+        if (userId.contains("@")) {
+            user = new User();
+            user.setId(userId);
+            user.setEmail(userId);
+        } else {
+            // Lookup user with userid
+            SecurityRealm realm = SecurityRealmFactory.getInstance();
+            user = realm.lookupUser(userId);
+        }
+        return user;
     }
 
     public void setListeners(ContentAlertListener[] listeners) {

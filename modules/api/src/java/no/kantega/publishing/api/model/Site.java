@@ -16,24 +16,94 @@
 
 package no.kantega.publishing.api.model;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * Represent a single site.
  */
-public interface Site {
+public class Site implements PublicIdObject{
+    private int id;
+    private String name;
+    private String alias;
+    private boolean disabled = false;
+    private String scheme;
+    private String publicId = "";
+    private String displayTemplateId;
+    private boolean isDefault;
 
-    int getId();
+    private List<String> hostnames = Collections.emptyList();
 
-    String getPublicId();
+    public int getId() {
+        return id;
+    }
 
-    String getName();
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    String getAlias();
+    public String getPublicId(){
+        return publicId;
+    }
 
-    List<String> getHostnames();
+    public String getName(){
+        return name;
+    }
 
-    String getScheme();
+    public String getAlias(){
+        return alias;
+    }
 
-    String getDisplayTemplateId();
+    public List<String> getHostnames(){
+        return hostnames;
+    }
+
+    public String getScheme(){
+        return scheme;
+    }
+
+    public String getDisplayTemplateId(){
+        return displayTemplateId;
+    }
+
+    public boolean isDisabled(){
+        return disabled;
+    }
+
+    public boolean isDefault(){
+        return isDefault;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public void setScheme(String scheme) {
+        this.scheme = scheme;
+    }
+
+    public void setPublicId(String publicId) {
+        this.publicId = publicId;
+    }
+
+    public void setDisplayTemplateId(String displayTemplateId) {
+        this.displayTemplateId = displayTemplateId;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+    public void setHostnames(List<String> hostnames) {
+        this.hostnames = hostnames;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 }

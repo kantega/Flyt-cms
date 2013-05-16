@@ -22,8 +22,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.log4j.Logger;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +31,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.Map;
 
 /**
  *
  */
 public class AdminFilter implements Filter {
     private ServletContext servletContext;
+    private CrossSiteRequestForgeryContentRewriter crossSiteRequestForgeryContentRewriter;
     private Logger  log = Logger.getLogger(getClass());
 
     private static String[] excludedStaticResources = {".png", ".jpg", ".gif", ".jjs", ".js", ".css"};
@@ -79,18 +79,13 @@ public class AdminFilter implements Filter {
                 request.getSession(true).setAttribute("adminMode", "true");
 
                 // Check for cross site request forgery
-                if(isForgedPost(request)) {
+                if(Aksess.isCsrfCheckEnabled() && isForgedPost(request)) {
                     log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
-                    if (Aksess.isCsrfCheckEnabled()) {
-                        response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
-                        return;
-                    } else {
-                        log.info("... but CSRF-checking is disabled for this site");
-                    }
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
+                    return;
                 }
                 response.setDateHeader("Expires", 0);
             }
-
 
             filterChain.doFilter(request,  response);
         } catch (Exception e) {
@@ -121,7 +116,7 @@ public class AdminFilter implements Filter {
                     cause = (Throwable) e;
                 }
             }
-            e.printStackTrace();
+            log.error(cause);
 
             handler.setThrowable(cause, request.getRequestURI());
             request.getSession(true).setAttribute("handler", handler);
@@ -152,28 +147,9 @@ public class AdminFilter implements Filter {
             return false;
         }
 
-        // DWR has it's own CSRF detection
-        if("/admin/dwr".equals(request.getServletPath()))  {
-            return false;
-        }
-
-        // It's impossible to add the X-Requested-With parameter or the csrfkey to the first DWR request, so we must manually skip this URL
-        if (request.getPathInfo() != null && request.getPathInfo().endsWith("System.pageLoaded.dwr")) {
-            return false;
-        }
-
         if(!HttpHelper.isAdminMode(request)) {
             return false;
         }
-        
-        final Map map = RootContext.getInstance().getBeansOfType(CrossSiteRequestForgeryContentRewriter.class);
-
-        // CSRF protection not configured
-        if(map.size() == 0) {
-            return false;
-        }
-
-        CrossSiteRequestForgeryContentRewriter rewriter = (CrossSiteRequestForgeryContentRewriter) map.values().iterator().next();
 
         String param = request.getParameter(CrossSiteRequestForgeryContentRewriter.CSRF_KEY);
 
@@ -196,12 +172,12 @@ public class AdminFilter implements Filter {
             throw new RuntimeException(e);
         }
 
-        if(!key.xor(rewriter.getSecret()).equals(expected)) {
-            return true;
+        if(crossSiteRequestForgeryContentRewriter == null){
+            crossSiteRequestForgeryContentRewriter = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext).getBean(CrossSiteRequestForgeryContentRewriter.class);
         }
 
+        return !key.xor(crossSiteRequestForgeryContentRewriter.getSecret()).equals(expected);
 
-        return false;
 
     }
 

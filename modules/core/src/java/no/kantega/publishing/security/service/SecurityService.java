@@ -27,18 +27,15 @@ import no.kantega.publishing.security.data.enums.Privilege;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SecurityService {
 
     /**
-     * Sjekk om rolle har tilgang til objekt
-     * @param role
-     * @param object
-     * @param privilege
-     * @return
-     * @throws SystemException
+     * Check whether a user with the given role is authorized to do the given privilege on the given object.
+     * @return true if the user is authorized.
+     * @throws SystemException if loading of the privilegies fails.
      */
     public static boolean isAuthorized(Role role, BaseObject object, int privilege) throws SystemException {
         if (object instanceof Content) {
@@ -46,16 +43,15 @@ public class SecurityService {
             object = c.getAssociation();
         }
 
-        List permissions = PermissionsCache.getPermissions(object);
+        List<Permission> permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
             // Ingen rettigheter definert for dette privilegium, ok
             return true;
         }
 
-        for (int i = 0; i < permissions.size(); i++) {
-            Permission p = (Permission)permissions.get(i);
-            if (p.getPrivilege() >= privilege) {
-                SecurityIdentifier sid = p.getSecurityIdentifier();
+        for (Permission permission : permissions) {
+            if (permission.getPrivilege() >= privilege) {
+                SecurityIdentifier sid = permission.getSecurityIdentifier();
                 String id = sid.getId();
                 if (role.getId().equalsIgnoreCase(id)) {
                     return true;
@@ -68,12 +64,9 @@ public class SecurityService {
 
 
     /**
-     * Sjekk om bruker har tilgang til objekt
-     * @param user
-     * @param object
-     * @param privilege
-     * @return
-     * @throws SystemException
+     * Check whether the given user is authorized to do the given privilege on the given object.
+     * @return true if the user is authorized.
+     * @throws SystemException if loading of the privilegies fails.
      */
     public static boolean isAuthorized(User user, BaseObject object, int privilege) throws SystemException {
 
@@ -88,7 +81,7 @@ public class SecurityService {
             object = c.getAssociation();
         }
 
-        List permissions = PermissionsCache.getPermissions(object);
+        List<Permission> permissions = PermissionsCache.getPermissions(object);
         if (permissions == null || permissions.size() == 0) {
             // Ingen rettigheter definert for dette privilegium, ok
             return true;
@@ -106,11 +99,9 @@ public class SecurityService {
 
 
     /**
-     * Sjekk om bruker er godkjenner av objekt
-     * @param user
-     * @param object
-     * @return
-     * @throws SystemException
+     * Check whether the given user has permission to approve the given Content object
+     * @return true if the user can approve the content object
+     * @throws SystemException if loading of the privilegies fails.
      */
     public static boolean isApprover(User user, Content object) throws SystemException {
 
@@ -206,10 +197,8 @@ public class SecurityService {
 
 
     /**
-     * Sjekk om bruker har rolle
-     * @param user
-     * @param role
-     * @return true/false
+     * Check whether the given user has the role with the given name.
+     * @return true if the user has the given role.
      */
     public static boolean isUserInRole(User user, String role) {
         if (role.equalsIgnoreCase(Aksess.getEveryoneRole())) {
@@ -217,21 +206,19 @@ public class SecurityService {
         } else if (user == null) {
             return false;
         } else {
-            HashMap roles = user.getRoles();
+            Map<String, Role> roles = user.getRoles();
             if (roles == null) {
                 return false;
             }
-            Role r = (Role)roles.get(role);
+            Role r = roles.get(role);
             return r != null;
         }
     }
 
 
     /**
-     * Hent rettigheter for objekt
-     * @param object
-     * @return
-     * @throws SystemException
+     * @return Permissions defined for the given object.
+     * @throws SystemException if loading of the privilegies fails.
      */
     public static List<Permission> getPermissions(BaseObject object) throws SystemException {
         if (object instanceof Content) {
@@ -242,10 +229,9 @@ public class SecurityService {
         List<Permission> permissions = new ArrayList<Permission>();
 
         // Klone liste i tilfelle den blir endret
-        List tmp = PermissionsCache.getPermissions(object);
+        List<Permission> tmp = PermissionsCache.getPermissions(object);
         if (tmp != null) {
-            for (int i = 0; i < tmp.size(); i++) {
-                Permission p = (Permission)tmp.get(i);
+            for (Permission p : tmp) {
                 Permission newP = new Permission(p);
                 permissions.add(newP);
             }
@@ -256,12 +242,10 @@ public class SecurityService {
 
 
     /**
-     * Lagre rettigheter for objekt
-     * @param object
-     * @param permissions
-     * @throws SystemException
+     * Set the given Permissions on the given object.
+     * @throws SystemException if persistence of permissions fails.
      */
-    public static void setPermissions(BaseObject object, List permissions) throws SystemException {
+    public static void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
         if (object instanceof Content) {
             Content c = (Content)object;
             object = c.getAssociation();
@@ -273,12 +257,11 @@ public class SecurityService {
     }
 
     /**
-     * Hent oversikt over alle rettigheter
-     * @param objectType
-     * @return
-     * @throws SystemException
+     * @return Overview of all Permissions for the given ObjectType
+     * @see no.kantega.publishing.common.data.enums.ObjectType
+     * @throws SystemException if loading of the privilegies fails.
      */
-    public static List getPermissionsOverview(int objectType) throws SystemException {
+    public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
         return PermissionsAO.getPermissionsOverview(objectType);
     }
 }

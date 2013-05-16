@@ -33,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
  * Controller for handling deletion of multimedia objects, i.e. files or folders.
  */
 @Controller
+@RequestMapping("/admin/multimedia/DeleteMultimedia.action")
 public class DeleteMultimediaAction {
     private static final String ERROR_VIEW = "/WEB-INF/jsp/admin/generic/popup-error.jsp";
     private static final String BEFORE_DELETE_VIEW = "/WEB-INF/jsp/admin/multimedia/delete/confirmdelete.jsp";

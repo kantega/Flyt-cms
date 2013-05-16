@@ -459,7 +459,7 @@ public class XTMImportWorker{
                 Element elmTopic = (Element)topics.item(i);
                 addTopic(elmTopic);
             }
-            System.out.println("Antall topics:" + topics.getLength());
+            Log.info(getClass().getSimpleName(), "Antall topics:" + topics.getLength());
 
             // Legg inn
             NodeList associations = XPathAPI.selectNodeList(xmlTopicMap.getDocumentElement(), "association");
@@ -467,7 +467,7 @@ public class XTMImportWorker{
                 Element elmAssociation = (Element)associations.item(i);
                 addAssociation(elmAssociation);
             }
-            System.out.println("Antall associations:" + associations.getLength());
+            Log.info(getClass().getSimpleName(), "Antall associations:" + associations.getLength());
 
         } catch (TransformerException e) {
             throw new SystemException("Uventet XML/XPath feil", SOURCE, e);

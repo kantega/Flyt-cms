@@ -16,23 +16,24 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.data.enums.ContentStatus;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.org.OrganizationManager;
-import no.kantega.publishing.org.OrgUnit;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-
-import java.sql.*;
-import java.util.List;
-
+import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.common.data.Hearing;
+import no.kantega.publishing.common.data.HearingComment;
+import no.kantega.publishing.common.data.HearingInvitee;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.org.OrgUnit;
+import no.kantega.publishing.org.OrganizationManager;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+
+import java.sql.*;
+import java.util.List;
 
 
 public class HearingAO {
@@ -243,7 +244,7 @@ public class HearingAO {
             if (activeversion == -1) {
                 return -1;
             }
-            return SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " + ContentStatus.HEARING +" AND Version > " +activeversion +" order by Version desc" , "ContentVersionId");
+            return SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " + ContentStatus.HEARING.getTypeAsInt() +" AND Version > " +activeversion +" order by Version desc" , "ContentVersionId");
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
             return -1;

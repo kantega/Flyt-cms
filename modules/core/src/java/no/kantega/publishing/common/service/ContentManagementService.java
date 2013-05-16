@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.common.service;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.InvalidFileException;
@@ -26,12 +26,22 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;
-import no.kantega.publishing.common.cache.*;
+import no.kantega.publishing.common.cache.AssociationCategoryCache;
+import no.kantega.publishing.common.cache.ContentTemplateCache;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -40,9 +50,9 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.service.impl.SiteMapWorker;
-import no.kantega.publishing.common.service.impl.TrafficLogger;
 import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
 import no.kantega.publishing.event.ContentEvent;
@@ -53,6 +63,7 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
@@ -67,21 +78,26 @@ public class ContentManagementService {
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;
-    private final Cache contentCache;
-    private final Cache contentListCache;
-    private final Cache siteMapCache;
-    private final Cache xmlCache;
+    private final Ehcache contentCache;
+    private final Ehcache contentListCache;
+    private final Ehcache siteMapCache;
+    private final XmlCache xmlCache;
     private EventLog eventLog;
     private boolean cachingEnabled;
+    private TrafficLogger trafficLogger;
+    private SiteCache siteCache;
 
     private ContentManagementService() {
-        final CacheManager cacheManager = RootContext.getInstance().getBean("cacheManager", CacheManager.class);
-        contentCache = cacheManager.getCache("ContentCache");
-        contentListCache = cacheManager.getCache("ContentListCache");
-        siteMapCache = cacheManager.getCache("SiteMapCache");
-        xmlCache = cacheManager.getCache("XmlCache");
+        ApplicationContext context = RootContext.getInstance();
 
-        eventLog = RootContext.getInstance().getBean(EventLog.class);
+        CacheManager cacheManager = context.getBean(CacheManager.class);
+        contentCache = cacheManager.getEhcache("ContentCache");
+        contentListCache = cacheManager.getEhcache("ContentListCache");
+        siteMapCache = cacheManager.getEhcache("SiteMapCache");
+
+        eventLog = context.getBean(EventLog.class);
+        trafficLogger = context.getBean(TrafficLogger.class);
+        xmlCache = context.getBean(XmlCache.class);
 
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
@@ -121,6 +137,7 @@ public class ContentManagementService {
      * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
+        ContentIdHelper.assureContentIdAndAssociationIdSet(id);
         ContentLock lock = LockManager.peekAtLock(id.getContentId());
         if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
             throw new ObjectLockedException(securitySession.getUser().getId(), SOURCE);
@@ -158,12 +175,12 @@ public class ContentManagementService {
         Calendar cal = new GregorianCalendar(Aksess.getDefaultLocale());
         defaultValues.put(AttributeDefaultValues.YEAR, "" + cal.get(Calendar.YEAR));
         int month = cal.get(Calendar.MONTH)+1;
-        String m = (month<10) ? "0"+month : ""+month;
+        String m = String.valueOf((month<10) ? "0"+month : month);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         String d = (day<10) ? "0"+day : ""+day;
         defaultValues.put(AttributeDefaultValues.MONTH, m);
-        defaultValues.put(AttributeDefaultValues.DAY, "" + d);
-        defaultValues.put(AttributeDefaultValues.WEEK, "" + cal.get(Calendar.WEEK_OF_YEAR));
+        defaultValues.put(AttributeDefaultValues.DAY, d);
+        defaultValues.put(AttributeDefaultValues.WEEK, String.valueOf(cal.get(Calendar.WEEK_OF_YEAR)));
 
         // Last attributter fra XML fil
         EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());
@@ -205,9 +222,8 @@ public class ContentManagementService {
         if (c != null) {
             assertCanView(c, adminMode, securitySession);
         }
-        if (c != null && logView && !adminMode && Aksess.isTrafficLogEnabled() && request != null) {
-            // Log event
-            TrafficLogger.log(c, request);
+        if (c != null && logView && request != null) {
+            trafficLogger.log(c, request);
         }
         return c;
     }
@@ -280,7 +296,7 @@ public class ContentManagementService {
      * @throws SystemException
      * @throws NotAuthorizedException
      */
-    public Content checkInContent(Content content, int newStatus) throws SystemException, NotAuthorizedException {
+    public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException, NotAuthorizedException {
         LockManager.releaseLock(content.getId());
         boolean hasBeenPublished = ContentAO.hasBeenPublished(content.getId());
 
@@ -389,10 +405,10 @@ public class ContentManagementService {
 
         String eventName;
         switch (c.getStatus()) {
-            case ContentStatus.DRAFT:
+            case DRAFT:
                 eventName = Event.SAVE_DRAFT;
                 break;
-            case ContentStatus.WAITING_FOR_APPROVAL:
+            case WAITING_FOR_APPROVAL:
                 eventName = Event.SEND_FOR_APPROVAL;
                 break;
             default:
@@ -415,10 +431,8 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public Content copyContent(Content sourceContent, Association target, AssociationCategory category, boolean copyChildren) throws SystemException, NotAuthorizedException {
+        ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
         Log.info(SOURCE, String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
-
-        ContentIdentifier parentCid = new ContentIdentifier();
-        parentCid.setAssociationId(target.getAssociationId());
 
         Content destParent = ContentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
@@ -506,7 +520,7 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      * @throws SystemException
      */
-    public Content setContentStatus(ContentIdentifier cid, int newStatus, String note) throws NotAuthorizedException, SystemException {
+    public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, String note) throws NotAuthorizedException, SystemException {
         Content c = getContent(cid);
         boolean hasBeenPublished = ContentAO.hasBeenPublished(c.getId());
         if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
@@ -520,10 +534,14 @@ public class ContentManagementService {
             n.setText(note);
             n.setContentId(cid.getContentId());
 
+            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+            int contentId = cid.getContentId();
+            n.setContentId(contentId);
+
             NotesDao notesDao = (NotesDao)RootContext.getInstance().getBean("aksessNotesDao");
             notesDao.addNote(n);
-            int count = notesDao.getNotesByContentId(cid.getContentId()).size();
-            ContentAO.setNumberOfNotes(cid.getContentId(), count);
+            int count = notesDao.getNotesByContentId(contentId).size();
+            ContentAO.setNumberOfNotes(contentId, count);
         }
 
         Date newPublishDate = null;
@@ -568,7 +586,6 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public void deleteContent(ContentIdentifier id) throws SystemException, ObjectInUseException, NotAuthorizedException {
-        ContentIdentifier cid = null;
         String title = null;
 
         if (id != null) {
@@ -588,7 +605,7 @@ public class ContentManagementService {
 
                 ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
 
-                cid = ContentAO.deleteContent(id);
+                ContentAO.deleteContent(id);
                 if (title != null) {
                     eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }
@@ -658,7 +675,7 @@ public class ContentManagementService {
         if(cachingEnabled) {
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
-            ParameterCacheKey key = new ParameterCacheKey(qp, maxElements, sort, getAttributes, getTopics);
+            String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
 
             Element element = contentListCache.get(key);
 
@@ -670,6 +687,19 @@ public class ContentManagementService {
         } else {
             return ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
         }
+    }
+
+    private String buildContentListKey(ContentQuery.QueryWithParameters qp, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
+        StringBuilder keyBuilder = new StringBuilder(qp.getQuery());
+        keyBuilder.append(maxElements);
+        if (sort != null) {
+            keyBuilder.append(sort.getSort1());
+            keyBuilder.append(sort.getSort2());
+            keyBuilder.append(sort.sortDescending());
+        }
+        keyBuilder.append(getAttributes);
+        keyBuilder.append(getTopics);
+        return keyBuilder.toString();
     }
 
     private int getMaxElementsToGetBeforeAuthorizationCheck(int maxElements) {
@@ -831,7 +861,7 @@ public class ContentManagementService {
         if (cachingEnabled) {
             int categoryId = category != null ? category.getId() : -1;
 
-            ParameterCacheKey key = new ParameterCacheKey(siteId, depth, language, rootId, path, categoryId);
+            String key = createSiteMapKey(siteId, depth, language, rootId, path, categoryId);
 
             Element element = siteMapCache.get(key);
             if(element == null) {
@@ -843,6 +873,16 @@ public class ContentManagementService {
         } else {
             return SiteMapWorker.getSiteMap(siteId, depth, language, category, rootId, path);
         }
+    }
+
+    private String createSiteMapKey(int siteId, int depth, int language, int rootId, int[] path, int categoryId) {
+        StringBuilder keybuilder = new StringBuilder(Integer.toString(siteId));
+        keybuilder.append(depth);
+        keybuilder.append(language);
+        keybuilder.append(rootId);
+        keybuilder.append(Arrays.toString(path));
+        keybuilder.append(categoryId);
+        return keybuilder.toString();
     }
 
     /**
@@ -896,7 +936,8 @@ public class ContentManagementService {
     public List<PathEntry> getPathByAssociation(Association association) throws SystemException {
         List<PathEntry> paths = PathWorker.getPathByAssociation(association);
         if (paths != null && paths.size() > 0) {
-            Site site = SiteCache.getSiteById(paths.get(0).getId());
+            setSiteCacheIfNull();
+            Site site = siteCache.getSiteById(paths.get(0).getId());
             if (site != null) {
                 paths.get(0).setTitle(site.getName());
             }
@@ -904,6 +945,11 @@ public class ContentManagementService {
         return paths;
     }
 
+    private void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
+    }
     /**
      * Hent sti basert på ContentIdentifier
      * @param cid - Innholdsid
@@ -1071,8 +1117,7 @@ public class ContentManagementService {
                     }
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker på
-                    ContentIdentifier cid = new ContentIdentifier();
-                    cid.setAssociationId(a.getId());
+                    ContentIdentifier cid =  ContentIdentifier.fromAssociationId(a.getId());
                     Content c = ContentAO.getContent(cid, false);
                     if (c == null) {
                         Log.error(SOURCE, "Content == null, associationId =" + a.getId(), null, null);
@@ -1115,17 +1160,14 @@ public class ContentManagementService {
     public void modifyAssociation(Association association) throws SystemException {
         int aid = association.getAssociationId();
         if (aid != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setAssociationId(aid);
+            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(aid);
             Content c = ContentAO.getContent(cid, true);
             Association old = AssociationAO.getAssociationById(association.getId());
             if (c != null && old != null) {
-                ContentIdentifier cidOldParent = new ContentIdentifier();
-                cidOldParent.setAssociationId(old.getParentAssociationId());
+                ContentIdentifier cidOldParent =  ContentIdentifier.fromAssociationId(old.getParentAssociationId());
                 Content oldParent = ContentAO.getContent(cidOldParent, true);
 
-                ContentIdentifier cidNewParent = new ContentIdentifier();
-                cidNewParent.setAssociationId(association.getParentAssociationId());
+                ContentIdentifier cidNewParent =  ContentIdentifier.fromAssociationId(association.getParentAssociationId());
                 Content newParent = ContentAO.getContent(cidNewParent, true);
 
                 String event = Event.MOVE_CONTENT;
@@ -1172,7 +1214,6 @@ public class ContentManagementService {
      */
     public int restoreDeletedItem(int id) throws SystemException {
         int parentId = AssociationAO.restoreAssociations(id);
-        DeletedItemsAO.purgeDeletedItem(id);
         return parentId;
     }
 
@@ -1190,8 +1231,7 @@ public class ContentManagementService {
             int contentId = attachment.getContentId();
             // Må hente ut tilhørende contentobject for å vite om bruker er autorisert og at ikke vedlegget er slettet
             if (contentId != -1) {
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(contentId);
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
                 if (siteId != -1) {
                     cid.setSiteId(siteId);
                 }
@@ -1230,8 +1270,7 @@ public class ContentManagementService {
         }
 
         if (attachment.getContentId() != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(attachment.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized to add attachment", SOURCE);
@@ -1269,8 +1308,7 @@ public class ContentManagementService {
         title = attachment.getFilename();
 
         if (attachment.getContentId() != -1) {
-            ContentIdentifier cid = new ContentIdentifier();
-            cid.setContentId(attachment.getContentId());
+            ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized to delete attachment", SOURCE);
@@ -1302,17 +1340,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
-        if(cachingEnabled) {
-            final Object key = (Object) id;
-            Element element = xmlCache.get(key);
-            if(element == null) {
-                element = new Element(key, XMLCacheAO.getXMLFromCache(id));
-                xmlCache.put(element);
-            }
-            return (XMLCacheEntry) element.getObjectValue();
-        } else {
-            return XMLCacheAO.getXMLFromCache(id);
-        }
+            return xmlCache.getXMLFromCache(id);
     }
 
     /**
@@ -1323,34 +1351,6 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List getXMLCacheSummary() throws SystemException {
-        return XMLCacheAO.getSummary();
-    }
-
-
-
-    final static class ParameterCacheKey {
-        private final Object[] cacheKey;
-
-        ParameterCacheKey(Object... cacheKey) {
-            this.cacheKey = cacheKey;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            ParameterCacheKey that = (ParameterCacheKey) o;
-
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
-            if (!Arrays.equals(cacheKey, that.cacheKey)) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(cacheKey);
-        }
+        return xmlCache.getSummary();
     }
 }

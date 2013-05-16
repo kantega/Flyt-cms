@@ -6,7 +6,6 @@ import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
@@ -76,9 +75,6 @@ public class IsHiddenTag extends ConditionalTagSupport {
                     return !negate;
                 }
             }
-        } catch (InvalidTemplateException ite) {
-            Log.error(SOURCE, ite);
-
         } catch (Exception e) {
             Log.error(SOURCE, e);
         }

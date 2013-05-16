@@ -1,10 +1,10 @@
-<%@ page import="java.util.List" %>
-<%@ page import="no.kantega.publishing.common.data.ContentIdentifier" %>
-<%@ page import="no.kantega.publishing.common.data.Attachment" %>
 <%@ page import="no.kantega.publishing.admin.AdminSessionAttributes" %>
+<%@ page import="no.kantega.publishing.api.content.ContentIdentifier" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="no.kantega.publishing.common.data.Attachment" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
+<%@ page import="java.util.List" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -68,8 +68,7 @@
             List<Attachment> attachments;
             if (!current.isNew()) {
                 // Existing page
-                ContentIdentifier cid = new ContentIdentifier();
-                cid.setContentId(current.getId());
+                ContentIdentifier cid =  ContentIdentifier.fromContentId(current.getId());
                 cid.setLanguage(current.getLanguage());
                 attachments = new ContentManagementService(request).getAttachmentList(cid);
             } else {
@@ -86,16 +85,17 @@
                     }
 
                     String selected = "";
-                    if (url != null && (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
+                    if (url != null &&
+                        (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId() + "&")
                         || url.endsWith(Aksess.ATTACHMENT_REQUEST_HANDLER + "?id=" + a.getId())
-                        || url.contains("/attachment/" + a.getId()))) {
+                        || url.contains(Aksess.ATTACHMENT_URL_PREFIX +"/" + a.getId()))) {
                         selected = " selected";
                     }
 
                     %>
                     var mimeType = '<%=a.getMimeType().getType()%>'.replace(/(\.|\/)/g, '-');
                     attachments.push({
-                        url: '<%= Aksess.getContextPath() + "/attachment.ap?id=" + a.getId() %>',
+                        url: '<%= a.getUrl() %>',
                         clz: 'file <%=a.getMimeType().getFileExtension()%> ' + mimeType
                     });
                     select.append("<option<%=selected%>><%=filename%></option>");

@@ -1,12 +1,11 @@
-<%@ page import="no.kantega.publishing.common.data.WorkList" %>
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
-<%@ page import="java.text.DecimalFormat" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -34,14 +33,32 @@
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.version"/></div>
                 <div class="content">
-                        ${aksessVersion} (<kantega:label key="aksess.systeminfo.revisjon.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
+                    <div class="formElement">
+                        <div class="content">
+                            <div class="row">
+                                OpenAksess: ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${aksessRevision},
+                                                    <fmt:formatDate value="${aksessTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
+                            </div>
+                            <div class="row">
+                                Webapp: ${webappVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${webappRevision},
+                                            <fmt:formatDate value="${webappTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="formElement">
+                <div class="heading"><kantega:label key="aksess.systeminfo.starttime"/></div>
+                <div class="content">
+                    <fmt:formatDate value="${jvmStartDate}" pattern="dd.MM.yyyy HH:mm:ss" />
                 </div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.jvm.version"/></div>
                 <div class="content">
-                    <%=System.getProperty("java.vendor")%> <%=System.getProperty("java.version")%>
+                     ${vmVendor} ${vmName} ${javaVersion}, ${vmVersion}
                 </div>
             </div>
 

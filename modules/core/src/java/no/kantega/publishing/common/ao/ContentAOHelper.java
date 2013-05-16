@@ -16,16 +16,18 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
+import org.apache.commons.lang.StringUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,10 +52,8 @@ public class ContentAOHelper {
         content.setDisplayTemplateId(rs.getInt("DisplayTemplateId"));
         content.setDocumentTypeId(rs.getInt("DocumentTypeId"));
         content.setGroupId(rs.getInt("GroupId"));
-        content.setOwner(rs.getString("Owner"));
-        if (content.getOwner() == null) {
-            content.setOwner("");
-        }
+        content.setOwner(StringUtils.defaultIfEmpty(rs.getString("Owner"), ""));
+
         if (content.getType() != ContentType.PAGE) {
             content.setLocation(rs.getString("Location"));
         }
@@ -64,48 +64,39 @@ public class ContentAOHelper {
         content.setVisibilityStatus(rs.getInt("VisibilityStatus"));
 
         content.setNumberOfNotes(rs.getInt("NumberOfNotes"));
-        content.setOwnerPerson(rs.getString("OwnerPerson"));
-        if (content.getOwnerPerson() == null) {
-            content.setOwnerPerson("");
-        }
+        content.setOwnerPerson(StringUtils.defaultIfEmpty(rs.getString("OwnerPerson"), ""));
+
         content.setRevisionDate(rs.getTimestamp("RevisionDate"));
         content.setForumId(rs.getLong("ForumId"));
-        content.setDoOpenInNewWindow(rs.getInt("OpenInNewWindow") == 1);
+        content.setDoOpenInNewWindow(rs.getBoolean("OpenInNewWindow"));
         content.setDocumentTypeIdForChildren(rs.getInt("DocumentTypeIdForChildren"));
 
         // Felter fra ContentVersion
         content.setVersionId(rs.getInt("ContentVersionId"));
         content.setVersion(rs.getInt("Version"));
-        content.setStatus(rs.getInt("Status"));
+        content.setStatus(ContentStatus.getContentStatusAsEnum(rs.getInt("Status")));
         content.setLanguage(rs.getInt("Language"));
         content.setTitle(rs.getString("Title"));
         content.setAltTitle(rs.getString("AltTitle"));
         content.setDescription(rs.getString("Description"));
         content.setImage(rs.getString("Image"));
-        content.setKeywords(rs.getString("Keywords"));
-        if (content.getKeywords() == null) {
-            content.setKeywords("");
-        }
+        content.setKeywords(StringUtils.defaultIfEmpty(rs.getString("Keywords"), ""));
+
         content.setPublisher(rs.getString("Publisher"));
         content.setLastModified(rs.getTimestamp("LastModified"));
         content.setModifiedBy(rs.getString("LastModifiedBy"));
-        content.setChangeDescription(rs.getString("ChangeDescription"));
-        if (content.getChangeDescription() == null) {
-            content.setChangeDescription("");
-        }
-        content.setApprovedBy(rs.getString("ApprovedBy"));
-        if (content.getApprovedBy() == null) {
-            content.setApprovedBy("");
-        }
+        content.setChangeDescription(StringUtils.defaultIfEmpty(rs.getString("ChangeDescription"), ""));
 
-        content.setLocked(rs.getInt("IsLocked") == 1);
+        content.setApprovedBy(StringUtils.defaultIfEmpty(rs.getString("ApprovedBy"), ""));
+
+        content.setLocked(rs.getBoolean("IsLocked"));
         content.setRatingScore(rs.getFloat("RatingScore"));
         content.setNumberOfRatings(rs.getInt("NumberOfRatings"));
-        content.setSearchable(rs.getInt("IsSearchable") == 1);
+        content.setSearchable(rs.getBoolean("IsSearchable"));
         content.setNumberOfComments(rs.getInt("NumberOfComments"));
         content.setChangeFromDate(rs.getTimestamp("ChangeFrom"));
 
-        content.setMinorChange(rs.getInt("IsMinorChange") == 1);
+        content.setMinorChange(rs.getBoolean("IsMinorChange"));
         content.setLastMajorChange(rs.getTimestamp("LastMajorChange"));
         content.setLastMajorChangeBy(rs.getString("LastMajorChangeBy"));
 
@@ -119,10 +110,7 @@ public class ContentAOHelper {
 
     public static void addAttributeFromRS(Content content, ResultSet rs) throws SQLException, SystemException {
 
-        String attributeType = rs.getString("AttributeType");
-        if (attributeType == null) {
-            attributeType = "Text";
-        }
+        String attributeType = StringUtils.defaultIfEmpty(rs.getString("AttributeType"), "Text");
 
         int attributeDataType = rs.getInt("DataType");
 
@@ -180,7 +168,7 @@ public class ContentAOHelper {
     private static void addCorrectNumberOfRows(Attribute parentAttribute, int row, RepeaterAttribute repeater) {
         List<Attribute> attributes;// Add number of necessary rows
         while (repeater.getNumberOfRows() < row + 1) {
-            attributes = new ArrayList<Attribute>();
+            attributes = new ArrayList<>();
             repeater.addRow(attributes);
             //repeater.setParent(parentAttribute);
         }

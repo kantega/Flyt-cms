@@ -16,21 +16,21 @@
 
 package no.kantega.publishing.common.data;
 
-import java.util.List;
+import no.kantega.publishing.api.model.Site;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Dec 17, 2008
- * Time: 9:34:38 AM
+ * Object containing the current Template configuration
  */
 public class TemplateConfiguration {
-    List<Site> sites = new ArrayList<Site>();
-    List<AssociationCategory> associationCategories = new ArrayList<AssociationCategory>();
-    List<DocumentType> documentTypes = new ArrayList<DocumentType>();
-    List<ContentTemplate> contentTemplates = new ArrayList<ContentTemplate>();
-    List<ContentTemplate> metadataTemplates = new ArrayList<ContentTemplate>();
-    List<DisplayTemplate> displayTemplates = new ArrayList<DisplayTemplate>();
+    List<Site> sites = new ArrayList<>();
+    List<AssociationCategory> associationCategories = new ArrayList<>();
+    List<DocumentType> documentTypes = new ArrayList<>();
+    List<ContentTemplate> contentTemplates = new ArrayList<>();
+    List<ContentTemplate> metadataTemplates = new ArrayList<>();
+    List<DisplayTemplate> displayTemplates = new ArrayList<>();
 
     public List<Site> getSites() {
         return sites;

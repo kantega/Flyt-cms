@@ -16,35 +16,37 @@
 
 package no.kantega.publishing.admin.security.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ContentIdHelper;
+import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.MultimediaService;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Permission;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.data.enums.NotificationPriority;
+import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import no.kantega.publishing.security.service.SecurityService;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.common.data.*;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.security.service.SecurityService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.security.data.enums.NotificationPriority;
-import no.kantega.publishing.security.data.Permission;
-import no.kantega.publishing.security.data.SecurityIdentifier;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.commons.client.util.RequestParameters;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class EditPermissionsAction extends AbstractController {
     public final static String PERMISSIONS_LIST = "tmpPermissionsList";
@@ -57,7 +59,7 @@ public class EditPermissionsAction extends AbstractController {
         int objectType = param.getInt("type");
         String url = param.getString("url");
         if (objectId == -1 && url != null) {
-            ContentIdentifier cid = new ContentIdentifier(request, url);
+            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
             objectId = cid.getAssociationId();
         }
 
@@ -68,7 +70,7 @@ public class EditPermissionsAction extends AbstractController {
 
         // Object with permissions same as object if not content object
         BaseObject permissionObject = null;
-        List permissions = null;
+        List<Permission> permissions = null;
 
         String title = "";
         String inheritedTitle = "";
@@ -88,7 +90,7 @@ public class EditPermissionsAction extends AbstractController {
 
             title = (String)session.getAttribute("tmpPermissionsTitle");
             inheritedTitle = (String)session.getAttribute("tmpPermissionsInheritedTitle");
-            permissions = (List)session.getAttribute(PERMISSIONS_LIST);
+            permissions = (List<Permission>)session.getAttribute(PERMISSIONS_LIST);
             objSecurityId = (Integer)session.getAttribute("tmpObjSecurityId");
         }
 
@@ -100,13 +102,12 @@ public class EditPermissionsAction extends AbstractController {
 
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
-                ContentIdentifier cid = new ContentIdentifier(request, url);
+                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
                 Content content = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();
                 if (objSecurityId != objectId) {
-                    ContentIdentifier inheritcid = new ContentIdentifier();
-                    inheritcid.setAssociationId(objSecurityId);
+                    ContentIdentifier inheritcid =  ContentIdentifier.fromAssociationId(objSecurityId);
                     Content inheritedFrom = aksessService.getContent(inheritcid);
                     if (inheritedFrom != null) {
                         inheritedTitle = inheritedFrom.getTitle();
@@ -150,8 +151,8 @@ public class EditPermissionsAction extends AbstractController {
             // Data is stored in session so user can add users and remove permissions before saving them
             session.setAttribute("tmpPermissionsTitle", title);
             session.setAttribute("tmpPermissionsInheritedTitle", inheritedTitle);
-            session.setAttribute("tmpPermissionsObject", object);
-            session.setAttribute("tmpPermissionsList", permissions);
+            session.setAttribute(PERMISSIONS_OBJECT, object);
+            session.setAttribute(PERMISSIONS_LIST, permissions);
             session.setAttribute("tmpObjSecurityId", objSecurityId);
         }
 
@@ -161,31 +162,30 @@ public class EditPermissionsAction extends AbstractController {
         }
 
         if (permissions == null) {
-            permissions = new ArrayList();
+            permissions = new ArrayList<Permission>();
         }
 
         // Lookup name for users / roles
         SecurityRealm realm = SecurityRealmFactory.getInstance();
 
-        for (int i = 0; i < permissions.size(); i++) {
-            Permission p = (Permission)permissions.get(i);
+        for (Permission p : permissions) {
 
             SecurityIdentifier secId = p.getSecurityIdentifier();
             // Look up rolename / username
             if (secId instanceof User) {
                 User tmp = realm.lookupUser(secId.getId());
                 if (tmp != null) {
-                    ((User)secId).setGivenName(tmp.getGivenName());
-                    ((User)secId).setSurname(tmp.getSurname());
+                    ((User) secId).setGivenName(tmp.getGivenName());
+                    ((User) secId).setSurname(tmp.getSurname());
                 } else {
-                    ((User)secId).setGivenName(secId.getId());
+                    ((User) secId).setGivenName(secId.getId());
                 }
             } else {
                 Role tmp = realm.lookupRole(secId.getId());
                 if (tmp != null) {
-                    ((Role)secId).setName(tmp.getName());
+                    ((Role) secId).setName(tmp.getName());
                 } else {
-                    ((Role)secId).setName(secId.getId());
+                    ((Role) secId).setName(secId.getId());
                 }
             }
         }

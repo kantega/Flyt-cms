@@ -18,13 +18,13 @@ package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.security.realm.SecurityRealm;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +32,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetUserTag  extends TagSupport {
     private static final String SOURCE = "aksess.GetUserTag";
@@ -49,7 +51,7 @@ public class GetUserTag  extends TagSupport {
             User user = null;
 
             SecuritySession session = SecuritySession.getInstance(request);
-            if(userid != null) {
+            if(!isBlank(userid)) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
                     user = realm.lookupUser(userid, useCache);
@@ -89,7 +91,7 @@ public class GetUserTag  extends TagSupport {
             }
         } catch (Exception e) {
             Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE + ":" + e.getMessage());
+            throw new JspTagException(SOURCE, e);
         }
 
         return SKIP_BODY;
