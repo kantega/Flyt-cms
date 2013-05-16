@@ -7,15 +7,17 @@ var ContentStateHandler = new function() {
      */
     this.notifyContentUpdate = function(url){
         openaksess.common.debug("ContentStateHandler.notifyContentUpdate(): " + url );
-        $.ajax({
-            url: contextPath + "/admin/publish/ContentState/notifyContentUpdate.action",
-            data: { url: url },
-            type: "POST"
-        })
-        .done(function(){
-                openaksess.common.debug("ContentStateHandler.notifyContentUpdate(): Success!");
-        }).fail(function(jqXHR, textStatus, errorThrown){
-                openaksess.common.debug("ContentStateHandler.notifyContentUpdate(): Failed!" + textStatus + " " + errorThrown );
+        if (url != 'about:blank') {
+            $.ajax({
+                url: contextPath + "/admin/publish/ContentState/notifyContentUpdate.action",
+                data: { url: url },
+                type: "POST"
             })
+                .done(function () {
+                    openaksess.common.debug("ContentStateHandler.notifyContentUpdate(): Success!");
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                    openaksess.common.debug("ContentStateHandler.notifyContentUpdate(): Failed!" + textStatus + " " + errorThrown);
+                })
+        }
     }
 };
