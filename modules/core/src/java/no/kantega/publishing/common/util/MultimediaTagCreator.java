@@ -29,19 +29,14 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class MultimediaTagCreator {
     private static final String SOURCE = "aksess.MultimediaHelper";
 
-    public static String mm2HtmlTag(Multimedia mm) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, null, false);
-    }
-
     public static String mm2HtmlTag(Multimedia mm, String cssClass) {
         return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass, false);
-    }
-
-    public static String mm2HtmlTag(Multimedia mm, int maxW, int maxH) {
-        return mm2HtmlTag(Aksess.getContextPath(), mm, null, maxW, maxH, null, false);
     }
 
     public static String mm2HtmlTag(Multimedia mm, String align, int maxW, int maxH) {
@@ -72,7 +67,7 @@ public class MultimediaTagCreator {
         String url = mm.getUrl();
         String altname = mm.getAltname();
 
-        if (altname == null || altname.length() == 0) {
+        if (isNotBlank(altname)) {
             altname = mm.getName();
         }
 
@@ -83,12 +78,12 @@ public class MultimediaTagCreator {
             tag.append("<img ");
 
             String author = mm.getAuthor();
-            if (author == null || author.length() == 0) {
+            if (isBlank(author)) {
                 author = Aksess.getMultimediaDefaultCopyright();
             }
 
             String copyright = "";
-            if (author != null && author.length() > 0) {
+            if (isNotBlank(altname)) {
                 copyright = " - &copy; " + author;
             }
 
@@ -203,11 +198,10 @@ public class MultimediaTagCreator {
                 tag.append("</div>");
                 tag.append("<noscript>");
             }
-            tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
-            tag.append("<PARAM name=\"movie\" value=\"").append(url).append("\">");
-            tag.append("<PARAM name=\"quality\" value=\"high\">");
-            tag.append("<PARAM name=\"wmode\" value=\"transparent\">");
-            tag.append("<EMBED src=\"").append(url).append("\" quality=\"high\" wmode=\"transparent\" pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"").append(width).append("\" height=\"").append(height).append("\"></EMBED></OBJECT>");
+            tag.append("<object type=\"application/x-shockwave-flash\" data=\"").append(url).append("\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
+            tag.append("<param name=\"movie\" value=\"").append(url).append("\" />");
+            tag.append("<param name=\"quality\" value=\"high\" />");
+            tag.append("</object>");
             if (Aksess.isFlashUseJavascript()) {
                 tag.append("</noscript>");
             }
