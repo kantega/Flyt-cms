@@ -139,6 +139,7 @@ public class ContentRequestHandler extends AbstractController {
                     e = sex.getRootCause();
                 }
             }
+            Log.error(SOURCE, request.getRequestURI());
             Log.error(SOURCE, e, null, null);
             throw new ServletException(e);
         }
