@@ -99,6 +99,10 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.common.ao.ContentAliasDaoJdbcImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
     <bean id="placeholderResolverStatic" class="no.kantega.publishing.urlplaceholder.UrlPlaceholderResolverStaticImpl"/>
 
     <bean class="no.kantega.publishing.spring.RootContext"/>

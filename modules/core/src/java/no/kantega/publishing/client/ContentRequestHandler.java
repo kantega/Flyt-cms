@@ -79,15 +79,10 @@ public abstract class ContentRequestHandler implements ServletContextAware{
         return handlePrettyUrl(thisId, request, response);
     }
 
-    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleAlias(@PathVariable String alias, HttpServletRequest request, HttpServletResponse response){
+
+    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response){
         SecuritySession securitySession = getSecuritySession();
         return null;
-    }
-
-    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}/{secondAlias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias, HttpServletRequest request, HttpServletResponse response){
-        return handleAlias(alias + "/" + secondAlias, request, response);
     }
 
     protected abstract SecuritySession getSecuritySession();

@@ -216,6 +216,9 @@
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
 
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping"/>
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
+
     <bean id="adminRoleInterceptedMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors">

@@ -13,6 +13,12 @@
         <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping" />
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
 
-
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <bean class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" />
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+    <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
 </beans>
