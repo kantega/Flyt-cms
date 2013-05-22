@@ -525,10 +525,12 @@
             <version>2.3.0</version>
         </dependency>
 
+
+        <!-- Must use the 2.6.2-kantega version to get dependency to correct xmpcore version -->
         <dependency>
             <groupId>com.drewnoakes</groupId>
             <artifactId>metadata-extractor</artifactId>
-            <version>2.6.2</version>
+            <version>2.6.2-kantega</version>
         </dependency>
 
         <dependency>
