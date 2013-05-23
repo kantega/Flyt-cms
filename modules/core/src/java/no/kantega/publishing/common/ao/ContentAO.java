@@ -1611,7 +1611,7 @@ public class ContentAO {
         Connection c = null;
         try {
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND Type = ?");
+            PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
             p.setInt(1, ContentVisibilityStatus.ACTIVE);
             p.setInt(2, ContentType.LINK.getTypeAsInt());
             ResultSet rs = p.executeQuery();
