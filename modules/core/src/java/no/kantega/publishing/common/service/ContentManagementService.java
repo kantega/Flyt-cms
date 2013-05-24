@@ -691,6 +691,9 @@ public class ContentManagementService {
 
     private String buildContentListKey(ContentQuery.QueryWithParameters qp, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
         StringBuilder keyBuilder = new StringBuilder(qp.getQuery());
+        for (Object o : qp.getParams()) {
+            keyBuilder.append(o);
+        }
         keyBuilder.append(maxElements);
         if (sort != null) {
             keyBuilder.append(sort.getSort1());
