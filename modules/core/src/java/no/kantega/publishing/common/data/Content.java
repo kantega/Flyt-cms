@@ -299,7 +299,9 @@ public class Content extends BaseObject {
         this.groupId = groupId;
     }
 
-
+    /**
+     * The department owning the content, or blank.
+    */
     public String getOwner() {
         return owner;
     }
@@ -770,6 +772,9 @@ public class Content extends BaseObject {
         return numberOfNotes;
     }
 
+    /**
+     * Person owning the content
+     */
     public String getOwnerPerson() {
         return ownerPerson;
     }

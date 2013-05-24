@@ -951,7 +951,7 @@ public class ContentAO {
 
 
         if (isNew) {
-            // GroupId benyttes for ø angi at en side arver egenskaper, f.eks meny, design fra en annen side
+            // GroupId benyttes for å angi at en side arver egenskaper, f.eks meny, design fra en annen side
             if (content.getGroupId() <= 0) {
                 PreparedStatement st = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
                 st.setInt(1, content.getId());

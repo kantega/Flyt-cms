@@ -270,7 +270,7 @@ public class ContentManagementService {
             throw new NotAuthorizedException("User is neither in admin mode or hearing instance", SOURCE);
         }
 
-        if (c.getStatus() == ContentStatus.DRAFT && !adminMode && !c.getModifiedBy().equals(userId)) {
+        if (c.getStatus() == ContentStatus.DRAFT && !adminMode && !c.getModifiedBy().equals(userId) && !c.getOwnerPerson().equals(userId)) {
             throw new NotAuthorizedException("Object is draft, must view in admin mode: " + c.getId(), SOURCE);
         }
     }
