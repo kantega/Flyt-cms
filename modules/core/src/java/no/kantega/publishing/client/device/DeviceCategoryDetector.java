@@ -34,6 +34,6 @@ public class DeviceCategoryDetector {
     private DeviceCategory getDeviceFromUserAgent(HttpServletRequest request) {
         Device device = deviceResolver.resolveDevice(request);
 
-        return device.isMobile() ? DeviceCategory.DESKTOP : DeviceCategory.DESKTOP;
+        return device.isMobile() ? DeviceCategory.MOBILE : DeviceCategory.DESKTOP;
     }
 }
