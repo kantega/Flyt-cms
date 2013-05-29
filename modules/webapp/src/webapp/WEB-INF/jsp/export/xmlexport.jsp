@@ -16,6 +16,7 @@
   --%>
 <%@ page contentType="text/xml;charset=UTF-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 
 <page id="<aksess:getattribute name="id" obj="${page}"/>" displaytemplateid="<aksess:getattribute name="displaytemplateid" obj="${page}"/>">
@@ -26,9 +27,11 @@
     <lastmajorchange><aksess:getattribute name="lastmajorchange" format="yyyy-MM-dd'T'HH:mm:ssZ" obj="${page}"/></lastmajorchange>
     <expiredate><aksess:getattribute name="expiredate" format="yyyy-MM-dd'T'HH:mm:ssZ" obj="${page}"/></expiredate>
     <c:out value="${xml}" escapeXml="false"/>
-    <children>
-        <aksess:getcollection name="undersider" associatedid="${page.association.id}" orderby="priority">
-            <child id="<aksess:getattribute name="id" collection="undersider"/>" absoluteurl="/content/<aksess:getattribute name="id" collection="undersider"/>/"/>
-        </aksess:getcollection>
-    </children>
+    <aksess:ifcollectionnotempty name="undersider" associatedid="${page.association.id}" orderby="publishdate" descending="true">
+        <children count="${fn:length(aksess_collection_itemsundersider)}">
+            <aksess:getcollection name="undersider">
+                <child id="<aksess:getattribute name="id" collection="undersider"/>" absoluteurl="/content/<aksess:getattribute name="id" collection="undersider"/>/"/>
+            </aksess:getcollection>
+        </children>
+    </aksess:ifcollectionnotempty>
 </page>
