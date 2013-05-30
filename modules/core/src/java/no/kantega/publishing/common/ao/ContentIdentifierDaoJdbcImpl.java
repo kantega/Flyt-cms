@@ -68,7 +68,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
         String sql = "select content.Alias from associations, content" +
                 " where associations.Type = :associationtype and associations.SiteId = :siteid and associations.AssociationId = :associationid" +
                 " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)";
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("associationid", associationId);
         parameters.put("associationtype", AssociationType.DEFAULT_POSTING_FOR_SITE);
         parameters.put("siteid", siteId);
@@ -87,7 +87,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
         String sql = "select associations.AssociationId, associations.SiteId, content.ContentId, content.Alias from associations, content" +
                 " where content.Alias = :alias and associations.Type = :associationtype" +
                 " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)";
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
         parameters.put("alias", getNormalisedAlias(alias));
         parameters.put("associationtype", AssociationType.DEFAULT_POSTING_FOR_SITE);
 

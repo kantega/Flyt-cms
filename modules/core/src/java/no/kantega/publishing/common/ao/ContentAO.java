@@ -35,6 +35,7 @@ import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
+import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.apache.log4j.Logger;
@@ -50,6 +51,7 @@ import java.util.Date;
 public class ContentAO {
     private static final String SOURCE = "aksess.ContentAO";
     private static Logger log = Logger.getLogger(ContentAO.class);
+    private static ContentDao contentDao;
 
     public static ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
         ContentIdentifier parent = getParent(cid);
@@ -227,112 +229,10 @@ public class ContentAO {
 
 
     public static Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
-        int requestedVersion = cid.getVersion();
-        int contentVersionId = -1;
-
-        try(Connection c = dbConnectionFactory.getConnection()){
-
-            int contentId = cid.getContentId();
-            if (isAdminMode) {
-                if (requestedVersion == -1) {
-                    // When in administration mode users should see last version
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " order by ContentVersionId desc" , "ContentVersionId");
-                    if (contentVersionId == -1) {
-                        return null;
-                    }
-                } else {
-                    contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " and Version = " + requestedVersion + " order by ContentVersionId desc" , "ContentVersionId");
-                    if (contentVersionId == -1) {
-                        return null;
-                    }
-                }
-            } else if(cid.getStatus() == ContentStatus.HEARING) {
-                // Find version for hearing, if no hearing is found, active version is returned
-                int activeversion = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +" and contentversion.IsActive = 1 order by ContentVersionId desc" , "ContentVersionId");
-                contentVersionId = SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " +ContentStatus.HEARING +" AND ContentVersionId > " +activeversion +" order by ContentVersionId desc" , "ContentVersionId");
-            } else {
-                // Others should see active version
-                contentVersionId = -1;
-            }
-
-
-            StringBuilder query = new StringBuilder();
-            query.append("select * from content, contentversion where content.ContentId = contentversion.ContentId");
-            if (contentVersionId != -1) {
-                // Hent angitt versjon
-                query.append(" and contentversion.ContentVersionId = ").append(contentVersionId);
-            } else {
-                // Hent aktiv versjon
-                query.append(" and contentversion.IsActive = 1");
-            }
-            query.append(" and content.ContentId = ").append(contentId).append(" order by ContentVersionId");
-
-            // Get data from content and contentversion tables
-            ResultSet rs = SQLHelper.getResultSet(c, query.toString());
-            if (!rs.next()) {
-                return null;
-            }
-            Content content = ContentAOHelper.getContentFromRS(rs, false);
-            rs.close();
-
-            // Get associations for this page
-            boolean foundCurrentAssociation = false;
-            rs = SQLHelper.getResultSet(c, "SELECT * FROM associations WHERE ContentId = " + content.getId() + " AND (IsDeleted IS NULL OR IsDeleted = 0)");
-            while(rs.next()) {
-                Association a = AssociationAO.getAssociationFromRS(rs);
-                if (!foundCurrentAssociation) {
-                    // Dersom knytningsid ikke er angitt bruker vi default for angitt site
-                    int associationId = cid.getAssociationId();
-                    if ((associationId == a.getId()) || (associationId == -1
-                            && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
-                            && a.getSiteId() == cid.getSiteId())) {
-                        foundCurrentAssociation = true;
-                        a.setCurrent(true);
-                    }
-                }
-                content.addAssociation(a);
-            }
-            rs.close();
-
-            if (!foundCurrentAssociation) {
-                // Knytningsid er ikke angitt, og heller ikke site, bruk den første
-                List<Association> associations = content.getAssociations();
-                for (Association a : associations) {
-                    if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
-                        foundCurrentAssociation = true;
-                        a.setCurrent(true);
-                        break;
-                    }
-                }
-
-                if (!foundCurrentAssociation && associations.size() > 0) {
-                    Association a = associations.get(0);
-                    a.setCurrent(true);
-                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + contentId, null, null);
-                }
-            }
-
-            if (content.getAssociation() == null) {
-                // All associations to page are deleted, dont return page
-                return null;
-            }
-
-            // Get content attributes
-            rs = SQLHelper.getResultSet(c, "select * from contentattributes where ContentVersionId = " + content.getVersionId());
-            while(rs.next()) {
-                ContentAOHelper.addAttributeFromRS(content, rs);
-            }
-            rs.close();
-
-            List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
-            content.setTopics(topics);
-
-            return content;
-
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+        if(contentDao == null){
+            contentDao = RootContext.getInstance().getBean(ContentDao.class);
         }
+        return contentDao.getContent(cid, isAdminMode);
     }
 
     /**

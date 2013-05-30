@@ -73,6 +73,11 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.common.ao.JdbcContentDao">
+        <property name="attributeFactory" ref="aksessAttributeFactory"/>
+        <property name="dataSource" ref="aksessDataSource" />
+    </bean>
+
     <bean id="aksessNotesDao" class="no.kantega.publishing.common.ao.JdbcNotesDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

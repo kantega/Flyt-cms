@@ -2,6 +2,7 @@ package no.kantega.config;
 
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentAliasDao;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,5 +22,10 @@ public class TestConfiguration {
         ContentAliasDao mock = mock(ContentAliasDao.class);
         when(mock.getAllAliases()).thenReturn(asList("/alias/", "/alias2", "/alias/alias/"));
         return mock;
+    }
+
+    @Bean
+    public ContentIdentifierDao getContentIdentifierDao(){
+        return mock(ContentIdentifierDao.class);
     }
 }
