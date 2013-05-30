@@ -1,9 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-
-<%--
-~ URL: admin/metrics
---%>
 <html>
 
 <head>
@@ -14,116 +10,170 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.5.2.min.js"></script>
     <script type="text/javascript">
         var memoryValues = [];
-        var lineMemoryValues = [];
+        var heapValues = [];
+        var requestValues = [];
+        var dbValues = [];
 
         $(document).ready(function(){
             $.getJSON(
                     '${pageContext.request.contextPath}/admin/metrics',
                     function(data) {
-                        var memory = data.jvm.memory;
-                        var items = {
-                                'totalInit': memory.totalInit,
-                                'totalUsed' : memory.totalUsed,
-                                'totalMax' : memory.totalMax,
-                                'totalCommitted' : memory.totalCommitted
-                            };
-//                        var listItems = [];
-//                        $.each(items, function(key, val) {
-//                            listItems.push('<li id="' + key + '">' + val + '</li>');
-//                        });
-//                        $('<ul/>', {
-//                            'class': 'my-new-list',
-//                            html: listItems.join('')
-//                        }).appendTo('body');
-
                         var d = new Date();
-                        lineMemoryValues = [
+                        var memory = data.jvm.memory;
+                        var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
+                        var filter = data["com.yammer.metrics.web.WebappMetricsFilter"];
+                        var requests = filter.activeRequests.count;
+
+                        requestValues = [{key : 'Active requests',
+                            values : [{ x:d, y:requests }],
+                            color : '#ff7f0e'
+                        }];
+                        updateLineGraph(requestValues, '#chart5 svg', 'Requests');
+                        memoryValues = [
                             {
                                 key : 'TotalInit',
-                                values : [ { y:items.totalInit, x:d } ] ,
+                                values : [ { y:memory.totalInit, x:d } ] ,
                                 color : '#ff7f0e'
                             },
                             {
                                 key : "TotalUsed",
-                                values : [ { y:items.totalUsed, x:d }  ] ,
+                                values : [ { y:memory.totalUsed, x:d }  ] ,
                                 color : '#2ca02c'
                             },
                             {
                                 key : "TotalMax",
-                                values : [ { y:items.totalMax, x:d }  ] ,
+                                values : [ { y:memory.totalMax, x:d }  ] ,
                                 color : '#629FCA'
                             },
                             {
                                 key : "TotalCommitted",
-                                values : [  { y:items.totalCommitted, x:d }  ],
+                                values : [  { y:memory.totalCommitted, x:d }  ],
                                 color : '#B3C4DB'
                             }
                         ];
-                        updateLineGraph(lineMemoryValues);
-                        memoryValues = [
+                        updateLineGraph(memoryValues, '#chart1 svg', 'Memory');
+                        heapValues = [
                             {
-                                "key" : "TotalInit",
-                                "values" : [ [d, items.totalInit]  ]
+                                key : 'HeapInit',
+                                values : [ { y:memory.heapInit, x:d } ] ,
+                                color : '#ff7f0e'
                             },
                             {
-                                "key" : "TotalUsed",
-                                "values" : [ [d,items.totalUsed]  ]
+                                key : "HeapUsed",
+                                values : [ { y:memory.heapUsed, x:d }  ] ,
+                                color : '#2ca02c'
                             },
                             {
-                                "key" : "TotalMax",
-                                "values" : [ [d,items.totalMax]  ]
+                                key : "HeapMax",
+                                values : [ { y:memory.heapMax, x:d }  ] ,
+                                color : '#629FCA'
                             },
                             {
-                                "key" : "TotalCommitted",
-                                "values" : [ [d, items.totalCommitted ] ]
+                                key : "HeapCommitted",
+                                values : [  { y:memory.heapCommitted, x:d }  ],
+                                color : '#B3C4DB'
                             }
                         ];
-//                        updateMemoryGraph(memoryValues);
+                        updateLineGraph(heapValues, '#chart2 svg', 'Heap');
+
+                        dbValues = [
+                            {
+                                key : 'Max',
+                                values : [ { y:db["max-connections"].value, x:d } ] ,
+                                color : '#ff7f0e'
+                            },
+                            {
+                                key : "Idle",
+                                values : [ { y:db["idle-connections"].value, x:d }  ] ,
+                                color : '#2ca02c'
+                            },
+                            {
+                                key : "Open",
+                                values : [ { y:db["open-connections"].value, x:d }  ] ,
+                                color : '#629FCA'
+                            }
+                        ];
+                        updateLineGraph(dbValues, '#chart6 svg', 'Connections');
                     });
         });
+
         window.setInterval(function(){
             $.getJSON(
                     '${pageContext.request.contextPath}/admin/metrics',
                     function(data) {
                         var memory = data.jvm.memory;
                         var d = new Date();
-                        lineMemoryValues[0].values.push({ y:memory.totalInit, x:d });
-                        lineMemoryValues[1].values.push({ y:memory.totalUsed, x:d });
-                        lineMemoryValues[2].values.push({ y:memory.totalMax, x:d });
-                        lineMemoryValues[3].values.push({ y:memory.totalCommitted, x:d });
+                        memoryValues[0].values.push({ y:memory.totalInit, x:d });
+                        memoryValues[1].values.push({ y:memory.totalUsed, x:d });
+                        memoryValues[2].values.push({ y:memory.totalMax, x:d });
+                        memoryValues[3].values.push({ y:memory.totalCommitted, x:d });
 
-                        updateLineGraph(lineMemoryValues);
+                        updateLineGraph(memoryValues, '#chart1 svg', 'Memory');
 
-                        memoryValues[0].values.push([d, memory.totalInit]);
-                        memoryValues[1].values.push([d, memory.totalUsed]);
-                        memoryValues[2].values.push([d, memory.totalMax]);
-                        memoryValues[3].values.push([d, memory.totalCommitted]);
-//                    updateMemoryGraph(memoryValues)
+                        heapValues[0].values.push({ y:memory.heapInit, x:d });
+                        heapValues[1].values.push({ y:memory.heapUsed, x:d });
+                        heapValues[2].values.push({ y:memory.heapMax, x:d });
+                        heapValues[3].values.push({ y:memory.heapCommitted, x:d });
+
+                        updateLineGraph(heapValues, '#chart2 svg', 'Heap');
+
+                        updateCakeGraph([{
+                            key: "Heap",
+                            values: [
+                                { "label": "Heap used", "value" : memory.heap_usage } ,
+                                { "label": "Heap available", "value" : 1 - memory.heap_usage }
+                            ]}], '#chart4 svg');
+
+                        updateCakeGraph([{
+                            key: "Non Heap Usage",
+                            values: [
+                                { "label": "Memory used", "value" : memory.non_heap_usage },
+                                { "label": "Memory available", "value" : 1 - memory.non_heap_usage }
+                            ]}], '#chart3 svg' );
+
+                        var filter = data["com.yammer.metrics.web.WebappMetricsFilter"];
+                        var requests = filter.activeRequests.count;
+                        requestValues[0].values.push({ y:requests, x:d });
+                        updateLineGraph(requestValues, '#chart5 svg', 'Requests');
+
+                        var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
+                        dbValues[0].values.push({ y:db["max-connections"].value, x:d });
+                        dbValues[1].values.push({ y:db["idle-connections"].value, x:d });
+                        dbValues[2].values.push({ y:db["open-connections"].value, x:d });
+                        updateLineGraph(dbValues, '#chart6 svg', 'Connections');
                     });
-        }, 2000);         // Change to 5000
+        }, 2500);
 
-        function updateLineGraph(items){
+        function updateLineGraph(items, chartId, yAxis){
             nv.addGraph(function() {
                 var chart = nv.models.lineChart();
-
                 chart.xAxis
                         .axisLabel('Time')
                         .tickFormat(function(d){ return getClockTime(d)});
-
                 chart.yAxis
-                        .axisLabel('Memory')
+                        .axisLabel(yAxis)
                         .tickFormat(d3.format(',f'));
-
-                d3.select('#chart1 svg')
+                d3.select(chartId)
                         .datum(items)
                         .transition().duration(500)
                         .call(chart);
 
                 nv.utils.windowResize(chart.update);
-
                 return chart;
             });
-
+        }
+        function updateCakeGraph(items, chartId){
+            nv.addGraph(function() {
+                var chart = nv.models.pieChart()
+                        .x(function(d) { return d.label })
+                        .y(function(d) { return d.value })
+                        .showLabels(true);
+                d3.select(chartId)
+                        .datum(items)
+                        .transition().duration(1200)
+                        .call(chart);
+                return chart;
+            });
         }
         function getClockTime(now){
             var date   = new Date(now);
@@ -133,35 +183,26 @@
             if (hour   < 10) { hour   = "0" + hour;   }
             if (minute < 10) { minute = "0" + minute; }
             if (second < 10) { second = "0" + second; }
-            var timeString = hour +
-                    ':' +
-                    minute +
-                    ':' +
-                    second
-            return timeString;
+            return hour + ':' + minute + ':' + second;
         }
 
-        function updateMemoryGraph(items) {
+        function updateTestGraph(items) {
             nv.addGraph(function() {
                 var chart = nv.models.stackedAreaChart()
                         .x(function(d) { return d[0] })
                         .y(function(d) { return d[1] })
                         .clipEdge(false);
-
                 chart.xAxis
                         .showMaxMin(false)
                         .tickFormat(function(d) {
                             return getClockTime(d)
                         });
-
                 chart.yAxis
                         .axisLabel('Memory')
                         .tickFormat(d3.format(',f'));
-
                 d3.select('#chart2 svg')
                         .datum(items)
                         .transition().duration(500).call(chart);
-
                 nv.utils.windowResize(chart.update);
                 return chart;
             });
@@ -170,19 +211,36 @@
     </script>
     <style>
         .chart svg {
-            height: 400px;
+            height: 250px;
         }
     </style>
 </head>
 
 <body>
     <div class="chart" id="chart1">
+        <h3>Memory</h3>
         <svg></svg>
     </div>
     <div class="chart" id="chart2">
+        <h3>Heap</h3>
         <svg></svg>
     </div>
-
+    <div class="chart" id="chart3">
+        <h3>Memory usage</h3>
+        <svg class="cake"></svg>
+    </div>
+    <div class="chart" id="chart4">
+        <h3>Heap usage</h3>
+        <svg class="cake"></svg>
+    </div>
+    <div class="chart" id="chart5">
+        <h3>Active requests</h3>
+        <svg></svg>
+    </div>
+    <div class="chart" id="chart6">
+        <h3>Database connections</h3>
+        <svg></svg>
+    </div>
 </body>
 
 </html>
