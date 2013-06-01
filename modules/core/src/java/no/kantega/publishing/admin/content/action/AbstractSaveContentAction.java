@@ -25,7 +25,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
-import no.kantega.publishing.admin.content.util.ValidatorHelper;
+import no.kantega.publishing.admin.content.util.ContentAliasValidator;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
@@ -36,6 +36,7 @@ import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -47,6 +48,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractSaveContentAction extends AbstractContentAction {
+    @Autowired
+    private ContentAliasValidator aliasValidator;
 
     abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
     abstract String getView();
@@ -291,7 +294,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     content.setAlias(alias);
                 }
 
-                ValidatorHelper.validateAlias(alias, content, errors);
+                aliasValidator.validateAlias(alias, content, errors);
             }
         }
     }

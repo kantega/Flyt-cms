@@ -17,34 +17,27 @@
 package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.util.RegExp;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.spring.RootContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
-public class ValidatorHelper {
-    private static String SOURCE = "ValidatorHelper";
+public class ContentAliasValidator {
 
-    public static void validateAlias(String alias, Content content, ValidationErrors errors) {
-        String regexp = "^[\\w\\.\\-\\+=/\\&]*$";
+    private Pattern validAliasPattern = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
 
-        try {
-            if (!RegExp.matches(regexp, alias)) {
+    @Autowired
+    private ContentIdentifierDao contentIdentifierDao;
+
+    public void validateAlias(String alias, Content content, ValidationErrors errors) {
+            if (!validAliasPattern.matcher(alias).matches()) {
                 errors.add(null, "aksess.error.aliasisillegal");
             }
-        } catch (RegExpSyntaxException e) {
-            Log.error(SOURCE, e);
-        }       
 
-        try {
-            ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
             List<Association> associations = content.getAssociations();
             for (Association association : associations) {
                 ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(association.getSiteId(), alias);
@@ -53,8 +46,5 @@ public class ValidatorHelper {
                     break;
                 }
             }
-        } catch (SystemException ex) {
-            Log.error(SOURCE, ex);
-        }
     }
 }
