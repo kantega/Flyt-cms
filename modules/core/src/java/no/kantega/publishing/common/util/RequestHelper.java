@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.util;
 
-import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
@@ -36,8 +35,9 @@ import java.util.Map;
 
 public class RequestHelper {
     private static SiteCache siteCache;
+    private static BeanFactory context;
 
-    public static void setRequestAttributes(HttpServletRequest request, Content content) throws SystemException {
+    public static void setRequestAttributes(HttpServletRequest request, Content content) {
         setSiteCacheIfNull();
         if (content == null) {
             Site site = siteCache.getSiteByHostname(request.getServerName());
@@ -59,9 +59,9 @@ public class RequestHelper {
 
     public static void runTemplateControllers(DisplayTemplate dt, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws Exception {
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
-        BeanFactory context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        setContextIfNotSet(servletContext);
 
         // Run all controllers
         if(dt.getControllers() != null) {
@@ -75,6 +75,12 @@ public class RequestHelper {
         for (Object o : model.keySet()) {
             String name = o.toString();
             request.setAttribute(name, model.get(name));
+        }
+    }
+
+    private static void setContextIfNotSet(ServletContext servletContext) {
+        if (context == null) {
+            context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         }
     }
 

@@ -17,8 +17,6 @@
 package no.kantega.publishing.client;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -32,7 +30,8 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.AksessAliasHandlerMapping;
-import org.apache.commons.lang.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +52,7 @@ import java.util.List;
  */
 @Controller
 public abstract class ContentRequestHandler implements ServletContextAware{
+    private static Logger LOG = LoggerFactory.getLogger(ContentRequestHandler.class);
     private static String SOURCE = "ContentRequestHandler";
 
     @Autowired
@@ -71,8 +71,23 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return handleFromContentIdentifier(ContentIdentifier.fromAssociationId(thisId), request, response);
+    public ModelAndView handleContent_Ap(@RequestParam(required = false, defaultValue = "-1") int thisId,
+                                         @RequestParam(required = false, defaultValue = "-1") int contentId,
+                                         @RequestParam(required = false, defaultValue = "-1") int version,
+                                         @RequestParam(required = false, defaultValue = "-1") int language,
+                                         @RequestParam(required = false, defaultValue = "published") ContentStatus contentStatus,
+                                         @RequestParam(required = false, defaultValue = "-1") int siteId,
+                                         @RequestParam(required = false, defaultValue = "-1") int contextId,
+                                         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
+        cid.setContentId(contentId);
+        cid.setVersion(version);
+        cid.setLanguage(language);
+        cid.setStatus(contentStatus);
+        cid.setSiteId(siteId);
+        cid.setContextId(contextId);
+        return handleFromContentIdentifier(cid, request, response);
     }
 
     public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -85,10 +100,6 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     private ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
         SecuritySession securitySession = getSecuritySession();
-
-        if("hearing".equals(request.getParameter("status"))) {
-            cid.setStatus(ContentStatus.HEARING);
-        }
 
         ContentManagementService cms = new ContentManagementService(securitySession);
         try {
@@ -125,11 +136,8 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                 secSession.initiateLogin(request, response);
             }
         } catch (ContentNotFoundException e) {
-            try {
-                RequestHelper.setRequestAttributes(request, null);
-            } catch (SystemException e1) {
-                Log.error(SOURCE, e1, null, null);
-            }
+            RequestHelper.setRequestAttributes(request, null);
+
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         } catch (Throwable e) {
             if (e instanceof ServletException) {
@@ -138,7 +146,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                     e = sex.getRootCause();
                 }
             }
-            Log.error(SOURCE, e, null, null);
+            LOG.error("Error when dispatching content", e);
             throw new ServletException(e);
         }
 
@@ -146,33 +154,25 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     }
 
     private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
-        /*List<ContentIdentifier> contentIdentifiersByAlias = contentIdentifierDao.getContentIdentifiersByAlias(alias);
-        if(contentIdentifiersByAlias.size() == 1){
-            return contentIdentifiersByAlias.get(0);
-        } else {
-            ContentIdentifier bestMatch = contentIdentifiersByAlias.remove(0);
-            for (ContentIdentifier cids : contentIdentifiersByAlias) {
-
+        Site site = siteCache.getSiteByHostname(serverName);
+        ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(site.getId(), alias);
+        if(cid == null){
+            List<ContentIdentifier> cids = contentIdentifierDao.getContentIdentifiersByAlias(alias);
+            if(cids.size() > 0){
+                cid = cids.get(0);
+                if(cids.size() > 1){
+                    LOG.warn("More than one ContentIdentifier matched alias {}", alias);
+                }
             }
-            return bestMatch;
-        }*/
-        throw new NotImplementedException();
+        }
+        return cid;
     }
 
     protected abstract SecuritySession getSecuritySession();
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
-        StringBuilder message = new StringBuilder("Execution time: ");
-        message.append((end - start));
-        message.append(" ms (");
-        message.append(content.getTitle());
-        message.append(", id: ");
-        message.append(content.getId());
-        message.append(", template:");
-        message.append(content.getDisplayTemplateId());
-        message.append(")");
-        Log.info(SOURCE, message.toString());
+        LOG.info("Execution time: {} ms ({}, id: {}, template: {})", new Object[]{ (end - start), content.getTitle(), content.getId(), content.getDisplayTemplateId() });
     }
 
     private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {
@@ -181,9 +181,9 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             // Send user to correct domain if page is from other site
             String url = content.getUrl();
             Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
-            List hostnames = site.getHostnames();
+            List<String> hostnames = site.getHostnames();
             if (hostnames.size() > 0) {
-                String hostname = (String)hostnames.get(0);
+                String hostname = hostnames.get(0);
                 int port = request.getServerPort();
                 String scheme = site.getScheme();
                 if (scheme == null) {

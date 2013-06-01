@@ -24,10 +24,7 @@ import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
-import no.kantega.publishing.spring.RootContext;
-import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -129,9 +126,9 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
     @Override
     public no.kantega.publishing.api.model.Site getDefaultSite() {
-        Collection<Site> defaultSites = filter((Collection<Site>) sites, new Predicate<Site>() {
+        Collection<Site> defaultSites = filter(sites, new Predicate<Site>() {
             @Override
-            public boolean apply(@Nullable Site o) {
+            public boolean apply(Site o) {
                 return o.isDefault();
             }
         });
@@ -140,12 +137,6 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             throw new IllegalStateException(size + " default sites exists, only 1 permitted");
         }
         return defaultSites.iterator().next();
-    }
-
-    public static DefaultSiteCache getInstance() {
-        ApplicationContext context = RootContext.getInstance();
-        Map beans = context.getBeansOfType(DefaultSiteCache.class);
-        return (DefaultSiteCache) beans.values().iterator().next();
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
