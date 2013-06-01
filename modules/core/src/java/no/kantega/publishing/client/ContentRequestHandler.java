@@ -108,7 +108,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             boolean isAdminMode = HttpHelper.isAdminMode(request);
             if (content != null) {
                 // Send NOT_FOUND if expired or not published
-                if(!isAdminMode && (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE && content.getVisibilityStatus() != ContentVisibilityStatus.ARCHIVED)) {
+                if(!isAdminMode && isExpiredOrNotPublished(content)) {
                     throw new ContentNotFoundException("", SOURCE);
                 }
                 if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
@@ -151,6 +151,11 @@ public abstract class ContentRequestHandler implements ServletContextAware{
         }
 
         return null;
+    }
+
+    private boolean isExpiredOrNotPublished(Content content) {
+        int visibilityStatus = content.getVisibilityStatus();
+        return (visibilityStatus != ContentVisibilityStatus.ACTIVE && visibilityStatus != ContentVisibilityStatus.ARCHIVED);
     }
 
     private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
