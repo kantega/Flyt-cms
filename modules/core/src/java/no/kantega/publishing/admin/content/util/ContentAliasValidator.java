@@ -28,13 +28,13 @@ import java.util.regex.Pattern;
 
 public class ContentAliasValidator {
 
-    private Pattern validAliasPattern = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
+    private static Pattern validAliasPattern = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
 
     @Autowired
     private ContentIdentifierDao contentIdentifierDao;
 
     public void validateAlias(String alias, Content content, ValidationErrors errors) {
-            if (!validAliasPattern.matcher(alias).matches()) {
+            if (!matchesAliasPattern(alias)) {
                 errors.add(null, "aksess.error.aliasisillegal");
             }
 
@@ -46,5 +46,9 @@ public class ContentAliasValidator {
                     break;
                 }
             }
+    }
+
+    public static boolean matchesAliasPattern(String alias) {
+        return validAliasPattern.matcher(alias).matches();
     }
 }

@@ -39,7 +39,7 @@ public class GetSiteMapTag  extends TagSupport {
 
     private String name = "sitemap";
     private int siteId = -1;
-    private int rootId = -1;
+    private String rootId = "";
     private int depth  = -1;
     private int language = -1;
     private int currentId = -1;
@@ -59,18 +59,7 @@ public class GetSiteMapTag  extends TagSupport {
     }
 
     public void setRootid(String rootId) {
-        if (rootId != null && rootId.length() > 0) {
-            try {
-                this.rootId = Integer.parseInt(rootId);
-            } catch (NumberFormatException e) {
-                try {
-                    ContentIdentifier cid = ContentIdHelper.fromUrl(rootId);
-                    this.rootId = cid.getAssociationId();
-                } catch (ContentNotFoundException | SystemException e1) {
-                    Log.error(SOURCE, e);
-                }
-            }
-        }
+        this.rootId = rootId;
     }
 
 
@@ -150,9 +139,9 @@ public class GetSiteMapTag  extends TagSupport {
 
             SiteMapEntry sitemap;
             if (alwaysIncludeCurrentId) {
-                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, rootId, currentId);
+                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, getRootId(content), currentId);
             } else {
-                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, rootId, -1);
+                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, getRootId(content), -1);
             }
             request.setAttribute(name, sitemap);
 
@@ -164,11 +153,30 @@ public class GetSiteMapTag  extends TagSupport {
         return SKIP_BODY;
     }
 
+    private int getRootId(Content content) {
+        int intRootId = -1;
+        if (rootId != null && rootId.length() > 0) {
+            try {
+                intRootId = Integer.parseInt(rootId);
+            } catch (NumberFormatException e) {
+                try {
+                    ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, rootId);
+                    if (cid != null) {
+                        intRootId = cid.getAssociationId();
+                    }
+                } catch (ContentNotFoundException | SystemException e1) {
+                    Log.error(SOURCE, e);
+                }
+            }
+        }
+        return intRootId;
+    }
+
 
     public int doEndTag() throws JspException {
         name = "sitemap";
         siteId = -1;
-        rootId = -1;
+        rootId = "";
         depth = -1;
         language = -1;
         currentId = -1;

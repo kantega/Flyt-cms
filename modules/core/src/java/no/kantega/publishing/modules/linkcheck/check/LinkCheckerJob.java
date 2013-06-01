@@ -20,8 +20,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.LinkDao;
@@ -30,13 +30,13 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,9 +44,12 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.List;
+
+import static no.kantega.publishing.admin.content.util.ContentAliasValidator.matchesAliasPattern;
 
 public class LinkCheckerJob implements InitializingBean {
-    private Logger log = Logger.getLogger(getClass());
+    private Logger log = LoggerFactory.getLogger(getClass());
     public static final String CONTENT = Aksess.VAR_WEB + Aksess.CONTENT_URL_PREFIX + "/";
     public static final String CONTENT_AP = Aksess.VAR_WEB + "/content.ap?thisId=";
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
@@ -62,6 +65,9 @@ public class LinkCheckerJob implements InitializingBean {
 
     @Autowired
     private LinkDao linkDao;
+
+    @Autowired
+    private ContentIdentifierDao contentIdentifierDao;
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
@@ -234,17 +240,16 @@ public class LinkCheckerJob implements InitializingBean {
         // Kan være et alias, sjekk
         String alias = link.substring(Aksess.VAR_WEB.length());
         try {
-            ContentIdentifier cid = ContentIdHelper.fromUrl(alias);
-            Content c = ContentAO.getContent(cid, true);
-            if (c != null) {
-                occurrence.setStatus(CheckStatus.OK);
+            if(matchesAliasPattern(alias)){
+                List<ContentIdentifier> cids = contentIdentifierDao.getContentIdentifiersByAlias(alias);
+                if (!cids.isEmpty()) {
+                    occurrence.setStatus(CheckStatus.OK);
+                } else {
+                    occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
+                }
             } else {
-                occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
+                checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
             }
-
-        } catch (ContentNotFoundException e) {
-            // Ikke et alias eller slettet alias
-            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
         } catch (SystemException e) {
             occurrence.setStatus(CheckStatus.IO_EXCEPTION);
         }

@@ -612,17 +612,6 @@ public class ContentIdHelper {
     }
 
     /**
-     * // TODO try to remove
-     * @param url - e.g. "/"
-     * @return ContentIdentifier for url.
-     * @throws ContentNotFoundException
-     * @throws SystemException
-     */
-    public static ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
-        return ContentIdHelper.findContentIdentifier(-1, url);
-    }
-
-    /**
      * Make sure the given ContentIdentifier has both contentId and associationId set.
      * @param contentIdentifier assure both are set on.
      */

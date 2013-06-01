@@ -108,13 +108,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
 
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
+            } catch (IOException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
         }
