@@ -16,15 +16,13 @@
 
 package no.kantega.openaksess.forms.database.dao;
 
-import no.kantega.publishing.api.forms.model.DefaultForm;
 import no.kantega.publishing.api.forms.model.*;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
@@ -34,15 +32,14 @@ import java.util.Date;
 
 public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     private FormSubmissionMapper formSubmissionMapper = new FormSubmissionMapper();
-    private DataSource dataSource;
+    private JdbcTemplate template;
 
     public FormSubmission getFormSubmissionById(int formSubmissionId) {
-        SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
         List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionMapper, formSubmissionId);
         if (list.size() > 0) {
             FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
             callback.setFormSubmission(list);
-            new JdbcTemplate(dataSource).query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId = ? ORDER BY FieldNumber", new Object[]{formSubmissionId}, callback);
+            template.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId = ? ORDER BY FieldNumber", new Object[]{formSubmissionId}, callback);
             return list.get(0);
         } else {
             return null;
@@ -51,36 +48,30 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormId(int formId) {
-        SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
-
         List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
 
-        new JdbcTemplate(dataSource).query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[]{formId}, callback);
+        template.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[]{formId}, callback);
 
         return (List<FormSubmission>)(List)list;
     }
 
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormIdAndIdentity(int formId, String identity) {
-        SimpleJdbcTemplate template = new SimpleJdbcTemplate(dataSource);
-
         List<DefaultFormSubmission> list = template.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
 
-        new JdbcTemplate(dataSource).query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?) ORDER BY FieldNumber", new Object[]{formId, identity}, callback);
+        template.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?) ORDER BY FieldNumber", new Object[]{formId, identity}, callback);
 
         return (List<FormSubmission>)(List)list;
     }
 
     public int saveFormSubmission(final FormSubmission form) {
         int id = form.getFormSubmissionId();
-
-        JdbcTemplate template = new JdbcTemplate(dataSource);
 
         String auth = "";
         Identity identity = form.getAuthenticatedIdentity();
@@ -96,10 +87,10 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         if (form.getFormSubmissionId() > 0) {
             // Update
             template.update("UPDATE formsubmission SET SubmittedBy = ?, AuthenticatedIdentity = ?, Password = ?, Email = ?, SubmittedDate = ? WHERE FormSubmissionId = ?",
-                    new Object[] {form.getSubmittedByName(), userId, form.getPassword(), form.getSubmittedByEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId()});
+                    form.getSubmittedByName(), userId, form.getPassword(), form.getSubmittedByEmail(), new Timestamp(new Date().getTime()), form.getFormSubmissionId());
 
             // Delete old form values
-            template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", new Object[] {form.getFormSubmissionId()});
+            template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", form.getFormSubmissionId());
         } else {
             // Insert new
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
@@ -143,7 +134,6 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         Map<String, String> mapNames = new HashMap<String, String>();
 
         // Get distinct names in correct order, cant do this only with SQL it seems
-        JdbcTemplate template = new JdbcTemplate(dataSource);
         List<String> allNames = template.queryForList("SELECT FieldName FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[] {formId}, String.class);
         for (String n : allNames) {
             if (mapNames.get(n) == null) {
@@ -155,30 +145,27 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     }
 
     public void deleteFormSubmissionsByFormId(int formId) {
-        JdbcTemplate template = new JdbcTemplate(dataSource);
-        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", new Object[] {formId});        
-        template.update("DELETE FROM formsubmission WHERE FormId = ?", new Object[] {formId});
+        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", formId);
+        template.update("DELETE FROM formsubmission WHERE FormId = ?", formId);
     }
 
     public void deleteFormSubmissionsOlderThanDate(Calendar dateLimit) {
-        JdbcTemplate template = new JdbcTemplate(dataSource);
         template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE SubmittedDate < ?)",
-                new Object[]{new Timestamp(dateLimit.getTime().getTime())});
+                new Timestamp(dateLimit.getTime().getTime()));
         template.update("DELETE FROM formsubmission where SubmittedDate < ?",
-                new Object[]{new Timestamp(dateLimit.getTime().getTime())});
+                new Timestamp(dateLimit.getTime().getTime()));
     }
 
     public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
+        template = new JdbcTemplate(dataSource);
     }
 
     public void deleteFormSubmissionById(int formSubmissionId) {
-        JdbcTemplate template = new JdbcTemplate(dataSource);
-        template.update("DELETE FROM formsubmission WHERE FormSubmissionId = ?", new Object[] {formSubmissionId});
-        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", new Object[] {formSubmissionId});        
+        template.update("DELETE FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionId);
+        template.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", formSubmissionId);
     }
 
-    private class FormSubmissionMapper implements ParameterizedRowMapper<DefaultFormSubmission> {
+    private class FormSubmissionMapper implements RowMapper<DefaultFormSubmission> {
         public DefaultFormSubmission mapRow(ResultSet rs, int i) throws SQLException {
             DefaultFormSubmission formSubmission = new DefaultFormSubmission();
             formSubmission.setFormSubmissionId(rs.getInt("FormSubmissionId"));
