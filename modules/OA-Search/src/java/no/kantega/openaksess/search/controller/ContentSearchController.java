@@ -10,6 +10,7 @@ import no.kantega.search.api.search.SearchQuery;
 import no.kantega.search.api.search.SearchResponse;
 import no.kantega.search.api.search.Searcher;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,9 @@ public class ContentSearchController implements AksessController {
 
     @Autowired
     private AksessSearchContextCreator aksessSearchContextCreator;
+
+    @Value("${oa.usefuzzysearch:true}")
+    private boolean useFuzzySearch;
 
     private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
@@ -106,7 +110,7 @@ public class ContentSearchController implements AksessController {
 
     private SearchQuery getSearchQuery(HttpServletRequest request, String query, AksessSearchContext searchContext) {
         SearchQuery searchQuery = new SearchQuery(searchContext, query, getFilterQueries(request, searchContext));
-
+        searchQuery.setFuzzySearch(useFuzzySearch);
         searchQuery.setPageNumber(ServletRequestUtils.getIntParameter(request, "page", 0));
         searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
         searchQuery.setOffset(ServletRequestUtils.getIntParameter(request, "offset", 0));
