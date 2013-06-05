@@ -7,159 +7,218 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery-2.0.2.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.flot.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.flot.time.js"></script>
-<script type="text/javascript">
-    <%--window.setInterval(function(){--%>
-        <%--$.getJSON(--%>
-                <%--'${pageContext.request.contextPath}/admin/metrics',--%>
-                <%--function(data) {--%>
-                    <%--var memory = data.jvm.memory;--%>
-                    <%--var d = new Date();--%>
-//                    memoryValues[0].values.push({ y:memory.totalInit, x:d });
-//                    memoryValues[1].values.push({ y:memory.totalUsed, x:d });
-//                    memoryValues[2].values.push({ y:memory.totalMax, x:d });
-//                    if(memoryValues[3].values.push({ y:memory.totalCommitted, x:d }) > 20) {
-//                        $.each(memoryValues, function(){
-//                            this['values'].shift()
-//                        });
-//                    }
-
-//                    heapValues[0].values.push({ y:memory.heapInit, x:d });
-//                    heapValues[1].values.push({ y:memory.heapUsed, x:d });
-//                    heapValues[2].values.push({ y:memory.heapMax, x:d });
-//                    if(heapValues[3].values.push({ y:memory.heapCommitted, x:d }) > 20) {
-//                        $.each(heapValues, function(){
-//                            this['values'].shift()
-//                        });
-//                    }
-
-//                    updateCakeGraph([{
-//                        key: "Heap",
-//                        values: [
-//                            { "label": "Heap used", "value" : memory.heap_usage } ,
-//                            { "label": "Heap available", "value" : 1 - memory.heap_usage }
-//                        ]}], '#chart4 svg');
-//
-//                    updateCakeGraph([{
-//                        key: "Non Heap Usage",
-//                        values: [
-//                            { "label": "Memory used", "value" : memory.non_heap_usage },
-//                            { "label": "Memory available", "value" : 1 - memory.non_heap_usage }
-//                        ]}], '#chart3 svg' );
-
-//                    var webAppMetrics = data["com.yammer.metrics.web.WebappMetricsFilter"];
-//                    var requests = webAppMetrics.activeRequests.count;
-//                    if(requestValues[0].values.push([d, requests ]) > 20) {
-//                        requestValues[0].values.shift();
-//                    }
-//
-//                    var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
-//                    dbValues[0].values.push({ y:db["max-connections"].value, x:d });
-//                    dbValues[1].values.push({ y:db["idle-connections"].value, x:d });
-//                    if(dbValues[2].values.push({ y:db["open-connections"].value, x:d }) > 20) {
-//                        $.each(dbValues,function(){
-//                            this['values'].shift()
-//                        });
-//                    }
-//
-//                    responseValues[0].values.push({ y:webAppMetrics['responseCodes.badRequest'].count, x:d });
-//                    responseValues[1].values.push({ y:webAppMetrics['responseCodes.created'].count, x:d });
-//                    responseValues[2].values.push({ y:webAppMetrics['responseCodes.noContent'].count, x:d });
-//                    responseValues[3].values.push({ y:webAppMetrics['responseCodes.notFound'].count, x:d });
-//                    responseValues[4].values.push({ y:webAppMetrics['responseCodes.ok'].count, x:d });
-//                    responseValues[5].values.push({ y:webAppMetrics['responseCodes.other'].count, x:d });
-//                    if(responseValues[6].values.push({ y:webAppMetrics['responseCodes.serverError'].count, x:d }) > 20) {
-//                        $.each(responseValues, function(){
-//                            this['values'].shift()
-//                        });
-//                    }
-//                });
-//    }, 5000);
-//    $(function() {
-//        // We use an inline data source in the example, usually data would
-//        // be fetched from a server
-//        var data = [],
-//                totalPoints = 300;
-//
-//        function getRandomData() {
-//            if (data.length > 0)
-//                data = data.slice(1);
-//            // Do a random walk
-//            while (data.length < totalPoints) {
-//                var prev = data.length > 0 ? data[data.length - 1] : 50,
-//                        y = prev + Math.random() * 10 - 5;
-//                if (y < 0) {
-//                    y = 0;
-//                } else if (y > 100) {
-//                    y = 100;
-//                }
-//                data.push(y);
-//            }
-//            // Zip the generated y values with the x values
-//            var res = [];
-//            for (var i = 0; i < data.length; ++i) {
-//                res.push([i, data[i]])
-//            }
-//            return res;
-//        }
-//        var updateInterval = 30;
-//        var plot = $.plot("#demo", [ getRandomData() ], {
-//            series: {
-//                shadowSize: 0	// Drawing is faster without shadows
-//            },
-//            yaxis: {
-//                min: 0,
-//                max: 100
-//            },
-//            xaxis: {
-//                show: true
-//            }
-//        });
-//        function update() {
-//            plot.setData([getRandomData()]);
-//            // Since the axes don't change, we don't need to call plot.setupGrid()
-//            plot.draw();
-//            setTimeout(update, updateInterval);
-//        }
-//        update();
-//
-//    });
-</script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/jquery.flot.pie.js"></script>
 </head>
 
 <body>
-<%--<div id="demo" style="width:600px;height:300px"></div>--%>
+<p>
+    Time between updates:
+    <input id="updateInterval" type="text" style="text-align: right; width:5em" value="">
+    milliseconds
+</p>
+<p>
+    Number of updates simultaneous in one view:
+    <input id="totalPoints" type="text" style="text-align: right; width:5em" value="">
+</p>
+
 <h3>Memory</h3>
-<div id="memory" style="width:600px;height:300px"></div>
+<div id="memory" style="width:700px;height:300px"></div>
+<h3>Memory usage</h3>
+<div id="memoryusage" style="width:400px;height:200px"></div>
+
+<h3>Heap</h3>
+<div id="heap" style="width:700px;height:300px"></div>
+<h3>Heap usage</h3>
+<div id="heapusage" style="width:400px;height:200px"></div>
+
+<h3>Database connections</h3>
+<div id="db" style="width:700px;height:300px"></div>
+
 <h3>Active requests</h3>
-<div id="placeholder" style="width:600px;height:300px"></div>
+<div id="placeholder" style="width:700px;height:300px"></div>
+
+<h3>Responses</h3>
+<div id="responses" style="width:700px;height:300px"></div>
+
+
 <script type="text/javascript">
     var updateInterval = 1000;
-    var memoryValues = [];
-    var heapValues = [];
-    var dbValues = [];
-    var responseValues = [];
+    $("#updateInterval").val(updateInterval).change(function () {
+        var v = $(this).val();
+        if (v && !isNaN(+v)) {
+            updateInterval = +v;
+            if (updateInterval < 200) {
+                updateInterval = 200;
+            } else if (updateInterval > 8000) {
+                updateInterval = 8000;
+            }
+            $(this).val("" + updateInterval);
+        }
+    });
 
     var requestValues = [];
 
-    var data = [],
-            totalPoints = 200;
+    var memoryMax = [];
+    var memoryUsed = [];
+    var memoryInit = [];
+    var memoryCommitted = [];
 
+    var heapMax = [];
+    var heapUsed = [];
+    var heapInit = [];
+    var heapCommitted = [];
+
+    var maxConnections = [];
+    var idleConnections = [];
+    var openConnections = [];
+
+    var heapUsage = [];
+    var memoryUsage = [];
+
+    var responseValues = [];
+
+    var totalPoints = 500;
+    $("#totalPoints").val(totalPoints).change(function () {
+        var v = $(this).val();
+        if (v && !isNaN(+v)) {
+            totalPoints = +v;
+            if (totalPoints < 100) {
+                totalPoints = 100;
+            } else if (totalPoints > 5000) {
+                totalPoints = 5000;
+            }
+            $(this).val("" + totalPoints);
+        }
+    });
+    function activeRequests(requests) {
+        var d = new Date();
+        if (requestValues.length > totalPoints)
+            requestValues = requestValues.slice(0, requestValues.length - totalPoints);
+        requestValues.push([d.getTime(), requests]);
+        plot.setData([requestValues]);
+        plot.draw();
+        plot.setupGrid();
+    }
+    function memoryValues(memory) {
+        var d = new Date();
+        if (memoryMax.length > totalPoints){
+            memoryMax = memoryMax.slice(0, memoryMax.length - totalPoints);
+            memoryUsed = memoryUsed.slice(0, memoryUsed.length - totalPoints);
+            memoryInit = memoryInit.slice(0, memoryInit.length - totalPoints);
+            memoryCommitted = memoryCommitted.slice(0, memoryCommitted.length - totalPoints);
+        }
+
+        memoryMax.push([d.getTime(), memory.totalMax]);
+        memoryUsed.push([d.getTime(), memory.totalUsed]);
+        memoryInit.push([d.getTime(), memory.totalInit]);
+        memoryCommitted.push([d.getTime(), memory.totalCommitted]);
+
+        plot2.setData([
+            {data:memoryMax, label:"Max"},
+            {data:memoryInit, label:"Init"},
+            {data:memoryCommitted, label:"Committed"},
+            {data:memoryUsed, label:"Used"}
+        ]);
+        plot2.draw();
+        plot2.setupGrid();
+    }
+    function heapValues(memory) {
+        var d = new Date();
+        if (heapMax.length > totalPoints) {
+            heapMax = heapMax.slice(0, heapMax.length - totalPoints);
+            heapUsed = heapUsed.slice(0, heapUsed.length - totalPoints);
+            heapInit = heapInit.slice(0, heapInit.length - totalPoints);
+            heapCommitted = heapCommitted.slice(0, heapCommitted.length - totalPoints);
+        }
+
+        heapMax.push([d.getTime(), memory.heapMax]);
+        heapUsed.push([d.getTime(), memory.heapUsed]);
+        heapInit.push([d.getTime(), memory.heapInit]);
+        heapCommitted.push([d.getTime(), memory.heapCommitted]);
+
+        plot3.setData([
+            {data:heapMax, label:"Max"},
+            {data:heapInit, label:"Init"},
+            {data:heapCommitted, label:"Committed"},
+            {data:heapUsed, label:"Used"}
+        ]);
+        plot3.draw();
+        plot3.setupGrid();
+    }
+    function dbValues(db) {
+        var d = new Date();
+        if (maxConnections.length > totalPoints) {
+            maxConnections = maxConnections.slice(0, maxConnections.length - totalPoints);
+            idleConnections = idleConnections.slice(0, idleConnections.length - totalPoints);
+            openConnections = openConnections.slice(0, openConnections.length - totalPoints);
+        }
+
+        maxConnections.push([d.getTime(), db['max-connections'].value]);
+        idleConnections.push([d.getTime(), db['idle-connections'].value]);
+        openConnections.push([d.getTime(), db['open-connections'].value]);
+
+        plot4.setData([
+            {data:maxConnections, label:"Max"},
+            {data:idleConnections, label:"Idle"},
+            {data:openConnections, label:"Open"}
+        ]);
+        plot4.draw();
+        plot4.setupGrid();
+    }
+    function heapUsageValues(memory) {
+        heapUsage = [
+            { label:"Heap used", data: memory.heap_usage },
+            { label:"Heap available", data: 1-memory.heap_usage }
+        ];
+        plot5.setData(heapUsage);
+        plot5.draw();
+    }
+    function memoryUsageValues(memory) {
+        memoryUsage = [
+            { label:"Memory used", data: memory.non_heap_usage },
+            { label:"Memory available", data: 1-memory.non_heap_usage }
+        ];
+        plot6.setData(memoryUsage);
+        plot6.draw();
+    }
+    function responseCodes(webAppMetrics) {
+        responseValues = [
+            { label:"Bad requests", data:webAppMetrics['responseCodes.badRequest'].count},
+            { label:"Created", data:webAppMetrics['responseCodes.created'].count },
+            { label:"No content", data:webAppMetrics['responseCodes.noContent'].count },
+            { label:"Not found", data:webAppMetrics['responseCodes.notFound'].count },
+            { label:"Ok", data:webAppMetrics['responseCodes.ok'].count },
+            { label:"Server error", data:webAppMetrics['responseCodes.serverError'].count },
+            { label:"Other", data:webAppMetrics['responseCodes.other'].count }
+        ];
+        plot7.setData(responseValues);
+        plot7.draw();
+    }
     function update() {
         $.getJSON(
                 '${pageContext.request.contextPath}/admin/metrics',
                 function(data) {
+                    var memory = data.jvm.memory;
+                    var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
                     var webAppMetrics = data["com.yammer.metrics.web.WebappMetricsFilter"];
                     var requests = webAppMetrics.activeRequests.count;
-                    var d = new Date();
-                    if(requestValues.length == totalPoints)
-                        requestValues = requestValues.slice(1);
-                    requestValues.push([d.getTime(), requests]);
-                    plot.setData([requestValues]);
-                    plot.draw();
-                    plot.setupGrid();
+
+                    activeRequests(requests);
+                    memoryValues(memory);
+                    heapValues(memory);
+                    dbValues(db);
+                    heapUsageValues(memory);
+                    memoryUsageValues(memory);
+                    responseCodes(webAppMetrics);
+
                     setTimeout(update, updateInterval);
                 });
     }
+
+    function labelFormatter(label, series) {
+        return "<div style='font-size:10pt; text-align:center; padding:1px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
+    }
+
     var plot = $.plot("#placeholder", [ {data: requestValues, label: "Active Requests"} ],{
         series: {
             shadowSize: 0	// Drawing is faster without shadows
@@ -173,25 +232,138 @@
         }
     });
     var plot2 = $.plot("#memory", [
-        {data: memoryValues, label: "Max"},
-        {data: memoryValues, label: "Init"},
-        {data: memoryValues, label: "Committed"},
-        {data: memoryValues, label: "User"}
+        {data: memoryMax, label: "Max"},
+        {data: memoryInit, label: "Init"},
+        {data: memoryCommitted, label: "Committed"},
+        {data: memoryUsed, label: "Used"}
     ],{
         series: {
             shadowSize: 0	// Drawing is faster without shadows
         },
         yaxis: {
             min: 0,
-            max: 5
+            max: 850000000
         },
         xaxis: {
-            show: true,
-            mode: "time",
-            max: 200
+            mode: "time"
+        }
+    });
+    var plot3 = $.plot("#heap", [
+        {data: heapMax, label: "Max"},
+        {data: heapInit, label: "Init"},
+        {data: heapCommitted, label: "Committed"},
+        {data: heapUsed, label: "Used"}
+    ],{
+        series: {
+            shadowSize: 0	// Drawing is faster without shadows
+        },
+        yaxis: {
+            min: 0,
+            max: 500000000
+        },
+        xaxis: {
+            mode: "time"
+        }
+    });
+    var plot4 = $.plot("#db", [
+        {data: maxConnections, label: "Max"},
+        {data: idleConnections, label: "Idle"},
+        {data: openConnections, label: "Open"}
+    ],{
+        series: {
+            shadowSize: 0	// Drawing is faster without shadows
+        },
+        yaxis: {
+            min: 0,
+            max: 55
+        },
+        xaxis: {
+            mode: "time"
         }
     });
 
+    var plot5 = $.plot('#heapusage', [ { label: "Heap used", data: 50},
+            { label:"Heap available", data: 50 } ], {
+        series: {
+            pie: {
+                show: true,
+                radius: 1,
+                tilt: 0.5,
+                label: {
+                    show: true,
+                    radius: 1,
+                    formatter: labelFormatter,
+                    background: {
+                        opacity: 0.8
+                    }
+                },
+                combine: {
+                    color: '#999',
+                    threshold: 0.1
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    });
+    var plot6 = $.plot('#memoryusage', [ { label: "Memory used", data: 50},
+        { label:"Memory available", data: 50 } ], {
+        series: {
+            pie: {
+                show: true,
+                radius: 1,
+                tilt: 0.5,
+                label: {
+                    show: true,
+                    radius: 1,
+                    formatter: labelFormatter,
+                    background: {
+                        opacity: 0.8
+                    }
+                },
+                combine: {
+                    color: '#999',
+                    threshold: 0.1
+                }
+            }
+        },
+        legend: {
+            show: false
+        }
+    });
+    var plot7 = $.plot('#responses', [
+        { label: "Bad requests", data: 50},
+        { label: "Created", data: 50 },
+        { label: "No content", data: 50 },
+        { label: "Not found", data: 50 },
+        { label: "Ok", data: 50 },
+        { label: "Server error", data: 50 },
+        { label: "Other", data: 50 }
+    ], {
+        series: {
+            pie: {
+                show: true,
+                radius: 1,
+                tilt: 0.5,
+                label: {
+                    show: true,
+                    radius: 1,
+                    formatter: labelFormatter,
+                    background: {
+                        opacity: 0.8
+                    }
+                },
+                combine: {
+                    color: '#999',
+                    threshold: 0.1
+                }
+            }
+        },
+        legend: {
+            show: true
+        }
+    });
     update();
 </script>
 
