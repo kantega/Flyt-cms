@@ -368,6 +368,15 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="hideifempty" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Specifies that the attribute is not shown as default if it has no value, but can be added by the content producer
+                        Default is false.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+
         </xs:complexType>
     </xs:element>
     <xs:element name="repeater">

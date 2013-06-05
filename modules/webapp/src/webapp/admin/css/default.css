@@ -740,6 +740,10 @@ table.fullWidth {
 
 /************** Form elements and content attributes **************/
 
+.attributeHiddenEmpty {
+    display:none;
+}
+
 .contentAttribute, .contentAttributeRepeater, .formElement {
     margin-bottom: 14px;
 }
@@ -761,7 +765,6 @@ table.fullWidth {
 .contentAttribute .inputs, .formElement .inputs, .contentAttribute .content, .formElement .content {
     clear: both;
 }
-
 
 #Content .contentAttributeRepeaterRow .repeaterButtons {
     text-align: right;
@@ -788,6 +791,12 @@ table.fullWidth {
 
 .fullWidth {
     width: 100%;
+}
+
+input.fullWidth, select.fullWidth {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 #Content td .button, #Content td .button:hover {

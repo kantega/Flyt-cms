@@ -874,7 +874,7 @@ public class Content extends BaseObject {
         }
     }
 
-    private void doForAttribute(AttributeHandler handler, Attribute attribute) {
+    public void doForAttribute(AttributeHandler handler, Attribute attribute) {
         if (attribute instanceof RepeaterAttribute) {
             RepeaterAttribute repeater = (RepeaterAttribute)attribute;
             int rows = repeater.getNumberOfRows();

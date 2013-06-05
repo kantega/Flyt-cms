@@ -62,6 +62,7 @@
                 <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
                 <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
                 <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
+                <prop key="/publish/popups/AddAttribute.action">AddAttributeAction</prop>
 
                 <!-- Rating -->
                 <prop key="/Rating.action">RatingController</prop>
@@ -517,6 +518,11 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
     </bean>
+
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="AddAttributeAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/addattribute.jsp"/>
+    </bean>
+
     <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
     </bean>

@@ -226,8 +226,10 @@ public class ContentQuery {
             }
         } else if (sql != null) {
             String s = sql.trim();
-            if (!s.startsWith("and") && !s.startsWith("or")) {
+            if (!s.startsWith("and ") && !s.startsWith("or ")) {
                 query.append(" and ");
+            } else {
+                query.append(" ");
             }
             query.append(sql);
         } else if (attributes == null && excludedAssociationTypes == null) {

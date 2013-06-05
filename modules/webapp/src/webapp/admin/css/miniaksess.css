@@ -1,3 +1,6 @@
+.attributeHiddenEmpty {
+    display:none;
+}
 
 #EditContentForm .contentAttribute {
     margin-bottom: 1em;
