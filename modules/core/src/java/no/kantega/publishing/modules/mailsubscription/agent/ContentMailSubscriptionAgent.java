@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2013 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
+import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.mailsubscription.MailSubscription;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
 import no.kantega.publishing.api.model.Site;
@@ -38,13 +40,95 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 /**
- * Class for sending mailsubscriptions notifying users about new content (for newsletters etc)
+ * Class for sending mail subscriptions notifying users about new content (for newsletters etc)
  */
-public class MailSubscriptionAgent {
+public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
     private static final String SOURCE = "aksess.MailSubscriptionAgent";
+
     private MailSubscriptionDeliveryService mailSubscriptionDeliveryService;
+
     @Autowired
     private MailSubscriptionService mailSubscriptionService;
+
+    @Autowired
+    private SiteCache siteCache;
+
+    @Override
+    public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval) {
+        if (previousRun != null) {
+            // Send ut epost med alle nye meldinger
+            boolean groupEmails = false;
+            try {
+                groupEmails = Aksess.getConfiguration().getBoolean("mail.subscription.groupemails", false);
+            } catch (ConfigurationException e) {
+                Log.info(SOURCE, "Unable to read configuration value for 'mail.subscription.groupemails'");
+            }
+
+            if (groupEmails) {
+                // Send en epost for alle sites
+                Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
+                emailNewContentForSite(previousRun, interval, null);
+            } else {
+                // Send en epost for hver site
+                List<Site> sites = siteCache.getSites();
+                for (Site site : sites) {
+                    Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
+                    emailNewContentForSite(previousRun, interval, site);
+                }
+            }
+        }
+    }
+
+
+    private void emailNewContentForSite(Date previousRun, MailSubscriptionInterval interval, Site site) {
+        ContentQuery query = new ContentQuery();
+        query.setPublishDateFrom(previousRun);
+        if (site != null) {
+            query.setSiteId(site.getId());
+        }
+
+        List<Content> allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
+
+        // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
+        List<Content> contentList = new ArrayList<>();
+        Role everyone = new Role();
+        everyone.setId(Aksess.getEveryoneRole());
+
+        boolean sendProtectedContent = false;
+        try {
+            sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
+        } catch (ConfigurationException e) {
+            Log.info(SOURCE, "Unable to read configuration value for 'mail.subscription.sendprotectedcontent'");
+        }
+
+        for (Content content : allContentList) {
+            if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
+                contentList.add(content);
+                Log.debug(SOURCE, "New content:" + content.getTitle());
+            } else {
+                Log.info(SOURCE, "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
+            }
+        }
+
+
+        // Cut descriptions and remove tags
+        for (Content content : contentList) {
+            String body = content.getDescription();
+            body = body.replaceAll("<(.|\\n)+?>", "");
+            if (body.length() > 400) {
+                body = body.substring(0, 399) + "...";
+            }
+            content.setDescription(body);
+        }
+
+        if (contentList.size() > 0) {
+            List<MailSubscription> subscriptions = mailSubscriptionService.getMailSubscriptionByInterval(interval);
+
+            sendEmail(contentList, subscriptions, site);
+        }
+
+    }
+
 
     /**
      *
@@ -54,7 +138,7 @@ public class MailSubscriptionAgent {
      * @throws ConfigurationException -
      * @throws SystemException -
      */
-    public void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
+    protected void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
         Map<String, List<Content>> subscribers = new HashMap<>();
 
         for (MailSubscription subscription : subscriptions) {
@@ -124,52 +208,8 @@ public class MailSubscriptionAgent {
     }
 
 
-    public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval, Site site) throws ConfigurationException {
-            if (previousRun != null) {
-                ContentQuery query = new ContentQuery();
-                query.setPublishDateFrom(previousRun);
-                if (site != null) {
-                    query.setSiteId(site.getId());
-                }
-
-                List<Content> allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
-
-                // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
-                List<Content> contentList = new ArrayList<>();
-                Role everyone = new Role();
-                everyone.setId(Aksess.getEveryoneRole());
-
-                boolean sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
-
-                for (Content content : allContentList) {
-                    if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
-                        contentList.add(content);
-                        Log.debug(SOURCE, "New content:" + content.getTitle());
-                    } else {
-                        Log.info(SOURCE, "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
-                    }
-                }
-
-
-                // Cut descriptions and remove tags
-                for (Content content : contentList) {
-                    String body = content.getDescription();
-                    body = body.replaceAll("<(.|\\n)+?>", "");
-                    if (body.length() > 400) {
-                        body = body.substring(0, 399) + "...";
-                    }
-                    content.setDescription(body);
-                }
-
-                if (contentList.size() > 0) {
-                    List<MailSubscription> subscriptions = mailSubscriptionService.getMailSubscriptionByInterval(interval);
-
-                    sendEmail(contentList, subscriptions, site);
-                }
-            }
-    }
-
     public void setMailSubscriptionDeliveryService(MailSubscriptionDeliveryService mailSubscriptionDeliveryService) {
         this.mailSubscriptionDeliveryService = mailSubscriptionDeliveryService;
     }
+
 }

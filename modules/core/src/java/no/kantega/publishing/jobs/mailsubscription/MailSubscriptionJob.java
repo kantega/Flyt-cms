@@ -16,17 +16,14 @@
 
 package no.kantega.publishing.jobs.mailsubscription;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
-import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent;
 import org.quartz.StatefulJob;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -40,7 +37,7 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     // dette er for å sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
     private MailSubscriptionInterval interval = MailSubscriptionInterval.immediate;
 
-    private MailSubscriptionAgent mailSubscriptionAgent;
+    private List<MailSubscriptionAgent> mailSubscriptionAgents;
 
     private SiteCache siteCache;
 
@@ -61,31 +58,15 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
             Log.info(SOURCE, "Mailsubscriptionjob disabled", null, null);
         }else{
             Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
-            try {
-                Configuration config = Aksess.getConfiguration();
 
-                Date previousRun = ScheduleLogAO.getLastRun(SOURCE + "-" + interval);
-                ScheduleLogAO.setLastrun(SOURCE + "-" + interval, new Date());
+            Date previousRun = ScheduleLogAO.getLastRun(SOURCE + "-" + interval);
+            ScheduleLogAO.setLastrun(SOURCE + "-" + interval, new Date());
 
-                if (previousRun != null) {
-                    // Send ut epost med alle nye meldinger
-                    boolean groupEmails = config.getBoolean("mail.subscription.groupemails", false);
-
-                    if (groupEmails) {
-                        // Send en epost for alle sites
-                        Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
-                        mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, null);
-                    } else {
-                        // Send en epost for hver site
-                        List<Site> sites = siteCache.getSites();
-                        for (Site site : sites) {
-                            Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
-                            mailSubscriptionAgent.emailNewContentSincePreviousDate(previousRun, interval, site);
-                        }
-                    }
+            if (previousRun != null) {
+                for (MailSubscriptionAgent agent : mailSubscriptionAgents) {
+                    Log.info(SOURCE, "Sending mailsubscriptions using agent " + agent, null, null);
+                    agent.emailNewContentSincePreviousDate(previousRun, interval);
                 }
-            } catch (SystemException | ConfigurationException e) {
-                Log.error(SOURCE, e, null, null);
             }
         }
     }
@@ -94,8 +75,8 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
         this.interval = interval;
     }
 
-    public void setMailSubscriptionAgent(MailSubscriptionAgent mailSubscriptionAgent) {
-        this.mailSubscriptionAgent = mailSubscriptionAgent;
+    public void setMailSubscriptionAgents(List<MailSubscriptionAgent> mailSubscriptionAgents) {
+        this.mailSubscriptionAgents = mailSubscriptionAgents;
     }
 
     public void setSiteCache(SiteCache siteCache) {
