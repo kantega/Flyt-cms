@@ -70,6 +70,7 @@ public abstract class Attribute {
     protected int tabIndex = 1;
     protected boolean editable = true;
     protected boolean inheritsFromAncestors = false;
+    protected boolean hideIfEmpty = false;
 
     private String[] showInSites = null; // Angir alias for siter hvor denne attributten skal vises (null = vis for alle)
     private String[] hideInSites = null; // Angir alias for siter hvor denne attributten ikke skal vises (null = vis for alle)
@@ -147,6 +148,10 @@ public abstract class Attribute {
                 for (int i = 0; i < hideInSites.length; i++) {
                     hideInSites[i] = hideInSites[i].trim();
                 }
+            }
+
+            if ("true".equalsIgnoreCase(config.getAttribute("hideifempty"))) {
+                hideIfEmpty = true;
             }
 
             String defaultValue = config.getAttribute("default");
@@ -421,6 +426,10 @@ public abstract class Attribute {
         return editableByRole;
     }
 
+    public boolean isHideIfEmpty() {
+        return hideIfEmpty;
+    }
+
     @Override
     public String toString() {
         StringBuilder toString = new StringBuilder(getClass().getSimpleName());
@@ -436,5 +445,4 @@ public abstract class Attribute {
     public XMLAttributeValueExporter getXMLAttributeValueExporter() {
         return new SimpleAttributeValueXMLExporter();
     }
-
 }

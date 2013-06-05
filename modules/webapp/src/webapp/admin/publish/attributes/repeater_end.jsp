@@ -16,7 +16,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-</div></div></div><div class="bottom"><div class="corner"></div></div></div>
+
 </div>
 <c:if test="${(repeater.numberOfRows < repeater.maxOccurs) || (repeater.maxOccurs == -1)}">
     <div class="buttonGroup">

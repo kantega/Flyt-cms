@@ -50,8 +50,9 @@ public class InputScreenTag extends SimpleTagSupport {
 
             InputScreenRenderer screenRenderer = new InputScreenRenderer(pageContext, currentEditContent, AttributeDataType.CONTENT_DATA);
             screenRenderer.generateInputScreen();
-
-
+            if (screenRenderer.hasHiddenAttributes()) {
+                pageContext.include("/WEB-INF/jsp/admin/layout/fragments/addattributebutton.jsp");
+            }
         } catch (InvalidFileException e) {
             Log.error(this.getClass().getName(), e, null, null);
         } catch (InvalidTemplateException e) {

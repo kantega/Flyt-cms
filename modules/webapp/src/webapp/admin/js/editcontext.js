@@ -539,6 +539,17 @@ openaksess.editcontext = function()  {
         deleteRepeaterRow : function(repeaterPath) {
             $("#DeleteRepeaterRow").val(repeaterPath);
             saveContent("");
+        },
+
+        listHiddenAttributes : function() {
+            openaksess.common.modalWindow.open({title: properties.editcontext.labels.addattribute, iframe:true, href: properties.contextPath + "/publish/popups/AddAttribute.action", width: 450, height:200});
+        },
+
+        showHiddenAttribute : function(id) {
+            $("#" + id).removeClass("attributeHiddenEmpty");
+            if ($(".attributeHiddenEmpty").size() == 0) {
+                $("#AddAttributeContainer").hide();
+            }
         }
     };
 }();
