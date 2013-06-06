@@ -16,8 +16,10 @@
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <task:annotation-driven />
 
     <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
 
@@ -152,15 +154,7 @@
         <property name="cronExpression" value="30 0/5 * * * ?"/>
     </bean>
 
-    <bean name="databaseCleanupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
-    </bean>
-
-    <!-- Slett gamle innslag i trafikk og eventlog -->
-    <bean id="databaseCleanupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="databaseCleanupJob"/>
-        <property name="cronExpression" value="0 0 4 * * ?"/>
-    </bean>
+    <bean id="databaseCleanupJob" class="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
