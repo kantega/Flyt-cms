@@ -35,10 +35,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Controller for viewing information about the application.
@@ -137,7 +134,12 @@ public class ViewSystemInformationAction extends AbstractController {
             try {
                 parsedDate = timestampFormat.parse(date);
             } catch (ParseException e1) {
-                Log.error("ViewSystemInformationAction", e1);
+                timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+                try {
+                    parsedDate = timestampFormat.parse(date);
+                } catch (ParseException e2) {
+                    Log.error("ViewSystemInformationAction", e2);
+                }
             }
         }
 
