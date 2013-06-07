@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -27,7 +28,9 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  */
 public class TinyMCEServlet extends HttpServlet {
+    private final long MAX_DISK_CACHE_AGE = 1000*60*60*24;
 
+    private boolean shouldRecreateDiskCache = true;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         throw new UnsupportedOperationException("POST is not supported.");
@@ -36,41 +39,20 @@ public class TinyMCEServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cacheKey = "";
         String cacheFile = "";
-        String content = "";
-        String enc;
-        String suffix;
-        String cachePath;
-        String[] plugins;
-        String[] languages;
-        String[] themes;
-        boolean diskCache;
-        boolean supportsGzip;
-        boolean isJS;
-        boolean compress;
-        boolean core;
-        int i;
-        int x;
-        int bytes;
-        int expiresOffset;
-        OutputStreamWriter bow;
-        ByteArrayOutputStream bos;
-        GZIPOutputStream gzipStream;
-        FileOutputStream fout;
-        FileInputStream fin;
-        byte buff[];
+
         ServletOutputStream outputStream = response.getOutputStream();
 
         // Get input
-        plugins = getParam(request, "plugins", "").split(",");
-        languages = getParam(request, "languages", "").split(",");
-        themes = getParam(request, "themes", "").split(",");
-        diskCache = getParam(request, "diskcache", "").equals("true");
-        isJS = getParam(request, "js", "").equals("true");
-        compress = getParam(request, "compress", "true").equals("true");
-        core = getParam(request, "core", "true").equals("true");
-        suffix = getParam(request, "suffix", "").equals("_src") ? "_src" : "";
-        cachePath = getCachePath(request, "."); // Cache path, this is where the .gz files will be stored
-        expiresOffset = 3600 * 24; // Cache for 1 days in browser cache
+        String[] plugins = getParam(request, "plugins", "").split(",");
+        String[] languages = getParam(request, "languages", "").split(",");
+        String[] themes = getParam(request, "themes", "").split(",");
+        boolean diskCache = getParam(request, "diskcache", "").equals("true");
+        boolean isJS = getParam(request, "js", "").equals("true");
+        boolean compress = getParam(request, "compress", "true").equals("true");
+        boolean core = getParam(request, "core", "true").equals("true");
+        String suffix = getParam(request, "suffix", "").equals("_src") ? "_src" : "";
+        String cachePath = getCachePath(); // Cache path, this is where the .gz files will be stored
+        int expiresOffset = 3600 * 24; // Cache for 1 days in browser cache
 
         // Headers
         response.setContentType("text/javascript");
@@ -86,9 +68,7 @@ public class TinyMCEServlet extends HttpServlet {
 
         // Setup cache info
         if (diskCache) {
-            cacheKey = getParam(request, "plugins", "") + getParam(request, "languages", "") + getParam(request, "themes", "");
-
-            cacheKey = md5(cacheKey);
+            cacheKey = createCacheKey(getParam(request, "plugins", "") + getParam(request, "languages", "") + getParam(request, "themes", ""));
 
             if (compress) {
                 cacheFile = cachePath + "tiny_mce_" + cacheKey + ".gz";
@@ -98,39 +78,36 @@ public class TinyMCEServlet extends HttpServlet {
         }
 
         // Check if it supports gzip
-        supportsGzip = false;
-        enc = request.getHeader("Accept-Encoding");
-        if (enc != null) {
-            enc = enc.replaceAll("\\s+", "").toLowerCase();
-            supportsGzip = enc.contains("gzip") || request.getHeader("---------------") != null;
-            enc = enc.contains("x-gzip") ? "x-gzip" : "gzip";
+        boolean supportsGzip = false;
+        if (request.getHeader("Accept-Encoding") != null) {
+            String encoding = request.getHeader("Accept-Encoding");
+            encoding = encoding.replaceAll("\\s+", "").toLowerCase();
+            supportsGzip = encoding.contains("gzip") || request.getHeader("---------------") != null;
+            encoding = encoding.contains("x-gzip") ? "x-gzip" : "gzip";
+
+            if (supportsGzip && compress) {
+                response.addHeader("Content-Encoding", encoding);
+            }
         }
+
 
         URL coreUrl = null;
         if (core) {
             coreUrl = mapUrl(request, "tiny_mce" + suffix + ".js");
         }
+
         List<URL> urls = getUrlList(request, languages, themes, plugins, suffix);
 
         // Use cached file disk cache
         if (diskCache && supportsGzip && new File(cacheFile).exists()) {
-            if (!isOutdated(cacheFile, coreUrl, urls)) {
-                if (compress)
-                    response.addHeader("Content-Encoding", enc);
-
-                fin = new FileInputStream(cacheFile);
-                buff = new byte[1024];
-
-                while ((bytes = fin.read(buff, 0, buff.length)) != -1) {
-                    outputStream.write(buff, 0, bytes);
-                }
-
-                fin.close();
+            if (cacheFileIsUpdated(cacheFile)) {
+                writeContentFromCacheFile(cacheFile, outputStream);
                 outputStream.close();
                 return;
             }
         }
 
+        String content = "";
         // Add core
         if (core) {
             content += getFileContents(coreUrl);
@@ -150,42 +127,62 @@ public class TinyMCEServlet extends HttpServlet {
 
         // Generate GZIP'd content
         if (supportsGzip) {
-            if (compress)
-                response.addHeader("Content-Encoding", enc);
-
             if (diskCache && isNotBlank(cacheKey)) {
-                bos = new ByteArrayOutputStream();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
                 // Gzip compress
                 if (compress) {
-                    gzipStream = new GZIPOutputStream(bos);
+                    GZIPOutputStream gzipStream = new GZIPOutputStream(bos);
                     gzipStream.write(content.getBytes("iso-8859-1"));
                     gzipStream.close();
                 } else {
-                    bow = new OutputStreamWriter(bos);
+                    OutputStreamWriter bow = new OutputStreamWriter(bos);
                     bow.write(content);
                     bow.close();
                 }
 
                 // Write to file
                 try {
-                    fout = new FileOutputStream(cacheFile);
+                    Log.info(this.getClass().getName(), "Creating diskcache:" + cacheFile);
+
+                    FileOutputStream fout = new FileOutputStream(cacheFile);
                     fout.write(bos.toByteArray());
                     fout.close();
                 } catch (IOException e) {
-                    Log.info(getClass().getSimpleName(), "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", null, null);
+                    Log.error(getClass().getName(), "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", null, null);
                 }
 
                 // Write to stream
                 outputStream.write(bos.toByteArray());
                 outputStream.close();
+
+                shouldRecreateDiskCache = false;
             } else {
-                gzipStream = new GZIPOutputStream(outputStream);
+                Log.info(this.getClass().getName(), "Sending content without using diskcache");
+                GZIPOutputStream gzipStream = new GZIPOutputStream(outputStream);
                 gzipStream.write(content.getBytes("iso-8859-1"));
                 gzipStream.close();
             }
-        } else
+        } else {
+            Log.info(this.getClass().getName(), "Sending content without using diskcache and without zip compression");
             outputStream.write(content.getBytes());
+        }
+    }
+
+    private void writeContentFromCacheFile(String cacheFile, ServletOutputStream outputStream) throws IOException {
+        FileInputStream fin;
+        byte[] buffer;
+        int bytes;
+        Log.info(this.getClass().getName(), "Writing content from cache:" + cacheFile);
+
+        fin = new FileInputStream(cacheFile);
+        buffer = new byte[1024];
+
+        while ((bytes = fin.read(buffer, 0, buffer.length)) != -1) {
+            outputStream.write(buffer, 0, bytes);
+        }
+
+        fin.close();
     }
 
     private List<URL> getUrlList(HttpServletRequest request, String[] languages, String[] themes, String[] plugins, String suffix) {
@@ -225,33 +222,14 @@ public class TinyMCEServlet extends HttpServlet {
         }
     }
 
-    private boolean isOutdated(String cacheFile, URL coreUrl, List<URL> urls) {
-        boolean outdated = false;
+    private boolean cacheFileIsUpdated(String cacheFile) {
+        if (shouldRecreateDiskCache) {
+            return false;
+        }
+
         long cacheLastModified = new File(cacheFile).lastModified();
-        try {
-            if (coreUrl != null) {
-                if (cacheLastModified < coreUrl.openConnection().getLastModified()) {
-                    outdated = true;
-                }
-            }
-        } catch (Exception e) {
-            Log.debug(getClass().getSimpleName(), e.getMessage(), null, null);
-        }
-
-        if (!outdated) {
-            for (URL url : urls) {
-                try {
-                    if (cacheLastModified < url.openConnection().getLastModified()) {
-                        outdated = true;
-                        break;
-                    }
-                } catch (Exception e) {
-                    Log.debug(getClass().getSimpleName(), e.getMessage(), null, null);
-                }
-            }
-        }
-
-        return outdated;
+        long now = new Date().getTime();
+        return !(now - cacheLastModified > MAX_DISK_CACHE_AGE);
     }
 
     private String getParam(HttpServletRequest request, String name, String def) {
@@ -275,7 +253,7 @@ public class TinyMCEServlet extends HttpServlet {
         return retVal;
     }
 
-    private String getCachePath(HttpServletRequest request, String s) {
+    private String getCachePath() {
         String tempdir = System.getProperty("java.io.tmpdir");
         if (!(tempdir.endsWith("/") || tempdir.endsWith("\\"))) {
             tempdir = tempdir + File.separator;
@@ -291,11 +269,10 @@ public class TinyMCEServlet extends HttpServlet {
         } catch (MalformedURLException e) {
             Log.info(getClass().getName(), e.getMessage());
         }
-        Log.info(getClass().getName(), "url='" + url + "' for path='" + path + "' (translated to: '" + relPath + ").");
         return url;
     }
 
-    private String md5(String str) {
+    private String createCacheKey(String str) {
         try {
             java.security.MessageDigest md5 = java.security.MessageDigest.getInstance("MD5");
 
@@ -324,5 +301,4 @@ public class TinyMCEServlet extends HttpServlet {
 
         return "";
     }
-
 }
