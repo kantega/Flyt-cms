@@ -372,6 +372,10 @@ public class DefaultDocumentProvider implements DocumentProvider {
 
             Attachment attachment = AttachmentAO.getAttachment(attachmentId);
 
+            if (attachment == null) {
+                return text;
+            }
+
             TextExtractor te = textExtractorSelector.select(attachment.getFilename());
             if (te != null) {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
