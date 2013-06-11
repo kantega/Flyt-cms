@@ -104,12 +104,32 @@ openaksess.editcontext = function()  {
             return openaksess.editcontext.editIsModified || (typeof tinyMCE != "undefined" && tinyMCE.activeEditor && tinyMCE.activeEditor.isDirty());
         },
 
+        init : function() {
+            openaksess.editcontext.bindFieldChangeListeners();
+            openaksess.editcontext.setupRepeaterSorting();
+        },
 
         bindFieldChangeListeners : function () {
             openaksess.common.debug("bindFieldChangeListeners");
-            $("#EditContentForm :input").change(openaksess.editcontext.setIsModified);
+            $("#EditContentForm").find(":input").change(openaksess.editcontext.setIsModified);
         },
 
+        setupRepeaterSorting : function () {
+            $("#EditContentPane").find("div.contentAttributeRepeater div.inputs").sortable({
+                items: 'div.contentAttributeRepeaterRow',
+                handle: '.repeaterHandle',
+                not: 'a',
+                axis: 'y',
+                stop: function(e, ui){
+                    var rows = $(ui.item).parent().find(".contentAttributeRepeaterRow");
+                    rows.each(function(index) {
+                        var html = $(this).html();
+                        html = html.replace(/(_\d_\$)/g, "_" + index + "_$");
+                        $(this).html(html);
+                    });
+                }
+            });
+        },
 
         /*
          *  Sets field as focused element
@@ -536,8 +556,13 @@ openaksess.editcontext = function()  {
             saveContent("");
         },
 
-        deleteRepeaterRow : function(repeaterPath) {
-            $("#DeleteRepeaterRow").val(repeaterPath);
+        deleteRepeaterRow : function(repeaterId, elem) {
+            var repeaterRow = $(elem).parents(".contentAttributeRepeaterRow");
+            var repeater = $(repeaterRow).parents(".contentAttributeRepeater");
+            var offset = $(repeater).find(".contentAttributeRepeaterRow").index(repeaterRow);
+
+            var path = repeaterId + "[" + offset + "]";
+            $("#DeleteRepeaterRow").val(path);
             saveContent("");
         },
 

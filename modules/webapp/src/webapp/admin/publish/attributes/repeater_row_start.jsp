@@ -17,8 +17,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<c:if test="${repeater.numberOfRows > repeater.minOccurs}">
-    <div class="repeaterButtons">
-        <a href="#" onclick="openaksess.editcontext.deleteRepeaterRow('${repeater.nameIncludingPath}[${repeaterRowNo}]')"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
-    </div>
-</c:if>
+
+<div class="repeaterButtons repeaterHandle">
+    <c:if test="${repeater.numberOfRows > repeater.minOccurs}">
+        <a href="#" onclick="openaksess.editcontext.deleteRepeaterRow('${repeater.nameIncludingPath}', this)"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
+    </c:if>
+</div>

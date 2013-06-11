@@ -147,11 +147,7 @@ public class InputScreenRenderer {
 
             int numberOfRows = repeaterAttribute.getNumberOfRows();
             for (int rowNo = 0; rowNo < numberOfRows; rowNo++) {
-                out.print("<div class=\"contentAttributeRepeaterRow");
-                if (rowNo == 0) {
-                    out.print(" first");
-                }
-                out.print("\" data-row=\"" + rowNo + "\">\n");
+                out.print("<div class=\"contentAttributeRepeaterRow\">\n");
                 request.setAttribute("repeaterRowNo", rowNo);
                 pageContext.include("/admin/publish/attributes/repeater_row_start.jsp");
                 List<Attribute> attributes = repeaterAttribute.getRow(rowNo);

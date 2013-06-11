@@ -50,7 +50,7 @@
                 </c:otherwise>
             </c:choose>
 
-            openaksess.editcontext.bindFieldChangeListeners();
+            openaksess.editcontext.init();
         });
 
         function scrollTo() {
