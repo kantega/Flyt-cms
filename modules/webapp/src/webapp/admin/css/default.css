@@ -768,6 +768,14 @@ table.fullWidth {
 
 #Content .contentAttributeRepeaterRow .repeaterButtons {
     text-align: right;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterHandle {
+    cursor: move;
+    min-height: 20px;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons a {
     cursor: pointer;
 }
 
