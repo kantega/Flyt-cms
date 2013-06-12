@@ -70,6 +70,8 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                 IndexableDocument indexableDocument = transformer.transform(attachment);
                 log.info("Transformed Attachment {}", attachment.getFilename());
                 indexableDocumentQueue.put(indexableDocument);
+            } else {
+                log.error("Attachment with id {} was null", id);
             }
         } finally {
             progressReporter.reportProgress();
@@ -91,6 +93,6 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     private long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForInt("SELECT count( distinct attachments.Id) " + FROM_CLAUSE);
+        return jdbcTemplate.queryForInt("SELECT count( distinct attachments.Id ) " + FROM_CLAUSE);
     }
 }
