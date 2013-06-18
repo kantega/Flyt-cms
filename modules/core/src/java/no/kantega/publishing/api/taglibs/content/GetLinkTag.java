@@ -38,6 +38,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
+import static no.kantega.commons.util.URLHelper.getValidUrl;
+
 public class GetLinkTag extends BodyTagSupport{
     private static final String SOURCE = "aksess.GetLinkTag";
 
@@ -128,6 +130,8 @@ public class GetLinkTag extends BodyTagSupport{
                 url = contentObject.getUrl(isAdminMode);
 
                 try {
+                    setSiteCacheIfNull();
+                    Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
                     if (url != null && isAdminMode) {
                         Content current = (Content)request.getAttribute("aksess_this");
                         if (current == null) {
@@ -137,20 +141,21 @@ public class GetLinkTag extends BodyTagSupport{
                             RequestHelper.setRequestAttributes(request, current);
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {
-                            setSiteCacheIfNull();
-                            Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
-
                             List<String> hostnames = site.getHostnames();
-                            if (hostnames.size() > 0) {
-                                String hostname = (String)hostnames.get(0);
+                            if (!hostnames.isEmpty()) {
+                                String hostname = hostnames.get(0);
                                 String scheme = site.getScheme();
                                 int port = request.getServerPort();
                                 if (scheme == null) {
                                     scheme = request.getScheme();
                                 }
-                                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" +port : "") + url;
+                                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             }
                         }
+                    } else if(url != null && site.getHostnames().isEmpty()){
+                        // Site does not have its own domain. append site alias to
+                        // distinguish it from same alias on other sites.
+                        url = getValidUrl(site.getAlias(), url);
                     }
                 } catch (ContentNotFoundException e) {
                     // Vi vet ikke hvilken site denne siden tilhører, er ikke registrert
