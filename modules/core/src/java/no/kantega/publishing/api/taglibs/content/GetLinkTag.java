@@ -57,7 +57,7 @@ public class GetLinkTag extends BodyTagSupport{
     private String title = null;
     private String rel = null;
 
-    private SiteCache siteCache;
+    private static SiteCache siteCache;
 
     public void setCollection(String collection) {
         this.collection = collection;
@@ -152,7 +152,7 @@ public class GetLinkTag extends BodyTagSupport{
                                 url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             }
                         }
-                    } else if(url != null && site.getHostnames().isEmpty()){
+                    } else if(url != null && url.equals(contentObject.getAlias()) && site.getHostnames().isEmpty()){
                         // Site does not have its own domain. append site alias to
                         // distinguish it from same alias on other sites.
                         url = getValidUrl(site.getAlias(), url);

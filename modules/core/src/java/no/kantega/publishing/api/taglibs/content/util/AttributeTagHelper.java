@@ -24,6 +24,7 @@ import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.Aksess;
@@ -49,6 +50,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static no.kantega.commons.util.URLHelper.getValidUrl;
+
 /**
  *
  */
@@ -56,7 +59,7 @@ public final class AttributeTagHelper {
     public final static String COLLECTION_PAGE_VAR = "aksess_collection_";
     public final static String REPEATER_CONTENT_OBJ_PAGE_VAR = "aksess_repeater_contentObj_";
     public final static String REPEATER_OFFSET_PAGE_VAR = "aksess_repeater_offset_";
-
+    private static SiteCache siteCache;
 
     public static Content getContent(PageContext pageContext, String collection, String contentId) throws SystemException, NotAuthorizedException {
         return getContent(pageContext, collection, contentId, null);
@@ -239,9 +242,6 @@ public final class AttributeTagHelper {
         String result = "";
 
         String name = cmd.getName();
-        int width = cmd.getWidth();
-        int height = cmd.getHeight();
-        String cssClass = cmd.getCssClass();
 
         if (content != null) {
             Attribute attr = content.getAttribute(name, cmd.getAttributeType());
@@ -284,89 +284,130 @@ public final class AttributeTagHelper {
                     isTextAttribute = true;
                 }
             } else {
-                if (name.equals(ContentProperty.TITLE)) {
-                    result = content.getTitle();
-                    isTextAttribute = true;
-                } else if (name.equals(ContentProperty.ID)) {
-                    result = String.valueOf(content.getAssociation().getId());
-                } else if (name.equals(ContentProperty.CONTENTID)) {
-                    result = String.valueOf(content.getId());
-                } else if (name.equals(ContentProperty.NUMBER_OF_VIEWS)) {
-                    result = String.valueOf(content.getAssociation().getNumberOfViews());
-                } else if (name.equals(ContentProperty.URL)) {
-                    result = content.getUrl();
-                } else if (name.equals(ContentProperty.ALIAS)) {
-                    result = content.getAlias();
-                } else if (name.equals(ContentProperty.DESCRIPTION)) {
-                    result = content.getDescription();
-                    if (result != null) {
-                        result = StringHelper.replace(result, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
-                        result = StringHelper.replace(result, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
-                    }
-                    isTextAttribute = true;
-                } else if (name.equals(ContentProperty.ALT_TITLE)) {
-                    result = content.getAltTitle();
-                    isTextAttribute = true;
-                } else if (name.equals(ContentProperty.KEYWORDS)) {
-                    result = content.getKeywords();
-                    isTextAttribute = true;
-                } else if (name.equals(ContentProperty.IMAGE)) {
-                    MediaAttribute media = new MediaAttribute();
-                    media.setValue(content.getImage());
-                    if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
-                        Multimedia mm = media.getMultimedia();
-                        if (mm != null) {
-                            result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCropping(), cmd.getCssClass());
+                switch (name) {
+                    case ContentProperty.TITLE:
+                        result = content.getTitle();
+                        isTextAttribute = true;
+                        break;
+                    case ContentProperty.ID:
+                        result = String.valueOf(content.getAssociation().getId());
+                        break;
+                    case ContentProperty.CONTENTID:
+                        result = String.valueOf(content.getId());
+                        break;
+                    case ContentProperty.NUMBER_OF_VIEWS:
+                        result = String.valueOf(content.getAssociation().getNumberOfViews());
+                        break;
+                    case ContentProperty.URL:
+                        setSiteCacheIfNull();
+                        Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
+                        result = content.getUrl();
+                        if(result.equals(content.getAlias()) && site.getHostnames().isEmpty()){
+                            // Site does not have its own domain. append site alias to
+                            // distinguish it from same alias on other sites.
+                            result = getValidUrl(site.getAlias(), result);
                         }
-                    } else {
-                        result = media.getProperty(cmd.getProperty());
-                    }
-                } else if (name.equals(ContentProperty.PUBLISH_DATE) || name.equals(ContentProperty.EXPIRE_DATE)|| name.equals(ContentProperty.LAST_MODIFIED) || name.equals(ContentProperty.REVISION_DATE) || name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
-                    Date date = null;
-                    if (cmd.getFormat() == null) {
-                        cmd.setFormat(Aksess.getDefaultDateFormat());
-                    }
+                        break;
+                    case ContentProperty.ALIAS:
+                        result = content.getAlias();
+                        break;
+                    case ContentProperty.DESCRIPTION:
+                        result = content.getDescription();
+                        if (result != null) {
+                            result = StringHelper.replace(result, "\"" + Aksess.VAR_WEB + "\"/", Aksess.getContextPath() + "/");
+                            result = StringHelper.replace(result, Aksess.VAR_WEB + "/", Aksess.getContextPath() + "/");
+                        }
+                        isTextAttribute = true;
+                        break;
+                    case ContentProperty.ALT_TITLE:
+                        result = content.getAltTitle();
+                        isTextAttribute = true;
+                        break;
+                    case ContentProperty.KEYWORDS:
+                        result = content.getKeywords();
+                        isTextAttribute = true;
+                        break;
+                    case ContentProperty.IMAGE:
+                        MediaAttribute media = new MediaAttribute();
+                        media.setValue(content.getImage());
+                        if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.HTML)) {
+                            Multimedia mm = media.getMultimedia();
+                            if (mm != null) {
+                                result = MultimediaTagCreator.mm2HtmlTag(mm, null, cmd.getWidth(), cmd.getHeight(), cmd.getCropping(), cmd.getCssClass());
+                            }
+                        } else {
+                            result = media.getProperty(cmd.getProperty());
+                        }
+                        break;
+                    case ContentProperty.PUBLISH_DATE:
+                    case ContentProperty.EXPIRE_DATE:
+                    case ContentProperty.LAST_MODIFIED:
+                    case ContentProperty.REVISION_DATE:
+                    case ContentProperty.LAST_MAJOR_CHANGE:
+                        Date date = null;
+                        if (cmd.getFormat() == null) {
+                            cmd.setFormat(Aksess.getDefaultDateFormat());
+                        }
 
-                    if (name.equals(ContentProperty.PUBLISH_DATE)) {
-                        date = content.getPublishDate();
-                    } else if (name.equals(ContentProperty.EXPIRE_DATE)) {
-                        date = content.getExpireDate();
-                    } else if (name.equals(ContentProperty.LAST_MODIFIED)) {
-                        date = content.getLastModified();
-                    } else if (name.equals(ContentProperty.LAST_MAJOR_CHANGE)) {
-                        date = content.getLastMajorChange();
-                    }  else if (name.equals(ContentProperty.REVISION_DATE)) {
-                        date = content.getRevisionDate();
-                    }
-                    if (date != null) {
-                        Locale locale = Language.getLanguageAsLocale(content.getLanguage());
-                        DateFormat df = new SimpleDateFormat(cmd.getFormat(), locale);
-                        result = df.format(date);
-                    }
-                } else if(name.equals(ContentProperty.MODIFIED_BY)) {
-                    result = content.getModifiedBy();
-                } else if(name.equals(ContentProperty.LAST_MAJOR_CHANGE_BY)) {
-                    result = content.getLastMajorChangeBy();
-                } else if(name.equals(ContentProperty.PUBLISHER)) {
-                    result = content.getPublisher();
-                } else if(name.equals(ContentProperty.OWNER)) {
-                    result = content.getOwner();
-                } else if(name.equals(ContentProperty.OWNERPERSON)) {
-                    result = content.getOwnerPerson();
-                } else if (name.equals(ContentProperty.CHANGE_DESCRIPTION)) {
-                    result = content.getChangeDescription();
-                } else if (name.equals(ContentProperty.RATING_SCORE)) {
-                    result = "" + content.getRatingScore();
-                } else if (name.equals(ContentProperty.NUMBER_OF_RATINGS)) {
-                    result = "" + content.getNumberOfRatings();
-                } else if (name.equals(ContentProperty.NUMBER_OF_COMMENTS)) {
-                    result = "" + content.getNumberOfComments();
-                } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE)) {
-                    result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
-                } else if(name.equals(ContentProperty.DISPLAY_TEMPLATE_ID)) {
-                    result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getPublicId();
-                } else if(name.equals(ContentProperty.VERSION)) {
-                    result = Integer.toString(content.getVersion());
+                        switch (name) {
+                            case ContentProperty.PUBLISH_DATE:
+                                date = content.getPublishDate();
+                                break;
+                            case ContentProperty.EXPIRE_DATE:
+                                date = content.getExpireDate();
+                                break;
+                            case ContentProperty.LAST_MODIFIED:
+                                date = content.getLastModified();
+                                break;
+                            case ContentProperty.LAST_MAJOR_CHANGE:
+                                date = content.getLastMajorChange();
+                                break;
+                            case ContentProperty.REVISION_DATE:
+                                date = content.getRevisionDate();
+                                break;
+                        }
+                        if (date != null) {
+                            Locale locale = Language.getLanguageAsLocale(content.getLanguage());
+                            DateFormat df = new SimpleDateFormat(cmd.getFormat(), locale);
+                            result = df.format(date);
+                        }
+                        break;
+                    case ContentProperty.MODIFIED_BY:
+                        result = content.getModifiedBy();
+                        break;
+                    case ContentProperty.LAST_MAJOR_CHANGE_BY:
+                        result = content.getLastMajorChangeBy();
+                        break;
+                    case ContentProperty.PUBLISHER:
+                        result = content.getPublisher();
+                        break;
+                    case ContentProperty.OWNER:
+                        result = content.getOwner();
+                        break;
+                    case ContentProperty.OWNERPERSON:
+                        result = content.getOwnerPerson();
+                        break;
+                    case ContentProperty.CHANGE_DESCRIPTION:
+                        result = content.getChangeDescription();
+                        break;
+                    case ContentProperty.RATING_SCORE:
+                        result = String.valueOf(content.getRatingScore());
+                        break;
+                    case ContentProperty.NUMBER_OF_RATINGS:
+                        result = String.valueOf(content.getNumberOfRatings());
+                        break;
+                    case ContentProperty.NUMBER_OF_COMMENTS:
+                        result = String.valueOf(content.getNumberOfComments());
+                        break;
+                    case ContentProperty.DISPLAY_TEMPLATE:
+                        result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName();
+                        break;
+                    case ContentProperty.DISPLAY_TEMPLATE_ID:
+                        result = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getPublicId();
+                        break;
+                    case ContentProperty.VERSION:
+                        result = Integer.toString(content.getVersion());
+                        break;
                 }
             }
 
@@ -468,5 +509,11 @@ public final class AttributeTagHelper {
 
         }
         return name;
+    }
+
+    private static void setSiteCacheIfNull() {
+        if(siteCache == null){
+            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
     }
 }
